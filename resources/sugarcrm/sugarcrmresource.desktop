@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=SugarCRM Resource
+Comment=Resource for SugarCRM Webservices
+Type=AkonadiResource
+Exec=akonadi_sugarcrm_resource
+Icon=text-directory
+
+X-Akonadi-MimeTypes=inode/directory,text/directory
+X-Akonadi-Capabilities=Resource,SugarCRM
+X-Akonadi-Identifier=akonadi_sugarcrm_resource

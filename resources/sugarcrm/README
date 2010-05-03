@@ -1,0 +1,33 @@
+Sugar-Resource: a KDSoap based Akonadi Resource for SugarCRM's webservice interface
+===================================================================================
+
+Synchronized the collection tree at login, collection contents can be synced in clients
+on demand.
+
+Creates one top level collection which just contains further collections, one for each module.
+Operations on each such collection are handled by a module/type specific ModuleHandler subclass.
+
+
+SOAP Dependencies
+=================
+
+SOAP input file: sugar.wsdl
+downloaded from http://localhost/crm/soap.php?wsdl
+
+Needs KDSoap installed for build and runtime
+svn+ssh://svn.kdab.net/home/SVN-klaralv/projects/Siemens/Soap/kdsoap/trunk/kdsoap
+
+build with
+qmake kdsoap.pro PREFIX=/your/prefix
+make install
+
+SOAP Debugging
+==============
+
+Set $KDSOAP_DEBUG to 1 in the environment Akonadi is started from, e.g.
+
+export KDSOAP_DEBUG=1
+akonadictl start
+
+
+
