@@ -1,0 +1,16 @@
+SugarClient: an Akonadi based test client for SugarCRM's webservice managed through a SugarCRM Resource
+=======================================================================================================
+
+Needs sugar-resource at runtime
+svn+ssh://svn.kdab.net/home/SVN-klaralv/projects/FatCRM/branches/playground/sugar-resource
+
+SOAP Debugging
+==============
+
+Set $KDSOAP_DEBUG to 1 in the environment Akonadi is started from, e.g.
+
+export KDSOAP_DEBUG=1
+akonadictl start
+
+
+
