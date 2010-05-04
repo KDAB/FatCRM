@@ -2,6 +2,7 @@
 #define CONTACTSPAGE_H
 
 #include "ui_contactspage.h"
+#include <contactdetails.h>
 
 #include <akonadi/collection.h>
 
@@ -26,6 +27,7 @@ public:
 
 private:
     void initialize();
+    ContactDetails *mDetailsWidget;
     Ui_ContactsPage mUi;
 
     Akonadi::ChangeRecorder *mChangeRecorder;

@@ -21,6 +21,7 @@ using namespace Akonadi;
 
 ContactsPage::ContactsPage( QWidget *parent )
     : QWidget( parent ),
+      mDetailsWidget( 0 ),
       mChangeRecorder( new ChangeRecorder( this ) )
 {
     mUi.setupUi( this );
@@ -78,31 +79,12 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
 
 void ContactsPage::slotContactChanged( const Item &item )
 {
-    qDebug() << "Sorry, ContactsPage::slotContactChanged, NIY";
+    if ( item.isValid() && item.hasPayload<KABC::Addressee>() )
+        mDetailsWidget->setItem( item );
 
-    /*
-    if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
-        const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    layout()->update();
+    mDetailsWidget->setVisible( true );
 
-        mUi.firstName->setText( addressee.givenName() );
-        mUi.lastName->setText( addressee.familyName() );
-        mUi.title->setText( addressee.title() );
-        mUi.company->setText( addressee.organization() );
-        mUi.department->setText( addressee.department() );
-
-        mUi.modifyContactButton->setEnabled( true );
-        mUi.removeContactButton->setEnabled( true );
-    } else {
-        mUi.firstName->clear();
-        mUi.lastName->clear();
-        mUi.title->clear();
-        mUi.company->clear();
-        mUi.department->clear();
-
-        mUi.modifyContactButton->setEnabled( false );
-        mUi.removeContactButton->setEnabled( false );
-    }
-    */
 }
 
 void ContactsPage::slotNewContactClicked()
@@ -130,6 +112,10 @@ void ContactsPage::initialize()
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
+
+    mDetailsWidget = new ContactDetails( this );
+    mDetailsWidget->setVisible( false );
+    layout()->addWidget( mDetailsWidget );
 
     /*
      * convenience model for contacts, allowing us to easily specify the columns

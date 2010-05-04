@@ -1,11 +1,13 @@
 set(sugarclient_SRCS
     contactspage.cpp
+    contactdetails.cpp
     main.cpp
     sugarclient.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
     contactspage.ui
+    contactdetails.ui
     mainwindow.ui
 )
 
