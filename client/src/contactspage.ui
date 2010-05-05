@@ -26,7 +26,14 @@
          <item>
           <widget class="QPushButton" name="newContactPB">
            <property name="text">
-            <string>New Contact</string>
+            <string>&amp;New Contact</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="modifyContactPB">
+           <property name="text">
+            <string>&amp;Modify Contact</string>
            </property>
           </widget>
          </item>

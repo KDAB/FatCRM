@@ -81,8 +81,11 @@ void ContactsPage::slotContactChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w )
+        if ( w ) {
             w->contactDetailsWidget()->setItem( item );
+            mUi.modifyContactPB->setEnabled( true );
+
+        }
         emit contactItemChanged();
     }
 }
@@ -100,11 +103,42 @@ void ContactsPage::slotNewContactClicked()
     emit contactItemChanged();
 }
 
+void ContactsPage::slotModifyContactClicked()
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        ContactDetails *cd = w->contactDetailsWidget();
+        cd->enableFields();
+        cd->setModifyFlag();
+        connect( cd, SIGNAL( modifyContact( const  Akonadi::Item& ) ),
+                 this, SLOT( slotModifyContact( const Akonadi::Item& ) ) );
+    }
+}
+
 void ContactsPage::slotAddContact( const Item &item )
 {
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
+    Q_UNUSED( job );
+}
+
+// Pending (michel)
+// check - does not work as execpected
+void ContactsPage::slotModifyContact( const Item &modifiedItem )
+{
+    const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
+    Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    if ( item.isValid() ) {
+        // job starts automatically
+        // TODO connect to result() signal for error handling
+        ItemModifyJob *job = new ItemModifyJob( modifiedItem );
+        Q_UNUSED( job );
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        if ( w )
+            w->contactDetailsWidget()->disableFields();
+    }
 }
 
 
@@ -113,6 +147,10 @@ void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
     if ( start == end ) {
         QModelIndex newIdx = mUi.contactsTV->model()->index(start, 0, index);
         mUi.contactsTV->setCurrentIndex( newIdx );
+
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        if ( w )
+            w->contactDetailsWidget()->disableFields();
     }
 }
 
@@ -131,6 +169,8 @@ void ContactsPage::initialize()
 
     connect( mUi.newContactPB, SIGNAL( clicked() ),
              this, SLOT( slotNewContactClicked() ) );
+    connect( mUi.modifyContactPB, SIGNAL( clicked() ),
+             this, SLOT( slotModifyContactClicked() ) );
     connect( mUi.filtersCB, SIGNAL( currentIndexChanged( const QString& ) ),
              this,  SLOT( slotFilterChanged( const QString& ) ) );
 

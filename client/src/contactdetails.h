@@ -19,13 +19,17 @@ public:
     void setItem( const Akonadi::Item &item );
     void clearFields();
     void enableFields();
+    void disableFields();
+    void setModifyFlag();
 
 Q_SIGNALS:
     void saveContact( const Akonadi::Item &item );
+    void modifyContact( const Akonadi::Item &item );
 
 private:
     void initialize();
 
+    bool mModifyFlag;
     Ui_ContactDetails mUi;
 
 private Q_SLOTS:

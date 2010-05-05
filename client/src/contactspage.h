@@ -42,8 +42,10 @@ private Q_SLOTS:
     void slotCollectionFetchResult( KJob *job );
     void slotContactChanged( const Akonadi::Item &item );
     void slotNewContactClicked();
+    void slotModifyContactClicked();
     void slotFilterChanged( const QString& text );
     void slotAddContact( const Akonadi::Item &item );
+    void slotModifyContact( const Akonadi::Item &item );
     void slotSetCurrent( const QModelIndex&,int,int );
 };
 

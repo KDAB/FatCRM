@@ -25,6 +25,7 @@ void ContactDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         le->setReadOnly( true );
     mUi.description->setReadOnly( true );
+    mModifyFlag = false;
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
 }
@@ -47,6 +48,19 @@ void ContactDetails::clearFields ()
     mUi.firstName->setFocus();
 }
 
+void ContactDetails::disableFields()
+{
+    QList<QLineEdit*> lineEdits =
+        mUi.contactInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits ) {
+        le->setReadOnly(true);
+    }
+    mUi.description->setReadOnly( true );
+    mUi.saveButton->setEnabled( false );
+    mModifyFlag = false;
+}
+
+
 void ContactDetails::enableFields()
 {
     QList<QLineEdit*> lineEdits =
@@ -59,6 +73,11 @@ void ContactDetails::enableFields()
     mUi.description->setReadOnly( false );
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
+}
+
+void ContactDetails::setModifyFlag()
+{
+    mModifyFlag = true;
 }
 
 void ContactDetails::slotEnableSaving()
@@ -76,8 +95,10 @@ void ContactDetails::slotSaveContact()
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
     item.setPayload<KABC::Addressee>( addressee );
-    emit saveContact( item );
-
+    if ( !mModifyFlag )
+        emit saveContact( item );
+    else
+        emit modifyContact( item );
 }
 
 
