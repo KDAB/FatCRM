@@ -105,19 +105,15 @@ void ContactsPage::slotAddContact( const Item &item )
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
-    connect( job, SIGNAL( result(KJob*) ), this, SLOT( slotSetCurrent() ) );
-    mCurrentItem = item;
 }
 
-void ContactsPage::slotSetCurrent()
+
+void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
 {
-    // Pending(michel)
-    // I dont get back the index
-    // needs to be investigated
-    QModelIndexList indexes =
-        EntityTreeModel::modelIndexesForItem( mUi.contactsTV->model(), mCurrentItem );
-    if ( indexes.count() > 0 )
-        mUi.contactsTV->setCurrentIndex( indexes.first() );
+    if ( start == end ) {
+        QModelIndex newIdx = mUi.contactsTV->model()->index(start, 0, index);
+        mUi.contactsTV->setCurrentIndex( newIdx );
+    }
 }
 
 void ContactsPage::slotFilterChanged( const QString& filterText )
@@ -167,6 +163,6 @@ void ContactsPage::initialize()
     mUi.contactsTV->setModel( filterModel );
 
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
-
+    connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 }
 
