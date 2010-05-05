@@ -2,6 +2,7 @@
 #define CONTACTSPAGE_H
 
 #include "ui_contactspage.h"
+#include <contactdetails.h>
 
 #include <akonadi/collection.h>
 
@@ -29,10 +30,12 @@ Q_SIGNALS:
 
 private:
     void initialize();
-    Ui_ContactsPage mUi;
 
+    ContactDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mContactsCollection;
+    Akonadi::Item mCurrentItem;
+    Ui_ContactsPage mUi;
 
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
@@ -40,6 +43,8 @@ private Q_SLOTS:
     void slotContactChanged( const Akonadi::Item &item );
     void slotNewContactClicked();
     void slotFilterChanged( const QString& text );
+    void slotAddContact( const Akonadi::Item &item );
+    void slotSetCurrent();
 };
 
 #endif

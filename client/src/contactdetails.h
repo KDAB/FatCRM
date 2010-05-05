@@ -20,14 +20,17 @@ public:
     void clearFields();
     void enableFields();
 
+Q_SIGNALS:
+    void saveContact( const Akonadi::Item &item );
+
 private:
     void initialize();
 
     Ui_ContactDetails mUi;
 
 private Q_SLOTS:
-    void slotSaveContact();
     void slotEnableSaving();
+    void slotSaveContact();
 };
 
 #endif /* CONTACTDETAILS_H */

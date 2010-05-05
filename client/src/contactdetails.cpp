@@ -57,7 +57,7 @@ void ContactDetails::enableFields()
                  this, SLOT( slotEnableSaving() ) );
     }
     mUi.description->setReadOnly( false );
-    connect( mUi.description, SIGNAL( textChanged( const QString& ) ),
+    connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 }
 
@@ -68,8 +68,16 @@ void ContactDetails::slotEnableSaving()
 
 void ContactDetails::slotSaveContact()
 {
-    qDebug() << "Sorry - ContactDetails::slotSaveContact() - NYI";
-}
+    // Pending (michel)
+    // to be completed
+    KABC::Addressee addressee;
+    addressee.setGivenName( mUi.firstName->text() );
+    addressee.setFamilyName( mUi.lastName->text() );
+    Item item;
+    item.setMimeType( KABC::Addressee::mimeType() );
+    item.setPayload<KABC::Addressee>( addressee );
+    emit saveContact( item );
 
+}
 
 

@@ -94,8 +94,30 @@ void ContactsPage::slotNewContactClicked()
         ContactDetails *cd = w->contactDetailsWidget();
         cd->clearFields();
         cd->enableFields();
+        connect( cd, SIGNAL( saveContact( const  Akonadi::Item& ) ),
+                 this, SLOT( slotAddContact( const Akonadi::Item& ) ) );
     }
     emit contactItemChanged();
+}
+
+void ContactsPage::slotAddContact( const Item &item )
+{
+    // job starts automatically
+    // TODO connect to result() signal for error handling
+    ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
+    connect( job, SIGNAL( result(KJob*) ), this, SLOT( slotSetCurrent() ) );
+    mCurrentItem = item;
+}
+
+void ContactsPage::slotSetCurrent()
+{
+    // Pending(michel)
+    // I dont get back the index
+    // needs to be investigated
+    QModelIndexList indexes =
+        EntityTreeModel::modelIndexesForItem( mUi.contactsTV->model(), mCurrentItem );
+    if ( indexes.count() > 0 )
+        mUi.contactsTV->setCurrentIndex( indexes.first() );
 }
 
 void ContactsPage::slotFilterChanged( const QString& filterText )
@@ -147,3 +169,4 @@ void ContactsPage::initialize()
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
 
 }
+
