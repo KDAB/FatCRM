@@ -24,3 +24,13 @@ void ContactDetails::setItem (const Item &item )
     mUi.lastName->setText( addressee.familyName() );
     // Pending Michel ( complete )
 }
+
+void ContactDetails::clearFields ()
+{
+    QList<QLineEdit*> lineEdits =
+        mUi.contactInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        if ( !le->text().isEmpty() ) le->clear();
+    mUi.description->clear();
+    mUi.firstName->setFocus();
+}

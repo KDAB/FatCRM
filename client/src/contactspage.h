@@ -25,7 +25,7 @@ public:
     ~ContactsPage();
 
 Q_SIGNALS:
-    void contactItemChanged(const Akonadi::Item &item );
+    void contactItemChanged();
 
 private:
     void initialize();

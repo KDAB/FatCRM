@@ -17,6 +17,7 @@ public:
     ~ContactDetails();
 
     void setItem( const Akonadi::Item &item );
+    void clearFields();
 
 private:
     Ui_ContactDetails mUi;

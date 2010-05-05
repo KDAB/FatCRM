@@ -1,7 +1,8 @@
 #include "contactspage.h"
 
-#include <akonadi/contact/contactstreemodel.h>
+#include "sugarclient.h"
 
+#include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -78,13 +79,20 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
 
 void ContactsPage::slotContactChanged( const Item &item )
 {
-    if ( item.isValid() && item.hasPayload<KABC::Addressee>() )
-        emit contactItemChanged( item );
+    if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        if ( w )
+            w->contactDetailsWidget()->setItem( item );
+        emit contactItemChanged();
+    }
 }
 
 void ContactsPage::slotNewContactClicked()
 {
-    qDebug() << "Sorry, ContactsPage::slotNewContactClicked(), NIY";
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->contactDetailsWidget()->clearFields();
+    emit contactItemChanged();
 }
 
 void ContactsPage::slotFilterChanged( const QString& filterText )

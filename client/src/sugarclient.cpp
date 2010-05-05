@@ -67,8 +67,8 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
 
-    connect(mUi.contactsPage,SIGNAL(contactItemChanged(const Akonadi::Item&)),
-            this, SLOT( slotContactItemChanged(const Akonadi::Item &)));
+    connect(mUi.contactsPage,SIGNAL(contactItemChanged()),
+            this, SLOT( slotContactItemChanged()));
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -79,9 +79,8 @@ void SugarClient::slotResourceSelectionChanged( int index )
     }
 }
 
-void SugarClient::slotContactItemChanged( const Akonadi::Item& item )
+void SugarClient::slotContactItemChanged()
 {
-    mContactDetailsWidget->setItem( item );
     if ( !mContactDetailsDock->isVisible() )
         mContactDetailsDock->setVisible( true );
 }

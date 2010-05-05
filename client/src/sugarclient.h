@@ -6,7 +6,6 @@
 
 #include <QMainWindow>
 
-#include <akonadi/item.h>
 
 class SugarClient : public QMainWindow
 {
@@ -15,6 +14,14 @@ public:
     SugarClient();
 
     ~SugarClient();
+/*
+    inline QDockWidget * contactDetailsDockWidget() {
+        return mContactDetailsDock;
+    }
+*/
+    inline ContactDetails * contactDetailsWidget() {
+        return mContactDetailsWidget;
+    }
 
 Q_SIGNALS:
     void resourceSelected( const QByteArray &identifier );
@@ -32,7 +39,7 @@ private:
 private Q_SLOTS:
     void slotDelayedInit();
     void slotResourceSelectionChanged( int index );
-    void slotContactItemChanged( const Akonadi::Item& item );
+    void slotContactItemChanged();
 };
 
 #endif
