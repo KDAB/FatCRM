@@ -90,8 +90,11 @@ void ContactsPage::slotContactChanged( const Item &item )
 void ContactsPage::slotNewContactClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w )
-        w->contactDetailsWidget()->clearFields();
+    if ( w ) {
+        ContactDetails *cd = w->contactDetailsWidget();
+        cd->clearFields();
+        cd->enableFields();
+    }
     emit contactItemChanged();
 }
 

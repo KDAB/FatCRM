@@ -18,9 +18,16 @@ public:
 
     void setItem( const Akonadi::Item &item );
     void clearFields();
+    void enableFields();
 
 private:
+    void initialize();
+
     Ui_ContactDetails mUi;
+
+private Q_SLOTS:
+    void slotSaveContact();
+    void slotEnableSaving();
 };
 
 #endif /* CONTACTDETAILS_H */
