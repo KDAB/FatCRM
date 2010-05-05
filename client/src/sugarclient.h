@@ -2,7 +2,11 @@
 #define SUGARCLIENT_H
 
 #include "ui_mainwindow.h"
+#include <contactdetails.h>
+
 #include <QMainWindow>
+
+#include <akonadi/item.h>
 
 class SugarClient : public QMainWindow
 {
@@ -17,11 +21,18 @@ Q_SIGNALS:
 
 private:
     void initialize();
+    void createMenus();
+    void createDockWidgets();
+
+    QMenu *mViewMenu;
+    QDockWidget *mContactDetailsDock;
+    ContactDetails *mContactDetailsWidget;
     Ui_MainWindow mUi;
 
 private Q_SLOTS:
     void slotDelayedInit();
     void slotResourceSelectionChanged( int index );
+    void slotContactItemChanged( const Akonadi::Item& item );
 };
 
 #endif

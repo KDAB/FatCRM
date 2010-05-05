@@ -5,6 +5,8 @@
 #include <akonadi/agentinstancemodel.h>
 #include <akonadi/control.h>
 
+#include <QDockWidget>
+
 using namespace Akonadi;
 
 SugarClient::SugarClient()
@@ -46,7 +48,27 @@ void SugarClient::slotDelayedInit()
 
 void SugarClient::initialize()
 {
-  resize( 900, 400 );
+  resize( 900, 900 );
+  createMenus();
+  createDockWidgets();
+}
+
+void SugarClient::createMenus()
+{
+    mViewMenu = menuBar()->addMenu( tr( "&View" ) );
+}
+
+void SugarClient::createDockWidgets()
+{
+    mContactDetailsDock = new QDockWidget(tr("Contact Details"), this );
+    mContactDetailsWidget = new ContactDetails(mContactDetailsDock);
+    mContactDetailsDock->setWidget( mContactDetailsWidget );
+    mContactDetailsDock->setHidden( true );
+    addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
+    mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
+
+    connect(mUi.contactsPage,SIGNAL(contactItemChanged(const Akonadi::Item&)),
+            this, SLOT( slotContactItemChanged(const Akonadi::Item &)));
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -55,6 +77,13 @@ void SugarClient::slotResourceSelectionChanged( int index )
     if ( agent.isValid() ) {
         emit resourceSelected( agent.identifier().toLatin1() );
     }
+}
+
+void SugarClient::slotContactItemChanged( const Akonadi::Item& item )
+{
+    mContactDetailsWidget->setItem( item );
+    if ( !mContactDetailsDock->isVisible() )
+        mContactDetailsDock->setVisible( true );
 }
 
 #include "sugarclient.moc"

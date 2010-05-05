@@ -21,7 +21,6 @@ using namespace Akonadi;
 
 ContactsPage::ContactsPage( QWidget *parent )
     : QWidget( parent ),
-      mDetailsWidget( 0 ),
       mChangeRecorder( new ChangeRecorder( this ) )
 {
     mUi.setupUi( this );
@@ -80,11 +79,7 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
 void ContactsPage::slotContactChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<KABC::Addressee>() )
-        mDetailsWidget->setItem( item );
-
-    layout()->update();
-    mDetailsWidget->setVisible( true );
-
+        emit contactItemChanged( item );
 }
 
 void ContactsPage::slotNewContactClicked()
@@ -112,10 +107,6 @@ void ContactsPage::initialize()
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
-
-    mDetailsWidget = new ContactDetails( this );
-    mDetailsWidget->setVisible( false );
-    layout()->addWidget( mDetailsWidget );
 
     /*
      * convenience model for contacts, allowing us to easily specify the columns
