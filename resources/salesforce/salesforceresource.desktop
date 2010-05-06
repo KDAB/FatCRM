@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Salesforce Resource
+Comment=Resource for Salesforce Webservices
+Type=AkonadiResource
+Exec=akonadi_salesforce_resource
+Icon=text-directory
+
+X-Akonadi-MimeTypes=inode/directory,text/directory
+X-Akonadi-Capabilities=Resource,SugarCRM
+X-Akonadi-Identifier=akonadi_salesforce_resource
