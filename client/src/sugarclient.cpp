@@ -50,6 +50,7 @@ void SugarClient::initialize()
 {
   resize( 900, 900 );
   createMenus();
+  setupActions();
   createDockWidgets();
 }
 
@@ -83,6 +84,17 @@ void SugarClient::slotContactItemChanged()
 {
     if ( !mContactDetailsDock->isVisible() )
         mContactDetailsDock->setVisible( true );
+}
+
+void SugarClient::setupActions()
+{
+    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mUi.contactsPage, SLOT( syncronize() ) );
+    connect( mUi.contactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+}
+
+void SugarClient::slotShowMessage( const QString& message )
+{
+    statusBar()->showMessage( message, 3000 );
 }
 
 #include "sugarclient.moc"

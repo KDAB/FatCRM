@@ -27,9 +27,14 @@ public:
 
 Q_SIGNALS:
     void contactItemChanged();
+    void statusMessage( const QString& );
+
+public Q_SLOTS:
+    void syncronize();
 
 private:
     void initialize();
+    void setupCachePolicy();
 
     ContactDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
@@ -49,6 +54,7 @@ private Q_SLOTS:
     void slotModifyContact();
     void slotRemoveContact();
     void slotSetCurrent( const QModelIndex&,int,int );
+    void cachePolicyJobCompleted( KJob* );
 };
 
 #endif

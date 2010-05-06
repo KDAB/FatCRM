@@ -30,6 +30,7 @@ private:
     void initialize();
     void createMenus();
     void createDockWidgets();
+    void setupActions();
 
     QMenu *mViewMenu;
     QDockWidget *mContactDetailsDock;
@@ -40,6 +41,7 @@ private Q_SLOTS:
     void slotDelayedInit();
     void slotResourceSelectionChanged( int index );
     void slotContactItemChanged();
+    void slotShowMessage( const QString& );
 };
 
 #endif

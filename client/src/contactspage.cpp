@@ -15,6 +15,8 @@
 #include <akonadi/itemdeletejob.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
+#include <akonadi/cachepolicy.h>
+#include <akonadi/collectionmodifyjob.h>
 
 #include <kabc/addressee.h>
 
@@ -72,6 +74,8 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
         if ( mContactsCollection.statistics().count() == 0 ) {
             AgentManager::self()->synchronizeCollection( mContactsCollection );
         }
+
+        setupCachePolicy();
     } else {
         mUi.newContactPB->setEnabled( false );
     }
@@ -217,6 +221,7 @@ void ContactsPage::slotSearchItem( const QString& text )
 
 void ContactsPage::slotFilterChanged( const QString& filterText )
 {
+    Q_UNUSED( filterText );
     qDebug() << "Sorry, ContactsPage::slotFilterChanged(), NIY";
 }
 
@@ -269,5 +274,28 @@ void ContactsPage::initialize()
              this, SLOT( slotSearchItem( const QString& ) ) );
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
+}
+
+void ContactsPage::syncronize()
+{
+    AgentManager::self()->synchronizeCollection( mContactsCollection );
+}
+
+void ContactsPage::cachePolicyJobCompleted( KJob* job)
+{
+    if ( job->error() )
+        emit statusMessage( tr("Error when setting cachepolicy: %1").arg( job->errorString() ) );
+    else
+        emit statusMessage( tr("Cache policy set") );
+}
+
+void ContactsPage::setupCachePolicy()
+{
+    CachePolicy policy;
+    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
+    policy.setInheritFromParent( false );
+    mContactsCollection.setCachePolicy( policy );
+    CollectionModifyJob *job = new CollectionModifyJob( mContactsCollection );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
 
