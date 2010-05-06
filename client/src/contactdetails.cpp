@@ -35,6 +35,13 @@ void ContactDetails::setItem (const Item &item )
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
     mUi.firstName->setText( addressee.givenName() );
     mUi.lastName->setText( addressee.familyName() );
+    mUi.title->setText( addressee.title() );
+    mUi.department->setText( addressee.department() );
+    mUi.accountName->setText( addressee.organization() );
+    mUi.primaryEmail->setText( addressee.preferredEmail() );
+    mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
+    mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
+    mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
     // Pending Michel ( complete )
 }
 

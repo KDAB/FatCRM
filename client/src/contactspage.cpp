@@ -123,9 +123,13 @@ void ContactsPage::slotAddContact()
     KABC::Addressee addressee;
     addressee.setGivenName( data.value( "firstName" ) );
     addressee.setFamilyName( data.value( "lastName" ) );
-    //addressee.setTitle( mUi.title->text() );
-    //addressee.setOrganization( mUi.company->text() );
-    //addressee.setDepartment( mUi.department->text() );
+    addressee.setTitle( data.value( "title" ) );
+    addressee.setDepartment( data.value( "department" ) );
+    addressee.setOrganization( data.value( "accountName" ) );
+    addressee.insertEmail( data.value( "primaryEmail" ), true );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ) , KABC::PhoneNumber::Home ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ) , KABC::PhoneNumber::Work ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
@@ -157,13 +161,15 @@ void ContactsPage::slotModifyContact()
 
         QMap<QString, QString> data;
         data = w->contactDetailsWidget()->contactData();
-
         addressee.setGivenName( data.value( "firstName" ) );
         addressee.setFamilyName( data.value( "lastName" ) );
-        //addressee.setTitle( mUi.title->text() );
-        //addressee.setOrganization( mUi.company->text() );
-        //addressee.setDepartment( mUi.department->text() );
-
+        addressee.setTitle( data.value( "title" ) );
+        addressee.setDepartment( data.value( "department" ) );
+        addressee.setOrganization( data.value( "accountName" ) );
+        addressee.insertEmail(data.value( "primaryEmail" ), true );
+        addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ), KABC::PhoneNumber::Home ) );
+        addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ), KABC::PhoneNumber::Cell ) );
+        addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ), KABC::PhoneNumber::Work ) );
         item.setPayload<KABC::Addressee>( addressee );
 
         // job starts automatically

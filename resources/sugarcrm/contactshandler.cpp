@@ -169,7 +169,7 @@ void ContactsHandler::listEntries( int offset, Sugarsoap* soap, const QString &s
 {
     const QString query = QLatin1String( "" );
     const QString orderBy = QLatin1String( "contacts.last_name" );
-    const int maxResults = 10;
+    const int maxResults = 100;
     const int fetchDeleted = 0; // do not fetch deleted items
 
     TNS__Select_fields selectedFields;
