@@ -44,6 +44,7 @@ private Q_SLOTS:
     void slotNewContactClicked();
     void slotModifyContactClicked();
     void slotFilterChanged( const QString& text );
+    void slotSearchItem( const QString& text );
     void slotAddContact();
     void slotModifyContact();
     void slotRemoveContact();

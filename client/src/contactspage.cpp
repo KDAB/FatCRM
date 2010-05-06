@@ -204,6 +204,11 @@ void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
     }
 }
 
+void ContactsPage::slotSearchItem( const QString& text )
+{
+    mUi.contactsTV->keyboardSearch( text );
+}
+
 void ContactsPage::slotFilterChanged( const QString& filterText )
 {
     qDebug() << "Sorry, ContactsPage::slotFilterChanged(), NIY";
@@ -254,6 +259,8 @@ void ContactsPage::initialize()
 
     mUi.contactsTV->setModel( filterModel );
 
+    connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotSearchItem( const QString& ) ) );
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 }
