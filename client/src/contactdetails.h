@@ -21,14 +21,16 @@ public:
     void enableFields();
     void disableFields();
     void setModifyFlag();
+    inline QMap<QString, QString> contactData() {return mContactData;}
 
 Q_SIGNALS:
-    void saveContact( const Akonadi::Item &item );
-    void modifyContact( const Akonadi::Item &item );
+    void saveContact();
+    void modifyContact();
 
 private:
     void initialize();
 
+    QMap<QString, QString> mContactData;
     bool mModifyFlag;
     Ui_ContactDetails mUi;
 

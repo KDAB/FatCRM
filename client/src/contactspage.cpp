@@ -97,8 +97,8 @@ void ContactsPage::slotNewContactClicked()
         ContactDetails *cd = w->contactDetailsWidget();
         cd->clearFields();
         cd->enableFields();
-        connect( cd, SIGNAL( saveContact( const  Akonadi::Item& ) ),
-                 this, SLOT( slotAddContact( const Akonadi::Item& ) ) );
+        connect( cd, SIGNAL( saveContact() ),
+                 this, SLOT( slotAddContact( ) ) );
     }
     emit contactItemChanged();
 }
@@ -110,22 +110,71 @@ void ContactsPage::slotModifyContactClicked()
         ContactDetails *cd = w->contactDetailsWidget();
         cd->enableFields();
         cd->setModifyFlag();
-        connect( cd, SIGNAL( modifyContact( const  Akonadi::Item& ) ),
-                 this, SLOT( slotModifyContact( const Akonadi::Item& ) ) );
+        connect( cd, SIGNAL( modifyContact() ),
+                 this, SLOT( slotModifyContact() ) );
     }
 }
 
-void ContactsPage::slotAddContact( const Item &item )
+void ContactsPage::slotAddContact()
 {
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    QMap<QString, QString> data;
+    data = w->contactDetailsWidget()->contactData();
+    KABC::Addressee addressee;
+    addressee.setGivenName( data.value( "firstName" ) );
+    addressee.setFamilyName( data.value( "lastName" ) );
+    //addressee.setTitle( mUi.title->text() );
+    //addressee.setOrganization( mUi.company->text() );
+    //addressee.setDepartment( mUi.department->text() );
+
+    Item item;
+    item.setMimeType( KABC::Addressee::mimeType() );
+    item.setPayload<KABC::Addressee>( addressee );
+
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
     Q_UNUSED( job );
+
+    disconnect( w->contactDetailsWidget(), SIGNAL( saveContact() ),
+                 this, SLOT( slotAddContact( ) ) );
 }
 
-// Pending (michel)
-// check - does not work as execpected
-void ContactsPage::slotModifyContact( const Item &modifiedItem )
+
+void ContactsPage::slotModifyContact()
+{
+    const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
+    Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    if ( item.isValid() ) {
+        KABC::Addressee addressee;
+        if ( item.hasPayload<KABC::Addressee>() ) {
+            addressee = item.payload<KABC::Addressee>();
+        }
+
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        w->contactDetailsWidget()->disableFields();
+
+        QMap<QString, QString> data;
+        data = w->contactDetailsWidget()->contactData();
+
+        addressee.setGivenName( data.value( "firstName" ) );
+        addressee.setFamilyName( data.value( "lastName" ) );
+        //addressee.setTitle( mUi.title->text() );
+        //addressee.setOrganization( mUi.company->text() );
+        //addressee.setDepartment( mUi.department->text() );
+
+        item.setPayload<KABC::Addressee>( addressee );
+
+        // job starts automatically
+        // TODO connect to result() signal for error handling
+        ItemModifyJob *job = new ItemModifyJob( item );
+        Q_UNUSED( job );
+
+    }
+}
+
+void ContactsPage::slotRemoveContact()
 {
     const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
     Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
@@ -133,14 +182,15 @@ void ContactsPage::slotModifyContact( const Item &modifiedItem )
     if ( item.isValid() ) {
         // job starts automatically
         // TODO connect to result() signal for error handling
-        ItemModifyJob *job = new ItemModifyJob( modifiedItem );
+        ItemDeleteJob *job = new ItemDeleteJob( item );
         Q_UNUSED( job );
-        SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w )
-            w->contactDetailsWidget()->disableFields();
+    }
+    const QModelIndex newIndex = mUi.contactsTV->selectionModel()->currentIndex();
+    if ( !index.isValid() ) {
+        mUi.modifyContactPB->setEnabled( false );
+        mUi.removeContactPB->setEnabled( false );
     }
 }
-
 
 void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
 {
@@ -171,6 +221,8 @@ void ContactsPage::initialize()
              this, SLOT( slotNewContactClicked() ) );
     connect( mUi.modifyContactPB, SIGNAL( clicked() ),
              this, SLOT( slotModifyContactClicked() ) );
+    connect( mUi.removeContactPB, SIGNAL( clicked() ),
+             this, SLOT( slotRemoveContact() ) );
     connect( mUi.filtersCB, SIGNAL( currentIndexChanged( const QString& ) ),
              this,  SLOT( slotFilterChanged( const QString& ) ) );
 

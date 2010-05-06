@@ -44,8 +44,9 @@ private Q_SLOTS:
     void slotNewContactClicked();
     void slotModifyContactClicked();
     void slotFilterChanged( const QString& text );
-    void slotAddContact( const Akonadi::Item &item );
-    void slotModifyContact( const Akonadi::Item &item );
+    void slotAddContact();
+    void slotModifyContact();
+    void slotRemoveContact();
     void slotSetCurrent( const QModelIndex&,int,int );
 };
 

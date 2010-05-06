@@ -87,18 +87,21 @@ void ContactDetails::slotEnableSaving()
 
 void ContactDetails::slotSaveContact()
 {
-    // Pending (michel)
-    // to be completed
-    KABC::Addressee addressee;
-    addressee.setGivenName( mUi.firstName->text() );
-    addressee.setFamilyName( mUi.lastName->text() );
-    Item item;
-    item.setMimeType( KABC::Addressee::mimeType() );
-    item.setPayload<KABC::Addressee>( addressee );
+   if ( !mContactData.empty() )
+       mContactData.clear();
+
+    QList<QLineEdit*> lineEdits =
+        mUi.contactInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        mContactData[le->objectName()] = le->text();
+
+    mContactData["description"] = mUi.description->toPlainText();
+
     if ( !mModifyFlag )
-        emit saveContact( item );
+        emit saveContact();
     else
-        emit modifyContact( item );
+        emit modifyContact();
 }
+
 
 
