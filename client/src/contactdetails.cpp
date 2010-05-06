@@ -3,6 +3,7 @@
 #include <akonadi/item.h>
 
 #include <kabc/addressee.h>
+#include <kabc/address.h>
 
 using namespace Akonadi;
 
@@ -32,6 +33,7 @@ void ContactDetails::initialize()
 
 void ContactDetails::setItem (const Item &item )
 {
+    // contact info
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
     mUi.firstName->setText( addressee.givenName() );
     mUi.lastName->setText( addressee.familyName() );
@@ -42,6 +44,22 @@ void ContactDetails::setItem (const Item &item )
     mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
     mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
     mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
+
+    // Pending(michel)
+    // primary here - need to check if that is what we want
+    const KABC::Address address = addressee.address( KABC::Address::Work );
+    mUi.primaryAddress->setText( address.street() );
+    mUi.city->setText( address.locality() );
+    mUi.state->setText( address.region() );
+    mUi.postalCode->setText( address.postalCode() );
+    mUi.country->setText( address.country() );
+
+    const KABC::Address other = addressee.address( KABC::Address::Pref );
+    mUi.otherAddress->setText( other.street() );
+    mUi.otherCity->setText( other.locality() );
+    mUi.otherState->setText( other.region() );
+    mUi.otherPostalCode->setText( other.postalCode() );
+    mUi.otherCountry->setText( other.country() );
     // Pending Michel ( complete )
 }
 

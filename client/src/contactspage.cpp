@@ -19,6 +19,7 @@
 #include <akonadi/collectionmodifyjob.h>
 
 #include <kabc/addressee.h>
+#include <kabc/address.h>
 
 using namespace Akonadi;
 
@@ -135,6 +136,26 @@ void ContactsPage::slotAddContact()
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ) , KABC::PhoneNumber::Work ) );
 
+    // Pending (michel)
+    // check for the type we want to use (e.g primary == Work? etc ... )
+    KABC::Address primaryAddress;
+    primaryAddress.setType( KABC::Address::Work );
+    primaryAddress.setStreet( data.value( "primaryAddress" ) );
+    primaryAddress.setLocality( data.value( "city" ) );
+    primaryAddress.setRegion( data.value( "state" ) );
+    primaryAddress.setPostalCode( data.value( "postalCode" ) );
+    primaryAddress.setCountry( data.value( "Country" ) );
+    addressee.insertAddress( primaryAddress );
+
+    KABC::Address otherAddress;
+    otherAddress.setType( KABC::Address::Pref );
+    otherAddress.setStreet( data.value( "otherAddress" ) );
+    otherAddress.setLocality( data.value( "otherCity" ) );
+    otherAddress.setRegion( data.value( "otherState" ) );
+    otherAddress.setPostalCode( data.value( "otherPostalCode" ) );
+    otherAddress.setCountry( data.value( "otherCountry" ) );
+    addressee.insertAddress( otherAddress );
+
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
     item.setPayload<KABC::Addressee>( addressee );
@@ -174,6 +195,27 @@ void ContactsPage::slotModifyContact()
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ), KABC::PhoneNumber::Home ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ), KABC::PhoneNumber::Cell ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ), KABC::PhoneNumber::Work ) );
+
+        // Pending (michel)
+        // check for the type we want to use (e.g primary == Work? etc ... )
+        KABC::Address primaryAddress;
+        primaryAddress.setType( KABC::Address::Work );
+        primaryAddress.setStreet( data.value( "primaryAddress" ) );
+        primaryAddress.setLocality( data.value( "city" ) );
+        primaryAddress.setRegion( data.value( "state" ) );
+        primaryAddress.setPostalCode( data.value( "postalCode" ) );
+        primaryAddress.setCountry( data.value( "Country" ) );
+        addressee.insertAddress( primaryAddress );
+
+        KABC::Address otherAddress;
+        otherAddress.setType( KABC::Address::Pref );
+        otherAddress.setStreet( data.value( "otherAddress" ) );
+        otherAddress.setLocality( data.value( "otherCity" ) );
+        otherAddress.setRegion( data.value( "otherState" ) );
+        otherAddress.setPostalCode( data.value( "otherPostalCode" ) );
+        otherAddress.setCountry( data.value( "otherCountry" ) );
+        addressee.insertAddress( otherAddress );
+
         item.setPayload<KABC::Addressee>( addressee );
 
         // job starts automatically

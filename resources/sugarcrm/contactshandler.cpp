@@ -5,6 +5,7 @@
 #include <akonadi/collection.h>
 
 #include <kabc/addressee.h>
+#include <kabc/address.h>
 
 #include <KLocale>
 
@@ -121,6 +122,23 @@ static void setMobilePhone( const QString &value, KABC::Addressee &addressee )
     addressee.insertPhoneNumber( KABC::PhoneNumber( value, KABC::PhoneNumber::Cell ) );
 }
 
+static QString getAddress( const QString &type, const KABC::Addressee &addressee )
+{
+    // Pending(michel)
+    // we need to decide which types
+    // we will support here
+    // see address.cpp for a list of types
+    if ( type == "Work" )
+        return addressee.address( KABC::Address::Work ).toString();
+    else
+        return addressee.address( KABC::Address::Pref ).toString();
+}
+
+static void setAddress( const KABC::Address &address, KABC::Addressee &addressee )
+{
+    addressee.insertAddress( address );
+}
+
 class AccessorPair
 {
 public:
@@ -145,6 +163,10 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "phone_home" ), AccessorPair( getHomePhone, setHomePhone ) );
     mAccessors->insert( QLatin1String( "phone_work" ), AccessorPair( getWorkPhone, setWorkPhone ) );
     mAccessors->insert( QLatin1String( "phone_mobile" ), AccessorPair( getMobilePhone, setMobilePhone ) );
+    // Pending (michel)
+    // we need to find a way
+    // for the address
+    //mAccessors->insert( QLatin1String( "address" ), AccessorPair( getAddress, setAddress ) );
 }
 
 ContactsHandler::~ContactsHandler()
