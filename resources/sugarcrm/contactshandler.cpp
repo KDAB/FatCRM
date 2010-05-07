@@ -12,15 +12,17 @@
 #include <QHash>
 
 typedef QString (*valueGetter)( const KABC::Addressee& );
-typedef void (*valueSetter)( const QString&, KABC::Addressee& );
+typedef void (*valueSetter)( const QString&, KABC::Addressee&);
 
 static QString getFirstName( const KABC::Addressee &addressee )
 {
+
     return addressee.givenName();
 }
 
 static void setFirstName( const QString &value, KABC::Addressee &addressee )
 {
+
     addressee.setGivenName( value );
 }
 
@@ -129,54 +131,87 @@ static QString getPrimaryStreet( const KABC::Addressee &addressee )
 
 static void setPrimaryStreet(const QString &value, KABC::Addressee &addressee )
 {
-    if ( addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty() ) {
-        KABC::Address primaryAddress;
-        primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
-        addressee.insertAddress( primaryAddress );
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty()) {
+        address.setType(KABC::Address::Work|KABC::Address::Pref );
+        address.setStreet( value );
+    } else {
+        address = addressee.address(KABC::Address::Work|KABC::Address::Pref );
+        address.setStreet( value );
     }
-
-    addressee.address(KABC::Address::Work|KABC::Address::Pref).setStreet( value );
+    addressee.insertAddress( address );
 }
 
 static QString getPrimaryCity( const KABC::Addressee &addressee )
 {
-
-    return addressee.address(KABC::Address::Work|KABC::Address::Pref).locality();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).locality();
 }
 
 static void setPrimaryCity(const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Work|KABC::Address::Pref).setLocality(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty()) {
+        address.setType(KABC::Address::Work|KABC::Address::Pref );
+        address.setLocality( value );
+    } else {
+        address = addressee.address(KABC::Address::Work|KABC::Address::Pref );
+        address.setLocality( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getPrimaryState( const KABC::Addressee &addressee )
 {
-    return addressee.address(KABC::Address::Work|KABC::Address::Pref).region();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).region();
 }
 
 static void setPrimaryState( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Work|KABC::Address::Pref).setRegion(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty()) {
+        address.setType(KABC::Address::Work|KABC::Address::Pref );
+        address.setRegion( value );
+    } else {
+        address = addressee.address(KABC::Address::Work|KABC::Address::Pref );
+        address.setRegion( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getPrimaryPostalcode( const KABC::Addressee &addressee )
 {
-    return addressee.address(KABC::Address::Work|KABC::Address::Pref).postalCode();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).postalCode();
 }
 
 static void setPrimaryPostalcode( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Work|KABC::Address::Pref).setPostalCode(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty()) {
+        address.setType(KABC::Address::Work|KABC::Address::Pref );
+        address.setPostalCode( value );
+    } else {
+        address = addressee.address(KABC::Address::Work|KABC::Address::Pref );
+        address.setPostalCode( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getPrimaryCountry( const KABC::Addressee &addressee )
 {
-    return addressee.address(KABC::Address::Work|KABC::Address::Pref).country();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).country();
 }
 
 static void setPrimaryCountry( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Work|KABC::Address::Pref).setCountry(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty()) {
+        address.setType(KABC::Address::Work|KABC::Address::Pref );
+        address.setCountry( value );
+    } else {
+        address = addressee.address(KABC::Address::Work|KABC::Address::Pref );
+        address.setCountry( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getOtherStreet( const KABC::Addressee &addressee )
@@ -186,12 +221,15 @@ static QString getOtherStreet( const KABC::Addressee &addressee )
 
 static void setOtherStreet(const QString &value, KABC::Addressee &addressee )
 {
-    if ( addressee.addresses(KABC::Address::Home ).isEmpty() ) {
-        KABC::Address address;
-        address.setType( KABC::Address::Home );
-        addressee.insertAddress( address );
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Home).isEmpty()) {
+        address.setType(KABC::Address::Home);
+        address.setStreet( value );
+    } else {
+        address = addressee.address(KABC::Address::Home);
+        address.setStreet( value );
     }
-    addressee.address(KABC::Address::Home).setStreet( value );
+    addressee.insertAddress( address );
 }
 
 static QString getOtherCity( const KABC::Addressee &addressee )
@@ -201,7 +239,15 @@ static QString getOtherCity( const KABC::Addressee &addressee )
 
 static void setOtherCity(const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Home).setLocality(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Home).isEmpty()) {
+        address.setType(KABC::Address::Home);
+        address.setLocality( value );
+    } else {
+        address = addressee.address(KABC::Address::Home);
+        address.setLocality( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getOtherState( const KABC::Addressee &addressee )
@@ -211,7 +257,15 @@ static QString getOtherState( const KABC::Addressee &addressee )
 
 static void setOtherState( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Home).setRegion(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Home).isEmpty()) {
+        address.setType(KABC::Address::Home);
+        address.setRegion( value );
+    } else {
+        address = addressee.address(KABC::Address::Home);
+        address.setRegion( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getOtherPostalcode( const KABC::Addressee &addressee )
@@ -221,7 +275,15 @@ static QString getOtherPostalcode( const KABC::Addressee &addressee )
 
 static void setOtherPostalcode( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Home).setPostalCode(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Home).isEmpty()) {
+        address.setType(KABC::Address::Home);
+        address.setPostalCode( value );
+    } else {
+        address = addressee.address(KABC::Address::Home);
+        address.setPostalCode( value );
+    }
+    addressee.insertAddress( address );
 }
 
 static QString getOtherCountry( const KABC::Addressee &addressee )
@@ -231,7 +293,15 @@ static QString getOtherCountry( const KABC::Addressee &addressee )
 
 static void setOtherCountry( const QString &value, KABC::Addressee &addressee )
 {
-    addressee.address(KABC::Address::Home).setCountry(value);
+    KABC::Address address;
+    if (addressee.addresses(KABC::Address::Home).isEmpty()) {
+        address.setType(KABC::Address::Home);
+        address.setCountry( value );
+    } else {
+        address = addressee.address(KABC::Address::Home);
+        address.setCountry( value );
+    }
+    addressee.insertAddress( address );
 }
 
 
@@ -367,9 +437,8 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
-            accessIt->setter( namedValue.value(), addressee );
+                accessIt->setter( namedValue.value(), addressee );
         }
-
         item.setPayload<KABC::Addressee>( addressee );
         items << item;
     }

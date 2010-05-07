@@ -136,8 +136,6 @@ void ContactsPage::slotAddContact()
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ) , KABC::PhoneNumber::Work ) );
 
-    // Pending (michel)
-    // check for the type we want to use (e.g primary == Work? etc ... )
     KABC::Address primaryAddress;
     primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
     primaryAddress.setStreet( data.value( "primaryAddress" ) );
@@ -196,15 +194,13 @@ void ContactsPage::slotModifyContact()
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ), KABC::PhoneNumber::Cell ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ), KABC::PhoneNumber::Work ) );
 
-        // Pending (michel)
-        // check for the type we want to use (e.g primary == Work? etc ... )
         KABC::Address primaryAddress;
         primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
         primaryAddress.setStreet( data.value( "primaryAddress" ) );
         primaryAddress.setLocality( data.value( "city" ) );
         primaryAddress.setRegion( data.value( "state" ) );
         primaryAddress.setPostalCode( data.value( "postalCode" ) );
-        primaryAddress.setCountry( data.value( "Country" ) );
+        primaryAddress.setCountry( data.value( "country" ) );
         addressee.insertAddress( primaryAddress );
 
         KABC::Address otherAddress;
