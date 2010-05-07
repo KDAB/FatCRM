@@ -122,22 +122,106 @@ static void setMobilePhone( const QString &value, KABC::Addressee &addressee )
     addressee.insertPhoneNumber( KABC::PhoneNumber( value, KABC::PhoneNumber::Cell ) );
 }
 
-static QString getAddress( const QString &type, const KABC::Addressee &addressee )
+static QString getPrimaryStreet( const KABC::Addressee &addressee )
 {
-    // Pending(michel)
-    // we need to decide which types
-    // we will support here
-    // see address.cpp for a list of types
-    if ( type == "Work" )
-        return addressee.address( KABC::Address::Work ).toString();
-    else
-        return addressee.address( KABC::Address::Pref ).toString();
+    return addressee.address(KABC::Address::Work|KABC::Address::Pref).street();
 }
 
-static void setAddress( const KABC::Address &address, KABC::Addressee &addressee )
+static void setPrimaryStreet(const QString &value, KABC::Addressee &addressee )
 {
-    addressee.insertAddress( address );
+    addressee.address(KABC::Address::Work|KABC::Address::Pref).setStreet( value );
 }
+
+static QString getPrimaryCity( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Work|KABC::Address::Pref).locality();
+}
+
+static void setPrimaryCity(const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Work|KABC::Address::Pref).setLocality(value);
+}
+
+static QString getPrimaryState( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Work|KABC::Address::Pref).region();
+}
+
+static void setPrimaryState( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Work|KABC::Address::Pref).setRegion(value);
+}
+
+static QString getPrimaryPostalcode( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Work|KABC::Address::Pref).postalCode();
+}
+
+static void setPrimaryPostalcode( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Work|KABC::Address::Pref).setPostalCode(value);
+}
+
+static QString getPrimaryCountry( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Work|KABC::Address::Pref).country();
+}
+
+static void setPrimaryCountry( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Work|KABC::Address::Pref).setCountry(value);
+}
+
+static QString getOtherStreet( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Home).street();
+}
+
+static void setOtherStreet(const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Home).setStreet( value );
+}
+
+static QString getOtherCity( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Home).locality();
+}
+
+static void setOtherCity(const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Home).setLocality(value);
+}
+
+static QString getOtherState( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Home).region();
+}
+
+static void setOtherState( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Home).setRegion(value);
+}
+
+static QString getOtherPostalcode( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Home).postalCode();
+}
+
+static void setOtherPostalcode( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Home).setPostalCode(value);
+}
+
+static QString getOtherCountry( const KABC::Addressee &addressee )
+{
+    return addressee.address(KABC::Address::Home).country();
+}
+
+static void setOtherCountry( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.address(KABC::Address::Home).setCountry(value);
+}
+
 
 class AccessorPair
 {
@@ -163,10 +247,18 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "phone_home" ), AccessorPair( getHomePhone, setHomePhone ) );
     mAccessors->insert( QLatin1String( "phone_work" ), AccessorPair( getWorkPhone, setWorkPhone ) );
     mAccessors->insert( QLatin1String( "phone_mobile" ), AccessorPair( getMobilePhone, setMobilePhone ) );
-    // Pending (michel)
-    // we need to find a way
-    // for the address
-    //mAccessors->insert( QLatin1String( "address" ), AccessorPair( getAddress, setAddress ) );
+    mAccessors->insert( QLatin1String( "primary_address_street" ), AccessorPair( getPrimaryStreet, setPrimaryStreet ) );
+    mAccessors->insert( QLatin1String( "primary_address_city" ), AccessorPair( getPrimaryCity, setPrimaryCity ) );
+    mAccessors->insert( QLatin1String( "primary_address_state" ), AccessorPair( getPrimaryState, setPrimaryState ) );
+    mAccessors->insert( QLatin1String( "primary_address_postalcode" ), AccessorPair( getPrimaryPostalcode, setPrimaryPostalcode ) );
+    mAccessors->insert( QLatin1String( "primary_address_country" ), AccessorPair( getPrimaryCountry, setPrimaryCountry ) );
+    mAccessors->insert( QLatin1String( "alt_address_street" ), AccessorPair( getOtherStreet, setOtherStreet ) );
+    mAccessors->insert( QLatin1String( "alt_address_city" ), AccessorPair( getOtherCity, setOtherCity ) );
+    mAccessors->insert( QLatin1String( "alt_address_state" ), AccessorPair( getOtherState, setOtherState ) );
+    mAccessors->insert( QLatin1String( "alt_address_postalcode" ), AccessorPair( getOtherPostalcode, setOtherPostalcode ) );
+    mAccessors->insert( QLatin1String( "alt_address_country" ), AccessorPair( getOtherCountry, setOtherCountry ) );
+
+
 }
 
 ContactsHandler::~ContactsHandler()

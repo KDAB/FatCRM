@@ -139,7 +139,7 @@ void ContactsPage::slotAddContact()
     // Pending (michel)
     // check for the type we want to use (e.g primary == Work? etc ... )
     KABC::Address primaryAddress;
-    primaryAddress.setType( KABC::Address::Work );
+    primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
     primaryAddress.setStreet( data.value( "primaryAddress" ) );
     primaryAddress.setLocality( data.value( "city" ) );
     primaryAddress.setRegion( data.value( "state" ) );
@@ -148,7 +148,7 @@ void ContactsPage::slotAddContact()
     addressee.insertAddress( primaryAddress );
 
     KABC::Address otherAddress;
-    otherAddress.setType( KABC::Address::Pref );
+    otherAddress.setType( KABC::Address::Home );
     otherAddress.setStreet( data.value( "otherAddress" ) );
     otherAddress.setLocality( data.value( "otherCity" ) );
     otherAddress.setRegion( data.value( "otherState" ) );
@@ -199,7 +199,7 @@ void ContactsPage::slotModifyContact()
         // Pending (michel)
         // check for the type we want to use (e.g primary == Work? etc ... )
         KABC::Address primaryAddress;
-        primaryAddress.setType( KABC::Address::Work );
+        primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
         primaryAddress.setStreet( data.value( "primaryAddress" ) );
         primaryAddress.setLocality( data.value( "city" ) );
         primaryAddress.setRegion( data.value( "state" ) );
@@ -208,7 +208,7 @@ void ContactsPage::slotModifyContact()
         addressee.insertAddress( primaryAddress );
 
         KABC::Address otherAddress;
-        otherAddress.setType( KABC::Address::Pref );
+        otherAddress.setType( KABC::Address::Home);
         otherAddress.setStreet( data.value( "otherAddress" ) );
         otherAddress.setLocality( data.value( "otherCity" ) );
         otherAddress.setRegion( data.value( "otherState" ) );

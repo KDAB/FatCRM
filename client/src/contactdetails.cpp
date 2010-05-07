@@ -47,14 +47,14 @@ void ContactDetails::setItem (const Item &item )
 
     // Pending(michel)
     // primary here - need to check if that is what we want
-    const KABC::Address address = addressee.address( KABC::Address::Work );
+    const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
     mUi.primaryAddress->setText( address.street() );
     mUi.city->setText( address.locality() );
     mUi.state->setText( address.region() );
     mUi.postalCode->setText( address.postalCode() );
     mUi.country->setText( address.country() );
 
-    const KABC::Address other = addressee.address( KABC::Address::Pref );
+    const KABC::Address other = addressee.address( KABC::Address::Home );
     mUi.otherAddress->setText( other.street() );
     mUi.otherCity->setText( other.locality() );
     mUi.otherState->setText( other.region() );
