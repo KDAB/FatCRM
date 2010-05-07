@@ -14,11 +14,7 @@ public:
     SugarClient();
 
     ~SugarClient();
-/*
-    inline QDockWidget * contactDetailsDockWidget() {
-        return mContactDetailsDock;
-    }
-*/
+
     inline ContactDetails * contactDetailsWidget() {
         return mContactDetailsWidget;
     }

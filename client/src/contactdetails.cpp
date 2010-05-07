@@ -45,8 +45,6 @@ void ContactDetails::setItem (const Item &item )
     mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
     mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
 
-    // Pending(michel)
-    // primary here - need to check if that is what we want
     const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
     mUi.primaryAddress->setText( address.street() );
     mUi.city->setText( address.locality() );

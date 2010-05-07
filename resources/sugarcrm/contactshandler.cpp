@@ -129,11 +129,18 @@ static QString getPrimaryStreet( const KABC::Addressee &addressee )
 
 static void setPrimaryStreet(const QString &value, KABC::Addressee &addressee )
 {
+    if ( addressee.addresses(KABC::Address::Work|KABC::Address::Pref ).isEmpty() ) {
+        KABC::Address primaryAddress;
+        primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
+        addressee.insertAddress( primaryAddress );
+    }
+
     addressee.address(KABC::Address::Work|KABC::Address::Pref).setStreet( value );
 }
 
 static QString getPrimaryCity( const KABC::Addressee &addressee )
 {
+
     return addressee.address(KABC::Address::Work|KABC::Address::Pref).locality();
 }
 
@@ -179,6 +186,11 @@ static QString getOtherStreet( const KABC::Addressee &addressee )
 
 static void setOtherStreet(const QString &value, KABC::Addressee &addressee )
 {
+    if ( addressee.addresses(KABC::Address::Home ).isEmpty() ) {
+        KABC::Address address;
+        address.setType( KABC::Address::Home );
+        addressee.insertAddress( address );
+    }
     addressee.address(KABC::Address::Home).setStreet( value );
 }
 
@@ -319,7 +331,6 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( addressee ) );
-
         itemList << field;
     }
 
@@ -356,7 +367,6 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
-
             accessIt->setter( namedValue.value(), addressee );
         }
 

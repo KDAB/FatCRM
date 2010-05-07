@@ -144,7 +144,7 @@ void ContactsPage::slotAddContact()
     primaryAddress.setLocality( data.value( "city" ) );
     primaryAddress.setRegion( data.value( "state" ) );
     primaryAddress.setPostalCode( data.value( "postalCode" ) );
-    primaryAddress.setCountry( data.value( "Country" ) );
+    primaryAddress.setCountry( data.value( "country" ) );
     addressee.insertAddress( primaryAddress );
 
     KABC::Address otherAddress;
