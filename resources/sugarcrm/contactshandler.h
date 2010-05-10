@@ -23,6 +23,9 @@ public:
     Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection );
 
 private:
+    bool isAddressValue( const QString& value ) const;
+    bool isAltAddressValue( const QString& value ) const;
+    bool isPrimaryAddressValue( const QString& value ) const;
     typedef QHash<QString, AccessorPair> AccessorHash;
     AccessorHash *mAccessors;
 };

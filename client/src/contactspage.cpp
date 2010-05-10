@@ -189,9 +189,19 @@ void ContactsPage::slotModifyContact()
         addressee.setTitle( data.value( "title" ) );
         addressee.setDepartment( data.value( "department" ) );
         addressee.setOrganization( data.value( "accountName" ) );
+        // remove before replacing
+        // primary email
+        addressee.removeEmail( addressee.preferredEmail() );
         addressee.insertEmail(data.value( "primaryEmail" ), true );
+        // home phone
+        addressee.removePhoneNumber( addressee.phoneNumber(KABC::PhoneNumber::Home ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ), KABC::PhoneNumber::Home ) );
+        // cell phone
+        addressee.removePhoneNumber( addressee.phoneNumber(KABC::PhoneNumber::Cell ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ), KABC::PhoneNumber::Cell ) );
+
+        // work phone
+        addressee.removePhoneNumber( addressee.phoneNumber( KABC::PhoneNumber::Work ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ), KABC::PhoneNumber::Work ) );
 
         KABC::Address primaryAddress;
@@ -201,6 +211,9 @@ void ContactsPage::slotModifyContact()
         primaryAddress.setRegion( data.value( "state" ) );
         primaryAddress.setPostalCode( data.value( "postalCode" ) );
         primaryAddress.setCountry( data.value( "country" ) );
+
+        if ( !addressee.addresses( KABC::Address::Work|KABC::Address::Pref ).isEmpty())
+            addressee.removeAddress( addressee.addresses( KABC::Address::Work|KABC::Address::Pref ).first() );
         addressee.insertAddress( primaryAddress );
 
         KABC::Address otherAddress;
@@ -210,6 +223,9 @@ void ContactsPage::slotModifyContact()
         otherAddress.setRegion( data.value( "otherState" ) );
         otherAddress.setPostalCode( data.value( "otherPostalCode" ) );
         otherAddress.setCountry( data.value( "otherCountry" ) );
+
+        if ( !addressee.addresses( KABC::Address::Home ).isEmpty())
+            addressee.removeAddress( addressee.addresses( KABC::Address::Home ).first() );
         addressee.insertAddress( otherAddress );
 
         item.setPayload<KABC::Addressee>( addressee );
