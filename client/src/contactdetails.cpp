@@ -44,6 +44,8 @@ void ContactDetails::setItem (const Item &item )
     mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
     mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
     mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
+    mUi.otherPhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Car ).number() );
+    mUi.fax->setText( addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
 
     const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
     mUi.primaryAddress->setText( address.street() );

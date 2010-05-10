@@ -135,6 +135,8 @@ void ContactsPage::slotAddContact()
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ) , KABC::PhoneNumber::Home ) );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ) , KABC::PhoneNumber::Work ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "otherPhone" ) , KABC::PhoneNumber::Car ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "fax" ) , KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ) );
 
     KABC::Address primaryAddress;
     primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
@@ -203,6 +205,15 @@ void ContactsPage::slotModifyContact()
         // work phone
         addressee.removePhoneNumber( addressee.phoneNumber( KABC::PhoneNumber::Work ) );
         addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ), KABC::PhoneNumber::Work ) );
+
+        // other phone - Pending( michel ) - investigate.
+        addressee.removePhoneNumber( addressee.phoneNumber( KABC::PhoneNumber::Car ) );
+        addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "otherPhone" ), KABC::PhoneNumber::Car ) );
+
+        // fax
+        addressee.removePhoneNumber( addressee.phoneNumber( KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ) );
+        addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "fax" ), KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ) );
+
 
         KABC::Address primaryAddress;
         primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );

@@ -13,7 +13,6 @@
 
 typedef QString (*valueGetter)( const KABC::Addressee& );
 typedef void (*valueSetter)( const QString&, KABC::Addressee&);
-typedef QString(*addressGetter )( const KABC::Address& );
 typedef void( *addressSetter )( const QString&, KABC::Address& );
 
 static QString getFirstName( const KABC::Addressee &addressee )
@@ -124,6 +123,28 @@ static QString getMobilePhone( const KABC::Addressee &addressee )
 static void setMobilePhone( const QString &value, KABC::Addressee &addressee )
 {
     addressee.insertPhoneNumber( KABC::PhoneNumber( value, KABC::PhoneNumber::Cell ) );
+}
+
+// Pending (michel)
+// we need to decide what other phone will be
+static QString getOtherPhone( const KABC::Addressee &addressee )
+{
+    return addressee.phoneNumber( KABC::PhoneNumber::Car ).number();
+}
+
+static void setOtherPhone( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertPhoneNumber( KABC::PhoneNumber( value, KABC::PhoneNumber::Car ) );
+}
+
+static QString getFaxPhone( const KABC::Addressee &addressee )
+{
+    return addressee.phoneNumber( KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ).number();
+}
+
+static void setFaxPhone( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertPhoneNumber( KABC::PhoneNumber( value, KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ) );
 }
 
 static QString getPrimaryStreet( const KABC::Addressee &addressee )
@@ -258,6 +279,8 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "phone_home" ), AccessorPair( getHomePhone, setHomePhone ) );
     mAccessors->insert( QLatin1String( "phone_work" ), AccessorPair( getWorkPhone, setWorkPhone ) );
     mAccessors->insert( QLatin1String( "phone_mobile" ), AccessorPair( getMobilePhone, setMobilePhone ) );
+    mAccessors->insert( QLatin1String( "phone_other" ), AccessorPair( getOtherPhone, setOtherPhone ) );
+    mAccessors->insert( QLatin1String( "phone_fax" ), AccessorPair( getFaxPhone, setFaxPhone ) );
     mAccessors->insert( QLatin1String( "primary_address_street" ), AccessorPair( getPrimaryStreet, setPrimaryStreet ) );
     mAccessors->insert( QLatin1String( "primary_address_city" ), AccessorPair( getPrimaryCity, setPrimaryCity ) );
     mAccessors->insert( QLatin1String( "primary_address_state" ), AccessorPair( getPrimaryState, setPrimaryState ) );
@@ -369,7 +392,6 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
-
             if ( isAddressValue(namedValue.name()) ) {
                 if ( isPrimaryAddressValue( namedValue.name() ) )
                     accessIt->aSetter( namedValue.value(), workAddress );
