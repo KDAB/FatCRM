@@ -67,6 +67,16 @@ static void setAccountName( const QString &value, KABC::Addressee &addressee )
     addressee.setOrganization( value );
 }
 
+static QString getBirthday( const KABC::Addressee &addressee )
+{
+    return addressee.birthday().toString( QString("yyyy-MM-dd" ) );
+}
+
+static void setBirthday( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.setBirthday( QDateTime::fromString( value, QString("yyyy-MM-dd" ) ) );
+}
+
 static QString getEmail1( const KABC::Addressee &addressee )
 {
     return addressee.preferredEmail();
@@ -291,6 +301,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "alt_address_state" ), AccessorPair( getOtherState, setOtherState ) );
     mAccessors->insert( QLatin1String( "alt_address_postalcode" ), AccessorPair( getOtherPostalcode, setOtherPostalcode ) );
     mAccessors->insert( QLatin1String( "alt_address_country" ), AccessorPair( getOtherCountry, setOtherCountry ) );
+    mAccessors->insert( QLatin1String( "birthdate" ), AccessorPair( getBirthday, setBirthday ) );
 
 
 }

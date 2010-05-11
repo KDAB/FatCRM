@@ -156,6 +156,8 @@ void ContactsPage::slotAddContact()
     otherAddress.setCountry( data.value( "otherCountry" ) );
     addressee.insertAddress( otherAddress );
 
+    addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
+
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
     item.setPayload<KABC::Addressee>( addressee );
@@ -238,6 +240,8 @@ void ContactsPage::slotModifyContact()
         if ( !addressee.addresses( KABC::Address::Home ).isEmpty())
             addressee.removeAddress( addressee.addresses( KABC::Address::Home ).first() );
         addressee.insertAddress( otherAddress );
+
+        addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
 
         item.setPayload<KABC::Addressee>( addressee );
 
