@@ -7,8 +7,8 @@
 
 #include <QtGui/QWidget>
 #include <QToolButton>
+#include <QCalendarWidget>
 
-class QCalendarWidget;
 
 class EditCalendarButton : public QToolButton
 {
@@ -21,7 +21,10 @@ public:
 protected:
     virtual void mousePressEvent( QMouseEvent* e );
 
+    friend class ContactDetails;
 private:
+    inline QCalendarWidget* calendarWidget() { return calendar; }
+
     QCalendarWidget *calendar;
 };
 

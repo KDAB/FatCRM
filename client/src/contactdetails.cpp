@@ -5,16 +5,16 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
-#include <QCalendarWidget>
 #include <QMouseEvent>
 
 using namespace Akonadi;
 
 
 EditCalendarButton::EditCalendarButton( QWidget *parent )
-    : QToolButton( parent ), calendar(0 )
+    : QToolButton( parent ), calendar(new QCalendarWidget())
 {
     setText( tr( "&Edit" ) );
+    setEnabled( false );
 }
 
 EditCalendarButton::~EditCalendarButton()
@@ -25,8 +25,6 @@ EditCalendarButton::~EditCalendarButton()
 
 void EditCalendarButton::mousePressEvent( QMouseEvent* e )
 {
-    if ( !calendar )
-        calendar = new QCalendarWidget();
     if ( calendar->isVisible() )
         calendar->hide();
     else {
@@ -35,7 +33,6 @@ void EditCalendarButton::mousePressEvent( QMouseEvent* e )
         calendar->raise();
     }
 }
-
 
 ContactDetails::ContactDetails( QWidget *parent )
     : QWidget( parent )
@@ -57,10 +54,14 @@ void ContactDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         le->setReadOnly( true );
     mUi.description->setReadOnly( true );
+
     calendarButton = new EditCalendarButton(this);
     QVBoxLayout *buttonLayout = new QVBoxLayout;
     buttonLayout->addWidget( calendarButton );
     mUi.calendarWidget->setLayout( buttonLayout );
+    connect( calendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetBirthday() ) );
+
     mModifyFlag = false;
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
@@ -95,7 +96,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.otherState->setText( other.region() );
     mUi.otherPostalCode->setText( other.postalCode() );
     mUi.otherCountry->setText( other.country() );
-    // Pending Michel ( complete )
+    mUi.birthDate->setText( QDateTime( addressee.birthday() ).date().toString( QString("yyyy-MM-dd" ) ) );
 }
 
 void ContactDetails::clearFields ()
@@ -167,6 +168,7 @@ void ContactDetails::slotSaveContact()
 
 void ContactDetails::slotSetBirthday()
 {
+    mUi.birthDate->setText( calendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
 
 }
 
