@@ -23,9 +23,13 @@ public:
     Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection );
 
 private:
-    bool isAddressValue( const QString& value ) const;
-    bool isAltAddressValue( const QString& value ) const;
-    bool isPrimaryAddressValue( const QString& value ) const;
+    inline bool isAddressValue( const QString& value ) const
+    { return ( isAltAddressValue( value ) || isPrimaryAddressValue( value ) );}
+    inline bool isAltAddressValue( const QString& value ) const
+    { return value.startsWith( QString( "alt_address_" ) );}
+    inline bool isPrimaryAddressValue( const QString& value ) const
+    { return value.startsWith( QString( "primary_address_" ) );}
+
     typedef QHash<QString, AccessorPair> AccessorHash;
     AccessorHash *mAccessors;
 };

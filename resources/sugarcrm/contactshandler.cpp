@@ -392,12 +392,9 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
-            if ( isAddressValue(namedValue.name()) ) {
-                if ( isPrimaryAddressValue( namedValue.name() ) )
-                    accessIt->aSetter( namedValue.value(), workAddress );
-                else
-                    accessIt->aSetter( namedValue.value(), homeAddress );
-            } else
+            if ( isAddressValue(namedValue.name()) )
+                accessIt->aSetter( namedValue.value(), isPrimaryAddressValue( namedValue.name() )?workAddress:homeAddress );
+            else
                 accessIt->setter( namedValue.value(), addressee );
         }
         addressee.insertAddress( workAddress );
@@ -409,29 +406,3 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
     return items;
 }
 
-bool ContactsHandler::isAltAddressValue( const QString& value ) const
-{
-    QStringList addressValues;
-    addressValues << "alt_address_street"
-                  << "alt_address_city"
-                  << "alt_address_state"
-                  << "alt_address_postalcode"
-                  << "alt_address_country";
-    return addressValues.contains( value );
-}
-
-bool ContactsHandler::isPrimaryAddressValue( const QString& value ) const
-{
-     QStringList addressValues;
-    addressValues << "primary_address_street"
-                  << "primary_address_city"
-                  << "primary_address_state"
-                  << "primary_address_postalcode"
-                  << "primary_address_country";
-    return addressValues.contains( value );
-}
-
-bool ContactsHandler::isAddressValue( const QString& value ) const
-{
-    return ( isPrimaryAddressValue( value ) || isAltAddressValue( value ) );
-}
