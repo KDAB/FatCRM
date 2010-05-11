@@ -82,7 +82,7 @@ static QString getAssistantPhone( const KABC::Addressee &addressee )
     return addressee.custom( "FATCRM", "X-AssistantsPhone" );
 }
 
-static void setAssitantPhone( const QString &value, KABC::Addressee &addressee )
+static void setAssistantPhone( const QString &value, KABC::Addressee &addressee )
 {
     addressee.insertCustom( "FATCRM", "X-AssistantsPhone", value );
 }
@@ -373,7 +373,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "birthdate" ), AccessorPair( getBirthday, setBirthday ) );
     mAccessors->insert( QLatin1String( "description" ), AccessorPair( getNote, setNote ) );
     mAccessors->insert( QLatin1String( "assistant" ), AccessorPair( getAssistantName, setAssitantName ) );
-    mAccessors->insert( QLatin1String( "assistant_phone" ), AccessorPair( getAssistantPhone, setAssitantPhone ) );
+    mAccessors->insert( QLatin1String( "assistant_phone" ), AccessorPair( getAssistantPhone, setAssistantPhone ) );
     mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSourceName, setLeadSourceName ) );
     mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
     mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );

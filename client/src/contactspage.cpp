@@ -160,7 +160,7 @@ void ContactsPage::slotAddContact()
 
     addressee.setNote( data.value( "description" ) );
     addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", data.value( "assistant" ) );
-    addressee.insertCustom( "FATCRM", "X-AssitantsPhone", data.value( "assistantPhone" ) );
+    addressee.insertCustom( "FATCRM", "X-AssistantsPhone", data.value( "assistantPhone" ) );
     addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
     addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
     addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
@@ -254,8 +254,8 @@ void ContactsPage::slotModifyContact()
         addressee.setNote( data.value( "description" ) );
         addressee.removeCustom( "KADDRESSBOOK", "X-AssistantsName" );
         addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", data.value( "assistant" ) );
-        addressee.removeCustom( "FATCRM", "X-AssitantsPhone" );
-        addressee.insertCustom( "FATCRM", "X-AssitantsPhone", data.value( "assistantPhone" ) );
+        addressee.removeCustom( "FATCRM", "X-AssistantsPhone" );
+        addressee.insertCustom( "FATCRM", "X-AssistantsPhone", data.value( "assistantPhone" ) );
         addressee.removeCustom( "FATCRM", "X-LeadSourceName" );
         addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
         addressee.removeCustom( "FATCRM", "X-CampaignName" );
