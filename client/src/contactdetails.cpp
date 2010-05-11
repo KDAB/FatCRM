@@ -101,7 +101,12 @@ void ContactDetails::setItem (const Item &item )
     mUi.otherCountry->setText( other.country() );
     mUi.birthDate->setText( QDateTime( addressee.birthday() ).date().toString( QString("yyyy-MM-dd" ) ) );
     mUi.description->setPlainText( addressee.note() );
-
+    mUi.assistant->setText( addressee.custom( "KADDRESSBOOK", "X-AssistantsName" ) );
+    mUi.assistantPhone->setText( addressee.custom( "FATCRM", "X-AssistantsPhone" ) );
+    mUi.leadSource->setText( addressee.custom( "FATCRM", "X-LeadSourceName" ) );
+    mUi.campaign->setText( addressee.custom( "FATCRM", "X-CampaignName" ) );
+    mUi.assignedTo->setText( addressee.custom( "FATCRM", "X-AssignedUserName" ) );
+    mUi.reportsTo->setText( addressee.custom( "FATCRM", "X-ReportToUserName" ) );
 }
 
 void ContactDetails::clearFields ()

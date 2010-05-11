@@ -159,6 +159,12 @@ void ContactsPage::slotAddContact()
     addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
 
     addressee.setNote( data.value( "description" ) );
+    addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", data.value( "assistant" ) );
+    addressee.insertCustom( "FATCRM", "X-AssitantsPhone", data.value( "assistantPhone" ) );
+    addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
+    addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
+    addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
+    addressee.insertCustom( "FATCRM", "X-ReportToUserName",data.value( "reportsTo" ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
@@ -246,6 +252,22 @@ void ContactsPage::slotModifyContact()
         addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
 
         addressee.setNote( data.value( "description" ) );
+        addressee.removeCustom( "KADDRESSBOOK", "X-AssistantsName" );
+        addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", data.value( "assistant" ) );
+        addressee.removeCustom( "FATCRM", "X-AssitantsPhone" );
+        addressee.insertCustom( "FATCRM", "X-AssitantsPhone", data.value( "assistantPhone" ) );
+        addressee.removeCustom( "FATCRM", "X-LeadSourceName" );
+        addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
+        addressee.removeCustom( "FATCRM", "X-CampaignName" );
+        addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
+        addressee.removeCustom( "FATCRM", "X-AssignedUserName" );
+        addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
+        addressee.removeCustom( "FATCRM", "X-ReportToUserName" );
+        addressee.insertCustom( "FATCRM", "X-ReportToUserName",data.value( "reportsTo" ) );
+
+
+
+
 
         item.setPayload<KABC::Addressee>( addressee );
 

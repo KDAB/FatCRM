@@ -67,6 +67,66 @@ static void setAccountName( const QString &value, KABC::Addressee &addressee )
     addressee.setOrganization( value );
 }
 
+static QString getAssistantName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "KADDRESSBOOK", "X-AssistantsName" );
+}
+
+static void setAssitantName( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", value );
+}
+
+static QString getAssistantPhone( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-AssistantsPhone" );
+}
+
+static void setAssitantPhone( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM", "X-AssistantsPhone", value );
+}
+
+static QString getLeadSourceName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-LeadSourceName" );
+}
+
+static void setLeadSourceName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-LeadSourceName", value );
+}
+
+static QString getCampaignName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-CampaignName" );
+}
+
+static void setCampaignName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-CampaignName",value );
+}
+
+static QString getAssignedUserName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-AssignedUserName" );
+}
+
+static void setAssignedUserName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-AssignedUserName", value );
+}
+
+static QString getReportToUserName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ReportToUserName" );
+}
+
+static void setReportToUserName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ReportToUserName", value );
+}
+
 static QString getNote( const KABC::Addressee &addressee )
 {
     return addressee.note();
@@ -76,8 +136,6 @@ static void setNote( const QString &value, KABC::Addressee &addressee )
 {
     addressee.setNote( value );
 }
-
-
 
 static QString getBirthday( const KABC::Addressee &addressee )
 {
@@ -314,6 +372,12 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "alt_address_country" ), AccessorPair( getOtherCountry, setOtherCountry ) );
     mAccessors->insert( QLatin1String( "birthdate" ), AccessorPair( getBirthday, setBirthday ) );
     mAccessors->insert( QLatin1String( "description" ), AccessorPair( getNote, setNote ) );
+    mAccessors->insert( QLatin1String( "assistant" ), AccessorPair( getAssistantName, setAssitantName ) );
+    mAccessors->insert( QLatin1String( "assistant_phone" ), AccessorPair( getAssistantPhone, setAssitantPhone ) );
+    mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSourceName, setLeadSourceName ) );
+    mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
+    mAccessors->insert( QLatin1String( "report_to_name" ), AccessorPair( getReportToUserName, setReportToUserName ) );
 }
 
 ContactsHandler::~ContactsHandler()
