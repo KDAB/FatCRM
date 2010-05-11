@@ -6,6 +6,24 @@
 #include <akonadi/item.h>
 
 #include <QtGui/QWidget>
+#include <QToolButton>
+
+class QCalendarWidget;
+
+class EditCalendarButton : public QToolButton
+{
+    Q_OBJECT
+public:
+    explicit EditCalendarButton( QWidget *parent = 0 );
+
+    ~EditCalendarButton();
+
+protected:
+    virtual void mousePressEvent( QMouseEvent* e );
+
+private:
+    QCalendarWidget *calendar;
+};
 
 
 class ContactDetails : public QWidget
@@ -30,6 +48,7 @@ Q_SIGNALS:
 private:
     void initialize();
 
+    EditCalendarButton *calendarButton;
     QMap<QString, QString> mContactData;
     bool mModifyFlag;
     Ui_ContactDetails mUi;
@@ -37,6 +56,7 @@ private:
 private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveContact();
+    void slotSetBirthday();
 };
 
 #endif /* CONTACTDETAILS_H */

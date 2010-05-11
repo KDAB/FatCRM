@@ -5,7 +5,37 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
+#include <QCalendarWidget>
+#include <QMouseEvent>
+
 using namespace Akonadi;
+
+
+EditCalendarButton::EditCalendarButton( QWidget *parent )
+    : QToolButton( parent ), calendar(0 )
+{
+    setText( tr( "&Edit" ) );
+}
+
+EditCalendarButton::~EditCalendarButton()
+{
+    delete calendar;
+}
+
+
+void EditCalendarButton::mousePressEvent( QMouseEvent* e )
+{
+    if ( !calendar )
+        calendar = new QCalendarWidget();
+    if ( calendar->isVisible() )
+        calendar->hide();
+    else {
+        calendar->move( e->globalPos() );
+        calendar->show();
+        calendar->raise();
+    }
+}
+
 
 ContactDetails::ContactDetails( QWidget *parent )
     : QWidget( parent )
@@ -17,6 +47,7 @@ ContactDetails::ContactDetails( QWidget *parent )
 
 ContactDetails::~ContactDetails()
 {
+    delete calendarButton;
 }
 
 void ContactDetails::initialize()
@@ -26,6 +57,10 @@ void ContactDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         le->setReadOnly( true );
     mUi.description->setReadOnly( true );
+    calendarButton = new EditCalendarButton(this);
+    QVBoxLayout *buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget( calendarButton );
+    mUi.calendarWidget->setLayout( buttonLayout );
     mModifyFlag = false;
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
@@ -82,6 +117,7 @@ void ContactDetails::disableFields()
     }
     mUi.description->setReadOnly( true );
     mUi.saveButton->setEnabled( false );
+    calendarButton->setEnabled( false );
     mModifyFlag = false;
 }
 
@@ -96,6 +132,7 @@ void ContactDetails::enableFields()
                  this, SLOT( slotEnableSaving() ) );
     }
     mUi.description->setReadOnly( false );
+    calendarButton->setEnabled( true );
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 }
@@ -128,5 +165,9 @@ void ContactDetails::slotSaveContact()
         emit modifyContact();
 }
 
+void ContactDetails::slotSetBirthday()
+{
+
+}
 
 
