@@ -158,6 +158,8 @@ void ContactsPage::slotAddContact()
 
     addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
 
+    addressee.setNote( data.value( "description" ) );
+
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
     item.setPayload<KABC::Addressee>( addressee );
@@ -242,6 +244,8 @@ void ContactsPage::slotModifyContact()
         addressee.insertAddress( otherAddress );
 
         addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
+
+        addressee.setNote( data.value( "description" ) );
 
         item.setPayload<KABC::Addressee>( addressee );
 

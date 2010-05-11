@@ -67,6 +67,18 @@ static void setAccountName( const QString &value, KABC::Addressee &addressee )
     addressee.setOrganization( value );
 }
 
+static QString getNote( const KABC::Addressee &addressee )
+{
+    return addressee.note();
+}
+
+static void setNote( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.setNote( value );
+}
+
+
+
 static QString getBirthday( const KABC::Addressee &addressee )
 {
     return addressee.birthday().toString( QString("yyyy-MM-dd" ) );
@@ -274,7 +286,6 @@ public:
 
 
 
-
 ContactsHandler::ContactsHandler()
     : ModuleHandler( QLatin1String( "Contacts" ) ),
       mAccessors( new AccessorHash )
@@ -302,8 +313,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "alt_address_postalcode" ), AccessorPair( getOtherPostalcode, setOtherPostalcode ) );
     mAccessors->insert( QLatin1String( "alt_address_country" ), AccessorPair( getOtherCountry, setOtherCountry ) );
     mAccessors->insert( QLatin1String( "birthdate" ), AccessorPair( getBirthday, setBirthday ) );
-
-
+    mAccessors->insert( QLatin1String( "description" ), AccessorPair( getNote, setNote ) );
 }
 
 ContactsHandler::~ContactsHandler()

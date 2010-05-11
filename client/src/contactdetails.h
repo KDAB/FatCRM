@@ -23,9 +23,9 @@ protected:
 
     friend class ContactDetails;
 private:
-    inline QCalendarWidget* calendarWidget() { return calendar; }
+    inline QCalendarWidget* calendarWidget() { return mCalendar; }
 
-    QCalendarWidget *calendar;
+    QCalendarWidget *mCalendar;
 };
 
 
@@ -51,7 +51,7 @@ Q_SIGNALS:
 private:
     void initialize();
 
-    EditCalendarButton *calendarButton;
+    EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mContactData;
     bool mModifyFlag;
     Ui_ContactDetails mUi;

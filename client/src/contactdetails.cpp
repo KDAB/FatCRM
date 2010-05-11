@@ -11,7 +11,7 @@ using namespace Akonadi;
 
 
 EditCalendarButton::EditCalendarButton( QWidget *parent )
-    : QToolButton( parent ), calendar(new QCalendarWidget())
+    : QToolButton( parent ), mCalendar(new QCalendarWidget())
 {
     setText( tr( "&Edit" ) );
     setEnabled( false );
@@ -19,18 +19,18 @@ EditCalendarButton::EditCalendarButton( QWidget *parent )
 
 EditCalendarButton::~EditCalendarButton()
 {
-    delete calendar;
+    delete mCalendar;
 }
 
 
 void EditCalendarButton::mousePressEvent( QMouseEvent* e )
 {
-    if ( calendar->isVisible() )
-        calendar->hide();
+    if ( mCalendar->isVisible() )
+        mCalendar->hide();
     else {
-        calendar->move( e->globalPos() );
-        calendar->show();
-        calendar->raise();
+        mCalendar->move( e->globalPos() );
+        mCalendar->show();
+        mCalendar->raise();
     }
 }
 
@@ -44,7 +44,7 @@ ContactDetails::ContactDetails( QWidget *parent )
 
 ContactDetails::~ContactDetails()
 {
-    delete calendarButton;
+    delete mCalendarButton;
 }
 
 void ContactDetails::initialize()
@@ -55,11 +55,11 @@ void ContactDetails::initialize()
         le->setReadOnly( true );
     mUi.description->setReadOnly( true );
 
-    calendarButton = new EditCalendarButton(this);
+    mCalendarButton = new EditCalendarButton(this);
     QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( calendarButton );
+    buttonLayout->addWidget( mCalendarButton );
     mUi.calendarWidget->setLayout( buttonLayout );
-    connect( calendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
              this, SLOT( slotSetBirthday() ) );
 
     mModifyFlag = false;
@@ -82,6 +82,9 @@ void ContactDetails::setItem (const Item &item )
     mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
     mUi.otherPhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Car ).number() );
     mUi.fax->setText( addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+    // Pending(michel)
+    // add assistant and assistant phone
+    // see if custom fields
 
     const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
     mUi.primaryAddress->setText( address.street() );
@@ -97,6 +100,8 @@ void ContactDetails::setItem (const Item &item )
     mUi.otherPostalCode->setText( other.postalCode() );
     mUi.otherCountry->setText( other.country() );
     mUi.birthDate->setText( QDateTime( addressee.birthday() ).date().toString( QString("yyyy-MM-dd" ) ) );
+    mUi.description->setPlainText( addressee.note() );
+
 }
 
 void ContactDetails::clearFields ()
@@ -118,7 +123,7 @@ void ContactDetails::disableFields()
     }
     mUi.description->setReadOnly( true );
     mUi.saveButton->setEnabled( false );
-    calendarButton->setEnabled( false );
+    mCalendarButton->setEnabled( false );
     mModifyFlag = false;
 }
 
@@ -133,7 +138,7 @@ void ContactDetails::enableFields()
                  this, SLOT( slotEnableSaving() ) );
     }
     mUi.description->setReadOnly( false );
-    calendarButton->setEnabled( true );
+    mCalendarButton->setEnabled( true );
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 }
@@ -168,7 +173,7 @@ void ContactDetails::slotSaveContact()
 
 void ContactDetails::slotSetBirthday()
 {
-    mUi.birthDate->setText( calendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
 
 }
 
