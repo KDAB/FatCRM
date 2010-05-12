@@ -31,13 +31,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="modifyContactPB">
-           <property name="text">
-            <string>&amp;Modify Contact</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="removeContactPB">
            <property name="text">
             <string>&amp;Remove Contact</string>

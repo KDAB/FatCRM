@@ -237,6 +237,16 @@ static void setCreatedById(const QString &value, KABC::Addressee &addressee)
     addressee.insertCustom( "FATCRM", "X-CreatedById", value );
 }
 
+static QString getSalutation( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-Salutation" );
+}
+
+static void setSalutation(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-Salutation", value );
+}
+
 static QString getNote( const KABC::Addressee &addressee )
 {
     return addressee.note();
@@ -499,6 +509,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "id" ), AccessorPair( getContactId, setContactId ) );
     mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
     mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedById, setCreatedById ) );
+    mAccessors->insert( QLatin1String( "salutation" ), AccessorPair( getSalutation, setSalutation ) );
 }
 
 ContactsHandler::~ContactsHandler()

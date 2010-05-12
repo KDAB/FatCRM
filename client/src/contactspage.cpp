@@ -88,8 +88,8 @@ void ContactsPage::slotContactChanged( const Item &item )
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             w->contactDetailsWidget()->setItem( item );
-            mUi.modifyContactPB->setEnabled( true );
-
+            connect( w->contactDetailsWidget(), SIGNAL( modifyContact() ),
+                 this, SLOT( slotModifyContact( ) ) );
         }
         emit contactItemChanged();
     }
@@ -101,23 +101,10 @@ void ContactsPage::slotNewContactClicked()
     if ( w ) {
         ContactDetails *cd = w->contactDetailsWidget();
         cd->clearFields();
-        cd->enableFields();
         connect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
     }
     emit contactItemChanged();
-}
-
-void ContactsPage::slotModifyContactClicked()
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        ContactDetails *cd = w->contactDetailsWidget();
-        cd->enableFields();
-        cd->setModifyFlag();
-        connect( cd, SIGNAL( modifyContact() ),
-                 this, SLOT( slotModifyContact() ) );
-    }
 }
 
 void ContactsPage::slotAddContact()
@@ -176,6 +163,7 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-CreatedByName", data.value( "createdBy" ) );
     addressee.insertCustom( "FATCRM", "X-CreatedById", data.value( "createdById" ) );
     addressee.insertCustom( "FATCRM", "X-ContactId", data.value( "contactId" ) );
+    addressee.insertCustom( "FATCRM", "X-Salutation", data.value( "salutation" ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
@@ -190,7 +178,6 @@ void ContactsPage::slotAddContact()
                  this, SLOT( slotAddContact( ) ) );
 }
 
-
 void ContactsPage::slotModifyContact()
 {
     const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
@@ -203,7 +190,6 @@ void ContactsPage::slotModifyContact()
         }
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        w->contactDetailsWidget()->disableFields();
 
         QMap<QString, QString> data;
         data = w->contactDetailsWidget()->contactData();
@@ -289,6 +275,9 @@ void ContactsPage::slotModifyContact()
         addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
         addressee.removeCustom( "FATCRM", "X-ModifiedUserName" );
         addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
+        addressee.removeCustom( "FATCRM", "X-Salutation" );
+        addressee.insertCustom( "FATCRM", "X-Salutation", data.value( "salutation" ) );
+
 
         item.setPayload<KABC::Addressee>( addressee );
 
@@ -312,10 +301,8 @@ void ContactsPage::slotRemoveContact()
         Q_UNUSED( job );
     }
     const QModelIndex newIndex = mUi.contactsTV->selectionModel()->currentIndex();
-    if ( !index.isValid() ) {
-        mUi.modifyContactPB->setEnabled( false );
+    if ( !index.isValid() )
         mUi.removeContactPB->setEnabled( false );
-    }
 }
 
 void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
@@ -323,10 +310,6 @@ void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
     if ( start == end ) {
         QModelIndex newIdx = mUi.contactsTV->model()->index(start, 0, index);
         mUi.contactsTV->setCurrentIndex( newIdx );
-
-        SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w )
-            w->contactDetailsWidget()->disableFields();
     }
 }
 
@@ -351,8 +334,6 @@ void ContactsPage::initialize()
 
     connect( mUi.newContactPB, SIGNAL( clicked() ),
              this, SLOT( slotNewContactClicked() ) );
-    connect( mUi.modifyContactPB, SIGNAL( clicked() ),
-             this, SLOT( slotModifyContactClicked() ) );
     connect( mUi.removeContactPB, SIGNAL( clicked() ),
              this, SLOT( slotRemoveContact() ) );
     connect( mUi.filtersCB, SIGNAL( currentIndexChanged( const QString& ) ),
@@ -390,6 +371,14 @@ void ContactsPage::initialize()
              this, SLOT( slotSearchItem( const QString& ) ) );
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
+
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        ContactDetails *cd = w->contactDetailsWidget();
+        qDebug() << "connecting cd to modify contact";
+        connect( cd, SIGNAL( modifyContact() ),
+                 this, SLOT( slotModifyContact( ) ) );
+    }
 }
 
 void ContactsPage::syncronize()

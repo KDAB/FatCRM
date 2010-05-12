@@ -14,7 +14,6 @@ EditCalendarButton::EditCalendarButton( QWidget *parent )
     : QToolButton( parent ), mCalendar(new QCalendarWidget())
 {
     setText( tr( "&Edit" ) );
-    setEnabled( false );
 }
 
 EditCalendarButton::~EditCalendarButton()
@@ -49,20 +48,36 @@ ContactDetails::~ContactDetails()
 
 void ContactDetails::initialize()
 {
-    QList<QLineEdit*> lineEdits =
-        mUi.contactInformationGB->findChildren<QLineEdit*>();
+
+    QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setReadOnly( true );
-    mUi.description->setReadOnly( true );
+        connect( le, SIGNAL( textChanged( const QString& ) ),
+                 this, SLOT( slotEnableSaving() ) );
+
+    connect( mUi.salutation, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
+    connect( mUi.description, SIGNAL( textChanged() ),
+             this,  SLOT( slotEnableSaving() ) );
 
     mCalendarButton = new EditCalendarButton(this);
     QVBoxLayout *buttonLayout = new QVBoxLayout;
     buttonLayout->addWidget( mCalendarButton );
     mUi.calendarWidget->setLayout( buttonLayout );
+
     connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
              this, SLOT( slotSetBirthday() ) );
 
     mModifyFlag = false;
+
+    connect( mUi.detailsBox,  SIGNAL( toggled( bool ) ),
+             this,SLOT( slotSetModifyFlag( bool ) ) );
+    connect( mUi.otherDetailsBox,  SIGNAL( toggled( bool ) ),
+             this,SLOT( slotSetModifyFlag( bool ) ) );
+    connect( mUi.addressesBox,  SIGNAL( toggled( bool ) ),
+             this,SLOT( slotSetModifyFlag( bool ) ) );
+    connect( mUi.descriptionBox,  SIGNAL( toggled( bool ) ),
+             this,SLOT( slotSetModifyFlag( bool ) ) );
+
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
 }
@@ -71,11 +86,13 @@ void ContactDetails::setItem (const Item &item )
 {
     // contact info
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    mUi.salutation->setCurrentIndex( mUi.salutation->findText( addressee.custom( "FATCRM", "X-Salutation" ) ) );
     mUi.firstName->setText( addressee.givenName() );
     mUi.lastName->setText( addressee.familyName() );
     mUi.title->setText( addressee.title() );
     mUi.department->setText( addressee.department() );
     mUi.accountName->setText( addressee.organization() );
+    mUi.accountName->setProperty( "accountId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AccountId" ) ) );
     mUi.primaryEmail->setText( addressee.preferredEmail() );
     mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
     mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
@@ -121,44 +138,43 @@ void ContactDetails::clearFields ()
 {
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
+    Q_FOREACH( QLineEdit* le, lineEdits ) {
+        QString value = le->objectName();
         if ( !le->text().isEmpty() ) le->clear();
+        if ( value == "campaign" )
+            le->setProperty( "campaignId", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "accountName" )
+            le->setProperty( "accountId", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "assignedTo" )
+            le->setProperty( "assignedToId", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "reportsTo" )
+            le->setProperty( "reportsToId", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "modifiedBy" ) {
+            le->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
+            le->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
+        }
+        else if ( value == "createdDate" )
+            le->setProperty( "contactId", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "createdBy" )
+            le->setProperty( "createdById", qVariantFromValue<QString>( QString() ) );
+    }
+
+    mUi.salutation->setCurrentIndex( 0 );
     mUi.description->clear();
     mUi.firstName->setFocus();
-}
-
-void ContactDetails::disableFields()
-{
-    QList<QLineEdit*> lineEdits =
-        mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        le->setReadOnly(true);
-    }
-    mUi.description->setReadOnly( true );
-    mUi.saveButton->setEnabled( false );
-    mCalendarButton->setEnabled( false );
-    mModifyFlag = false;
+    // enable
+    mUi.detailsBox->setChecked( true );
+    mUi.otherDetailsBox->setChecked( true );
+    mUi.addressesBox->setChecked( true );
+    mUi.descriptionBox->setChecked( true );
+    // we are creating a new contact
+    slotSetModifyFlag( false );
 }
 
 
-void ContactDetails::enableFields()
+void ContactDetails::slotSetModifyFlag( bool value )
 {
-    QList<QLineEdit*> lineEdits =
-        mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        le->setReadOnly(false);
-        connect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
-    }
-    mUi.description->setReadOnly( false );
-    mCalendarButton->setEnabled( true );
-    connect( mUi.description, SIGNAL( textChanged() ),
-             this,  SLOT( slotEnableSaving() ) );
-}
-
-void ContactDetails::setModifyFlag()
-{
-    mModifyFlag = true;
+    mModifyFlag = value;
 }
 
 void ContactDetails::slotEnableSaving()
@@ -168,9 +184,10 @@ void ContactDetails::slotEnableSaving()
 
 void ContactDetails::slotSaveContact()
 {
-   if ( !mContactData.empty() )
-       mContactData.clear();
+    if ( !mContactData.empty() )
+        mContactData.clear();
 
+    mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits ) {
@@ -193,7 +210,7 @@ void ContactDetails::slotSaveContact()
         else if ( objName == "createdBy" )
             mContactData["createdById"] = le->property( "createdById" ).toString();
     }
-
+    mContactData["salutation"] = mUi.salutation->currentText();
     mContactData["description"] = mUi.description->toPlainText();
 
     if ( !mModifyFlag )

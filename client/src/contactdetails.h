@@ -39,9 +39,6 @@ public:
 
     void setItem( const Akonadi::Item &item );
     void clearFields();
-    void enableFields();
-    void disableFields();
-    void setModifyFlag();
     inline QMap<QString, QString> contactData() {return mContactData;}
 
 Q_SIGNALS:
@@ -50,7 +47,6 @@ Q_SIGNALS:
 
 private:
     void initialize();
-
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mContactData;
     bool mModifyFlag;
@@ -60,6 +56,7 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveContact();
     void slotSetBirthday();
+    void slotSetModifyFlag( bool );
 };
 
 #endif /* CONTACTDETAILS_H */
