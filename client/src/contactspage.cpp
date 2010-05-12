@@ -371,14 +371,6 @@ void ContactsPage::initialize()
              this, SLOT( slotSearchItem( const QString& ) ) );
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
-
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        ContactDetails *cd = w->contactDetailsWidget();
-        qDebug() << "connecting cd to modify contact";
-        connect( cd, SIGNAL( modifyContact() ),
-                 this, SLOT( slotModifyContact( ) ) );
-    }
 }
 
 void ContactsPage::syncronize()
