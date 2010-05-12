@@ -173,6 +173,9 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
     addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
     addressee.insertCustom( "FATCRM", "X-DateCreated", data.value( "createdDate" ) );
+    addressee.insertCustom( "FATCRM", "X-CreatedByName", data.value( "createdBy" ) );
+    addressee.insertCustom( "FATCRM", "X-CreatedById", data.value( "createdById" ) );
+    addressee.insertCustom( "FATCRM", "X-ContactId", data.value( "contactId" ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );

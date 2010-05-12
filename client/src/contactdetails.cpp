@@ -113,6 +113,8 @@ void ContactDetails::setItem (const Item &item )
     mUi.modifiedDate->setText( addressee.custom( "FATCRM", "X-DateModified" ) );
     mUi.createdDate->setText( addressee.custom( "FATCRM", "X-DateCreated"));
     mUi.createdDate->setProperty( "contactId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ContactId" ) ) );
+    mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
+    mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
 }
 
 void ContactDetails::clearFields ()
@@ -188,6 +190,8 @@ void ContactDetails::slotSaveContact()
         }
         else if ( objName == "createdDate" )
             mContactData["contactId"] = le->property( "contactId" ).toString();
+        else if ( objName == "createdBy" )
+            mContactData["createdById"] = le->property( "createdById" ).toString();
     }
 
     mContactData["description"] = mUi.description->toPlainText();
