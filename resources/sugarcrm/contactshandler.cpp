@@ -157,6 +157,66 @@ static void setReportsToUserId(const QString &value, KABC::Addressee &addressee)
     addressee.insertCustom( "FATCRM", "X-ReportsToUserId", value );
 }
 
+static QString getModifiedByName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ModifiedByName" );
+}
+
+static void setModifiedByName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ModifiedByName", value );
+}
+
+static QString getDateModified( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-DateModified" );
+}
+
+static void setDateModified(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-DateModified", value );
+}
+
+static QString getModifiedUserName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ModifiedUserName" );
+}
+
+static void setModifiedUserName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserName", value );
+}
+
+static QString getModifiedUserId( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ModifiedUserId" );
+}
+
+static void setModifiedUserId(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserId", value );
+}
+
+static QString getDateCreated( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-DateCreated" );
+}
+
+static void setDateCreated(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-DateCreated", value );
+}
+
+static QString getContactId( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ContactId" );
+}
+
+static void setContactId(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ContactId", value );
+}
+
 static QString getNote( const KABC::Addressee &addressee )
 {
     return addressee.note();
@@ -411,7 +471,12 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
     mAccessors->insert( QLatin1String( "report_to_name" ), AccessorPair( getReportsToUserName, setReportsToUserName ) );
     mAccessors->insert( QLatin1String( "reports_to_id" ), AccessorPair( getReportsToUserId, setReportsToUserId ) );
-
+    mAccessors->insert( QLatin1String( "modified_by_name" ), AccessorPair( getModifiedByName, setModifiedByName ) );
+    mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
+    mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
+    mAccessors->insert( QLatin1String( "modified_user_name" ), AccessorPair( getModifiedUserName, setModifiedUserName ) );
+    mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateCreated, setDateCreated ) );
+    mAccessors->insert( QLatin1String( "id" ), AccessorPair( getContactId, setContactId ) );
 }
 
 ContactsHandler::~ContactsHandler()

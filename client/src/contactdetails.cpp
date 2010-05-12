@@ -82,9 +82,6 @@ void ContactDetails::setItem (const Item &item )
     mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
     mUi.otherPhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Car ).number() );
     mUi.fax->setText( addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
-    // Pending(michel)
-    // add assistant and assistant phone
-    // see if custom fields
 
     const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
     mUi.primaryAddress->setText( address.street() );
@@ -110,6 +107,12 @@ void ContactDetails::setItem (const Item &item )
     mUi.assignedTo->setProperty( "assignedToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AssignedUserId" ) ) );
     mUi.reportsTo->setText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) );
     mUi.reportsTo->setProperty( "reportsToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ReportsToUserId" ) ) );
+    mUi.modifiedBy->setText( addressee.custom( "FATCRM", "X-ModifiedByName" ) );
+    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserId" ) ) );
+    mUi.modifiedBy->setProperty( "modifiedUserName", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserName" ) ) );
+    mUi.modifiedDate->setText( addressee.custom( "FATCRM", "X-DateModified" ) );
+    mUi.createdDate->setText( addressee.custom( "FATCRM", "X-DateCreated"));
+    mUi.createdDate->setProperty( "contactId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ContactId" ) ) );
 }
 
 void ContactDetails::clearFields ()
@@ -179,6 +182,12 @@ void ContactDetails::slotSaveContact()
             mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
         else if ( objName == "reportsTo" )
             mContactData["reportsToId"] = le->property( "reportsToId" ).toString();
+        else if ( objName == "modifiedBy" ) {
+            mContactData["modifiedUserId"] = le->property( "modifiedUserId" ).toString();
+            mContactData["modifiedUserName"] = le->property( "modifiedUserName" ).toString();
+        }
+        else if ( objName == "createdDate" )
+            mContactData["contactId"] = le->property( "contactId" ).toString();
     }
 
     mContactData["description"] = mUi.description->toPlainText();

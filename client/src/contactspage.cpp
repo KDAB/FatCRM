@@ -168,6 +168,11 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-AssignedUserId", data.value( "assignedToId" ) );
     addressee.insertCustom( "FATCRM", "X-ReportsToUserName",data.value( "reportsTo" ) );
     addressee.insertCustom( "FATCRM", "X-ReportsToUserId",data.value( "reportsToId" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedByName", data.value( "modifiedBy" ) );
+    addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "modifiedDate" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
+    addressee.insertCustom( "FATCRM", "X-DateCreated", data.value( "createdDate" ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
@@ -260,19 +265,27 @@ void ContactsPage::slotModifyContact()
         addressee.removeCustom( "FATCRM", "X-AssistantsPhone" );
         addressee.insertCustom( "FATCRM", "X-AssistantsPhone", data.value( "assistantPhone" ) );
         addressee.removeCustom( "FATCRM", "X-LeadSourceName" );
-        addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
+        addressee.insertCustom( "FATCRM", "X-LeadSourceName", data.value( "leadSource" ) );
         addressee.removeCustom( "FATCRM", "X-CampaignName" );
-        addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
+        addressee.insertCustom( "FATCRM", "X-CampaignName", data.value( "campaign" ) );
         addressee.removeCustom( "FATCRM", "X-CampaignId" );
-        addressee.insertCustom( "FATCRM", "X-CampaignId",data.value( "campaignId" ) );
+        addressee.insertCustom( "FATCRM", "X-CampaignId", data.value( "campaignId" ) );
         addressee.removeCustom( "FATCRM", "X-AssignedUserName" );
-        addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
+        addressee.insertCustom( "FATCRM", "X-AssignedUserName", data.value( "assignedTo" ) );
         addressee.removeCustom( "FATCRM", "X-AssignedUserId" );
         addressee.insertCustom( "FATCRM", "X-AssignedUserId", data.value( "assignedToId" ) );
         addressee.removeCustom( "FATCRM", "X-ReportsToUserName" );
-        addressee.insertCustom( "FATCRM", "X-ReportsToUserName",data.value( "reportsTo" ) );
+        addressee.insertCustom( "FATCRM", "X-ReportsToUserName", data.value( "reportsTo" ) );
         addressee.removeCustom( "FATCRM", "X-ReportsToUserId" );
-        addressee.insertCustom( "FATCRM", "X-ReportsToUserId",data.value( "reportsToId" ) );
+        addressee.insertCustom( "FATCRM", "X-ReportsToUserId", data.value( "reportsToId" ) );
+        addressee.removeCustom( "FATCRM", "X-ModifiedByName" );
+        addressee.insertCustom( "FATCRM", "X-ModifiedByName", data.value( "modifiedBy" ) );
+        addressee.removeCustom( "FATCRM", "X-DateModified" );
+        addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "modifiedDate" ) );
+        addressee.removeCustom( "FATCRM", "X-ModifiedUserId" );
+        addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
+        addressee.removeCustom( "FATCRM", "X-ModifiedUserName" );
+        addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
 
         item.setPayload<KABC::Addressee>( addressee );
 
