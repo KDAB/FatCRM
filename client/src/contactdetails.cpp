@@ -105,8 +105,11 @@ void ContactDetails::setItem (const Item &item )
     mUi.assistantPhone->setText( addressee.custom( "FATCRM", "X-AssistantsPhone" ) );
     mUi.leadSource->setText( addressee.custom( "FATCRM", "X-LeadSourceName" ) );
     mUi.campaign->setText( addressee.custom( "FATCRM", "X-CampaignName" ) );
+    mUi.campaign->setProperty( "campaignId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CampaignId" ) ) );
     mUi.assignedTo->setText( addressee.custom( "FATCRM", "X-AssignedUserName" ) );
-    mUi.reportsTo->setText( addressee.custom( "FATCRM", "X-ReportToUserName" ) );
+    mUi.assignedTo->setProperty( "assignedToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AssignedUserId" ) ) );
+    mUi.reportsTo->setText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) );
+    mUi.reportsTo->setProperty( "reportsToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ReportsToUserId" ) ) );
 }
 
 void ContactDetails::clearFields ()
@@ -165,8 +168,18 @@ void ContactDetails::slotSaveContact()
 
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        mContactData[le->objectName()] = le->text();
+    Q_FOREACH( QLineEdit* le, lineEdits ) {
+        QString objName = le->objectName();
+        mContactData[objName] = le->text();
+        if ( objName == "campaign" )
+            mContactData["campaignId"] = le->property( "campaignId" ).toString();
+        else if ( objName == "accountName" )
+            mContactData["accountId"] = le->property( "accountId" ).toString();
+        else if ( objName == "assignedTo" )
+            mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
+        else if ( objName == "reportsTo" )
+            mContactData["reportsToId"] = le->property( "reportsToId" ).toString();
+    }
 
     mContactData["description"] = mUi.description->toPlainText();
 
@@ -174,6 +187,8 @@ void ContactDetails::slotSaveContact()
         emit saveContact();
     else
         emit modifyContact();
+
+    mUi.saveButton->setEnabled( false );
 }
 
 void ContactDetails::slotSetBirthday()

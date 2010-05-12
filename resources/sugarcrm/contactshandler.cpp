@@ -107,6 +107,16 @@ static void setCampaignName(const QString &value, KABC::Addressee &addressee)
     addressee.insertCustom( "FATCRM", "X-CampaignName",value );
 }
 
+static QString getCampaignId( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-CampaignId" );
+}
+
+static void setCampaignId(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-CampaignId",value );
+}
+
 static QString getAssignedUserName( const KABC::Addressee &addressee )
 {
     return addressee.custom( "FATCRM", "X-AssignedUserName" );
@@ -117,14 +127,34 @@ static void setAssignedUserName(const QString &value, KABC::Addressee &addressee
     addressee.insertCustom( "FATCRM", "X-AssignedUserName", value );
 }
 
-static QString getReportToUserName( const KABC::Addressee &addressee )
+static QString getAssignedUserId( const KABC::Addressee &addressee )
 {
-    return addressee.custom( "FATCRM", "X-ReportToUserName" );
+    return addressee.custom( "FATCRM", "X-AssignedUserId" );
 }
 
-static void setReportToUserName(const QString &value, KABC::Addressee &addressee)
+static void setAssignedUserId(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertCustom( "FATCRM", "X-ReportToUserName", value );
+    addressee.insertCustom( "FATCRM", "X-AssignedUserId", value );
+}
+
+static QString getReportsToUserName( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ReportsToUserName" );
+}
+
+static void setReportsToUserName(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ReportsToUserName", value );
+}
+
+static QString getReportsToUserId( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-ReportsToUserId" );
+}
+
+static void setReportsToUserId(const QString &value, KABC::Addressee &addressee)
+{
+    addressee.insertCustom( "FATCRM", "X-ReportsToUserId", value );
 }
 
 static QString getNote( const KABC::Addressee &addressee )
@@ -376,8 +406,12 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "assistant_phone" ), AccessorPair( getAssistantPhone, setAssistantPhone ) );
     mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSourceName, setLeadSourceName ) );
     mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
+    mAccessors->insert( QLatin1String( "campaign_id" ), AccessorPair( getCampaignId, setCampaignId ) );
     mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
-    mAccessors->insert( QLatin1String( "report_to_name" ), AccessorPair( getReportToUserName, setReportToUserName ) );
+    mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
+    mAccessors->insert( QLatin1String( "report_to_name" ), AccessorPair( getReportsToUserName, setReportsToUserName ) );
+    mAccessors->insert( QLatin1String( "reports_to_id" ), AccessorPair( getReportsToUserId, setReportsToUserId ) );
+
 }
 
 ContactsHandler::~ContactsHandler()
