@@ -67,6 +67,16 @@ static void setAccountName( const QString &value, KABC::Addressee &addressee )
     addressee.setOrganization( value );
 }
 
+static QString getAccountId( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-AccountId" );
+}
+
+static void setAccountId( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM", "X-AccountId", value );
+}
+
 static QString getAssistantName( const KABC::Addressee &addressee )
 {
     return addressee.custom( "KADDRESSBOOK", "X-AssistantsName" );
@@ -245,6 +255,16 @@ static QString getSalutation( const KABC::Addressee &addressee )
 static void setSalutation(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom( "FATCRM", "X-Salutation", value );
+}
+
+static QString getOpportunityRoleFields( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-OpportunityRoleFields" );
+}
+
+static void setOpportunityRoleFields( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM","X-OpportunityRoleFields", value );
 }
 
 static QString getNote( const KABC::Addressee &addressee )
@@ -475,6 +495,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "title" ), AccessorPair( getTitle, setTitle ) );
     mAccessors->insert( QLatin1String( "department" ), AccessorPair( getDepartment, setDepartment ) );
     mAccessors->insert( QLatin1String( "account_name" ), AccessorPair( getAccountName, setAccountName ) );
+    mAccessors->insert( QLatin1String( "account_id" ), AccessorPair( getAccountId, setAccountId ) );
     mAccessors->insert( QLatin1String( "phone_home" ), AccessorPair( getHomePhone, setHomePhone ) );
     mAccessors->insert( QLatin1String( "phone_work" ), AccessorPair( getWorkPhone, setWorkPhone ) );
     mAccessors->insert( QLatin1String( "phone_mobile" ), AccessorPair( getMobilePhone, setMobilePhone ) );
@@ -510,6 +531,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
     mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedById, setCreatedById ) );
     mAccessors->insert( QLatin1String( "salutation" ), AccessorPair( getSalutation, setSalutation ) );
+    mAccessors->insert( QLatin1String( "opportunity_role_fields" ), AccessorPair( getOpportunityRoleFields, setOpportunityRoleFields ) );
 }
 
 ContactsHandler::~ContactsHandler()

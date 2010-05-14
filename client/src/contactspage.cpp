@@ -118,6 +118,7 @@ void ContactsPage::slotAddContact()
     addressee.setTitle( data.value( "title" ) );
     addressee.setDepartment( data.value( "department" ) );
     addressee.setOrganization( data.value( "accountName" ) );
+    addressee.insertCustom( "FATCRM", "X-AccountId", data.value( "accountId" ) );
     addressee.insertEmail( data.value( "primaryEmail" ), true );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ) , KABC::PhoneNumber::Home ) );
     addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
@@ -155,6 +156,7 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-AssignedUserId", data.value( "assignedToId" ) );
     addressee.insertCustom( "FATCRM", "X-ReportsToUserName",data.value( "reportsTo" ) );
     addressee.insertCustom( "FATCRM", "X-ReportsToUserId",data.value( "reportsToId" ) );
+    addressee.insertCustom( "FATCRM", "X-OpportunityRoleFields", data.value( "opportunityRoleFields" ) );
     addressee.insertCustom( "FATCRM", "X-ModifiedByName", data.value( "modifiedBy" ) );
     addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "modifiedDate" ) );
     addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );

@@ -130,6 +130,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.modifiedDate->setText( addressee.custom( "FATCRM", "X-DateModified" ) );
     mUi.createdDate->setText( addressee.custom( "FATCRM", "X-DateCreated"));
     mUi.createdDate->setProperty( "contactId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ContactId" ) ) );
+    mUi.createdDate->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-OpportunityRoleFields" ) ) );
     mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
     mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
 }
@@ -205,8 +206,10 @@ void ContactDetails::slotSaveContact()
             mContactData["modifiedUserId"] = le->property( "modifiedUserId" ).toString();
             mContactData["modifiedUserName"] = le->property( "modifiedUserName" ).toString();
         }
-        else if ( objName == "createdDate" )
+        else if ( objName == "createdDate" ) {
             mContactData["contactId"] = le->property( "contactId" ).toString();
+            mContactData["opportunityRoleFields"] =  le->property( "opportunityRoleFields" ).toString();
+        }
         else if ( objName == "createdBy" )
             mContactData["createdById"] = le->property( "createdById" ).toString();
     }
