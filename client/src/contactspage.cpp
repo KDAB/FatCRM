@@ -52,17 +52,19 @@ void ContactsPage::slotResourceSelectionChanged( const QByteArray &identifier )
     job->fetchScope().setIncludeStatistics( true );
     connect( job, SIGNAL( result( KJob* ) ),
              this, SLOT( slotCollectionFetchResult( KJob* ) ) );
-
 }
 
 void ContactsPage::slotCollectionFetchResult( KJob *job )
 {
+
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
 
     // look for the "Contacts" collection
+    int i = 0;
     Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
         if ( collection.remoteId() == QLatin1String( "Contacts" ) ) {
             mContactsCollection = collection;
+            i++;
             break;
         }
     }
@@ -93,6 +95,7 @@ void ContactsPage::slotContactChanged( const Item &item )
         }
         emit contactItemChanged();
     }
+
 }
 
 void ContactsPage::slotNewContactClicked()
@@ -152,6 +155,8 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
     addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
     addressee.insertCustom( "FATCRM", "X-CampaignId", data.value( "campaignId" ) );
+    addressee.insertCustom( "FATCRM", "X-CacceptStatusFields", data.value( "cAcceptStatusFields" ) );
+    addressee.insertCustom( "FATCRM", "X-MacceptStatusFields", data.value( "mAcceptStatusFields" ) );
     addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
     addressee.insertCustom( "FATCRM", "X-AssignedUserId", data.value( "assignedToId" ) );
     addressee.insertCustom( "FATCRM", "X-ReportsToUserName",data.value( "reportsTo" ) );
@@ -261,6 +266,14 @@ void ContactsPage::slotModifyContact()
         addressee.insertCustom( "FATCRM", "X-CampaignName", data.value( "campaign" ) );
         addressee.removeCustom( "FATCRM", "X-CampaignId" );
         addressee.insertCustom( "FATCRM", "X-CampaignId", data.value( "campaignId" ) );
+        addressee.removeCustom( "FATCRM", "X-AccountId" );
+        addressee.insertCustom( "FATCRM", "X-AccountId", data.value( "accountId" ) );
+        addressee.removeCustom( "FATCRM", "X-OpportunityRoleFields" );
+        addressee.insertCustom( "FATCRM", "X-OpportunityRoleFields", data.value( "opportunityRoleFields" ) );
+        addressee.removeCustom( "FATCRM", "X-CacceptStatusFields" );
+        addressee.insertCustom( "FATCRM", "X-CacceptStatusFields", data.value( "cAcceptStatusFields" ) );
+        addressee.removeCustom( "FATCRM", "X-MacceptStatusFields");
+        addressee.insertCustom( "FATCRM", "X-MacceptStatusFields", data.value( "mAcceptStatusFields" ) );
         addressee.removeCustom( "FATCRM", "X-AssignedUserName" );
         addressee.insertCustom( "FATCRM", "X-AssignedUserName", data.value( "assignedTo" ) );
         addressee.removeCustom( "FATCRM", "X-AssignedUserId" );
@@ -313,6 +326,28 @@ void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
         QModelIndex newIdx = mUi.contactsTV->model()->index(start, 0, index);
         mUi.contactsTV->setCurrentIndex( newIdx );
     }
+     //model items are loaded
+     if ( mUi.contactsTV->model()->rowCount() == mContactsCollection.statistics().count() )
+         addAccountsData();
+}
+
+void ContactsPage::addAccountsData()
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    ContactDetails *cd = w->contactDetailsWidget();
+    QModelIndex index;
+    Item item;
+    KABC::Addressee addressee;
+    for ( int i = 0; i <  mUi.contactsTV->model()->rowCount(); ++i ) {
+       index  =  mUi.contactsTV->model()->index( i, 0 );
+       item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+       if ( item.hasPayload<KABC::Addressee>() ) {
+           addressee = item.payload<KABC::Addressee>();
+           cd->addAccountData( addressee.organization(), addressee.custom( "FATCRM", "X-AccountId" ) );
+       }
+    }
+    // fill accounts combo
+    cd->fillAccountsCombo();
 }
 
 void ContactsPage::slotSearchItem( const QString& text )
@@ -323,7 +358,6 @@ void ContactsPage::slotSearchItem( const QString& text )
 void ContactsPage::slotFilterChanged( const QString& filterText )
 {
     Q_UNUSED( filterText );
-    qDebug() << "Sorry, ContactsPage::slotFilterChanged(), NIY";
 }
 
 void ContactsPage::initialize()
@@ -372,12 +406,15 @@ void ContactsPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              this, SLOT( slotSearchItem( const QString& ) ) );
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
+
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
+
 }
 
 void ContactsPage::syncronize()
 {
     AgentManager::self()->synchronizeCollection( mContactsCollection );
+
 }
 
 void ContactsPage::cachePolicyJobCompleted( KJob* job)
@@ -386,6 +423,7 @@ void ContactsPage::cachePolicyJobCompleted( KJob* job)
         emit statusMessage( tr("Error when setting cachepolicy: %1").arg( job->errorString() ) );
     else
         emit statusMessage( tr("Cache policy set") );
+
 }
 
 void ContactsPage::setupCachePolicy()

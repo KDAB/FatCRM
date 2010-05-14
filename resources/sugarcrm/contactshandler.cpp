@@ -267,6 +267,26 @@ static void setOpportunityRoleFields( const QString &value, KABC::Addressee &add
     addressee.insertCustom( "FATCRM","X-OpportunityRoleFields", value );
 }
 
+static QString getCAcceptStatusFields( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-CacceptStatusFields" );
+}
+
+static void setCAcceptStatusFields( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM","X-CacceptStatusFields", value );
+}
+
+static QString getMAcceptStatusFields( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-MacceptStatusFields" );
+}
+
+static void setMAcceptStatusFields( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM","X-MacceptStatusFields", value );
+}
+
 static QString getNote( const KABC::Addressee &addressee )
 {
     return addressee.note();
@@ -532,6 +552,8 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedById, setCreatedById ) );
     mAccessors->insert( QLatin1String( "salutation" ), AccessorPair( getSalutation, setSalutation ) );
     mAccessors->insert( QLatin1String( "opportunity_role_fields" ), AccessorPair( getOpportunityRoleFields, setOpportunityRoleFields ) );
+    mAccessors->insert( QLatin1String( "c_accept_status_fields" ),AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields ) );
+    mAccessors->insert( QLatin1String( "m_accept_status_fields" ),AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields ) );
 }
 
 ContactsHandler::~ContactsHandler()

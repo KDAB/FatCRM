@@ -77,12 +77,13 @@ void SugarClient::slotResourceSelectionChanged( int index )
     AgentInstance agent = mUi.resourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
     if ( agent.isValid() ) {
         emit resourceSelected( agent.identifier().toLatin1() );
+        mUi.contactsPage->addAccountsData();
     }
 }
 
 void SugarClient::slotContactItemChanged()
 {
-    if ( !mContactDetailsDock->isVisible() )
+    if ( !mContactDetailsDock->isVisible() && mContactDetailsDock->toggleViewAction()->isChecked() )
         mContactDetailsDock->setVisible( true );
 }
 

@@ -25,6 +25,8 @@ public:
 
     ~ContactsPage();
 
+     void addAccountsData();
+
 Q_SIGNALS:
     void contactItemChanged();
     void statusMessage( const QString& );
@@ -35,6 +37,7 @@ public Q_SLOTS:
 private:
     void initialize();
     void setupCachePolicy();
+
 
     ContactDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;

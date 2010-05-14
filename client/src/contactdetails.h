@@ -39,6 +39,8 @@ public:
 
     void setItem( const Akonadi::Item &item );
     void clearFields();
+    void addAccountData( const QString name, const QString id );
+    void fillAccountsCombo();
     inline QMap<QString, QString> contactData() {return mContactData;}
 
 Q_SIGNALS:
@@ -47,7 +49,9 @@ Q_SIGNALS:
 
 private:
     void initialize();
+
     EditCalendarButton *mCalendarButton;
+    QMap<QString, QString> mAccountsData;
     QMap<QString, QString> mContactData;
     bool mModifyFlag;
     Ui_ContactDetails mUi;

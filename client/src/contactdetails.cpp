@@ -91,7 +91,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.lastName->setText( addressee.familyName() );
     mUi.title->setText( addressee.title() );
     mUi.department->setText( addressee.department() );
-    mUi.accountName->setText( addressee.organization() );
+    mUi.accountName->setCurrentIndex( mUi.accountName->findText( addressee.organization() ) );
     mUi.accountName->setProperty( "accountId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AccountId" ) ) );
     mUi.primaryEmail->setText( addressee.preferredEmail() );
     mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
@@ -131,6 +131,8 @@ void ContactDetails::setItem (const Item &item )
     mUi.createdDate->setText( addressee.custom( "FATCRM", "X-DateCreated"));
     mUi.createdDate->setProperty( "contactId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ContactId" ) ) );
     mUi.createdDate->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-OpportunityRoleFields" ) ) );
+    mUi.createdDate->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CacceptStatusFields" ) ) );
+    mUi.createdDate->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-MacceptStatusFields" ) ) );
     mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
     mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
 }
@@ -139,25 +141,40 @@ void ContactDetails::clearFields ()
 {
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
+
     Q_FOREACH( QLineEdit* le, lineEdits ) {
         QString value = le->objectName();
         if ( !le->text().isEmpty() ) le->clear();
         if ( value == "campaign" )
             le->setProperty( "campaignId", qVariantFromValue<QString>( QString() ) );
-        else if ( value == "accountName" )
-            le->setProperty( "accountId", qVariantFromValue<QString>( QString() ) );
+        //else if ( value == "accountName" )
+        //  le->setProperty( "accountId", qVariantFromValue<QString>( QString() ) );
         else if ( value == "assignedTo" )
             le->setProperty( "assignedToId", qVariantFromValue<QString>( QString() ) );
         else if ( value == "reportsTo" )
             le->setProperty( "reportsToId", qVariantFromValue<QString>( QString() ) );
-        else if ( value == "modifiedBy" ) {
-            le->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
-            le->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
+    }
+
+    QList<QLabel*> labels =
+        mUi.contactInformationGB->findChildren<QLabel*>();
+    Q_FOREACH( QLabel* lab, labels ) {
+        QString value = lab->objectName();
+        if ( value == "modifiedBy" ) {
+            lab->clear();
+            lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
+            lab->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
         }
-        else if ( value == "createdDate" )
-            le->setProperty( "contactId", qVariantFromValue<QString>( QString() ) );
-        else if ( value == "createdBy" )
-            le->setProperty( "createdById", qVariantFromValue<QString>( QString() ) );
+        else if ( value == "createdDate" ) {
+            lab->clear();
+            lab->setProperty( "contactId", qVariantFromValue<QString>( QString() ) );
+            lab->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( QString() ) );
+            lab->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
+            lab->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
+        }
+        else if ( value == "createdBy" ) {
+            lab->clear();
+            lab->setProperty( "createdById", qVariantFromValue<QString>( QString() ) );
+        }
     }
 
     mUi.salutation->setCurrentIndex( 0 );
@@ -189,6 +206,7 @@ void ContactDetails::slotSaveContact()
         mContactData.clear();
 
     mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
+
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits ) {
@@ -196,22 +214,36 @@ void ContactDetails::slotSaveContact()
         mContactData[objName] = le->text();
         if ( objName == "campaign" )
             mContactData["campaignId"] = le->property( "campaignId" ).toString();
-        else if ( objName == "accountName" )
-            mContactData["accountId"] = le->property( "accountId" ).toString();
+        //else if ( objName == "accountName" )
+        //  mContactData["accountId"] = le->property( "accountId" ).toString();
         else if ( objName == "assignedTo" )
             mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
         else if ( objName == "reportsTo" )
             mContactData["reportsToId"] = le->property( "reportsToId" ).toString();
+    }
+
+    QList<QLabel*> labels =
+        mUi.contactInformationGB->findChildren<QLabel*>();
+    Q_FOREACH( QLabel* lab, labels ) {
+        QString objName = lab->objectName();
+        if ( objName == "modifiedDate" )
+            mContactData["modifiedDate"] = lab->text();
         else if ( objName == "modifiedBy" ) {
-            mContactData["modifiedUserId"] = le->property( "modifiedUserId" ).toString();
-            mContactData["modifiedUserName"] = le->property( "modifiedUserName" ).toString();
+            mContactData["modifiedBy"] = lab->text();
+            mContactData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
+            mContactData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
         }
         else if ( objName == "createdDate" ) {
-            mContactData["contactId"] = le->property( "contactId" ).toString();
-            mContactData["opportunityRoleFields"] =  le->property( "opportunityRoleFields" ).toString();
+            mContactData["createdDate"] = lab->text();
+            mContactData["contactId"] = lab->property( "contactId" ).toString();
+            mContactData["opportunityRoleFields"] =  lab->property( "opportunityRoleFields" ).toString();
+            mContactData["cAcceptStatusFields"] = lab->property( "cAcceptStatusFields" ).toString();
+            mContactData["mAcceptStatusFields"] = lab->property( "mAcceptStatusFields" ).toString();
         }
-        else if ( objName == "createdBy" )
-            mContactData["createdById"] = le->property( "createdById" ).toString();
+        else if ( objName == "createdBy" ) {
+            mContactData["createdBy"] = lab->text();
+            mContactData["createdById"] = lab->property( "createdById" ).toString();
+        }
     }
     mContactData["salutation"] = mUi.salutation->currentText();
     mContactData["description"] = mUi.description->toPlainText();
@@ -230,4 +262,15 @@ void ContactDetails::slotSetBirthday()
 
 }
 
+void ContactDetails::addAccountData( const QString accountName,  const QString accountId )
+{
+    mAccountsData.insert( accountName, accountId );
+}
 
+void ContactDetails::fillAccountsCombo()
+{
+    QList<QString> names = mAccountsData.uniqueKeys();
+    // fill the accountNames combo
+    for ( int i = 0; i < names.count(); ++i )
+        mUi.accountName->addItem( names[i] );
+}
