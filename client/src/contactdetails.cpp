@@ -56,8 +56,17 @@ void ContactDetails::initialize()
 
     connect( mUi.salutation, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotEnableSaving() ) );
+    connect( mUi.accountName, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
+    connect( mUi.leadSource, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
+    connect( mUi.campaign, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
+    connect( mUi.reportsTo, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
+
 
     mCalendarButton = new EditCalendarButton(this);
     QVBoxLayout *buttonLayout = new QVBoxLayout;
@@ -92,7 +101,6 @@ void ContactDetails::setItem (const Item &item )
     mUi.title->setText( addressee.title() );
     mUi.department->setText( addressee.department() );
     mUi.accountName->setCurrentIndex( mUi.accountName->findText( addressee.organization() ) );
-    mUi.accountName->setProperty( "accountId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AccountId" ) ) );
     mUi.primaryEmail->setText( addressee.preferredEmail() );
     mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
     mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
@@ -118,12 +126,11 @@ void ContactDetails::setItem (const Item &item )
     mUi.assistant->setText( addressee.custom( "KADDRESSBOOK", "X-AssistantsName" ) );
     mUi.assistantPhone->setText( addressee.custom( "FATCRM", "X-AssistantsPhone" ) );
     mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( addressee.custom( "FATCRM", "X-LeadSourceName" ) ) );
-    mUi.campaign->setText( addressee.custom( "FATCRM", "X-CampaignName" ) );
-    mUi.campaign->setProperty( "campaignId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CampaignId" ) ) );
+    mUi.campaign->setCurrentIndex( mUi.campaign->findText( addressee.custom( "FATCRM", "X-CampaignName" ) ) );
+
     mUi.assignedTo->setText( addressee.custom( "FATCRM", "X-AssignedUserName" ) );
     mUi.assignedTo->setProperty( "assignedToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AssignedUserId" ) ) );
-    mUi.reportsTo->setText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) );
-    mUi.reportsTo->setProperty( "reportsToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ReportsToUserId" ) ) );
+    mUi.reportsTo->setCurrentIndex( mUi.reportsTo->findText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) ) );
     mUi.modifiedBy->setText( addressee.custom( "FATCRM", "X-ModifiedByName" ) );
     mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserId" ) ) );
     mUi.modifiedBy->setProperty( "modifiedUserName", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserName" ) ) );
@@ -145,11 +152,7 @@ void ContactDetails::clearFields ()
     Q_FOREACH( QLineEdit* le, lineEdits ) {
         QString value = le->objectName();
         if ( !le->text().isEmpty() ) le->clear();
-        if ( value == "campaign" )
-            le->setProperty( "campaignId", qVariantFromValue<QString>( QString() ) );
-        //else if ( value == "accountName" )
-        //  le->setProperty( "accountId", qVariantFromValue<QString>( QString() ) );
-        else if ( value == "assignedTo" )
+        if ( value == "assignedTo" )
             le->setProperty( "assignedToId", qVariantFromValue<QString>( QString() ) );
         else if ( value == "reportsTo" )
             le->setProperty( "reportsToId", qVariantFromValue<QString>( QString() ) );
@@ -178,8 +181,10 @@ void ContactDetails::clearFields ()
     }
 
     mUi.salutation->setCurrentIndex( 0 );
+    mUi.campaign->setCurrentIndex( 0 );
     mUi.accountName->setCurrentIndex( 0 );
     mUi.leadSource->setCurrentIndex( 0 );
+    mUi.reportsTo->setCurrentIndex( 0 );
     mUi.description->clear();
     mUi.firstName->setFocus();
     // enable
@@ -214,12 +219,8 @@ void ContactDetails::slotSaveContact()
     Q_FOREACH( QLineEdit* le, lineEdits ) {
         QString objName = le->objectName();
         mContactData[objName] = le->text();
-        if ( objName == "campaign" )
-            mContactData["campaignId"] = le->property( "campaignId" ).toString();
-        else if ( objName == "assignedTo" )
+        if ( objName == "assignedTo" )
             mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
-        else if ( objName == "reportsTo" )
-            mContactData["reportsToId"] = le->property( "reportsToId" ).toString();
     }
 
     QList<QLabel*> labels =
@@ -247,8 +248,12 @@ void ContactDetails::slotSaveContact()
     }
 
     mContactData["salutation"] = mUi.salutation->currentText();
+    mContactData["campaign"] = mUi.campaign->currentText();
+    mContactData["campaignId"] = mCampaignsData.value( mUi.campaign->currentText() );
     mContactData["accountName"] = mUi.accountName->currentText();
     mContactData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
+    mContactData["reportsTo"] = mUi.reportsTo->currentText();
+    mContactData["reportsToId"] = mReportsToData.value( mUi.reportsTo->currentText() );
     mContactData["leadSource"] = mUi.leadSource->currentText();
     mContactData["description"] = mUi.description->toPlainText();
 
@@ -263,18 +268,38 @@ void ContactDetails::slotSaveContact()
 void ContactDetails::slotSetBirthday()
 {
     mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
-
 }
 
-void ContactDetails::addAccountData( const QString accountName,  const QString accountId )
+void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
     mAccountsData.insert( accountName, accountId );
 }
 
-void ContactDetails::fillAccountsCombo()
+void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
+{
+    mCampaignsData.insert( campaignName, campaignId );
+}
+
+void ContactDetails::addReportsToData( const QString &name, const QString &id )
+{
+    mReportsToData.insert( name, id );
+}
+
+void ContactDetails::fillCombos()
 {
     QList<QString> names = mAccountsData.uniqueKeys();
-    // fill the accountNames combo
+    // fill
+    // accountName combo
     for ( int i = 0; i < names.count(); ++i )
         mUi.accountName->addItem( names[i] );
+
+    // campaign
+    names = mCampaignsData.uniqueKeys();
+    for ( int i = 0; i < names.count(); ++i )
+        mUi.campaign->addItem( names[i] );
+
+    // reports to
+    names = mReportsToData.uniqueKeys();
+    for ( int i = 0; i < names.count(); ++i )
+        mUi.reportsTo->addItem( names[i] );
 }

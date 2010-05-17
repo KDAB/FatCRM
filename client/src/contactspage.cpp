@@ -344,10 +344,13 @@ void ContactsPage::addAccountsData()
        if ( item.hasPayload<KABC::Addressee>() ) {
            addressee = item.payload<KABC::Addressee>();
            cd->addAccountData( addressee.organization(), addressee.custom( "FATCRM", "X-AccountId" ) );
+           cd->addCampaignData( addressee.custom( "FATCRM", "X-CampaignName" ), addressee.custom( "FATCRM", "X-CampaignId" ) );
+           QString fullName = addressee.givenName() + " " + addressee.familyName();
+           cd->addReportsToData( fullName, addressee.custom( "FATCRM", "X-ContactId") );
        }
     }
     // fill accounts combo
-    cd->fillAccountsCombo();
+    cd->fillCombos();
 }
 
 void ContactsPage::slotSearchItem( const QString& text )
