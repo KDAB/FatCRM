@@ -50,7 +50,6 @@ private Q_SLOTS:
     void slotContactChanged( const Akonadi::Item &item );
     void slotNewContactClicked();
     void slotFilterChanged( const QString& text );
-    void slotSearchItem( const QString& text );
     void slotAddContact();
     void slotModifyContact();
     void slotRemoveContact();

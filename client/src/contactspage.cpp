@@ -360,21 +360,6 @@ void ContactsPage::addAccountsData()
     cd->fillCombos();
 }
 
-void ContactsPage::slotSearchItem( const QString& text )
-{
-
-
-    ;
-    /*
-    mUi.contactsTV->keyboardSearch( text );
-    */
-}
-
-void ContactsPage::slotFilterChanged( const QString& filterText )
-{
-    Q_UNUSED( filterText );
-}
-
 void ContactsPage::initialize()
 {
     QStringList filtersLabels;
@@ -400,7 +385,7 @@ void ContactsPage::initialize()
      * collections but only a single one
      */
     ContactsTreeModel *contactsModel = new ContactsTreeModel( mChangeRecorder, this );
-    //contactsModel = new ContactsTreeModel( mChangeRecorder, this );
+
     ContactsTreeModel::Columns columns;
     columns << ContactsTreeModel::FullName
             << ContactsTreeModel::Role
@@ -410,26 +395,20 @@ void ContactsPage::initialize()
             << ContactsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 
- ContactsFilterModel *filterModel = new ContactsFilterModel( this );
- filterModel->setSourceModel( contactsModel );
- filterModel->setSourceModel( contactsModel );
- mUi.contactsTV->setModel( filterModel );
-
- connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
-           filterModel, SLOT( setFilterString( const QString& ) ) );
 
     // same as for the ContactsTreeModel, not strictly necessary
- /*
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( contactsModel );
     filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    mUi.contactsTV->setModel( filterModel );
+    ContactsFilterModel *filter = new ContactsFilterModel( this );
+    filter->setSourceModel( filterModel );
+    mUi.contactsTV->setModel( filter );
 
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotSearchItem( const QString& ) ) );
- */
+             filter, SLOT( setFilterString( const QString& ) ) );
+
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
 
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
@@ -461,3 +440,7 @@ void ContactsPage::setupCachePolicy()
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
 
+void ContactsPage::slotFilterChanged( const QString& filterString )
+{
+    Q_UNUSED( filterString );
+}
