@@ -6,6 +6,7 @@
 #include <akonadi/control.h>
 
 #include <QDockWidget>
+#include <QToolBar>
 
 using namespace Akonadi;
 
@@ -52,11 +53,18 @@ void SugarClient::initialize()
   createMenus();
   setupActions();
   createDockWidgets();
+  createToolBars();
 }
 
 void SugarClient::createMenus()
 {
     mViewMenu = menuBar()->addMenu( tr( "&View" ) );
+}
+
+void SugarClient::createToolBars()
+{
+    QToolBar *toolBar = addToolBar( tr( "&View" ) );
+    toolBar->addAction( mContactDetailsDock->toggleViewAction() );
 }
 
 void SugarClient::createDockWidgets()
@@ -68,6 +76,7 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
 
+
     connect(mUi.contactsPage,SIGNAL(contactItemChanged()),
             this, SLOT( slotContactItemChanged()));
 }
@@ -77,7 +86,6 @@ void SugarClient::slotResourceSelectionChanged( int index )
     AgentInstance agent = mUi.resourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
     if ( agent.isValid() ) {
         emit resourceSelected( agent.identifier().toLatin1() );
-        mUi.contactsPage->addAccountsData();
     }
 }
 

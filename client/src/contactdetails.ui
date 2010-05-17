@@ -161,9 +161,6 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="2">
-            <widget class="QLineEdit" name="leadSource"/>
-           </item>
            <item row="8" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
@@ -253,6 +250,85 @@
            </item>
            <item row="6" column="2">
             <widget class="QComboBox" name="accountName"/>
+           </item>
+           <item row="7" column="2">
+            <widget class="QComboBox" name="leadSource">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Cold Call</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Existing Customer</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Self Generated</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Employee</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Partner</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Public Relations</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Direct Mail</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Conference</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Trade Show</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Web Site</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Word of mouth</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Email</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Campaign</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Other</string>
+              </property>
+             </item>
+            </widget>
            </item>
           </layout>
          </widget>

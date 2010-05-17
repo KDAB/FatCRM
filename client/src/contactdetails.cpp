@@ -117,7 +117,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.description->setPlainText( addressee.note() );
     mUi.assistant->setText( addressee.custom( "KADDRESSBOOK", "X-AssistantsName" ) );
     mUi.assistantPhone->setText( addressee.custom( "FATCRM", "X-AssistantsPhone" ) );
-    mUi.leadSource->setText( addressee.custom( "FATCRM", "X-LeadSourceName" ) );
+    mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( addressee.custom( "FATCRM", "X-LeadSourceName" ) ) );
     mUi.campaign->setText( addressee.custom( "FATCRM", "X-CampaignName" ) );
     mUi.campaign->setProperty( "campaignId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CampaignId" ) ) );
     mUi.assignedTo->setText( addressee.custom( "FATCRM", "X-AssignedUserName" ) );
@@ -178,6 +178,8 @@ void ContactDetails::clearFields ()
     }
 
     mUi.salutation->setCurrentIndex( 0 );
+    mUi.accountName->setCurrentIndex( 0 );
+    mUi.leadSource->setCurrentIndex( 0 );
     mUi.description->clear();
     mUi.firstName->setFocus();
     // enable
@@ -214,8 +216,6 @@ void ContactDetails::slotSaveContact()
         mContactData[objName] = le->text();
         if ( objName == "campaign" )
             mContactData["campaignId"] = le->property( "campaignId" ).toString();
-        //else if ( objName == "accountName" )
-        //  mContactData["accountId"] = le->property( "accountId" ).toString();
         else if ( objName == "assignedTo" )
             mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
         else if ( objName == "reportsTo" )
@@ -245,7 +245,11 @@ void ContactDetails::slotSaveContact()
             mContactData["createdById"] = lab->property( "createdById" ).toString();
         }
     }
+
     mContactData["salutation"] = mUi.salutation->currentText();
+    mContactData["accountName"] = mUi.accountName->currentText();
+    mContactData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
+    mContactData["leadSource"] = mUi.leadSource->currentText();
     mContactData["description"] = mUi.description->toPlainText();
 
     if ( !mModifyFlag )

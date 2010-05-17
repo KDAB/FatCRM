@@ -25,6 +25,7 @@ Q_SIGNALS:
 private:
     void initialize();
     void createMenus();
+    void createToolBars();
     void createDockWidgets();
     void setupActions();
 
