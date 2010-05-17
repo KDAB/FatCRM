@@ -64,6 +64,8 @@ void ContactDetails::initialize()
              this, SLOT( slotEnableSaving() ) );
     connect( mUi.reportsTo, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotEnableSaving() ) );
+    connect( mUi.assignedTo, SIGNAL( currentIndexChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 
@@ -128,8 +130,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( addressee.custom( "FATCRM", "X-LeadSourceName" ) ) );
     mUi.campaign->setCurrentIndex( mUi.campaign->findText( addressee.custom( "FATCRM", "X-CampaignName" ) ) );
 
-    mUi.assignedTo->setText( addressee.custom( "FATCRM", "X-AssignedUserName" ) );
-    mUi.assignedTo->setProperty( "assignedToId",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-AssignedUserId" ) ) );
+    mUi.assignedTo->setCurrentIndex( mUi.assignedTo->findText( addressee.custom( "FATCRM", "X-AssignedUserName" ) ) );
     mUi.reportsTo->setCurrentIndex( mUi.reportsTo->findText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) ) );
     mUi.modifiedBy->setText( addressee.custom( "FATCRM", "X-ModifiedByName" ) );
     mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserId" ) ) );
@@ -140,6 +141,9 @@ void ContactDetails::setItem (const Item &item )
     mUi.createdDate->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-OpportunityRoleFields" ) ) );
     mUi.createdDate->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CacceptStatusFields" ) ) );
     mUi.createdDate->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-MacceptStatusFields" ) ) );
+    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-Deleted" ) ) );
+    bool donotcall = ( addressee.custom( "FATCRM", "X-DoNotCall" ).isEmpty() || addressee.custom( "FATCRM", "X-DoNotCall" ) == "0" ) ? false : true;
+    mUi.doNotCall->setChecked( donotcall );
     mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
     mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
 }
@@ -149,14 +153,8 @@ void ContactDetails::clearFields ()
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
 
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        QString value = le->objectName();
+    Q_FOREACH( QLineEdit* le, lineEdits )
         if ( !le->text().isEmpty() ) le->clear();
-        if ( value == "assignedTo" )
-            le->setProperty( "assignedToId", qVariantFromValue<QString>( QString() ) );
-        else if ( value == "reportsTo" )
-            le->setProperty( "reportsToId", qVariantFromValue<QString>( QString() ) );
-    }
 
     QList<QLabel*> labels =
         mUi.contactInformationGB->findChildren<QLabel*>();
@@ -173,6 +171,7 @@ void ContactDetails::clearFields ()
             lab->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( QString() ) );
             lab->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
             lab->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
+            lab->setProperty( "deleted", qVariantFromValue<QString>( QString() ) );
         }
         else if ( value == "createdBy" ) {
             lab->clear();
@@ -180,11 +179,13 @@ void ContactDetails::clearFields ()
         }
     }
 
+    // reset combos
     mUi.salutation->setCurrentIndex( 0 );
     mUi.campaign->setCurrentIndex( 0 );
     mUi.accountName->setCurrentIndex( 0 );
     mUi.leadSource->setCurrentIndex( 0 );
     mUi.reportsTo->setCurrentIndex( 0 );
+    mUi.assignedTo->setCurrentIndex( 0 );
     mUi.description->clear();
     mUi.firstName->setFocus();
     // enable
@@ -192,6 +193,7 @@ void ContactDetails::clearFields ()
     mUi.otherDetailsBox->setChecked( true );
     mUi.addressesBox->setChecked( true );
     mUi.descriptionBox->setChecked( true );
+    mUi.doNotCall->setChecked( false );
     // we are creating a new contact
     slotSetModifyFlag( false );
 }
@@ -240,6 +242,7 @@ void ContactDetails::slotSaveContact()
             mContactData["opportunityRoleFields"] =  lab->property( "opportunityRoleFields" ).toString();
             mContactData["cAcceptStatusFields"] = lab->property( "cAcceptStatusFields" ).toString();
             mContactData["mAcceptStatusFields"] = lab->property( "mAcceptStatusFields" ).toString();
+            mContactData["deleted"] = lab->property( "deleted" ).toString();
         }
         else if ( objName == "createdBy" ) {
             mContactData["createdBy"] = lab->text();
@@ -254,8 +257,11 @@ void ContactDetails::slotSaveContact()
     mContactData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
     mContactData["reportsTo"] = mUi.reportsTo->currentText();
     mContactData["reportsToId"] = mReportsToData.value( mUi.reportsTo->currentText() );
+    mContactData["assignedTo"] = mUi.assignedTo->currentText();
+    mContactData["assignedToId"] = mAssignedToData.value( mUi.assignedTo->currentText() );
     mContactData["leadSource"] = mUi.leadSource->currentText();
     mContactData["description"] = mUi.description->toPlainText();
+    mContactData["doNotCall"] =   mUi.doNotCall->isChecked() ? "1" : "0";
 
     if ( !mModifyFlag )
         emit saveContact();
@@ -285,6 +291,11 @@ void ContactDetails::addReportsToData( const QString &name, const QString &id )
     mReportsToData.insert( name, id );
 }
 
+void ContactDetails::addAssignedToData( const QString &name, const QString &id )
+{
+    mAssignedToData.insert( name, id );
+}
+
 void ContactDetails::fillCombos()
 {
     QList<QString> names = mAccountsData.uniqueKeys();
@@ -302,4 +313,9 @@ void ContactDetails::fillCombos()
     names = mReportsToData.uniqueKeys();
     for ( int i = 0; i < names.count(); ++i )
         mUi.reportsTo->addItem( names[i] );
+
+    // assigned to
+    names = mAssignedToData.uniqueKeys();
+    for ( int i = 0; i < names.count(); ++i )
+        mUi.assignedTo->addItem( names[i] );
 }

@@ -42,6 +42,7 @@ public:
     void addAccountData( const QString &name, const QString &id );
     void addCampaignData( const QString &name,  const QString &id );
     void addReportsToData( const QString &name, const QString &id );
+    void addAssignedToData( const QString &name, const QString &id );
     void fillCombos();
     inline QMap<QString, QString> contactData() {return mContactData;}
 
@@ -54,6 +55,7 @@ private:
 
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mReportsToData;
+    QMap<QString, QString> mAssignedToData;
     QMap<QString, QString> mCampaignsData;
     QMap<QString, QString> mAccountsData;
     QMap<QString, QString> mContactData;

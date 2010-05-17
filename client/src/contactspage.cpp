@@ -171,6 +171,8 @@ void ContactsPage::slotAddContact()
     addressee.insertCustom( "FATCRM", "X-CreatedById", data.value( "createdById" ) );
     addressee.insertCustom( "FATCRM", "X-ContactId", data.value( "contactId" ) );
     addressee.insertCustom( "FATCRM", "X-Salutation", data.value( "salutation" ) );
+    addressee.insertCustom( "FATCRM", "X-Deleted", data.value( "deleted" ) );
+    addressee.insertCustom( "FATCRM", "X-DoNotCall", data.value( "doNotCall" ) );
 
     Item item;
     item.setMimeType( KABC::Addressee::mimeType() );
@@ -292,7 +294,10 @@ void ContactsPage::slotModifyContact()
         addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
         addressee.removeCustom( "FATCRM", "X-Salutation" );
         addressee.insertCustom( "FATCRM", "X-Salutation", data.value( "salutation" ) );
-
+        addressee.removeCustom( "FATCRM", "X-Deleted" );
+        addressee.insertCustom( "FATCRM", "X-Deleted", data.value( "deleted" ) );
+        addressee.removeCustom( "FATCRM", "X-DoNotCall" );
+        addressee.insertCustom( "FATCRM", "X-DoNotCall", data.value( "doNotCall" ) );
 
         item.setPayload<KABC::Addressee>( addressee );
 
@@ -347,6 +352,7 @@ void ContactsPage::addAccountsData()
            cd->addCampaignData( addressee.custom( "FATCRM", "X-CampaignName" ), addressee.custom( "FATCRM", "X-CampaignId" ) );
            QString fullName = addressee.givenName() + " " + addressee.familyName();
            cd->addReportsToData( fullName, addressee.custom( "FATCRM", "X-ContactId") );
+           cd->addAssignedToData(  addressee.custom( "FATCRM", "X-AssignedUserName" ), addressee.custom( "FATCRM", "X-AssignedUserId" ) );
        }
     }
     // fill accounts combo

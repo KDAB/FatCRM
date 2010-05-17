@@ -287,6 +287,26 @@ static void setMAcceptStatusFields( const QString &value, KABC::Addressee &addre
     addressee.insertCustom( "FATCRM","X-MacceptStatusFields", value );
 }
 
+static QString getDeleted( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-Deleted" );
+}
+
+static void setDeleted (const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM","X-Deleted", value );
+}
+
+static QString getDoNotCall( const KABC::Addressee &addressee )
+{
+    return addressee.custom( "FATCRM", "X-DoNotCall" );
+}
+
+static void setDoNotCall ( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.insertCustom( "FATCRM","X-DoNotCall", value );
+}
+
 static QString getNote( const KABC::Addressee &addressee )
 {
     return addressee.note();
@@ -489,6 +509,8 @@ static void setOtherCountry( const QString &value, KABC::Address &address )
 }
 
 
+
+
 class AccessorPair
 {
 public:
@@ -554,6 +576,8 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "opportunity_role_fields" ), AccessorPair( getOpportunityRoleFields, setOpportunityRoleFields ) );
     mAccessors->insert( QLatin1String( "c_accept_status_fields" ),AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields ) );
     mAccessors->insert( QLatin1String( "m_accept_status_fields" ),AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields ) );
+    mAccessors->insert( QLatin1String( "deleted" ),AccessorPair( getDeleted, setDeleted ) );
+    mAccessors->insert( QLatin1String( "do_not_call" ),AccessorPair( getDoNotCall, setDoNotCall ) );
 }
 
 ContactsHandler::~ContactsHandler()
