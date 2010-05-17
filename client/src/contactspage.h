@@ -38,7 +38,6 @@ private:
     void initialize();
     void setupCachePolicy();
 
-
     ContactDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mContactsCollection;

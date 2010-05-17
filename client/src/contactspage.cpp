@@ -3,6 +3,7 @@
 #include "sugarclient.h"
 
 #include <akonadi/contact/contactstreemodel.h>
+#include <akonadi/contact/contactsfiltermodel.h>
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -361,7 +362,12 @@ void ContactsPage::addAccountsData()
 
 void ContactsPage::slotSearchItem( const QString& text )
 {
+
+
+    ;
+    /*
     mUi.contactsTV->keyboardSearch( text );
+    */
 }
 
 void ContactsPage::slotFilterChanged( const QString& filterText )
@@ -394,7 +400,7 @@ void ContactsPage::initialize()
      * collections but only a single one
      */
     ContactsTreeModel *contactsModel = new ContactsTreeModel( mChangeRecorder, this );
-
+    //contactsModel = new ContactsTreeModel( mChangeRecorder, this );
     ContactsTreeModel::Columns columns;
     columns << ContactsTreeModel::FullName
             << ContactsTreeModel::Role
@@ -404,7 +410,16 @@ void ContactsPage::initialize()
             << ContactsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 
+ ContactsFilterModel *filterModel = new ContactsFilterModel( this );
+ filterModel->setSourceModel( contactsModel );
+ filterModel->setSourceModel( contactsModel );
+ mUi.contactsTV->setModel( filterModel );
+
+ connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
+           filterModel, SLOT( setFilterString( const QString& ) ) );
+
     // same as for the ContactsTreeModel, not strictly necessary
+ /*
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( contactsModel );
     filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
@@ -414,6 +429,7 @@ void ContactsPage::initialize()
 
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              this, SLOT( slotSearchItem( const QString& ) ) );
+ */
     connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
 
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
