@@ -39,6 +39,7 @@ private Q_SLOTS:
     void slotResourceSelectionChanged( int index );
     void slotContactItemChanged();
     void slotShowMessage( const QString& );
+    void slotShowDetailsDock();
 };
 
 #endif

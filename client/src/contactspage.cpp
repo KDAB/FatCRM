@@ -108,7 +108,8 @@ void ContactsPage::slotNewContactClicked()
         connect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
     }
-    emit contactItemChanged();
+
+    emit showDetails();
 }
 
 void ContactsPage::slotAddContact()

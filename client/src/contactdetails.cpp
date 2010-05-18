@@ -54,20 +54,26 @@ void ContactDetails::initialize()
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-    connect( mUi.salutation, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.accountName, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.leadSource, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.campaign, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.reportsTo, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.assignedTo, SIGNAL( currentIndexChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
+    QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        connect( cb, SIGNAL( currentIndexChanged( int ) ),
+                 this, SLOT( slotEnableSaving() ) );
+
+     QList<QGroupBox*> groupBoxes =
+        mUi.contactInformationGB->findChildren<QGroupBox*>();
+    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
+       connect( gb, SIGNAL( toggled( bool ) ),
+                this, SLOT( slotEnableSaving() ) );
+       connect( gb, SIGNAL( toggled( bool ) ),
+                this, SLOT( slotSetModifyFlag( bool ) ) );
+    }
+
+    mModifyFlag = false;
+
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
+    connect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
+             this, SLOT( slotEnableSaving() ) );
 
 
     mCalendarButton = new EditCalendarButton(this);
@@ -78,19 +84,10 @@ void ContactDetails::initialize()
     connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
              this, SLOT( slotSetBirthday() ) );
 
-    mModifyFlag = false;
-
-    connect( mUi.detailsBox,  SIGNAL( toggled( bool ) ),
-             this,SLOT( slotSetModifyFlag( bool ) ) );
-    connect( mUi.otherDetailsBox,  SIGNAL( toggled( bool ) ),
-             this,SLOT( slotSetModifyFlag( bool ) ) );
-    connect( mUi.addressesBox,  SIGNAL( toggled( bool ) ),
-             this,SLOT( slotSetModifyFlag( bool ) ) );
-    connect( mUi.descriptionBox,  SIGNAL( toggled( bool ) ),
-             this,SLOT( slotSetModifyFlag( bool ) ) );
-
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
+
+    mUi.saveButton->setEnabled( false );
 }
 
 void ContactDetails::setItem (const Item &item )
@@ -150,12 +147,13 @@ void ContactDetails::setItem (const Item &item )
 
 void ContactDetails::clearFields ()
 {
+    // reset line edits
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
-
     Q_FOREACH( QLineEdit* le, lineEdits )
-        if ( !le->text().isEmpty() ) le->clear();
+        le->setText(QString());
 
+    // reset label and properties
     QList<QLabel*> labels =
         mUi.contactInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
@@ -179,23 +177,27 @@ void ContactDetails::clearFields ()
         }
     }
 
+    // enable
+    QList<QGroupBox*> groupBoxes =
+        mUi.contactInformationGB->findChildren<QGroupBox*>();
+    Q_FOREACH( QGroupBox* gb, groupBoxes )
+        gb->setChecked( true );
+
     // reset combos
-    mUi.salutation->setCurrentIndex( 0 );
-    mUi.campaign->setCurrentIndex( 0 );
-    mUi.accountName->setCurrentIndex( 0 );
-    mUi.leadSource->setCurrentIndex( 0 );
-    mUi.reportsTo->setCurrentIndex( 0 );
-    mUi.assignedTo->setCurrentIndex( 0 );
+    QList<QComboBox*> comboBoxes =
+        mUi.contactInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        cb->setCurrentIndex( 0 );
+
+    // initialize other fields
+    mUi.doNotCall->setChecked( false );
     mUi.description->clear();
     mUi.firstName->setFocus();
-    // enable
-    mUi.detailsBox->setChecked( true );
-    mUi.otherDetailsBox->setChecked( true );
-    mUi.addressesBox->setChecked( true );
-    mUi.descriptionBox->setChecked( true );
-    mUi.doNotCall->setChecked( false );
+
+
     // we are creating a new contact
     slotSetModifyFlag( false );
+
 }
 
 
@@ -206,7 +208,15 @@ void ContactDetails::slotSetModifyFlag( bool value )
 
 void ContactDetails::slotEnableSaving()
 {
-    mUi.saveButton->setEnabled( true );
+    QList<QGroupBox*> groupBoxes =
+        mUi.contactInformationGB->findChildren<QGroupBox*>();
+
+    Q_FOREACH( QGroupBox* gb, groupBoxes )
+        if ( gb->isChecked() ) {
+            mUi.saveButton->setEnabled( true );
+            return;
+        }
+    mUi.saveButton->setEnabled( false );
 }
 
 void ContactDetails::slotSaveContact()
@@ -268,7 +278,6 @@ void ContactDetails::slotSaveContact()
     else
         emit modifyContact();
 
-    mUi.saveButton->setEnabled( false );
 }
 
 void ContactDetails::slotSetBirthday()
@@ -318,4 +327,13 @@ void ContactDetails::fillCombos()
     names = mAssignedToData.uniqueKeys();
     for ( int i = 0; i < names.count(); ++i )
         mUi.assignedTo->addItem( names[i] );
+}
+
+void ContactDetails::disableGroupBoxes()
+{
+    QList<QGroupBox*> groupBoxes =
+        mUi.contactInformationGB->findChildren<QGroupBox*>();
+
+    Q_FOREACH( QGroupBox* gb, groupBoxes )
+        gb->setChecked( false );
 }

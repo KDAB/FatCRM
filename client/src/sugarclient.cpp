@@ -76,9 +76,10 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
 
-
     connect(mUi.contactsPage,SIGNAL(contactItemChanged()),
             this, SLOT( slotContactItemChanged()));
+    connect(mUi.contactsPage,SIGNAL(showDetails()),
+            this, SLOT( slotShowDetailsDock()));
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -91,9 +92,20 @@ void SugarClient::slotResourceSelectionChanged( int index )
 
 void SugarClient::slotContactItemChanged()
 {
-    if ( !mContactDetailsDock->isVisible() && mContactDetailsDock->toggleViewAction()->isChecked() )
+    if ( mContactDetailsDock->toggleViewAction()->isChecked() )
         mContactDetailsDock->setVisible( true );
+    mContactDetailsWidget->disableGroupBoxes();
 }
+
+void SugarClient::slotShowDetailsDock()
+{
+    if ( !mContactDetailsDock->toggleViewAction()->isChecked() ) {
+        mContactDetailsDock->toggleViewAction()->setChecked( true );
+        mContactDetailsDock->setVisible( true );
+    }
+}
+
+
 
 void SugarClient::setupActions()
 {

@@ -44,6 +44,7 @@ public:
     void addReportsToData( const QString &name, const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
     void fillCombos();
+    void disableGroupBoxes();
     inline QMap<QString, QString> contactData() {return mContactData;}
 
 Q_SIGNALS:

@@ -30,6 +30,7 @@ public:
 Q_SIGNALS:
     void contactItemChanged();
     void statusMessage( const QString& );
+    void showDetails();
 
 public Q_SLOTS:
     void syncronize();
