@@ -74,6 +74,8 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 set( sugarcrmresource_SRCS
     contactshandler.cpp
     modulehandler.cpp
+    moduledebuginterface.cpp
+    resourcedebuginterface.cpp
     sugarconfigdialog.cpp
     sugarcrmresource.cpp
     ${CMAKE_CURRENT_BINARY_DIR}/sugarsoap.cpp

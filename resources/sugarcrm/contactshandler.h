@@ -14,6 +14,8 @@ public:
 
     ~ContactsHandler();
 
+    QStringList supportedFields() const;
+
     Akonadi::Collection collection() const;
 
     void listEntries( int offset, Sugarsoap* soap, const QString &sessionId );

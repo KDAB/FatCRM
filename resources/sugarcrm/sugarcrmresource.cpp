@@ -1,6 +1,8 @@
 #include "sugarcrmresource.h"
 
 #include "contactshandler.h"
+#include "moduledebuginterface.h"
+#include "resourcedebuginterface.h"
 #include "settings.h"
 #include "settingsadaptor.h"
 #include "sugarconfigdialog.h"
@@ -44,7 +46,13 @@ SugarCRMResource::SugarCRMResource( const QString &id )
 {
     new SettingsAdaptor( Settings::self() );
     QDBusConnection::sessionBus().registerObject( QLatin1String( "/Settings" ),
-                                                  Settings::self(), QDBusConnection::ExportAdaptors );
+                                                  Settings::self(),
+                                                  QDBusConnection::ExportAdaptors );
+
+    ResourceDebugInterface *debugInterface = new ResourceDebugInterface( this );
+    QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug" ),
+                                                  debugInterface,
+                                                  QDBusConnection::ExportScriptableSlots );
 
     setNeedsNetwork( true );
 
@@ -446,8 +454,16 @@ void SugarCRMResource::getAvailableModulesDone( const TNS__Module_list &callResu
 
         collections << topLevelCollection;
 
+        mAvailableModules.clear();
         const TNS__Select_fields moduleNames = callResult.modules();
         Q_FOREACH( const QString &module, moduleNames.items() ) {
+            mAvailableModules << module;
+
+            ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
+            QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
+                                                          debugInterface,
+                                                           QDBusConnection::ExportScriptableSlots );
+
             Collection collection;
 
             // check if we have a corresponding module handler already

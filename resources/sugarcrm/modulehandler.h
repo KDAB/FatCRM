@@ -20,6 +20,8 @@ public:
 
     QString moduleName() const;
 
+    virtual QStringList supportedFields() const = 0;
+
     virtual Akonadi::Collection collection() const = 0;
 
     virtual void listEntries( int offset, Sugarsoap* soap, const QString &sessionId ) = 0;

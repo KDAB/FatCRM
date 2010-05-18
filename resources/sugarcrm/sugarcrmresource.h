@@ -3,6 +3,8 @@
 
 #include <akonadi/resourcebase.h>
 
+#include <QStringList>
+
 class KDSoapMessage;
 class ModuleHandler;
 class TNS__Get_entry_list_result;
@@ -14,6 +16,9 @@ template <typename U, typename V> class QHash;
 
 class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
 {
+    friend class ModuleDebugInterface;
+    friend class ResourceDebugInterface;
+
     Q_OBJECT
 
 public:
@@ -30,6 +35,7 @@ protected:
 
     Akonadi::Item mPendingItem;
 
+    QStringList mAvailableModules;
     typedef QHash<QString, ModuleHandler*> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
 
