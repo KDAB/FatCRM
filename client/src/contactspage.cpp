@@ -3,7 +3,7 @@
 #include "sugarclient.h"
 
 #include <akonadi/contact/contactstreemodel.h>
-#include <akonadi/contact/contactsfiltermodel.h>
+#include <akonadi/contact/contactsfilterproxymodel.h>
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -403,7 +403,7 @@ void ContactsPage::initialize()
     filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    ContactsFilterModel *filter = new ContactsFilterModel( this );
+    ContactsFilterProxyModel *filter = new ContactsFilterProxyModel( this );
     filter->setSourceModel( filterModel );
     mUi.contactsTV->setModel( filter );
 
