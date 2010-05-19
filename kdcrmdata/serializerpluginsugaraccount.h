@@ -10,7 +10,7 @@ namespace Akonadi {
 class SerializerPluginSugarAccount : public QObject, public ItemSerializerPlugin
 {
     Q_OBJECT
-    Q_INTERFACES( Akonadi::ItemSerializerPlugin )
+    //Q_INTERFACES( Akonadi::ItemSerializerPlugin )
 
 public:
     bool deserialize( Item& item, const QByteArray& label, QIODevice& data, int version );

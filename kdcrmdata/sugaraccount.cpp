@@ -546,5 +546,5 @@ QString SugarAccount::description() const
 
 QString SugarAccount::mimeType()
 {
-    return QLatin1String( "application/x-fatcrm.sugaraccount" );
+    return QLatin1String( "application/x-vnd.kdab.crm.account" );
 }
