@@ -3,6 +3,7 @@
 
 #include <QtCore/QSharedDataPointer>
 
+#include "kdcrmdata_export.h"
 
 /**
   @short sugar account entry
@@ -11,7 +12,7 @@
 
   The data of this class is implicitly shared. You can pass this class by value.
  */
-class SugarAccount
+class KDCRMDATA_EXPORT SugarAccount
 {
 
   public:

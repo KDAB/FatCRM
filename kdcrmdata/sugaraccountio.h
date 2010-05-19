@@ -1,10 +1,12 @@
 #ifndef SUGARACCOUNTIO_H
 #define SUGARACCOUNTIO_H
 
+#include "kdcrmdata_export.h"
+
 class SugarAccount;
 class QIODevice;
 
-class SugarAccountIO
+class KDCRMDATA_EXPORT SugarAccountIO
 {
 public:
     static bool readSugarAccount( QIODevice *device, SugarAccount &account );

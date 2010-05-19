@@ -2,7 +2,6 @@
 #define SERIALIZERPLUGINSUGARACCOUNT_H
 
 #include <QtCore/QObject>
-#include <QtCore/QObject>
 
 #include <akonadi/itemserializerplugin.h>
 

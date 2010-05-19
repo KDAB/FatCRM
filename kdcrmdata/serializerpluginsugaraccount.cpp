@@ -35,6 +35,6 @@ void SerializerPluginSugarAccount::serialize( const Item& item, const QByteArray
     SugarAccountIO::writeSugarAccount( sugarAccount, &data );
 }
 
-Q_EXPORT_PLUGIN2( serializerpluginsugaraccount, Akonadi::SerializerPluginSugarAccount )
+Q_EXPORT_PLUGIN2( akonadi_serializer_sugaraccount, Akonadi::SerializerPluginSugarAccount )
 
 #include "serializerpluginsugaraccount.moc"
