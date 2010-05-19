@@ -1,3 +1,5 @@
+include_directories ( ${CMAKE_SOURCE_DIR} )
+
 set(sugarclient_SRCS
     contactspage.cpp
     contactdetails.cpp
@@ -14,6 +16,7 @@ kde4_add_ui_files(sugarclient_SRCS
 kde4_add_executable(sugarclient ${sugarclient_SRCS})
 
 target_link_libraries(sugarclient
+    kdcrmdata
     ${KDE4_KDECORE_LIBS}
     ${KDE4_AKONADI_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
