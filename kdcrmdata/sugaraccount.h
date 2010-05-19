@@ -1,8 +1,8 @@
 #ifndef SUGARACCOUNT_H
 #define SUGARACCOUNT_H
 
-
 #include <QtCore/QSharedDataPointer>
+
 
 /**
   @short sugar account entry
@@ -11,21 +11,10 @@
 
   The data of this class is implicitly shared. You can pass this class by value.
  */
-
 class SugarAccount
 {
 
   public:
-    /**
-      A list of account objects
-     */
-    typedef AccountList List;
-    /**
-      A map from unique identifier to sugaraccount.
-
-      @see uid()
-     */
-    typedef QMap<QString, SugarAccount> Map;
 
     /**
       Construct an empty SugarAccount entry.
@@ -354,6 +343,10 @@ class SugarAccount
      */
     QString description() const;
 
+    /**
+       Return the Mime type
+     */
+    static QString mimeType();
 
   private:
     class Private;

@@ -1,6 +1,7 @@
 #include "sugaraccount.h"
 
 #include <QtCore/QSharedData>
+#include <QtCore/QString>
 
 class SugarAccount::Private : public QSharedData
 {
@@ -46,7 +47,7 @@ class SugarAccount::Private : public QSharedData
       mPrimaryEmail = other.mPrimaryEmail;
       mOptedOutEmail = other.mOptedOutEmail;
       mInvalidEmail = other.mInvalidEmail;
-      mDescription = other.Description;
+      mDescription = other.mDescription;
     }
 
     bool mEmpty;
@@ -171,7 +172,7 @@ bool SugarAccount::operator==( const SugarAccount &other ) const
         return false;
     if ( d->mInvalidEmail != other.d->mInvalidEmail )
         return false;
-    if ( d->mDescription != other.d->Description )
+    if ( d->mDescription != other.d->mDescription )
         return false;
 
   return true;
@@ -245,7 +246,7 @@ void SugarAccount::setMemberOf( const QString &value )
 
 QString SugarAccount::memberOf() const
 {
-    return->d->mMemberOf;
+    return d->mMemberOf;
 }
 
 void SugarAccount::setOwnership( const QString &value )
@@ -336,7 +337,7 @@ void SugarAccount::setOtherPhone( const QString &value )
 
 QString SugarAccount::otherPhone() const
 {
-    return d->otherPhone;
+    return d->mOtherPhone;
 }
 
 void SugarAccount::setEmployees( const QString &value )
@@ -448,7 +449,7 @@ void SugarAccount::setShippingAddress( const QString &value )
 
 QString SugarAccount::shippingAddress() const
 {
-    d->mShippingAddress;
+    return d->mShippingAddress;
 }
 
 
@@ -541,4 +542,9 @@ void SugarAccount::setDescription( const QString &value )
 QString SugarAccount::description() const
 {
     return d->mDescription;
+}
+
+QString SugarAccount::mimeType()
+{
+    return QLatin1String( "application/x-fatcrm.sugaraccount" );
 }

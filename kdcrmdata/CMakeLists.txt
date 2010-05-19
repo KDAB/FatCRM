@@ -3,9 +3,7 @@ project(kdcrmdata)
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}${QT_INCLUDES} )
 
 set(kdcrmdata_LIB_SRCS
     sugaraccount.cpp
