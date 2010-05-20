@@ -1,5 +1,6 @@
 #include "sugarclient.h"
 
+
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
 #include <akonadi/agentinstancemodel.h>
@@ -32,7 +33,9 @@ SugarClient::~SugarClient()
 void SugarClient::slotDelayedInit()
 {
     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mUi.contactsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+             mContactsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
+             mAccountsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
 
     // monitor Akonadi agents so we can check for SugarCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
@@ -51,6 +54,7 @@ void SugarClient::initialize()
 {
   resize( 900, 900 );
   createMenus();
+  createTabs();
   setupActions();
   createDockWidgets();
   createToolBars();
@@ -76,10 +80,14 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
 
-    connect(mUi.contactsPage,SIGNAL(contactItemChanged()),
-            this, SLOT( slotContactItemChanged()));
-    connect(mUi.contactsPage,SIGNAL(showDetails()),
-            this, SLOT( slotShowDetailsDock()));
+    connect( mContactsPage, SIGNAL( contactItemChanged() ),
+            this, SLOT( slotContactItemChanged() ) );
+    connect( mContactsPage, SIGNAL( showDetails() ),
+            this, SLOT( slotShowContactsDetailsDock() ) );
+    connect( mAccountsPage, SIGNAL( accountItemChanged() ),
+            this, SLOT( slotAccountItemChanged() ) );
+    connect( mAccountsPage, SIGNAL( showDetails() ),
+            this, SLOT( slotShowAccountsDetailsDock() ) );
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -97,7 +105,12 @@ void SugarClient::slotContactItemChanged()
     mContactDetailsWidget->disableGroupBoxes();
 }
 
-void SugarClient::slotShowDetailsDock()
+void SugarClient::slotAccountItemChanged()
+{
+    qDebug() << " Sorry, SugarClient::slotAccountItemChanged() - NYI";
+}
+
+void SugarClient::slotShowContactDetailsDock()
 {
     if ( !mContactDetailsDock->toggleViewAction()->isChecked() ) {
         mContactDetailsDock->toggleViewAction()->setChecked( true );
@@ -105,12 +118,15 @@ void SugarClient::slotShowDetailsDock()
     }
 }
 
-
+void SugarClient::slotShowAccountDetailsDock()
+{
+  qDebug() << " Sorry, SugarClient::slotShowAccountDetailsDock() - NYI";
+}
 
 void SugarClient::setupActions()
 {
-    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mUi.contactsPage, SLOT( syncronize() ) );
-    connect( mUi.contactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
+    connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -118,4 +134,15 @@ void SugarClient::slotShowMessage( const QString& message )
     statusBar()->showMessage( message, 3000 );
 }
 
+void SugarClient::createTabs()
+{
+    mAccountsPage = new AccountsPage( this );
+    mUi.tabWidget->addTab( mAccountsPage, tr( "&Accounts" ) );
+    mContactsPage = new ContactsPage( this );
+    mUi.tabWidget->addTab( mContactsPage, tr( "&Contacts" ) );
+
+    //set contacts page as current for now
+    mUi.tabWidget->setCurrentIndex( 1 );
+
+}
 #include "sugarclient.moc"

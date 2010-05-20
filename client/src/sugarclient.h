@@ -3,6 +3,8 @@
 
 #include "ui_mainwindow.h"
 #include <contactdetails.h>
+#include <accountspage.h>
+#include <contactspage.h>
 
 #include <QMainWindow>
 
@@ -28,18 +30,23 @@ private:
     void createToolBars();
     void createDockWidgets();
     void setupActions();
+    void createTabs();
 
     QMenu *mViewMenu;
     QDockWidget *mContactDetailsDock;
     ContactDetails *mContactDetailsWidget;
+    ContactsPage *mContactsPage;
+    AccountsPage *mAccountsPage;
     Ui_MainWindow mUi;
 
 private Q_SLOTS:
     void slotDelayedInit();
     void slotResourceSelectionChanged( int index );
     void slotContactItemChanged();
+    void slotAccountItemChanged();
     void slotShowMessage( const QString& );
-    void slotShowDetailsDock();
+    void slotShowContactDetailsDock();
+    void slotShowAccountDetailsDock();
 };
 
 #endif

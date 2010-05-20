@@ -22,5 +22,6 @@ bool SugarAccountIO::readSugarAccount( QIODevice *device, SugarAccount &account 
 bool SugarAccountIO::writeSugarAccount(  const SugarAccount &account, QIODevice *device )
 {
     QTextStream writer( device );
+    qDebug() << account.name();
 }
 
