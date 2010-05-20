@@ -62,6 +62,7 @@ endif(WIN32)
 set(KDE4_ICON_DIR ${KDE4_INSTALL_DIR}/share/icons)
 
 include_directories(
+    ${CMAKE_SOURCE_DIR}
     ${KDE4_INCLUDES}
     ${KDEPIMLIBS_INCLUDE_DIRS}
     ${KDSoap_INCLUDE_DIR}
@@ -73,6 +74,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
 set( sugarcrmresource_SRCS
     contactshandler.cpp
+    accountshandler.cpp
     modulehandler.cpp
     moduledebuginterface.cpp
     resourcedebuginterface.cpp
@@ -99,6 +101,7 @@ kdsoap_generate_soap_bindings( ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap 
 kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource
+    kdcrmdata
     ${KDSoap_LIBRARIES}
     ${KDE4_AKONADI_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}

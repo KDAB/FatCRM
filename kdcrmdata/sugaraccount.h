@@ -84,40 +84,103 @@ class KDCRMDATA_EXPORT SugarAccount
     QString name() const;
 
     /**
-      Set website.
+      Set Creation date.
      */
-    void setWebsite( const QString &value );
+    void setDateEntered( const QString &name );
     /**
-      Return Website.
+      Return Creation date.
      */
-    QString website() const;
+    QString dateEntered() const;
 
     /**
-      Set Tycker Symbol.
+      Set Modification date.
      */
-    void setTyckerSymbol( const QString &value );
+    void setDateModified( const QString &name );
     /**
-      Return Tycker Symbol.
+      Return Modification date.
      */
-    QString tyckerSymbol() const;
+    QString dateModified() const;
 
     /**
-      Set Member of.
+      Set Modified User id.
      */
-    void setMemberOf( const QString &value );
+    void setModifiedUserId( const QString &name );
     /**
-      Return Member of.
+      Return Modified User id.
      */
-    QString memberOf() const;
+    QString modifiedUserId() const;
 
     /**
-      Set Ownership.
+      Set Modified By name.
      */
-    void setOwnership( const QString &value );
+    void setModifiedByName( const QString &name );
     /**
-      Return Ownership.
+      Return Modified By name.
      */
-    QString ownership() const;
+    QString modifiedByName() const;
+
+    /**
+      Set Created By id.
+     */
+    void setCreatedBy( const QString &name );
+    /**
+      Return created by id.
+     */
+    QString createdBy() const;
+
+    /**
+      Set Created By Name.
+     */
+    void setCreatedByName( const QString &name );
+    /**
+      Return created by Name.
+     */
+    QString createdByName() const;
+
+    /**
+      Set Description.
+    */
+    void setDescription( const QString &value );
+    /**
+      Return Description.
+     */
+    QString description() const;
+
+    /**
+      Set Deleted.
+    */
+    void setDeleted( const QString &value );
+    /**
+      Return Deleted.
+     */
+    QString deleted() const;
+
+    /**
+      Set Assigned User Id.
+    */
+    void setAssignedUserId( const QString &value );
+    /**
+      Return Assigned User Id.
+     */
+    QString assignedUserId() const;
+
+    /**
+      Set Assigned User Name.
+     */
+    void setAssignedUserName( const QString &value );
+    /**
+      Return assigned User Name.
+     */
+    QString assignedUserName() const;
+
+    /**
+      Set Account type.
+     */
+    void setAccountType( const QString &value );
+    /**
+      Return Account type.
+     */
+    QString accountType() const;
 
     /**
       Set Industry.
@@ -129,67 +192,67 @@ class KDCRMDATA_EXPORT SugarAccount
     QString industry() const;
 
     /**
-      Set Type.
+      Set Annual Revenue.
      */
-    void setType( const QString &value );
+    void setAnnualRevenue( const QString &value );
     /**
-      Return type.
+      Return AnnualRevenue.
      */
-    QString type() const;
+    QString annualRevenue() const;
 
     /**
-      Set Campaign.
+      Set Phone Fax.
      */
-    void setCampaign( const QString &value );
+    void setPhoneFax( const QString &value );
     /**
-      Return Campaign.
+      Return Phone Fax.
      */
-    QString campaign() const;
+    QString phoneFax() const;
 
     /**
-      Set Assigned to.
+      Set Billing Address Street.
      */
-    void setAssignedTo( const QString &value );
+    void setBillingAddressStreet( const QString &value );
     /**
-      Return assigned to.
+      Return Billing Address Street.
      */
-    QString assignedTo() const;
+    QString billingAddressStreet() const;
 
     /**
-      Set Office Phone.
+       Set Billing Address City.
      */
-    void setOfficePhone( const QString &value );
+    void setBillingAddressCity( const QString &value );
     /**
-      Return Office Phone.
+      Return Billing Address City.
      */
-    QString officePhone() const;
+    QString billingAddressCity() const;
 
     /**
-      Set Fax Phone.
+      Set Billing Address State.
      */
-    void setFax( const QString &value );
+    void setBillingAddressState( const QString &value );
     /**
-      Return Fax Phone.
+      Return Billing Address State.
      */
-    QString fax() const;
+    QString billingAddressState() const;
 
     /**
-      Set Other Phone.
+       Set Billing Address Postal Code.
      */
-    void setOtherPhone( const QString &value );
+    void setBillingAddressPostalcode( const QString &value );
     /**
-      Return Other Phone.
+       Return Billing Address Postal Code.
      */
-    QString otherPhone() const;
+    QString billingAddressPostalcode() const;
 
     /**
-      Set Employees.
+      Set Billing Address Country.
      */
-    void setEmployees( const QString &value );
+    void setBillingAddressCountry( const QString &value );
     /**
-      Return Employees.
+      Return Billing Address Country.
      */
-    QString employees() const;
+    QString billingAddressCountry() const;
 
     /**
       Set Rating.
@@ -201,6 +264,132 @@ class KDCRMDATA_EXPORT SugarAccount
     QString rating() const;
 
     /**
+      Set Office Phone.
+     */
+    void setPhoneOffice( const QString &value );
+    /**
+      Return Office Phone.
+     */
+    QString phoneOffice() const;
+
+    /**
+      Set Other Phone.
+     */
+    void setPhoneAlternate( const QString &value );
+    /**
+      Return Other Phone.
+     */
+    QString phoneAlternate() const;
+
+    /**
+      Set website.
+     */
+    void setWebsite( const QString &value );
+    /**
+      Return Website.
+     */
+    QString website() const;
+
+    /**
+      Set Ownership.
+     */
+    void setOwnership( const QString &value );
+    /**
+      Return Ownership.
+     */
+    QString ownership() const;
+
+    /**
+      Set Employees.
+     */
+    void setEmployees( const QString &value );
+    /**
+      Return Employees.
+     */
+    QString employees() const;
+
+    /**
+      Set Tycker Symbol.
+     */
+    void setTyckerSymbol( const QString &value );
+    /**
+      Return Tycker Symbol.
+     */
+    QString tyckerSymbol() const;
+
+    /**
+      Set Shipping Address street.
+     */
+    void setShippingAddressStreet( const QString &value );
+    /**
+      Return Shipping Address street.
+     */
+    QString shippingAddressStreet() const;
+
+    /**
+      Set Shipping Address City.
+     */
+    void setShippingAddressCity( const QString &value );
+    /**
+      Return Shipping Address City.
+     */
+    QString shippingAddressCity() const;
+
+    /**
+      Set Shipping Address State.
+     */
+    void setShippingAddressState( const QString &value );
+    /**
+      Return Shipping Address State.
+     */
+    QString shippingAddressState() const;
+
+    /**
+      Set Shipping Address Postal Code.
+     */
+    void setShippingAddressPostalcode( const QString &value );
+    /**
+      Return Shipping Address Postal Code.
+     */
+    QString shippingAddressPostalcode() const;
+
+    /**
+      Set Shipping Address Country.
+     */
+    void setShippingAddressCountry( const QString &value );
+    /**
+      Return Shipping Address Country.
+     */
+    QString shippingAddressCountry() const;
+
+    /**
+      Set Primary Email.
+     */
+    void setEmail1( const QString &value );
+    /**
+      Return Primary Email.
+     */
+    QString email1() const;
+
+    /**
+      Set Parent Id .
+     */
+    void setParentId( const QString &value );
+    /**
+      Return Parent Id.
+     */
+    QString parentId() const;
+
+    /**
+      Set Parent Name .
+     */
+    void setParentName( const QString &value );
+    /**
+      Return Parent Name.
+     */
+    QString parentName() const;
+
+    /**
       Set SIC Code.
      */
     void setSicCode( const QString &value );
@@ -210,139 +399,22 @@ class KDCRMDATA_EXPORT SugarAccount
     QString sicCode() const;
 
     /**
-      Set Annual Revenue.
+      Set Campaign Id.
      */
-    void setAnnualRevenue( const QString &value );
+    void setCampaignId( const QString &value );
     /**
-      Return AnnualRevenue.
+      Return Campaign Id.
      */
-    QString annualRevenue() const;
+    QString campaignId() const;
 
     /**
-      Set Billing Address.
+      Set Campaign Name.
      */
-    void setBillingAddress( const QString &value );
+    void setCampaignName( const QString &value );
     /**
-      Return Billing Address.
+      Return Campaign Name.
      */
-    QString billingAddress() const;
-
-    /**
-      Set City.
-     */
-    void setCity( const QString &value );
-    /**
-      Return City.
-     */
-    QString city() const;
-
-    /**
-      Set State.
-     */
-    void setState( const QString &value );
-    /**
-      Return State.
-     */
-    QString state() const;
-
-    /**
-      Set Postal Code.
-     */
-    void setPostalCode( const QString &value );
-    /**
-      Return Postal Code.
-     */
-    QString postalCode() const;
-
-    /**
-      Set Country.
-     */
-    void setCountry( const QString &value );
-    /**
-      Return Country.
-     */
-    QString country() const;
-
-    /**
-      Set Shipping Address.
-     */
-    void setShippingAddress( const QString &value );
-    /**
-      Return Shipping Address.
-     */
-    QString shippingAddress() const;
-
-    /**
-      Set Shipping City.
-     */
-    void setShippingCity( const QString &value );
-    /**
-      Return Shipping City.
-     */
-    QString shippingCity() const;
-
-    /**
-      Set Shipping State.
-     */
-    void setShippingState( const QString &value );
-    /**
-      Return Shipping State.
-     */
-    QString shippingState() const;
-
-    /**
-      Set Shipping Postal Code.
-     */
-    void setShippingPostalCode( const QString &value );
-    /**
-      Return Shipping Postal Code.
-     */
-    QString shippingPostalCode() const;
-
-    /**
-      Set Shipping Country.
-     */
-    void setShippingCountry( const QString &value );
-    /**
-      Return Shipping Country.
-     */
-    QString shippingCountry() const;
-
-    /**
-      Set Primary Email.
-     */
-    void setPrimaryEmail( const QString &value );
-    /**
-      Return Primary Email.
-     */
-    QString primaryEmail() const;
-
-    /**
-      Set Opted Out Email.
-     */
-    void setOptedOutEmail( const QString &value );
-    /**
-      Return Opted Out Email.
-     */
-    QString optedOutEmail() const;
-
-    /**
-      Set Invalid Email.
-     */
-    void setInvalidEmail( const QString &value );
-    /**
-      Return Invalid Email.
-     */
-    QString invalidEmail() const;
-
-    /**
-      Set Description.
-     */
-    void setDescription( const QString &value );
-    /**
-      Return Description.
-     */
-    QString description() const;
+    QString campaignName() const;
 
     /**
        Return the Mime type
