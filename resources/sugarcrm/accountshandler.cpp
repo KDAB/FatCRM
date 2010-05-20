@@ -478,7 +478,7 @@ Akonadi::Collection AccountsHandler::collection() const
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId( moduleName() );
     contactCollection.setContentMimeTypes( QStringList() << SugarAccount::mimeType() );
-    contactCollection.setName( i18nc( "@item folder name", "Contacts" ) );
+    contactCollection.setName( i18nc( "@item folder name", "Accounts" ) );
     contactCollection.setRights( Akonadi::Collection::CanChangeItem |
                                  Akonadi::Collection::CanCreateItem |
                                  Akonadi::Collection::CanDeleteItem );
@@ -489,7 +489,7 @@ Akonadi::Collection AccountsHandler::collection() const
 void AccountsHandler::listEntries( int offset, Sugarsoap* soap, const QString &sessionId )
 {
     const QString query = QLatin1String( "" );
-    const QString orderBy = QLatin1String( "contacts.last_name" );
+    const QString orderBy = QLatin1String( "accounst.name" );
     const int maxResults = 100;
     const int fetchDeleted = 0; // do not fetch deleted items
 
@@ -544,7 +544,7 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
     Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
         const QList<TNS__Name_value> valueList = entry.name_value_list().items();
         if ( valueList.isEmpty() ) {
-            kWarning() << "Contacts entry for id=" << entry.id() << "has no values";
+            kWarning() << "Accounts entry for id=" << entry.id() << "has no values";
             continue;
         }
 

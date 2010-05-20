@@ -83,11 +83,11 @@ void SugarClient::createDockWidgets()
     connect( mContactsPage, SIGNAL( contactItemChanged() ),
             this, SLOT( slotContactItemChanged() ) );
     connect( mContactsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowContactsDetailsDock() ) );
+            this, SLOT( slotShowContactDetailsDock() ) );
     connect( mAccountsPage, SIGNAL( accountItemChanged() ),
             this, SLOT( slotAccountItemChanged() ) );
     connect( mAccountsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowAccountsDetailsDock() ) );
+            this, SLOT( slotShowAccountDetailsDock() ) );
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
