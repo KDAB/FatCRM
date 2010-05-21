@@ -1,5 +1,6 @@
 #include "sugarcrmresource.h"
 
+#include "accountshandler.h"
 #include "contactshandler.h"
 #include "moduledebuginterface.h"
 #include "resourcedebuginterface.h"
@@ -376,13 +377,17 @@ void SugarCRMResource::retrieveItems( const Akonadi::Collection &collection )
 
 bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByteArray> &parts )
 {
-    Q_UNUSED( item );
     Q_UNUSED( parts );
 
     // TODO not implemented yet
     // retrieveItems() provides full items anyway so this one is not called
     // (no need for getting additional data)
     // should be implemented for consistency though
+    kError() << "Akonadi requesting item, module handler should have delivered full items already";
+    kError() << "item.remoteId=" << item.remoteId()
+             << "item.mimeType=" << item.mimeType()
+             << "parentCollection.remoteId=" << item.parentCollection().remoteId();
+    itemRetrieved( item );
 
     return true;
 }
@@ -475,6 +480,8 @@ void SugarCRMResource::getAvailableModulesDone( const TNS__Module_list &callResu
                 ModuleHandler* handler = 0;
                 if ( module == QLatin1String( "Contacts" ) ) {
                     handler = new ContactsHandler;
+                } else if ( module == QLatin1String( "Accounts" ) ) {
+                    handler = new AccountsHandler;
                 } else {
                     //kDebug() << "No module handler for" << module;
                     continue;
