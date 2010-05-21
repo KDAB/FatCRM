@@ -8,6 +8,7 @@
 #include <akonadi/collectionfetchjob.h>
 #include <akonadi/collectionfetchscope.h>
 #include <akonadi/collectionstatistics.h>
+#include <akonadi/itemmodel.h>
 #include <akonadi/entitymimetypefiltermodel.h>
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
@@ -84,41 +85,69 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
 
 void AccountsPage::slotAccountChanged( const Item &item )
 {
-
+    qDebug() << "Sorry, AccountsPage::slotAccountChanged NIY";
 }
 
 void AccountsPage::slotNewAccountClicked()
 {
-
+    qDebug() << "Sorry, AccountsPage::slotNewAccountClicked NIY";
 }
 
 void AccountsPage::slotAddAccount()
 {
-
+    qDebug() << "Sorry, AccountsPage::slotAddAccount NIY";
 }
 
 void AccountsPage::slotModifyAccount()
 {
-
+    qDebug() << "Sorry, AccountsPage::slotModifyAccount NIY";
 }
 
 void AccountsPage::slotRemoveAccount()
 {
-
+    qDebug() << "Sorry, AccountsPage::slotRemoveAccount NIY";
 }
 
 void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
 {
-
+    qDebug() << "Sorry, AccountsPage::slotSetCurrent NIY";
 }
 
 void AccountsPage::addAccountsData()
 {
-
+    qDebug() << "Sorry, AccountsPage::addAccountData NIY";
 }
 
 void AccountsPage::initialize()
 {
+    mUi.accountsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
+
+    connect( mUi.newAccountPB, SIGNAL( clicked() ),
+             this, SLOT( slotNewAccountClicked() ) );
+    connect( mUi.removeAccountPB, SIGNAL( clicked() ),
+             this, SLOT( slotRemoveAccount() ) );
+
+    // automatically get the full data when items change
+    mChangeRecorder->itemFetchScope().fetchFullPayload( true );
+
+    /*
+     * Use an Akonadi::ItemModel because we don't have a tree of
+     * collections but only a single one
+     */
+    Akonadi::ItemModel *accountsModel = new Akonadi::ItemModel(this );
+
+    accountsModel->setCollection( mAccountsCollection );
+    /*
+    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
+    filterModel->setSourceModel( accountsModel );
+    filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
+    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
+    */
+    mUi.accountsTV->setModel( accountsModel );
+
+    connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
+
+    connect( mUi.accountsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
 }
 
