@@ -36,3 +36,10 @@ install(TARGETS akonadi_serializer_sugaraccount DESTINATION ${PLUGIN_INSTALL_DIR
 #if (KDE4_BUILD_TESTS)
 #  add_subdirectory(tests)
 #endif (KDE4_BUILD_TESTS)
+
+########### install files ###############
+
+install( FILES
+  akonadi_serializer_sugaraccount.desktop
+DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
+
