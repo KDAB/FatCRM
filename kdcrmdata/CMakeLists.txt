@@ -5,7 +5,7 @@ include(KDE4Defaults)
 
 find_package(KdepimLibs REQUIRED)
 
-include_directories( ${CMAKE_CURRENT_SOURCE_DIR}${QT_INCLUDES} )
+include_directories( ${KDEPIMLIBS_INCLUDE_DIR}${CMAKE_CURRENT_SOURCE_DIR}${QT_INCLUDES} )
 
 set(kdcrmdata_LIB_SRCS
     sugaraccount.cpp
@@ -26,7 +26,6 @@ set_target_properties(kdcrmdata PROPERTIES VERSION ${GENERIC_LIB_VERSION} SOVERS
 install(TARGETS kdcrmdata ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ### next target
-
 set(akonadi_serializer_sugaraccount_PART_SRCS serializerpluginsugaraccount.cpp )
 kde4_add_plugin(akonadi_serializer_sugaraccount ${akonadi_serializer_sugaraccount_PART_SRCS})
 target_link_libraries(akonadi_serializer_sugaraccount kdcrmdata ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_AKONADI_LIBS})
