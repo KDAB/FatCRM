@@ -489,7 +489,7 @@ Akonadi::Collection AccountsHandler::collection() const
 void AccountsHandler::listEntries( int offset, Sugarsoap* soap, const QString &sessionId )
 {
     const QString query = QLatin1String( "" );
-    const QString orderBy = QLatin1String( "accounst.name" );
+    const QString orderBy = QLatin1String( "accounts.name" );
     const int maxResults = 100;
     const int fetchDeleted = 0; // do not fetch deleted items
 
