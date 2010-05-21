@@ -387,9 +387,7 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     kError() << "item.remoteId=" << item.remoteId()
              << "item.mimeType=" << item.mimeType()
              << "parentCollection.remoteId=" << item.parentCollection().remoteId();
-    itemRetrieved( item );
-
-    return true;
+    return false;
 }
 
 void SugarCRMResource::loginDone( const TNS__Set_entry_result &callResult )
