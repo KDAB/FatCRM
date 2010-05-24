@@ -54,9 +54,7 @@ void AccountDetails::initialize()
 
 void AccountDetails::setItem (const Item &item )
 {
-
-    qDebug() << "AccountDetails::setItem (const Item &item ) -called";
-    // contact info
+    // account info
     const SugarAccount account = item.payload<SugarAccount>();
     mUi.name->setText( account.name() );
     mUi.website->setText( account.website() );

@@ -2,9 +2,9 @@
 #define ACCOUNTSPAGE_H
 
 #include "ui_accountspage.h"
-//#include <accountsdetails.h>
 
 #include <akonadi/collection.h>
+#include <akonadi/entitytreemodel.h>
 
 #include <QtGui/QWidget>
 
@@ -40,11 +40,8 @@ private:
     void initialize();
     void setupCachePolicy();
 
-    //AccountDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mAccountsCollection;
-    Akonadi::ItemModel *mAccountsModel;
-    //Akonadi::Item mCurrentItem;
     Ui_AccountsPage mUi;
 
 private Q_SLOTS:

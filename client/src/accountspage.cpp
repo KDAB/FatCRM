@@ -41,7 +41,7 @@ void AccountsPage::slotResourceSelectionChanged( const QByteArray &identifier )
     }
 
     /*
-     * Look for the "Contacts" collection explicitly by listing all collections
+     * Look for the "Accounts" collection explicitly by listing all collections
      * of the currently selected resource, filtering by MIME type.
      * include statistics to get the number of items in each collection
      */
@@ -58,7 +58,7 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
 
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
 
-    // look for the "Contacts" collection
+    // look for the "Accounts" collection
     int i = 0;
     Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
         if ( collection.remoteId() == QLatin1String( "Accounts" ) ) {
@@ -71,7 +71,6 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
     if ( mAccountsCollection.isValid() ) {
         mUi.newAccountPB->setEnabled( true );
         mChangeRecorder->setCollectionMonitored( mAccountsCollection, true );
-        mAccountsModel->setCollection( mAccountsCollection );
         // if empty, the collection might not have been loaded yet, try synchronizing
         if ( mAccountsCollection.statistics().count() == 0 ) {
             AgentManager::self()->synchronizeCollection( mAccountsCollection );
@@ -86,14 +85,12 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
 void AccountsPage::slotAccountChanged( const Item &item )
 {
 
-    //qDebug() << "AccountsPage::slotAccountChanged( const Item &item )";
-    //qDebug() << "item payload " << item.hasPayload<SugarAccount>();
     if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             w->accountDetailsWidget()->setItem( item );
-            connect( w->accountDetailsWidget(), SIGNAL( modifyContact() ),
-                 this, SLOT( slotModifyContact( ) ) );
+            connect( w->accountDetailsWidget(), SIGNAL( modifyAccount() ),
+                 this, SLOT( slotModifyAccount( ) ) );
         }
         emit accountItemChanged();
     }
@@ -173,7 +170,7 @@ void AccountsPage::slotAddAccount()
 void AccountsPage::slotModifyAccount()
 {
     const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
-    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+    Item item = mUi.accountsTV->model()->data( index, /*EntityTreeModel*/ ItemModel::ItemRole ).value<Item>();
 
     if ( item.isValid() ) {
         SugarAccount account;
@@ -292,20 +289,16 @@ void AccountsPage::initialize()
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
-    /*
-     * Use an Akonadi::ItemModel because we don't have a tree of
-     * collections but only a single one
-     */
-    mAccountsModel = new Akonadi::ItemModel(this );
 
-    //accountsModel->setCollection( mAccountsCollection );
-    /*
+    Akonadi::EntityTreeModel *accountsModel = new EntityTreeModel( mChangeRecorder, this );
+
+    // same as for the ContactsTreeModel, not strictly necessary
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( accountsModel );
     filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    */
-    mUi.accountsTV->setModel( mAccountsModel );
+
+    mUi.accountsTV->setModel( filterModel );
 
     connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
 

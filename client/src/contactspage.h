@@ -2,7 +2,6 @@
 #define CONTACTSPAGE_H
 
 #include "ui_contactspage.h"
-#include <contactdetails.h>
 
 #include <akonadi/collection.h>
 
@@ -39,10 +38,8 @@ private:
     void initialize();
     void setupCachePolicy();
 
-    ContactDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mContactsCollection;
-    Akonadi::Item mCurrentItem;
     Ui_ContactsPage mUi;
 
 private Q_SLOTS:

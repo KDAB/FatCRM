@@ -115,7 +115,10 @@ void SugarClient::slotContactItemChanged()
 
 void SugarClient::slotAccountItemChanged()
 {
-    qDebug() << " Sorry, SugarClient::slotAccountItemChanged() - NYI";
+      if ( mAccountDetailsDock->toggleViewAction()->isChecked() )
+        mAccountDetailsDock->setVisible( true );
+    mAccountDetailsWidget->disableGroupBoxes();
+
 }
 
 void SugarClient::slotShowContactDetailsDock()
@@ -128,7 +131,11 @@ void SugarClient::slotShowContactDetailsDock()
 
 void SugarClient::slotShowAccountDetailsDock()
 {
-  qDebug() << " Sorry, SugarClient::slotShowAccountDetailsDock() - NYI";
+    if ( !mAccountDetailsDock->toggleViewAction()->isChecked() ) {
+        mAccountDetailsDock->toggleViewAction()->setChecked( true );
+        mAccountDetailsDock->setVisible( true );
+    }
+
 }
 
 void SugarClient::setupActions()
