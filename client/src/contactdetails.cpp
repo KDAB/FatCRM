@@ -228,12 +228,8 @@ void ContactDetails::slotSaveContact()
 
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        QString objName = le->objectName();
-        mContactData[objName] = le->text();
-        if ( objName == "assignedTo" )
-            mContactData["assignedToId"] = le->property( "assignedToId" ).toString();
-    }
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        mContactData[le->objectName()] = le->text();
 
     QList<QLabel*> labels =
         mUi.contactInformationGB->findChildren<QLabel*>();

@@ -3,6 +3,7 @@
 
 #include "ui_mainwindow.h"
 #include <contactdetails.h>
+#include <accountdetails.h>
 #include <accountspage.h>
 #include <contactspage.h>
 
@@ -21,6 +22,10 @@ public:
         return mContactDetailsWidget;
     }
 
+    inline AccountDetails * accountDetailsWidget() {
+        return mAccountDetailsWidget;
+    }
+
 Q_SIGNALS:
     void resourceSelected( const QByteArray &identifier );
 
@@ -35,6 +40,8 @@ private:
     QMenu *mViewMenu;
     QDockWidget *mContactDetailsDock;
     ContactDetails *mContactDetailsWidget;
+    QDockWidget *mAccountDetailsDock;
+    AccountDetails *mAccountDetailsWidget;
     ContactsPage *mContactsPage;
     AccountsPage *mAccountsPage;
     Ui_MainWindow mUi;

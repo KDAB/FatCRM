@@ -71,7 +71,7 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
     if ( mAccountsCollection.isValid() ) {
         mUi.newAccountPB->setEnabled( true );
         mChangeRecorder->setCollectionMonitored( mAccountsCollection, true );
-
+        mAccountsModel->setCollection( mAccountsCollection );
         // if empty, the collection might not have been loaded yet, try synchronizing
         if ( mAccountsCollection.statistics().count() == 0 ) {
             AgentManager::self()->synchronizeCollection( mAccountsCollection );
@@ -85,7 +85,18 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
 
 void AccountsPage::slotAccountChanged( const Item &item )
 {
-    qDebug() << "Sorry, AccountsPage::slotAccountChanged NIY";
+
+    //qDebug() << "AccountsPage::slotAccountChanged( const Item &item )";
+    //qDebug() << "item payload " << item.hasPayload<SugarAccount>();
+    if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        if ( w ) {
+            w->accountDetailsWidget()->setItem( item );
+            connect( w->accountDetailsWidget(), SIGNAL( modifyContact() ),
+                 this, SLOT( slotModifyContact( ) ) );
+        }
+        emit accountItemChanged();
+    }
 }
 
 void AccountsPage::slotNewAccountClicked()
@@ -110,12 +121,34 @@ void AccountsPage::slotRemoveAccount()
 
 void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
 {
-    qDebug() << "Sorry, AccountsPage::slotSetCurrent NIY";
+        if ( start == end ) {
+            QModelIndex newIdx = mUi.accountsTV->model()->index(start, 0, index);
+            mUi.accountsTV->setCurrentIndex( newIdx );
+        }
+        //model items are loaded
+        if ( mUi.accountsTV->model()->rowCount() == mAccountsCollection.statistics().count() )
+            addAccountsData();
 }
 
 void AccountsPage::addAccountsData()
 {
-    qDebug() << "Sorry, AccountsPage::addAccountData NIY";
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    AccountDetails *cd = w->accountDetailsWidget();
+    QModelIndex index;
+    Item item;
+    SugarAccount account;
+    for ( int i = 0; i <  mUi.accountsTV->model()->rowCount(); ++i ) {
+       index  =  mUi.accountsTV->model()->index( i, 0 );
+       item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+       if ( item.hasPayload<SugarAccount>() ) {
+           account = item.payload<SugarAccount>();
+           cd->addAccountData( account.name(), account.id() );
+           cd->addCampaignData( account.campaignName(), account.campaignId() );
+           cd->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
+       }
+    }
+    // fill accounts combo
+    cd->fillCombos();
 }
 
 void AccountsPage::initialize()
@@ -129,21 +162,20 @@ void AccountsPage::initialize()
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
-
     /*
      * Use an Akonadi::ItemModel because we don't have a tree of
      * collections but only a single one
      */
-    Akonadi::ItemModel *accountsModel = new Akonadi::ItemModel(this );
+    mAccountsModel = new Akonadi::ItemModel(this );
 
-    accountsModel->setCollection( mAccountsCollection );
+    //accountsModel->setCollection( mAccountsCollection );
     /*
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( accountsModel );
     filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
     */
-    mUi.accountsTV->setModel( accountsModel );
+    mUi.accountsTV->setModel( mAccountsModel );
 
     connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
 
@@ -154,7 +186,6 @@ void AccountsPage::initialize()
 void AccountsPage::syncronize()
 {
     AgentManager::self()->synchronizeCollection( mAccountsCollection );
-
 }
 
 void AccountsPage::cachePolicyJobCompleted( KJob* job)

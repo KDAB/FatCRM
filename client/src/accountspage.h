@@ -12,6 +12,7 @@ namespace Akonadi
 {
     class ChangeRecorder;
     class Item;
+    class ItemModel;
 }
 
 class KJob;
@@ -42,6 +43,7 @@ private:
     //AccountDetails *mDetailsWidget;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mAccountsCollection;
+    Akonadi::ItemModel *mAccountsModel;
     //Akonadi::Item mCurrentItem;
     Ui_AccountsPage mUi;
 

@@ -80,6 +80,14 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
 
+    mAccountDetailsDock = new QDockWidget(tr("Account Details"), this );
+    mAccountDetailsWidget = new AccountDetails(mAccountDetailsDock);
+    mAccountDetailsDock->setWidget( mAccountDetailsWidget );
+    mAccountDetailsDock->setHidden( true );
+    addDockWidget( Qt::BottomDockWidgetArea, mAccountDetailsDock );
+    mViewMenu->addAction( mAccountDetailsDock->toggleViewAction() );
+
+
     connect( mContactsPage, SIGNAL( contactItemChanged() ),
             this, SLOT( slotContactItemChanged() ) );
     connect( mContactsPage, SIGNAL( showDetails() ),
@@ -127,6 +135,8 @@ void SugarClient::setupActions()
 {
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
+    connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -143,6 +153,5 @@ void SugarClient::createTabs()
 
     //set contacts page as current for now
     mUi.tabWidget->setCurrentIndex( 1 );
-
 }
 #include "sugarclient.moc"
