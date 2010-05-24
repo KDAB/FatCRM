@@ -105,8 +105,8 @@ void AccountsPage::slotNewAccountClicked()
     if ( w ) {
         AccountDetails *cd = w->accountDetailsWidget();
         cd->clearFields();
-        connect( cd, SIGNAL( saveContact() ),
-                 this, SLOT( slotAddContact( ) ) );
+        connect( cd, SIGNAL( saveAccount() ),
+                 this, SLOT( slotAddAccount( ) ) );
     }
 
     emit showDetails();

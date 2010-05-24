@@ -12,10 +12,11 @@ using namespace Akonadi;
 bool SerializerPluginSugarAccount::deserialize( Item& item, const QByteArray& label, QIODevice& data, int version )
 {
     Q_UNUSED( version );
-    SugarAccount sugarAccount;
-    if ( item.hasPayload<SugarAccount>() )
-        sugarAccount = item.payload<SugarAccount>();
 
+    if ( label != Item::FullPayload )
+        return false;
+
+    SugarAccount sugarAccount;
     if ( !SugarAccountIO::readSugarAccount( &data, sugarAccount ) )
         return false;
 
@@ -28,10 +29,11 @@ void SerializerPluginSugarAccount::serialize( const Item& item, const QByteArray
 {
     Q_UNUSED( version );
 
-    if ( !item.hasPayload<SugarAccount>() )
+    if ( label != Item::FullPayload || !item.hasPayload<SugarAccount>() )
         return;
 
     const SugarAccount sugarAccount = item.payload<SugarAccount>();
+
     SugarAccountIO::writeSugarAccount( sugarAccount, &data );
 }
 
