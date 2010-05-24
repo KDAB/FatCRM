@@ -1,5 +1,5 @@
 #include "accountspage.h"
-
+#include "accountstreemodel.h"
 #include "sugarclient.h"
 
 #include <akonadi/agentmanager.h>
@@ -8,7 +8,6 @@
 #include <akonadi/collectionfetchjob.h>
 #include <akonadi/collectionfetchscope.h>
 #include <akonadi/collectionstatistics.h>
-#include <akonadi/itemmodel.h>
 #include <akonadi/entitymimetypefiltermodel.h>
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
@@ -170,7 +169,7 @@ void AccountsPage::slotAddAccount()
 void AccountsPage::slotModifyAccount()
 {
     const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
-    Item item = mUi.accountsTV->model()->data( index, /*EntityTreeModel*/ ItemModel::ItemRole ).value<Item>();
+    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
     if ( item.isValid() ) {
         SugarAccount account;
@@ -290,7 +289,14 @@ void AccountsPage::initialize()
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
 
-    Akonadi::EntityTreeModel *accountsModel = new EntityTreeModel( mChangeRecorder, this );
+    AccountsTreeModel *accountsModel = new AccountsTreeModel( mChangeRecorder, this );
+
+    AccountsTreeModel::Columns columns;
+    columns << AccountsTreeModel::Name
+            << AccountsTreeModel::City
+            << AccountsTreeModel::Phone
+            << AccountsTreeModel::User;
+    accountsModel->setColumns( columns );
 
     // same as for the ContactsTreeModel, not strictly necessary
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );

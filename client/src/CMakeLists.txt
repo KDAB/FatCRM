@@ -3,6 +3,7 @@ include_directories ( ${CMAKE_SOURCE_DIR} )
 set(sugarclient_SRCS
     contactspage.cpp
     accountspage.cpp
+    accountstreemodel.cpp
     contactdetails.cpp
     accountdetails.cpp
     main.cpp
