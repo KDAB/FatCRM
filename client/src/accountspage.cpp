@@ -101,22 +101,152 @@ void AccountsPage::slotAccountChanged( const Item &item )
 
 void AccountsPage::slotNewAccountClicked()
 {
-    qDebug() << "Sorry, AccountsPage::slotNewAccountClicked NIY";
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        AccountDetails *cd = w->accountDetailsWidget();
+        cd->clearFields();
+        connect( cd, SIGNAL( saveContact() ),
+                 this, SLOT( slotAddContact( ) ) );
+    }
+
+    emit showDetails();
 }
 
 void AccountsPage::slotAddAccount()
 {
-    qDebug() << "Sorry, AccountsPage::slotAddAccount NIY";
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    QMap<QString, QString> data;
+    data = w->accountDetailsWidget()->accountData();
+    SugarAccount account;
+    account.setName( data.value( "name" ) );
+    account.setDateEntered( data.value( "dateEntered" ) );
+    account.setDateModified( data.value( "dateModified" ) );
+    account.setModifiedUserId( data.value( "modifiedUserId" ) );
+    account.setModifiedByName( data.value( "modifiedByName" ) );
+    account.setCreatedBy( data.value( "createdBy" ) ); // id
+    account.setCreatedByName( data.value( "createdByName" ) );
+    account.setDescription( data.value( "description" ) );
+    account.setDeleted( data.value( "deleted" ) );
+    account.setAssignedUserId( data.value( "assignedUserId" ) );
+    account.setAssignedUserName( data.value( "assignedUserName" ) );
+    account.setAccountType( data.value( "accountType" ) );
+    account.setIndustry( data.value( "industry" ) );
+    account.setAnnualRevenue( data.value( "annualRevenue" ) );
+    account.setPhoneFax( data.value( "phoneFax" ) );
+    account.setBillingAddressStreet( data.value( "billingAddressStreet" ) );
+    account.setBillingAddressCity( data.value( "billingAddressCity" ) );
+    account.setBillingAddressState( data.value( "billingAddressState" ) );
+    account.setBillingAddressPostalcode( data.value( "billingAddressPostalcode" ) );
+    account.setBillingAddressCountry( data.value( "billingAddressCountry" ) );
+    account.setRating( data.value( "rating" ) );
+    account.setPhoneOffice( data.value( "phoneOffice" ) );
+    account.setPhoneAlternate( data.value( "phoneAlternate" ) );
+    account.setWebsite( data.value( "website" ) );
+    account.setOwnership( data.value( "ownership" ) );
+    account.setEmployees( data.value( "employees" ) );
+    account.setTyckerSymbol( data.value( "tyckerSymbol" ) );
+    account.setShippingAddressStreet( data.value( "shippingAddressStreet" ) );
+    account.setShippingAddressCity( data.value( "shippingAddressCity" ) );
+    account.setShippingAddressState( data.value( "shippingAddressState" ) );
+    account.setShippingAddressPostalcode( data.value( "shippingAddressPostalcode" ) );
+    account.setShippingAddressCountry( data.value( "shippingAddressCountry" ) );
+    account.setEmail1( data.value( "email1" ) );
+    account.setParentId( data.value( "parentId" ) );
+    account.setParentName( data.value( "parentName" ) );
+    account.setSicCode( data.value( "sicCode" ) );
+    account.setCampaignId( data.value( "campaignId" ) );
+    account.setCampaignName( data.value( "campaignName" ) );
+
+    Item item;
+    item.setMimeType( SugarAccount::mimeType() );
+    item.setPayload<SugarAccount>( account );
+
+    // job starts automatically
+    // TODO connect to result() signal for error handling
+    ItemCreateJob *job = new ItemCreateJob( item, mAccountsCollection );
+    Q_UNUSED( job );
+
+    disconnect( w->accountDetailsWidget(), SIGNAL( saveContact() ),
+                 this, SLOT( slotAddContact( ) ) );
 }
 
 void AccountsPage::slotModifyAccount()
 {
-    qDebug() << "Sorry, AccountsPage::slotModifyAccount NIY";
+    const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
+    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    if ( item.isValid() ) {
+        SugarAccount account;
+        if ( item.hasPayload<SugarAccount>() ) {
+            account = item.payload<SugarAccount>();
+        }
+
+        SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        QMap<QString, QString> data;
+        data = w->accountDetailsWidget()->accountData();
+
+        account.setName( data.value( "name" ) );
+        account.setDateEntered( data.value( "dateEntered" ) );
+        account.setDateModified( data.value( "dateModified" ) );
+        account.setModifiedUserId( data.value( "modifiedUserId" ) );
+        account.setModifiedByName( data.value( "modifiedByName" ) );
+        account.setCreatedBy( data.value( "createdBy" ) ); // id
+        account.setCreatedByName( data.value( "createdByName" ) );
+        account.setDescription( data.value( "description" ) );
+        account.setDeleted( data.value( "deleted" ) );
+        account.setAssignedUserId( data.value( "assignedUserId" ) );
+        account.setAssignedUserName( data.value( "assignedUserName" ) );
+        account.setAccountType( data.value( "accountType" ) );
+        account.setIndustry( data.value( "industry" ) );
+        account.setAnnualRevenue( data.value( "annualRevenue" ) );
+        account.setPhoneFax( data.value( "phoneFax" ) );
+        account.setBillingAddressStreet( data.value( "billingAddressStreet" ) );
+        account.setBillingAddressCity( data.value( "billingAddressCity" ) );
+        account.setBillingAddressState( data.value( "billingAddressState" ) );
+        account.setBillingAddressPostalcode( data.value( "billingAddressPostalcode" ) );
+        account.setBillingAddressCountry( data.value( "billingAddressCountry" ) );
+        account.setRating( data.value( "rating" ) );
+        account.setPhoneOffice( data.value( "phoneOffice" ) );
+        account.setPhoneAlternate( data.value( "phoneAlternate" ) );
+        account.setWebsite( data.value( "website" ) );
+        account.setOwnership( data.value( "ownership" ) );
+        account.setEmployees( data.value( "employees" ) );
+        account.setTyckerSymbol( data.value( "tyckerSymbol" ) );
+        account.setShippingAddressStreet( data.value( "shippingAddressStreet" ) );
+        account.setShippingAddressCity( data.value( "shippingAddressCity" ) );
+        account.setShippingAddressState( data.value( "shippingAddressState" ) );
+        account.setShippingAddressPostalcode( data.value( "shippingAddressPostalcode" ) );
+        account.setShippingAddressCountry( data.value( "shippingAddressCountry" ) );
+        account.setEmail1( data.value( "email1" ) );
+        account.setParentId( data.value( "parentId" ) );
+        account.setParentName( data.value( "parentName" ) );
+        account.setSicCode( data.value( "sicCode" ) );
+        account.setCampaignId( data.value( "campaignId" ) );
+        account.setCampaignName( data.value( "campaignName" ) );
+
+        item.setPayload<SugarAccount>( account );
+
+        // job starts automatically
+        // TODO connect to result() signal for error handling
+        ItemModifyJob *job = new ItemModifyJob( item );
+        Q_UNUSED( job );
+    }
 }
 
 void AccountsPage::slotRemoveAccount()
 {
-    qDebug() << "Sorry, AccountsPage::slotRemoveAccount NIY";
+    const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
+    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    if ( item.isValid() ) {
+        // job starts automatically
+        // TODO connect to result() signal for error handling
+        ItemDeleteJob *job = new ItemDeleteJob( item );
+        Q_UNUSED( job );
+    }
+    const QModelIndex newIndex = mUi.accountsTV->selectionModel()->currentIndex();
+    if ( !index.isValid() )
+        mUi.removeAccountPB->setEnabled( false );
 }
 
 void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
