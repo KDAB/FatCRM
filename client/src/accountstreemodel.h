@@ -27,9 +27,14 @@ class AccountsTreeModel : public EntityTreeModel
       Name,
 
       /**
-       * Shows the City for the Account.
+       * Shows the Billing Address City for the Account.
        */
       City,
+
+      /**
+       * Shows the Billing Address Country for the Account
+       */
+      Country,
 
       /**
        * Shows the Office phone.
@@ -37,9 +42,14 @@ class AccountsTreeModel : public EntityTreeModel
       Phone,
 
       /**
+       * Shows the primary email for the Account
+       */
+      Email,
+
+      /**
        * Shows the Created By User Name
        */
-      User
+      CreatedBy
     };
 
     /**
@@ -47,14 +57,6 @@ class AccountsTreeModel : public EntityTreeModel
      */
     typedef QList<Column> Columns;
 
-    /**
-     * Describes the role for accounts.
-     */
-    enum Roles
-    {
-      DateRole = UserRole + 1,   ///< The QDate object for the current index.
-      UserRole = DateRole + 42
-    };
 
     /**
      * Creates a new accounts tree model.

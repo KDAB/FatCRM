@@ -294,8 +294,10 @@ void AccountsPage::initialize()
     AccountsTreeModel::Columns columns;
     columns << AccountsTreeModel::Name
             << AccountsTreeModel::City
+            << AccountsTreeModel::Country
             << AccountsTreeModel::Phone
-            << AccountsTreeModel::User;
+            << AccountsTreeModel::Email
+            << AccountsTreeModel::CreatedBy;
     accountsModel->setColumns( columns );
 
     // same as for the ContactsTreeModel, not strictly necessary

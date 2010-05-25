@@ -66,10 +66,16 @@ QVariant AccountsTreeModel::entityData( const Item &item, int column, int role )
         case City:
             return account.billingAddressCity();
             break;
+        case Country:
+            return account.billingAddressCountry();
+            break;
         case Phone:
             return account.phoneOffice();
             break;
-        case User:
+        case Email:
+            return account.email1();
+            break;
+        case CreatedBy:
           return account.createdByName();
           break;
       }
@@ -128,11 +134,17 @@ QVariant AccountsTreeModel::entityHeaderData( int section, Qt::Orientation orien
         case City:
             return i18nc( "@title:column city - billing address", "City" );
             break;
+        case Country:
+            return i18nc( "@title:column country - billing address", "Country" );
+            break;
         case Phone:
             return i18nc( "@title:column phone number  - office", "Phone" );
             break;
-        case User:
-            return i18nc( "@title:column created by user", "User" );
+        case Email:
+            return i18nc( "@title:column primary email", "Email" );
+            break;
+        case CreatedBy:
+            return i18nc( "@title:column created by user", "Created By" );
             break;
         }
       }
