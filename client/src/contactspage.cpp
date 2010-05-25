@@ -350,7 +350,6 @@ void ContactsPage::addAccountsData()
        item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<KABC::Addressee>() ) {
            addressee = item.payload<KABC::Addressee>();
-           cd->addAccountData( addressee.organization(), addressee.custom( "FATCRM", "X-AccountId" ) );
            cd->addCampaignData( addressee.custom( "FATCRM", "X-CampaignName" ), addressee.custom( "FATCRM", "X-CampaignId" ) );
            QString fullName = addressee.givenName() + " " + addressee.familyName();
            cd->addReportsToData( fullName, addressee.custom( "FATCRM", "X-ContactId") );

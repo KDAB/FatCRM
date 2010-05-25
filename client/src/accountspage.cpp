@@ -260,7 +260,8 @@ void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
 void AccountsPage::addAccountsData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    AccountDetails *cd = w->accountDetailsWidget();
+    AccountDetails *ad = w->accountDetailsWidget();
+    ContactDetails *cd = w->contactDetailsWidget();
     QModelIndex index;
     Item item;
     SugarAccount account;
@@ -269,9 +270,12 @@ void AccountsPage::addAccountsData()
        item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarAccount>() ) {
            account = item.payload<SugarAccount>();
+           ad->addAccountData( account.name(), account.id() );
            cd->addAccountData( account.name(), account.id() );
-           cd->addCampaignData( account.campaignName(), account.campaignId() );
-           cd->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
+           // code below should be executed from
+           // their own pages when implemented
+           ad->addCampaignData( account.campaignName(), account.campaignId() );
+           ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
        }
     }
     // fill accounts combo
