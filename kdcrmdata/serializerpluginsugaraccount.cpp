@@ -17,7 +17,8 @@ bool SerializerPluginSugarAccount::deserialize( Item& item, const QByteArray& la
         return false;
 
     SugarAccount sugarAccount;
-    if ( !SugarAccountIO::readSugarAccount( &data, sugarAccount ) )
+    SugarAccountIO io;
+    if ( !io.readSugarAccount( &data, sugarAccount ) )
         return false;
 
     item.setPayload<SugarAccount>( sugarAccount );
@@ -33,8 +34,8 @@ void SerializerPluginSugarAccount::serialize( const Item& item, const QByteArray
         return;
 
     const SugarAccount sugarAccount = item.payload<SugarAccount>();
-
-    SugarAccountIO::writeSugarAccount( sugarAccount, &data );
+    SugarAccountIO io;
+    io.writeSugarAccount( sugarAccount, &data );
 }
 
 Q_EXPORT_PLUGIN2( akonadi_serializer_sugaraccount, Akonadi::SerializerPluginSugarAccount )

@@ -3,8 +3,12 @@
 
 #include <QtCore/QIODevice>
 #include <QtCore/QXmlStreamWriter>
-#include <QtCore/QTextStream>
 #include <QtCore/QDebug>
+
+
+SugarAccountIO::SugarAccountIO()
+{
+}
 
 bool SugarAccountIO::readSugarAccount( QIODevice *device, SugarAccount &account )
 {
@@ -12,106 +16,113 @@ bool SugarAccountIO::readSugarAccount( QIODevice *device, SugarAccount &account 
         return false;
 
     account = SugarAccount();
+    xml.setDevice( device );
+    if ( xml.readNextStartElement() )
+    {
+        if ( xml.name() == "sugarAccount"
+             && xml.attributes().value( "version" ) == "1.0" )
+            readAccount( account );
+        else
+            xml.raiseError( QObject::tr( "It is not a sugarAccount version 1.0 data." ) );
 
-    QTextStream reader( device );
-    QString line;
-    do {
-        line = reader.readLine();
-        if ( line.startsWith( QString( "<id>" ) ) )
-            account.setId( readContent( line ) );
-        if ( line.startsWith( QString( "<name>" ) ) )
-            account.setName( readContent( line ) );
-        if ( line.startsWith( QString( "<date_entered>" ) ) )
-            account.setDateEntered( readContent( line ) );
-        if ( line.startsWith( QString( "<date_modified>" ) ) )
-            account.setDateModified( readContent( line ) );
-        if ( line.startsWith( QString( "<modified_user_id>" ) ) )
-            account.setModifiedUserId( readContent( line ) );
-        if ( line.startsWith( QString( "<modified_by_name>" ) ) )
-            account.setModifiedByName( readContent( line ) );
-        if ( line.startsWith( QString( "<created_by>" ) ) )
-            account.setCreatedBy( readContent( line ) );
-        if ( line.startsWith( QString( "<created_by_name>" ) ) )
-            account.setCreatedByName( readContent( line ) );
-        if ( line.startsWith( QString( "<description>" ) ) )
-            account.setDescription( readContent( line ) );
-        if ( line.startsWith( QString( "<deleted>" ) ) )
-            account.setDeleted( readContent( line ) );
-        if ( line.startsWith( QString( "<assigned_user_id>" ) ) )
-            account.setAssignedUserId( readContent( line ) );
-        if ( line.startsWith( QString( "<assigned_user_name>" ) ) )
-            account.setAssignedUserName( readContent( line ) );
-        if ( line.startsWith( QString( "<account_type>" ) ) )
-            account.setAccountType( readContent( line ) );
-        if ( line.startsWith( QString( "<industry>" ) ) )
-            account.setIndustry( readContent( line ) );
-        if ( line.startsWith( QString( "<annual_revenue>" ) ) )
-            account.setAnnualRevenue( readContent( line ) );
-        if ( line.startsWith( QString( "<phone_fax>" ) ) )
-            account.setPhoneFax( readContent( line ) );
-        if ( line.startsWith( QString( "<billing_address_street>" ) ) )
-            account.setBillingAddressStreet( readContent( line ) );
-        if ( line.startsWith( QString( "<billing_address_city>" ) ) )
-            account.setBillingAddressCity( readContent( line ) );
-        if ( line.startsWith( QString( "<billing_address_state>" ) ) )
-            account.setBillingAddressState( readContent( line ) );
-        if ( line.startsWith( QString( "<billing_address_postalcode>" ) ) )
-            account.setBillingAddressPostalcode( readContent( line ) );
-        if ( line.startsWith( QString( "<billing_address_country>" ) ) )
-            account.setBillingAddressCountry( readContent( line ) );
-        if ( line.startsWith( QString( "<rating>" ) ) )
-            account.setRating( readContent( line ) );
-        if ( line.startsWith( QString( "<phone_office>" ) ) )
-            account.setPhoneOffice( readContent( line ) );
-        if ( line.startsWith( QString( "<phone_alternate>" ) ) )
-            account.setPhoneAlternate( readContent( line ) );
-        if ( line.startsWith( QString( "<website>" ) ) )
-            account.setWebsite( readContent( line ) );
-        if ( line.startsWith( QString( "<ownership>" ) ) )
-            account.setOwnership( readContent( line ) );
-        if ( line.startsWith( QString( "<employees>" ) ) )
-            account.setEmployees( readContent( line ) );
-        if ( line.startsWith( QString( "<tycker_symbol>" ) ) )
-            account.setTyckerSymbol( readContent( line ) );
-        if ( line.startsWith( QString( "<shipping_address_street>" ) ) )
-            account.setShippingAddressStreet( readContent( line ) );
-        if ( line.startsWith( QString( "<shipping_address_city>" ) ) )
-            account.setShippingAddressCity( readContent( line ) );
-        if ( line.startsWith( QString( "<shipping_address_state>" ) ) )
-            account.setShippingAddressState( readContent( line ) );
-        if ( line.startsWith( QString( "<shipping_address_postalcode>" ) ) )
-            account.setShippingAddressPostalcode( readContent( line ) );
-        if ( line.startsWith( QString( "<shipping_address_country>" ) ) )
-            account.setShippingAddressCountry( readContent( line ) );
-        if ( line.startsWith( QString( "<email1>" ) ) )
-            account.setEmail1( readContent( line ) );
-        if ( line.startsWith( QString( "<parent_id>" ) ) )
-            account.setParentId( readContent( line ) );
-        if ( line.startsWith( QString( "<sic_code>" ) ) )
-            account.setSicCode( readContent( line ) );
-        if ( line.startsWith( QString( "<parent_name>" ) ) )
-            account.setParentName( readContent( line ) );
-        if ( line.startsWith( QString( "<campaign_id>" ) ) )
-            account.setCampaignId( readContent( line ) );
-        if ( line.startsWith( QString( "<campaign_name>" ) ) )
-            account.setCampaignName( readContent( line ) );
-    } while ( !line.isNull() );
-
-    return true;
+    }
+    return !xml.error();
 }
 
-const QString SugarAccountIO::readContent( const QString &line )
+QString SugarAccountIO::errorString() const
 {
-    // extract value <start>value<end>
-    QString content,  startElement,  endElement;
-    content = line;
-    startElement = line;
-    int index = content.indexOf( ">" ) + 1;
-    startElement.truncate( index );
-    content.remove( startElement );
-    endElement = startElement.insert( 1, "/" );
+    return QObject::tr( "%1\nLine %2, column %3" )
+        .arg( xml.errorString() )
+        .arg( xml.lineNumber() )
+        .arg( xml.columnNumber() );
+}
 
-    return content.remove( endElement );
+void SugarAccountIO::readAccount(SugarAccount &account)
+{
+    Q_ASSERT( xml.isStartElement() && xml.name() == "sugarAccount" );
+
+    while ( xml.readNextStartElement() ) {
+        if ( xml.name() == "id" )
+            account.setId( xml.readElementText() );
+        else if ( xml.name() == "name" )
+            account.setName( xml.readElementText() );
+        else if ( xml.name() == "date_entered" )
+            account.setDateEntered( xml.readElementText() );
+        else if ( xml.name() == "date_modified" )
+            account.setDateModified( xml.readElementText() );
+        else if ( xml.name() == "modified_user_id" )
+            account.setModifiedUserId( xml.readElementText() );
+        else if ( xml.name() == "modified_by_name" )
+            account.setModifiedByName( xml.readElementText() );
+        else if ( xml.name() == "created_by" )
+            account.setCreatedBy( xml.readElementText() );
+        else if ( xml.name() == "created_by_name" )
+            account.setCreatedByName( xml.readElementText() );
+        else if ( xml.name() == "description" )
+            account.setDescription( xml.readElementText() );
+        else if ( xml.name() == "deleted" )
+            account.setDeleted( xml.readElementText() );
+        else if ( xml.name() == "assigned_user_id" )
+            account.setAssignedUserId( xml.readElementText() );
+        else if ( xml.name() == "assigned_user_name" )
+            account.setAssignedUserName( xml.readElementText() );
+        else if ( xml.name() == "account_type" )
+            account.setAccountType( xml.readElementText() );
+        else if ( xml.name() == "industry" )
+            account.setIndustry( xml.readElementText() );
+        else if ( xml.name() == "annual_revenue" )
+            account.setAnnualRevenue( xml.readElementText() );
+        else if ( xml.name() == "phone_fax" )
+            account.setPhoneFax( xml.readElementText() );
+        else if ( xml.name() == "billing_address_street" )
+            account.setBillingAddressStreet( xml.readElementText() );
+        else if ( xml.name() == "billing_address_city" )
+            account.setBillingAddressCity( xml.readElementText() );
+        else if ( xml.name() == "billing_address_state" )
+            account.setBillingAddressState( xml.readElementText() );
+        else if ( xml.name() == "billing_address_postalcode" )
+            account.setBillingAddressPostalcode( xml.readElementText() );
+        else if ( xml.name() == "billing_address_country" )
+            account.setBillingAddressCountry( xml.readElementText() );
+        else if ( xml.name() == "rating" )
+            account.setRating( xml.readElementText() );
+        else if ( xml.name() == "phone_office" )
+            account.setPhoneOffice( xml.readElementText() );
+        else if ( xml.name() == "phone_alternate" )
+            account.setPhoneAlternate( xml.readElementText() );
+        else if ( xml.name() == "website" )
+            account.setWebsite( xml.readElementText() );
+        else if ( xml.name() == "ownership" )
+            account.setOwnership( xml.readElementText() );
+        else if ( xml.name() == "employees" )
+            account.setEmployees( xml.readElementText() );
+        else if ( xml.name() == "tycker_symbol" )
+            account.setTyckerSymbol( xml.readElementText() );
+        else if ( xml.name() == "shipping_address_street" )
+            account.setShippingAddressStreet( xml.readElementText() );
+        else if ( xml.name() == "shipping_address_city" )
+            account.setShippingAddressCity( xml.readElementText() );
+        else if ( xml.name() == "shipping_address_state" )
+            account.setShippingAddressState( xml.readElementText() );
+        else if ( xml.name() == "shipping_address_postalcode" )
+            account.setShippingAddressPostalcode( xml.readElementText() );
+        else if ( xml.name() == "shipping_address_country" )
+            account.setShippingAddressCountry( xml.readElementText() );
+        else if ( xml.name() == "email1" )
+            account.setEmail1( xml.readElementText() );
+        else if ( xml.name() == "parent_id" )
+            account.setParentId( xml.readElementText() );
+        else if ( xml.name() == "sic_code" )
+            account.setSicCode( xml.readElementText() );
+        else if ( xml.name() == "parent_name" )
+            account.setParentName( xml.readElementText() );
+        else if ( xml.name() == "campaign_id" )
+            account.setCampaignId( xml.readElementText() );
+        else if ( xml.name() == "campaign_name" )
+            account.setCampaignName( xml.readElementText() );
+        else
+            xml.skipCurrentElement();
+    }
 }
 
 bool SugarAccountIO::writeSugarAccount(  const SugarAccount &account, QIODevice *device )
@@ -121,6 +132,9 @@ bool SugarAccountIO::writeSugarAccount(  const SugarAccount &account, QIODevice 
     QXmlStreamWriter writer( device );
     writer.setAutoFormatting( true );
     writer.writeStartDocument();
+    writer.writeDTD( "<!DOCTYPE sugarAccount>" );
+    writer.writeStartElement( "sugarAccount");
+    writer.writeAttribute( "version", "1.0" );
     writer.writeTextElement( QString( "id" ), account.id() );
     writer.writeTextElement( QString( "name" ), account.name() );
     writer.writeTextElement( QString( "date_entered" ), account.dateEntered() );

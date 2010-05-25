@@ -2,6 +2,7 @@
 #define SUGARACCOUNTIO_H
 
 #include "kdcrmdata_export.h"
+#include <QXmlStreamReader>
 
 class SugarAccount;
 class QIODevice;
@@ -9,11 +10,15 @@ class QIODevice;
 class KDCRMDATA_EXPORT SugarAccountIO
 {
 public:
-    static bool readSugarAccount( QIODevice *device, SugarAccount &account );
-    static bool writeSugarAccount( const SugarAccount &account, QIODevice *device );
+    SugarAccountIO();
+    bool readSugarAccount( QIODevice *device, SugarAccount &account );
+    bool writeSugarAccount( const SugarAccount &account, QIODevice *device );
+    QString errorString() const;
 
 private:
-    static const QString readContent( const QString &line );
+    QXmlStreamReader xml;
+    void readAccount(SugarAccount &account);
+
 };
 
 #endif /* SUGARACCOUNTIO_H */
