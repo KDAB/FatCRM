@@ -55,9 +55,11 @@ void SugarClient::initialize()
   resize( 900, 900 );
   createMenus();
   createTabs();
-  setupActions();
   createDockWidgets();
   createToolBars();
+  setupActions();
+  // initialize view actions
+  slotManageItemDetailsView( 0 );
 }
 
 void SugarClient::createMenus()
@@ -68,7 +70,9 @@ void SugarClient::createMenus()
 void SugarClient::createToolBars()
 {
     QToolBar *toolBar = addToolBar( tr( "&View" ) );
-    toolBar->addAction( mContactDetailsDock->toggleViewAction() );
+   toolBar->addAction( mViewAccountAction );
+   toolBar->addSeparator();
+   toolBar->addAction( mViewContactAction );
 }
 
 void SugarClient::createDockWidgets()
@@ -78,14 +82,16 @@ void SugarClient::createDockWidgets()
     mContactDetailsDock->setWidget( mContactDetailsWidget );
     mContactDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
-    mViewMenu->addAction( mContactDetailsDock->toggleViewAction() );
+    mViewContactAction = mContactDetailsDock->toggleViewAction();
+    mViewMenu->addAction(mViewContactAction);
 
     mAccountDetailsDock = new QDockWidget(tr("Account Details"), this );
     mAccountDetailsWidget = new AccountDetails(mAccountDetailsDock);
     mAccountDetailsDock->setWidget( mAccountDetailsWidget );
     mAccountDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mAccountDetailsDock );
-    mViewMenu->addAction( mAccountDetailsDock->toggleViewAction() );
+    mViewAccountAction = mAccountDetailsDock->toggleViewAction();
+    mViewMenu->addAction( mViewAccountAction );
 
 
     connect( mContactsPage, SIGNAL( contactItemChanged() ),
@@ -159,6 +165,24 @@ void SugarClient::createTabs()
     mUi.tabWidget->addTab( mContactsPage, tr( "&Contacts" ) );
 
     //set contacts page as current for now
-    mUi.tabWidget->setCurrentIndex( 1 );
+    mUi.tabWidget->setCurrentIndex( 0 );
+    connect( mUi.tabWidget, SIGNAL( currentChanged( int ) ),
+             this, SLOT( slotManageItemDetailsView( int ) ) );
+}
+
+void SugarClient::slotManageItemDetailsView( int currentTab )
+{
+    if ( currentTab == 0 ) {
+        mViewAccountAction->setEnabled( true );
+        if ( mContactDetailsDock->isVisible() )
+            mContactDetailsDock->setVisible( false );
+        mViewContactAction->setEnabled( false );
+    }
+    else if ( currentTab == 1 ) {
+        if ( mAccountDetailsDock->isVisible() )
+            mAccountDetailsDock->setVisible( false );
+        mViewAccountAction->setEnabled( false );
+        mViewContactAction->setEnabled( true );
+    }
 }
 #include "sugarclient.moc"

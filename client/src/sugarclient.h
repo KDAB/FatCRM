@@ -9,6 +9,7 @@
 
 #include <QMainWindow>
 
+class QAction;
 
 class SugarClient : public QMainWindow
 {
@@ -40,8 +41,10 @@ private:
     QMenu *mViewMenu;
     QDockWidget *mContactDetailsDock;
     ContactDetails *mContactDetailsWidget;
+    QAction *mViewContactAction;
     QDockWidget *mAccountDetailsDock;
     AccountDetails *mAccountDetailsWidget;
+    QAction *mViewAccountAction;
     ContactsPage *mContactsPage;
     AccountsPage *mAccountsPage;
     Ui_MainWindow mUi;
@@ -54,6 +57,7 @@ private Q_SLOTS:
     void slotShowMessage( const QString& );
     void slotShowContactDetailsDock();
     void slotShowAccountDetailsDock();
+    void slotManageItemDetailsView( int currentTab );
 };
 
 #endif
