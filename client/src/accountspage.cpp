@@ -279,7 +279,7 @@ void AccountsPage::addAccountsData()
        }
     }
     // fill accounts combo
-    cd->fillCombos();
+    ad->fillCombos();
 }
 
 void AccountsPage::initialize()
