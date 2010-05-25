@@ -196,6 +196,8 @@ void AccountDetails::slotSaveAccount()
             mData["createdBy"] = lab->property( "createdBy" ).toString();
         }
     }
+    mData["industry"] = mUi.industry->currentText();
+    mData["accountType"] = mUi.accountType->currentText();
     mData["parentName"] = mUi.parentName->currentText();
     mData["parentId"] = mAccountsData.value( mUi.parentName->currentText() );
     mData["campaignName"] = mUi.campaignName->currentText();

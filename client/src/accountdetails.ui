@@ -183,7 +183,163 @@
             <widget class="QComboBox" name="parentName"/>
            </item>
            <item row="6" column="2">
-            <widget class="QComboBox" name="industry"/>
+            <widget class="QComboBox" name="industry">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Apparel</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Banking</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Biotechnology</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Chemicals</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Communications</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Construction</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Consulting</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Education</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Electronics</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Energy</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Engineering</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Entertainment</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Environmental</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Finance</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Government</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Healthcare</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Hospitality</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Insurance</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Machinery</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Manufacturing</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Media</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Not For Profit</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Recreation</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Retail</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Shipping </string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Technology</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Telecommunication</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Transportation</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Utilities</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Other</string>
+              </property>
+             </item>
+            </widget>
            </item>
            <item row="8" column="2">
             <widget class="QComboBox" name="campaignName">
@@ -195,7 +351,63 @@
             </widget>
            </item>
            <item row="7" column="2">
-            <widget class="QComboBox" name="accountType"/>
+            <widget class="QComboBox" name="accountType">
+             <item>
+              <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Analyst</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Competitor</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Customer</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Integrator</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Investor</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Partner</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Press</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Prospect</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Reseller</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Other</string>
+              </property>
+             </item>
+            </widget>
            </item>
            <item row="5" column="2">
             <widget class="QLineEdit" name="ownership"/>
@@ -275,20 +487,6 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QLineEdit" name="sicCode">
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QWidget" name="calendarWidget" native="true"/>
-             </item>
-            </layout>
-           </item>
            <item row="6" column="0">
             <widget class="QLabel" name="label_11">
              <property name="text">
@@ -321,6 +519,9 @@
               </size>
              </property>
             </spacer>
+           </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="sicCode"/>
            </item>
           </layout>
          </widget>
