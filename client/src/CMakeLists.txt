@@ -4,6 +4,7 @@ set(sugarclient_SRCS
     contactspage.cpp
     accountspage.cpp
     accountstreemodel.cpp
+    accountsfilterproxymodel.cpp
     contactdetails.cpp
     accountdetails.cpp
     main.cpp

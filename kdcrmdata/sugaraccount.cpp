@@ -2,6 +2,7 @@
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
+#include <QDebug>
 
 class SugarAccount::Private : public QSharedData
 {

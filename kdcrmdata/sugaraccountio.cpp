@@ -96,7 +96,7 @@ void SugarAccountIO::readAccount(SugarAccount &account)
             account.setOwnership( xml.readElementText() );
         else if ( xml.name() == "employees" )
             account.setEmployees( xml.readElementText() );
-        else if ( xml.name() == "tycker_symbol" )
+        else if ( xml.name() == "ticker_symbol" )
             account.setTyckerSymbol( xml.readElementText() );
         else if ( xml.name() == "shipping_address_street" )
             account.setShippingAddressStreet( xml.readElementText() );
@@ -162,7 +162,7 @@ bool SugarAccountIO::writeSugarAccount(  const SugarAccount &account, QIODevice 
     writer.writeTextElement( QString( "website" ), account.website() );
     writer.writeTextElement( QString( "ownership" ), account.ownership() );
     writer.writeTextElement( QString( "employees" ), account.employees() );
-    writer.writeTextElement( QString( "tycker_symbol" ), account.tyckerSymbol() );
+    writer.writeTextElement( QString( "ticker_symbol" ), account.tyckerSymbol() );
     writer.writeTextElement( QString( "shipping_address_street" ), account.shippingAddressStreet() );
     writer.writeTextElement( QString( "shipping_address_city" ), account.shippingAddressCity() );
     writer.writeTextElement( QString( "shipping_address_state" ), account.shippingAddressState() );

@@ -449,7 +449,7 @@ AccountsHandler::AccountsHandler()
     mAccessors->insert( QLatin1String( "website" ), AccessorPair( getWebsite, setWebsite ) );
     mAccessors->insert( QLatin1String( "ownership" ), AccessorPair( getOwnership, setOwnership ) );
     mAccessors->insert( QLatin1String( "employees" ), AccessorPair( getEmployees, setEmployees ) );
-    mAccessors->insert( QLatin1String( "tycker_symbol" ), AccessorPair( getTyckerSymbol, setTyckerSymbol ) );
+    mAccessors->insert( QLatin1String( "ticker_symbol" ), AccessorPair( getTyckerSymbol, setTyckerSymbol ) );
     mAccessors->insert( QLatin1String( "shipping_address_street" ), AccessorPair( getShippingAddressStreet, setShippingAddressStreet ) );
     mAccessors->insert( QLatin1String( "shipping_address_city" ), AccessorPair( getShippingAddressCity, setShippingAddressCity ) );
     mAccessors->insert( QLatin1String( "shipping_address_state" ), AccessorPair( getShippingAddressState, setShippingAddressState ) );
@@ -475,15 +475,15 @@ QStringList AccountsHandler::supportedFields() const
 
 Akonadi::Collection AccountsHandler::collection() const
 {
-    Akonadi::Collection contactCollection;
-    contactCollection.setRemoteId( moduleName() );
-    contactCollection.setContentMimeTypes( QStringList() << SugarAccount::mimeType() );
-    contactCollection.setName( i18nc( "@item folder name", "Accounts" ) );
-    contactCollection.setRights( Akonadi::Collection::CanChangeItem |
+    Akonadi::Collection accountCollection;
+    accountCollection.setRemoteId( moduleName() );
+    accountCollection.setContentMimeTypes( QStringList() << SugarAccount::mimeType() );
+    accountCollection.setName( i18nc( "@item folder name", "Accounts" ) );
+    accountCollection.setRights( Akonadi::Collection::CanChangeItem |
                                  Akonadi::Collection::CanCreateItem |
                                  Akonadi::Collection::CanDeleteItem );
 
-    return contactCollection;
+    return accountCollection;
 }
 
 void AccountsHandler::listEntries( int offset, Sugarsoap* soap, const QString &sessionId )
@@ -510,7 +510,7 @@ bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
     QList<TNS__Name_value> itemList;
 
     // if there is an id add it, otherwise skip this field
-    // no id will result in the contact being added
+    // no id will result in the account being added
     if ( !item.remoteId().isEmpty() ) {
         TNS__Name_value field;
         field.setName( QLatin1String( "id" ) );

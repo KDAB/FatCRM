@@ -1,5 +1,6 @@
 #include "accountspage.h"
 #include "accountstreemodel.h"
+#include "accountsfilterproxymodel.h"
 #include "sugarclient.h"
 
 #include <akonadi/agentmanager.h>
@@ -162,8 +163,8 @@ void AccountsPage::slotAddAccount()
     ItemCreateJob *job = new ItemCreateJob( item, mAccountsCollection );
     Q_UNUSED( job );
 
-    disconnect( w->accountDetailsWidget(), SIGNAL( saveContact() ),
-                 this, SLOT( slotAddContact( ) ) );
+    disconnect( w->accountDetailsWidget(), SIGNAL( saveAccount() ),
+                 this, SLOT( slotAddAccount( ) ) );
 }
 
 void AccountsPage::slotModifyAccount()
@@ -306,7 +307,12 @@ void AccountsPage::initialize()
     filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    mUi.accountsTV->setModel( filterModel );
+    AccountsFilterProxyModel *filter = new AccountsFilterProxyModel( this );
+    filter->setSourceModel( filterModel );
+    mUi.accountsTV->setModel( filter );
+
+    connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
+             filter, SLOT( setFilterString( const QString& ) ) );
 
     connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
 
