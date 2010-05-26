@@ -127,7 +127,8 @@ void SugarAccountIO::readAccount(SugarAccount &account)
 
 bool SugarAccountIO::writeSugarAccount(  const SugarAccount &account, QIODevice *device )
 {
-    if ( device == 0 || !device->isWritable() )        return false;
+    if ( device == 0 || !device->isWritable() )
+        return false;
 
     QXmlStreamWriter writer( device );
     writer.setAutoFormatting( true );
