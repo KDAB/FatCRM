@@ -2,9 +2,11 @@
 #define SUGARCLIENT_H
 
 #include "ui_mainwindow.h"
-#include <contactdetails.h>
 #include <accountdetails.h>
+#include <opportunitydetails.h>
+#include <contactdetails.h>
 #include <accountspage.h>
+#include <opportunitiespage.h>
 #include <contactspage.h>
 
 #include <QMainWindow>
@@ -19,12 +21,16 @@ public:
 
     ~SugarClient();
 
-    inline ContactDetails * contactDetailsWidget() {
-        return mContactDetailsWidget;
+    inline AccountDetails *accountDetailsWidget() {
+        return mAccountDetailsWidget;
     }
 
-    inline AccountDetails * accountDetailsWidget() {
-        return mAccountDetailsWidget;
+    inline OpportunityDetails *opportunityDetailsWidget() {
+        return mOpportunityDetailsWidget;
+    }
+
+    inline ContactDetails *contactDetailsWidget() {
+        return mContactDetailsWidget;
     }
 
 Q_SIGNALS:
@@ -39,24 +45,30 @@ private:
     void createTabs();
 
     QMenu *mViewMenu;
-    QDockWidget *mContactDetailsDock;
-    ContactDetails *mContactDetailsWidget;
-    QAction *mViewContactAction;
     QDockWidget *mAccountDetailsDock;
     AccountDetails *mAccountDetailsWidget;
     QAction *mViewAccountAction;
-    ContactsPage *mContactsPage;
+    QDockWidget *mOpportunityDetailsDock;
+    OpportunityDetails *mOpportunityDetailsWidget;
+    QAction *mViewOpportunityAction;
+    QDockWidget *mContactDetailsDock;
+    ContactDetails *mContactDetailsWidget;
+    QAction *mViewContactAction;
     AccountsPage *mAccountsPage;
+    OpportunitiesPage *mOpportunitiesPage;
+    ContactsPage *mContactsPage;
     Ui_MainWindow mUi;
 
 private Q_SLOTS:
     void slotDelayedInit();
     void slotResourceSelectionChanged( int index );
-    void slotContactItemChanged();
     void slotAccountItemChanged();
+    void slotOpportunityItemChanged();
+    void slotContactItemChanged();
     void slotShowMessage( const QString& );
-    void slotShowContactDetailsDock();
     void slotShowAccountDetailsDock();
+    void slotShowOpportunityDetailsDock();
+    void slotShowContactDetailsDock();
     void slotManageItemDetailsView( int currentTab );
 };
 

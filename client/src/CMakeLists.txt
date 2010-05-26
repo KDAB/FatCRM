@@ -5,8 +5,12 @@ set(sugarclient_SRCS
     accountspage.cpp
     accountstreemodel.cpp
     accountsfilterproxymodel.cpp
+    opportunitiespage.cpp
+    opportunitiestreemodel.cpp
+    opportunitiesfilterproxymodel.cpp
     contactdetails.cpp
     accountdetails.cpp
+    opportunitydetails.cpp
     main.cpp
     sugarclient.cpp
 )
@@ -14,8 +18,10 @@ set(sugarclient_SRCS
 kde4_add_ui_files(sugarclient_SRCS
     contactspage.ui
     accountspage.ui 
+    opportunitiespage.ui
     contactdetails.ui
     accountdetails.ui
+    opportunitydetails.ui
     mainwindow.ui
 )
 

@@ -34,8 +34,11 @@ void SugarClient::slotDelayedInit()
 {
     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
              mContactsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
+    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
              mAccountsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
+             mOpportunitiesPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+
 
     // monitor Akonadi agents so we can check for SugarCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
@@ -72,7 +75,10 @@ void SugarClient::createToolBars()
     QToolBar *toolBar = addToolBar( tr( "&View" ) );
    toolBar->addAction( mViewAccountAction );
    toolBar->addSeparator();
+   toolBar->addAction( mViewOpportunityAction );
+   toolBar->addSeparator();
    toolBar->addAction( mViewContactAction );
+
 }
 
 void SugarClient::createDockWidgets()
@@ -93,6 +99,13 @@ void SugarClient::createDockWidgets()
     mViewAccountAction = mAccountDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewAccountAction );
 
+    mOpportunityDetailsDock = new QDockWidget(tr("Opportunity Details"), this );
+    mOpportunityDetailsWidget = new OpportunityDetails(mAccountDetailsDock);
+    mOpportunityDetailsDock->setWidget( mOpportunityDetailsWidget );
+    mOpportunityDetailsDock->setHidden( true );
+    addDockWidget( Qt::BottomDockWidgetArea, mOpportunityDetailsDock );
+    mViewOpportunityAction = mOpportunityDetailsDock->toggleViewAction();
+    mViewMenu->addAction( mViewOpportunityAction );
 
     connect( mContactsPage, SIGNAL( contactItemChanged() ),
             this, SLOT( slotContactItemChanged() ) );
@@ -102,6 +115,10 @@ void SugarClient::createDockWidgets()
             this, SLOT( slotAccountItemChanged() ) );
     connect( mAccountsPage, SIGNAL( showDetails() ),
             this, SLOT( slotShowAccountDetailsDock() ) );
+    connect( mOpportunitiesPage, SIGNAL( opportunityItemChanged() ),
+            this, SLOT( slotOpportunityItemChanged() ) );
+    connect( mOpportunitiesPage, SIGNAL( showDetails() ),
+            this, SLOT( slotShowOpportunityDetailsDock() ) );
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -127,6 +144,15 @@ void SugarClient::slotAccountItemChanged()
 
 }
 
+void SugarClient::slotOpportunityItemChanged()
+{
+      if ( mOpportunityDetailsDock->toggleViewAction()->isChecked() )
+        mOpportunityDetailsDock->setVisible( true );
+    mOpportunityDetailsWidget->disableGroupBoxes();
+
+}
+
+
 void SugarClient::slotShowContactDetailsDock()
 {
     if ( !mContactDetailsDock->toggleViewAction()->isChecked() ) {
@@ -144,12 +170,23 @@ void SugarClient::slotShowAccountDetailsDock()
 
 }
 
+void SugarClient::slotShowOpportunityDetailsDock()
+{
+    if ( !mOpportunityDetailsDock->toggleViewAction()->isChecked() ) {
+        mOpportunityDetailsDock->toggleViewAction()->setChecked( true );
+        mOpportunityDetailsDock->setVisible( true );
+    }
+
+}
+
 void SugarClient::setupActions()
 {
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
     connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mOpportunitiesPage, SLOT( syncronize() ) );
+    connect( mOpportunitiesPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -161,10 +198,12 @@ void SugarClient::createTabs()
 {
     mAccountsPage = new AccountsPage( this );
     mUi.tabWidget->addTab( mAccountsPage, tr( "&Accounts" ) );
+    mOpportunitiesPage = new OpportunitiesPage( this );
+    mUi.tabWidget->addTab( mOpportunitiesPage, tr( "&Opportunities" ) );
     mContactsPage = new ContactsPage( this );
     mUi.tabWidget->addTab( mContactsPage, tr( "&Contacts" ) );
 
-    //set contacts page as current for now
+    //set Accounts page as current
     mUi.tabWidget->setCurrentIndex( 0 );
     connect( mUi.tabWidget, SIGNAL( currentChanged( int ) ),
              this, SLOT( slotManageItemDetailsView( int ) ) );
@@ -172,16 +211,34 @@ void SugarClient::createTabs()
 
 void SugarClient::slotManageItemDetailsView( int currentTab )
 {
-    if ( currentTab == 0 ) {
-        mViewAccountAction->setEnabled( true );
+    if ( currentTab == 0 ) { // Accounts
         if ( mContactDetailsDock->isVisible() )
             mContactDetailsDock->setVisible( false );
+        if ( mOpportunitiesPage->isVisible() )
+            mOpportunitiesPage->setVisible( false );
+
         mViewContactAction->setEnabled( false );
+        mViewOpportunityAction->setEnabled( false );
+        mViewAccountAction->setEnabled( true );
     }
-    else if ( currentTab == 1 ) {
+    else if ( currentTab == 1 ) { // Opportunities
         if ( mAccountDetailsDock->isVisible() )
             mAccountDetailsDock->setVisible( false );
+        if ( mContactDetailsDock->isVisible() )
+            mContactDetailsDock->setVisible( false );
+
         mViewAccountAction->setEnabled( false );
+        mViewContactAction->setEnabled( false );
+        mViewOpportunityAction->setEnabled( true );
+    }
+    else if ( currentTab == 2 ) { // Contacts
+         if ( mAccountDetailsDock->isVisible() )
+            mAccountDetailsDock->setVisible( false );
+        if ( mOpportunityDetailsDock->isVisible() )
+            mOpportunityDetailsDock->setVisible( false );
+
+        mViewAccountAction->setEnabled( false );
+        mViewOpportunityAction->setEnabled( false );
         mViewContactAction->setEnabled( true );
     }
 }
