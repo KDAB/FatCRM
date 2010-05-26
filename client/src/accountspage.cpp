@@ -262,6 +262,8 @@ void AccountsPage::addAccountsData()
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     AccountDetails *ad = w->accountDetailsWidget();
     ContactDetails *cd = w->contactDetailsWidget();
+    OpportunityDetails *od = w->opportunityDetailsWidget();
+
     QModelIndex index;
     Item item;
     SugarAccount account;
@@ -272,6 +274,7 @@ void AccountsPage::addAccountsData()
            account = item.payload<SugarAccount>();
            ad->addAccountData( account.name(), account.id() );
            cd->addAccountData( account.name(), account.id() );
+           od->addAccountData( account.name(), account.id() );
            // code below should be executed from
            // their own pages when implemented
            ad->addCampaignData( account.campaignName(), account.campaignId() );

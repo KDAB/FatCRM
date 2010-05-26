@@ -65,6 +65,14 @@ void OpportunityDetails::setItem (const Item &item )
 {
     // opportunity info
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+    mUi.modifiedDate->setText( opportunity.dateModified() );
+    mUi.modifiedBy->setText( opportunity.modifiedByName() );
+    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( opportunity.modifiedUserId() ) );
+    mUi.createdDate->setText( opportunity.dateEntered() );
+    mUi.createdDate->setProperty( "id", qVariantFromValue<QString>( opportunity.id( ) ) );
+    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( opportunity.deleted( ) ) );
+    mUi.createdBy->setText( opportunity.createdByName() );
+    mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( opportunity.createdBy( ) ) ); // id
     mUi.name->setText( opportunity.name() );
     mUi.accountName->setCurrentIndex( mUi.accountName->findText( opportunity.accountName() ) );
     mUi.opportunityType->setCurrentIndex( mUi.opportunityType->findText( opportunity.opportunityType() ) );
@@ -72,13 +80,13 @@ void OpportunityDetails::setItem (const Item &item )
     mUi.campaignName->setCurrentIndex(mUi.campaignName->findText( opportunity.campaignName() ) );
     mUi.salesStage->setCurrentIndex(mUi.salesStage->findText( opportunity.salesStage() ) );
     mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( opportunity.assignedUserName() ) );
-    mUi.opportunityType->setCurrentIndex(mUi.opportunityType->findText( opportunity.opportunityType() ) );
-    mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( opportunity.assignedUserName() ) );
-    // Pending (michel) - currency todo
+    // Pending (michel) find out
+    mUi.currency->setCurrentIndex( 0 ); // US Dollars : $
     mUi.amount->setText( opportunity.amount() );
-    // Pending (michel) - closed date todo
+    mUi.dateClosed->setText( opportunity.dateClosed() );
     mUi.nextStep->setText( opportunity.nextStep() );
     mUi.probability->setText( opportunity.probability() );
+    mUi.description->setPlainText( opportunity.description() );
 }
 
 void OpportunityDetails::clearFields ()

@@ -243,10 +243,6 @@ void OpportunitiesPage::addOpportunitiesData()
        item = mUi.opportunitiesTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarOpportunity>() ) {
            opportunity = item.payload<SugarOpportunity>();
-
-           // Pending (michel) - to be done via the accounts
-           od->addAccountData( opportunity.name(), opportunity.id() );
-
            // code below should be executed from
            // their own pages when implemented
            od->addCampaignData( opportunity.campaignName(), opportunity.campaignId() );
