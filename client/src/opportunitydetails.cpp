@@ -17,6 +17,7 @@ OpportunityDetails::OpportunityDetails( QWidget *parent )
 
 OpportunityDetails::~OpportunityDetails()
 {
+    delete mCalendarButton;
 }
 
 void OpportunityDetails::initialize()
@@ -42,6 +43,14 @@ void OpportunityDetails::initialize()
     }
 
     mModifyFlag = false;
+
+    mCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget( mCalendarButton );
+    mUi.calendarWidget->setLayout( buttonLayout );
+
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetCloseDate() ) );
 
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
@@ -234,3 +243,7 @@ void OpportunityDetails::disableGroupBoxes()
 }
 
 
+void OpportunityDetails::slotSetDateClosed()
+{
+    mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+}

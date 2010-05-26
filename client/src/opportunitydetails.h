@@ -2,12 +2,11 @@
 #define OPPORTUNITYDETAILS_H
 
 #include "ui_opportunitydetails.h"
+#include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
 
 #include <QtGui/QWidget>
-#include <QToolButton>
-
 
 class OpportunityDetails : public QWidget
 {
@@ -32,6 +31,8 @@ Q_SIGNALS:
 
 private:
     void initialize();
+
+    EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this
     QMap<QString, QString> mAccountsData;
     QMap<QString, QString> mAssignedToData;
@@ -43,6 +44,7 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveOpportunity();
     void slotSetModifyFlag( bool );
+    void slotSetDateClosed();
 };
 
 

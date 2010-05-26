@@ -2,31 +2,11 @@
 #define CONTACTDETAILS_H
 
 #include "ui_contactdetails.h"
+#include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
 
 #include <QtGui/QWidget>
-#include <QToolButton>
-#include <QCalendarWidget>
-
-
-class EditCalendarButton : public QToolButton
-{
-    Q_OBJECT
-public:
-    explicit EditCalendarButton( QWidget *parent = 0 );
-
-    ~EditCalendarButton();
-
-protected:
-    virtual void mousePressEvent( QMouseEvent* e );
-
-    friend class ContactDetails;
-private:
-    inline QCalendarWidget* calendarWidget() { return mCalendar; }
-
-    QCalendarWidget *mCalendar;
-};
 
 
 class ContactDetails : public QWidget

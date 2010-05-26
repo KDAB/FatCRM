@@ -11,6 +11,7 @@ set(sugarclient_SRCS
     contactdetails.cpp
     accountdetails.cpp
     opportunitydetails.cpp
+    editcalendarbutton.cpp
     main.cpp
     sugarclient.cpp
 )

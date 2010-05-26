@@ -214,8 +214,8 @@ void SugarClient::slotManageItemDetailsView( int currentTab )
     if ( currentTab == 0 ) { // Accounts
         if ( mContactDetailsDock->isVisible() )
             mContactDetailsDock->setVisible( false );
-        if ( mOpportunitiesPage->isVisible() )
-            mOpportunitiesPage->setVisible( false );
+        if ( mOpportunityDetailsDock->isVisible() )
+            mOpportunityDetailsDock->setVisible( false );
 
         mViewContactAction->setEnabled( false );
         mViewOpportunityAction->setEnabled( false );
