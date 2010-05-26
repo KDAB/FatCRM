@@ -1,6 +1,7 @@
 #include "salesforceresource.h"
 
 #include "contactshandler.h"
+#include "resourcedebuginterface.h"
 #include "settings.h"
 #include "settingsadaptor.h"
 #include "salesforceconfigdialog.h"
@@ -43,6 +44,11 @@ SalesforceResource::SalesforceResource( const QString &id )
     new SettingsAdaptor( Settings::self() );
     QDBusConnection::sessionBus().registerObject( QLatin1String( "/Settings" ),
                                                   Settings::self(), QDBusConnection::ExportAdaptors );
+
+    ResourceDebugInterface *debugInterface = new ResourceDebugInterface( this );
+    QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug" ),
+                                                  debugInterface,
+                                                  QDBusConnection::ExportScriptableSlots );
 
     setNeedsNetwork( true );
 
@@ -146,14 +152,21 @@ void SalesforceResource::doSetOnline( bool online )
     ResourceBase::doSetOnline( online );
 
     if ( online ) {
+#if 0
         if ( Settings::self()->host().isEmpty() ) {
-            const QString message = i18nc( "@status", "No server configured" );
+            const QString message = i18nc( "@info:status", "No server configured" );
             status( Broken, message );
             error( message );
         } else if ( Settings::self()->user().isEmpty() ) {
-            const QString message = i18nc( "@status", "No user name configured" );
+            const QString message = i18nc( "@info:status", "No user name configured" );
             status( Broken, message );
             error( message );
+#else
+        if ( Settings::self()->user().isEmpty() ) {
+            const QString message = i18nc( "@info:status", "No user name configured" );
+            status( Broken, message );
+            error( message );
+#endif
         } else {
             doLogin();
         }
@@ -191,10 +204,10 @@ void SalesforceResource::itemAdded( const Akonadi::Item &item, const Akonadi::Co
         // results handled by slots setEntryDone() and setEntryError()
         if ( !moduleIt.value()->setEntry( item, mSoap ) ) {
             mPendingItem = Item();
-            message = i18nc( "@status", "Attempting to add malformed item to folder %1", collection.name() );
+            message = i18nc( "@info:status", "Attempting to add malformed item to folder %1", collection.name() );
         }
     } else {
-        message = i18nc( "@status", "Cannot add items to folder %1", collection.name() );
+        message = i18nc( "@info:status", "Cannot add items to folder %1", collection.name() );
     }
 
     if ( message.isEmpty() ) {
@@ -225,10 +238,10 @@ void SalesforceResource::itemChanged( const Akonadi::Item &item, const QSet<QByt
         // results handled by slots setEntryDone() and setEntryError()
         if ( !moduleIt.value()->setEntry( item, mSoap ) ) {
             mPendingItem = Item();
-            message = i18nc( "@status", "Attempting to modify a malformed item in folder %1", collection.name() );
+            message = i18nc( "@info:status", "Attempting to modify a malformed item in folder %1", collection.name() );
         }
     } else {
-        message = i18nc( "@status", "Cannot modify items in folder %1", collection.name() );
+        message = i18nc( "@info:status", "Cannot modify items in folder %1", collection.name() );
     }
 
     if ( message.isEmpty() ) {
@@ -275,12 +288,11 @@ void SalesforceResource::connectSoapProxy()
 
     connect( mSoap, SIGNAL( loginDone( TNS__LoginResponse ) ), this, SLOT( loginDone( TNS__LoginResponse ) ) );
     connect( mSoap, SIGNAL( loginError( KDSoapMessage ) ), this, SLOT( loginError( KDSoapMessage ) ) );
-#if 0
-    connect( mSoap, SIGNAL( get_available_modulesDone( TNS__Module_list ) ),
-             this,  SLOT( getAvailableModulesDone( TNS__Module_list ) ) );
-    connect( mSoap, SIGNAL( get_available_modulesError( KDSoapMessage ) ),
-             this,  SLOT( getAvailableModulesError( KDSoapMessage ) ) );
-#endif
+
+    connect( mSoap, SIGNAL( describeGlobalDone( TNS__DescribeGlobalResponse ) ),
+             this,  SLOT( describeGlobalDone( TNS__DescribeGlobalResponse ) ) );
+    connect( mSoap, SIGNAL( describeGlobalError( KDSoapMessage ) ),
+             this, SLOT( describeGlobalError( KDSoapMessage ) ) );
 
     connect( mSoap, SIGNAL( queryDone( TNS__QueryResponse ) ),
              this,  SLOT( getEntryListDone( TNS__QueryResponse ) ) );
@@ -304,23 +316,33 @@ void SalesforceResource::retrieveCollections()
         QString message;
         if ( Settings::host().isEmpty() ) {
 #if 0
-            message = i18nc( "@status", "No server configured" );
+            message = i18nc( "@info:status", "No server configured" );
 #endif
         } else if ( Settings::self()->user().isEmpty() ) {
-            message = i18nc( "@status", "No user name configured" );
+            message = i18nc( "@info:status", "No user name configured" );
         } else {
-            message = i18nc( "@status", "Unable to login to %1", Settings::host() );
+            message = i18nc( "@info:status", "Unable to login to %1", Settings::host() );
         }
 
         status( Broken, message );
         error( message );
         cancelTask( message );
     } else {
-        status( Running, i18nc( "@status", "Retrieving folders" ) );
-        // results handled by slots getAvailableModulesDone() and getAvailableModulesError()
+        status( Running, i18nc( "@info:status", "Retrieving folders" ) );
 #if 0
-        mSoap->asyncGet_available_modules( mSessionId );
-#else
+        const TNS__DescribeGlobalResponse callResult = mSoap->describeGlobal();
+        const QString error = mSoap->lastError();
+        const TNS__DescribeGlobalResult result = callResult.result();
+        kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+                    << "encoding=" << result.encoding()
+                    << "error=" << error;
+        const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
+        kDebug() << sobjects.count() << "SObjects";
+        Q_FOREACH( const TNS__DescribeGlobalSObjectResult &object, sobjects ) {
+            kDebug() << "name=" << object.name() << "label=" << object.label()
+                    << "keyPrefix=" << object.keyPrefix();
+        }
+
         Collection topLevelCollection;
         topLevelCollection.setRemoteId( identifier() );
         topLevelCollection.setName( name() );
@@ -342,6 +364,11 @@ void SalesforceResource::retrieveCollections()
 
         collection.setParentCollection( topLevelCollection );
         collections << collection;
+
+        collectionsRetrieved( collections );
+#else
+        // results handled by slots describeGlobalDone() and describeGlobalError()
+        mSoap->asyncDescribeGlobal();
 #endif
     }
 }
@@ -357,11 +384,11 @@ void SalesforceResource::retrieveItems( const Akonadi::Collection &collection )
     if ( mSessionId.isEmpty() ) {
         QString message;
         if ( Settings::host().isEmpty() ) {
-            message = i18nc( "@status", "No server configured" );
+            message = i18nc( "@info:status", "No server configured" );
         } else if ( Settings::self()->user().isEmpty() ) {
-            message = i18nc( "@status", "No user name configured" );
+            message = i18nc( "@info:status", "No user name configured" );
         } else {
-            message = i18nc( "@status", "Unable to login to %1", Settings::host() );
+            message = i18nc( "@info:status", "Unable to login to %1", Settings::host() );
         }
 
         status( Broken, message );
@@ -372,7 +399,7 @@ void SalesforceResource::retrieveItems( const Akonadi::Collection &collection )
         // perform the respective "list entries" operation
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
         if ( moduleIt != mModuleHandlers->constEnd() ) {
-            status( Running, i18nc( "@status", "Retrieving contents of folder %1", collection.name() ) );
+            status( Running, i18nc( "@info:status", "Retrieving contents of folder %1", collection.name() ) );
 
             // getting items in batches
             setItemStreamingEnabled( true );
@@ -398,7 +425,7 @@ bool SalesforceResource::retrieveItem( const Akonadi::Item &item, const QSet<QBy
     // (no need for getting additional data)
     // should be implemented for consistency though
 
-    return true;
+    return false;
 }
 
 void SalesforceResource::loginDone( const TNS__LoginResponse &callResult )
@@ -410,9 +437,9 @@ void SalesforceResource::loginDone( const TNS__LoginResponse &callResult )
 
     const QString sessionId = loginResult.sessionId();
     if ( sessionId.isEmpty() ) {
-        message = i18nc( "@status", "Login failed: server returned an empty session identifier" );
+        message = i18nc( "@info:status", "Login failed: server returned an empty session identifier" );
     } else if ( mSessionId == QLatin1String( "-1" ) ) {
-        message = i18nc( "@status", "Login failed: server returned an invalid session identifier" );
+        message = i18nc( "@info:status", "Login failed: server returned an invalid session identifier" );
     } else {
         mSessionId = sessionId;
         kDebug() << "Login succeeded: sessionId=" << mSessionId;
@@ -425,21 +452,13 @@ void SalesforceResource::loginDone( const TNS__LoginResponse &callResult )
         mSoap->setEndPoint( loginResult.serverUrl() );
         connectSoapProxy();
 
+        TNS__SessionHeader sessionHeader;
+        sessionHeader.setSessionId( mSessionId );
+        mSoap->setSessionHeader( sessionHeader );
+
         status( Idle );
 
-#if 0
         synchronizeCollectionTree();
-#else
-        const TNS__DescribeGlobalResponse callResponse = mSoap->describeGlobal();
-        const TNS__DescribeGlobalResult result = callResponse.result();
-        kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
-                 << "encoding=" << result.encoding();
-        const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
-        Q_FOREACH( const TNS__DescribeGlobalSObjectResult &object, sobjects ) {
-            kDebug() << "name=" << object.name() << "label=" << object.label()
-                     << "keyPrefix=" << object.keyPrefix();
-        }
-#endif
     } else {
         status( Broken, message );
         error( message );
@@ -455,78 +474,6 @@ void SalesforceResource::loginError( const KDSoapMessage &fault )
     status( Broken, message );
     error( message );
 }
-
-#if 0
-void SalesforceResource::getAvailableModulesDone( const TNS__Module_list &callResult )
-{
-    QString message;
-    Collection::List collections;
-
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
-
-        message = errorValue.description();
-    } else {
-        Collection topLevelCollection;
-        topLevelCollection.setRemoteId( identifier() );
-        topLevelCollection.setName( name() );
-        topLevelCollection.setParentCollection( Collection::root() );
-
-        // Our top level collection only contains other collections (no items) and cannot be
-        // modified by clients
-        topLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
-        topLevelCollection.setRights( Collection::ReadOnly );
-
-        collections << topLevelCollection;
-
-        const TNS__Select_fields moduleNames = callResult.modules();
-        Q_FOREACH( const QString &module, moduleNames.items() ) {
-            Collection collection;
-
-            // check if we have a corresponding module handler already
-            // if not see if we can create one
-            ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
-            if ( moduleIt != mModuleHandlers->constEnd() ) {
-                collection = moduleIt.value()->collection();
-            } else {
-                ModuleHandler* handler = 0;
-                if ( module == QLatin1String( "Contacts" ) ) {
-                    handler = new ContactsHandler;
-                } else {
-                    //kDebug() << "No module handler for" << module;
-                    continue;
-                }
-                mModuleHandlers->insert( module, handler );
-
-                collection = handler->collection();
-            }
-
-            collection.setParentCollection( topLevelCollection );
-            collections << collection;
-        }
-    }
-
-    if ( message.isEmpty() ) {
-        collectionsRetrieved( collections );
-        status( Idle );
-    } else {
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-    }
-}
-
-void SalesforceResource::getAvailableModulesError( const KDSoapMessage &fault )
-{
-    const QString message = fault.faultAsString();
-
-    status( Broken, message );
-    error( message );
-    cancelTask( message );
-}
-#endif
 
 void SalesforceResource::getEntryListDone( const TNS__QueryResponse &callResult )
 {
@@ -598,7 +545,7 @@ void SalesforceResource::setEntryDone( const TNS__UpsertResponse &callResult )
     const QList<TNS__UpsertResult> upsertResults = callResult.result();
     if ( upsertResults.isEmpty() ) {
         kError() << "UpsertResponse does not contain any results";
-        message = i18nc( "@status", "Server did not respond as expected: result set is empty" );
+        message = i18nc( "@info:status", "Server did not respond as expected: result set is empty" );
     } else {
         if ( upsertResults.count() > 1 ) {
             kError() << "Expecting one upsert result in response but got"
@@ -613,9 +560,9 @@ void SalesforceResource::setEntryDone( const TNS__UpsertResponse &callResult )
             } else {
                 // that can probably not be reached, just to be sure
                 if ( mPendingItem.remoteId().isEmpty() ) {
-                    message = i18nc( "@status", "Creation of an item failed for unspecified reasons" );
+                    message = i18nc( "@info:status", "Creation of an item failed for unspecified reasons" );
                 } else {
-                    message = i18nc( "@status", "Modification of an item failed for unspecified reasons" );
+                    message = i18nc( "@info:status", "Modification of an item failed for unspecified reasons" );
                 }
             }
         } else {
@@ -655,7 +602,7 @@ void SalesforceResource::deleteEntryDone( const TNS__DeleteResponse &callResult 
     const QList<TNS__DeleteResult> deleteResults = callResult.result();
     if ( deleteResults.isEmpty() ) {
         kError() << "deleteResponse does not contain any results";
-        message = i18nc( "@status", "Server did not respond as expected: result set is empty" );
+        message = i18nc( "@info:status", "Server did not respond as expected: result set is empty" );
     } else {
         if ( deleteResults.count() > 1 ) {
             kError() << "Expecting one delete result in response but got"
@@ -669,7 +616,7 @@ void SalesforceResource::deleteEntryDone( const TNS__DeleteResponse &callResult 
                 message = errors[ 0 ].message();
             } else {
                 // that can probably not be reached, just to be sure
-                message = i18nc( "@status", "Deletion of an item failed for unspecified reasons" );
+                message = i18nc( "@info:status", "Deletion of an item failed for unspecified reasons" );
             }
         }
     }
@@ -696,6 +643,71 @@ void SalesforceResource::deleteEntryError( const KDSoapMessage &fault )
     cancelTask( message );
 
     mPendingItem = Item();
+}
+
+void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& callResult )
+{
+    Collection topLevelCollection;
+    topLevelCollection.setRemoteId( identifier() );
+    topLevelCollection.setName( name() );
+    topLevelCollection.setParentCollection( Collection::root() );
+
+    // Our top level collection only contains other collections (no items) and cannot be
+    // modified by clients
+    topLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
+    topLevelCollection.setRights( Collection::ReadOnly );
+
+    Collection::List collections;
+    collections << topLevelCollection;
+
+    const TNS__DescribeGlobalResult result = callResult.result();
+    kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+                << "encoding=" << result.encoding();
+    const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
+    kDebug() << sobjects.count() << "SObjects";
+    Q_FOREACH( const TNS__DescribeGlobalSObjectResult &object, sobjects ) {
+        kDebug() << "name=" << object.name() << "label=" << object.label()
+                 << "keyPrefix=" << object.keyPrefix();
+
+        // assume for now that each "sobject" describes a module
+        const QString module = object.name();
+
+        Collection collection;
+
+        // check if we have a corresponding module handler already
+        // if not see if we can create one
+        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
+        if ( moduleIt != mModuleHandlers->constEnd() ) {
+            collection = moduleIt.value()->collection();
+        } else {
+            ModuleHandler* handler = 0;
+            if ( module == QLatin1String( "Contacts" ) ) {
+                handler = new ContactsHandler;
+            } else {
+                //kDebug() << "No module handler for" << module;
+                continue;
+            }
+            mModuleHandlers->insert( module, handler );
+
+            collection = handler->collection();
+        }
+
+        collection.setParentCollection( topLevelCollection );
+        collections << collection;
+    }
+
+    kDebug() << collections.count() << "collections";
+    collectionsRetrieved( collections );
+}
+
+void SalesforceResource::describeGlobalError( const KDSoapMessage &fault )
+{
+    const QString message = fault.faultAsString();
+    kError() << message;
+
+    status( Broken, message );
+    error( message );
+    cancelTask( message );
 }
 
 AKONADI_RESOURCE_MAIN( SalesforceResource )

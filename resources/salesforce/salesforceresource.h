@@ -3,11 +3,14 @@
 
 #include <akonadi/resourcebase.h>
 
+#include <QStringList>
+
 class ModuleHandler;
 class KDSoapMessage;
 class SforceService;
 
 class TNS__DeleteResponse;
+class TNS__DescribeGlobalResponse;
 class TNS__LoginResponse;
 class TNS__QueryMoreResponse;
 class TNS__QueryResponse;
@@ -17,6 +20,8 @@ template <typename U, typename V> class QHash;
 
 class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
 {
+    friend class ResourceDebugInterface;
+
     Q_OBJECT
 
 public:
@@ -33,6 +38,7 @@ protected:
 
     Akonadi::Item mPendingItem;
 
+    QStringList mAvailableModules;
     typedef QHash<QString, ModuleHandler*> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
 
@@ -70,6 +76,9 @@ protected Q_SLOTS:
 
     void deleteEntryDone( const TNS__DeleteResponse &callResult );
     void deleteEntryError( const KDSoapMessage &fault );
+
+    void describeGlobalDone( const TNS__DescribeGlobalResponse& callResult );
+    void describeGlobalError( const KDSoapMessage &fault );
 };
 
 #endif
