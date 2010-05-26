@@ -289,7 +289,7 @@ public:
 
 
 OpportunitiesHandler::OpportunitiesHandler()
-    : ModuleHandler( QLatin1String( "Accounts" ) ),
+    : ModuleHandler( QLatin1String( "Opportunities" ) ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "id" ), AccessorPair( getId, setId ) );
