@@ -127,7 +127,9 @@ void OpportunitiesPage::slotAddOpportunity()
     opportunity.setAssignedUserId( data.value( "assignedUserId" ) );
     opportunity.setAssignedUserName( data.value( "assignedUserName" ) );
     opportunity.setOpportunityType( data.value( "opportunityType" ) );
+    // Pending(michel)
     opportunity.setAccountName( data.value( "accountName" ) );
+    opportunity.setAccountId( data.value( "accountId" ) );
     opportunity.setCampaignId( data.value( "campaignId" ) );
     opportunity.setCampaignName( data.value( "campaignName" ) );
     opportunity.setLeadSource( data.value( "leadSource" ) );
@@ -182,6 +184,8 @@ void OpportunitiesPage::slotModifyOpportunity()
         opportunity.setAssignedUserName( data.value( "assignedUserName" ) );
         opportunity.setOpportunityType( data.value( "opportunityType" ) );
         opportunity.setAccountName( data.value( "accountName" ) );
+        opportunity.setAccountId( data.value( "accountId" ) );
+        qDebug() << "value pour id " << data.value( "accountId" );
         opportunity.setCampaignId( data.value( "campaignId" ) );
         opportunity.setCampaignName( data.value( "campaignName" ) );
         opportunity.setLeadSource( data.value( "leadSource" ) );

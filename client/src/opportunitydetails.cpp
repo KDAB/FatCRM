@@ -50,7 +50,7 @@ void OpportunityDetails::initialize()
     mUi.calendarWidget->setLayout( buttonLayout );
 
     connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetCloseDate() ) );
+             this, SLOT( slotSetDateClosed() ) );
 
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
@@ -217,6 +217,8 @@ void OpportunityDetails::slotSaveOpportunity()
         }
     }
 
+    mData["accountName"] = mUi.accountName->currentText();
+    mData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
     mData["opportunityType"] = mUi.opportunityType->currentText();
 
     mData["campaignName"] = mUi.campaignName->currentText();

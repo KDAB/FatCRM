@@ -32,6 +32,7 @@ class SugarOpportunity::Private : public QSharedData
       mAssignedUserName = other.mAssignedUserName;
       mOpportunityType = other.mOpportunityType;
       mAccountName = other.mAccountName;
+      mAccountId = other.mAccountId;
       mCampaignId = other.mCampaignId;
       mCampaignName = other.mCampaignName;
       mLeadSource = other.mLeadSource;
@@ -62,6 +63,7 @@ class SugarOpportunity::Private : public QSharedData
     QString mAssignedUserName;
     QString mOpportunityType;
     QString mAccountName;
+    QString mAccountId;
     QString mCampaignId;
     QString mCampaignName;
     QString mLeadSource;
@@ -129,6 +131,8 @@ bool SugarOpportunity::operator==( const SugarOpportunity &other ) const
     if ( d->mOpportunityType != other.d->mOpportunityType )
         return false;
     if ( d->mAccountName != other.d->mAccountName )
+        return false;
+    if ( d->mAccountId != other.d->mAccountId )
         return false;
     if ( d->mCampaignId != other.d->mCampaignId )
         return false;
@@ -326,6 +330,18 @@ QString SugarOpportunity::accountName() const
 {
     return d->mAccountName;
 }
+
+void SugarOpportunity::setAccountId( const QString &value )
+{
+    d->mEmpty = false;
+    d->mAccountId = value;
+}
+
+QString SugarOpportunity::accountId() const
+{
+    return d->mAccountId;
+}
+
 
 void SugarOpportunity::setCampaignId( const QString &value )
 {

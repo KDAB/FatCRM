@@ -191,7 +191,16 @@ class KDCRMDATA_EXPORT SugarOpportunity
     */
     QString accountName() const;
 
-        /**
+    /**
+      Set the Account Id.
+     */
+    void setAccountId( const QString &value );
+    /**
+      Return the Account Name.
+    */
+    QString accountId() const;
+
+    /**
       Set Campaign Id.
      */
     void setCampaignId( const QString &value );

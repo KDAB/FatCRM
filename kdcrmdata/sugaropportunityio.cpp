@@ -70,6 +70,8 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
             opportunity.setOpportunityType( xml.readElementText() );
         else if ( xml.name() == "account_name" )
             opportunity.setAccountName( xml.readElementText() );
+        else if ( xml.name() == "account_id" )
+            opportunity.setAccountId( xml.readElementText() );
         else if ( xml.name() == "campaign_id" )
             opportunity.setCampaignId( xml.readElementText() );
         else if ( xml.name() == "campaign_name" )
@@ -124,6 +126,7 @@ bool SugarOpportunityIO::writeSugarOpportunity(  const SugarOpportunity &opportu
     writer.writeTextElement( QString( "assigned_user_name" ), opportunity.assignedUserName() );
     writer.writeTextElement( QString( "opportunity_type" ), opportunity.opportunityType() );
     writer.writeTextElement( QString( "account_name" ), opportunity.accountName() );
+    writer.writeTextElement( QString( "account_id" ), opportunity.accountId() );
     writer.writeTextElement( QString( "campaign_id" ), opportunity.campaignId() );
     writer.writeTextElement( QString( "campaign_name" ), opportunity.campaignName() );
     writer.writeTextElement( QString( "lead_source" ), opportunity.leadSource() );

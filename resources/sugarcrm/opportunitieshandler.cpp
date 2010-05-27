@@ -155,6 +155,16 @@ static void setAccountName(const QString &value, SugarOpportunity &opportunity)
     opportunity.setAccountName( value );
 }
 
+static QString getAccountId( const SugarOpportunity &opportunity )
+{
+    return opportunity.accountId();
+}
+
+static void setAccountId(const QString &value, SugarOpportunity &opportunity)
+{
+    opportunity.setAccountId( value );
+}
+
 static QString getCampaignId( const SugarOpportunity &opportunity )
 {
     return opportunity.campaignId();
@@ -306,6 +316,7 @@ OpportunitiesHandler::OpportunitiesHandler()
     mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
     mAccessors->insert( QLatin1String( "opportunity_type" ), AccessorPair( getOpportunityType, setOpportunityType ) );
     mAccessors->insert( QLatin1String( "account_name" ), AccessorPair( getAccountName, setAccountName ) );
+    mAccessors->insert( QLatin1String( "account_id" ), AccessorPair( getAccountId, setAccountId ) );
     mAccessors->insert( QLatin1String( "campaign_id" ), AccessorPair( getCampaignId, setCampaignId ) );
     mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
     mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSource, setLeadSource ) );
