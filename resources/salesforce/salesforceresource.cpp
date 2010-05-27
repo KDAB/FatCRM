@@ -294,6 +294,11 @@ void SalesforceResource::connectSoapProxy()
     connect( mSoap, SIGNAL( describeGlobalError( KDSoapMessage ) ),
              this, SLOT( describeGlobalError( KDSoapMessage ) ) );
 
+    connect( mSoap, SIGNAL( describeSObjectsDone( TNS__DescribeSObjectsResponse ) ),
+             this,  SLOT( describeSObjectsDone( TNS__DescribeSObjectsResponse ) ) );
+    connect( mSoap, SIGNAL( describeSObjectsError( KDSoapMessage ) ),
+             this, SLOT( describeSObjectsError( KDSoapMessage ) ) );
+
     connect( mSoap, SIGNAL( queryDone( TNS__QueryResponse ) ),
              this,  SLOT( getEntryListDone( TNS__QueryResponse ) ) );
     connect( mSoap, SIGNAL( queryError( KDSoapMessage ) ),
@@ -657,30 +662,32 @@ void SalesforceResource::deleteEntryError( const KDSoapMessage &fault )
 
 void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& callResult )
 {
-    Collection topLevelCollection;
-    topLevelCollection.setRemoteId( identifier() );
-    topLevelCollection.setName( name() );
-    topLevelCollection.setParentCollection( Collection::root() );
+    mTopLevelCollection.setRemoteId( identifier() );
+    mTopLevelCollection.setName( name() );
+    mTopLevelCollection.setParentCollection( Collection::root() );
 
     // Our top level collection only contains other collections (no items) and cannot be
     // modified by clients
-    topLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
-    topLevelCollection.setRights( Collection::ReadOnly );
+    mTopLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
+    mTopLevelCollection.setRights( Collection::ReadOnly );
 
     Collection::List collections;
-    collections << topLevelCollection;
+    collections << mTopLevelCollection;
 
     const TNS__DescribeGlobalResult result = callResult.result();
     kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
                 << "encoding=" << result.encoding();
     const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
     kDebug() << sobjects.count() << "SObjects";
+
+    QStringList unknownModules;
     Q_FOREACH( const TNS__DescribeGlobalSObjectResult &object, sobjects ) {
         kDebug() << "name=" << object.name() << "label=" << object.label()
                  << "keyPrefix=" << object.keyPrefix();
 
         // assume for now that each "sobject" describes a module
         const QString module = object.name();
+        mAvailableModules << module;
 
         Collection collection;
 
@@ -689,28 +696,80 @@ void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& 
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
         if ( moduleIt != mModuleHandlers->constEnd() ) {
             collection = moduleIt.value()->collection();
+            collection.setParentCollection( mTopLevelCollection );
+            collections << collection;
         } else {
             ModuleHandler* handler = 0;
             if ( module == QLatin1String( "Contact" ) ) {
                 handler = new ContactsHandler;
+                unknownModules << module;
             } else {
                 //kDebug() << "No module handler for" << module;
                 continue;
             }
             mModuleHandlers->insert( module, handler );
-
-            collection = handler->collection();
         }
-
-        collection.setParentCollection( topLevelCollection );
-        collections << collection;
     }
 
-    kDebug() << collections.count() << "collections";
-    collectionsRetrieved( collections );
+    kDebug() << collections.count() << "collections"
+             << unknownModules.count() << "unknown modules";
+
+    if ( !unknownModules.isEmpty() ) {
+        // we have new modules, we need to get their object description
+        // report all collections we've got so far, provide the newly ones later
+        setCollectionStreamingEnabled( true );
+        collectionsRetrieved( collections );
+
+        QMetaObject::invokeMethod( this, "describeSObjects", Qt::QueuedConnection,
+                                   Q_ARG( QStringList, unknownModules ) );
+    } else {
+        collectionsRetrieved( collections );
+    }
 }
 
 void SalesforceResource::describeGlobalError( const KDSoapMessage &fault )
+{
+    const QString message = fault.faultAsString();
+    kError() << message;
+
+    status( Broken, message );
+    error( message );
+    cancelTask( message );
+}
+
+void SalesforceResource::describeSObjects( const QStringList &objects )
+{
+    kDebug() << "Getting descriptions for" << objects;
+
+    TNS__DescribeSObjects param;
+    param.setSObjectType( objects );
+
+    mSoap->asyncDescribeSObjects( param );
+}
+
+void SalesforceResource::describeSObjectsDone( const TNS__DescribeSObjectsResponse &callResult )
+{
+    Collection::List collections;
+
+    const QList<TNS__DescribeSObjectResult> resultList = callResult.result();
+    Q_FOREACH( const TNS__DescribeSObjectResult &result, resultList ) {
+        kDebug() << "describeSObject result: name=" << result.name();
+        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( result.name() );
+        if ( moduleIt != mModuleHandlers->constEnd() ) {
+            moduleIt.value()->setDescriptionResult( result );
+
+            Collection collection = moduleIt.value()->collection();
+            collection.setParentCollection( mTopLevelCollection );
+
+            collections << collection;
+        }
+    }
+
+    collectionsRetrieved( collections );
+    collectionsRetrievalDone();
+}
+
+void SalesforceResource::describeSObjectsError( const KDSoapMessage &fault )
 {
     const QString message = fault.faultAsString();
     kError() << message;

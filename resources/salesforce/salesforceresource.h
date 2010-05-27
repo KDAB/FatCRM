@@ -11,6 +11,7 @@ class SforceService;
 
 class TNS__DeleteResponse;
 class TNS__DescribeGlobalResponse;
+class TNS__DescribeSObjectsResponse;
 class TNS__LoginResponse;
 class TNS__QueryMoreResponse;
 class TNS__QueryResponse;
@@ -35,6 +36,8 @@ protected:
     SforceService* mSoap;
 
     QString mSessionId;
+
+    Akonadi::Collection mTopLevelCollection;
 
     Akonadi::Item mPendingItem;
 
@@ -62,11 +65,6 @@ protected Q_SLOTS:
     void loginDone( const TNS__LoginResponse &callResult );
     void loginError( const KDSoapMessage &fault );
 
-#if 0
-    void getAvailableModulesDone( const TNS__Module_list &callResult );
-    void getAvailableModulesError( const KDSoapMessage &fault );
-#endif
-
     void getEntryListDone( const TNS__QueryResponse &callResult );
     void getEntryListDone( const TNS__QueryMoreResponse &callResult );
     void getEntryListError( const KDSoapMessage &fault );
@@ -79,6 +77,10 @@ protected Q_SLOTS:
 
     void describeGlobalDone( const TNS__DescribeGlobalResponse& callResult );
     void describeGlobalError( const KDSoapMessage &fault );
+
+    void describeSObjects( const QStringList &objects );
+    void describeSObjectsDone( const TNS__DescribeSObjectsResponse &callResult );
+    void describeSObjectsError( const KDSoapMessage &fault );
 };
 
 #endif

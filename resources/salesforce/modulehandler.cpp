@@ -1,5 +1,7 @@
 #include "modulehandler.h"
 
+#include "salesforcesoap.h"
+
 ModuleHandler::ModuleHandler( const QString &moduleName )
     : mModuleName( moduleName )
 {
@@ -14,3 +16,15 @@ QString ModuleHandler::moduleName() const
     return mModuleName;
 }
 
+void ModuleHandler::setDescriptionResult( const TNS__DescribeSObjectResult &description )
+{
+    mAvailableFields.clear();
+
+    const QList<TNS__Field> fields = description.fields();
+    Q_FOREACH( const TNS__Field &field, fields ) {
+        mAvailableFields << field.name();
+    }
+
+    kDebug() << "Module" << moduleName() << "has" << mAvailableFields.count() << "fields:"
+             << mAvailableFields;
+}
