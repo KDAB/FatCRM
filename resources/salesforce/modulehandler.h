@@ -24,6 +24,10 @@ public:
 
     QString moduleName() const;
 
+    QStringList availableFields() const;
+
+    virtual QStringList supportedFields() const = 0;
+
     virtual void setDescriptionResult( const TNS__DescribeSObjectResult &description );
 
     virtual Akonadi::Collection collection() const = 0;

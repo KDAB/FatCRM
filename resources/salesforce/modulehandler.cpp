@@ -16,6 +16,11 @@ QString ModuleHandler::moduleName() const
     return mModuleName;
 }
 
+QStringList ModuleHandler::availableFields() const
+{
+    return mAvailableFields;
+}
+
 void ModuleHandler::setDescriptionResult( const TNS__DescribeSObjectResult &description )
 {
     mAvailableFields.clear();

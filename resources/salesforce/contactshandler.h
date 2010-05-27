@@ -14,6 +14,8 @@ public:
 
     ~ContactsHandler();
 
+    QStringList supportedFields() const;
+
     Akonadi::Collection collection() const;
 
     virtual void listEntries( const TNS__QueryLocator &locator, SforceService* soap );

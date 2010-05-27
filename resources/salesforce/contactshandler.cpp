@@ -151,6 +151,11 @@ ContactsHandler::~ContactsHandler()
     delete mAccessors;
 }
 
+QStringList ContactsHandler::supportedFields() const
+{
+    return mAccessors->keys();
+}
+
 Akonadi::Collection ContactsHandler::collection() const
 {
     Akonadi::Collection contactCollection;

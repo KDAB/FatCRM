@@ -21,6 +21,7 @@ template <typename U, typename V> class QHash;
 
 class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
 {
+    friend class ModuleDebugInterface;
     friend class ResourceDebugInterface;
 
     Q_OBJECT

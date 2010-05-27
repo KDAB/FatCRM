@@ -73,6 +73,7 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 
 set( salesforceresource_SRCS
     contactshandler.cpp
+    moduledebuginterface.cpp
     modulehandler.cpp
     resourcedebuginterface.cpp
     salesforceconfigdialog.cpp

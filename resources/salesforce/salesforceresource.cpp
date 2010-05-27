@@ -1,6 +1,7 @@
 #include "salesforceresource.h"
 
 #include "contactshandler.h"
+#include "moduledebuginterface.h"
 #include "resourcedebuginterface.h"
 #include "settings.h"
 #include "settingsadaptor.h"
@@ -708,6 +709,13 @@ void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& 
                 continue;
             }
             mModuleHandlers->insert( module, handler );
+
+            ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
+            QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
+                                                          debugInterface,
+                                                          QDBusConnection::ExportScriptableSlots );
+
+
         }
     }
 
