@@ -470,6 +470,7 @@ void SalesforceResource::loginError( const KDSoapMessage &fault )
     mSessionId = QString();
 
     const QString message = fault.faultAsString();
+    kError() << message;
 
     status( Broken, message );
     error( message );
@@ -478,6 +479,7 @@ void SalesforceResource::loginError( const KDSoapMessage &fault )
 void SalesforceResource::getEntryListDone( const TNS__QueryResponse &callResult )
 {
     const Collection collection = currentCollection();
+    kDebug() << "got Query result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -486,6 +488,7 @@ void SalesforceResource::getEntryListDone( const TNS__QueryResponse &callResult 
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
         const TNS__QueryResult queryResult = callResult.result();
+        kDebug() << "result.size=" << queryResult.size();
         if ( queryResult.size() > 0 ) {
             itemsRetrieved( moduleIt.value()->itemsFromListEntriesResponse( queryResult, collection ) );
 
@@ -499,12 +502,15 @@ void SalesforceResource::getEntryListDone( const TNS__QueryResponse &callResult 
             status( Idle );
             itemsRetrievalDone();
         }
+    } else {
+        kError() << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListDone( const TNS__QueryMoreResponse &callResult )
 {
     const Collection collection = currentCollection();
+    kDebug() << "got QueryMore result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -513,6 +519,7 @@ void SalesforceResource::getEntryListDone( const TNS__QueryMoreResponse &callRes
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
         const TNS__QueryResult queryResult = callResult.result();
+        kDebug() << "result.size=" << queryResult.size();
         if ( queryResult.size() > 0 ) {
             itemsRetrieved( moduleIt.value()->itemsFromListEntriesResponse( queryResult, collection ) );
 
@@ -526,12 +533,15 @@ void SalesforceResource::getEntryListDone( const TNS__QueryMoreResponse &callRes
             status( Idle );
             itemsRetrievalDone();
         }
+    } else {
+        kError() << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListError( const KDSoapMessage &fault )
 {
     const QString message = fault.faultAsString();
+    kError() << message;
 
     status( Broken, message );
     error( message );
@@ -681,7 +691,7 @@ void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& 
             collection = moduleIt.value()->collection();
         } else {
             ModuleHandler* handler = 0;
-            if ( module == QLatin1String( "Contacts" ) ) {
+            if ( module == QLatin1String( "Contact" ) ) {
                 handler = new ContactsHandler;
             } else {
                 //kDebug() << "No module handler for" << module;

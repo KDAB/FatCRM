@@ -132,7 +132,7 @@ public:
 };
 
 ContactsHandler::ContactsHandler()
-    : ModuleHandler( QLatin1String( "Contacts" ) ),
+    : ModuleHandler( QLatin1String( "Contact" ) ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "FirstName" ), AccessorPair( getFirstName, setFirstName ) );
@@ -166,7 +166,7 @@ Akonadi::Collection ContactsHandler::collection() const
 
 void ContactsHandler::listEntries( const TNS__QueryLocator &locator, SforceService* soap )
 {
-    static QString queryString = QLatin1String( "Select" ) +
+    static QString queryString = QLatin1String( "Select Id, " ) +
                                  QStringList( mAccessors->keys() ).join( QLatin1String( ", " ) ) +
                                  QLatin1String( " from Contact" ); // without trailing 's'
 
@@ -223,9 +223,11 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
     Akonadi::Item::List items;
 
     Q_FOREACH( const ENS__SObject &entry, queryResult.records() ) {
+        kDebug() << "Record of type=" << entry.type();
         const QList<QString> valueList = entry.any();
         if ( valueList.isEmpty() ) {
             kWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
+            kDebug() << "fieldsToNull:" << entry.fieldsToNull();
             continue;
         }
 
