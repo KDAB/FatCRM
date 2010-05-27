@@ -117,6 +117,9 @@ ContactsHandler::ContactsHandler()
     : ModuleHandler( QLatin1String( "Contact" ) ),
       mAccessors( new AccessorHash )
 {
+    // interestingly, if we don't specifically request Id in queries, the resulting
+    // XML does contain empty Id elements. If we request Id, we get it twice, but that's better
+    // than never
     mAccessors->insert( QLatin1String( "Id" ), AccessorPair( getId, setId ) );
 
     mAccessors->insert( QLatin1String( "FirstName" ), AccessorPair( getFirstName, setFirstName ) );
@@ -215,7 +218,6 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
     Akonadi::Item::List items;
 
     Q_FOREACH( const ENS__SObject &entry, queryResult.records() ) {
-        kDebug() << "Record of type=" << entry.type();
         const QList<QString> valueList = entry.any();
         if ( valueList.isEmpty() ) {
             kWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
@@ -245,5 +247,6 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
         items << item;
     }
 
+    kDebug() << "Query result had" << items.count() << "valid contact items";
     return items;
 }

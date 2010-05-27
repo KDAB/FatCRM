@@ -494,7 +494,7 @@ void SalesforceResource::getEntryListDone( const TNS__QueryResponse &callResult 
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
         const TNS__QueryResult queryResult = callResult.result();
-        kDebug() << "result.size=" << queryResult.size();
+        kDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if ( queryResult.size() > 0 ) {
             itemsRetrieved( moduleIt.value()->itemsFromListEntriesResponse( queryResult, collection ) );
 
@@ -525,7 +525,7 @@ void SalesforceResource::getEntryListDone( const TNS__QueryMoreResponse &callRes
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
         const TNS__QueryResult queryResult = callResult.result();
-        kDebug() << "result.size=" << queryResult.size();
+        kDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if ( queryResult.size() > 0 ) {
             itemsRetrieved( moduleIt.value()->itemsFromListEntriesResponse( queryResult, collection ) );
 
@@ -683,8 +683,8 @@ void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& 
 
     QStringList unknownModules;
     Q_FOREACH( const TNS__DescribeGlobalSObjectResult &object, sobjects ) {
-        kDebug() << "name=" << object.name() << "label=" << object.label()
-                 << "keyPrefix=" << object.keyPrefix();
+//         kDebug() << "name=" << object.name() << "label=" << object.label()
+//                  << "keyPrefix=" << object.keyPrefix();
 
         // assume for now that each "sobject" describes a module
         const QString module = object.name();
@@ -714,13 +714,11 @@ void SalesforceResource::describeGlobalDone( const TNS__DescribeGlobalResponse& 
             QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
                                                           debugInterface,
                                                           QDBusConnection::ExportScriptableSlots );
-
-
         }
     }
 
     kDebug() << collections.count() << "collections"
-             << unknownModules.count() << "unknown modules";
+             << unknownModules.count() << "new modules";
 
     if ( !unknownModules.isEmpty() ) {
         // we have new modules, we need to get their object description
@@ -747,7 +745,7 @@ void SalesforceResource::describeGlobalError( const KDSoapMessage &fault )
 
 void SalesforceResource::describeSObjects( const QStringList &objects )
 {
-    kDebug() << "Getting descriptions for" << objects;
+    kDebug() << "Getting descriptions for new modules:" << objects;
 
     TNS__DescribeSObjects param;
     param.setSObjectType( objects );
