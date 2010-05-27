@@ -13,6 +13,16 @@
 typedef QString (*valueGetter)( const KABC::Addressee& );
 typedef void (*valueSetter)( const QString&, KABC::Addressee& );
 
+static QString getId( const KABC::Addressee &addressee )
+{
+    return addressee.uid();
+}
+
+static void setId( const QString &value, KABC::Addressee &addressee )
+{
+    addressee.setUid( value );
+}
+
 static QString getFirstName( const KABC::Addressee &addressee )
 {
     return addressee.givenName();
@@ -53,16 +63,6 @@ static void setDepartment( const QString &value, KABC::Addressee &addressee )
     addressee.setDepartment( value );
 }
 
-static QString getAccountName( const KABC::Addressee &addressee )
-{
-    return addressee.organization();
-}
-
-static void setAccountName( const QString &value, KABC::Addressee &addressee )
-{
-    addressee.setOrganization( value );
-}
-
 static QString getEmail1( const KABC::Addressee &addressee )
 {
     return addressee.preferredEmail();
@@ -71,24 +71,6 @@ static QString getEmail1( const KABC::Addressee &addressee )
 static void setEmail1( const QString &value, KABC::Addressee &addressee )
 {
     addressee.insertEmail( value, true );
-}
-
-static QString getEmail2( const KABC::Addressee &addressee )
-{
-    // preferred might not be the first one, so remove it and take the first of
-    // the remaining instead of always taking the second one
-    QStringList emails = addressee.emails();
-    emails.removeAll( addressee.preferredEmail() );
-    if ( emails.count() >= 1 ) {
-        return emails[ 0 ];
-    }
-
-    return QString();
-}
-
-static void setEmail2( const QString &value, KABC::Addressee &addressee )
-{
-    addressee.insertEmail( value, false );
 }
 
 static QString getHomePhone( const KABC::Addressee &addressee )
@@ -135,6 +117,8 @@ ContactsHandler::ContactsHandler()
     : ModuleHandler( QLatin1String( "Contact" ) ),
       mAccessors( new AccessorHash )
 {
+    mAccessors->insert( QLatin1String( "Id" ), AccessorPair( getId, setId ) );
+
     mAccessors->insert( QLatin1String( "FirstName" ), AccessorPair( getFirstName, setFirstName ) );
     mAccessors->insert( QLatin1String( "LastName" ), AccessorPair( getLastName, setLastName ) );
 
@@ -171,7 +155,7 @@ Akonadi::Collection ContactsHandler::collection() const
 
 void ContactsHandler::listEntries( const TNS__QueryLocator &locator, SforceService* soap )
 {
-    static QString queryString = QLatin1String( "Select Id, " ) +
+    static QString queryString = QLatin1String( "Select " ) +
                                  QStringList( mAccessors->keys() ).join( QLatin1String( ", " ) ) +
                                  QLatin1String( " from Contact" ); // without trailing 's'
 
@@ -203,14 +187,17 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, SforceService *soap )
         object.setId( item.remoteId() );
     }
 
-    QList<QString> valueList;
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
-    for ( ; it != endIt; ++it ) {
-        // TODO how do we specify which fields we have?
-        // do we need to fill the full object?
-        valueList << it->getter( addressee );
+
+    QList<QString> valueList;
+    const QStringList fields = availableFields();
+    Q_FOREACH( const QString &field, fields ) {
+        AccessorHash::const_iterator accessorIt = mAccessors->constFind( field );
+        if ( accessorIt != mAccessors->constEnd() ) {
+           valueList << accessorIt->getter( addressee );
+        } else {
+            valueList << QString();
+        }
     }
 
     object.setAny( valueList );
@@ -247,9 +234,10 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
         // assume for now that the values are in the same order we have queried them
         Q_ASSERT( mAccessors->count() == valueList.count() );
 
+        QList<QString>::const_iterator valueIt = valueList.constBegin();
         AccessorHash::const_iterator it    = mAccessors->constBegin();
         AccessorHash::const_iterator endIt = mAccessors->constEnd();
-        for ( QList<QString>::const_iterator valueIt ; it != endIt; ++it, ++valueIt ) {
+        for ( ; it != endIt; ++it, ++valueIt ) {
             it->setter( *valueIt, addressee );
         }
 
