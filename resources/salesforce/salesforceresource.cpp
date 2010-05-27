@@ -453,7 +453,7 @@ void SalesforceResource::loginDone( const TNS__LoginResponse &callResult )
 
     if ( message.isEmpty() ) {
         // salesforce might issue a redirect on login so set a new endpoint
-        delete mSoap;
+        mSoap->deleteLater();
         mSoap = new SforceService;
         mSoap->setEndPoint( loginResult.serverUrl() );
         connectSoapProxy();
