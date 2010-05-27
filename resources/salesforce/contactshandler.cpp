@@ -177,7 +177,7 @@ void ContactsHandler::listEntries( const TNS__QueryLocator &locator, SforceServi
     } else {
         TNS__QueryMore query;
         query.setQueryLocator( locator );
-        soap->queryMore( query );
+        soap->asyncQueryMore( query );
     }
 }
 
