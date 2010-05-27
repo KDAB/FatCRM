@@ -407,6 +407,11 @@
             <widget class="QComboBox" name="currency">
              <item>
               <property name="text">
+               <string/>
+              </property>
+             </item>
+             <item>
+              <property name="text">
                <string>US Dollars : $</string>
               </property>
              </item>

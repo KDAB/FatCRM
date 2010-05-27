@@ -80,8 +80,28 @@ void OpportunityDetails::setItem (const Item &item )
     mUi.campaignName->setCurrentIndex(mUi.campaignName->findText( opportunity.campaignName() ) );
     mUi.salesStage->setCurrentIndex(mUi.salesStage->findText( opportunity.salesStage() ) );
     mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( opportunity.assignedUserName() ) );
-    // Pending (michel) find out
-    mUi.currency->setCurrentIndex( 0 ); // US Dollars : $
+    // Pending (michel)
+    // we dont get the name and symbol value atm
+    // setting a default value so long
+    mUi.currency->setProperty( "currencyId",qVariantFromValue<QString>( opportunity.currencyId() ) );
+    QString currencyName = opportunity.currencyName();
+    if ( currencyName.isEmpty() )
+        currencyName = "US Dollars";
+    mUi.currency->setProperty( "currencyName", qVariantFromValue<QString>( currencyName ) );
+    currencyName += QString( " : " );
+    QString currencySymbol = opportunity.currencySymbol();
+    if ( currencySymbol.isEmpty() )
+        currencySymbol = "$";
+    mUi.currency->setProperty( "currencySymbol", qVariantFromValue<QString>(  currencySymbol ) );
+    QString currencyItem = currencyName + currencySymbol;
+    int index = mUi.currency->findText( currencyItem );
+    if ( index < 0  ) {
+        mUi.currency->addItem( currencyItem );
+        mUi.currency->setCurrentIndex( mUi.currency->findText( currencyItem ) );
+    }
+    else
+        mUi.currency->setCurrentIndex( index );
+
     mUi.amount->setText( opportunity.amount() );
     mUi.dateClosed->setText( opportunity.dateClosed() );
     mUi.nextStep->setText( opportunity.nextStep() );
@@ -126,17 +146,22 @@ void OpportunityDetails::clearFields ()
     // reset combos
     QList<QComboBox*> comboBoxes =
         mUi.opportunityInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
+    Q_FOREACH( QComboBox* cb, comboBoxes ) {
+        QString value = cb->objectName();
         cb->setCurrentIndex( 0 );
+        if ( value =="currency" ) {
+            cb->setProperty( "currencyName", qVariantFromValue<QString>( QString() ) );
+            cb->setProperty( "currencyId", qVariantFromValue<QString>( QString() ) );
+            cb->setProperty( "currencySymbol", qVariantFromValue<QString>( QString() ) );
 
+        }
+    }
     // initialize other fields
     mUi.description->clear();
     mUi.name->setFocus();
 
-
-    // we are creating a new contact
+    // we are creating a new opportunity
     slotSetModifyFlag( false );
-
 }
 
 
@@ -199,7 +224,15 @@ void OpportunityDetails::slotSaveOpportunity()
 
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
     mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
+    mData["leadSource"] = mUi.leadSource->currentText();
+    mData["salesStage"] = mUi.salesStage->currentText();
     mData["description"] = mUi.description->toPlainText();
+    // read currency combo and parse - Name : Symbol
+    QString currencyName = mUi.currency->currentText().split( ":" )[0].trimmed();
+    mData["currencyName"] = currencyName;
+    QString currencySymbol = mUi.currency->currentText().split( ":")[1].trimmed();
+    mData["currencySymbol"] = currencySymbol;
+    mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
 
     if ( !mModifyFlag )
         emit saveOpportunity();
