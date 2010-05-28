@@ -106,9 +106,11 @@ static void setMobilePhone( const QString &value, KABC::Addressee &addressee )
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ) {}
+    AccessorPair( valueGetter get, valueSetter set )
+        : isAvailable( false ), getter( get ), setter( set ) {}
 
 public:
+    bool isAvailable;
     valueGetter getter;
     valueSetter setter;
 };
@@ -141,6 +143,24 @@ ContactsHandler::~ContactsHandler()
 QStringList ContactsHandler::supportedFields() const
 {
     return mAccessors->keys();
+}
+
+void ContactsHandler::setDescriptionResult( const TNS__DescribeSObjectResult &description )
+{
+    ModuleHandler::setDescriptionResult( description );
+
+    const QSet<QString> fields = availableFields().toSet();
+
+    AccessorHash::iterator it    = mAccessors->begin();
+    AccessorHash::iterator endIt = mAccessors->end();
+    for ( ; it != endIt; ++it ) {
+        it->isAvailable = fields.contains( it.key() );
+
+        if ( !it->isAvailable ) {
+            kDebug() << "Disabling accessor pair for" << it.key()
+                     << "because it is not part of the server's available fields";
+        }
+    }
 }
 
 Akonadi::Collection ContactsHandler::collection() const
@@ -201,9 +221,11 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, SforceService *soap )
             continue;
         }
 
-        const QString value = it->getter( addressee );
-        valueList << KDSoapValue( it.key(), value );
-        kDebug() << "Upsert: name=" << it.key() << "value=" << value;
+        if ( it->isAvailable ) {
+            const QString value = it->getter( addressee );
+            valueList << KDSoapValue( it.key(), value );
+            kDebug() << "Upsert: name=" << it.key() << "value=" << value;
+        }
     }
 
     object.setAny( valueList );
@@ -242,7 +264,9 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
         for ( ; it != endIt; ++it ) {
             AccessorHash::const_iterator accessorIt = mAccessors->constFind( it->name() );
             if ( accessorIt != mAccessors->constEnd() ) {
-                accessorIt->setter( it->value().value<QString>(), addressee );
+                if ( accessorIt->isAvailable ) {
+                    accessorIt->setter( it->value().value<QString>(), addressee );
+                }
             } else {
                 kWarning() << "Contacts entry for id=" << entry.id().value()
                            << "has unknown value named" << it->name();

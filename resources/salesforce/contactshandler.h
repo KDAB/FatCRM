@@ -16,6 +16,8 @@ public:
 
     QStringList supportedFields() const;
 
+    virtual void setDescriptionResult( const TNS__DescribeSObjectResult &description );
+
     Akonadi::Collection collection() const;
 
     virtual void listEntries( const TNS__QueryLocator &locator, SforceService* soap );
