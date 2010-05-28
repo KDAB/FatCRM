@@ -196,12 +196,20 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, SforceService *soap )
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
-        valueList << KDSoapValue( it.key(), it->getter( addressee ) );
+        // Id is already part of the object, we have the accessor for the query
+        if ( it.key() == QLatin1String( "Id" ) ) {
+            continue;
+        }
+
+        const QString value = it->getter( addressee );
+        valueList << KDSoapValue( it.key(), value );
+        kDebug() << "Upsert: name=" << it.key() << "value=" << value;
     }
 
     object.setAny( valueList );
 
     TNS__Upsert upsert;
+    upsert.setExternalIDFieldName( QLatin1String( "Id" ) );
     upsert.setSObjects( QList<ENS__SObject>() << object );
     soap->asyncUpsert( upsert );
 
