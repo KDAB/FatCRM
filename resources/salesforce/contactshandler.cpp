@@ -192,15 +192,11 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, SforceService *soap )
 
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
 
-    QList<QString> valueList;
-    const QStringList fields = availableFields();
-    Q_FOREACH( const QString &field, fields ) {
-        AccessorHash::const_iterator accessorIt = mAccessors->constFind( field );
-        if ( accessorIt != mAccessors->constEnd() ) {
-           valueList << accessorIt->getter( addressee );
-        } else {
-            valueList << QString();
-        }
+    QList<KDSoapValue> valueList;
+    AccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    for ( ; it != endIt; ++it ) {
+        valueList << KDSoapValue( it.key(), it->getter( addressee ) );
     }
 
     object.setAny( valueList );
@@ -218,7 +214,7 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
     Akonadi::Item::List items;
 
     Q_FOREACH( const ENS__SObject &entry, queryResult.records() ) {
-        const QList<QString> valueList = entry.any();
+        const QList<KDSoapValue> valueList = entry.any();
         if ( valueList.isEmpty() ) {
             kWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
             kDebug() << "fieldsToNull:" << entry.fieldsToNull();
@@ -233,14 +229,16 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Qu
         KABC::Addressee addressee;
         addressee.setUid( entry.id().value() );
 
-        // assume for now that the values are in the same order we have queried them
-        Q_ASSERT( mAccessors->count() == valueList.count() );
-
-        QList<QString>::const_iterator valueIt = valueList.constBegin();
-        AccessorHash::const_iterator it    = mAccessors->constBegin();
-        AccessorHash::const_iterator endIt = mAccessors->constEnd();
-        for ( ; it != endIt; ++it, ++valueIt ) {
-            it->setter( *valueIt, addressee );
+        QList<KDSoapValue>::const_iterator it    = valueList.constBegin();
+        QList<KDSoapValue>::const_iterator endIt = valueList.constEnd();
+        for ( ; it != endIt; ++it ) {
+            AccessorHash::const_iterator accessorIt = mAccessors->constFind( it->name() );
+            if ( accessorIt != mAccessors->constEnd() ) {
+                accessorIt->setter( it->value().value<QString>(), addressee );
+            } else {
+                kWarning() << "Contacts entry for id=" << entry.id().value()
+                           << "has unknown value named" << it->name();
+            }
         }
 
         item.setPayload<KABC::Addressee>( addressee );
