@@ -313,6 +313,11 @@ void SalesforceResource::connectSoapProxy()
              this,  SLOT( setEntryDone( TNS__UpsertResponse ) ) );
     connect( mSoap, SIGNAL( upsertError( KDSoapMessage ) ),
              this,  SLOT( setEntryError( KDSoapMessage ) ) );
+
+    connect( mSoap, SIGNAL( deleteDone( TNS__DeleteResponse ) ),
+             this,  SLOT( deleteEntryDone( TNS__DeleteResponse ) ) );
+    connect( mSoap, SIGNAL( deleteError( KDSoapMessage ) ),
+             this,  SLOT( deleteEntryError( KDSoapMessage ) ) );
 }
 
 void SalesforceResource::retrieveCollections()
@@ -589,10 +594,14 @@ void SalesforceResource::setEntryDone( const TNS__UpsertResponse &callResult )
     }
 
     if ( !message.isEmpty() ) {
+        kError() << message;
         status( Broken, message );
         error( message );
         cancelTask( message );
     } else {
+        kDebug() << "itemAdded/itemChanged done, comitting pending item (id="
+                 << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
+                 << ", mime=" << mPendingItem.mimeType();
         status( Idle );
         changeCommitted( mPendingItem );
     }
@@ -604,6 +613,7 @@ void SalesforceResource::setEntryError( const KDSoapMessage &fault )
 {
     const QString message = fault.faultAsString();
 
+    kError() << message;
     status( Broken, message );
     error( message );
     cancelTask( message );
@@ -639,10 +649,14 @@ void SalesforceResource::deleteEntryDone( const TNS__DeleteResponse &callResult 
 
 
     if ( !message.isEmpty() ) {
+        kError() << message;
         status( Broken, message );
         error( message );
         cancelTask( message );
     } else {
+        kDebug() << "itemRemoved done, comitting pending item (id="
+                 << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
+                 << ", mime=" << mPendingItem.mimeType();
         status( Idle );
         changeCommitted( mPendingItem );
     }
@@ -653,6 +667,7 @@ void SalesforceResource::deleteEntryDone( const TNS__DeleteResponse &callResult 
 void SalesforceResource::deleteEntryError( const KDSoapMessage &fault )
 {
     const QString message = fault.faultAsString();
+    kError() << message;
 
     status( Broken, message );
     error( message );
