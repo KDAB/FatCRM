@@ -76,6 +76,7 @@ set( sugarcrmresource_SRCS
     contactshandler.cpp
     accountshandler.cpp
     opportunitieshandler.cpp
+    leadshandler.cpp
     modulehandler.cpp
     moduledebuginterface.cpp
     resourcedebuginterface.cpp
