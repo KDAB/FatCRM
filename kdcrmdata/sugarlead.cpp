@@ -1,4 +1,4 @@
-#include "sugarLead.h"
+#include "sugarlead.h"
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -420,7 +420,7 @@ QString SugarLead::assignedUserName() const
     return d->mAssignedUserName;
 }
 
-void SugarLead::setSalutation( const QString &value );
+void SugarLead::setSalutation( const QString &value )
 {
     d->mEmpty = false;
     d->mSalutation = value;
@@ -464,101 +464,101 @@ QString SugarLead::title() const
     return d->mTitle;
 }
 
-void setDepartment( const QString &value )
+void SugarLead::setDepartment( const QString &value )
 {
     d->mEmpty = false;
     d->mDepartment = value;
 }
 
-QString department() const
+QString SugarLead::department() const
 {
     return d->mDepartment;
 }
 
-void setDoNotCall( const QString &value )
+void SugarLead::setDoNotCall( const QString &value )
 {
     d->mEmpty = false;
     d->mDoNotCall = value;
 }
 
-QString doNotCall() const
+QString SugarLead::doNotCall() const
 {
     return d->mDoNotCall;
 }
 
-void setPhoneHome( const QString &value )
+void SugarLead::setPhoneHome( const QString &value )
 {
     d->mEmpty = false;
     d->mPhoneHome = value;
 }
 
-QString phoneHome() const
+QString SugarLead::phoneHome() const
 {
     return d->mPhoneHome;
 }
 
-void setPhoneMobile( const QString &value )
+void SugarLead::setPhoneMobile( const QString &value )
 {
     d->mEmpty = false;
     d->mPhoneMobile = value;
 }
 
-QString phoneMobile() const
+QString SugarLead::phoneMobile() const
 {
     return d->mPhoneMobile;
 }
 
-void setPhoneWork( const QString &value )
+void SugarLead::setPhoneWork( const QString &value )
 {
     d->mEmpty = false;
     d->mPhoneWork = value;
 }
 
-QString phoneWork() const
+QString SugarLead::phoneWork() const
 {
     return d->mPhoneWork;
 }
 
-void setPhoneOther( const QString &value )
+void SugarLead::setPhoneOther( const QString &value )
 {
     d->mEmpty = false;
     d->mPhoneOther = value;
 }
 
-QString phoneOther() const
+QString SugarLead::phoneOther() const
 {
     return d->mPhoneOther;
 }
 
-void setPhoneFax( const QString &value )
+void SugarLead::setPhoneFax( const QString &value )
 {
     d->mEmpty = false;
     d->mPhoneFax = value;
 }
 
-QString phoneFax() const
+QString SugarLead::phoneFax() const
 {
     return d->mPhoneFax;
 }
 
-void setEmail1( const QString &value )
+void SugarLead::setEmail1( const QString &value )
 {
     d->mEmpty = false;
     d->mEmail1 = value;
 }
 
-QString email1() const
+QString SugarLead::email1() const
 {
     return d->mEmail1;
 }
 
-void setEmail2( const QString &value )
+void SugarLead::setEmail2( const QString &value )
 {
     d->mEmpty = false;
     d->mEmail2 = value;
 }
 
-QString email2() const
+QString SugarLead::email2() const
 {
     return d->mEmail2;
 }
@@ -740,24 +740,24 @@ QString SugarLead::leadSourceDescription() const
     return d->mLeadSourceDescription;
 }
 
-void setStatus( const QString &value )
+void SugarLead::setStatus( const QString &value )
 {
     d->mEmpty = false;
     d->mStatus = value;
 }
 
-QString status() const
+QString SugarLead::status() const
 {
     return d->mStatus;
 }
 
-void setStatusDescription( const QString &value )
+void SugarLead::setStatusDescription( const QString &value )
 {
     d->mEmpty = false;
     d->mStatusDescription = value;
 }
 
-QString statusDescription() const
+QString SugarLead::statusDescription() const
 {
     return d->mStatusDescription;
 }
@@ -900,7 +900,7 @@ void SugarLead::setMAcceptStatusFields( const QString &value )
     d->mMAcceptStatusFields = value;
 }
 
-QString SugarLead::mMAcceptStatusFields() const
+QString SugarLead::mAcceptStatusFields() const
 {
     return d->mMAcceptStatusFields;
 }
@@ -911,7 +911,7 @@ void SugarLead::setBirthdate( const QString &value )
     d->mBirthdate = value;
 }
 
-QString SugarLead::birthDate() const
+QString SugarLead::birthdate() const
 {
     return d->mBirthdate;
 }

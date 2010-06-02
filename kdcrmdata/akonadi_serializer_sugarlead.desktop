@@ -1,0 +1,7 @@
+[Misc]
+Name=CRM Lead Serializer
+Comment=An Akonadi serializer plugin for CRM Lead objects
+
+[Plugin]
+Type=application/x-vnd.kdab.crm.lead
+X-KDE-Library=akonadi_serializer_sugarlead

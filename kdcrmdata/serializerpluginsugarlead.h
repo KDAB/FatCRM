@@ -7,7 +7,7 @@
 
 namespace Akonadi {
 
-class SerializerPluginSugarAccount : public QObject, public ItemSerializerPlugin
+class SerializerPluginSugarLead : public QObject, public ItemSerializerPlugin
 {
     Q_OBJECT
     Q_INTERFACES( Akonadi::ItemSerializerPlugin )
