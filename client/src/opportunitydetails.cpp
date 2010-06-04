@@ -285,7 +285,6 @@ void OpportunityDetails::disableGroupBoxes()
         gb->setChecked( false );
 }
 
-
 void OpportunityDetails::slotSetDateClosed()
 {
     mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );

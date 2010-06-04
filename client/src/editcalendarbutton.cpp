@@ -6,6 +6,7 @@ EditCalendarButton::EditCalendarButton( QWidget *parent )
     : QToolButton( parent ), mCalendar(new QCalendarWidget())
 {
     setText( tr( "&Edit" ) );
+    mCalendar->setWindowTitle( tr( "Calendar" ) );
 }
 
 EditCalendarButton::~EditCalendarButton()

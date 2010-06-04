@@ -3,6 +3,7 @@
 #include "accountshandler.h"
 #include "contactshandler.h"
 #include "opportunitieshandler.h"
+#include "leadshandler.h"
 #include "moduledebuginterface.h"
 #include "resourcedebuginterface.h"
 #include "settings.h"
@@ -483,6 +484,8 @@ void SugarCRMResource::getAvailableModulesDone( const TNS__Module_list &callResu
                     handler = new AccountsHandler;
                 } else if ( module == QLatin1String( "Opportunities" ) ) {
                     handler = new OpportunitiesHandler;
+                } else if ( module == QLatin1String( "Leads" ) ) {
+                    handler = new LeadsHandler;
                 } else {
                     //kDebug() << "No module handler for" << module;
                     continue;

@@ -18,6 +18,7 @@ protected:
 
     friend class ContactDetails;
     friend class OpportunityDetails;
+    friend class LeadDetails;
 private:
     inline QCalendarWidget* calendarWidget() { return mCalendar; }
 

@@ -224,6 +224,7 @@ bool SugarLeadIO::writeSugarLead(  const SugarLead &lead, QIODevice *device )
     writer.writeTextElement( QString( "account_id" ), lead.accountId() );
     writer.writeTextElement( QString( "opportunity_id" ), lead.opportunityId() );
     writer.writeTextElement( QString( "opportunity_name" ), lead.opportunityName() );
+    writer.writeTextElement( QString( "opportunity_amount" ), lead.opportunityAmount() );
     writer.writeTextElement( QString( "campaign_id" ), lead.campaignId() );
     writer.writeTextElement( QString( "campaign_name" ), lead.campaignName() );
     writer.writeTextElement( QString( "c_accept_status_fields" ), lead.cAcceptStatusFields() );

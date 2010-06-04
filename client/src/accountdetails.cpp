@@ -256,3 +256,4 @@ void AccountDetails::disableGroupBoxes()
         gb->setChecked( false );
 }
 
+
