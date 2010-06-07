@@ -324,13 +324,13 @@ QString SugarCampaign::trackerCount() const
     return d->mTrackerCount;
 }
 
-void SugarCampaign::setRefereUrl( const QString &value )
+void SugarCampaign::setReferUrl( const QString &value )
 {
     d->mEmpty = false;
     d->mReferUrl = value;
 }
 
-QString SugarCampaign::refereUrl() const
+QString SugarCampaign::referUrl() const
 {
     return d->mReferUrl;
 }
