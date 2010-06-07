@@ -11,10 +11,14 @@ set(sugarclient_SRCS
     leadspage.cpp
     leadstreemodel.cpp
     leadsfilterproxymodel.cpp
+    campaignspage.cpp
+    campaignstreemodel.cpp
+    campaignsfilterproxymodel.cpp 
     contactdetails.cpp
     accountdetails.cpp
     opportunitydetails.cpp
     leaddetails.cpp
+    campaigndetails.cpp
     editcalendarbutton.cpp
     main.cpp
     sugarclient.cpp
@@ -25,10 +29,12 @@ kde4_add_ui_files(sugarclient_SRCS
     accountspage.ui 
     opportunitiespage.ui
     leadspage.ui
+    campaignspage.ui
     contactdetails.ui
     accountdetails.ui
     opportunitydetails.ui
     leaddetails.ui
+    campaigndetails.ui
     mainwindow.ui
 )
 

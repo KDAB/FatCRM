@@ -5,11 +5,13 @@
 #include <accountdetails.h>
 #include <opportunitydetails.h>
 #include <leaddetails.h>
+#include <campaigndetails.h>
 #include <contactdetails.h>
 #include <accountspage.h>
 #include <opportunitiespage.h>
 #include <leadspage.h>
 #include <contactspage.h>
+#include <campaignspage.h>
 
 #include <QMainWindow>
 
@@ -39,6 +41,10 @@ public:
         return mContactDetailsWidget;
     }
 
+    inline CampaignDetails *campaignDetailsWidget() {
+        return mCampaignDetailsWidget;
+    }
+
 Q_SIGNALS:
     void resourceSelected( const QByteArray &identifier );
 
@@ -63,10 +69,15 @@ private:
     QDockWidget *mContactDetailsDock;
     ContactDetails *mContactDetailsWidget;
     QAction *mViewContactAction;
+    QDockWidget *mCampaignDetailsDock;
+    CampaignDetails *mCampaignDetailsWidget;
+    QAction *mViewCampaignAction;
     AccountsPage *mAccountsPage;
     OpportunitiesPage *mOpportunitiesPage;
     LeadsPage *mLeadsPage;
     ContactsPage *mContactsPage;
+    CampaignsPage *mCampaignsPage;
+
     Ui_MainWindow mUi;
 
 private Q_SLOTS:
@@ -76,11 +87,13 @@ private Q_SLOTS:
     void slotOpportunityItemChanged();
     void slotContactItemChanged();
     void slotLeadItemChanged();
+    void slotCampaignItemChanged();
     void slotShowMessage( const QString& );
     void slotShowAccountDetailsDock();
     void slotShowOpportunityDetailsDock();
     void slotShowLeadDetailsDock();
     void slotShowContactDetailsDock();
+    void slotShowCampaignDetailsDock();
     void slotManageItemDetailsView( int currentTab );
 };
 
