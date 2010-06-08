@@ -258,45 +258,29 @@ void ContactDetails::slotSetBirthday()
 void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
     mAccountsData.insert( accountName, accountId );
+    if ( mUi.accountName->findText( accountName ) < 0 )
+        mUi.accountName->addItem( accountName );
 }
 
 void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
     mCampaignsData.insert( campaignName, campaignId );
+    if ( mUi.campaign->findText( campaignName ) < 0 )
+        mUi.campaign->addItem( campaignName );
 }
 
 void ContactDetails::addReportsToData( const QString &name, const QString &id )
 {
     mReportsToData.insert( name, id );
+    if ( mUi.reportsTo->findText( name ) < 0 )
+        mUi.reportsTo->addItem( name );
 }
 
 void ContactDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
-}
-
-void ContactDetails::fillCombos()
-{
-    QList<QString> names = mAccountsData.uniqueKeys();
-    // fill
-    // accountName combo
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.accountName->addItem( names[i] );
-
-    // campaign
-    names = mCampaignsData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.campaign->addItem( names[i] );
-
-    // reports to
-    names = mReportsToData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.reportsTo->addItem( names[i] );
-
-    // assigned to
-    names = mAssignedToData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.assignedTo->addItem( names[i] );
+    if ( mUi.assignedTo->findText( name ) < 0 )
+        mUi.assignedTo->addItem( name );
 }
 
 void ContactDetails::disableGroupBoxes()

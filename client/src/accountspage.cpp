@@ -260,9 +260,9 @@ void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
 void AccountsPage::addAccountsData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    AccountDetails *ad = w->accountDetailsWidget();
-    ContactDetails *cd = w->contactDetailsWidget();
-    OpportunityDetails *od = w->opportunityDetailsWidget();
+    AccountDetails *accountDetails = w->accountDetailsWidget();
+    ContactDetails *contactDetails = w->contactDetailsWidget();
+    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
 
     QModelIndex index;
     Item item;
@@ -272,17 +272,14 @@ void AccountsPage::addAccountsData()
        item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarAccount>() ) {
            account = item.payload<SugarAccount>();
-           ad->addAccountData( account.name(), account.id() );
-           cd->addAccountData( account.name(), account.id() );
-           od->addAccountData( account.name(), account.id() );
+           accountDetails->addAccountData( account.name(), account.id() );
+           contactDetails->addAccountData( account.name(), account.id() );
+           opportunityDetails->addAccountData( account.name(), account.id() );
            // code below should be executed from
            // their own pages when implemented
-           ad->addCampaignData( account.campaignName(), account.campaignId() );
-           ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
+           accountDetails->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
        }
     }
-    // fill accounts combo
-    ad->fillCombos();
 }
 
 void AccountsPage::initialize()

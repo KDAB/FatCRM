@@ -238,9 +238,11 @@ void CampaignsPage::addCampaignsData()
 {
     // Pending (Michel) - clean up
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    CampaignDetails *ad = w->campaignDetailsWidget();
-    ContactDetails *cd = w->contactDetailsWidget();
-    OpportunityDetails *od = w->opportunityDetailsWidget();
+    AccountDetails *accountDetails = w->accountDetailsWidget();
+    CampaignDetails *campaignDetails = w->campaignDetailsWidget();
+    ContactDetails *contactDetails = w->contactDetailsWidget();
+    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
+    LeadDetails *leadDetails = w->leadDetailsWidget();
 
     QModelIndex index;
     Item item;
@@ -250,17 +252,16 @@ void CampaignsPage::addCampaignsData()
        item = mUi.campaignsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarCampaign>() ) {
            campaign = item.payload<SugarCampaign>();
-           ad->addCampaignData( campaign.name(), campaign.id() );
-           cd->addCampaignData( campaign.name(), campaign.id() );
-           od->addCampaignData( campaign.name(), campaign.id() );
+           accountDetails->addCampaignData( campaign.name(), campaign.id() );
+           contactDetails->addCampaignData( campaign.name(), campaign.id() );
+           opportunityDetails->addCampaignData( campaign.name(), campaign.id() );
+           leadDetails->addCampaignData( campaign.name(), campaign.id() );
+           campaignDetails->addCampaignData( campaign.name(), campaign.id() );
            // code below should be executed from
-           // their own pages when implemented
-           ad->addCampaignData( campaign.name(), campaign.id() );
-           ad->addAssignedToData( campaign.assignedUserName(), campaign.assignedUserId() );
+           //its own pages when implemented
+           campaignDetails->addAssignedToData( campaign.assignedUserName(), campaign.assignedUserId() );
        }
     }
-    // fill campaigns combo
-    ad->fillCombos();
 }
 
 void CampaignsPage::initialize()

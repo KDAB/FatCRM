@@ -238,7 +238,7 @@ void OpportunitiesPage::slotSetCurrent( const QModelIndex& index, int start, int
 void OpportunitiesPage::addOpportunitiesData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    OpportunityDetails *od = w->opportunityDetailsWidget();
+    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
     QModelIndex index;
     Item item;
     SugarOpportunity opportunity;
@@ -247,14 +247,10 @@ void OpportunitiesPage::addOpportunitiesData()
        item = mUi.opportunitiesTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarOpportunity>() ) {
            opportunity = item.payload<SugarOpportunity>();
-           // code below should be executed from
-           // their own pages when implemented
-           od->addCampaignData( opportunity.campaignName(), opportunity.campaignId() );
-           od->addAssignedToData( opportunity.assignedUserName(), opportunity.assignedUserId() );
+           // Pending(michel) - call this from the right module.
+           opportunityDetails->addAssignedToData( opportunity.assignedUserName(), opportunity.assignedUserId() );
        }
     }
-    // fill opportunities combo
-    od->fillCombos();
 }
 
 void OpportunitiesPage::initialize()

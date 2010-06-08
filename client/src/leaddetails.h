@@ -20,10 +20,8 @@ public:
 
     void setItem( const Akonadi::Item &item );
     void clearFields();
-    void addLeadData( const QString &name,  const QString &id );
     void addCampaignData( const QString &name,  const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
-    void fillCombos();
     void disableGroupBoxes();
     inline QMap<QString, QString> leadData() {return mData;}
 
@@ -36,7 +34,6 @@ private:
 
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this
-    QMap<QString, QString> mLeadsData;
     QMap<QString, QString> mAssignedToData;
     QMap<QString, QString> mCampaignsData;
     bool mModifyFlag;

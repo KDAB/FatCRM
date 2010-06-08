@@ -228,15 +228,8 @@ void CampaignDetails::addCampaignData( const QString &campaignName,  const QStri
 void CampaignDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
-}
-
-void CampaignDetails::fillCombos()
-{
-    QList<QString> names = mAssignedToData.uniqueKeys();
-    // fill
-    // assigned to
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.assignedUserName->addItem( names[i] );
+    if ( mUi.assignedUserName->findText( name ) < 0 )
+        mUi.assignedUserName->addItem( name );
 }
 
 void CampaignDetails::disableGroupBoxes()

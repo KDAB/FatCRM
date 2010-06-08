@@ -22,7 +22,6 @@ public:
     void clearFields();
     void addCampaignData( const QString &name,  const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
-    void fillCombos();
     void disableGroupBoxes();
     inline QMap<QString, QString> campaignData() {return mData;}
     inline  QMap<QString, QString> campaignsData() {return mCampaignsData;}

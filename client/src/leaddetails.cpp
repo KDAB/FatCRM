@@ -237,24 +237,15 @@ void LeadDetails::slotSaveLead()
 void LeadDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
     mCampaignsData.insert( campaignName, campaignId );
+    if ( mUi.campaignName->findText( campaignName ) < 0 )
+        mUi.campaignName->addItem( campaignName );
 }
 
 void LeadDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
-}
-
-void LeadDetails::fillCombos()
-{
-
-    QList<QString> names = mCampaignsData.uniqueKeys();
-    // campaings
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.campaignName->addItem( names[i] );
-    // assigned to
-    names = mAssignedToData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.assignedUserName->addItem( names[i] );
+    if ( mUi.assignedUserName->findText( name ) < 0 )
+        mUi.assignedUserName->addItem( name );
 }
 
 void LeadDetails::disableGroupBoxes()

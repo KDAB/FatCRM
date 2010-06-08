@@ -310,12 +310,9 @@ void LeadsPage::addLeadsData()
             lead = item.payload<SugarLead>();
             // code below should be executed from
             // their own pages when implemented
-            ad->addCampaignData( lead.campaignName(), lead.campaignId() );
             ad->addAssignedToData( lead.assignedUserName(), lead.assignedUserId() );
         }
     }
-    // fill leads combo
-    ad->fillCombos();
 }
 
 void LeadsPage::initialize()

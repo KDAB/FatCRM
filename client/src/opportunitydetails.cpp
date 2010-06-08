@@ -246,34 +246,22 @@ void OpportunityDetails::slotSaveOpportunity()
 void OpportunityDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
     mAccountsData.insert( accountName, accountId );
+    if ( mUi.accountName->findText( accountName ) < 0 )
+        mUi.accountName->addItem( accountName );
 }
 
 void OpportunityDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
     mCampaignsData.insert( campaignName, campaignId );
+    if ( mUi.campaignName->findText( campaignName ) < 0 )
+        mUi.campaignName->addItem( campaignName );
 }
 
 void OpportunityDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
-}
-
-void OpportunityDetails::fillCombos()
-{
-
-    QList<QString> names = mAccountsData.uniqueKeys();
-    // fill
-    // accountName combo
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.accountName->addItem( names[i] );
-    // campaign
-    names = mCampaignsData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.campaignName->addItem( names[i] );
-    // assigned to
-    names = mAssignedToData.uniqueKeys();
-    for ( int i = 0; i < names.count(); ++i )
-        mUi.assignedUserName->addItem( names[i] );
+    if ( mUi.assignedUserName->findText( name ) < 0 )
+        mUi.assignedUserName->addItem( name );
 }
 
 void OpportunityDetails::disableGroupBoxes()

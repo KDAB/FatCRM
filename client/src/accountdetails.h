@@ -22,7 +22,6 @@ public:
     void addAccountData( const QString &name,  const QString &id );
     void addCampaignData( const QString &name,  const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
-    void fillCombos();
     void disableGroupBoxes();
     inline QMap<QString, QString> accountData() {return mData;}
 
