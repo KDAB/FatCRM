@@ -221,11 +221,27 @@ void AccountDetails::addAccountData( const QString &accountName,  const QString 
         mUi.parentName->addItem( accountName );
 }
 
+void AccountDetails::removeAccountData( const QString &accountName )
+{
+    mAccountsData.remove( accountName );
+    int index = mUi.parentName->findText( accountName );
+    if ( index >= 0 )
+        mUi.parentName->removeItem( index );
+}
+
 void AccountDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
     mCampaignsData.insert( campaignName, campaignId );
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
+}
+
+void AccountDetails::removeCampaignData( const QString &campaignName )
+{
+    mCampaignsData.remove( campaignName );
+    int index = mUi.campaignName->findText( campaignName );
+    if ( index >= 0 )
+        mUi.campaignName->removeItem( index );
 }
 
 void AccountDetails::addAssignedToData( const QString &name, const QString &id )
@@ -234,6 +250,8 @@ void AccountDetails::addAssignedToData( const QString &name, const QString &id )
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
 }
+
+// Pending (michel) add a remove method when we have the source module
 
 void AccountDetails::disableGroupBoxes()
 {

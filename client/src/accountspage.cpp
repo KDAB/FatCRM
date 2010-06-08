@@ -235,6 +235,8 @@ void AccountsPage::slotRemoveAccount()
     const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
     Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
+    removeAccountsData( item );
+
     if ( item.isValid() ) {
         // job starts automatically
         // TODO connect to result() signal for error handling
@@ -255,6 +257,22 @@ void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
         //model items are loaded
         if ( mUi.accountsTV->model()->rowCount() == mAccountsCollection.statistics().count() )
             addAccountsData();
+}
+
+void AccountsPage::removeAccountsData( const Item &item )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    AccountDetails *accountDetails = w->accountDetailsWidget();
+    ContactDetails *contactDetails = w->contactDetailsWidget();
+    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
+
+    if ( item.hasPayload<SugarAccount>() ) {
+        SugarAccount account;
+        account = item.payload<SugarAccount>();
+        accountDetails->removeAccountData( account.name() );
+        contactDetails->removeAccountData( account.name() );
+        opportunityDetails->removeAccountData( account.name() );
+    }
 }
 
 void AccountsPage::addAccountsData()

@@ -21,6 +21,7 @@ public:
     void setItem( const Akonadi::Item &item );
     void clearFields();
     void addCampaignData( const QString &name,  const QString &id );
+    void removeCampaignData( const QString &campaignName );
     void addAssignedToData( const QString &name, const QString &id );
     void disableGroupBoxes();
     inline QMap<QString, QString> campaignData() {return mData;}

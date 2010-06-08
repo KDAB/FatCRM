@@ -20,7 +20,9 @@ public:
     void setItem( const Akonadi::Item &item );
     void clearFields();
     void addAccountData( const QString &name, const QString &id );
+    void removeAccountData( const QString &accountName );
     void addCampaignData( const QString &name,  const QString &id );
+    void removeCampaignData( const QString &campaignName );
     void addReportsToData( const QString &name, const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
     void disableGroupBoxes();

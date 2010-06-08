@@ -225,6 +225,11 @@ void CampaignDetails::addCampaignData( const QString &campaignName,  const QStri
     mCampaignsData.insert( campaignName, campaignId );
 }
 
+void CampaignDetails::removeCampaignData( const QString &campaignName )
+{
+    mCampaignsData.remove( campaignName );
+}
+
 void CampaignDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );

@@ -39,6 +39,7 @@ public Q_SLOTS:
 private:
     void initialize();
     void setupCachePolicy();
+    void removeAccountsData( const Akonadi::Item &item );
 
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mAccountsCollection;

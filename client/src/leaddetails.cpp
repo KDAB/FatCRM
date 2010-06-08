@@ -241,6 +241,14 @@ void LeadDetails::addCampaignData( const QString &campaignName,  const QString &
         mUi.campaignName->addItem( campaignName );
 }
 
+void LeadDetails::removeCampaignData( const QString &campaignName )
+{
+    mCampaignsData.remove( campaignName );
+    int index = mUi.campaignName->findText( campaignName );
+    if ( index >= 0 )
+        mUi.campaignName->removeItem( index );
+}
+
 void LeadDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );

@@ -212,6 +212,8 @@ void CampaignsPage::slotRemoveCampaign()
     const QModelIndex index = mUi.campaignsTV->selectionModel()->currentIndex();
     Item item = mUi.campaignsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
+    removeCampaignsData( item );
+
     if ( item.isValid() ) {
         // job starts automatically
         // TODO connect to result() signal for error handling
@@ -221,6 +223,8 @@ void CampaignsPage::slotRemoveCampaign()
     const QModelIndex newIndex = mUi.campaignsTV->selectionModel()->currentIndex();
     if ( !index.isValid() )
         mUi.removeCampaignPB->setEnabled( false );
+
+
 }
 
 void CampaignsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
@@ -232,6 +236,26 @@ void CampaignsPage::slotSetCurrent( const QModelIndex& index, int start, int end
         //model items are loaded
         if ( mUi.campaignsTV->model()->rowCount() == mCampaignsCollection.statistics().count() )
             addCampaignsData();
+}
+
+void CampaignsPage::removeCampaignsData( const Item &item )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    AccountDetails *accountDetails = w->accountDetailsWidget();
+    CampaignDetails *campaignDetails = w->campaignDetailsWidget();
+    ContactDetails *contactDetails = w->contactDetailsWidget();
+    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
+    LeadDetails *leadDetails = w->leadDetailsWidget();
+
+    if ( item.hasPayload<SugarCampaign>() ) {
+        SugarCampaign campaign;
+        campaign = item.payload<SugarCampaign>();
+        accountDetails->removeCampaignData( campaign.name() );
+        contactDetails->removeCampaignData( campaign.name() );
+        opportunityDetails->removeCampaignData( campaign.name() );
+        leadDetails->removeCampaignData( campaign.name() );
+        campaignDetails->removeCampaignData( campaign.name() );
+    }
 }
 
 void CampaignsPage::addCampaignsData()

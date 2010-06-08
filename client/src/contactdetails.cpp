@@ -263,11 +263,27 @@ void ContactDetails::addAccountData( const QString &accountName,  const QString 
         mUi.accountName->addItem( accountName );
 }
 
+void ContactDetails::removeAccountData( const QString &accountName )
+{
+    mAccountsData.remove( accountName );
+    int index = mUi.accountName->findText( accountName );
+    if ( index >= 0 )
+        mUi.accountName->removeItem( index );
+}
+
 void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
     mCampaignsData.insert( campaignName, campaignId );
     if ( mUi.campaign->findText( campaignName ) < 0 )
         mUi.campaign->addItem( campaignName );
+}
+
+void ContactDetails::removeCampaignData( const QString &campaignName )
+{
+    mCampaignsData.remove( campaignName );
+    int index = mUi.campaign->findText( campaignName );
+    if ( index >= 0 )
+        mUi.campaign->removeItem( index );
 }
 
 void ContactDetails::addReportsToData( const QString &name, const QString &id )
@@ -277,12 +293,16 @@ void ContactDetails::addReportsToData( const QString &name, const QString &id )
         mUi.reportsTo->addItem( name );
 }
 
+// Pending (michel) add a remove method when we have the source module
+
 void ContactDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
     if ( mUi.assignedTo->findText( name ) < 0 )
         mUi.assignedTo->addItem( name );
 }
+
+// Pending (michel) add a remove method when we have the source module
 
 void ContactDetails::disableGroupBoxes()
 {
