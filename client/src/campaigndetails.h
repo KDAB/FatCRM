@@ -46,7 +46,8 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveCampaign();
     void slotSetModifyFlag( bool );
-    void slotSetDateClosed();
+    void slotSetStartDate();
+    void slotSetEndDate();
 };
 
 

@@ -55,10 +55,10 @@ void CampaignDetails::initialize()
     mUi.endCalendarWidget->setLayout( endLayout );
 
     connect( mStartDateCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetDateClosed() ) );
+             this, SLOT( slotSetStartDate() ) );
 
     connect( mEndDateCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetDateClosed() ) );
+             this, SLOT( slotSetEndDate() ) );
 
     connect( mUi.objective, SIGNAL( textChanged() ),
              this, SLOT( slotEnableSaving() ) );
@@ -241,10 +241,14 @@ void CampaignDetails::disableGroupBoxes()
         gb->setChecked( false );
 }
 
-void CampaignDetails::slotSetDateClosed()
+void CampaignDetails::slotSetStartDate()
 {
-    if ( QObject::sender()->objectName().contains( "start" ) )
-        mUi.startDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
-    else
-        mUi.endDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mUi.startDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mStartDateCalendarButton->calendarWidget()->close();
+}
+
+void CampaignDetails::slotSetEndDate()
+{
+    mUi.endDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mEndDateCalendarButton->calendarWidget()->close();
 }

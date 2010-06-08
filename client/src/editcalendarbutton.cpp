@@ -18,7 +18,7 @@ EditCalendarButton::~EditCalendarButton()
 void EditCalendarButton::mousePressEvent( QMouseEvent* e )
 {
     if ( mCalendar->isVisible() )
-        mCalendar->hide();
+        mCalendar->close();
     else {
         mCalendar->move( e->globalPos() );
         mCalendar->show();
