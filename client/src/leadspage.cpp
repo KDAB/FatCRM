@@ -45,7 +45,7 @@ void LeadsPage::slotResourceSelectionChanged( const QByteArray &identifier )
      * of the currently selected resource, filtering by MIME type.
      * include statistics to get the number of items in each collection
      */
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
+    CollectionFetchJob *job = new CollectionFetchJob( mLeadsCollection.root(), CollectionFetchJob::Recursive );
     job->fetchScope().setResource( identifier );
     job->fetchScope().setContentMimeTypes( QStringList() << SugarLead::mimeType() );
     job->fetchScope().setIncludeStatistics( true );

@@ -46,7 +46,7 @@ void CampaignsPage::slotResourceSelectionChanged( const QByteArray &identifier )
      * of the currently selected resource, filtering by MIME type.
      * include statistics to get the number of items in each collection
      */
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
+    CollectionFetchJob *job = new CollectionFetchJob( mCampaignsCollection.root(), CollectionFetchJob::Recursive );
     job->fetchScope().setResource( identifier );
     job->fetchScope().setContentMimeTypes( QStringList() << SugarCampaign::mimeType() );
     job->fetchScope().setIncludeStatistics( true );
