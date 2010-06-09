@@ -15,6 +15,7 @@ SugarClient::SugarClient()
     : QMainWindow()
 {
     mUi.setupUi( this );
+    initialize();
 
     /*
      * this creates an overlay in case Akonadi is not running,
@@ -22,8 +23,8 @@ SugarClient::SugarClient()
      */
     Akonadi::Control::widgetNeedsAkonadi( this );
 
-    QMetaObject::invokeMethod( this, "slotDelayedInit", Qt::QueuedConnection );
-    initialize();
+    QMetaObject::invokeMethod( this, "slotDelayedInit", Qt::AutoConnection );
+
 }
 
 SugarClient::~SugarClient()

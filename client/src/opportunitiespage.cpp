@@ -59,11 +59,9 @@ void OpportunitiesPage::slotCollectionFetchResult( KJob *job )
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
 
     // look for the "Opportunities" collection
-    int i = 0;
     Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
         if ( collection.remoteId() == QLatin1String( "Opportunities" ) ) {
             mOpportunitiesCollection = collection;
-            i++;
             break;
         }
     }

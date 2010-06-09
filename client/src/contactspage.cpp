@@ -61,11 +61,9 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
 
     // look for the "Contacts" collection
-    int i = 0;
     Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
         if ( collection.remoteId() == QLatin1String( "Contacts" ) ) {
             mContactsCollection = collection;
-            i++;
             break;
         }
     }
