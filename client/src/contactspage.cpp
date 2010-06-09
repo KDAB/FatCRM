@@ -359,18 +359,13 @@ void ContactsPage::addAccountsData()
 
 void ContactsPage::initialize()
 {
-    QStringList filtersLabels;
-    filtersLabels << QString( "All Contacts" )
-                  << QString( "Birthdays this month" );
-    mUi.filtersCB->addItems( filtersLabels );
+
     mUi.contactsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
     connect( mUi.newContactPB, SIGNAL( clicked() ),
              this, SLOT( slotNewContactClicked() ) );
     connect( mUi.removeContactPB, SIGNAL( clicked() ),
              this, SLOT( slotRemoveContact() ) );
-    connect( mUi.filtersCB, SIGNAL( currentIndexChanged( const QString& ) ),
-             this,  SLOT( slotFilterChanged( const QString& ) ) );
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
@@ -435,9 +430,4 @@ void ContactsPage::setupCachePolicy()
     mContactsCollection.setCachePolicy( policy );
     CollectionModifyJob *job = new CollectionModifyJob( mContactsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
-}
-
-void ContactsPage::slotFilterChanged( const QString& filterString )
-{
-    Q_UNUSED( filterString );
 }

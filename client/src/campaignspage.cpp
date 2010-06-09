@@ -353,8 +353,3 @@ void CampaignsPage::setupCachePolicy()
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
 
-void CampaignsPage::slotFilterChanged( const QString& filterString )
-{
-    Q_UNUSED( filterString );
-}
-

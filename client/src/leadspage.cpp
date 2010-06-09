@@ -380,8 +380,3 @@ void LeadsPage::setupCachePolicy()
     CollectionModifyJob *job = new CollectionModifyJob( mLeadsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
-
-void LeadsPage::slotFilterChanged( const QString& filterString )
-{
-    Q_UNUSED( filterString );
-}

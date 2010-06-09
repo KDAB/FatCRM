@@ -49,7 +49,6 @@ private Q_SLOTS:
     void slotCollectionFetchResult( KJob *job );
     void slotOpportunityChanged( const Akonadi::Item &item );
     void slotNewOpportunityClicked();
-    void slotFilterChanged( const QString& text );
     void slotAddOpportunity();
     void slotModifyOpportunity();
     void slotRemoveOpportunity();

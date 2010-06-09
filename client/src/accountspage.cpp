@@ -365,8 +365,3 @@ void AccountsPage::setupCachePolicy()
     CollectionModifyJob *job = new CollectionModifyJob( mAccountsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
-
-void AccountsPage::slotFilterChanged( const QString& filterString )
-{
-    Q_UNUSED( filterString );
-}

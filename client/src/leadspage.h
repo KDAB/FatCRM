@@ -49,7 +49,6 @@ private Q_SLOTS:
     void slotCollectionFetchResult( KJob *job );
     void slotLeadChanged( const Akonadi::Item &item );
     void slotNewLeadClicked();
-    void slotFilterChanged( const QString& text );
     void slotAddLead();
     void slotModifyLead();
     void slotRemoveLead();

@@ -318,9 +318,3 @@ void OpportunitiesPage::setupCachePolicy()
     CollectionModifyJob *job = new CollectionModifyJob( mOpportunitiesCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
-
-void OpportunitiesPage::slotFilterChanged( const QString& filterString )
-{
-    Q_UNUSED( filterString );
-}
-

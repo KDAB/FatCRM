@@ -50,7 +50,6 @@ private Q_SLOTS:
     void slotCollectionFetchResult( KJob *job );
     void slotCampaignChanged( const Akonadi::Item &item );
     void slotNewCampaignClicked();
-    void slotFilterChanged( const QString& text );
     void slotAddCampaign();
     void slotModifyCampaign();
     void slotRemoveCampaign();
