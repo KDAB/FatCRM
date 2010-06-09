@@ -22,7 +22,6 @@ SugarClient::SugarClient()
      * allowing the user to restart it
      */
     Akonadi::Control::widgetNeedsAkonadi( this );
-
     QMetaObject::invokeMethod( this, "slotDelayedInit", Qt::AutoConnection );
 
 }
@@ -43,7 +42,6 @@ void SugarClient::slotDelayedInit()
              mLeadsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
              mCampaignsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-
 
     // monitor Akonadi agents so we can check for SugarCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
@@ -161,6 +159,22 @@ void SugarClient::slotResourceSelectionChanged( int index )
     }
 }
 
+void SugarClient::slotReload()
+{
+    int index = -1;
+    for ( int i = 0; i < mUi.resourceSelector->count(); ++i ) {
+        if ( mUi.resourceSelector->itemText( i ).contains( "SugarCRM" ) ) {
+            index = i;
+            break;
+        }
+    }
+    if ( index >= 0 ) {
+        AgentInstance agent = mUi.resourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+        if ( agent.isValid() )
+            emit resourceSelected( agent.identifier().toLatin1() );
+    }
+}
+
 void SugarClient::slotContactItemChanged()
 {
     if ( mContactDetailsDock->toggleViewAction()->isChecked() )
@@ -246,6 +260,7 @@ void SugarClient::slotShowCampaignDetailsDock()
 void SugarClient::setupActions()
 {
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
+    connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
     connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );

@@ -27,6 +27,11 @@
           <property name="sizeAdjustPolicy">
            <enum>QComboBox::AdjustToContents</enum>
           </property>
+          <item>
+           <property name="text">
+            <string/>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -62,6 +67,7 @@
      <string>File</string>
     </property>
     <addaction name="actionSyncronize"/>
+    <addaction name="actionReload"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -69,6 +75,11 @@
   <action name="actionSyncronize">
    <property name="text">
     <string>Syncronize</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="text">
+    <string>Reload</string>
    </property>
   </action>
  </widget>

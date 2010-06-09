@@ -36,6 +36,7 @@ AccountsPage::~AccountsPage()
 
 void AccountsPage::slotResourceSelectionChanged( const QByteArray &identifier )
 {
+    qDebug() << " AccountsPage::slotResourceSelectionChanged - identifier " << identifier;
     if ( mAccountsCollection.isValid() ) {
         mChangeRecorder->setCollectionMonitored( mAccountsCollection, false );
     }
@@ -45,7 +46,7 @@ void AccountsPage::slotResourceSelectionChanged( const QByteArray &identifier )
      * of the currently selected resource, filtering by MIME type.
      * include statistics to get the number of items in each collection
      */
-    CollectionFetchJob *job = new CollectionFetchJob( mAccountsCollection.root(), CollectionFetchJob::Recursive );
+    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
     job->fetchScope().setResource( identifier );
     job->fetchScope().setContentMimeTypes( QStringList() << SugarAccount::mimeType() );
     job->fetchScope().setIncludeStatistics( true );

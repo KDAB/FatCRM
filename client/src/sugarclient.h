@@ -82,6 +82,7 @@ private:
 
 private Q_SLOTS:
     void slotDelayedInit();
+    void slotReload();
     void slotResourceSelectionChanged( int index );
     void slotAccountItemChanged();
     void slotOpportunityItemChanged();
