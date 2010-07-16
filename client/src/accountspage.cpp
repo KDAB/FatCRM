@@ -36,7 +36,7 @@ AccountsPage::~AccountsPage()
 
 void AccountsPage::slotResourceSelectionChanged( const QByteArray &identifier )
 {
-    qDebug() << " AccountsPage::slotResourceSelectionChanged - identifier " << identifier;
+
     if ( mAccountsCollection.isValid() ) {
         mChangeRecorder->setCollectionMonitored( mAccountsCollection, false );
     }
