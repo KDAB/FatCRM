@@ -58,14 +58,13 @@ void SugarClient::slotDelayedInit()
 
 void SugarClient::initialize()
 {
-  resize( 900, 900 );
-  createMenus();
-  createTabs();
-  createDockWidgets();
-  createToolBars();
-  setupActions();
-  // initialize view actions
-  slotManageItemDetailsView( 0 );
+    resize( 900, 900 );
+    createMenus();
+    createTabs();
+    createDockWidgets();
+    setupActions();
+    // initialize view actions
+    slotManageItemDetailsView( 0 );
 }
 
 void SugarClient::createMenus()
@@ -73,26 +72,11 @@ void SugarClient::createMenus()
     mViewMenu = menuBar()->addMenu( tr( "&View" ) );
 }
 
-void SugarClient::createToolBars()
-{
-    QToolBar *toolBar = addToolBar( tr( "&View" ) );
-   toolBar->addAction( mViewAccountAction );
-   toolBar->addSeparator();
-   toolBar->addAction( mViewOpportunityAction );
-   toolBar->addSeparator();
-   toolBar->addAction( mViewLeadAction );
-   toolBar->addSeparator();
-   toolBar->addAction( mViewContactAction );
-   toolBar->addSeparator();
-   toolBar->addAction( mViewCampaignAction );
-}
-
 void SugarClient::createDockWidgets()
 {
     mContactDetailsDock = new QDockWidget(tr("Contact Details"), this );
     mContactDetailsWidget = new ContactDetails(mContactDetailsDock);
     mContactDetailsDock->setWidget( mContactDetailsWidget );
-    mContactDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewContactAction = mContactDetailsDock->toggleViewAction();
     mViewMenu->addAction(mViewContactAction);
@@ -100,7 +84,6 @@ void SugarClient::createDockWidgets()
     mAccountDetailsDock = new QDockWidget(tr("Account Details"), this );
     mAccountDetailsWidget = new AccountDetails(mAccountDetailsDock);
     mAccountDetailsDock->setWidget( mAccountDetailsWidget );
-    mAccountDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mAccountDetailsDock );
     mViewAccountAction = mAccountDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewAccountAction );
@@ -108,15 +91,13 @@ void SugarClient::createDockWidgets()
     mOpportunityDetailsDock = new QDockWidget(tr("Opportunity Details"), this );
     mOpportunityDetailsWidget = new OpportunityDetails(mOpportunityDetailsDock);
     mOpportunityDetailsDock->setWidget( mOpportunityDetailsWidget );
-    mOpportunityDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mOpportunityDetailsDock );
     mViewOpportunityAction = mOpportunityDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewOpportunityAction );
 
     mLeadDetailsDock = new QDockWidget(tr("Lead Details"), this );
     mLeadDetailsWidget = new LeadDetails(mLeadDetailsDock);
-    mLeadDetailsDock->setWidget( mLeadDetailsWidget );
-    mLeadDetailsDock->setHidden( true );
+    mLeadDetailsDock ->setWidget( mLeadDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mLeadDetailsDock );
     mViewLeadAction = mLeadDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewLeadAction );
@@ -124,32 +105,19 @@ void SugarClient::createDockWidgets()
     mCampaignDetailsDock = new QDockWidget(tr("Campaign Details"), this );
     mCampaignDetailsWidget = new CampaignDetails(mCampaignDetailsDock);
     mCampaignDetailsDock->setWidget( mCampaignDetailsWidget );
-    mCampaignDetailsDock->setHidden( true );
     addDockWidget( Qt::BottomDockWidgetArea, mCampaignDetailsDock );
     mViewCampaignAction = mCampaignDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewCampaignAction );
-
-    connect( mContactsPage, SIGNAL( contactItemChanged() ),
-            this, SLOT( slotContactItemChanged() ) );
-    connect( mContactsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowContactDetailsDock() ) );
-    connect( mAccountsPage, SIGNAL( accountItemChanged() ),
-            this, SLOT( slotAccountItemChanged() ) );
-    connect( mAccountsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowAccountDetailsDock() ) );
-    connect( mOpportunitiesPage, SIGNAL( opportunityItemChanged() ),
-            this, SLOT( slotOpportunityItemChanged() ) );
-    connect( mOpportunitiesPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowOpportunityDetailsDock() ) );
-    connect( mLeadsPage, SIGNAL( leadItemChanged() ),
-            this, SLOT( slotLeadItemChanged() ) );
-    connect( mLeadsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowLeadDetailsDock() ) );
-    connect( mCampaignsPage, SIGNAL( campaignItemChanged() ),
-            this, SLOT( slotCampaignItemChanged() ) );
-    connect( mCampaignsPage, SIGNAL( showDetails() ),
-            this, SLOT( slotShowCampaignDetailsDock() ) );
 }
+
+void SugarClient::slotManageDetailsDisplay( bool value )
+{
+    if ( sender() == mUi.showDetails )
+        slotManageItemDetailsView( mUi.tabWidget->currentIndex() );
+    else
+        slotDetachDockViews( value );
+}
+
 
 void SugarClient::slotResourceSelectionChanged( int index )
 {
@@ -178,88 +146,6 @@ void SugarClient::slotReload()
     }
 }
 
-void SugarClient::slotContactItemChanged()
-{
-    if ( mContactDetailsDock->toggleViewAction()->isChecked() )
-        mContactDetailsDock->setVisible( true );
-    mContactDetailsWidget->disableGroupBoxes();
-}
-
-void SugarClient::slotAccountItemChanged()
-{
-      if ( mAccountDetailsDock->toggleViewAction()->isChecked() )
-        mAccountDetailsDock->setVisible( true );
-    mAccountDetailsWidget->disableGroupBoxes();
-
-}
-
-void SugarClient::slotOpportunityItemChanged()
-{
-      if ( mOpportunityDetailsDock->toggleViewAction()->isChecked() )
-        mOpportunityDetailsDock->setVisible( true );
-    mOpportunityDetailsWidget->disableGroupBoxes();
-
-}
-
-void SugarClient::slotLeadItemChanged()
-{
-      if ( mLeadDetailsDock->toggleViewAction()->isChecked() )
-        mLeadDetailsDock->setVisible( true );
-    mLeadDetailsWidget->disableGroupBoxes();
-}
-
-void SugarClient::slotCampaignItemChanged()
-{
-      if ( mCampaignDetailsDock->toggleViewAction()->isChecked() )
-        mCampaignDetailsDock->setVisible( true );
-    mCampaignDetailsWidget->disableGroupBoxes();
-}
-
-
-void SugarClient::slotShowContactDetailsDock()
-{
-    if ( !mContactDetailsDock->toggleViewAction()->isChecked() ) {
-        mContactDetailsDock->toggleViewAction()->setChecked( true );
-        mContactDetailsDock->setVisible( true );
-    }
-}
-
-void SugarClient::slotShowAccountDetailsDock()
-{
-    if ( !mAccountDetailsDock->toggleViewAction()->isChecked() ) {
-        mAccountDetailsDock->toggleViewAction()->setChecked( true );
-        mAccountDetailsDock->setVisible( true );
-    }
-
-}
-
-void SugarClient::slotShowOpportunityDetailsDock()
-{
-    if ( !mOpportunityDetailsDock->toggleViewAction()->isChecked() ) {
-        mOpportunityDetailsDock->toggleViewAction()->setChecked( true );
-        mOpportunityDetailsDock->setVisible( true );
-    }
-
-}
-
-void SugarClient::slotShowLeadDetailsDock()
-{
-    if ( !mLeadDetailsDock->toggleViewAction()->isChecked() ) {
-        mLeadDetailsDock->toggleViewAction()->setChecked( true );
-        mLeadDetailsDock->setVisible( true );
-    }
-
-}
-
-void SugarClient::slotShowCampaignDetailsDock()
-{
-    if ( !mCampaignDetailsDock->toggleViewAction()->isChecked() ) {
-        mCampaignDetailsDock->toggleViewAction()->setChecked( true );
-        mCampaignDetailsDock->setVisible( true );
-    }
-
-}
-
 void SugarClient::setupActions()
 {
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
@@ -268,12 +154,15 @@ void SugarClient::setupActions()
     connect( mUi.actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
+    connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
+    connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mOpportunitiesPage, SLOT( syncronize() ) );
     connect( mOpportunitiesPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mLeadsPage, SLOT( syncronize() ) );
     connect( mLeadsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mCampaignsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -303,86 +192,51 @@ void SugarClient::createTabs()
 
 void SugarClient::slotManageItemDetailsView( int currentTab )
 {
+    bool show = mUi.showDetails->isChecked();
     if ( currentTab == 0 ) { // Accounts
-        if ( mContactDetailsDock->isVisible() )
-            mContactDetailsDock->setVisible( false );
-        if ( mOpportunityDetailsDock->isVisible() )
-            mOpportunityDetailsDock->setVisible( false );
-        if ( mLeadDetailsDock->isVisible() )
-            mLeadDetailsDock->setVisible( false );
-        if ( mCampaignDetailsDock->isVisible() )
-            mCampaignDetailsDock->setVisible( false );
-
-        mViewContactAction->setEnabled( false );
-        mViewOpportunityAction->setEnabled( false );
-        mViewLeadAction->setEnabled( false );
-        mViewCampaignAction->setEnabled( false );
-        mViewAccountAction->setEnabled( true );
+        mContactDetailsDock->setVisible( false );
+        mOpportunityDetailsDock->setVisible( false );
+        mLeadDetailsDock->setVisible( false );
+        mCampaignDetailsDock->setVisible( false );
+        mAccountDetailsDock->setVisible( show );
     }
     else if ( currentTab == 1 ) { // Opportunities
-        if ( mAccountDetailsDock->isVisible() )
-            mAccountDetailsDock->setVisible( false );
-        if ( mContactDetailsDock->isVisible() )
-            mContactDetailsDock->setVisible( false );
-        if ( mLeadDetailsDock->isVisible() )
-            mLeadDetailsDock->setVisible( false );
-        if ( mCampaignDetailsDock->isVisible() )
-            mCampaignDetailsDock->setVisible( false );
-
-        mViewAccountAction->setEnabled( false );
-        mViewContactAction->setEnabled( false );
-        mViewLeadAction->setEnabled( false );
-        mViewCampaignAction->setEnabled( false );
-        mViewOpportunityAction->setEnabled( true );
+        mAccountDetailsDock->setVisible( false );
+        mContactDetailsDock->setVisible( false );
+        mLeadDetailsDock->setVisible( false );
+        mCampaignDetailsDock->setVisible( false );
+        mOpportunityDetailsDock->setVisible( show );
     }
     else if ( currentTab == 2 ) { // Leads
-        if ( mAccountDetailsDock->isVisible() )
-            mAccountDetailsDock->setVisible( false );
-        if ( mContactDetailsDock->isVisible() )
-            mContactDetailsDock->setVisible( false );
-        if ( mOpportunityDetailsDock->isVisible() )
-            mOpportunityDetailsDock->setVisible( false );
-        if ( mCampaignDetailsDock->isVisible() )
-            mCampaignDetailsDock->setVisible( false );
-
-        mViewAccountAction->setEnabled( false );
-        mViewContactAction->setEnabled( false );
-        mViewOpportunityAction->setEnabled( false );
-        mViewCampaignAction->setEnabled( false );
-        mViewLeadAction->setEnabled( true );
+        mAccountDetailsDock->setVisible( false );
+        mContactDetailsDock->setVisible( false );
+        mOpportunityDetailsDock->setVisible( false );
+        mCampaignDetailsDock->setVisible( false );
+        mLeadDetailsDock->setVisible( show );
     }
     else if ( currentTab == 3 ) { // Contacts
-        if ( mAccountDetailsDock->isVisible() )
-            mAccountDetailsDock->setVisible( false );
-        if ( mOpportunityDetailsDock->isVisible() )
-            mOpportunityDetailsDock->setVisible( false );
-        if ( mLeadDetailsDock->isVisible() )
-            mLeadDetailsDock->setVisible( false );
-        if ( mCampaignDetailsDock->isVisible() )
-            mCampaignDetailsDock->setVisible( false );
-
-        mViewAccountAction->setEnabled( false );
-        mViewOpportunityAction->setEnabled( false );
-        mViewLeadAction->setEnabled( false );
-        mViewCampaignAction->setEnabled( false );
-        mViewContactAction->setEnabled( true );
+        mAccountDetailsDock->setVisible( false );
+        mOpportunityDetailsDock->setVisible( false );
+        mLeadDetailsDock->setVisible( false );
+        mCampaignDetailsDock->setVisible( false );
+        mContactDetailsDock->setVisible( show );
     }
     else if ( currentTab == 4 ) { // Campaigns
-        if ( mAccountDetailsDock->isVisible() )
-            mAccountDetailsDock->setVisible( false );
-        if ( mOpportunityDetailsDock->isVisible() )
-            mOpportunityDetailsDock->setVisible( false );
-        if ( mLeadDetailsDock->isVisible() )
-            mLeadDetailsDock->setVisible( false );
-        if ( mContactDetailsDock->isVisible() )
-            mContactDetailsDock->setVisible( false );
-
-        mViewAccountAction->setEnabled( false );
-        mViewOpportunityAction->setEnabled( false );
-        mViewLeadAction->setEnabled( false );
-        mViewContactAction->setEnabled( false );
-        mViewCampaignAction->setEnabled( true );
+        mAccountDetailsDock->setVisible( false );
+        mOpportunityDetailsDock->setVisible( false );
+        mLeadDetailsDock->setVisible( false );
+        mContactDetailsDock->setVisible( false );
+        mCampaignDetailsDock->setVisible( show );
     }
+}
+
+void SugarClient::slotDetachDockViews( bool value )
+{
+    mAccountDetailsDock->setFloating( value );
+    mOpportunityDetailsDock->setFloating( value );
+    mLeadDetailsDock->setFloating( value );
+    mCampaignDetailsDock->setFloating( value );
+    mContactDetailsDock->setFloating( value );
 }
 
 void SugarClient::slotLogin()
@@ -398,7 +252,6 @@ void SugarClient::slotLogin()
         mResourceSelector->setCurrentIndex( mResourceSelector->findText( item ) );
 
 }
-
 
 QComboBox* SugarClient::getResourcesCombo( )
 {

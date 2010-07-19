@@ -51,7 +51,6 @@ Q_SIGNALS:
 private:
     void initialize();
     void createMenus();
-    void createToolBars();
     void createDockWidgets();
     void setupActions();
     void createTabs();
@@ -86,18 +85,10 @@ private Q_SLOTS:
     void slotDelayedInit();
     void slotReload();
     void slotResourceSelectionChanged( int index );
-    void slotAccountItemChanged();
-    void slotOpportunityItemChanged();
-    void slotContactItemChanged();
-    void slotLeadItemChanged();
-    void slotCampaignItemChanged();
     void slotShowMessage( const QString& );
-    void slotShowAccountDetailsDock();
-    void slotShowOpportunityDetailsDock();
-    void slotShowLeadDetailsDock();
-    void slotShowContactDetailsDock();
-    void slotShowCampaignDetailsDock();
     void slotManageItemDetailsView( int currentTab );
+    void slotManageDetailsDisplay( bool value );
+    void slotDetachDockViews( bool value );
     void slotLogin();
 
 private:
