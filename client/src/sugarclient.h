@@ -101,10 +101,7 @@ private Q_SLOTS:
     void slotLogin();
 
 private:
-    QComboBox* getResourcesCombo( QString filter = QString() );
-    QDialog* createLoginDialog();
-
-
+    QComboBox* getResourcesCombo();
 };
 
 #endif
