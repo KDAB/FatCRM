@@ -261,6 +261,7 @@ void SugarClient::setupActions()
 {
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
+    connect( mUi.actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
     connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );

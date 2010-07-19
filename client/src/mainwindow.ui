@@ -68,6 +68,8 @@
     </property>
     <addaction name="actionSyncronize"/>
     <addaction name="actionReload"/>
+    <addaction name="separator"/>
+    <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -80,6 +82,11 @@
   <action name="actionReload">
    <property name="text">
     <string>Reload</string>
+   </property>
+  </action>
+  <action name="actionQuit">
+   <property name="text">
+    <string>Quit</string>
    </property>
   </action>
  </widget>
