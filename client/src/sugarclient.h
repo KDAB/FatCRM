@@ -78,6 +78,8 @@ private:
     ContactsPage *mContactsPage;
     CampaignsPage *mCampaignsPage;
 
+    QComboBox * mResourceSelector; // Login;
+
     Ui_MainWindow mUi;
 
 private Q_SLOTS:
@@ -96,6 +98,13 @@ private Q_SLOTS:
     void slotShowContactDetailsDock();
     void slotShowCampaignDetailsDock();
     void slotManageItemDetailsView( int currentTab );
+    void slotLogin();
+
+private:
+    QComboBox* getResourcesCombo( QString filter = QString() );
+    QDialog* createLoginDialog();
+
+
 };
 
 #endif

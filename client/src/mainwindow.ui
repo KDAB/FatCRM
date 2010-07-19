@@ -23,18 +23,6 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QComboBox" name="resourceSelector">
-          <property name="sizeAdjustPolicy">
-           <enum>QComboBox::AdjustToContents</enum>
-          </property>
-          <item>
-           <property name="text">
-            <string/>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -66,6 +54,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionLogin"/>
+    <addaction name="separator"/>
     <addaction name="actionSyncronize"/>
     <addaction name="actionReload"/>
     <addaction name="separator"/>
@@ -74,6 +64,11 @@
    <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLogin">
+   <property name="text">
+    <string>Login</string>
+   </property>
+  </action>
   <action name="actionSyncronize">
    <property name="text">
     <string>Syncronize</string>

@@ -7,6 +7,7 @@
 #include <akonadi/control.h>
 
 #include <QDockWidget>
+#include <QInputDialog>
 #include <QToolBar>
 
 using namespace Akonadi;
@@ -43,17 +44,13 @@ void SugarClient::slotDelayedInit()
     connect( this, SIGNAL( resourceSelected( QByteArray ) ),
              mCampaignsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
 
-    // monitor Akonadi agents so we can check for SugarCRM specific resources
-    AgentInstanceModel *agentModel = new AgentInstanceModel( this );
-    AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel( this );
-    agentFilterModel->addCapabilityFilter( QLatin1String( "SugarCRM" ) );
-    agentFilterModel->setSourceModel( agentModel );
-    mUi.resourceSelector->setModel( agentFilterModel );
+    //initialize member
+    mResourceSelector = getResourcesCombo( "SugarCRM" );
 
-    connect( mUi.resourceSelector, SIGNAL( currentIndexChanged( int ) ),
+    connect( mResourceSelector, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotResourceSelectionChanged( int ) ) );
 
-    slotResourceSelectionChanged( mUi.resourceSelector->currentIndex() );
+    slotResourceSelectionChanged( mResourceSelector->currentIndex() );
 }
 
 void SugarClient::initialize()
@@ -153,23 +150,26 @@ void SugarClient::createDockWidgets()
 
 void SugarClient::slotResourceSelectionChanged( int index )
 {
-    AgentInstance agent = mUi.resourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+    AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
     if ( agent.isValid() ) {
+        QString context = mResourceSelector->itemText( index );
         emit resourceSelected( agent.identifier().toLatin1() );
+        QString contextTitle = QString ( "SugarCRM Client: " ) + "(" + context + ")";
+        setWindowTitle(  contextTitle );
     }
 }
 
 void SugarClient::slotReload()
 {
     int index = -1;
-    for ( int i = 0; i < mUi.resourceSelector->count(); ++i ) {
-        if ( mUi.resourceSelector->itemText( i ).contains( "SugarCRM" ) ) {
+    for ( int i = 0; i < mResourceSelector->count(); ++i ) {
+        if ( mResourceSelector->itemText( i ).contains( "SugarCRM" ) ) {
             index = i;
             break;
         }
     }
     if ( index >= 0 ) {
-        AgentInstance agent = mUi.resourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+        AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
         if ( agent.isValid() )
             emit resourceSelected( agent.identifier().toLatin1() );
     }
@@ -259,6 +259,7 @@ void SugarClient::slotShowCampaignDetailsDock()
 
 void SugarClient::setupActions()
 {
+    connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
@@ -274,7 +275,7 @@ void SugarClient::setupActions()
 
 void SugarClient::slotShowMessage( const QString& message )
 {
-    statusBar()->showMessage( message, 3000 );
+    statusBar()->showMessage( message, 10000 );
 }
 
 void SugarClient::createTabs()
@@ -379,5 +380,44 @@ void SugarClient::slotManageItemDetailsView( int currentTab )
         mViewContactAction->setEnabled( false );
         mViewCampaignAction->setEnabled( true );
     }
+}
+
+void SugarClient::slotLogin()
+{
+    createLoginDialog()->exec();
+}
+
+QDialog* SugarClient::createLoginDialog()
+{
+    QDialog* dialog = new QDialog;
+    dialog->setWindowTitle( tr( "Select Resource" ) );
+    QVBoxLayout * layout = new QVBoxLayout;
+    QComboBox * container = getResourcesCombo();
+    container->setCurrentIndex( container->findText( mResourceSelector->currentText() ) );
+    layout->addWidget( container );
+    QHBoxLayout * hlayout = new QHBoxLayout;
+    QPushButton * OkButton = new QPushButton( QString ( "&Ok" ) );
+    hlayout->addWidget( OkButton );
+    QPushButton * CancelButton = new QPushButton( QString( "&Cancel" ) );
+    hlayout->addWidget( CancelButton );
+    layout->addLayout( hlayout );
+    dialog->setLayout( layout );
+    return dialog;
+}
+
+QComboBox* SugarClient::getResourcesCombo( QString filter )
+{
+    // monitor Akonadi agents so we can check for SugarCRM specific resources
+    AgentInstanceModel *agentModel = new AgentInstanceModel( this );
+    AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel( this );
+    agentFilterModel->setSourceModel( agentModel );
+    //initialize member
+    QComboBox *container = new QComboBox();
+    if ( !filter.isEmpty() )
+        agentFilterModel->addCapabilityFilter( filter.toLatin1() );
+    container->setModel( agentFilterModel );
+
+    return container;
+
 }
 #include "sugarclient.moc"
