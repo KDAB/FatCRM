@@ -90,7 +90,6 @@ void LeadsPage::slotLeadChanged( const Item &item )
             connect( w->leadDetailsWidget(), SIGNAL( modifyLead() ),
                      this, SLOT( slotModifyLead( ) ) );
         }
-        emit leadItemChanged();
     }
 }
 
@@ -103,8 +102,6 @@ void LeadsPage::slotNewLeadClicked()
         connect( cd, SIGNAL( saveLead() ),
                  this, SLOT( slotAddLead( ) ) );
     }
-
-    emit showDetails();
 }
 
 void LeadsPage::slotAddLead()

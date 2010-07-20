@@ -29,9 +29,7 @@ public:
     void addLeadsData();
 
 Q_SIGNALS:
-    void leadItemChanged();
     void statusMessage( const QString& );
-    void showDetails();
 
 public Q_SLOTS:
     void syncronize();

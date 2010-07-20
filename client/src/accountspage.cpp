@@ -91,7 +91,6 @@ void AccountsPage::slotAccountChanged( const Item &item )
             connect( w->accountDetailsWidget(), SIGNAL( modifyAccount() ),
                  this, SLOT( slotModifyAccount( ) ) );
         }
-        emit accountItemChanged();
     }
 }
 
@@ -104,8 +103,6 @@ void AccountsPage::slotNewAccountClicked()
         connect( cd, SIGNAL( saveAccount() ),
                  this, SLOT( slotAddAccount( ) ) );
     }
-
-    emit showDetails();
 }
 
 void AccountsPage::slotAddAccount()

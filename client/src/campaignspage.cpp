@@ -91,7 +91,6 @@ void CampaignsPage::slotCampaignChanged( const Item &item )
             connect( w->campaignDetailsWidget(), SIGNAL( modifyCampaign() ),
                  this, SLOT( slotModifyCampaign( ) ) );
         }
-        emit campaignItemChanged();
     }
 }
 
@@ -104,8 +103,6 @@ void CampaignsPage::slotNewCampaignClicked()
         connect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
     }
-
-    emit showDetails();
 }
 
 void CampaignsPage::slotAddCampaign()

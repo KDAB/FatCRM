@@ -90,7 +90,6 @@ void OpportunitiesPage::slotOpportunityChanged( const Item &item )
             connect( w->opportunityDetailsWidget(), SIGNAL( modifyOpportunity() ),
                  this, SLOT( slotModifyOpportunity( ) ) );
         }
-        emit opportunityItemChanged();
     }
 }
 
@@ -103,8 +102,6 @@ void OpportunitiesPage::slotNewOpportunityClicked()
         connect( cd, SIGNAL( saveOpportunity() ),
                  this, SLOT( slotAddOpportunity( ) ) );
     }
-
-    emit showDetails();
 }
 
 void OpportunitiesPage::slotAddOpportunity()

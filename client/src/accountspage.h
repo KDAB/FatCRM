@@ -29,9 +29,7 @@ public:
      void addAccountsData();
 
 Q_SIGNALS:
-    void accountItemChanged();
     void statusMessage( const QString& );
-    void showDetails();
 
 public Q_SLOTS:
     void syncronize();

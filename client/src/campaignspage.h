@@ -29,9 +29,7 @@ public:
      void addCampaignsData();
 
 Q_SIGNALS:
-    void campaignItemChanged();
     void statusMessage( const QString& );
-    void showDetails();
 
 public Q_SLOTS:
     void syncronize();

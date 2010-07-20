@@ -92,9 +92,7 @@ void ContactsPage::slotContactChanged( const Item &item )
             connect( w->contactDetailsWidget(), SIGNAL( modifyContact() ),
                  this, SLOT( slotModifyContact( ) ) );
         }
-        emit contactItemChanged();
     }
-
 }
 
 void ContactsPage::slotNewContactClicked()
@@ -106,8 +104,6 @@ void ContactsPage::slotNewContactClicked()
         connect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
     }
-
-    emit showDetails();
 }
 
 void ContactsPage::slotAddContact()
