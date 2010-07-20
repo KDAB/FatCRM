@@ -23,7 +23,8 @@ public:
     void addCampaignData( const QString &name,  const QString &id );
     void removeCampaignData( const QString &campaignName );
     void addAssignedToData( const QString &name, const QString &id );
-    void disableGroupBoxes();
+    void reset();
+
     inline QMap<QString, QString> campaignData() {return mData;}
     inline  QMap<QString, QString> campaignsData() {return mCampaignsData;}
 
@@ -31,6 +32,7 @@ Q_SIGNALS:
     void saveCampaign();
     void modifyCampaign();
 
+    friend class CampaignsPage;
 private:
     void initialize();
 

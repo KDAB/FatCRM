@@ -2,6 +2,7 @@
 #include "leadstreemodel.h"
 #include "leadsfilterproxymodel.h"
 #include "sugarclient.h"
+#include "enums.h"
 
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
@@ -19,6 +20,8 @@
 #include <akonadi/collectionmodifyjob.h>
 
 #include "kdcrmdata/sugarlead.h"
+
+
 
 using namespace Akonadi;
 
@@ -86,8 +89,9 @@ void LeadsPage::slotLeadChanged( const Item &item )
     if ( item.isValid() && item.hasPayload<SugarLead>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
-            w->leadDetailsWidget()->setItem( item );
-            connect( w->leadDetailsWidget(), SIGNAL( modifyLead() ),
+            LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+            ld->setItem( item );
+            connect( ld, SIGNAL( modifyLead() ),
                      this, SLOT( slotModifyLead( ) ) );
         }
     }
@@ -97,10 +101,13 @@ void LeadsPage::slotNewLeadClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        LeadDetails *cd = w->leadDetailsWidget();
-        cd->clearFields();
-        connect( cd, SIGNAL( saveLead() ),
+        w->displayDockWidgets();
+        LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+        ld->clearFields();
+        connect( ld, SIGNAL( saveLead() ),
                  this, SLOT( slotAddLead( ) ) );
+        // reset
+        ld->initialize();
     }
 }
 
@@ -108,8 +115,9 @@ void LeadsPage::slotAddLead()
 {
 
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
     QMap<QString, QString> data;
-    data = w->leadDetailsWidget()->leadData();
+    data = ld->leadData();
     SugarLead lead;
     lead.setDateEntered( data.value( "dateEntered" ) );
     lead.setDateModified( data.value( "dateModified" ) );
@@ -178,7 +186,7 @@ void LeadsPage::slotAddLead()
     ItemCreateJob *job = new ItemCreateJob( item, mLeadsCollection );
     Q_UNUSED( job );
 
-    disconnect( w->leadDetailsWidget(), SIGNAL( saveLead() ),
+    disconnect( ld, SIGNAL( saveLead() ),
                 this, SLOT( slotAddLead( ) ) );
 }
 
@@ -194,8 +202,9 @@ void LeadsPage::slotModifyLead()
         }
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
         QMap<QString, QString> data;
-        data = w->leadDetailsWidget()->leadData();
+        data = ld->leadData();
         lead.setDateEntered( data.value( "dateEntered" ) );
         lead.setDateModified( data.value( "dateModified" ) );
         lead.setModifiedUserId( data.value( "modifiedUserId" ) );
@@ -260,6 +269,7 @@ void LeadsPage::slotModifyLead()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
+        ld->initialize();
     }
 }
 
@@ -293,7 +303,7 @@ void LeadsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
 void LeadsPage::addLeadsData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    LeadDetails *ad = w->leadDetailsWidget();
+    LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
 
     QModelIndex index;
     Item item;
@@ -305,7 +315,7 @@ void LeadsPage::addLeadsData()
             lead = item.payload<SugarLead>();
             // code below should be executed from
             // their own pages when implemented
-            ad->addAssignedToData( lead.assignedUserName(), lead.assignedUserId() );
+            ld->addAssignedToData( lead.assignedUserName(), lead.assignedUserId() );
         }
     }
 }

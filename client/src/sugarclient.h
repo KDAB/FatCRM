@@ -12,6 +12,7 @@
 #include <leadspage.h>
 #include <contactspage.h>
 #include <campaignspage.h>
+#include "enums.h"
 
 #include <QMainWindow>
 
@@ -25,25 +26,9 @@ public:
 
     ~SugarClient();
 
-    inline AccountDetails *accountDetailsWidget() {
-        return mAccountDetailsWidget;
-    }
-
-    inline OpportunityDetails *opportunityDetailsWidget() {
-        return mOpportunityDetailsWidget;
-    }
-
-    inline LeadDetails *leadDetailsWidget() {
-        return mLeadDetailsWidget;
-    }
-
-    inline ContactDetails *contactDetailsWidget() {
-        return mContactDetailsWidget;
-    }
-
-    inline CampaignDetails *campaignDetailsWidget() {
-        return mCampaignDetailsWidget;
-    }
+    inline void displayDockWidgets( bool value = true )
+    { mUi.showDetails->setChecked( value ); }
+    QWidget *detailsWidget( DetailsType type );
 
 Q_SIGNALS:
     void resourceSelected( const QByteArray &identifier );
@@ -88,10 +73,11 @@ private Q_SLOTS:
     void slotShowMessage( const QString& );
     void slotManageItemDetailsView( int currentTab );
     void slotManageDetailsDisplay( bool value );
-    void slotDetachDockViews( bool value );
+
     void slotLogin();
 
 private:
+    void detachDockViews( bool value );
     QComboBox* getResourcesCombo();
 };
 

@@ -135,7 +135,7 @@
          <string>Details</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -358,7 +358,7 @@
          <string>Other Details</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -429,7 +429,7 @@
          <string>Description:</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="checked">
          <bool>false</bool>

@@ -21,7 +21,6 @@ AccountDetails::~AccountDetails()
 
 void AccountDetails::initialize()
 {
-
     QList<QLineEdit*> lineEdits =  mUi.accountInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
@@ -32,28 +31,36 @@ void AccountDetails::initialize()
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-     QList<QGroupBox*> groupBoxes =
-        mUi.accountInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotEnableSaving() ) );
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotSetModifyFlag( bool ) ) );
-    }
-
-    mModifyFlag = false;
-
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveAccount() ) );
-
     mUi.saveButton->setEnabled( false );
+}
+
+void AccountDetails::reset()
+{
+    QList<QLineEdit*> lineEdits =  mUi.accountInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        connect( le, SIGNAL( textChanged( const QString& ) ),
+                 this, SLOT( slotEnableSaving() ) );
+
+    QList<QComboBox*> comboBoxes =  mUi.accountInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    disconnect( mUi.description, SIGNAL( textChanged() ),
+                this,  SLOT( slotEnableSaving() ) );
 }
 
 void AccountDetails::setItem (const Item &item )
 {
+    // new item selected reset flag and saving
+    mModifyFlag = true;
+    reset();
+
     // account info
     const SugarAccount account = item.payload<SugarAccount>();
     mUi.name->setText( account.name() );
@@ -92,6 +99,7 @@ void AccountDetails::setItem (const Item &item )
     mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( account.deleted( ) ) );
     mUi.createdBy->setText( account.createdByName() );
     mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( account.createdBy( ) ) );
+    initialize();
 }
 
 void AccountDetails::clearFields ()
@@ -107,7 +115,9 @@ void AccountDetails::clearFields ()
         mUi.accountInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
+        if ( value == "modifiedDate" )
+            lab->clear();
+        else if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -122,12 +132,6 @@ void AccountDetails::clearFields ()
         }
     }
 
-    // enable
-    QList<QGroupBox*> groupBoxes =
-        mUi.accountInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( true );
-
     // reset combos
     QList<QComboBox*> comboBoxes =
         mUi.accountInformationGB->findChildren<QComboBox*>();
@@ -139,9 +143,8 @@ void AccountDetails::clearFields ()
     mUi.name->setFocus();
 
 
-    // we are creating a new contact
+    // we are creating a new account
     slotSetModifyFlag( false );
-
 }
 
 
@@ -152,15 +155,8 @@ void AccountDetails::slotSetModifyFlag( bool value )
 
 void AccountDetails::slotEnableSaving()
 {
-    QList<QGroupBox*> groupBoxes =
-        mUi.accountInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        if ( gb->isChecked() ) {
-            mUi.saveButton->setEnabled( true );
-            return;
-        }
-    mUi.saveButton->setEnabled( false );
+    // check for modify flag
+    mUi.saveButton->setEnabled( true );
 }
 
 void AccountDetails::slotSaveAccount()
@@ -202,7 +198,6 @@ void AccountDetails::slotSaveAccount()
     mData["parentId"] = mAccountsData.value( mUi.parentName->currentText() );
     mData["campaignName"] = mUi.campaignName->currentText();
     mData["campaignId"] = mCampaignsData.value( mUi.campaignName->currentText() );
-
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
     mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
     mData["description"] = mUi.description->toPlainText();
@@ -211,7 +206,6 @@ void AccountDetails::slotSaveAccount()
         emit saveAccount();
     else
         emit modifyAccount();
-
 }
 
 void AccountDetails::addAccountData( const QString &accountName,  const QString &accountId )
@@ -249,17 +243,6 @@ void AccountDetails::addAssignedToData( const QString &name, const QString &id )
     mAssignedToData.insert( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
-}
-
-// Pending (michel) add a remove method when we have the source module
-
-void AccountDetails::disableGroupBoxes()
-{
-    QList<QGroupBox*> groupBoxes =
-        mUi.accountInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( false );
 }
 
 

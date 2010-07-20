@@ -12,6 +12,16 @@ ContactDetails::ContactDetails( QWidget *parent )
 
 {
     mUi.setupUi( this );
+
+    //calendar
+    mCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget( mCalendarButton );
+    mUi.calendarWidget->setLayout( buttonLayout );
+
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetBirthday() ) );
+
     initialize();
 }
 
@@ -22,7 +32,6 @@ ContactDetails::~ContactDetails()
 
 void ContactDetails::initialize()
 {
-
     QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
@@ -33,39 +42,41 @@ void ContactDetails::initialize()
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-     QList<QGroupBox*> groupBoxes =
-        mUi.contactInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotEnableSaving() ) );
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotSetModifyFlag( bool ) ) );
-    }
-
-    mModifyFlag = false;
-
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
     connect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
              this, SLOT( slotEnableSaving() ) );
-
-
-    mCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( mCalendarButton );
-    mUi.calendarWidget->setLayout( buttonLayout );
-
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthday() ) );
-
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveContact() ) );
 
     mUi.saveButton->setEnabled( false );
 }
 
+void ContactDetails::reset()
+{
+    QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        connect( le, SIGNAL( textChanged( const QString& ) ),
+                 this, SLOT( slotEnableSaving() ) );
+
+    QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    disconnect( mUi.description, SIGNAL( textChanged() ),
+                this,  SLOT( slotEnableSaving() ) );
+
+    disconnect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
+                this, SLOT( slotEnableSaving() ) );
+}
+
 void ContactDetails::setItem (const Item &item )
 {
+    // new item selected reset flag and saving
+    mModifyFlag = true;
+    reset();
+
     // contact info
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
     mUi.salutation->setCurrentIndex( mUi.salutation->findText( addressee.custom( "FATCRM", "X-Salutation" ) ) );
@@ -117,6 +128,7 @@ void ContactDetails::setItem (const Item &item )
     mUi.doNotCall->setChecked( donotcall );
     mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
     mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
+    initialize();
 }
 
 void ContactDetails::clearFields ()
@@ -132,7 +144,9 @@ void ContactDetails::clearFields ()
         mUi.contactInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
+        if ( value == "modifiedDate" )
+            lab->clear();
+        else if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
             lab->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
@@ -151,12 +165,6 @@ void ContactDetails::clearFields ()
         }
     }
 
-    // enable
-    QList<QGroupBox*> groupBoxes =
-        mUi.contactInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( true );
-
     // reset combos
     QList<QComboBox*> comboBoxes =
         mUi.contactInformationGB->findChildren<QComboBox*>();
@@ -171,9 +179,7 @@ void ContactDetails::clearFields ()
 
     // we are creating a new contact
     slotSetModifyFlag( false );
-
 }
-
 
 void ContactDetails::slotSetModifyFlag( bool value )
 {
@@ -182,15 +188,7 @@ void ContactDetails::slotSetModifyFlag( bool value )
 
 void ContactDetails::slotEnableSaving()
 {
-    QList<QGroupBox*> groupBoxes =
-        mUi.contactInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        if ( gb->isChecked() ) {
-            mUi.saveButton->setEnabled( true );
-            return;
-        }
-    mUi.saveButton->setEnabled( false );
+    mUi.saveButton->setEnabled( true );
 }
 
 void ContactDetails::slotSaveContact()
@@ -229,7 +227,6 @@ void ContactDetails::slotSaveContact()
             mContactData["createdById"] = lab->property( "createdById" ).toString();
         }
     }
-
     mContactData["salutation"] = mUi.salutation->currentText();
     mContactData["campaign"] = mUi.campaign->currentText();
     mContactData["campaignId"] = mCampaignsData.value( mUi.campaign->currentText() );
@@ -247,7 +244,6 @@ void ContactDetails::slotSaveContact()
         emit saveContact();
     else
         emit modifyContact();
-
 }
 
 void ContactDetails::slotSetBirthday()
@@ -293,22 +289,9 @@ void ContactDetails::addReportsToData( const QString &name, const QString &id )
         mUi.reportsTo->addItem( name );
 }
 
-// Pending (michel) add a remove method when we have the source module
-
 void ContactDetails::addAssignedToData( const QString &name, const QString &id )
 {
     mAssignedToData.insert( name, id );
     if ( mUi.assignedTo->findText( name ) < 0 )
         mUi.assignedTo->addItem( name );
-}
-
-// Pending (michel) add a remove method when we have the source module
-
-void ContactDetails::disableGroupBoxes()
-{
-    QList<QGroupBox*> groupBoxes =
-        mUi.contactInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( false );
 }

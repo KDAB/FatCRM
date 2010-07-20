@@ -12,6 +12,18 @@ LeadDetails::LeadDetails( QWidget *parent )
 
 {
     mUi.setupUi( this );
+
+    //calendar
+    mCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget( mCalendarButton );
+    if ( !mUi.calendarWidget->layout() == 0 )
+        delete mUi.calendarWidget->layout();
+    mUi.calendarWidget->setLayout( buttonLayout );
+
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
+
     initialize();
 }
 
@@ -22,7 +34,6 @@ LeadDetails::~LeadDetails()
 
 void LeadDetails::initialize()
 {
-
     QList<QLineEdit*> lineEdits =  mUi.leadInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
@@ -33,39 +44,37 @@ void LeadDetails::initialize()
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-     QList<QGroupBox*> groupBoxes =
-        mUi.leadInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotEnableSaving() ) );
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotSetModifyFlag( bool ) ) );
-    }
-
-    mModifyFlag = false;
-
-    mCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( mCalendarButton );
-    mUi.calendarWidget->setLayout( buttonLayout );
-
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetDateClosed() ) );
-
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
-
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveLead() ) );
-
     connect( mUi.copyAddressFromPrimary, SIGNAL( toggled( bool ) ),
              this, SLOT( slotCopyFromPrimary( bool ) ) );
 
     mUi.saveButton->setEnabled( false );
 }
 
+void LeadDetails::reset()
+{
+    QList<QLineEdit*> lineEdits =  mUi.leadInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        disconnect( le, SIGNAL( textChanged( const QString& ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    QList<QComboBox*> comboBoxes =  mUi.leadInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
+                    this, SLOT( slotEnableSaving() ) );
+    disconnect( mUi.description, SIGNAL( textChanged() ),
+                this,  SLOT( slotEnableSaving() ) );
+}
+
 void LeadDetails::setItem (const Item &item )
 {
+    // new item selected reset flag and saving
+    mModifyFlag = true;
+    reset();
+
     // lead info
     const SugarLead lead = item.payload<SugarLead>();
     mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( lead.leadSource() ) );
@@ -110,6 +119,7 @@ void LeadDetails::setItem (const Item &item )
     mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( lead.deleted( ) ) );
     mUi.createdBy->setText( lead.createdByName() );
     mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( lead.createdBy( ) ) );
+    initialize();
 }
 
 void LeadDetails::clearFields ()
@@ -125,7 +135,9 @@ void LeadDetails::clearFields ()
         mUi.leadInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
+        if ( value == "modifiedDate" )
+            lab->clear();
+        else if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -140,12 +152,6 @@ void LeadDetails::clearFields ()
         }
     }
 
-    // enable
-    QList<QGroupBox*> groupBoxes =
-        mUi.leadInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( true );
-
     // reset combos
     QList<QComboBox*> comboBoxes =
         mUi.leadInformationGB->findChildren<QComboBox*>();
@@ -153,16 +159,14 @@ void LeadDetails::clearFields ()
         cb->setCurrentIndex( 0 );
 
     // reset text fields
-     QList<QTextEdit*> textEdits =
+    QList<QTextEdit*> textEdits =
         mUi.leadInformationGB->findChildren<QTextEdit*>();
     Q_FOREACH( QTextEdit* te, textEdits )
         te->clear();
 
-    // we are creating a new contact
+    // we are creating a new lead
     slotSetModifyFlag( false );
-
 }
-
 
 void LeadDetails::slotSetModifyFlag( bool value )
 {
@@ -171,15 +175,7 @@ void LeadDetails::slotSetModifyFlag( bool value )
 
 void LeadDetails::slotEnableSaving()
 {
-    QList<QGroupBox*> groupBoxes =
-        mUi.leadInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        if ( gb->isChecked() ) {
-            mUi.saveButton->setEnabled( true );
-            return;
-        }
-    mUi.saveButton->setEnabled( false );
+    mUi.saveButton->setEnabled( true );
 }
 
 void LeadDetails::slotSaveLead()
@@ -231,7 +227,6 @@ void LeadDetails::slotSaveLead()
         emit saveLead();
     else
         emit modifyLead();
-
 }
 
 void LeadDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
@@ -256,15 +251,6 @@ void LeadDetails::addAssignedToData( const QString &name, const QString &id )
         mUi.assignedUserName->addItem( name );
 }
 
-void LeadDetails::disableGroupBoxes()
-{
-    QList<QGroupBox*> groupBoxes =
-        mUi.leadInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( false );
-}
-
 void LeadDetails::slotCopyFromPrimary( bool checked )
 {
     if ( !checked )
@@ -275,7 +261,6 @@ void LeadDetails::slotCopyFromPrimary( bool checked )
     mUi.altAddressState->setText( mUi.primaryAddressState->text() );
     mUi.altAddressPostalcode->setText( mUi.primaryAddressPostalcode->text() );
     mUi.altAddressCountry->setText( mUi.primaryAddressCountry->text() );
-
 }
 
 void LeadDetails::slotSetDateClosed()

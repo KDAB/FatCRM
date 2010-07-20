@@ -23,13 +23,15 @@ public:
     void addCampaignData( const QString &name,  const QString &id );
     void removeCampaignData( const QString &campaignName );
     void addAssignedToData( const QString &name, const QString &id );
-    void disableGroupBoxes();
+    void reset();
+
     inline QMap<QString, QString> leadData() {return mData;}
 
 Q_SIGNALS:
     void saveLead();
     void modifyLead();
 
+    friend class LeadsPage;
 private:
     void initialize();
 

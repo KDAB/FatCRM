@@ -1,6 +1,6 @@
 #include "contactspage.h"
-
 #include "sugarclient.h"
+#include "enums.h"
 
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactsfilterproxymodel.h>
@@ -21,6 +21,7 @@
 
 #include <kabc/addressee.h>
 #include <kabc/address.h>
+
 
 using namespace Akonadi;
 
@@ -88,9 +89,10 @@ void ContactsPage::slotContactChanged( const Item &item )
     if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
-            w->contactDetailsWidget()->setItem( item );
-            connect( w->contactDetailsWidget(), SIGNAL( modifyContact() ),
-                 this, SLOT( slotModifyContact( ) ) );
+            ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ));
+            cd->setItem( item );
+            connect( cd, SIGNAL( modifyContact() ),
+                     this, SLOT( slotModifyContact( ) ) );
         }
     }
 }
@@ -99,10 +101,13 @@ void ContactsPage::slotNewContactClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        ContactDetails *cd = w->contactDetailsWidget();
+        w->displayDockWidgets();
+        ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ) );
         cd->clearFields();
         connect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
+        // reset
+        cd->initialize();
     }
 }
 
@@ -110,7 +115,8 @@ void ContactsPage::slotAddContact()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     QMap<QString, QString> data;
-    data = w->contactDetailsWidget()->contactData();
+    ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+    data = cd->contactData();
     KABC::Addressee addressee;
     addressee.setGivenName( data.value( "firstName" ) );
     addressee.setFamilyName( data.value( "lastName" ) );
@@ -178,8 +184,7 @@ void ContactsPage::slotAddContact()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
     Q_UNUSED( job );
-
-    disconnect( w->contactDetailsWidget(), SIGNAL( saveContact() ),
+    disconnect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
 }
 
@@ -197,7 +202,8 @@ void ContactsPage::slotModifyContact()
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
 
         QMap<QString, QString> data;
-        data = w->contactDetailsWidget()->contactData();
+        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+        data = cd->contactData();
         addressee.setGivenName( data.value( "firstName" ) );
         addressee.setFamilyName( data.value( "lastName" ) );
         addressee.setTitle( data.value( "title" ) );
@@ -301,7 +307,7 @@ void ContactsPage::slotModifyContact()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
-
+        cd->initialize();
     }
 }
 
@@ -335,7 +341,7 @@ void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end 
 void ContactsPage::addAccountsData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    ContactDetails *cd = w->contactDetailsWidget();
+    ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
     QModelIndex index;
     Item item;
     KABC::Addressee addressee;

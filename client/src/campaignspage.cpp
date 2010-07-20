@@ -3,6 +3,7 @@
 #include "campaignstreemodel.h"
 #include "campaignsfilterproxymodel.h"
 #include "sugarclient.h"
+#include "enums.h"
 
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
@@ -87,8 +88,9 @@ void CampaignsPage::slotCampaignChanged( const Item &item )
     if ( item.isValid() && item.hasPayload<SugarCampaign>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
-            w->campaignDetailsWidget()->setItem( item );
-            connect( w->campaignDetailsWidget(), SIGNAL( modifyCampaign() ),
+            CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+            cd->setItem( item );
+            connect( cd, SIGNAL( modifyCampaign() ),
                  this, SLOT( slotModifyCampaign( ) ) );
         }
     }
@@ -98,18 +100,22 @@ void CampaignsPage::slotNewCampaignClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        CampaignDetails *cd = w->campaignDetailsWidget();
+        w->displayDockWidgets();
+        CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
         cd->clearFields();
         connect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
+        // reset
+        cd->initialize();
     }
 }
 
 void CampaignsPage::slotAddCampaign()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
     QMap<QString, QString> data;
-    data = w->campaignDetailsWidget()->campaignData();
+    data = cd->campaignData();
     SugarCampaign campaign;
     campaign.setName( data.value( "name" ) );
     campaign.setDateEntered( data.value( "dateEntered" ) );
@@ -148,7 +154,7 @@ void CampaignsPage::slotAddCampaign()
     ItemCreateJob *job = new ItemCreateJob( item, mCampaignsCollection );
     Q_UNUSED( job );
 
-    disconnect( w->campaignDetailsWidget(), SIGNAL( saveCampaign() ),
+    disconnect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
 }
 
@@ -164,8 +170,9 @@ void CampaignsPage::slotModifyCampaign()
         }
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
         QMap<QString, QString> data;
-        data = w->campaignDetailsWidget()->campaignData();
+        data = cd->campaignData();
 
         campaign.setName( data.value( "name" ) );
         campaign.setDateEntered( data.value( "dateEntered" ) );
@@ -199,6 +206,7 @@ void CampaignsPage::slotModifyCampaign()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
+        cd->initialize();
     }
 }
 
@@ -236,20 +244,20 @@ void CampaignsPage::slotSetCurrent( const QModelIndex& index, int start, int end
 void CampaignsPage::removeCampaignsData( const Item &item )
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    AccountDetails *accountDetails = w->accountDetailsWidget();
-    CampaignDetails *campaignDetails = w->campaignDetailsWidget();
-    ContactDetails *contactDetails = w->contactDetailsWidget();
-    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
-    LeadDetails *leadDetails = w->leadDetailsWidget();
+    AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+    CampaignDetails *cad = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+    ContactDetails *cod = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity ) );
+    LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
 
     if ( item.hasPayload<SugarCampaign>() ) {
         SugarCampaign campaign;
         campaign = item.payload<SugarCampaign>();
-        accountDetails->removeCampaignData( campaign.name() );
-        contactDetails->removeCampaignData( campaign.name() );
-        opportunityDetails->removeCampaignData( campaign.name() );
-        leadDetails->removeCampaignData( campaign.name() );
-        campaignDetails->removeCampaignData( campaign.name() );
+        ad->removeCampaignData( campaign.name() );
+        cod->removeCampaignData( campaign.name() );
+        od->removeCampaignData( campaign.name() );
+        ld->removeCampaignData( campaign.name() );
+        cad->removeCampaignData( campaign.name() );
     }
 }
 
@@ -257,11 +265,11 @@ void CampaignsPage::addCampaignsData()
 {
     // Pending (Michel) - clean up
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    AccountDetails *accountDetails = w->accountDetailsWidget();
-    CampaignDetails *campaignDetails = w->campaignDetailsWidget();
-    ContactDetails *contactDetails = w->contactDetailsWidget();
-    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
-    LeadDetails *leadDetails = w->leadDetailsWidget();
+    AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+    CampaignDetails *cad = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+    ContactDetails *cod = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity ) );
+    LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
 
     QModelIndex index;
     Item item;
@@ -271,14 +279,14 @@ void CampaignsPage::addCampaignsData()
        item = mUi.campaignsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarCampaign>() ) {
            campaign = item.payload<SugarCampaign>();
-           accountDetails->addCampaignData( campaign.name(), campaign.id() );
-           contactDetails->addCampaignData( campaign.name(), campaign.id() );
-           opportunityDetails->addCampaignData( campaign.name(), campaign.id() );
-           leadDetails->addCampaignData( campaign.name(), campaign.id() );
-           campaignDetails->addCampaignData( campaign.name(), campaign.id() );
+           ad->addCampaignData( campaign.name(), campaign.id() );
+           cod->addCampaignData( campaign.name(), campaign.id() );
+           od->addCampaignData( campaign.name(), campaign.id() );
+           ld->addCampaignData( campaign.name(), campaign.id() );
+           cad->addCampaignData( campaign.name(), campaign.id() );
            // code below should be executed from
            //its own pages when implemented
-           campaignDetails->addAssignedToData( campaign.assignedUserName(), campaign.assignedUserId() );
+           cad->addAssignedToData( campaign.assignedUserName(), campaign.assignedUserId() );
        }
     }
 }

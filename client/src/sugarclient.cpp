@@ -6,6 +6,8 @@
 #include <akonadi/agentinstancemodel.h>
 #include <akonadi/control.h>
 
+#include "enums.h"
+
 #include <QDockWidget>
 #include <QInputDialog>
 #include <QToolBar>
@@ -114,8 +116,8 @@ void SugarClient::slotManageDetailsDisplay( bool value )
 {
     if ( sender() == mUi.showDetails )
         slotManageItemDetailsView( mUi.tabWidget->currentIndex() );
-    else
-        slotDetachDockViews( value );
+    else // mUi.detchDetails
+        detachDockViews( value );
 }
 
 
@@ -125,7 +127,7 @@ void SugarClient::slotResourceSelectionChanged( int index )
     if ( agent.isValid() ) {
         QString context = mResourceSelector->itemText( index );
         emit resourceSelected( agent.identifier().toLatin1() );
-        QString contextTitle = QString ( "SugarCRM Client: " ) + "(" + context + ")";
+        QString contextTitle = QString ( "SugarCRM Client: " ) + context;
         setWindowTitle(  contextTitle );
     }
 }
@@ -167,7 +169,7 @@ void SugarClient::setupActions()
 
 void SugarClient::slotShowMessage( const QString& message )
 {
-    statusBar()->showMessage( message, 10000 );
+    statusBar()->showMessage( message, 5000 );
 }
 
 void SugarClient::createTabs()
@@ -230,7 +232,7 @@ void SugarClient::slotManageItemDetailsView( int currentTab )
     }
 }
 
-void SugarClient::slotDetachDockViews( bool value )
+void SugarClient::detachDockViews( bool value )
 {
     mAccountDetailsDock->setFloating( value );
     mOpportunityDetailsDock->setFloating( value );
@@ -253,7 +255,7 @@ void SugarClient::slotLogin()
 
 }
 
-QComboBox* SugarClient::getResourcesCombo( )
+QComboBox* SugarClient::getResourcesCombo()
 {
     // monitor Akonadi agents so we can check for SugarCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
@@ -265,5 +267,21 @@ QComboBox* SugarClient::getResourcesCombo( )
     container->setModel( agentFilterModel );
 
     return container;
+}
+
+QWidget* SugarClient::detailsWidget( DetailsType type )
+{
+    switch( type  ) {
+    case Account:
+        return mAccountDetailsWidget;
+    case Opportunity:
+        return mOpportunityDetailsWidget;
+    case Lead:
+        return mLeadDetailsWidget;
+    case Contact:
+        return mContactDetailsWidget;
+    case Campaign:
+        return mCampaignDetailsWidget;
+    }
 }
 #include "sugarclient.moc"

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1072</width>
+    <width>1086</width>
     <height>867</height>
    </rect>
   </property>
@@ -113,7 +113,7 @@
            <string>Details</string>
           </property>
           <property name="checkable">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="checked">
            <bool>false</bool>
@@ -383,7 +383,7 @@
            <string>Other Details</string>
           </property>
           <property name="checkable">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="checked">
            <bool>false</bool>
@@ -554,7 +554,7 @@
            <string>Addresses</string>
           </property>
           <property name="checkable">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
           <property name="checked">
            <bool>false</bool>

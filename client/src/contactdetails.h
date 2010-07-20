@@ -25,13 +25,15 @@ public:
     void removeCampaignData( const QString &campaignName );
     void addReportsToData( const QString &name, const QString &id );
     void addAssignedToData( const QString &name, const QString &id );
-    void disableGroupBoxes();
+    void reset();
+
     inline QMap<QString, QString> contactData() {return mContactData;}
 
 Q_SIGNALS:
     void saveContact();
     void modifyContact();
 
+    friend class ContactsPage;
 private:
     void initialize();
 

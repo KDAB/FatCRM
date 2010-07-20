@@ -24,15 +24,19 @@ public:
     void addCampaignData( const QString &name,  const QString &id );
     void removeCampaignData( const QString &campaignName );
     void addAssignedToData( const QString &name, const QString &id );
-    void disableGroupBoxes();
+    void reset();
+
     inline QMap<QString, QString> accountData() {return mData;}
 
 Q_SIGNALS:
     void saveAccount();
     void modifyAccount();
 
+    friend class AccountsPage;
 private:
     void initialize();
+
+
     QMap<QString, QString> mData; // this
     QMap<QString, QString> mAccountsData;
     QMap<QString, QString> mAssignedToData;

@@ -2,6 +2,7 @@
 #include "opportunitiestreemodel.h"
 #include "opportunitiesfilterproxymodel.h"
 #include "sugarclient.h"
+#include "enums.h"
 
 #include <akonadi/agentmanager.h>
 #include <akonadi/changerecorder.h>
@@ -19,6 +20,7 @@
 #include <akonadi/collectionmodifyjob.h>
 
 #include "kdcrmdata/sugaropportunity.h"
+
 
 using namespace Akonadi;
 
@@ -86,8 +88,9 @@ void OpportunitiesPage::slotOpportunityChanged( const Item &item )
     if ( item.isValid() && item.hasPayload<SugarOpportunity>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
-            w->opportunityDetailsWidget()->setItem( item );
-            connect( w->opportunityDetailsWidget(), SIGNAL( modifyOpportunity() ),
+            OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+            od->setItem( item );
+            connect( od, SIGNAL( modifyOpportunity() ),
                  this, SLOT( slotModifyOpportunity( ) ) );
         }
     }
@@ -97,18 +100,21 @@ void OpportunitiesPage::slotNewOpportunityClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        OpportunityDetails *cd = w->opportunityDetailsWidget();
-        cd->clearFields();
-        connect( cd, SIGNAL( saveOpportunity() ),
+        w->displayDockWidgets();
+        OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+        od->clearFields();
+        connect( od, SIGNAL( saveOpportunity() ),
                  this, SLOT( slotAddOpportunity( ) ) );
+        od->initialize();
     }
 }
 
 void OpportunitiesPage::slotAddOpportunity()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity ) );
     QMap<QString, QString> data;
-    data = w->opportunityDetailsWidget()->opportunityData();
+    data = od->opportunityData();
     SugarOpportunity opportunity;
     opportunity.setName( data.value( "name" ) );
     opportunity.setDateEntered( data.value( "dateEntered" ) );
@@ -147,7 +153,7 @@ void OpportunitiesPage::slotAddOpportunity()
     ItemCreateJob *job = new ItemCreateJob( item, mOpportunitiesCollection );
     Q_UNUSED( job );
 
-    disconnect( w->opportunityDetailsWidget(), SIGNAL( saveOpportunity() ),
+    disconnect( od, SIGNAL( saveOpportunity() ),
                  this, SLOT( slotAddOpportunity( ) ) );
 }
 
@@ -163,8 +169,9 @@ void OpportunitiesPage::slotModifyOpportunity()
         }
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
         QMap<QString, QString> data;
-        data = w->opportunityDetailsWidget()->opportunityData();
+        data = od->opportunityData();
 
         opportunity.setName( data.value( "name" ) );
         opportunity.setDateEntered( data.value( "dateEntered" ) );
@@ -200,6 +207,7 @@ void OpportunitiesPage::slotModifyOpportunity()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
+        od->initialize();
     }
 }
 
@@ -233,7 +241,7 @@ void OpportunitiesPage::slotSetCurrent( const QModelIndex& index, int start, int
 void OpportunitiesPage::addOpportunitiesData()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    OpportunityDetails *opportunityDetails = w->opportunityDetailsWidget();
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity ) );
     QModelIndex index;
     Item item;
     SugarOpportunity opportunity;
@@ -243,7 +251,7 @@ void OpportunitiesPage::addOpportunitiesData()
        if ( item.hasPayload<SugarOpportunity>() ) {
            opportunity = item.payload<SugarOpportunity>();
            // Pending(michel) - call this from the right module.
-           opportunityDetails->addAssignedToData( opportunity.assignedUserName(), opportunity.assignedUserId() );
+           od->addAssignedToData( opportunity.assignedUserName(), opportunity.assignedUserId() );
        }
     }
 }

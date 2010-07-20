@@ -12,6 +12,23 @@ CampaignDetails::CampaignDetails( QWidget *parent )
 
 {
     mUi.setupUi( this );
+
+    // calendars
+    mStartDateCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *startLayout = new QVBoxLayout;
+    startLayout->addWidget( mStartDateCalendarButton );
+    mUi.startCalendarWidget->setLayout( startLayout );
+
+    mEndDateCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *endLayout = new QVBoxLayout;
+    endLayout->addWidget( mEndDateCalendarButton );
+    mUi.endCalendarWidget->setLayout( endLayout );
+
+    connect( mStartDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
+    connect( mEndDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
+
     initialize();
 }
 
@@ -33,33 +50,6 @@ void CampaignDetails::initialize()
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-     QList<QGroupBox*> groupBoxes =
-        mUi.campaignInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotEnableSaving() ) );
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotSetModifyFlag( bool ) ) );
-    }
-
-    mModifyFlag = false;
-
-    mStartDateCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *startLayout = new QVBoxLayout;
-    startLayout->addWidget( mStartDateCalendarButton );
-    mUi.startCalendarWidget->setLayout( startLayout );
-
-    mEndDateCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *endLayout = new QVBoxLayout;
-    endLayout->addWidget( mEndDateCalendarButton );
-    mUi.endCalendarWidget->setLayout( endLayout );
-
-    connect( mStartDateCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetStartDate() ) );
-
-    connect( mEndDateCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetEndDate() ) );
-
     connect( mUi.objective, SIGNAL( textChanged() ),
              this, SLOT( slotEnableSaving() ) );
 
@@ -72,8 +62,32 @@ void CampaignDetails::initialize()
     mUi.saveButton->setEnabled( false );
 }
 
+void CampaignDetails::reset()
+{
+    QList<QLineEdit*> lineEdits =  mUi.campaignInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        connect( le, SIGNAL( textChanged( const QString& ) ),
+                 this, SLOT( slotEnableSaving() ) );
+
+    QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    disconnect( mUi.objective, SIGNAL( textChanged() ),
+                this, SLOT( slotEnableSaving() ) );
+
+    disconnect( mUi.content, SIGNAL( textChanged() ),
+                this,  SLOT( slotEnableSaving() ) );
+}
+
+
 void CampaignDetails::setItem (const Item &item )
 {
+    // new item selected reset flag and saving
+    mModifyFlag = true;
+    reset();
+
     // campaign info
     const SugarCampaign campaign = item.payload<SugarCampaign>();
     mUi.name->setText( campaign.name() );
@@ -100,6 +114,7 @@ void CampaignDetails::setItem (const Item &item )
     mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( campaign.deleted( ) ) );
     mUi.createdBy->setText( campaign.createdByName() );
     mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( campaign.createdBy( ) ) );
+    initialize();
 }
 
 void CampaignDetails::clearFields ()
@@ -115,7 +130,9 @@ void CampaignDetails::clearFields ()
         mUi.campaignInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
+        if ( value == "modifiedDate" )
+            lab->clear();
+        else if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -130,12 +147,6 @@ void CampaignDetails::clearFields ()
         }
     }
 
-    // enable
-    QList<QGroupBox*> groupBoxes =
-        mUi.campaignInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( true );
-
     // reset combos
     QList<QComboBox*> comboBoxes =
         mUi.campaignInformationGB->findChildren<QComboBox*>();
@@ -148,11 +159,9 @@ void CampaignDetails::clearFields ()
     mUi.name->setFocus();
 
 
-    // we are creating a new contact
+    // we are creating a new campaign
     slotSetModifyFlag( false );
-
 }
-
 
 void CampaignDetails::slotSetModifyFlag( bool value )
 {
@@ -161,15 +170,7 @@ void CampaignDetails::slotSetModifyFlag( bool value )
 
 void CampaignDetails::slotEnableSaving()
 {
-    QList<QGroupBox*> groupBoxes =
-        mUi.campaignInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        if ( gb->isChecked() ) {
-            mUi.saveButton->setEnabled( true );
-            return;
-        }
-    mUi.saveButton->setEnabled( false );
+    mUi.saveButton->setEnabled( true );
 }
 
 void CampaignDetails::slotSaveCampaign()
@@ -217,7 +218,6 @@ void CampaignDetails::slotSaveCampaign()
         emit saveCampaign();
     else
         emit modifyCampaign();
-
 }
 
 void CampaignDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
@@ -235,15 +235,6 @@ void CampaignDetails::addAssignedToData( const QString &name, const QString &id 
     mAssignedToData.insert( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
-}
-
-void CampaignDetails::disableGroupBoxes()
-{
-    QList<QGroupBox*> groupBoxes =
-        mUi.campaignInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( false );
 }
 
 void CampaignDetails::slotSetStartDate()

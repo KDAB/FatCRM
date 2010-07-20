@@ -12,6 +12,15 @@ OpportunityDetails::OpportunityDetails( QWidget *parent )
 
 {
     mUi.setupUi( this );
+
+    // calendars
+    mCalendarButton = new EditCalendarButton(this);
+    QVBoxLayout *buttonLayout = new QVBoxLayout;
+    buttonLayout->addWidget( mCalendarButton );
+    mUi.calendarWidget->setLayout( buttonLayout );
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
+
     initialize();
 }
 
@@ -22,7 +31,6 @@ OpportunityDetails::~OpportunityDetails()
 
 void OpportunityDetails::initialize()
 {
-
     QList<QLineEdit*> lineEdits =  mUi.opportunityInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
@@ -33,25 +41,6 @@ void OpportunityDetails::initialize()
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
                  this, SLOT( slotEnableSaving() ) );
 
-     QList<QGroupBox*> groupBoxes =
-        mUi.opportunityInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes ) {
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotEnableSaving() ) );
-       connect( gb, SIGNAL( toggled( bool ) ),
-                this, SLOT( slotSetModifyFlag( bool ) ) );
-    }
-
-    mModifyFlag = false;
-
-    mCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( mCalendarButton );
-    mUi.calendarWidget->setLayout( buttonLayout );
-
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetDateClosed() ) );
-
     connect( mUi.description, SIGNAL( textChanged() ),
              this,  SLOT( slotEnableSaving() ) );
 
@@ -61,8 +50,28 @@ void OpportunityDetails::initialize()
     mUi.saveButton->setEnabled( false );
 }
 
+void OpportunityDetails::reset()
+{
+    QList<QLineEdit*> lineEdits =  mUi.opportunityInformationGB->findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        disconnect( le, SIGNAL( textChanged( const QString& ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    QList<QComboBox*> comboBoxes =  mUi.opportunityInformationGB->findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
+                    this, SLOT( slotEnableSaving() ) );
+
+    disconnect( mUi.description, SIGNAL( textChanged() ),
+                this,  SLOT( slotEnableSaving() ) );
+}
+
 void OpportunityDetails::setItem (const Item &item )
 {
+    // new item selected reset flag and saving
+    mModifyFlag = true;
+    reset();
+
     // opportunity info
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
     mUi.modifiedDate->setText( opportunity.dateModified() );
@@ -107,6 +116,7 @@ void OpportunityDetails::setItem (const Item &item )
     mUi.nextStep->setText( opportunity.nextStep() );
     mUi.probability->setText( opportunity.probability() );
     mUi.description->setPlainText( opportunity.description() );
+    initialize();
 }
 
 void OpportunityDetails::clearFields ()
@@ -122,7 +132,9 @@ void OpportunityDetails::clearFields ()
         mUi.opportunityInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
+        if ( value == "modifiedDate" )
+            lab->clear();
+        else if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -136,12 +148,6 @@ void OpportunityDetails::clearFields ()
             lab->setProperty( "createdBy", qVariantFromValue<QString>( QString() ) );
         }
     }
-
-    // enable
-    QList<QGroupBox*> groupBoxes =
-        mUi.opportunityInformationGB->findChildren<QGroupBox*>();
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( true );
 
     // reset combos
     QList<QComboBox*> comboBoxes =
@@ -164,7 +170,6 @@ void OpportunityDetails::clearFields ()
     slotSetModifyFlag( false );
 }
 
-
 void OpportunityDetails::slotSetModifyFlag( bool value )
 {
     mModifyFlag = value;
@@ -172,15 +177,7 @@ void OpportunityDetails::slotSetModifyFlag( bool value )
 
 void OpportunityDetails::slotEnableSaving()
 {
-    QList<QGroupBox*> groupBoxes =
-        mUi.opportunityInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        if ( gb->isChecked() ) {
-            mUi.saveButton->setEnabled( true );
-            return;
-        }
-    mUi.saveButton->setEnabled( false );
+    mUi.saveButton->setEnabled( true );
 }
 
 void OpportunityDetails::slotSaveOpportunity()
@@ -240,7 +237,6 @@ void OpportunityDetails::slotSaveOpportunity()
         emit saveOpportunity();
     else
         emit modifyOpportunity();
-
 }
 
 void OpportunityDetails::addAccountData( const QString &accountName,  const QString &accountId )
@@ -278,17 +274,6 @@ void OpportunityDetails::addAssignedToData( const QString &name, const QString &
     mAssignedToData.insert( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
-}
-
-// Pending(michel) - add a remove method when we have implemented the source module
-
-void OpportunityDetails::disableGroupBoxes()
-{
-    QList<QGroupBox*> groupBoxes =
-        mUi.opportunityInformationGB->findChildren<QGroupBox*>();
-
-    Q_FOREACH( QGroupBox* gb, groupBoxes )
-        gb->setChecked( false );
 }
 
 void OpportunityDetails::slotSetDateClosed()
