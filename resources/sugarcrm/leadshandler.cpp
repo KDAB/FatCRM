@@ -773,6 +773,7 @@ Akonadi::Item::List LeadsHandler::itemsFromListEntriesResponse( const TNS__Entry
             accessIt->setter( namedValue.value(), lead );
         }
         item.setPayload<SugarLead>( lead );
+        item.setRemoteRevision( getDateModified( lead ) );
         items << item;
     }
 

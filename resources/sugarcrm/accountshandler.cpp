@@ -564,6 +564,7 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
             accessIt->setter( namedValue.value(), account );
         }
         item.setPayload<SugarAccount>( account );
+        item.setRemoteRevision( getDateModified( account ) );
         items << item;
     }
 

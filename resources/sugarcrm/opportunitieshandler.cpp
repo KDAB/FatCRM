@@ -432,6 +432,7 @@ Akonadi::Item::List OpportunitiesHandler::itemsFromListEntriesResponse( const TN
             accessIt->setter( namedValue.value(), account );
         }
         item.setPayload<SugarOpportunity>( account );
+        item.setRemoteRevision( getDateModified( account ) );
         items << item;
     }
 

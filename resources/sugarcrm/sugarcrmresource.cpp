@@ -240,6 +240,39 @@ void SugarCRMResource::itemChanged( const Akonadi::Item &item, const QSet<QByteA
         // save item so we can reference it in the result slots
         mPendingItem = item;
 
+         // TODO FIXME this should be asynchronous
+         bool hasConflict = false;
+         if ( !item.remoteRevision().isEmpty() ) {
+             TNS__Select_fields selectedFields;
+             selectedFields.setItems( QStringList() << QLatin1String( "date_modified" ) );
+
+            TNS__Get_entry_result result = mSoap->get_entry( mSessionId, collection.remoteId(), item.remoteId(), selectedFields );
+
+            const TNS__Error_value errorValue = result.error();
+            if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
+            kError() << "SOAP Error: number=" << errorValue.number()
+                    << ", name=" << errorValue.name() << ", description=" << errorValue.description();
+            } else {
+                const TNS__Entry_list entryList = result.entry_list();
+                Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
+                    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+                    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+                        if ( namedValue.name() == QLatin1String( "date_modified" ) ) {
+                            // date_modified is an ISO date, string comparison correctly works for < or >
+                            hasConflict = ( namedValue.value() > item.remoteRevision() );
+                        }
+                    }
+                }
+            }
+        }
+
+        // TODO show conflict resolution UI?
+        if ( hasConflict ) {
+            // TODO
+            kDebug() << "conflict in modification date";
+        }
+
+
         // results handled by slots setEntryDone() and setEntryError()
         if ( !moduleIt.value()->setEntry( item, mSoap, mSessionId ) ) {
             mPendingItem = Item();

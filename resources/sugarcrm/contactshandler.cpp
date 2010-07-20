@@ -690,6 +690,7 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
         addressee.insertAddress( workAddress );
         addressee.insertAddress( homeAddress );
         item.setPayload<KABC::Addressee>( addressee );
+        item.setRemoteRevision( getDateModified( addressee ) );
         items << item;
     }
 

@@ -445,6 +445,7 @@ Akonadi::Item::List CampaignsHandler::itemsFromListEntriesResponse( const TNS__E
             accessIt->setter( namedValue.value(), campaign );
         }
         item.setPayload<SugarCampaign>( campaign );
+        item.setRemoteRevision( getDateModified( campaign ) );
         items << item;
     }
 
