@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotRemoveAccount();
     void slotSetCurrent( const QModelIndex&,int,int );
     void cachePolicyJobCompleted( KJob* );
+    void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
 };
 #endif /* ACCOUNTSPAGE_H */
 

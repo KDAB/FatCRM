@@ -21,6 +21,8 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
+#include <QDebug>
+
 
 using namespace Akonadi;
 
@@ -342,6 +344,7 @@ void AccountsPage::initialize()
 
     connect( mUi.accountsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
+    connect( mUi.accountsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
 }
 
 void AccountsPage::syncronize()
@@ -366,4 +369,13 @@ void AccountsPage::setupCachePolicy()
     mAccountsCollection.setCachePolicy( policy );
     CollectionModifyJob *job = new CollectionModifyJob( mAccountsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+}
+
+void AccountsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
+{
+    Q_UNUSED( bottomRight );
+    Item item;
+    SugarAccount account;
+    item = mUi.accountsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
+    slotAccountChanged( item );
 }
