@@ -360,6 +360,8 @@ void LeadsPage::initialize()
 
     connect( mUi.leadsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
+    connect( mUi.leadsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
+
 }
 
 void LeadsPage::syncronize()
@@ -384,4 +386,13 @@ void LeadsPage::setupCachePolicy()
     mLeadsCollection.setCachePolicy( policy );
     CollectionModifyJob *job = new CollectionModifyJob( mLeadsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+}
+
+void LeadsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
+{
+    Q_UNUSED( bottomRight );
+    Item item;
+    SugarLead lead;
+    item = mUi.leadsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
+    slotLeadChanged( item );
 }

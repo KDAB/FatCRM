@@ -296,6 +296,9 @@ void OpportunitiesPage::initialize()
 
     connect( mUi.opportunitiesTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
+    connect( mUi.opportunitiesTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
+
+
 }
 
 void OpportunitiesPage::syncronize()
@@ -320,4 +323,13 @@ void OpportunitiesPage::setupCachePolicy()
     mOpportunitiesCollection.setCachePolicy( policy );
     CollectionModifyJob *job = new CollectionModifyJob( mOpportunitiesCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+}
+
+void OpportunitiesPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
+{
+    Q_UNUSED( bottomRight );
+    Item item;
+    SugarOpportunity opportunity;
+    item = mUi.opportunitiesTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
+    slotOpportunityChanged( item );
 }

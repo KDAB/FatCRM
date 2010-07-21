@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotRemoveCampaign();
     void slotSetCurrent( const QModelIndex&,int,int );
     void cachePolicyJobCompleted( KJob* );
+    void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
 };
 
 #endif /* CAMPAIGNSPAGE_H */

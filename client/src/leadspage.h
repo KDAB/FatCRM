@@ -52,6 +52,7 @@ private Q_SLOTS:
     void slotRemoveLead();
     void slotSetCurrent( const QModelIndex&,int,int );
     void cachePolicyJobCompleted( KJob* );
+    void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
 };
 
 

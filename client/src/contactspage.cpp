@@ -405,6 +405,8 @@ void ContactsPage::initialize()
 
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
+    connect( mUi.contactsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
+
 }
 
 void ContactsPage::syncronize()
@@ -431,3 +433,13 @@ void ContactsPage::setupCachePolicy()
     CollectionModifyJob *job = new CollectionModifyJob( mContactsCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
 }
+
+void ContactsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
+{
+    Q_UNUSED( bottomRight );
+    Item item;
+    KABC::Addressee addressee;
+    item = mUi.contactsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
+    slotContactChanged( item );
+}
+

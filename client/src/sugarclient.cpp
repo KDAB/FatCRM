@@ -282,6 +282,8 @@ QWidget* SugarClient::detailsWidget( DetailsType type )
         return mContactDetailsWidget;
     case Campaign:
         return mCampaignDetailsWidget;
+    default:
+        return 0;
     }
 }
 #include "sugarclient.moc"
