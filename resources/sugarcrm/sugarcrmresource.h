@@ -8,6 +8,7 @@
 class KDSoapMessage;
 class ModuleHandler;
 class TNS__Get_entry_list_result;
+class TNS__Get_entry_result;
 class TNS__Module_list;
 class TNS__Set_entry_result;
 class Sugarsoap;
@@ -67,6 +68,9 @@ protected Q_SLOTS:
 
     void setEntryDone( const TNS__Set_entry_result &callResult );
     void setEntryError( const KDSoapMessage &fault );
+
+    void getEntryDone( const TNS__Get_entry_result &callResult );
+    void getEntryError( const KDSoapMessage &fault );
 };
 
 #endif

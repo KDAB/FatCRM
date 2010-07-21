@@ -28,6 +28,8 @@ public:
 
     virtual bool setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId ) = 0;
 
+    virtual bool getEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId );
+
     virtual Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
                                                               const Akonadi::Collection &parentCollection ) = 0;
 
