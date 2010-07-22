@@ -265,6 +265,12 @@ void LeadDetails::slotCopyFromPrimary( bool checked )
 
 void LeadDetails::slotSetDateClosed()
 {
+    disconnect( mCalendarButton->calendarWidget(),
+                SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
     mUi.birthdate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
     mCalendarButton->calendarDialog()->close();
 }

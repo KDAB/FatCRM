@@ -278,6 +278,11 @@ void OpportunityDetails::addAssignedToData( const QString &name, const QString &
 
 void OpportunityDetails::slotSetDateClosed()
 {
+    disconnect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
     mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetDateClosed() ) );
     mCalendarButton->calendarDialog()->close();
 }

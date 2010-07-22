@@ -248,7 +248,13 @@ void ContactDetails::slotSaveContact()
 
 void ContactDetails::slotSetBirthday()
 {
+    disconnect( mCalendarButton->calendarWidget(),
+                SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetBirthday() ) );
     mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
+    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+             this, SLOT( slotSetBirthday() ) );
     mCalendarButton->calendarDialog()->close();
 }
 

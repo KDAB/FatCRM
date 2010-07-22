@@ -239,12 +239,22 @@ void CampaignDetails::addAssignedToData( const QString &name, const QString &id 
 
 void CampaignDetails::slotSetStartDate()
 {
+    disconnect( mStartDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
     mUi.startDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mStartDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
+    connect( mStartDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
     mStartDateCalendarButton->calendarDialog()->close();
 }
 
 void CampaignDetails::slotSetEndDate()
 {
+    disconnect( mEndDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
     mUi.endDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mEndDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
+    connect( mEndDateCalendarButton->calendarWidget(),
+             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
     mEndDateCalendarButton->calendarDialog()->close();
 }
