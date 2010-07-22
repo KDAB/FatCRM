@@ -724,7 +724,6 @@ bool LeadsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const Q
         TNS__Name_value field;
         field.setName( QLatin1String( "id" ) );
         field.setValue( item.remoteId() );
-
         itemList << field;
     }
 
@@ -735,6 +734,9 @@ bool LeadsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const Q
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( lead ) );
+        if ( field.name() == "date_modified"  ||
+             field.name() == "date_entered" )
+            field.setValue( adjustedTime( field.value() ) );
         itemList << field;
     }
 
@@ -770,6 +772,13 @@ Akonadi::Item::List LeadsHandler::itemsFromListEntriesResponse( const TNS__Entry
                 // no accessor for field
                 continue;
             }
+
+            // adjust time to local system
+            if ( namedValue.name() == "date_modified" ||
+                 namedValue.name() == "date_entered" ) {
+                accessIt->setter( adjustedTime(namedValue.value()), lead );
+                continue;
+            }
             accessIt->setter( namedValue.value(), lead );
         }
         item.setPayload<SugarLead>( lead );
@@ -780,3 +789,12 @@ Akonadi::Item::List LeadsHandler::itemsFromListEntriesResponse( const TNS__Entry
     return items;
 }
 
+QString LeadsHandler::adjustedTime( const QString dateTime ) const
+{
+    QVariant var = QVariant( dateTime );
+    QDateTime dt = var.toDateTime();
+    QDateTime system =  QDateTime::currentDateTime();
+    QDateTime utctime( system );
+    utctime.setTimeSpec( Qt::OffsetFromUTC );
+    return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
+}

@@ -643,6 +643,9 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( addressee ) );
+        if ( field.name() == "date_modified"  ||
+             field.name() == "date_entered" )
+            field.setValue( adjustedTime( field.value() ) );
         itemList << field;
     }
 
@@ -682,6 +685,12 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
+            // adjust time to local system
+            if ( namedValue.name() == "date_modified" ||
+                 namedValue.name() == "date_entered" ) {
+                accessIt->setter( adjustedTime(namedValue.value()), addressee );
+                continue;
+            }
             if ( isAddressValue(namedValue.name()) )
                 accessIt->aSetter( namedValue.value(), isPrimaryAddressValue( namedValue.name() )?workAddress:homeAddress );
             else
@@ -695,5 +704,15 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
     }
 
     return items;
+}
+
+QString ContactsHandler::adjustedTime( const QString dateTime ) const
+{
+    QVariant var = QVariant( dateTime );
+    QDateTime dt = var.toDateTime();
+    QDateTime system =  QDateTime::currentDateTime();
+    QDateTime utctime( system );
+    utctime.setTimeSpec( Qt::OffsetFromUTC );
+    return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
 }
 

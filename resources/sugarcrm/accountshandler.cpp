@@ -526,6 +526,9 @@ bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( account ) );
+        if ( field.name() == "date_modified"  ||
+             field.name() == "date_entered" )
+            field.setValue( adjustedTime( field.value() ) );
         itemList << field;
     }
 
@@ -561,6 +564,12 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
+            // adjust time to local system
+            if ( namedValue.name() == "date_modified" ||
+                 namedValue.name() == "date_entered" ) {
+                accessIt->setter( adjustedTime(namedValue.value()), account );
+                continue;
+            }
             accessIt->setter( namedValue.value(), account );
         }
         item.setPayload<SugarAccount>( account );
@@ -571,3 +580,12 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
     return items;
 }
 
+QString AccountsHandler::adjustedTime( const QString dateTime ) const
+{
+    QVariant var = QVariant( dateTime );
+    QDateTime dt = var.toDateTime();
+    QDateTime system =  QDateTime::currentDateTime();
+    QDateTime utctime( system );
+    utctime.setTimeSpec( Qt::OffsetFromUTC );
+    return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
+}
