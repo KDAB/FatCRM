@@ -714,6 +714,37 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>website</tabstop>
+  <tabstop>tyckerSymbol</tabstop>
+  <tabstop>parentName</tabstop>
+  <tabstop>ownership</tabstop>
+  <tabstop>industry</tabstop>
+  <tabstop>accountType</tabstop>
+  <tabstop>campaignName</tabstop>
+  <tabstop>assignedUserName</tabstop>
+  <tabstop>phoneOffice</tabstop>
+  <tabstop>phoneFax</tabstop>
+  <tabstop>phoneAlternate</tabstop>
+  <tabstop>employees</tabstop>
+  <tabstop>rating</tabstop>
+  <tabstop>sicCode</tabstop>
+  <tabstop>annualRevenue</tabstop>
+  <tabstop>email1</tabstop>
+  <tabstop>billingAddressStreet</tabstop>
+  <tabstop>billingAddressCity</tabstop>
+  <tabstop>billingAddressState</tabstop>
+  <tabstop>billingAddressPostalcode</tabstop>
+  <tabstop>billingAddressCountry</tabstop>
+  <tabstop>shippingAddressStreet</tabstop>
+  <tabstop>shippingAddressCity</tabstop>
+  <tabstop>shippingAddressState</tabstop>
+  <tabstop>shippingAddressPostalcode</tabstop>
+  <tabstop>shippingAddressCountry</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>saveButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -708,7 +708,7 @@
          <string>Description:</string>
         </property>
         <property name="checkable">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
         <property name="checked">
          <bool>false</bool>
@@ -761,6 +761,45 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>leadSource</tabstop>
+  <tabstop>leadSourceDescription</tabstop>
+  <tabstop>campaignName</tabstop>
+  <tabstop>referedBy</tabstop>
+  <tabstop>salutation</tabstop>
+  <tabstop>firstName</tabstop>
+  <tabstop>lastName</tabstop>
+  <tabstop>birthdate</tabstop>
+  <tabstop>accountName</tabstop>
+  <tabstop>title</tabstop>
+  <tabstop>department</tabstop>
+  <tabstop>assignedUserName</tabstop>
+  <tabstop>status</tabstop>
+  <tabstop>statusDescription</tabstop>
+  <tabstop>opportunityAmount</tabstop>
+  <tabstop>phoneWork</tabstop>
+  <tabstop>phoneMobile</tabstop>
+  <tabstop>phoneHome</tabstop>
+  <tabstop>phoneOther</tabstop>
+  <tabstop>phoneFax</tabstop>
+  <tabstop>doNotCall</tabstop>
+  <tabstop>email1</tabstop>
+  <tabstop>email2</tabstop>
+  <tabstop>primaryAddressStreet</tabstop>
+  <tabstop>primaryAddressCity</tabstop>
+  <tabstop>primaryAddressState</tabstop>
+  <tabstop>primaryAddressPostalcode</tabstop>
+  <tabstop>primaryAddressCountry</tabstop>
+  <tabstop>altAddressStreet</tabstop>
+  <tabstop>altAddressCity</tabstop>
+  <tabstop>altAddressState</tabstop>
+  <tabstop>altAddressPostalcode</tabstop>
+  <tabstop>altAddressCountry</tabstop>
+  <tabstop>copyAddressFromPrimary</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>saveButton</tabstop>
+  <tabstop>descriptionBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

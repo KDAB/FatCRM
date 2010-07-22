@@ -666,6 +666,40 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>salutation</tabstop>
+  <tabstop>firstName</tabstop>
+  <tabstop>lastName</tabstop>
+  <tabstop>title</tabstop>
+  <tabstop>department</tabstop>
+  <tabstop>accountName</tabstop>
+  <tabstop>leadSource</tabstop>
+  <tabstop>campaign</tabstop>
+  <tabstop>assignedTo</tabstop>
+  <tabstop>reportsTo</tabstop>
+  <tabstop>primaryEmail</tabstop>
+  <tabstop>officePhone</tabstop>
+  <tabstop>mobilePhone</tabstop>
+  <tabstop>homePhone</tabstop>
+  <tabstop>otherPhone</tabstop>
+  <tabstop>fax</tabstop>
+  <tabstop>birthDate</tabstop>
+  <tabstop>assistant</tabstop>
+  <tabstop>assistantPhone</tabstop>
+  <tabstop>doNotCall</tabstop>
+  <tabstop>primaryAddress</tabstop>
+  <tabstop>city</tabstop>
+  <tabstop>state</tabstop>
+  <tabstop>postalCode</tabstop>
+  <tabstop>country</tabstop>
+  <tabstop>otherAddress</tabstop>
+  <tabstop>otherCity</tabstop>
+  <tabstop>otherState</tabstop>
+  <tabstop>otherPostalCode</tabstop>
+  <tabstop>otherCountry</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>saveButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

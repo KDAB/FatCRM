@@ -446,6 +446,23 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>status</tabstop>
+  <tabstop>startDate</tabstop>
+  <tabstop>endDate</tabstop>
+  <tabstop>campaignType</tabstop>
+  <tabstop>currency</tabstop>
+  <tabstop>budget</tabstop>
+  <tabstop>expectedRevenue</tabstop>
+  <tabstop>assignedUserName</tabstop>
+  <tabstop>impressions</tabstop>
+  <tabstop>actualCost</tabstop>
+  <tabstop>expectedCost</tabstop>
+  <tabstop>objective</tabstop>
+  <tabstop>content</tabstop>
+  <tabstop>saveButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -507,6 +507,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>accountName</tabstop>
+  <tabstop>opportunityType</tabstop>
+  <tabstop>leadSource</tabstop>
+  <tabstop>campaignName</tabstop>
+  <tabstop>salesStage</tabstop>
+  <tabstop>assignedUserName</tabstop>
+  <tabstop>currency</tabstop>
+  <tabstop>amount</tabstop>
+  <tabstop>dateClosed</tabstop>
+  <tabstop>nextStep</tabstop>
+  <tabstop>probability</tabstop>
+  <tabstop>description</tabstop>
+  <tabstop>saveButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
