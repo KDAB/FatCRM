@@ -249,7 +249,7 @@ void ContactDetails::slotSaveContact()
 void ContactDetails::slotSetBirthday()
 {
     mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
-    mCalendarButton->calendarWidget()->close();
+    mCalendarButton->calendarDialog()->close();
 }
 
 void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )

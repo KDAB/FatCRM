@@ -266,5 +266,5 @@ void LeadDetails::slotCopyFromPrimary( bool checked )
 void LeadDetails::slotSetDateClosed()
 {
     mUi.birthdate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
-    mCalendarButton->calendarWidget()->close();
+    mCalendarButton->calendarDialog()->close();
 }

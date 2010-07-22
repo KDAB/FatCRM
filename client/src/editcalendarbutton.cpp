@@ -1,27 +1,33 @@
 #include "editcalendarbutton.h"
 
 #include <QMouseEvent>
+#include <QDialog>
+#include <QVBoxLayout>
 
 EditCalendarButton::EditCalendarButton( QWidget *parent )
-    : QToolButton( parent ), mCalendar(new QCalendarWidget())
+    : QToolButton( parent ),
+      mCalendar(new QCalendarWidget()),
+      mDialog( new QDialog )
 {
     setText( tr( "&Edit" ) );
-    mCalendar->setWindowTitle( tr( "Calendar" ) );
+    mDialog->setWindowTitle( tr( "Calendar" ) );
+    QVBoxLayout *dlgLayout = new QVBoxLayout;
+    dlgLayout->addWidget( mCalendar );
+    mDialog->setLayout( dlgLayout );
 }
 
 EditCalendarButton::~EditCalendarButton()
 {
-    delete mCalendar;
+
 }
 
 
 void EditCalendarButton::mousePressEvent( QMouseEvent* e )
 {
-    if ( mCalendar->isVisible() )
-        mCalendar->close();
+    if ( mDialog->isVisible() )
+        mDialog->close();
     else {
-        mCalendar->move( e->globalPos() );
-        mCalendar->show();
-        mCalendar->raise();
+        mDialog->move( e->globalPos() );
+        mDialog->show();
     }
 }

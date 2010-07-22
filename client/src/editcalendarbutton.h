@@ -13,6 +13,7 @@ public:
 
     ~EditCalendarButton();
 
+
 protected:
     virtual void mousePressEvent( QMouseEvent* e );
 
@@ -22,7 +23,9 @@ protected:
     friend class CampaignDetails;
 private:
     inline QCalendarWidget* calendarWidget() { return mCalendar; }
+    inline QDialog * calendarDialog() { return mDialog; }
 
+    QDialog *mDialog;
     QCalendarWidget *mCalendar;
 };
 

@@ -279,5 +279,5 @@ void OpportunityDetails::addAssignedToData( const QString &name, const QString &
 void OpportunityDetails::slotSetDateClosed()
 {
     mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
-    mCalendarButton->calendarWidget()->close();
+    mCalendarButton->calendarDialog()->close();
 }
