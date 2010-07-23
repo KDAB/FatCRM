@@ -73,6 +73,7 @@ private Q_SLOTS:
     void slotShowMessage( const QString& );
     void slotManageItemDetailsView( int currentTab );
     void slotManageDetailsDisplay( bool value );
+    void slotDetailsDisplayDisabled( bool value );
 
     void slotLogin();
 

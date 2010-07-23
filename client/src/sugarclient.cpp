@@ -110,6 +110,9 @@ void SugarClient::createDockWidgets()
     addDockWidget( Qt::BottomDockWidgetArea, mCampaignDetailsDock );
     mViewCampaignAction = mCampaignDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewCampaignAction );
+
+    connect( mAccountDetailsDock, SIGNAL( visibilityChanged( bool ) ),
+             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
 }
 
 void SugarClient::slotManageDetailsDisplay( bool value )
@@ -285,5 +288,10 @@ QWidget* SugarClient::detailsWidget( DetailsType type )
     default:
         return 0;
     }
+}
+
+void SugarClient::slotDetailsDisplayDisabled( bool value )
+{
+    mUi.showDetails->setChecked( value );
 }
 #include "sugarclient.moc"
