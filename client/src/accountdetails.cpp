@@ -219,7 +219,7 @@ void AccountDetails::removeAccountData( const QString &accountName )
 {
     mAccountsData.remove( accountName );
     int index = mUi.parentName->findText( accountName );
-    if ( index >= 0 )
+    if ( index > 0 )
         mUi.parentName->removeItem( index );
 }
 
@@ -234,7 +234,7 @@ void AccountDetails::removeCampaignData( const QString &campaignName )
 {
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
-    if ( index >= 0 )
+    if ( index > 0 )
         mUi.campaignName->removeItem( index );
 }
 

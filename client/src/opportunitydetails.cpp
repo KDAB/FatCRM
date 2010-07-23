@@ -231,10 +231,14 @@ void OpportunityDetails::slotSaveOpportunity()
     mData["leadSource"] = mUi.leadSource->currentText();
     mData["salesStage"] = mUi.salesStage->currentText();
     mData["description"] = mUi.description->toPlainText();
+    QString currencyName = QString();
+    QString currencySymbol = QString();
     // read currency combo and parse - Name : Symbol
-    QString currencyName = mUi.currency->currentText().split( ":" )[0].trimmed();
+    if ( !mUi.currency->currentText().isEmpty() ) {
+        currencyName = mUi.currency->currentText().split( ":" )[0].trimmed();
+        currencySymbol = mUi.currency->currentText().split( ":")[1].trimmed();
+    }
     mData["currencyName"] = currencyName;
-    QString currencySymbol = mUi.currency->currentText().split( ":")[1].trimmed();
     mData["currencySymbol"] = currencySymbol;
     mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
 
@@ -255,7 +259,7 @@ void OpportunityDetails::removeAccountData( const QString &accountName )
 {
     mAccountsData.remove( accountName );
     int index = mUi.accountName->findText( accountName );
-    if ( index >= 0 )
+    if ( index > 0 )
         mUi.accountName->removeItem( index );
 }
 
@@ -270,7 +274,7 @@ void OpportunityDetails::removeCampaignData( const QString &campaignName )
 {
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
-    if ( index >= 0 )
+    if ( index > 0 )
         mUi.campaignName->removeItem( index );
 }
 

@@ -113,6 +113,14 @@ void SugarClient::createDockWidgets()
 
     connect( mAccountDetailsDock, SIGNAL( visibilityChanged( bool ) ),
              this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
+    connect( mOpportunityDetailsDock, SIGNAL( visibilityChanged( bool ) ),
+             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
+    connect( mLeadDetailsDock, SIGNAL( visibilityChanged( bool ) ),
+             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
+    connect( mContactDetailsDock, SIGNAL( visibilityChanged( bool ) ),
+             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
+    connect( mCampaignDetailsDock, SIGNAL( visibilityChanged( bool ) ),
+             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
 }
 
 void SugarClient::slotManageDetailsDisplay( bool value )

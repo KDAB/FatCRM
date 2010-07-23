@@ -243,7 +243,7 @@ void LeadDetails::removeCampaignData( const QString &campaignName )
 {
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
-    if ( index >= 0 )
+    if ( index > 0 )
         mUi.campaignName->removeItem( index );
 }
 
