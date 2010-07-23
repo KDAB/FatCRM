@@ -21,6 +21,8 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
+#include <QMessageBox>
+#include <QItemSelectionModel>
 #include <QDebug>
 
 
@@ -90,8 +92,18 @@ void AccountsPage::slotAccountChanged( const Item &item )
     if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
-            AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account ) );
+            AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
+            if ( ad->isEditing() ) {
+                qDebug() << "ad is editing ";
+                if ( !proceedIsOk() ) {
+                    disconnect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
+                    mUi.accountsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
+                    connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
+                    return;
+                }
+            }
             ad->setItem( item );
+            mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
             connect( ad, SIGNAL( modifyAccount() ),
                  this, SLOT( slotModifyAccount( ) ) );
         }
@@ -342,6 +354,7 @@ void AccountsPage::initialize()
 
     connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
 
+
     connect( mUi.accountsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.accountsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
@@ -378,4 +391,19 @@ void AccountsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMod
     SugarAccount account;
     item = mUi.accountsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     slotAccountChanged( item );
+}
+
+bool AccountsPage::proceedIsOk()
+{
+    bool proceed = true;
+    QMessageBox msgBox;
+    msgBox.setText( tr( "The current item has been modified." ) );
+    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
+    msgBox.setStandardButtons( QMessageBox::Save |
+                               QMessageBox::Discard );
+    msgBox.setDefaultButton( QMessageBox::Save );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Save )
+        proceed = false;
+    return proceed;
 }

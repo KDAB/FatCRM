@@ -38,9 +38,11 @@ private:
     void initialize();
     void setupCachePolicy();
     void removeCampaignsData( const Akonadi::Item &item );
+    bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCampaignsCollection;
+    QModelIndex mCurrentIndex;
     Ui_CampaignsPage mUi;
 
 private Q_SLOTS:

@@ -22,6 +22,8 @@
 
 #include "kdcrmdata/sugarcampaign.h"
 
+#include <QMessageBox>
+
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage( QWidget *parent )
@@ -89,7 +91,16 @@ void CampaignsPage::slotCampaignChanged( const Item &item )
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+            if ( cd->isEditing() ) {
+                if ( !proceedIsOk() ) {
+                    disconnect( mUi.campaignsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotCampaignChanged( Akonadi::Item ) ) );
+                    mUi.campaignsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
+                    connect( mUi.campaignsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotCampaignChanged( Akonadi::Item ) ) );
+                    return;
+                }
+            }
             cd->setItem( item );
+            mCurrentIndex = mUi.campaignsTV->selectionModel()->currentIndex();
             connect( cd, SIGNAL( modifyCampaign() ),
                  this, SLOT( slotModifyCampaign( ) ) );
         }
@@ -364,4 +375,19 @@ void CampaignsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMo
     SugarCampaign campaign;
     item = mUi.campaignsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     slotCampaignChanged( item );
+}
+
+bool CampaignsPage::proceedIsOk()
+{
+    bool proceed = true;
+    QMessageBox msgBox;
+    msgBox.setText( tr( "The current item has been modified." ) );
+    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
+    msgBox.setStandardButtons( QMessageBox::Save |
+                               QMessageBox::Discard );
+    msgBox.setDefaultButton( QMessageBox::Save );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Save )
+        proceed = false;
+    return proceed;
 }

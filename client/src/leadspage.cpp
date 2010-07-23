@@ -21,7 +21,7 @@
 
 #include "kdcrmdata/sugarlead.h"
 
-
+#include <QMessageBox>
 
 using namespace Akonadi;
 
@@ -90,7 +90,16 @@ void LeadsPage::slotLeadChanged( const Item &item )
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+            if ( ld->isEditing() ) {
+                if ( !proceedIsOk() ) {
+                    disconnect( mUi.leadsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotLeadChanged( Akonadi::Item ) ) );
+                    mUi.leadsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
+                    connect( mUi.leadsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotLeadChanged( Akonadi::Item ) ) );
+                    return;
+                }
+            }
             ld->setItem( item );
+            mCurrentIndex = mUi.leadsTV->selectionModel()->currentIndex();
             connect( ld, SIGNAL( modifyLead() ),
                      this, SLOT( slotModifyLead( ) ) );
         }
@@ -395,4 +404,19 @@ void LeadsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelI
     SugarLead lead;
     item = mUi.leadsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     slotLeadChanged( item );
+}
+
+bool LeadsPage::proceedIsOk()
+{
+    bool proceed = true;
+    QMessageBox msgBox;
+    msgBox.setText( tr( "The current item has been modified." ) );
+    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
+    msgBox.setStandardButtons( QMessageBox::Save |
+                               QMessageBox::Discard );
+    msgBox.setDefaultButton( QMessageBox::Save );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Save )
+        proceed = false;
+    return proceed;
 }

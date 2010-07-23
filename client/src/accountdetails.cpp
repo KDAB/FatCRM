@@ -159,6 +159,11 @@ void AccountDetails::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+bool AccountDetails::isEditing()
+{
+    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+}
+
 void AccountDetails::slotSaveAccount()
 {
     if ( !mData.empty() )

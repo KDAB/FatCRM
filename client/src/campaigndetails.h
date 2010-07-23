@@ -35,6 +35,7 @@ Q_SIGNALS:
     friend class CampaignsPage;
 private:
     void initialize();
+    bool isEditing();
 
     EditCalendarButton *mStartDateCalendarButton;
     EditCalendarButton *mEndDateCalendarButton;

@@ -21,6 +21,7 @@
 
 #include "kdcrmdata/sugaropportunity.h"
 
+#include <QMessageBox>
 
 using namespace Akonadi;
 
@@ -89,7 +90,16 @@ void OpportunitiesPage::slotOpportunityChanged( const Item &item )
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+            if ( od->isEditing() ) {
+                if ( !proceedIsOk() ) {
+                    disconnect( mUi.opportunitiesTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotOpportunityChanged( Akonadi::Item ) ) );
+                    mUi.opportunitiesTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
+                    connect( mUi.opportunitiesTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotOpportunityChanged( Akonadi::Item ) ) );
+                    return;
+                }
+            }
             od->setItem( item );
+            mCurrentIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
             connect( od, SIGNAL( modifyOpportunity() ),
                  this, SLOT( slotModifyOpportunity( ) ) );
         }
@@ -333,3 +343,19 @@ void OpportunitiesPage::slotUpdateItemDetails( const QModelIndex& topLeft, const
     item = mUi.opportunitiesTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     slotOpportunityChanged( item );
 }
+
+bool OpportunitiesPage::proceedIsOk()
+{
+    bool proceed = true;
+    QMessageBox msgBox;
+    msgBox.setText( tr( "The current item has been modified." ) );
+    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
+    msgBox.setStandardButtons( QMessageBox::Save |
+                               QMessageBox::Discard );
+    msgBox.setDefaultButton( QMessageBox::Save );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Save )
+        proceed = false;
+    return proceed;
+}
+

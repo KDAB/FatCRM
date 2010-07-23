@@ -35,7 +35,7 @@ Q_SIGNALS:
     friend class AccountsPage;
 private:
     void initialize();
-
+    bool isEditing();
 
     QMap<QString, QString> mData; // this
     QMap<QString, QString> mAccountsData;

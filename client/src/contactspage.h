@@ -35,9 +35,11 @@ public Q_SLOTS:
 private:
     void initialize();
     void setupCachePolicy();
+    bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mContactsCollection;
+    QModelIndex mCurrentIndex;
     Ui_ContactsPage mUi;
 
 private Q_SLOTS:

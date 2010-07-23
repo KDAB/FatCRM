@@ -194,6 +194,12 @@ void ContactDetails::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+bool ContactDetails::isEditing()
+{
+    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+}
+
+
 void ContactDetails::slotSaveContact()
 {
     if ( !mContactData.empty() )

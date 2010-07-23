@@ -185,6 +185,11 @@ void OpportunityDetails::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+bool OpportunityDetails::isEditing()
+{
+    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+}
+
 void OpportunityDetails::slotSaveOpportunity()
 {
     if ( !mData.empty() )

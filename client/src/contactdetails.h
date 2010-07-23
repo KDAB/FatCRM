@@ -36,6 +36,7 @@ Q_SIGNALS:
     friend class ContactsPage;
 private:
     void initialize();
+    bool isEditing();
 
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mReportsToData;

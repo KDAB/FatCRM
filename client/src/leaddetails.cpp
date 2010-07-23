@@ -181,6 +181,11 @@ void LeadDetails::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+bool LeadDetails::isEditing()
+{
+    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+}
+
 void LeadDetails::slotSaveLead()
 {
     if ( !mData.empty() )

@@ -34,6 +34,7 @@ Q_SIGNALS:
     friend class OpportunitiesPage;
 private:
     void initialize();
+    bool isEditing();
 
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this

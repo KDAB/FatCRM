@@ -22,6 +22,7 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
+#include <QMessageBox>
 
 using namespace Akonadi;
 
@@ -90,7 +91,16 @@ void ContactsPage::slotContactChanged( const Item &item )
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ));
+            if ( cd->isEditing() ) {
+                if ( !proceedIsOk() ) {
+                    disconnect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
+                    mUi.contactsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
+                    connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
+                    return;
+                }
+            }
             cd->setItem( item );
+            mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
             connect( cd, SIGNAL( modifyContact() ),
                      this, SLOT( slotModifyContact( ) ) );
         }
@@ -443,3 +453,17 @@ void ContactsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMod
     slotContactChanged( item );
 }
 
+bool ContactsPage::proceedIsOk()
+{
+    bool proceed = true;
+    QMessageBox msgBox;
+    msgBox.setText( tr( "The current item has been modified." ) );
+    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
+    msgBox.setStandardButtons( QMessageBox::Save |
+                               QMessageBox::Discard );
+    msgBox.setDefaultButton( QMessageBox::Save );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Save )
+        proceed = false;
+    return proceed;
+}

@@ -182,6 +182,11 @@ void CampaignDetails::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+bool CampaignDetails::isEditing()
+{
+    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+}
+
 void CampaignDetails::slotSaveCampaign()
 {
     if ( !mData.empty() )
