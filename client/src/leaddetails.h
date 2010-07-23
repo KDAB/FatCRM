@@ -47,7 +47,8 @@ private Q_SLOTS:
     void slotSaveLead();
     void slotSetModifyFlag( bool );
     void slotCopyFromPrimary( bool );
-    void slotSetDateClosed();
+    void slotSetBirthDate();
+    void slotClearDate();
 };
 
 #endif /* LEADDETAILS_H */

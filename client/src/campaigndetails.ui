@@ -214,18 +214,25 @@
             </widget>
            </item>
            <item>
+            <widget class="QToolButton" name="clearStartDateButton">
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QWidget" name="startCalendarWidget" native="true"/>
            </item>
           </layout>
          </item>
-         <item row="3" column="0">
+         <item row="4" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
             <string>End Date:</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="1">
+         <item row="4" column="1">
           <layout class="QHBoxLayout" name="horizontalLayout_4">
            <item>
             <widget class="QLineEdit" name="endDate">
@@ -235,18 +242,25 @@
             </widget>
            </item>
            <item>
+            <widget class="QToolButton" name="clearEndDateButton">
+             <property name="text">
+              <string>Clear</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QWidget" name="endCalendarWidget" native="true"/>
            </item>
           </layout>
          </item>
-         <item row="4" column="0">
+         <item row="5" column="0">
           <widget class="QLabel" name="label_4">
            <property name="text">
             <string>Type:</string>
            </property>
           </widget>
          </item>
-         <item row="4" column="1">
+         <item row="5" column="1">
           <widget class="QComboBox" name="campaignType">
            <item>
             <property name="text">
@@ -295,14 +309,14 @@
            </item>
           </widget>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>Currency:</string>
            </property>
           </widget>
          </item>
-         <item row="5" column="1">
+         <item row="6" column="1">
           <widget class="QComboBox" name="currency">
            <item>
             <property name="text">
@@ -316,27 +330,27 @@
            </item>
           </widget>
          </item>
-         <item row="6" column="0">
+         <item row="7" column="0">
           <widget class="QLabel" name="label_9">
            <property name="text">
             <string>Budget:</string>
            </property>
           </widget>
          </item>
-         <item row="6" column="1">
+         <item row="7" column="1">
           <widget class="QLineEdit" name="budget"/>
          </item>
-         <item row="7" column="0">
+         <item row="8" column="0">
           <widget class="QLabel" name="label_28">
            <property name="text">
             <string>Expected Revenue:</string>
            </property>
           </widget>
          </item>
-         <item row="7" column="1">
+         <item row="8" column="1">
           <widget class="QLineEdit" name="expectedRevenue"/>
          </item>
-         <item row="8" column="1">
+         <item row="9" column="1">
           <spacer name="verticalSpacer">
            <property name="orientation">
             <enum>Qt::Vertical</enum>

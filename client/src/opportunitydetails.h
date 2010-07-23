@@ -48,6 +48,7 @@ private Q_SLOTS:
     void slotSaveOpportunity();
     void slotSetModifyFlag( bool );
     void slotSetDateClosed();
+    void slotClearDate();
 };
 
 

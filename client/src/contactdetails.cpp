@@ -19,6 +19,9 @@ ContactDetails::ContactDetails( QWidget *parent )
     buttonLayout->addWidget( mCalendarButton );
     mUi.calendarWidget->setLayout( buttonLayout );
 
+    connect( mUi.clearButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
+
     connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
              this, SLOT( slotSetBirthday() ) );
 
@@ -256,6 +259,11 @@ void ContactDetails::slotSetBirthday()
     connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
              this, SLOT( slotSetBirthday() ) );
     mCalendarButton->calendarDialog()->close();
+}
+
+void ContactDetails::slotClearDate()
+{
+    mUi.birthDate->clear();
 }
 
 void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )

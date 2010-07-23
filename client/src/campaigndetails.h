@@ -51,6 +51,7 @@ private Q_SLOTS:
     void slotSetModifyFlag( bool );
     void slotSetStartDate();
     void slotSetEndDate();
+    void slotClearDate();
 };
 
 

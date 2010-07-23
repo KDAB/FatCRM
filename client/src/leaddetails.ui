@@ -312,6 +312,13 @@
               </widget>
              </item>
              <item>
+              <widget class="QToolButton" name="clearButton">
+               <property name="text">
+                <string>Clear</string>
+               </property>
+              </widget>
+             </item>
+             <item>
               <widget class="QWidget" name="calendarWidget" native="true"/>
              </item>
             </layout>

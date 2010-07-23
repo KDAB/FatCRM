@@ -51,6 +51,7 @@ private Q_SLOTS:
     void slotSaveContact();
     void slotSetBirthday();
     void slotSetModifyFlag( bool );
+    void slotClearDate();
 };
 
 #endif /* CONTACTDETAILS_H */

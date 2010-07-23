@@ -24,10 +24,19 @@ CampaignDetails::CampaignDetails( QWidget *parent )
     endLayout->addWidget( mEndDateCalendarButton );
     mUi.endCalendarWidget->setLayout( endLayout );
 
+    connect( mUi.clearStartDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
+
     connect( mStartDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
+             SIGNAL( clicked( const QDate& ) ),
+             this, SLOT( slotSetStartDate() ) );
+
+    connect( mUi.clearEndDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
+
     connect( mEndDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
+             SIGNAL( clicked( const QDate& ) ),
+             this, SLOT( slotSetEndDate() ) );
 
     initialize();
 }
@@ -240,21 +249,29 @@ void CampaignDetails::addAssignedToData( const QString &name, const QString &id 
 void CampaignDetails::slotSetStartDate()
 {
     disconnect( mStartDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
+             SIGNAL( clicked( const QDate& ) ), this, SLOT( slotSetStartDate() ) );
     mUi.startDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mStartDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
     connect( mStartDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetStartDate() ) );
+             SIGNAL( clicked( const QDate& ) ), this, SLOT( slotSetStartDate() ) );
     mStartDateCalendarButton->calendarDialog()->close();
 }
 
 void CampaignDetails::slotSetEndDate()
 {
     disconnect( mEndDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
+             SIGNAL( clicked( const QDate& ) ), this, SLOT( slotSetEndDate() ) );
     mUi.endDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mEndDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
     connect( mEndDateCalendarButton->calendarWidget(),
-             SIGNAL( selectionChanged() ), this, SLOT( slotSetEndDate() ) );
+             SIGNAL( clicked( const QDate& ) ), this, SLOT( slotSetEndDate() ) );
     mEndDateCalendarButton->calendarDialog()->close();
+}
+
+void CampaignDetails::slotClearDate()
+{
+    if ( sender()->objectName() == "clearStartDateButton" )
+        mUi.startDate->clear();
+    else
+        mUi.endDate->clear();
 }

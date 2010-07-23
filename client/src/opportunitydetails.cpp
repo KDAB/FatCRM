@@ -18,7 +18,12 @@ OpportunityDetails::OpportunityDetails( QWidget *parent )
     QVBoxLayout *buttonLayout = new QVBoxLayout;
     buttonLayout->addWidget( mCalendarButton );
     mUi.calendarWidget->setLayout( buttonLayout );
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+
+    connect( mUi.clearButton, SIGNAL( clicked() ), this,
+             SLOT( slotClearDate() ) );
+
+    connect( mCalendarButton->calendarWidget(),
+             SIGNAL( clicked( const QDate& ) ),
              this, SLOT( slotSetDateClosed() ) );
 
     initialize();
@@ -278,11 +283,18 @@ void OpportunityDetails::addAssignedToData( const QString &name, const QString &
 
 void OpportunityDetails::slotSetDateClosed()
 {
-    disconnect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetDateClosed() ) );
+    disconnect( mCalendarButton->calendarWidget(),
+                SIGNAL( clicked( const QDate& ) ),
+                this, SLOT( slotSetDateClosed() ) );
     mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
+    connect( mCalendarButton->calendarWidget(),
+             SIGNAL( clicked( const QDate& ) ),
              this, SLOT( slotSetDateClosed() ) );
     mCalendarButton->calendarDialog()->close();
+}
+
+void OpportunityDetails::slotClearDate()
+{
+    mUi.dateClosed->clear();
 }
