@@ -473,7 +473,7 @@
            <item row="1" column="0">
             <widget class="QLabel" name="label_7">
              <property name="text">
-              <string>Phone Fax:</string>
+              <string>Fax:</string>
              </property>
             </widget>
            </item>
@@ -513,7 +513,7 @@
            <item row="5" column="0">
             <widget class="QLabel" name="label_16">
              <property name="text">
-              <string>Sic Code:</string>
+              <string>SIC Code:</string>
              </property>
             </widget>
            </item>
@@ -533,7 +533,7 @@
            <item row="7" column="0">
             <widget class="QLabel" name="label_12">
              <property name="text">
-              <string>Email addresses</string>
+              <string>Email Address:</string>
              </property>
             </widget>
            </item>
@@ -627,7 +627,7 @@
            <item row="5" column="0">
             <widget class="QLabel" name="label_24">
              <property name="text">
-              <string>Shipping Address</string>
+              <string>Shipping Address:</string>
              </property>
             </widget>
            </item>

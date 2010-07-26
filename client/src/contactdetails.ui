@@ -169,14 +169,14 @@
            <item row="7" column="0">
             <widget class="QLabel" name="label_4">
              <property name="text">
-              <string>Lead Source</string>
+              <string>Lead Source:</string>
              </property>
             </widget>
            </item>
            <item row="8" column="0">
             <widget class="QLabel" name="label_5">
              <property name="text">
-              <string>Campaign</string>
+              <string>Campaign:</string>
              </property>
             </widget>
            </item>
@@ -440,7 +440,7 @@
            <item row="5" column="0">
             <widget class="QLabel" name="label_16">
              <property name="text">
-              <string>BirthDate:</string>
+              <string>Birthdate:</string>
              </property>
             </widget>
            </item>
