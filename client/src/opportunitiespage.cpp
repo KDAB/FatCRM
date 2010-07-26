@@ -83,21 +83,29 @@ void OpportunitiesPage::slotCollectionFetchResult( KJob *job )
     }
 }
 
-void OpportunitiesPage::slotOpportunityChanged( const Item &item )
+void OpportunitiesPage::slotOpportunityClicked( const QModelIndex &index )
 {
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity) );
 
+        if ( od->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.opportunitiesTV->setCurrentIndex( mCurrentIndex );
+                return;
+            }
+        }
+        Item item = mUi.opportunitiesTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        opportunityChanged(item );
+    }
+}
+
+void OpportunitiesPage::opportunityChanged( const Item &item )
+{
     if ( item.isValid() && item.hasPayload<SugarOpportunity>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
-            if ( od->isEditing() ) {
-                if ( !proceedIsOk() ) {
-                    disconnect( mUi.opportunitiesTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotOpportunityChanged( Akonadi::Item ) ) );
-                    mUi.opportunitiesTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
-                    connect( mUi.opportunitiesTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotOpportunityChanged( Akonadi::Item ) ) );
-                    return;
-                }
-            }
             od->setItem( item );
             mCurrentIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
             connect( od, SIGNAL( modifyOpportunity() ),
@@ -110,8 +118,14 @@ void OpportunitiesPage::slotNewOpportunityClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        w->displayDockWidgets();
         OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+
+        if ( od->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
+
+        w->displayDockWidgets();
         od->clearFields();
         connect( od, SIGNAL( saveOpportunity() ),
                  this, SLOT( slotAddOpportunity( ) ) );
@@ -302,13 +316,12 @@ void OpportunitiesPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.opportunitiesTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotOpportunityChanged( Akonadi::Item ) ) );
+    connect( mUi.opportunitiesTV, SIGNAL( clicked( const QModelIndex& ) ),
+             this, SLOT( slotOpportunityClicked( const QModelIndex& ) ) );
 
     connect( mUi.opportunitiesTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.opportunitiesTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
-
-
 }
 
 void OpportunitiesPage::syncronize()
@@ -341,7 +354,7 @@ void OpportunitiesPage::slotUpdateItemDetails( const QModelIndex& topLeft, const
     Item item;
     SugarOpportunity opportunity;
     item = mUi.opportunitiesTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    slotOpportunityChanged( item );
+    opportunityChanged( item );
 }
 
 bool OpportunitiesPage::proceedIsOk()

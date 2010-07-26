@@ -38,6 +38,7 @@ private:
     void initialize();
     void setupCachePolicy();
     void removeCampaignsData( const Akonadi::Item &item );
+    void campaignChanged( const Akonadi::Item &item );
     bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
@@ -48,7 +49,7 @@ private:
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
     void slotCollectionFetchResult( KJob *job );
-    void slotCampaignChanged( const Akonadi::Item &item );
+    void slotCampaignClicked( const QModelIndex& index );
     void slotNewCampaignClicked();
     void slotAddCampaign();
     void slotModifyCampaign();

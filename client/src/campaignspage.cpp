@@ -84,21 +84,30 @@ void CampaignsPage::slotCollectionFetchResult( KJob *job )
     }
 }
 
-void CampaignsPage::slotCampaignChanged( const Item &item )
+void CampaignsPage::slotCampaignClicked( const QModelIndex &index )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget(Campaign) );
+
+        if ( cd->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.campaignsTV->setCurrentIndex( mCurrentIndex );
+                return;
+            }
+        }
+        Item item = mUi.campaignsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        campaignChanged(item );
+    }
+}
+
+void CampaignsPage::campaignChanged( const Item &item )
 {
 
     if ( item.isValid() && item.hasPayload<SugarCampaign>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
-            if ( cd->isEditing() ) {
-                if ( !proceedIsOk() ) {
-                    disconnect( mUi.campaignsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotCampaignChanged( Akonadi::Item ) ) );
-                    mUi.campaignsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
-                    connect( mUi.campaignsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotCampaignChanged( Akonadi::Item ) ) );
-                    return;
-                }
-            }
             cd->setItem( item );
             mCurrentIndex = mUi.campaignsTV->selectionModel()->currentIndex();
             connect( cd, SIGNAL( modifyCampaign() ),
@@ -111,8 +120,12 @@ void CampaignsPage::slotNewCampaignClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        w->displayDockWidgets();
         CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+        if ( cd->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
+        w->displayDockWidgets();
         cd->clearFields();
         connect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
@@ -337,7 +350,8 @@ void CampaignsPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.campaignsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotCampaignChanged( Akonadi::Item ) ) );
+    connect( mUi.campaignsTV, SIGNAL( clicked( const QModelIndex& ) ),
+             this, SLOT( slotCampaignClicked( const QModelIndex& ) ) );
 
     connect( mUi.campaignsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
@@ -374,7 +388,7 @@ void CampaignsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMo
     Item item;
     SugarCampaign campaign;
     item = mUi.campaignsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    slotCampaignChanged( item );
+    campaignChanged( item );
 }
 
 bool CampaignsPage::proceedIsOk()

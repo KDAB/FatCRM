@@ -187,7 +187,7 @@ void OpportunityDetails::slotEnableSaving()
 
 bool OpportunityDetails::isEditing()
 {
-    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+    return ( mUi.saveButton->isEnabled() );
 }
 
 void OpportunityDetails::slotSaveOpportunity()

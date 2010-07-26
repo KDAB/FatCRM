@@ -35,6 +35,7 @@ public Q_SLOTS:
 private:
     void initialize();
     void setupCachePolicy();
+    void contactChanged(const Akonadi::Item &item );
     bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
@@ -45,7 +46,7 @@ private:
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
     void slotCollectionFetchResult( KJob *job );
-    void slotContactChanged( const Akonadi::Item &item );
+    void slotContactClicked( const QModelIndex& index );
     void slotNewContactClicked();
     void slotAddContact();
     void slotModifyContact();

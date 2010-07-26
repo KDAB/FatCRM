@@ -83,21 +83,29 @@ void LeadsPage::slotCollectionFetchResult( KJob *job )
     }
 }
 
-void LeadsPage::slotLeadChanged( const Item &item )
+void LeadsPage::slotLeadClicked( const QModelIndex &index )
 {
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget(Lead) );
 
+        if ( ld->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.leadsTV->setCurrentIndex( mCurrentIndex );
+                return;
+            }
+        }
+        Item item = mUi.leadsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        leadChanged(item );
+    }
+}
+
+void LeadsPage::leadChanged( const Item &item )
+{
     if ( item.isValid() && item.hasPayload<SugarLead>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
-            if ( ld->isEditing() ) {
-                if ( !proceedIsOk() ) {
-                    disconnect( mUi.leadsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotLeadChanged( Akonadi::Item ) ) );
-                    mUi.leadsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
-                    connect( mUi.leadsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotLeadChanged( Akonadi::Item ) ) );
-                    return;
-                }
-            }
             ld->setItem( item );
             mCurrentIndex = mUi.leadsTV->selectionModel()->currentIndex();
             connect( ld, SIGNAL( modifyLead() ),
@@ -110,8 +118,13 @@ void LeadsPage::slotNewLeadClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        w->displayDockWidgets();
         LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+        if ( ld->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
+        w->displayDockWidgets();
+
         ld->clearFields();
         connect( ld, SIGNAL( saveLead() ),
                  this, SLOT( slotAddLead( ) ) );
@@ -365,7 +378,7 @@ void LeadsPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.leadsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotLeadChanged( Akonadi::Item ) ) );
+    connect( mUi.leadsTV, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotLeadClicked( const QModelIndex& ) ) );
 
     connect( mUi.leadsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
@@ -403,7 +416,7 @@ void LeadsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelI
     Item item;
     SugarLead lead;
     item = mUi.leadsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    slotLeadChanged( item );
+    leadChanged( item );
 }
 
 bool LeadsPage::proceedIsOk()

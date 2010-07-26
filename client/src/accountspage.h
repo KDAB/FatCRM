@@ -38,6 +38,7 @@ private:
     void initialize();
     void setupCachePolicy();
     void removeAccountsData( const Akonadi::Item &item );
+    void accountChanged( const Akonadi::Item &item );
     bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
@@ -49,7 +50,7 @@ private:
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
     void slotCollectionFetchResult( KJob *job );
-    void slotAccountChanged( const Akonadi::Item &item );
+    void slotAccountClicked( const QModelIndex& index );
     void slotNewAccountClicked();
     void slotAddAccount();
     void slotModifyAccount();

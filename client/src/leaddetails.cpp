@@ -183,7 +183,7 @@ void LeadDetails::slotEnableSaving()
 
 bool LeadDetails::isEditing()
 {
-    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+    return ( mUi.saveButton->isEnabled() );
 }
 
 void LeadDetails::slotSaveLead()

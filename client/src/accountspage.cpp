@@ -87,21 +87,29 @@ void AccountsPage::slotCollectionFetchResult( KJob *job )
     }
 }
 
-void AccountsPage::slotAccountChanged( const Item &item )
+void AccountsPage::slotAccountClicked( const QModelIndex &index )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
+
+        if ( ad->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.accountsTV->setCurrentIndex( mCurrentIndex );
+                return;
+            }
+        }
+        Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        accountChanged(item );
+    }
+}
+
+void AccountsPage::accountChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
-            if ( ad->isEditing() ) {
-                qDebug() << "ad is editing ";
-                if ( !proceedIsOk() ) {
-                    disconnect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
-                    mUi.accountsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
-                    connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
-                    return;
-                }
-            }
             ad->setItem( item );
             mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
             connect( ad, SIGNAL( modifyAccount() ),
@@ -114,8 +122,13 @@ void AccountsPage::slotNewAccountClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        w->displayDockWidgets();
         AccountDetails* ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+        if ( ad->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
+
+        w->displayDockWidgets();
         ad->clearFields();
         connect( ad, SIGNAL( saveAccount() ),
                  this, SLOT( slotAddAccount( ) ) );
@@ -352,8 +365,8 @@ void AccountsPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.accountsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotAccountChanged( Akonadi::Item ) ) );
-
+    connect( mUi.accountsTV, SIGNAL( clicked( const QModelIndex& ) ),
+             this, SLOT( slotAccountClicked( const QModelIndex& ) ) );
 
     connect( mUi.accountsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
@@ -390,7 +403,7 @@ void AccountsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMod
     Item item;
     SugarAccount account;
     item = mUi.accountsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    slotAccountChanged( item );
+    accountChanged( item );
 }
 
 bool AccountsPage::proceedIsOk()

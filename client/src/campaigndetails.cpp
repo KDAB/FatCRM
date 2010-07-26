@@ -184,7 +184,7 @@ void CampaignDetails::slotEnableSaving()
 
 bool CampaignDetails::isEditing()
 {
-    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+    return ( mUi.saveButton->isEnabled() );
 }
 
 void CampaignDetails::slotSaveCampaign()

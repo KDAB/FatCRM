@@ -196,7 +196,7 @@ void ContactDetails::slotEnableSaving()
 
 bool ContactDetails::isEditing()
 {
-    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+    return ( mUi.saveButton->isEnabled() );
 }
 
 

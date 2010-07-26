@@ -37,6 +37,7 @@ public Q_SLOTS:
 private:
     void initialize();
     void setupCachePolicy();
+    void opportunityChanged( const Akonadi::Item &item );
     bool proceedIsOk();
 
     Akonadi::ChangeRecorder *mChangeRecorder;
@@ -47,7 +48,7 @@ private:
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
     void slotCollectionFetchResult( KJob *job );
-    void slotOpportunityChanged( const Akonadi::Item &item );
+    void slotOpportunityClicked( const QModelIndex& index );
     void slotNewOpportunityClicked();
     void slotAddOpportunity();
     void slotModifyOpportunity();

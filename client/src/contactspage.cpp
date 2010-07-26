@@ -85,20 +85,29 @@ void ContactsPage::slotCollectionFetchResult( KJob *job )
     }
 }
 
-void ContactsPage::slotContactChanged( const Item &item )
+void ContactsPage::slotContactClicked( const QModelIndex &index )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w ) {
+        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget(Contact) );
+
+        if ( cd->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.contactsTV->setCurrentIndex( mCurrentIndex );
+                return;
+            }
+        }
+        Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        contactChanged(item );
+    }
+}
+
+void ContactsPage::contactChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         if ( w ) {
             ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ));
-            if ( cd->isEditing() ) {
-                if ( !proceedIsOk() ) {
-                    disconnect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
-                    mUi.contactsTV->selectionModel()->setCurrentIndex( mCurrentIndex,  QItemSelectionModel::NoUpdate );
-                    connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
-                    return;
-                }
-            }
             cd->setItem( item );
             mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
             connect( cd, SIGNAL( modifyContact() ),
@@ -111,8 +120,14 @@ void ContactsPage::slotNewContactClicked()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( w ) {
-        w->displayDockWidgets();
         ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ) );
+
+        if ( cd->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
+        w->displayDockWidgets();
+
         cd->clearFields();
         connect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
@@ -411,11 +426,12 @@ void ContactsPage::initialize()
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.contactsTV, SIGNAL( currentChanged( Akonadi::Item ) ), this, SLOT( slotContactChanged( Akonadi::Item ) ) );
+    connect( mUi.contactsTV, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotContactClicked( const QModelIndex& ) ) );
 
     connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.contactsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
+    mUi.contactsTV->reset();
 
 }
 
@@ -450,7 +466,7 @@ void ContactsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QMod
     Item item;
     KABC::Addressee addressee;
     item = mUi.contactsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    slotContactChanged( item );
+    contactChanged( item );
 }
 
 bool ContactsPage::proceedIsOk()

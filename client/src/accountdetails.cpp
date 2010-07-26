@@ -161,7 +161,7 @@ void AccountDetails::slotEnableSaving()
 
 bool AccountDetails::isEditing()
 {
-    return ( mUi.saveButton->isEnabled() && mModifyFlag );
+    return ( mUi.saveButton->isEnabled() );
 }
 
 void AccountDetails::slotSaveAccount()
