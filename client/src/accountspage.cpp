@@ -389,7 +389,9 @@ void AccountsPage::initialize()
 
 void AccountsPage::syncronize()
 {
-    AgentManager::self()->synchronizeCollection( mAccountsCollection );
+    if ( mUi.accountsTV->model() != 0
+         && mUi.accountsTV->model()->rowCount() > 0 )
+        AgentManager::self()->synchronizeCollection( mAccountsCollection );
 }
 
 void AccountsPage::cachePolicyJobCompleted( KJob* job)

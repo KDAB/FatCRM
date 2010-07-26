@@ -402,7 +402,9 @@ void LeadsPage::initialize()
 
 void LeadsPage::syncronize()
 {
-    AgentManager::self()->synchronizeCollection( mLeadsCollection );
+    if ( mUi.leadsTV->model() != 0
+         && mUi.leadsTV->model()->rowCount() > 0 )
+        AgentManager::self()->synchronizeCollection( mLeadsCollection );
 }
 
 void LeadsPage::cachePolicyJobCompleted( KJob* job)

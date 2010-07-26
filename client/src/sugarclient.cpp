@@ -26,7 +26,6 @@ SugarClient::SugarClient()
      */
     Akonadi::Control::widgetNeedsAkonadi( this );
     QMetaObject::invokeMethod( this, "slotDelayedInit", Qt::AutoConnection );
-
 }
 
 SugarClient::~SugarClient()
@@ -52,10 +51,13 @@ void SugarClient::slotDelayedInit()
     connect( mResourceSelector, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotResourceSelectionChanged( int ) ) );
 
-    if ( mResourceSelector->count() > 1 ) // several resources
+    int selectors = mResourceSelector->count();
+    if ( selectors > 1 ) // several resources
         slotLogin();
     else
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
+
+    mUi.actionSyncronize->setEnabled( false );
 }
 
 void SugarClient::initialize()
@@ -140,6 +142,7 @@ void SugarClient::slotResourceSelectionChanged( int index )
         emit resourceSelected( agent.identifier().toLatin1() );
         QString contextTitle = QString ( "SugarCRM Client: " ) + context;
         setWindowTitle(  contextTitle );
+        mUi.actionSyncronize->setEnabled( true );
     }
 }
 
@@ -154,8 +157,10 @@ void SugarClient::slotReload()
     }
     if ( index >= 0 ) {
         AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
-        if ( agent.isValid() )
+        if ( agent.isValid() ) {
             emit resourceSelected( agent.identifier().toLatin1() );
+            mUi.actionSyncronize->setEnabled( true );
+        }
     }
 }
 

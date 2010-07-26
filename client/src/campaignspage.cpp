@@ -374,7 +374,9 @@ void CampaignsPage::initialize()
 
 void CampaignsPage::syncronize()
 {
-    AgentManager::self()->synchronizeCollection( mCampaignsCollection );
+    if ( mUi.campaignsTV->model() != 0
+         && mUi.campaignsTV->model()->rowCount() > 0 )
+        AgentManager::self()->synchronizeCollection( mCampaignsCollection );
 }
 
 void CampaignsPage::cachePolicyJobCompleted( KJob* job)

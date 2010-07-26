@@ -211,7 +211,6 @@ void OpportunitiesPage::slotModifyOpportunity()
         opportunity.setOpportunityType( data.value( "opportunityType" ) );
         opportunity.setAccountName( data.value( "accountName" ) );
         opportunity.setAccountId( data.value( "accountId" ) );
-        qDebug() << "value pour id " << data.value( "accountId" );
         opportunity.setCampaignId( data.value( "campaignId" ) );
         opportunity.setCampaignName( data.value( "campaignName" ) );
         opportunity.setLeadSource( data.value( "leadSource" ) );
@@ -340,6 +339,8 @@ void OpportunitiesPage::initialize()
 
 void OpportunitiesPage::syncronize()
 {
+   if ( mUi.opportunitiesTV->model() != 0
+         && mUi.opportunitiesTV->model()->rowCount() > 0 )
     AgentManager::self()->synchronizeCollection( mOpportunitiesCollection );
 }
 

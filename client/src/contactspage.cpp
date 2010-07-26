@@ -451,7 +451,9 @@ void ContactsPage::initialize()
 
 void ContactsPage::syncronize()
 {
-    AgentManager::self()->synchronizeCollection( mContactsCollection );
+    if ( mUi.contactsTV->model() != 0
+         && mUi.contactsTV->model()->rowCount() > 0 )
+        AgentManager::self()->synchronizeCollection( mContactsCollection );
 
 }
 
