@@ -57,7 +57,6 @@ void SugarClient::slotDelayedInit()
     else
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
 
-    mUi.actionSyncronize->setEnabled( false );
 }
 
 void SugarClient::initialize()
@@ -69,6 +68,7 @@ void SugarClient::initialize()
     setupActions();
     // initialize view actions
     slotManageItemDetailsView( 0 );
+    mUi.actionSyncronize->setEnabled( false );
 }
 
 void SugarClient::createMenus()
