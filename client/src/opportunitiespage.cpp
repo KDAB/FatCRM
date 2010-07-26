@@ -238,7 +238,21 @@ void OpportunitiesPage::slotModifyOpportunity()
 void OpportunitiesPage::slotRemoveOpportunity()
 {
     const QModelIndex index = mUi.opportunitiesTV->selectionModel()->currentIndex();
+    if ( !index.isValid() )
+        return;
+
     Item item = mUi.opportunitiesTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle( tr( "SugarClient - Delete Opportunity" ) );
+    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
+    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
+    msgBox.setStandardButtons( QMessageBox::Yes |
+                               QMessageBox::Cancel );
+    msgBox.setDefaultButton( QMessageBox::Cancel );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Cancel )
+        return;
 
     if ( item.isValid() ) {
         // job starts automatically
@@ -247,7 +261,7 @@ void OpportunitiesPage::slotRemoveOpportunity()
         Q_UNUSED( job );
     }
     const QModelIndex newIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
-    if ( !index.isValid() )
+    if ( !newIndex.isValid() )
         mUi.removeOpportunityPB->setEnabled( false );
 }
 

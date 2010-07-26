@@ -339,7 +339,21 @@ void ContactsPage::slotModifyContact()
 void ContactsPage::slotRemoveContact()
 {
     const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
+    if ( !index.isValid() )
+        return;
+
     Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle( tr( "SugarClient - Delete Contact" ) );
+    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
+    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
+    msgBox.setStandardButtons( QMessageBox::Yes |
+                               QMessageBox::Cancel );
+    msgBox.setDefaultButton( QMessageBox::Cancel );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Cancel )
+        return;
 
     if ( item.isValid() ) {
         // job starts automatically
@@ -348,7 +362,7 @@ void ContactsPage::slotRemoveContact()
         Q_UNUSED( job );
     }
     const QModelIndex newIndex = mUi.contactsTV->selectionModel()->currentIndex();
-    if ( !index.isValid() )
+    if ( !newIndex.isValid() )
         mUi.removeContactPB->setEnabled( false );
 }
 

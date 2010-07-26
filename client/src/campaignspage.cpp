@@ -237,7 +237,21 @@ void CampaignsPage::slotModifyCampaign()
 void CampaignsPage::slotRemoveCampaign()
 {
     const QModelIndex index = mUi.campaignsTV->selectionModel()->currentIndex();
+    if ( !index.isValid() )
+        return;
+
     Item item = mUi.campaignsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+
+    QMessageBox msgBox;
+    msgBox.setWindowTitle( tr( "SugarClient - Delete Campaign" ) );
+    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
+    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
+    msgBox.setStandardButtons( QMessageBox::Yes |
+                               QMessageBox::Cancel );
+    msgBox.setDefaultButton( QMessageBox::Cancel );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Cancel )
+        return;
 
     removeCampaignsData( item );
 
@@ -248,7 +262,7 @@ void CampaignsPage::slotRemoveCampaign()
         Q_UNUSED( job );
     }
     const QModelIndex newIndex = mUi.campaignsTV->selectionModel()->currentIndex();
-    if ( !index.isValid() )
+    if ( !newIndex.isValid() )
         mUi.removeCampaignPB->setEnabled( false );
 
 
