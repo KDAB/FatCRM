@@ -97,6 +97,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QGroupBox" name="detailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Details</string>
           </property>
@@ -348,6 +354,12 @@
         </item>
         <item>
          <widget class="QGroupBox" name="otherDetailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Other Details</string>
           </property>

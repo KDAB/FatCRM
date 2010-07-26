@@ -16,6 +16,12 @@
   <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0" colspan="3">
     <widget class="QGroupBox" name="contactInformationGB">
+     <property name="minimumSize">
+      <size>
+       <width>850</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="title">
       <string>Contact Information</string>
      </property>
@@ -97,6 +103,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QGroupBox" name="detailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Details</string>
           </property>
@@ -359,6 +371,12 @@
         </item>
         <item>
          <widget class="QGroupBox" name="otherDetailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Other Details</string>
           </property>
@@ -499,6 +517,12 @@
         </item>
         <item>
          <widget class="QGroupBox" name="addressesBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Addresses</string>
           </property>

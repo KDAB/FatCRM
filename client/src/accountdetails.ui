@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>897</width>
-    <height>684</height>
+    <width>891</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,16 @@
   <layout class="QGridLayout" name="gridLayout_6">
    <item row="0" column="0" colspan="3">
     <widget class="QGroupBox" name="accountInformationGB">
+     <property name="minimumSize">
+      <size>
+       <width>850</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="title">
       <string>Account Information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5">
+     <layout class="QGridLayout" name="gridLayout_7">
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -94,9 +100,15 @@
        </layout>
       </item>
       <item row="1" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_3">
-        <item>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
          <widget class="QGroupBox" name="detailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>275</height>
+           </size>
+          </property>
           <property name="title">
            <string>Details</string>
           </property>
@@ -430,8 +442,14 @@
           </layout>
          </widget>
         </item>
-        <item>
+        <item row="0" column="1">
          <widget class="QGroupBox" name="otherDetailsBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Other Details</string>
           </property>
@@ -441,7 +459,7 @@
           <property name="checked">
            <bool>false</bool>
           </property>
-          <layout class="QGridLayout" name="gridLayout_2">
+          <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
             <widget class="QLabel" name="label_6">
              <property name="text">
@@ -499,6 +517,9 @@
              </property>
             </widget>
            </item>
+           <item row="5" column="1">
+            <widget class="QLineEdit" name="sicCode"/>
+           </item>
            <item row="6" column="0">
             <widget class="QLabel" name="label_11">
              <property name="text">
@@ -532,14 +553,17 @@
              </property>
             </spacer>
            </item>
-           <item row="5" column="1">
-            <widget class="QLineEdit" name="sicCode"/>
-           </item>
           </layout>
          </widget>
         </item>
-        <item>
+        <item row="0" column="2">
          <widget class="QGroupBox" name="addressesBox">
+          <property name="minimumSize">
+           <size>
+            <width>275</width>
+            <height>0</height>
+           </size>
+          </property>
           <property name="title">
            <string>Addresses</string>
           </property>
@@ -549,7 +573,7 @@
           <property name="checked">
            <bool>false</bool>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3">
+          <layout class="QGridLayout" name="gridLayout_2">
            <item row="0" column="0">
             <widget class="QLabel" name="label_13">
              <property name="text">

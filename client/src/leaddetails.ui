@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1086</width>
-    <height>867</height>
+    <width>861</width>
+    <height>622</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_6">
+  <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0" colspan="3">
     <widget class="QGroupBox" name="leadInformationGB">
      <property name="title">
       <string>Lead Information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
+     <layout class="QGridLayout" name="gridLayout_6">
       <item row="0" column="0">
        <layout class="QGridLayout" name="gridLayout">
         <item row="0" column="0">
@@ -99,7 +99,7 @@
          <widget class="QGroupBox" name="detailsBox">
           <property name="minimumSize">
            <size>
-            <width>350</width>
+            <width>275</width>
             <height>0</height>
            </size>
           </property>
@@ -376,7 +376,7 @@
          <widget class="QGroupBox" name="otherDetailsBox">
           <property name="minimumSize">
            <size>
-            <width>350</width>
+            <width>275</width>
             <height>0</height>
            </size>
           </property>
@@ -553,7 +553,7 @@
          <widget class="QGroupBox" name="addressesBox">
           <property name="minimumSize">
            <size>
-            <width>350</width>
+            <width>275</width>
             <height>0</height>
            </size>
           </property>
