@@ -387,3 +387,11 @@ bool OpportunitiesPage::proceedIsOk()
     return proceed;
 }
 
+void OpportunitiesPage::slotSetItem()
+{
+    mCurrentIndex  = mUi.opportunitiesTV->selectionModel()->currentIndex();
+    if ( mCurrentIndex.isValid() )
+        slotOpportunityClicked( mCurrentIndex );
+    else
+        slotNewOpportunityClicked();
+}

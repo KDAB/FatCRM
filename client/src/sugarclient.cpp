@@ -56,7 +56,6 @@ void SugarClient::slotDelayedInit()
         slotLogin();
     else
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
-
 }
 
 void SugarClient::initialize()
@@ -127,9 +126,12 @@ void SugarClient::createDockWidgets()
 
 void SugarClient::slotManageDetailsDisplay( bool value )
 {
-    if ( sender() == mUi.showDetails )
+    if ( sender() == mUi.showDetails ) {
         slotManageItemDetailsView( mUi.tabWidget->currentIndex() );
-    else // mUi.detchDetails
+        if ( value ) // initialize the detail widget fields
+            emit displayDetails();
+    }
+    else // mUi.detachDetails
         detachDockViews( value );
 }
 
@@ -180,7 +182,11 @@ void SugarClient::setupActions()
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mLeadsPage, SLOT( syncronize() ) );
     connect( mLeadsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mCampaignsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-
+    connect( this, SIGNAL( displayDetails() ), mAccountsPage, SLOT( slotSetItem() ) );
+    connect( this, SIGNAL( displayDetails() ), mCampaignsPage, SLOT( slotSetItem() ) );
+    connect( this, SIGNAL( displayDetails() ), mContactsPage, SLOT( slotSetItem() ) );
+    connect( this, SIGNAL( displayDetails() ), mLeadsPage, SLOT( slotSetItem() ) );
+    connect( this, SIGNAL( displayDetails() ), mOpportunitiesPage, SLOT( slotSetItem() ) );
 }
 
 void SugarClient::slotShowMessage( const QString& message )

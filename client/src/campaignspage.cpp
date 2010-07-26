@@ -421,3 +421,12 @@ bool CampaignsPage::proceedIsOk()
         proceed = false;
     return proceed;
 }
+
+void CampaignsPage::slotSetItem()
+{
+    mCurrentIndex  = mUi.campaignsTV->selectionModel()->currentIndex();
+    if ( mCurrentIndex.isValid() )
+        slotCampaignClicked( mCurrentIndex );
+    else
+        slotNewCampaignClicked();
+}

@@ -449,3 +449,12 @@ bool LeadsPage::proceedIsOk()
         proceed = false;
     return proceed;
 }
+
+void LeadsPage::slotSetItem()
+{
+    mCurrentIndex  = mUi.leadsTV->selectionModel()->currentIndex();
+    if ( mCurrentIndex.isValid() )
+        slotLeadClicked( mCurrentIndex );
+    else
+        slotNewLeadClicked();
+}

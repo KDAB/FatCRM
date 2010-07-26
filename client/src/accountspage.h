@@ -58,6 +58,7 @@ private Q_SLOTS:
     void slotSetCurrent( const QModelIndex&,int,int );
     void cachePolicyJobCompleted( KJob* );
     void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
+    void slotSetItem();
 };
 #endif /* ACCOUNTSPAGE_H */
 

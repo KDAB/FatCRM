@@ -499,3 +499,12 @@ bool ContactsPage::proceedIsOk()
         proceed = false;
     return proceed;
 }
+
+void ContactsPage::slotSetItem()
+{
+    mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
+    if ( mCurrentIndex.isValid() )
+        slotContactClicked( mCurrentIndex );
+    else
+        slotNewContactClicked();
+}

@@ -436,3 +436,12 @@ bool AccountsPage::proceedIsOk()
         proceed = false;
     return proceed;
 }
+
+void AccountsPage::slotSetItem()
+{
+    mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
+    if ( mCurrentIndex.isValid() )
+        slotAccountClicked( mCurrentIndex );
+    else
+        slotNewAccountClicked();
+}
