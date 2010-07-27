@@ -323,6 +323,10 @@ void LeadsPage::slotRemoveLead()
     const QModelIndex newIndex = mUi.leadsTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeLeadPB->setEnabled( false );
+
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->displayDockWidgets( false );
 }
 
 void LeadsPage::slotSetCurrent( const QModelIndex& index, int start, int end )

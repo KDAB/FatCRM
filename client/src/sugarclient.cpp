@@ -62,6 +62,7 @@ void SugarClient::initialize()
 {
     resize( 900, 900 );
     createMenus();
+    createToolBar();
     createTabs();
     createDockWidgets();
     setupActions();
@@ -74,6 +75,13 @@ void SugarClient::initialize()
 void SugarClient::createMenus()
 {
     mViewMenu = menuBar()->addMenu( tr( "&View" ) );
+}
+
+void SugarClient::createToolBar()
+{
+    mToolBar = addToolBar( QString( "Details controller" ) );
+    mToolBar->addWidget( mUi.showDetails );
+    mToolBar->addWidget( mUi.detachDetails );
 }
 
 void SugarClient::createDockWidgets()

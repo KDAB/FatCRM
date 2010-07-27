@@ -265,6 +265,10 @@ void CampaignsPage::slotRemoveCampaign()
     const QModelIndex newIndex = mUi.campaignsTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeCampaignPB->setEnabled( false );
+
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->displayDockWidgets( false );
 }
 
 void CampaignsPage::slotSetCurrent( const QModelIndex& index, int start, int end )

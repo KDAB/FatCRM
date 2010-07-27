@@ -262,6 +262,9 @@ void OpportunitiesPage::slotRemoveOpportunity()
     const QModelIndex newIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeOpportunityPB->setEnabled( false );
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->displayDockWidgets( false );
 }
 
 void OpportunitiesPage::slotSetCurrent( const QModelIndex& index, int start, int end )

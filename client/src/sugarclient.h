@@ -17,6 +17,7 @@
 #include <QMainWindow>
 
 class QAction;
+class QToolBar;
 
 class SugarClient : public QMainWindow
 {
@@ -37,11 +38,13 @@ Q_SIGNALS:
 private:
     void initialize();
     void createMenus();
+    void createToolBar();
     void createDockWidgets();
     void setupActions();
     void createTabs();
 
     QMenu *mViewMenu;
+    QToolBar *mToolBar;
     QDockWidget *mAccountDetailsDock;
     AccountDetails *mAccountDetailsWidget;
     QAction *mViewAccountAction;

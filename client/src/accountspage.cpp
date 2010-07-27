@@ -296,6 +296,10 @@ void AccountsPage::slotRemoveAccount()
     const QModelIndex newIndex = mUi.accountsTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeAccountPB->setEnabled( false );
+
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->displayDockWidgets( false );
 }
 
 void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end )

@@ -364,6 +364,10 @@ void ContactsPage::slotRemoveContact()
     const QModelIndex newIndex = mUi.contactsTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeContactPB->setEnabled( false );
+
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( w )
+        w->displayDockWidgets( false );
 }
 
 void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
