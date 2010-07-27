@@ -274,31 +274,45 @@ void ContactDetails::slotClearDate()
 
 void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
+    QString dataKey;
+    dataKey = mAccountsData.key( accountId );
+    removeAccountData( dataKey );
+
     mAccountsData.insert( accountName, accountId );
+
     if ( mUi.accountName->findText( accountName ) < 0 )
         mUi.accountName->addItem( accountName );
 }
 
 void ContactDetails::removeAccountData( const QString &accountName )
 {
+    if ( accountName.isEmpty() )
+        return;
     mAccountsData.remove( accountName );
     int index = mUi.accountName->findText( accountName );
-    if ( index > 0 )
+    if ( index > 0 ) // always leave the first blank field
         mUi.accountName->removeItem( index );
 }
 
 void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
+    QString dataKey;
+    dataKey = mCampaignsData.key( campaignId );
+    removeCampaignData( dataKey );
+
     mCampaignsData.insert( campaignName, campaignId );
+
     if ( mUi.campaign->findText( campaignName ) < 0 )
         mUi.campaign->addItem( campaignName );
 }
 
 void ContactDetails::removeCampaignData( const QString &campaignName )
 {
+    if ( campaignName.isEmpty() )
+        return;
     mCampaignsData.remove( campaignName );
     int index = mUi.campaign->findText( campaignName );
-    if ( index > 0 )
+    if ( index > 0 ) // always leave the first blank field
         mUi.campaign->removeItem( index );
 }
 

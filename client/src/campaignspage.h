@@ -40,6 +40,7 @@ private:
     void removeCampaignsData( const Akonadi::Item &item );
     void campaignChanged( const Akonadi::Item &item );
     bool proceedIsOk();
+    void updateCampaignCombo( const QString& name,  const QString& id );
 
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCampaignsCollection;

@@ -40,6 +40,7 @@ private:
     void removeAccountsData( const Akonadi::Item &item );
     void accountChanged( const Akonadi::Item &item );
     bool proceedIsOk();
+    void updateAccountCombo( const QString& name, const QString& id );
 
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mAccountsCollection;

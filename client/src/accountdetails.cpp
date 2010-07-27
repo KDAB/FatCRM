@@ -215,36 +215,52 @@ void AccountDetails::slotSaveAccount()
 
 void AccountDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
+    QString dataKey;
+    dataKey = mAccountsData.key( accountId );
+    removeAccountData( dataKey );
+
     mAccountsData.insert( accountName, accountId );
+
     if ( mUi.parentName->findText( accountName ) < 0 )
         mUi.parentName->addItem( accountName );
 }
 
 void AccountDetails::removeAccountData( const QString &accountName )
 {
+    if ( accountName.isEmpty() )
+        return;
     mAccountsData.remove( accountName );
     int index = mUi.parentName->findText( accountName );
-    if ( index > 0 )
+    if ( index > 0 )// always leave the first blank field
         mUi.parentName->removeItem( index );
 }
 
 void AccountDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
+    QString dataKey;
+    dataKey = mCampaignsData.key( campaignId );
+    removeCampaignData( dataKey );
+
     mCampaignsData.insert( campaignName, campaignId );
+
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
 }
 
 void AccountDetails::removeCampaignData( const QString &campaignName )
 {
+    if ( campaignName.isEmpty() )
+        return;
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
-    if ( index > 0 )
+    if ( index > 0 )// always leave the first blank field
         mUi.campaignName->removeItem( index );
 }
 
 void AccountDetails::addAssignedToData( const QString &name, const QString &id )
 {
+    if ( mAssignedToData.values().contains( id ) )
+        mAssignedToData.remove( mAssignedToData.key( id ) );
     mAssignedToData.insert( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );

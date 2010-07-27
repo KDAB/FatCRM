@@ -255,31 +255,45 @@ void OpportunityDetails::slotSaveOpportunity()
 
 void OpportunityDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
+    QString dataKey;
+    dataKey = mAccountsData.key( accountId );
+    removeAccountData( dataKey );
+
     mAccountsData.insert( accountName, accountId );
+
     if ( mUi.accountName->findText( accountName ) < 0 )
         mUi.accountName->addItem( accountName );
 }
 
 void OpportunityDetails::removeAccountData( const QString &accountName )
 {
+    if ( accountName.isEmpty() )
+        return;
     mAccountsData.remove( accountName );
     int index = mUi.accountName->findText( accountName );
-    if ( index > 0 )
+    if ( index > 0 ) // always leave the first blank field
         mUi.accountName->removeItem( index );
 }
 
 void OpportunityDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
+    QString dataKey;
+    dataKey = mCampaignsData.key( campaignId );
+    removeCampaignData( dataKey );
+
     mCampaignsData.insert( campaignName, campaignId );
+
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
 }
 
 void OpportunityDetails::removeCampaignData( const QString &campaignName )
 {
+    if ( campaignName.isEmpty() )
+        return;
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
-    if ( index > 0 )
+    if ( index > 0 )// always leave the first blank field
         mUi.campaignName->removeItem( index );
 }
 

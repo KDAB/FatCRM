@@ -239,13 +239,20 @@ void LeadDetails::slotSaveLead()
 
 void LeadDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
+    QString dataKey;
+    dataKey = mCampaignsData.key( campaignId );
+    removeCampaignData( dataKey );
+
     mCampaignsData.insert( campaignName, campaignId );
+
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
 }
 
 void LeadDetails::removeCampaignData( const QString &campaignName )
 {
+    if ( campaignName.isEmpty() )
+        return;
     mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
     if ( index > 0 )

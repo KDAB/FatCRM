@@ -236,11 +236,17 @@ void CampaignDetails::slotSaveCampaign()
 
 void CampaignDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
+    QString dataKey;
+    dataKey = mCampaignsData.key( campaignId );
+    removeCampaignData( dataKey );
+
     mCampaignsData.insert( campaignName, campaignId );
 }
 
 void CampaignDetails::removeCampaignData( const QString &campaignName )
 {
+    if ( campaignName.isEmpty() )
+        return;
     mCampaignsData.remove( campaignName );
 }
 

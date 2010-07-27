@@ -177,7 +177,7 @@ void CampaignsPage::slotAddCampaign()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mCampaignsCollection );
     Q_UNUSED( job );
-
+    updateCampaignCombo( campaign.name(), campaign.id() );
     disconnect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
 }
@@ -230,6 +230,7 @@ void CampaignsPage::slotModifyCampaign()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
+        updateCampaignCombo( campaign.name(), campaign.id() );
         cd->initialize();
     }
 }
@@ -264,8 +265,6 @@ void CampaignsPage::slotRemoveCampaign()
     const QModelIndex newIndex = mUi.campaignsTV->selectionModel()->currentIndex();
     if ( !newIndex.isValid() )
         mUi.removeCampaignPB->setEnabled( false );
-
-
 }
 
 void CampaignsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
@@ -301,7 +300,6 @@ void CampaignsPage::removeCampaignsData( const Item &item )
 
 void CampaignsPage::addCampaignsData()
 {
-    // Pending (Michel) - clean up
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
     CampaignDetails *cad = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
@@ -327,6 +325,28 @@ void CampaignsPage::addCampaignsData()
            cad->addAssignedToData( campaign.assignedUserName(), campaign.assignedUserId() );
        }
     }
+}
+
+void CampaignsPage::updateCampaignCombo( const QString& name, const QString& id )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+
+    AccountDetails *ad =
+        dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+    CampaignDetails *cad =
+        dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+    ContactDetails *cod =
+        dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+    OpportunityDetails *od =
+        dynamic_cast<OpportunityDetails*>( w->detailsWidget(Opportunity ) );
+    LeadDetails *ld =
+        dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+
+    ad->addCampaignData( name, id );
+    cod->addCampaignData( name, id );
+    od->addCampaignData( name, id );
+    ld->addCampaignData( name, id );
+    cad->addCampaignData( name, id );
 }
 
 void CampaignsPage::initialize()

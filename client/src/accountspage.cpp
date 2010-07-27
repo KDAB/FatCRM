@@ -191,6 +191,9 @@ void AccountsPage::slotAddAccount()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mAccountsCollection );
     Q_UNUSED( job );
+    // update Account combos for:
+    // accounts - contacts and opportunity details
+    updateAccountCombo( account.name(), account.id());
     disconnect( ad, SIGNAL( saveAccount() ),
                  this, SLOT( slotAddAccount( ) ) );
 }
@@ -256,6 +259,9 @@ void AccountsPage::slotModifyAccount()
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
         Q_UNUSED( job );
+        // update Account combos for:
+        // accounts - contacts and opportunity details
+        updateAccountCombo( account.name(), account.id());
         ad->initialize();
     }
 }
@@ -341,6 +347,17 @@ void AccountsPage::addAccountsData()
            ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
        }
     }
+}
+
+void AccountsPage::updateAccountCombo( const QString& name, const QString& id )
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+    ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+    OpportunityDetails *od =dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+    ad->addAccountData( name, id );
+    cd->addAccountData( name, id );
+    od->addAccountData( name, id );
 }
 
 void AccountsPage::initialize()

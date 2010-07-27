@@ -65,6 +65,7 @@ void SugarClient::initialize()
     createTabs();
     createDockWidgets();
     setupActions();
+    mResourceSelector = 0;
     // initialize view actions
     slotManageItemDetailsView( 0 );
     mUi.actionSyncronize->setEnabled( false );
@@ -150,6 +151,9 @@ void SugarClient::slotResourceSelectionChanged( int index )
 
 void SugarClient::slotReload()
 {
+    if ( mResourceSelector == 0 )
+        return;
+
     int index = -1;
     for ( int i = 0; i < mResourceSelector->count(); ++i ) {
         if ( mResourceSelector->itemText( i ).contains( "SugarCRM" ) ) {
@@ -216,12 +220,14 @@ void SugarClient::createTabs()
 
 void SugarClient::slotManageItemDetailsView( int currentTab )
 {
+
     bool show = mUi.showDetails->isChecked();
     if ( currentTab == 0 ) { // Accounts
         mContactDetailsDock->setVisible( false );
         mOpportunityDetailsDock->setVisible( false );
         mLeadDetailsDock->setVisible( false );
         mCampaignDetailsDock->setVisible( false );
+
         mAccountDetailsDock->setVisible( show );
     }
     else if ( currentTab == 1 ) { // Opportunities
