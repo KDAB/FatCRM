@@ -112,6 +112,8 @@
 :Details.title_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='title' type='QLineEdit' visible='1'}
 :Details.tyckerSymbol_QLineEdit	{container=':Account Information.Details_QGroupBox' name='tyckerSymbol' type='QLineEdit' visible='1'}
 :Details.website_QLineEdit	{container=':Account Information.Details_QGroupBox' name='website' type='QLineEdit' visible='1'}
+:Discard_QPushButton	{text='Discard' type='QPushButton' unnamed='1' visible='1' window=':_QMessageBox'}
+:Form.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='clearAccountSearch' text='Clear' type='QToolButton' visible='1'}
 :Form.New Account_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='newAccountPB' text='New Account' type='QPushButton' visible='1'}
 :Form.New Lead_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='newLeadPB' text='New Lead' type='QPushButton' visible='1'}
 :Form.New Opportunity_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='newOpportunityPB' text='New Opportunity' type='QPushButton' visible='1'}
@@ -198,6 +200,7 @@
 :SugarClient - Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Lead'}
 :SugarClient - Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Opportunity_QMessageBox'}
 :SugarClient - Delete Opportunity_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Opportunity'}
+:_QMessageBox	{type='QMessageBox' unnamed='1' visible='1'}
 :qt_tabwidget_stackedwidget.Contacts_ContactsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='ContactsPage' type='ContactsPage' visible='1' windowTitle='Contacts'}
 :qt_tabwidget_stackedwidget.Form_AccountsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='AccountsPage' type='AccountsPage' visible='1' windowTitle='Form'}
 :qt_tabwidget_stackedwidget.Form_CampaignsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='CampaignsPage' type='CampaignsPage' visible='1' windowTitle='Form'}
