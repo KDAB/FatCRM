@@ -1,0 +1,205 @@
+:&Account Details.Account Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget' name='accountInformationGB' title='Account Information' type='QGroupBox' visible='1'}
+:&Account Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Account Details.qt_dockwidget_closebutton_QDockWidgetTitleButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget' name='qt_dockwidget_closebutton' type='QDockWidgetTitleButton' visible='1'}
+:&Campaign Details.Campaign Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Campaign Details_QDockWidget' name='campaignInformationGB' title='Campaign Information' type='QGroupBox' visible='1'}
+:&Campaign Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Campaign Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Contact Details.Contact Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Contact Details_QDockWidget' name='contactInformationGB' title='Contact Information' type='QGroupBox' visible='1'}
+:&Contact Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Contact Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Lead Details.Lead Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget' name='leadInformationGB' title='Lead Information' type='QGroupBox' visible='1'}
+:&Lead Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Opportunity Details.Opportunity Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='opportunityInformationGB' title='Opportunity Information' type='QGroupBox' visible='1'}
+:&Opportunity Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Opportunity Details.qt_dockwidget_closebutton_QDockWidgetTitleButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='qt_dockwidget_closebutton' type='QDockWidgetTitleButton' visible='1'}
+:Account Information.Addresses_QGroupBox	{container=':&Account Details.Account Information_QGroupBox' name='addressesBox' title='Addresses' type='QGroupBox' visible='1'}
+:Account Information.Description:_QGroupBox	{container=':&Account Details.Account Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
+:Account Information.Details_QGroupBox	{container=':&Account Details.Account Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
+:Account Information.Other Details_QGroupBox	{container=':&Account Details.Account Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
+:Account Information.admin_QLabel	{container=':&Account Details.Account Information_QGroupBox' name='createdBy' text='admin' type='QLabel' visible='1'}
+:Account Information.admin_QLabel_2	{container=':&Account Details.Account Information_QGroupBox' name='modifiedBy' type='QLabel' visible='1'}
+:Addresses.altAddressCity_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressCity' type='QLineEdit' visible='1'}
+:Addresses.altAddressCountry_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressCountry' type='QLineEdit' visible='1'}
+:Addresses.altAddressPostalcode_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressPostalcode' type='QLineEdit' visible='1'}
+:Addresses.altAddressState_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressState' type='QLineEdit' visible='1'}
+:Addresses.altAddressStreet_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressStreet' type='QLineEdit' visible='1'}
+:Addresses.billingAddressCity_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressCity' type='QLineEdit' visible='1'}
+:Addresses.billingAddressCountry_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressCountry' type='QLineEdit' visible='1'}
+:Addresses.billingAddressPostalcode_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressPostalcode' type='QLineEdit' visible='1'}
+:Addresses.billingAddressState_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressState' type='QLineEdit' visible='1'}
+:Addresses.billingAddressStreet_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressStreet' type='QLineEdit' visible='1'}
+:Addresses.city_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='city' type='QLineEdit' visible='1'}
+:Addresses.country_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='country' type='QLineEdit' visible='1'}
+:Addresses.otherAddress_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherAddress' type='QLineEdit' visible='1'}
+:Addresses.otherCity_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherCity' type='QLineEdit' visible='1'}
+:Addresses.otherCountry_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherCountry' type='QLineEdit' visible='1'}
+:Addresses.otherPostalCode_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherPostalCode' type='QLineEdit' visible='1'}
+:Addresses.otherState_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherState' type='QLineEdit' visible='1'}
+:Addresses.postalCode_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='postalCode' type='QLineEdit' visible='1'}
+:Addresses.primaryAddressCity_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='primaryAddressCity' type='QLineEdit' visible='1'}
+:Addresses.primaryAddressCountry_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='primaryAddressCountry' type='QLineEdit' visible='1'}
+:Addresses.primaryAddressPostalcode_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='primaryAddressPostalcode' type='QLineEdit' visible='1'}
+:Addresses.primaryAddressState_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='primaryAddressState' type='QLineEdit' visible='1'}
+:Addresses.primaryAddressStreet_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='primaryAddressStreet' type='QLineEdit' visible='1'}
+:Addresses.primaryAddress_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='primaryAddress' type='QLineEdit' visible='1'}
+:Addresses.shippingAddressCity_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='shippingAddressCity' type='QLineEdit' visible='1'}
+:Addresses.shippingAddressCountry_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='shippingAddressCountry' type='QLineEdit' visible='1'}
+:Addresses.shippingAddressPostalcode_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='shippingAddressPostalcode' type='QLineEdit' visible='1'}
+:Addresses.shippingAddressState_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='shippingAddressState' type='QLineEdit' visible='1'}
+:Addresses.shippingAddressStreet_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='shippingAddressStreet' type='QLineEdit' visible='1'}
+:Addresses.state_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='state' type='QLineEdit' visible='1'}
+:Calendar.qt_calendar_calendarview_QCalendarView	{name='qt_calendar_calendarview' type='QCalendarView' visible='1' window=':Calendar_QDialog'}
+:Calendar_QDialog	{type='QDialog' unnamed='1' visible='1' windowTitle='Calendar'}
+:Campaign Information.Description:_QGroupBox	{container=':&Campaign Details.Campaign Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
+:Campaign Information.Details_QGroupBox	{container=':&Campaign Details.Campaign Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
+:Campaign Information.Other Details_QGroupBox	{container=':&Campaign Details.Campaign Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
+:Campaign Information.createdBy_QLabel	{container=':&Campaign Details.Campaign Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
+:Campaign Information.modifiedBy_QLabel	{container=':&Campaign Details.Campaign Information_QGroupBox' name='modifiedBy' type='QLabel' visible='1'}
+:Contact Information.Addresses_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='addressesBox' title='Addresses' type='QGroupBox' visible='1'}
+:Contact Information.Description:_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
+:Contact Information.Details_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
+:Contact Information.Other Details_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
+:Contact Information.createdBy_QLabel	{container=':&Contact Details.Contact Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
+:Contacts.New Contact_QPushButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='newContactPB' text='New Contact' type='QPushButton' visible='1'}
+:Contacts.contactsTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='contactsTV' type='Akonadi::EntityTreeView' visible='1'}
+:Contacts.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='searchLE' type='QLineEdit' visible='1'}
+:Description:.content_QTextEdit	{container=':Campaign Information.Description:_QGroupBox' name='content' type='QTextEdit' visible='1'}
+:Description:.description_QTextEdit	{container=':Account Information.Description:_QGroupBox' name='description' type='QTextEdit' visible='1'}
+:Description:.description_QTextEdit_2	{container=':Opportunity Information.Description:_QGroupBox' name='description' type='QTextEdit' visible='1'}
+:Description:.description_QTextEdit_3	{container=':Lead Information.Description:_QGroupBox' name='description' type='QTextEdit' visible='1'}
+:Description:.description_QTextEdit_4	{container=':Contact Information.Description:_QGroupBox' name='description' type='QTextEdit' visible='1'}
+:Details.Edit_EditCalendarButton	{container=':Lead Information.Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
+:Details.Edit_EditCalendarButton_2	{container=':Campaign Information.Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
+:Details.Edit_EditCalendarButton_3	{container=':Campaign Information.Details_QGroupBox' occurrence='2' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
+:Details.accountName_QComboBox	{container=':Opportunity Information.Details_QGroupBox' name='accountName' type='QComboBox' visible='1'}
+:Details.accountName_QComboBox_2	{container=':Contact Information.Details_QGroupBox' name='accountName' type='QComboBox' visible='1'}
+:Details.accountName_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='accountName' type='QLineEdit' visible='1'}
+:Details.accountType_QComboBox	{container=':Account Information.Details_QGroupBox' name='accountType' type='QComboBox' visible='1'}
+:Details.assignedTo_QComboBox	{container=':Contact Information.Details_QGroupBox' name='assignedTo' type='QComboBox' visible='1'}
+:Details.assignedUserName_QComboBox	{container=':Account Information.Details_QGroupBox' name='assignedUserName' type='QComboBox' visible='1'}
+:Details.assignedUserName_QComboBox_2	{container=':Opportunity Information.Details_QGroupBox' name='assignedUserName' type='QComboBox' visible='1'}
+:Details.assignedUserName_QComboBox_3	{container=':Lead Information.Details_QGroupBox' name='assignedUserName' type='QComboBox' visible='1'}
+:Details.budget_QLineEdit	{container=':Campaign Information.Details_QGroupBox' name='budget' type='QLineEdit' visible='1'}
+:Details.campaignName_QComboBox	{container=':Account Information.Details_QGroupBox' name='campaignName' type='QComboBox' visible='1'}
+:Details.campaignName_QComboBox_2	{container=':Opportunity Information.Details_QGroupBox' name='campaignName' type='QComboBox' visible='1'}
+:Details.campaignType_QComboBox	{container=':Campaign Information.Details_QGroupBox' name='campaignType' type='QComboBox' visible='1'}
+:Details.campaign_QComboBox	{container=':Contact Information.Details_QGroupBox' name='campaign' type='QComboBox' visible='1'}
+:Details.currency_QComboBox	{container=':Campaign Information.Details_QGroupBox' name='currency' type='QComboBox' visible='1'}
+:Details.department_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='department' type='QLineEdit' visible='1'}
+:Details.department_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='department' type='QLineEdit' visible='1'}
+:Details.expectedRevenue_QLineEdit	{container=':Campaign Information.Details_QGroupBox' name='expectedRevenue' type='QLineEdit' visible='1'}
+:Details.firstName_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='firstName' type='QLineEdit' visible='1'}
+:Details.firstName_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='firstName' type='QLineEdit' visible='1'}
+:Details.industry_QComboBox	{container=':Account Information.Details_QGroupBox' name='industry' type='QComboBox' visible='1'}
+:Details.lastName_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='lastName' type='QLineEdit' visible='1'}
+:Details.lastName_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='lastName' type='QLineEdit' visible='1'}
+:Details.leadSourceDescription_QTextEdit	{container=':Lead Information.Details_QGroupBox' name='leadSourceDescription' type='QTextEdit' visible='1'}
+:Details.leadSource_QComboBox	{container=':Opportunity Information.Details_QGroupBox' name='leadSource' type='QComboBox' visible='1'}
+:Details.leadSource_QComboBox_2	{container=':Lead Information.Details_QGroupBox' name='leadSource' type='QComboBox' visible='1'}
+:Details.leadSource_QComboBox_3	{container=':Contact Information.Details_QGroupBox' name='leadSource' type='QComboBox' visible='1'}
+:Details.name_QLineEdit	{container=':Account Information.Details_QGroupBox' name='name' type='QLineEdit' visible='1'}
+:Details.name_QLineEdit_2	{container=':Opportunity Information.Details_QGroupBox' name='name' type='QLineEdit' visible='1'}
+:Details.name_QLineEdit_3	{container=':Campaign Information.Details_QGroupBox' name='name' type='QLineEdit' visible='1'}
+:Details.opportunityType_QComboBox	{container=':Opportunity Information.Details_QGroupBox' name='opportunityType' type='QComboBox' visible='1'}
+:Details.ownership_QLineEdit	{container=':Account Information.Details_QGroupBox' name='ownership' type='QLineEdit' visible='1'}
+:Details.parentName_QComboBox	{container=':Account Information.Details_QGroupBox' name='parentName' type='QComboBox' visible='1'}
+:Details.primaryEmail_QLineEdit	{container=':Contact Information.Details_QGroupBox' name='primaryEmail' type='QLineEdit' visible='1'}
+:Details.referedBy_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='referedBy' type='QLineEdit' visible='1'}
+:Details.reportsTo_QComboBox	{container=':Contact Information.Details_QGroupBox' name='reportsTo' type='QComboBox' visible='1'}
+:Details.salesStage_QComboBox	{container=':Opportunity Information.Details_QGroupBox' name='salesStage' type='QComboBox' visible='1'}
+:Details.salutation_QComboBox	{container=':Lead Information.Details_QGroupBox' name='salutation' type='QComboBox' visible='1'}
+:Details.salutation_QComboBox_2	{container=':Contact Information.Details_QGroupBox' name='salutation' type='QComboBox' visible='1'}
+:Details.status_QComboBox	{container=':Campaign Information.Details_QGroupBox' name='status' type='QComboBox' visible='1'}
+:Details.title_QLineEdit	{container=':Lead Information.Details_QGroupBox' name='title' type='QLineEdit' visible='1'}
+:Details.title_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='title' type='QLineEdit' visible='1'}
+:Details.tyckerSymbol_QLineEdit	{container=':Account Information.Details_QGroupBox' name='tyckerSymbol' type='QLineEdit' visible='1'}
+:Details.website_QLineEdit	{container=':Account Information.Details_QGroupBox' name='website' type='QLineEdit' visible='1'}
+:Form.New Account_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='newAccountPB' text='New Account' type='QPushButton' visible='1'}
+:Form.New Lead_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='newLeadPB' text='New Lead' type='QPushButton' visible='1'}
+:Form.New Opportunity_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='newOpportunityPB' text='New Opportunity' type='QPushButton' visible='1'}
+:Form.Remove Account_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='removeAccountPB' text='Remove Account' type='QPushButton' visible='1'}
+:Form.Remove Campaign_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='removeCampaignPB' text='Remove Campaign' type='QPushButton' visible='1'}
+:Form.Remove Lead_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='removeLeadPB' text='Remove Lead' type='QPushButton' visible='1'}
+:Form.Remove Opportunity_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='removeOpportunityPB' text='Remove Opportunity' type='QPushButton' visible='1'}
+:Form.accountsTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='accountsTV' type='Akonadi::EntityTreeView' visible='1'}
+:Form.campaignsTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='campaignsTV' type='Akonadi::EntityTreeView' visible='1'}
+:Form.leadsTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='leadsTV' type='Akonadi::EntityTreeView' visible='1'}
+:Form.opportunitiesTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='opportunitiesTV' type='Akonadi::EntityTreeView' visible='1'}
+:Form.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='searchLE' type='QLineEdit' visible='1'}
+:Form.searchLE_QLineEdit_2	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='searchLE' type='QLineEdit' visible='1'}
+:Form.searchLE_QLineEdit_3	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='searchLE' type='QLineEdit' visible='1'}
+:Lead Information.Addresses_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='addressesBox' title='Addresses' type='QGroupBox' visible='1'}
+:Lead Information.Description:_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
+:Lead Information.Details_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
+:Lead Information.Other Details_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
+:Lead Information.createdBy_QLabel	{container=':&Lead Details.Lead Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
+:Opportunity Information.Description:_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
+:Opportunity Information.Details_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
+:Opportunity Information.Other Details_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
+:Opportunity Information.createdBy_QLabel	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
+:Other Details.Clear_QToolButton	{container=':Opportunity Information.Other Details_QGroupBox' name='clearButton' text='Clear' type='QToolButton' visible='1'}
+:Other Details.Edit_EditCalendarButton	{container=':Opportunity Information.Other Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
+:Other Details.Edit_EditCalendarButton_2	{container=':Contact Information.Other Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
+:Other Details.actualCost_QLineEdit	{container=':Campaign Information.Other Details_QGroupBox' name='actualCost' type='QLineEdit' visible='1'}
+:Other Details.amount_QLineEdit	{container=':Opportunity Information.Other Details_QGroupBox' name='amount' type='QLineEdit' visible='1'}
+:Other Details.annualRevenue_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='annualRevenue' type='QLineEdit' visible='1'}
+:Other Details.assignedUserName_QComboBox	{container=':Campaign Information.Other Details_QGroupBox' name='assignedUserName' type='QComboBox' visible='1'}
+:Other Details.assistantPhone_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='assistantPhone' type='QLineEdit' visible='1'}
+:Other Details.assistant_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='assistant' type='QLineEdit' visible='1'}
+:Other Details.currency_QComboBox	{container=':Opportunity Information.Other Details_QGroupBox' name='currency' type='QComboBox' visible='1'}
+:Other Details.email1_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='email1' type='QLineEdit' visible='1'}
+:Other Details.email1_QLineEdit_2	{container=':Lead Information.Other Details_QGroupBox' name='email1' type='QLineEdit' visible='1'}
+:Other Details.email2_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='email2' type='QLineEdit' visible='1'}
+:Other Details.employees_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='employees' type='QLineEdit' visible='1'}
+:Other Details.expectedCost_QLineEdit	{container=':Campaign Information.Other Details_QGroupBox' name='expectedCost' type='QLineEdit' visible='1'}
+:Other Details.fax_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='fax' type='QLineEdit' visible='1'}
+:Other Details.homePhone_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='homePhone' type='QLineEdit' visible='1'}
+:Other Details.impressions_QLineEdit	{container=':Campaign Information.Other Details_QGroupBox' name='impressions' type='QLineEdit' visible='1'}
+:Other Details.mobilePhone_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='mobilePhone' type='QLineEdit' visible='1'}
+:Other Details.nextStep_QLineEdit	{container=':Opportunity Information.Other Details_QGroupBox' name='nextStep' type='QLineEdit' visible='1'}
+:Other Details.objective_QTextEdit	{container=':Campaign Information.Other Details_QGroupBox' name='objective' type='QTextEdit' visible='1'}
+:Other Details.officePhone_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='officePhone' type='QLineEdit' visible='1'}
+:Other Details.opportunityAmount_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='opportunityAmount' type='QLineEdit' visible='1'}
+:Other Details.otherPhone_QLineEdit	{container=':Contact Information.Other Details_QGroupBox' name='otherPhone' type='QLineEdit' visible='1'}
+:Other Details.phoneAlternate_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='phoneAlternate' type='QLineEdit' visible='1'}
+:Other Details.phoneFax_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='phoneFax' type='QLineEdit' visible='1'}
+:Other Details.phoneFax_QLineEdit_2	{container=':Lead Information.Other Details_QGroupBox' name='phoneFax' type='QLineEdit' visible='1'}
+:Other Details.phoneHome_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='phoneHome' type='QLineEdit' visible='1'}
+:Other Details.phoneMobile_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='phoneMobile' type='QLineEdit' visible='1'}
+:Other Details.phoneOffice_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='phoneOffice' type='QLineEdit' visible='1'}
+:Other Details.phoneOther_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='phoneOther' type='QLineEdit' visible='1'}
+:Other Details.phoneWork_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='phoneWork' type='QLineEdit' visible='1'}
+:Other Details.probability_QLineEdit	{container=':Opportunity Information.Other Details_QGroupBox' name='probability' type='QLineEdit' visible='1'}
+:Other Details.rating_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='rating' type='QLineEdit' visible='1'}
+:Other Details.sicCode_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='sicCode' type='QLineEdit' visible='1'}
+:Other Details.statusDescription_QTextEdit	{container=':Lead Information.Other Details_QGroupBox' name='statusDescription' type='QTextEdit' visible='1'}
+:Other Details.status_QComboBox	{container=':Lead Information.Other Details_QGroupBox' name='status' type='QComboBox' visible='1'}
+:Resource: _QComboBox	{buddy=':Select Sugar Resource.Resource: _QLabel' type='QComboBox' unnamed='1' visible='1'}
+:Select Sugar Resource.OK_QPushButton	{text='OK' type='QPushButton' unnamed='1' visible='1' window=':Select Sugar Resource_QInputDialog'}
+:Select Sugar Resource.Resource: _QLabel	{text='Resource: ' type='QLabel' unnamed='1' visible='1' window=':Select Sugar Resource_QInputDialog'}
+:Select Sugar Resource_QInputDialog	{type='QInputDialog' unnamed='1' visible='1' windowTitle='Select Sugar Resource'}
+:SugarCRM Client.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client_SugarClient'}
+:SugarCRM Client.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Account Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Campaign Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Campaign Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Contact Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Contact Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Lead Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Opportunity Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget	{name='qt_tabwidget_stackedwidget' type='QStackedWidget' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar	{name='qt_tabwidget_tabbar' type='QTabBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost_SugarClient	{name='MainWindow' type='SugarClient' visible='1' windowTitle='SugarCRM Client: admin@SugarCRM on localhost'}
+:SugarCRM Client_SugarClient	{name='MainWindow' type='SugarClient' visible='1' windowTitle='SugarCRM Client'}
+:SugarClient - Delete Account.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Account_QMessageBox'}
+:SugarClient - Delete Account_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Account'}
+:SugarClient - Delete Campaign.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Campaign_QMessageBox'}
+:SugarClient - Delete Campaign_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Campaign'}
+:SugarClient - Delete Lead.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
+:SugarClient - Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Lead'}
+:SugarClient - Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Opportunity_QMessageBox'}
+:SugarClient - Delete Opportunity_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Opportunity'}
+:qt_tabwidget_stackedwidget.Contacts_ContactsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='ContactsPage' type='ContactsPage' visible='1' windowTitle='Contacts'}
+:qt_tabwidget_stackedwidget.Form_AccountsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='AccountsPage' type='AccountsPage' visible='1' windowTitle='Form'}
+:qt_tabwidget_stackedwidget.Form_CampaignsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='CampaignsPage' type='CampaignsPage' visible='1' windowTitle='Form'}
+:qt_tabwidget_stackedwidget.Form_LeadsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='LeadsPage' type='LeadsPage' visible='1' windowTitle='Form'}
+:qt_tabwidget_stackedwidget.Form_OpportunitiesPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='OpportunitiesPage' type='OpportunitiesPage' visible='1' windowTitle='Form'}
