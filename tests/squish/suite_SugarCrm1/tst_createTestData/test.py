@@ -1,6 +1,7 @@
 
 def main():
     startApplication("sugarclient")
+    # create a new account and save it
     clickButton(waitForObject(":Form.New Account_QPushButton"))
     type(waitForObject(":Details.name_QLineEdit"), "test account")
     mouseClick(waitForObject(":Details.website_QLineEdit"), 96, 9, 0, Qt.LeftButton)
@@ -60,7 +61,7 @@ def main():
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
     label = waitForObject(':Account Information.admin_QLabel_2')
     waitFor("label.text !=''")
-    #data back from remote client - check saved data values
+    #data back from remote client - check account saved data values
     waitFor("object.exists(':Details.website_QLineEdit')")
     test.compare(findObject(":Details.website_QLineEdit").text, "a web site")
     waitFor("object.exists(':Details.tyckerSymbol_QLineEdit')")
@@ -99,7 +100,6 @@ def main():
     test.compare(findObject(":Addresses.billingAddressState_QLineEdit").text, "Värmland")    
     waitFor("object.exists(':Addresses.billingAddressPostalcode_QLineEdit')")
     test.compare(findObject(":Addresses.billingAddressPostalcode_QLineEdit").text, "34567")
-    #:Addresses.billingAddressCountry_QLineEdit"), "Sweden
     waitFor("object.exists(':Addresses.billingAddressCountry_QLineEdit')")
     test.compare(findObject(":Addresses.billingAddressCountry_QLineEdit").text, "Sweden")
     waitFor("object.exists(':Addresses.shippingAddressStreet_QLineEdit')")
@@ -123,6 +123,7 @@ def main():
     type(waitForObject(":Form.searchLE_QLineEdit"), "<Backspace>")
     type(waitForObject(":Form.searchLE_QLineEdit"), "<Backspace>")
     clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    # create and save a new Opportunity
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Opportunities")
     clickButton(waitForObject(":Form.New Opportunity_QPushButton"))
     type(waitForObject(":Details.name_QLineEdit_2"), "test opportunity")
@@ -152,6 +153,22 @@ def main():
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
     label = waitForObject(':Opportunity Information.createdBy_QLabel')
     waitFor("label.text !=''")
+    #data back from remote client - check opportunity saved data values    
+    waitFor("object.exists(':Details.name_QLineEdit_2')")
+    test.compare(findObject(":Details.name_QLineEdit_2").text, "test opportunity")    
+    waitFor("object.exists(':Details.accountName_QComboBox')")
+    test.compare(findObject(":Details.accountName_QComboBox").currentText, "test account")    
+    waitFor("object.exists(':Details.opportunityType_QComboBox')")
+    test.compare(findObject(":Details.opportunityType_QComboBox").currentText, "Existing Business")    
+    waitFor("object.exists(':Details.leadSource_QComboBox')")
+    test.compare(findObject(":Details.leadSource_QComboBox").currentText, "Cold Call")    
+    waitFor("object.exists(':Details.salesStage_QComboBox')")
+    test.compare(findObject(":Details.salesStage_QComboBox").currentText, "Prospecting")    
+    waitFor("object.exists(':Details.assignedUserName_QComboBox_2')")
+    test.compare(findObject(":Details.assignedUserName_QComboBox_2").currentText, "max")
+    waitFor("object.exists(':Other Details.currency_QComboBox')")
+    test.compare(findObject(":Other Details.currency_QComboBox").currentText, "US Dollars : $")
+    # continue here
     clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
     mouseClick(waitForObject(":Form.searchLE_QLineEdit_2"), 36, 17, 0, Qt.LeftButton)
     type(waitForObject(":Form.searchLE_QLineEdit_2"), "hello")
