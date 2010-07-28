@@ -113,7 +113,7 @@ def main():
     waitFor("object.exists(':Addresses.shippingAddressCountry_QLineEdit')")
     test.compare(findObject(":Addresses.shippingAddressCountry_QLineEdit").text, "Sweden")
     waitFor("object.exists(':Description:.description_QTextEdit')")
-    test.compare(findObject(":Description:.description_QTextEdit").toPlainText, "blä blö blå")
+    test.compare(findObject(":Description:.description_QTextEdit").plainText, "blä blö blå")
     clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
     mouseClick(waitForObject(":Form.searchLE_QLineEdit"), 71, 15, 0, Qt.LeftButton)
     type(waitForObject(":Form.searchLE_QLineEdit"), "hello")
