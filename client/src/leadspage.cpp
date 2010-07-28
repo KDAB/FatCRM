@@ -364,6 +364,8 @@ void LeadsPage::initialize()
 {
     mUi.leadsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
+    connect( mUi.clearLeadSearch, SIGNAL( clicked() ),
+             this, SLOT( slotResetSearch() ) );
     connect( mUi.newLeadPB, SIGNAL( clicked() ),
              this, SLOT( slotNewLeadClicked() ) );
     connect( mUi.removeLeadPB, SIGNAL( clicked() ),
@@ -461,4 +463,9 @@ void LeadsPage::slotSetItem()
         slotLeadClicked( mCurrentIndex );
     else
         slotNewLeadClicked();
+}
+
+void LeadsPage::slotResetSearch()
+{
+    mUi.searchLE->clear();
 }

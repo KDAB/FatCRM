@@ -405,6 +405,8 @@ void ContactsPage::initialize()
 
     mUi.contactsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
+    connect( mUi.clearContactSearch, SIGNAL( clicked() ),
+             this, SLOT( slotResetSearch() ) );
     connect( mUi.newContactPB, SIGNAL( clicked() ),
              this, SLOT( slotNewContactClicked() ) );
     connect( mUi.removeContactPB, SIGNAL( clicked() ),
@@ -511,4 +513,9 @@ void ContactsPage::slotSetItem()
         slotContactClicked( mCurrentIndex );
     else
         slotNewContactClicked();
+}
+
+void ContactsPage::slotResetSearch()
+{
+    mUi.searchLE->clear();
 }

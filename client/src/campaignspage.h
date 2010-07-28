@@ -59,6 +59,7 @@ private Q_SLOTS:
     void cachePolicyJobCompleted( KJob* );
     void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
     void slotSetItem();
+    void slotResetSearch();
 };
 
 #endif /* CAMPAIGNSPAGE_H */

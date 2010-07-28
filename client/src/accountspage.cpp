@@ -368,6 +368,8 @@ void AccountsPage::initialize()
 {
     mUi.accountsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
+    connect( mUi.clearAccountSearch, SIGNAL( clicked() ),
+             this, SLOT( slotResetSearch() ) );
     connect( mUi.newAccountPB, SIGNAL( clicked() ),
              this, SLOT( slotNewAccountClicked() ) );
     connect( mUi.removeAccountPB, SIGNAL( clicked() ),
@@ -465,4 +467,9 @@ void AccountsPage::slotSetItem()
         slotAccountClicked( mCurrentIndex );
     else
         slotNewAccountClicked();
+}
+
+void AccountsPage::slotResetSearch()
+{
+    mUi.searchLE->clear();
 }

@@ -299,7 +299,8 @@ void OpportunitiesPage::addOpportunitiesData()
 void OpportunitiesPage::initialize()
 {
     mUi.opportunitiesTV->header()->setResizeMode( QHeaderView::ResizeToContents );
-
+    connect( mUi.clearOpportunitySearch, SIGNAL( clicked() ),
+             this, SLOT( slotResetSearch() ) );
     connect( mUi.newOpportunityPB, SIGNAL( clicked() ),
              this, SLOT( slotNewOpportunityClicked() ) );
     connect( mUi.removeOpportunityPB, SIGNAL( clicked() ),
@@ -397,4 +398,9 @@ void OpportunitiesPage::slotSetItem()
         slotOpportunityClicked( mCurrentIndex );
     else
         slotNewOpportunityClicked();
+}
+
+void OpportunitiesPage::slotResetSearch()
+{
+    mUi.searchLE->clear();
 }

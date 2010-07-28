@@ -357,6 +357,8 @@ void CampaignsPage::initialize()
 {
     mUi.campaignsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
+    connect( mUi.clearCampaignSearch, SIGNAL( clicked() ),
+             this, SLOT( slotResetSearch() ) );
     connect( mUi.newCampaignPB, SIGNAL( clicked() ),
              this, SLOT( slotNewCampaignClicked() ) );
     connect( mUi.removeCampaignPB, SIGNAL( clicked() ),
@@ -453,4 +455,9 @@ void CampaignsPage::slotSetItem()
         slotCampaignClicked( mCurrentIndex );
     else
         slotNewCampaignClicked();
+}
+
+void CampaignsPage::slotResetSearch()
+{
+    mUi.searchLE->clear();
 }
