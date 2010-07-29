@@ -1,0 +1,42 @@
+
+def main():
+    startApplication("sugarclient")
+    # load an existing campaign
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Campaigns")
+    mouseClick(waitForObject(":Form.searchLE_QLineEdit_4"), 179, 10, 0, Qt.LeftButton)
+    type(waitForObject(":Form.searchLE_QLineEdit_4"), "test c")
+    waitForObjectItem(":Form.campaignsTV_Akonadi::EntityTreeView", "test campaign")
+    clickItem(":Form.campaignsTV_Akonadi::EntityTreeView", "test campaign", 10, 8, 0, Qt.LeftButton)
+    clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    # modify a few values
+    mouseClick(waitForObject(":Details.status_QComboBox"), 60, 13, 0, Qt.LeftButton)
+    mouseClick(waitForObjectItem(":Details.status_QComboBox", "Active"), 41, 4, 0, Qt.LeftButton)
+    mouseClick(waitForObject(":Details.campaignType_QComboBox"), 48, 7, 0, Qt.LeftButton)
+    mouseClick(waitForObjectItem(":Details.campaignType_QComboBox", "Print"), 35, 5, 0, Qt.LeftButton)
+    mouseClick(waitForObject(":Other Details.objective_QTextEdit"), 111, 32, 0, Qt.LeftButton)
+    type(waitForObject(":Other Details.objective_QTextEdit"), " and sales again")
+    mouseDrag(waitForObject(":Description:.content_QTextEdit"), 1, 12, 124, 4, 1, Qt.LeftButton)
+    type(waitForObject(":Description:.content_QTextEdit"), "some text")
+    # save
+    clickButton(waitForObject(":&Campaign Details.Save_QPushButton"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
+    label = waitForObject(':Campaign Information.createdDate_QLabel')
+    waitFor("label.text !=''")
+    # data is back from remote client
+    clickButton(waitForObject(":Form.Clear_QToolButton_4"))
+    mouseClick(waitForObject(":Form.searchLE_QLineEdit_4"), 43, 12, 0, Qt.LeftButton)
+    type(waitForObject(":Form.searchLE_QLineEdit_4"), "test")
+    waitForObjectItem(":Form.campaignsTV_Akonadi::EntityTreeView", "test campaign")
+    clickItem(":Form.campaignsTV_Akonadi::EntityTreeView", "test campaign", 59, 4, 0, Qt.LeftButton)
+    # check values
+    waitFor("object.exists(':Details.status_QComboBox')")
+    test.compare(findObject(":Details.status_QComboBox").currentText, "Active")
+    waitFor("object.exists(':Details.campaignType_QComboBox')")
+    test.compare(findObject(":Details.campaign_QComboBox").currentText, "Print")
+    waitFor("object.exists(':Other Details.objective_QTextEdit')")
+    test.compare(findObject(":Other Details.objective_QTextEdit").plainText, " and sales again")
+    waitFor("object.exists(':Description:.content_QTextEdit')")
+    test.compare(findObject(":Description:.content_QTextEdit").plainText, "some text")
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))

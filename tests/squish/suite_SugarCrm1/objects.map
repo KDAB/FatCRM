@@ -128,6 +128,7 @@
 :Form.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='clearAccountSearch' text='Clear' type='QToolButton' visible='1'}
 :Form.Clear_QToolButton_2	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='clearOpportunitySearch' text='Clear' type='QToolButton' visible='1'}
 :Form.Clear_QToolButton_3	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='clearLeadSearch' text='Clear' type='QToolButton' visible='1'}
+:Form.Clear_QToolButton_4	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='clearCampaignSearch' text='Clear' type='QToolButton' visible='1'}
 :Form.New Account_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='newAccountPB' text='New Account' type='QPushButton' visible='1'}
 :Form.New Campaign_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='newCampaignPB' text='New Campaign' type='QPushButton' visible='1'}
 :Form.New Lead_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='newLeadPB' text='New Lead' type='QPushButton' visible='1'}
@@ -143,6 +144,7 @@
 :Form.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='searchLE' type='QLineEdit' visible='1'}
 :Form.searchLE_QLineEdit_2	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='searchLE' type='QLineEdit' visible='1'}
 :Form.searchLE_QLineEdit_3	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='searchLE' type='QLineEdit' visible='1'}
+:Form.searchLE_QLineEdit_4	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='searchLE' type='QLineEdit' visible='1'}
 :Lead Information.Addresses_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='addressesBox' title='Addresses' type='QGroupBox' visible='1'}
 :Lead Information.Description:_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
 :Lead Information.Details_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
