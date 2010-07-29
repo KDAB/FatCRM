@@ -1,0 +1,38 @@
+
+def main():
+    startApplication("sugarclient")
+    # load an existing opportunity 
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Opportunities")
+    mouseClick(waitForObject(":Form.searchLE_QLineEdit_2"), 85, 7, 0, Qt.LeftButton)
+    type(waitForObject(":Form.searchLE_QLineEdit_2"), "test opportunity")
+    waitForObjectItem(":Form.opportunitiesTV_Akonadi::EntityTreeView", "test account")
+    clickItem(":Form.opportunitiesTV_Akonadi::EntityTreeView", "test account", 26, 6, 0, Qt.LeftButton)
+    clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    # modify a few values
+    mouseClick(waitForObject(":Details.campaignName_QComboBox_2"), 253, 13, 0, Qt.LeftButton)
+    mouseClick(waitForObjectItem(":Details.campaignName_QComboBox_2", "test campaign"), 222, 8, 0, Qt.LeftButton)
+    mouseClick(waitForObject(":Details.salesStage_QComboBox"), 291, 15, 0, Qt.LeftButton)
+    mouseClick(waitForObjectItem(":Details.salesStage_QComboBox", "Proposal/Price Quote"), 167, 3, 0, Qt.LeftButton)
+    mouseClick(waitForObject(":Description:.description_QTextEdit_2"), 240, 17, 0, Qt.LeftButton)
+    type(waitForObject(":Description:.description_QTextEdit_2"), "made a proposal")
+    # save 
+    clickButton(waitForObject(":&Opportunity Details.Save_QPushButton"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
+    label = waitForObject(':Opportunity Information.createdBy_QLabel')
+    waitFor("label.text !=''")
+    # data is back from remote client check modified values 
+    clickButton(waitForObject(":Form.New Opportunity_QPushButton"))
+    clickButton(waitForObject(":Form.Clear_QToolButton_2"))
+    mouseClick(waitForObject(":Form.searchLE_QLineEdit_2"), 310, 14, 0, Qt.LeftButton)
+    type(waitForObject(":Form.searchLE_QLineEdit_2"), "test opp")
+    waitForObjectItem(":Form.opportunitiesTV_Akonadi::EntityTreeView", "Proposal/Price Quote")
+    clickItem(":Form.opportunitiesTV_Akonadi::EntityTreeView", "Proposal/Price Quote", 103, 4, 0, Qt.LeftButton)     
+    waitFor("object.exists(':Details.campaignName_QComboBox_2')")
+    test.compare(findObject(":Details.campaignName_QComboBox_2").currentText, "test campaign")
+    waitFor("object.exists(':Details.salesStage_QComboBox')")
+    test.compare(findObject(":Details.salesStage_QComboBox").currentText, "Proposal/Price Quote")    
+    waitFor("object.exists(':Description:.description_QTextEdit_2')")
+    test.compare(findObject(":Description:.description_QTextEdit_2").plainText, "made a proposal")
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))

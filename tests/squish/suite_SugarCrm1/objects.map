@@ -121,6 +121,7 @@
 :Details.website_QLineEdit	{container=':Account Information.Details_QGroupBox' name='website' type='QLineEdit' visible='1'}
 :Discard_QPushButton	{text='Discard' type='QPushButton' unnamed='1' visible='1' window=':_QMessageBox'}
 :Form.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='clearAccountSearch' text='Clear' type='QToolButton' visible='1'}
+:Form.Clear_QToolButton_2	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='clearOpportunitySearch' text='Clear' type='QToolButton' visible='1'}
 :Form.New Account_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='newAccountPB' text='New Account' type='QPushButton' visible='1'}
 :Form.New Campaign_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_CampaignsPage' name='newCampaignPB' text='New Campaign' type='QPushButton' visible='1'}
 :Form.New Lead_QPushButton	{container=':qt_tabwidget_stackedwidget.Form_LeadsPage' name='newLeadPB' text='New Lead' type='QPushButton' visible='1'}
