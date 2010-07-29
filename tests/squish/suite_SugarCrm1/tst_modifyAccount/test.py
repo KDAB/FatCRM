@@ -15,7 +15,7 @@ def main():
     clickButton(waitForObject(":&Account Details.Save_QPushButton"))
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
-    label = waitForObject(':Account Information.admin_QLabel_2')
+    label = waitForObject(':Account Information.createdDate_QLabel')
     waitFor("label.text !=''")
     # data is back from remote client check modified values 
     clickButton(waitForObject(":Form.New Account_QPushButton"))

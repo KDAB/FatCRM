@@ -1,0 +1,40 @@
+
+def main():
+    startApplication("sugarclient")
+    # load an existing contact 
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Contacts")
+    clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    mouseClick(waitForObject(":Contacts.searchLE_QLineEdit"), 32, 13, 0, Qt.LeftButton)
+    type(waitForObject(":Contacts.searchLE_QLineEdit"), "test contact")
+    clickButton(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox"))
+    # modify a few values
+    mouseClick(waitForObject(":Details.campaign_QComboBox"), 95, 5, 0, Qt.LeftButton)
+    mouseClick(waitForObjectItem(":Details.campaign_QComboBox", "test campaign"), 74, 3, 0, Qt.LeftButton)
+    clickButton(waitForObject(":Other Details.doNotCall_QCheckBox"))
+    mouseDrag(waitForObject(":Description:.description_QTextEdit_4"), 1, 9, 109, 2, 1, Qt.LeftButton)
+    type(waitForObject(":Description:.description_QTextEdit_4"), "a better text")
+    # save
+    clickButton(waitForObject(":&Contact Details.Save_QPushButton"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
+    label = waitForObject(':Contact Information.createdDate_QLabel')
+    waitFor("label.text !=''")
+    # data is back from remote client 
+    clickButton(waitForObject(":Contacts.Clear_QToolButton"))
+    waitForObjectItem(":Contacts.contactsTV_Akonadi::EntityTreeView", "phone\\.qa@example\\.edu")
+    clickItem(":Contacts.contactsTV_Akonadi::EntityTreeView", "phone\\.qa@example\\.edu", 31, 17, 0, Qt.LeftButton)
+    mouseClick(waitForObject(":Contacts.searchLE_QLineEdit"), 218, 13, 0, Qt.LeftButton)
+    type(waitForObject(":Contacts.searchLE_QLineEdit"), "test cont")
+    waitForObjectItem(":Contacts.contactsTV_Akonadi::EntityTreeView", "test account")
+    clickItem(":Contacts.contactsTV_Akonadi::EntityTreeView", "test account", 72, 26, 0, Qt.LeftButton)
+    #check modified values
+    waitFor("object.exists(':Details.campaign_QComboBox')")
+    test.compare(findObject(":Details.campaign_QComboBox").currentText, "test campaign")
+    waitFor("object.exists(':Other Details.doNotCall_QCheckBox')")
+    test.compare(findObject(":Other Details.doNotCall_QCheckBox").checked, "1")
+    waitFor("object.exists(':Description:.description_QTextEdit_4')")
+    test.compare(findObject(":Description:.description_QTextEdit_4").plainText, "a better text")
+    clickButton(waitForObject(":Contacts.Clear_QToolButton"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
+    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
