@@ -98,5 +98,8 @@ def removeAccount( accountName ):
      clickButton(waitForObject(":SugarClient - Delete Account.Yes_QPushButton"))
      clickButton(waitForObject(":Form.Clear_QToolButton"))     
      type(waitForObject(":Form.searchLE_QLineEdit"), accountName)
-     #check that the model is empty at this point    
+     treeView = waitForObject(":Form.accountsTV_Akonadi::EntityTreeView")
+     model = treeView.model()
+     count = model.rowCount()
+     test.compare(count, 0)
     

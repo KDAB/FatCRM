@@ -1,3 +1,4 @@
+
 def main():
     startApplication("sugarclient")
     # load methods 
@@ -24,7 +25,7 @@ def main():
     accountsHandling.checkAddressesValues(billingList, shippingList)
     accountsHandling.checkDescriptionValue(description)
     # remove account
-    accountsHandling.removeAccount( accountName)
+    accountsHandling.removeAccount(accountName)
     # quit
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
