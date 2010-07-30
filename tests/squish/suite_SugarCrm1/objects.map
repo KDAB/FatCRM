@@ -124,6 +124,7 @@
 :Details.title_QLineEdit_2	{container=':Contact Information.Details_QGroupBox' name='title' type='QLineEdit' visible='1'}
 :Details.tyckerSymbol_QLineEdit	{container=':Account Information.Details_QGroupBox' name='tyckerSymbol' type='QLineEdit' visible='1'}
 :Details.website_QLineEdit	{container=':Account Information.Details_QGroupBox' name='website' type='QLineEdit' visible='1'}
+:Details_QComboBoxListView	{container=':Account Information.Details_QGroupBox' type='QComboBoxListView' unnamed='1' visible='1'}
 :Discard_QPushButton	{text='Discard' type='QPushButton' unnamed='1' visible='1' window=':_QMessageBox'}
 :Form.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Form_AccountsPage' name='clearAccountSearch' text='Clear' type='QToolButton' visible='1'}
 :Form.Clear_QToolButton_2	{container=':qt_tabwidget_stackedwidget.Form_OpportunitiesPage' name='clearOpportunitySearch' text='Clear' type='QToolButton' visible='1'}
