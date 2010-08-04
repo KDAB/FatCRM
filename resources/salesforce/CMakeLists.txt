@@ -34,7 +34,7 @@ endif (XSLTPROC_EXECUTABLE)
 
 if (KDSoap_KDWSDL2CPP)
   # generate SOAP bindings for a wsdl file
-  macro ( kdsoap_generate_soap_bindings _wsdl _name )
+  macro ( kdsoap_generate_soap_bindings _sources _wsdl _name )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
       COMMAND ${KDSoap_KDWSDL2CPP} -o ${_name}.h
@@ -48,7 +48,11 @@ if (KDSoap_KDWSDL2CPP)
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
               ${_wsdl}
     )
-    QT4_GENERATE_MOC( ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${_name}_moc.cpp )
+    
+    QT4_GENERATE_MOC(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp PROPERTIES SKIP_AUTOMOC TRUE)
+
+    SET(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
   endmacro( kdsoap_generate_soap_bindings )
 endif (KDSoap_KDWSDL2CPP)
 
@@ -78,8 +82,6 @@ set( salesforceresource_SRCS
     resourcedebuginterface.cpp
     salesforceconfigdialog.cpp
     salesforceresource.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/salesforcesoap.cpp
-    ${CMAKE_CURRENT_BINARY_DIR}/salesforcesoap_moc.cpp
 )
 
 kde4_add_ui_files( salesforceresource_SRCS
@@ -94,7 +96,7 @@ qt4_add_dbus_adaptor(salesforceresource_SRCS
     ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml settings.h Settings
 )
 
-kdsoap_generate_soap_bindings( ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap )
+kdsoap_generate_soap_bindings( salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap )
 
 kde4_add_executable(akonadi_salesforce_resource RUN_UNINSTALLED ${salesforceresource_SRCS})
 
