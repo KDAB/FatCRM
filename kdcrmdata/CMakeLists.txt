@@ -4,8 +4,9 @@ find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
 
 find_package(KdepimLibs REQUIRED)
+find_package(Boost REQUIRED)
 
-include_directories( ${KDEPIMLIBS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QT_INCLUDES} )
+include_directories( ${KDEPIMLIBS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QT_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 set(kdcrmdata_LIB_SRCS
     sugaraccount.cpp

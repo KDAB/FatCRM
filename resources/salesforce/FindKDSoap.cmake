@@ -9,7 +9,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_library(KDSoap_LIBRARIES
-    NAMES KDSoap kdsoap
+    NAMES KDSoap kdsoap kdsoapd kdsoap1 kdsoapd1
     PATH_SUFFIXES bin)
 find_path(KDSoap_INCLUDE_DIR
     NAMES KDSoapValue.h

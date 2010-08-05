@@ -9,6 +9,7 @@ include(MacroLibrary)
 include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 find_package (KdepimLibs REQUIRED)
+find_package (Boost REQUIRED)
 
 find_program(XSLTPROC_EXECUTABLE xsltproc)
 macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources. Recommended.")
@@ -70,6 +71,7 @@ include_directories(
     ${KDE4_INCLUDES}
     ${KDEPIMLIBS_INCLUDE_DIRS}
     ${KDSoap_INCLUDE_DIR}
+    ${Boost_INCLUDE_DIR}
 )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
