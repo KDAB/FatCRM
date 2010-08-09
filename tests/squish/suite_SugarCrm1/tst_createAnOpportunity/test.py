@@ -5,7 +5,7 @@ def main():
     # data to be registered
     opportunityName = "test opportunity"
     detailsList = [opportunityName, "", "Existing Business", "Employee", "", "Prospecting", "max"]
-    otherDetailsList = ["US Dollars:$", "10000", "1/2", "another step", "90"]   
+    otherDetailsList = ["US Dollars : $", "10000", "1/2", "another step", "90"]   
     description = "an opportunity created via my refactored functions"
     # launch the details widget
     opportunitiesHandling.createOpportunity()

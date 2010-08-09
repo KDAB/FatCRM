@@ -40,15 +40,16 @@ def checkDetailsValues(dList):
     test.compare(findObject(":Details.name_QLineEdit_2").text, dList[0])        
     test.compare(findObject(":Details.accountName_QComboBox").currentText, dList[1])        
     test.compare(findObject(":Details.opportunityType_QComboBox").currentText, dList[2])        
-    test.compare(findObject(":Details.leadSource_QComboBox").currentText, dList[3])        
-    test.compare(findObject(":Details.salesStage_QComboBox").currentText, dList[4])        
-    test.compare(findObject(":Details.assignedUserName_QComboBox_2").currentText, dList[5])
+    test.compare(findObject(":Details.leadSource_QComboBox").currentText, dList[3])  
+    test.compare(findObject(":Details.campaignName_QComboBox_2").currentText, dList[4])      
+    test.compare(findObject(":Details.salesStage_QComboBox").currentText, dList[5])        
+    test.compare(findObject(":Details.assignedUserName_QComboBox_2").currentText, dList[6])
     
 def checkOtherDetailsValues(oList):
     test.compare(findObject(":Other Details.currency_QComboBox").currentText, oList[0])    
     test.compare(findObject(":Other Details.amount_QLineEdit").text, oList[1])
     if(oList[2] == "1/2"):
-        test.compare(findObject(":Other Details.dateClosed_QLineEdit").text, "2010-06-28")    
+        test.compare(findObject(":Other Details.dateClosed_QLineEdit").text, "2010-07-26")    
     test.compare(findObject(":Other Details.nextStep_QLineEdit").text, oList[3])    
     test.compare(findObject(":Other Details.probability_QLineEdit").text, oList[4])
     
