@@ -85,9 +85,9 @@ def checkOtherDetailsValues(oList):
     test.compare(findObject(":Other Details.phoneOther_QLineEdit").text, oList[6])
     test.compare(findObject(":Other Details.phoneFax_QLineEdit_2").text, oList[7])
     if(oList[8] == "true"):
-        test.compare(findObject(":Other Details.doNotCall_QCheckBox_2").checkState, Qt.Checked)
+        test.compare(findObject(":Other Details.doNotCall_QCheckBox_2").checked, True)
     else:
-        test.compare(findObject(":Other Details.doNotCall_QCheckBox_2").checkState, Qt.Unchecked)    
+        test.compare(findObject(":Other Details.doNotCall_QCheckBox_2").checked, False)    
     test.compare(findObject(":Other Details.email1_QLineEdit_2").text, oList[9])
     test.compare(findObject(":Other Details.email2_QLineEdit").text, oList[10])                    
     
@@ -103,9 +103,9 @@ def checkAddressesValues(aList):
     test.compare(findObject(":Addresses.altAddressPostalcode_QLineEdit").text, aList[8])    
     test.compare(findObject(":Addresses.altAddressCountry_QLineEdit").text, aList[9])
     if(aList[10] == "true"):
-        test.compare(findObject(":Addresses.copyAddressFromPrimary_QCheckBox").checkState, Qt.Checked)
+        test.compare(findObject(":Addresses.copyAddressFromPrimary_QCheckBox").checked, True)
     else:
-        test.compare(findObject(":Addresses.copyAddressFromPrimary_QCheckBox").checkState, Qt.Unchecked)
+        test.compare(findObject(":Addresses.copyAddressFromPrimary_QCheckBox").checked, False)
         
 def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit_3").plainText, description)
