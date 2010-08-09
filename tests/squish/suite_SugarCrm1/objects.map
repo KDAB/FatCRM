@@ -68,6 +68,7 @@
 :Contact Information.createdDate_QLabel	{container=':&Contact Details.Contact Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
 :Contacts.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='clearContactSearch' text='Clear' type='QToolButton' visible='1'}
 :Contacts.New Contact_QPushButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='newContactPB' text='New Contact' type='QPushButton' visible='1'}
+:Contacts.Remove Contact_QPushButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='removeContactPB' text='Remove Contact' type='QPushButton' visible='1'}
 :Contacts.contactsTV_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='contactsTV' type='Akonadi::EntityTreeView' visible='1'}
 :Contacts.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='searchLE' type='QLineEdit' visible='1'}
 :Description:.content_QTextEdit	{container=':Campaign Information.Description:_QGroupBox' name='content' type='QTextEdit' visible='1'}
@@ -229,6 +230,8 @@
 :SugarClient - Delete Account_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Account'}
 :SugarClient - Delete Campaign.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Campaign_QMessageBox'}
 :SugarClient - Delete Campaign_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Campaign'}
+:SugarClient - Delete Contact.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Contact_QMessageBox'}
+:SugarClient - Delete Contact_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Contact'}
 :SugarClient - Delete Lead.Cancel_QPushButton	{text='Cancel' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
 :SugarClient - Delete Lead.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
 :SugarClient - Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Lead'}
