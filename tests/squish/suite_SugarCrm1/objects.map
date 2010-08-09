@@ -9,6 +9,7 @@
 :&Lead Details.Lead Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget' name='leadInformationGB' title='Lead Information' type='QGroupBox' visible='1'}
 :&Lead Details.Lead Information_QGroupBox_2	{container=':SugarCRM Client.&Lead Details_QDockWidget' name='leadInformationGB' title='Lead Information' type='QGroupBox' visible='1'}
 :&Lead Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
+:&Lead Details.qt_dockwidget_closebutton_QDockWidgetTitleButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget' name='qt_dockwidget_closebutton' type='QDockWidgetTitleButton' visible='1'}
 :&Opportunity Details.Opportunity Information_QGroupBox	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='opportunityInformationGB' title='Opportunity Information' type='QGroupBox' visible='1'}
 :&Opportunity Details.Save_QPushButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='saveButton' text='Save' type='QPushButton' visible='1'}
 :&Opportunity Details.qt_dockwidget_closebutton_QDockWidgetTitleButton	{container=':SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget' name='qt_dockwidget_closebutton' type='QDockWidgetTitleButton' visible='1'}
@@ -30,6 +31,7 @@
 :Addresses.billingAddressState_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressState' type='QLineEdit' visible='1'}
 :Addresses.billingAddressStreet_QLineEdit	{container=':Account Information.Addresses_QGroupBox' name='billingAddressStreet' type='QLineEdit' visible='1'}
 :Addresses.city_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='city' type='QLineEdit' visible='1'}
+:Addresses.copyAddressFromPrimary_QCheckBox	{container=':Lead Information.Addresses_QGroupBox' name='copyAddressFromPrimary' type='QCheckBox' visible='1'}
 :Addresses.country_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='country' type='QLineEdit' visible='1'}
 :Addresses.otherAddress_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherAddress' type='QLineEdit' visible='1'}
 :Addresses.otherCity_QLineEdit	{container=':Contact Information.Addresses_QGroupBox' name='otherCity' type='QLineEdit' visible='1'}
@@ -172,6 +174,7 @@
 :Other Details.currency_QComboBox	{container=':Opportunity Information.Other Details_QGroupBox' name='currency' type='QComboBox' visible='1'}
 :Other Details.dateClosed_QLineEdit	{container=':Opportunity Information.Other Details_QGroupBox' name='dateClosed' type='QLineEdit' visible='1'}
 :Other Details.doNotCall_QCheckBox	{container=':Contact Information.Other Details_QGroupBox' name='doNotCall' type='QCheckBox' visible='1'}
+:Other Details.doNotCall_QCheckBox_2	{container=':Lead Information.Other Details_QGroupBox' name='doNotCall' type='QCheckBox' visible='1'}
 :Other Details.email1_QLineEdit	{container=':Account Information.Other Details_QGroupBox' name='email1' type='QLineEdit' visible='1'}
 :Other Details.email1_QLineEdit_2	{container=':Lead Information.Other Details_QGroupBox' name='email1' type='QLineEdit' visible='1'}
 :Other Details.email2_QLineEdit	{container=':Lead Information.Other Details_QGroupBox' name='email2' type='QLineEdit' visible='1'}
@@ -226,6 +229,7 @@
 :SugarClient - Delete Account_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Account'}
 :SugarClient - Delete Campaign.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Campaign_QMessageBox'}
 :SugarClient - Delete Campaign_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Campaign'}
+:SugarClient - Delete Lead.Cancel_QPushButton	{text='Cancel' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
 :SugarClient - Delete Lead.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
 :SugarClient - Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Lead'}
 :SugarClient - Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Opportunity_QMessageBox'}
