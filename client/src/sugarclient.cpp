@@ -1,12 +1,12 @@
 #include "sugarclient.h"
 
+#include "enums.h"
+#include "resourceconfigdialog.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
 #include <akonadi/agentinstancemodel.h>
 #include <akonadi/control.h>
-
-#include "enums.h"
 
 #include <QDockWidget>
 #include <QInputDialog>
@@ -199,6 +199,7 @@ void SugarClient::setupActions()
     connect( this, SIGNAL( displayDetails() ), mContactsPage, SLOT( slotSetItem() ) );
     connect( this, SIGNAL( displayDetails() ), mLeadsPage, SLOT( slotSetItem() ) );
     connect( this, SIGNAL( displayDetails() ), mOpportunitiesPage, SLOT( slotSetItem() ) );
+    connect( mUi.actionConfigureResources, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -291,6 +292,12 @@ void SugarClient::slotLogin()
 
 }
 
+void SugarClient::slotConfigureResources()
+{
+    ResourceConfigDialog dialog( this );
+    dialog.exec();
+}
+
 QComboBox* SugarClient::getResourcesCombo()
 {
     // monitor Akonadi agents so we can check for SugarCRM specific resources
@@ -327,4 +334,5 @@ void SugarClient::slotDetailsDisplayDisabled( bool value )
 {
     mUi.showDetails->setChecked( value );
 }
+
 #include "sugarclient.moc"

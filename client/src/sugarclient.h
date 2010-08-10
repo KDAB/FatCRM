@@ -79,6 +79,7 @@ private Q_SLOTS:
     void slotManageDetailsDisplay( bool value );
     void slotDetailsDisplayDisabled( bool value );
     void slotLogin();
+    void slotConfigureResources();
 
 private:
     void detachDockViews( bool value );
