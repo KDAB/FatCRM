@@ -24,8 +24,8 @@ LeadDetails::LeadDetails( QWidget *parent )
     connect( mUi.clearButton, SIGNAL( clicked() ),
              this, SLOT( slotClearDate() ) );
 
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthDate() ) );
+    connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetBirthDate()));
 
     initialize();
 }
@@ -280,13 +280,8 @@ void LeadDetails::slotCopyFromPrimary( bool checked )
 
 void LeadDetails::slotSetBirthDate()
 {
-    disconnect( mCalendarButton->calendarWidget(),
-                SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthDate() ) );
     mUi.birthdate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthDate() ) );
     mCalendarButton->calendarDialog()->close();
 }
 

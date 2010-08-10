@@ -22,8 +22,8 @@ ContactDetails::ContactDetails( QWidget *parent )
     connect( mUi.clearButton, SIGNAL( clicked() ),
              this, SLOT( slotClearDate() ) );
 
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthday() ) );
+    connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetBirthday()));
 
     initialize();
 }
@@ -257,13 +257,8 @@ void ContactDetails::slotSaveContact()
 
 void ContactDetails::slotSetBirthday()
 {
-    disconnect( mCalendarButton->calendarWidget(),
-                SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthday() ) );
     mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    connect( mCalendarButton->calendarWidget(), SIGNAL( selectionChanged() ),
-             this, SLOT( slotSetBirthday() ) );
     mCalendarButton->calendarDialog()->close();
 }
 
