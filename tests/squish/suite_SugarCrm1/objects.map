@@ -220,6 +220,7 @@
 :SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Opportunity Details'}
 :SugarCRM Client: admin@SugarCRM on localhost.Details controller_QToolBar	{type='QToolBar' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='Details controller'}
 :SugarCRM Client: admin@SugarCRM on localhost.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
+:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu_2	{name='menuFile' title='File' type='QMenu' visible='0' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
 :SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
 :SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
 :SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget	{name='qt_tabwidget_stackedwidget' type='QStackedWidget' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
