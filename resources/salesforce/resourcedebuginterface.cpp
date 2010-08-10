@@ -3,8 +3,6 @@
 #include "modulehandler.h"
 #include "salesforceresource.h"
 
-#include <stdlib.h>
-
 ResourceDebugInterface::ResourceDebugInterface( SalesforceResource *resource )
     : QObject( resource ), mResource( resource )
 {
@@ -16,13 +14,7 @@ ResourceDebugInterface::~ResourceDebugInterface()
 
 void ResourceDebugInterface::setKDSoapDebugEnabled( bool enable )
 {
-    // Most likely this needs to be done completely different on windows
-    // unfortunately there seems to be no equivalent to qgetenv()
-    if ( enable ) {
-        ::setenv( "KDSOAP_DEBUG", "1", 1 );
-    } else {
-        ::unsetenv( "KDSOAP_DEBUG" );
-    }
+    qputenv( "KDSOAP_DEBUG", ( enable ? "1" : "0" ) );
 }
 
 bool ResourceDebugInterface::kdSoapDebugEnabled() const
