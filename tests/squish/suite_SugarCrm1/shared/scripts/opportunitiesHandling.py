@@ -6,6 +6,7 @@ def createOpportunity():
     clickButton(waitForObject(":Form.New Opportunity_QPushButton"))
    
 def registerDetails(dList):    
+    type(waitForObject(":Details.name_QLineEdit_2"), "<Ctrl+A>")
     type(waitForObject(":Details.name_QLineEdit_2"), dList[0])
     mouseClick(waitForObject(":Details.accountName_QComboBox"), 75, 5, 0, Qt.LeftButton)
     if(dList[1] != ""):     
@@ -19,14 +20,18 @@ def registerDetails(dList):
     
 def registerOtherDetails(oList):
     type(waitForObject(":Other Details.currency_QComboBox"), oList[0])
+    type(waitForObject(":Other Details.amount_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.amount_QLineEdit"), oList[1])
     clickButton(waitForObject(":Other Details.Edit_EditCalendarButton"))
     waitForObjectItem(":Calendar.qt_calendar_calendarview_QCalendarView", oList[2])
     clickItem(":Calendar.qt_calendar_calendarview_QCalendarView", oList[2], 15, 15, 0, Qt.LeftButton)
+    type(waitForObject(":Other Details.nextStep_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.nextStep_QLineEdit"), oList[3])
+    type(waitForObject(":Other Details.probability_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.probability_QLineEdit"), oList[4])
  
 def registerDescription(description):
+    type(waitForObject(":Description:.description_QTextEdit_2"), "<Ctrl+A>")
     type(waitForObject(":Description:.description_QTextEdit_2"), description)
     
 def saveOpportunity():

@@ -14,7 +14,7 @@ def registerDetails( list ):
     type(waitForObject(":Details.tyckerSymbol_QLineEdit"), list[2])  
     mouseClick(waitForObject(":Details.parentName_QComboBox"), 195, 14, 0, Qt.LeftButton)
     if(list[3] == ""):
-        mouseClick(waitForObject(":Details_QComboBoxListView"), 170, 12, 0, Qt.LeftButton)
+        mouseClick(waitForObject(":Details.parentName_QComboBox"), 170, 12, 0, Qt.LeftButton)
     elif(list[3] != ""):  
         mouseClick(waitForObjectItem(":Details.parentName_QComboBox", list[3]), 156, 11, 0, Qt.LeftButton)
     type(waitForObject(":Details.ownership_QLineEdit"), "<Ctrl+A>")        
