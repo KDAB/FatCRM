@@ -38,15 +38,25 @@ def main():
     accountsHandling.registerDescription(description)
     # save remotely
     accountsHandling.saveAccount()
-    modifyList = [accountName, "www.kdab.net", "a ticker", accountName, "AB", "Apparel", "Analyst", name, "max"]
+    modifyDetailsList = [accountName, "mwww.kdab.net", "ma ticker", accountName, "mAB", "Apparel", "Analyst", name, "max"]
+    modifyOtherList = ["m12345", "m67890", "m09876", "m100", "m90", "m3333", "m1000000000", "m@kdab.com"]
+    modifyBillingList = ["mbilling","mHagfors", "mVärmland", "m34567", "mSweden"]
+    modifyShippingList = ["mshipping", "mHagfors", "mVärmland", "m34567", "mSweden"]
+    modifyDescription = "a modified account description" 
     #modify data
-    accountsHandling.registerDetails(modifyList)
+    accountsHandling.registerDetails(modifyDetailsList)
+    accountsHandling.registerOtherDetails(modifyOtherList)
+    accountsHandling.registerAddresses(modifyBillingList, modifyShippingList)
+    accountsHandling.registerDescription(modifyDescription)
     #save
     accountsHandling.saveAccount()
     #check
-    accountsHandling.checkDetailsValues(modifyList)
+    accountsHandling.checkDetailsValues(modifyDetailsList)
+    accountsHandling.checkOtherDetailsValues(modifyOtherList)
+    accountsHandling.checkAddressesValues(modifyBillingList, modifyShippingList)
+    accountsHandling.checkDescriptionValue(modifyDescription)
     #test done - cleanup and quit
-    accountsHandling.removeAccount(accountName) 
+    #accountsHandling.removeAccount(accountName) 
     campaignsHandling.removeCampaign(name)  
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
