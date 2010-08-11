@@ -211,6 +211,10 @@ void AccountDetails::slotSaveAccount()
         emit saveAccount();
     else
         emit modifyAccount();
+
+    int index = mUi.parentName->findText( mData["parentName"] );
+    if ( index >= 0 )
+        mUi.parentName->setCurrentIndex( index );
 }
 
 void AccountDetails::addAccountData( const QString &accountName,  const QString &accountId )
