@@ -8,8 +8,7 @@ def createCampaign():
 def registerDetails(dList):                                                 
     type(waitForObject(":Details.name_QLineEdit_3"), dList[0]) 
     mouseClick(waitForObject(":Details.status_QComboBox"), 47, 18, 0, Qt.LeftButton)
-    mouseClick(waitForObjectItem(":Details.status_QComboBox", dList[1]), 43, 11, 0, Qt.LeftButton)   
-    #type(waitForObject(":Details.status_QComboBox"), dList[1])
+    mouseClick(waitForObjectItem(":Details.status_QComboBox", dList[1]), 43, 11, 0, Qt.LeftButton)       
     clickButton(waitForObject(":Details.Edit_EditCalendarButton_2"))
     waitForObjectItem(":Calendar.qt_calendar_calendarview_QCalendarView", dList[2])
     clickItem(":Calendar.qt_calendar_calendarview_QCalendarView", dList[2], 18, 8, 0, Qt.LeftButton)
@@ -60,7 +59,8 @@ def checkOtherDetailsValues(oList):
 def checkDescriptionValue(description):
     test.compare(findObject(":Description:.content_QTextEdit").plainText, description)
     
-def removeCampaign(name):      
+def removeCampaign(name):  
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Campaigns")       
     type(waitForObject(":Form.searchLE_QLineEdit_4"), name)    
     mouseClick((":Form.campaignsTV_Akonadi::EntityTreeView"), 67, 5, 0, Qt.LeftButton)
     clickButton(waitForObject(":Form.Remove Campaign_QPushButton"))

@@ -111,6 +111,7 @@ def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit_3").plainText, description)
     
 def removeLead(firstName):      
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Leads")
     type(waitForObject(":Form.searchLE_QLineEdit_3"), firstName)    
     mouseClick((":Form.leadsTV_Akonadi::EntityTreeView"), 62, 8, 0, Qt.LeftButton)
     clickButton(waitForObject(":Form.Remove Lead_QPushButton"))

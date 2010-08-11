@@ -2,18 +2,23 @@ from squish import *
 import test
 
 def createAccount():
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Accounts")
     clickButton(waitForObject(":Form.New Account_QPushButton"))
     
-def registerDetails( list ):
-    type(waitForObject(":Details.name_QLineEdit"), list[0])    
+def registerDetails( list ):    
+    type(waitForObject(":Details.name_QLineEdit"), "<Ctrl+A>")   
+    type(waitForObject(":Details.name_QLineEdit"), list[0])
+    type(waitForObject(":Details.website_QLineEdit"), "<Ctrl+A>")    
     type(waitForObject(":Details.website_QLineEdit"), list[1])    
+    type(waitForObject(":Details.tyckerSymbol_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Details.tyckerSymbol_QLineEdit"), list[2])  
     mouseClick(waitForObject(":Details.parentName_QComboBox"), 195, 14, 0, Qt.LeftButton)
     if(list[3] == ""):
         mouseClick(waitForObject(":Details_QComboBoxListView"), 170, 12, 0, Qt.LeftButton)
     elif(list[3] != ""):  
-        mouseClick(waitForObjectItem(":Details.parentName_QComboBox", list[3]), 156, 11, 0, Qt.LeftButton)    
-    type(waitForObject(":Details.ownership_QLineEdit"), list[4])        
+        mouseClick(waitForObjectItem(":Details.parentName_QComboBox", list[3]), 156, 11, 0, Qt.LeftButton)
+    type(waitForObject(":Details.ownership_QLineEdit"), "<Ctrl+A>")        
+    type(waitForObject(":Details.ownership_QLineEdit"), list[4])           
     type(waitForObject(":Details.industry_QComboBox"), list[5])
     type(waitForObject(":Details.accountType_QComboBox"), list[6])
     mouseClick(waitForObject(":Details.campaignName_QComboBox"), 183, 10, 0, Qt.LeftButton)
@@ -24,28 +29,47 @@ def registerDetails( list ):
     type(waitForObject(":Details.assignedUserName_QComboBox"), list[8])
     
 def registerOtherDetails( list ):
-    type(waitForObject(":Other Details.phoneOffice_QLineEdit"), list[0])    
-    type(waitForObject(":Other Details.phoneFax_QLineEdit"), list[1])    
-    type(waitForObject(":Other Details.phoneAlternate_QLineEdit"), list[2])    
+    type(waitForObject(":Other Details.phoneOffice_QLineEdit"), "<Ctrl+A>")
+    type(waitForObject(":Other Details.phoneOffice_QLineEdit"), list[0])
+    type(waitForObject(":Other Details.phoneFax_QLineEdit"), "<Ctrl+A>")    
+    type(waitForObject(":Other Details.phoneFax_QLineEdit"), list[1])
+    type(waitForObject(":Other Details.phoneAlternate_QLineEdit"), "<Ctrl+A>")    
+    type(waitForObject(":Other Details.phoneAlternate_QLineEdit"), list[2])
+    type(waitForObject(":Other Details.employees_QLineEdit"), "<Ctrl+A>")    
     type(waitForObject(":Other Details.employees_QLineEdit"), list[3])
-    type(waitForObject(":Other Details.rating_QLineEdit"), list[4])    
+    type(waitForObject(":Other Details.rating_QLineEdit"), "<Ctrl+A>")
+    type(waitForObject(":Other Details.rating_QLineEdit"), list[4]) 
+    type(waitForObject(":Other Details.sicCode_QLineEdit"), "<Ctrl+A>")   
     type(waitForObject(":Other Details.sicCode_QLineEdit"), list[5])    
-    type(waitForObject(":Other Details.annualRevenue_QLineEdit"), list[6])    
+    type(waitForObject(":Other Details.annualRevenue_QLineEdit"), "<Ctrl+A>")
+    type(waitForObject(":Other Details.annualRevenue_QLineEdit"), list[6])
+    type(waitForObject(":Other Details.email1_QLineEdit"), "<Ctrl+A>")    
     type(waitForObject(":Other Details.email1_QLineEdit"), list[7])
     
 def registerAddresses( bList, sList):  
-    type(waitForObject(":Addresses.billingAddressStreet_QLineEdit"), bList[0])    
-    type(waitForObject(":Addresses.billingAddressCity_QLineEdit"), bList[1])    
-    type(waitForObject(":Addresses.billingAddressState_QLineEdit"), bList[2])       
-    type(waitForObject(":Addresses.billingAddressPostalcode_QLineEdit"), bList[3])       
-    type(waitForObject(":Addresses.billingAddressCountry_QLineEdit"), bList[4])           
-    type(waitForObject(":Addresses.shippingAddressStreet_QLineEdit"), sList[0])       
-    type(waitForObject(":Addresses.shippingAddressCity_QLineEdit"), sList[1])       
-    type(waitForObject(":Addresses.shippingAddressState_QLineEdit"), sList[2])       
-    type(waitForObject(":Addresses.shippingAddressPostalcode_QLineEdit"), sList[3])       
+    type(waitForObject(":Addresses.billingAddressStreet_QLineEdit"), "<Ctrl+A>")
+    type(waitForObject(":Addresses.billingAddressStreet_QLineEdit"), bList[0])
+    type(waitForObject(":Addresses.billingAddressCity_QLineEdit"), "<Ctrl+A>")    
+    type(waitForObject(":Addresses.billingAddressCity_QLineEdit"), bList[1])
+    type(waitForObject(":Addresses.billingAddressState_QLineEdit"), "<Ctrl+A>")         
+    type(waitForObject(":Addresses.billingAddressState_QLineEdit"), bList[2])     
+    type(waitForObject(":Addresses.billingAddressPostalcode_QLineEdit"), "<Ctrl+A>")  
+    type(waitForObject(":Addresses.billingAddressPostalcode_QLineEdit"), bList[3])
+    type(waitForObject(":Addresses.billingAddressCountry_QLineEdit"), "<Ctrl+A>")       
+    type(waitForObject(":Addresses.billingAddressCountry_QLineEdit"), bList[4])
+    type(waitForObject(":Addresses.shippingAddressStreet_QLineEdit"), "<Ctrl+A>")           
+    type(waitForObject(":Addresses.shippingAddressStreet_QLineEdit"), sList[0])
+    type(waitForObject(":Addresses.shippingAddressCity_QLineEdit"), "<Ctrl+A>")    
+    type(waitForObject(":Addresses.shippingAddressCity_QLineEdit"), sList[1]) 
+    type(waitForObject(":Addresses.shippingAddressState_QLineEdit"), "<Ctrl+A>")      
+    type(waitForObject(":Addresses.shippingAddressState_QLineEdit"), sList[2])     
+    type(waitForObject(":Addresses.shippingAddressPostalcode_QLineEdit"), "<Ctrl+A>")  
+    type(waitForObject(":Addresses.shippingAddressPostalcode_QLineEdit"), sList[3])
+    type(waitForObject(":Addresses.shippingAddressCountry_QLineEdit"), "<Ctrl+A>")       
     type(waitForObject(":Addresses.shippingAddressCountry_QLineEdit"), sList[4])       
     
 def registerDescription( description ):
+    type(waitForObject(":Description:.description_QTextEdit"), "<Ctrl+A>" )
     type(waitForObject(":Description:.description_QTextEdit"), description )
     
 def saveAccount():
@@ -92,6 +116,7 @@ def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit").plainText, description)      
     
 def removeAccount( accountName ):
+     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Accounts")    
      type(waitForObject(":Form.searchLE_QLineEdit"), accountName)
      waitForObjectItem(":Form.accountsTV_Akonadi::EntityTreeView", "admin")          
      clickButton(waitForObject(":Form.Remove Account_QPushButton"))

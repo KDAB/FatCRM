@@ -57,6 +57,7 @@ def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit_2").plainText, description)
     
 def removeOpportunity(opportunityName):    
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Opportunities")
     type(waitForObject(":Form.searchLE_QLineEdit_2"), opportunityName)
     mouseClick(waitForObject(":Form.opportunitiesTV_Akonadi::EntityTreeView"), 135, 9, 0, Qt.LeftButton)
     clickButton(waitForObject(":Form.Remove Opportunity_QPushButton"))

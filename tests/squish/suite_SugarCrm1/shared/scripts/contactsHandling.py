@@ -97,7 +97,8 @@ def checkAddressesValues(aList):
 def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit_4").plainText, description)
     
-def removeContact(firstName):      
+def removeContact(firstName):  
+    clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Contacts")    
     type(waitForObject(":Contacts.searchLE_QLineEdit"), firstName)    
     mouseClick((":Contacts.contactsTV_Akonadi::EntityTreeView"), 20, 42, 0, Qt.LeftButton)
     clickButton(waitForObject(":Contacts.Remove Contact_QPushButton"))
