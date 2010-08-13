@@ -106,13 +106,11 @@ void ContactsPage::contactChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w ) {
             ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ));
             cd->setItem( item );
             mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
             connect( cd, SIGNAL( modifyContact() ),
                      this, SLOT( slotModifyContact( ) ) );
-        }
     }
 }
 
@@ -209,6 +207,10 @@ void ContactsPage::slotAddContact()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
     Q_UNUSED( job );
+
+    w->setEnabled( false );
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
     disconnect( cd, SIGNAL( saveContact() ),
                  this, SLOT( slotAddContact( ) ) );
 }
@@ -225,9 +227,12 @@ void ContactsPage::slotModifyContact()
         }
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
+        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
+
+        disconnect( cd, SIGNAL( modifyContact() ),
+                    this, SLOT( slotModifyContact( ) ) );
 
         QMap<QString, QString> data;
-        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
         data = cd->contactData();
         addressee.setGivenName( data.value( "firstName" ) );
         addressee.setFamilyName( data.value( "lastName" ) );
@@ -327,12 +332,18 @@ void ContactsPage::slotModifyContact()
         addressee.insertCustom( "FATCRM", "X-DoNotCall", data.value( "doNotCall" ) );
 
         item.setPayload<KABC::Addressee>( addressee );
+        item.setRemoteRevision( data.value( "remoteRevision" ) );
 
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
-        Q_UNUSED( job );
-        cd->initialize();
+        if ( !job->exec() )
+            return; //qDebug() << "Error:" << job->errorString();
+
+        w->setEnabled( false );
+        QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+        emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+        cd->reset();
     }
 }
 

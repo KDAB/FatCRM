@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotSetBirthday();
     void slotSetModifyFlag( bool );
     void slotClearDate();
+    void slotResetCursor( const QString& );
 };
 
 #endif /* CONTACTDETAILS_H */

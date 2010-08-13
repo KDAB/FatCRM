@@ -50,6 +50,7 @@ private Q_SLOTS:
     void slotSetModifyFlag( bool );
     void slotSetDateClosed();
     void slotClearDate();
+    void slotResetCursor( const QString& );
 };
 
 

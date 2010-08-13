@@ -48,6 +48,7 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveAccount();
     void slotSetModifyFlag( bool );
+    void slotResetCursor( const QString& );
 };
 
 #endif /* ACCOUNTDETAILS_H */

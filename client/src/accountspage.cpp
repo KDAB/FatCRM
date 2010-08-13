@@ -106,15 +106,13 @@ void AccountsPage::slotAccountClicked( const QModelIndex &index )
 
 void AccountsPage::accountChanged( const Item &item )
 {
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
     if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
-        SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w ) {
             AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
             ad->setItem( item );
             mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
             connect( ad, SIGNAL( modifyAccount() ),
                  this, SLOT( slotModifyAccount( ) ) );
-        }
     }
 }
 
@@ -191,6 +189,9 @@ void AccountsPage::slotAddAccount()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mAccountsCollection );
     Q_UNUSED( job );
+    w->setEnabled( false );
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
     // update Account combos for:
     // accounts - contacts and opportunity details
     updateAccountCombo( account.name(), account.id());
@@ -200,6 +201,7 @@ void AccountsPage::slotAddAccount()
 
 void AccountsPage::slotModifyAccount()
 {
+
     const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
     Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
@@ -211,6 +213,9 @@ void AccountsPage::slotModifyAccount()
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
+
+        disconnect( ad, SIGNAL( modifyAccount() ),
+                this, SLOT( slotModifyAccount( ) ) );
         QMap<QString, QString> data;
         data = ad->accountData();
 
@@ -254,15 +259,22 @@ void AccountsPage::slotModifyAccount()
         account.setCampaignName( data.value( "campaignName" ) );
 
         item.setPayload<SugarAccount>( account );
-
+        item.setRemoteRevision( data.value( "remoteRevision" ) );
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
-        Q_UNUSED( job );
+
+        if ( !job->exec() )
+            return; //qDebug() << "Error:" << job->errorString();
+
+        w->setEnabled( false );
+        QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+        emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
         // update Account combos for:
         // accounts - contacts and opportunity details
         updateAccountCombo( account.name(), account.id());
-        ad->initialize();
+        ad->reset();
+
     }
 }
 

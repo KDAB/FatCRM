@@ -55,7 +55,7 @@
      <property name="title">
       <string>Campaign Information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_5">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
@@ -66,9 +66,18 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="modifiedDate">
-          <property name="text">
-           <string>TextLabel</string>
+         <widget class="QLineEdit" name="modifiedDate">
+          <property name="maximumSize">
+           <size>
+            <width>114</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="frame">
+           <bool>false</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -449,7 +458,7 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
+      <item row="2" column="0">
        <widget class="QGroupBox" name="descriptionBox">
         <property name="title">
          <string>Description:</string>

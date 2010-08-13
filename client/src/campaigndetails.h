@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotSetStartDate();
     void slotSetEndDate();
     void slotClearDate();
+    void slotResetCursor( const QString& );
 };
 
 

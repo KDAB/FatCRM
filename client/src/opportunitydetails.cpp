@@ -1,4 +1,5 @@
 #include "opportunitydetails.h"
+#include "sugarclient.h"
 
 #include <akonadi/item.h>
 
@@ -40,6 +41,8 @@ void OpportunityDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
+    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotResetCursor( const QString& ) ) );
 
     QList<QComboBox*> comboBoxes =  mUi.opportunityInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
@@ -69,6 +72,7 @@ void OpportunityDetails::reset()
 
     disconnect( mUi.description, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
+    mUi.saveButton->setEnabled( false );
 }
 
 void OpportunityDetails::setItem (const Item &item )
@@ -137,9 +141,7 @@ void OpportunityDetails::clearFields ()
         mUi.opportunityInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedDate" )
-            lab->clear();
-        else if ( value == "modifiedBy" ) {
+        if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -182,7 +184,8 @@ void OpportunityDetails::slotSetModifyFlag( bool value )
 
 void OpportunityDetails::slotEnableSaving()
 {
-    mUi.saveButton->setEnabled( true );
+    if ( sender()->objectName() != "modifiedDate" )
+        mUi.saveButton->setEnabled( true );
 }
 
 bool OpportunityDetails::isEditing()
@@ -195,7 +198,7 @@ void OpportunityDetails::slotSaveOpportunity()
     if ( !mData.empty() )
         mData.clear();
 
-    mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
+    mData["remoteRevision"] = mUi.modifiedDate->text();
 
     QList<QLineEdit*> lineEdits =
         mUi.opportunityInformationGB->findChildren<QLineEdit*>();
@@ -206,9 +209,7 @@ void OpportunityDetails::slotSaveOpportunity()
         mUi.opportunityInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString objName = lab->objectName();
-        if ( objName == "modifiedDate" )
-            mData["modifiedDate"] = lab->text();
-        else if ( objName == "modifiedBy" ) {
+        if ( objName == "modifiedBy" ) {
             mData["modifiedBy"] = lab->text();
             mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
             mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
@@ -314,4 +315,15 @@ void OpportunityDetails::slotSetDateClosed()
 void OpportunityDetails::slotClearDate()
 {
     mUi.dateClosed->clear();
+}
+
+void OpportunityDetails::slotResetCursor( const QString& text)
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( !text.isEmpty() ) {
+        do {
+            QApplication::restoreOverrideCursor();
+        } while ( QApplication::overrideCursor() != 0 );
+        w->setEnabled( true );
+    }
 }

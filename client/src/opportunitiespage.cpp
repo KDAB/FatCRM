@@ -104,13 +104,11 @@ void OpportunitiesPage::opportunityChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<SugarOpportunity>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w ) {
-            OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
-            od->setItem( item );
-            mCurrentIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
-            connect( od, SIGNAL( modifyOpportunity() ),
+        OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+        od->setItem( item );
+        mCurrentIndex = mUi.opportunitiesTV->selectionModel()->currentIndex();
+        connect( od, SIGNAL( modifyOpportunity() ),
                  this, SLOT( slotModifyOpportunity( ) ) );
-        }
     }
 }
 
@@ -176,6 +174,9 @@ void OpportunitiesPage::slotAddOpportunity()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mOpportunitiesCollection );
     Q_UNUSED( job );
+    w->setEnabled( false );
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
 
     disconnect( od, SIGNAL( saveOpportunity() ),
                  this, SLOT( slotAddOpportunity( ) ) );
@@ -194,6 +195,10 @@ void OpportunitiesPage::slotModifyOpportunity()
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         OpportunityDetails *od = dynamic_cast<OpportunityDetails*>( w->detailsWidget( Opportunity ) );
+
+        disconnect( od, SIGNAL( modifyOpportunity() ),
+               this, SLOT( slotModifyOpportunity() ) );
+
         QMap<QString, QString> data;
         data = od->opportunityData();
 
@@ -225,12 +230,17 @@ void OpportunitiesPage::slotModifyOpportunity()
         opportunity.setProbability( data.value( "probability" ) );
 
         item.setPayload<SugarOpportunity>( opportunity );
-
+        item.setRemoteRevision( data.value( "remoteRevision" ) );
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
-        Q_UNUSED( job );
-        od->initialize();
+        if ( !job->exec() )
+            return; //qDebug() << "Error:" << job->errorString();
+
+        w->setEnabled( false );
+        QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+        emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+        od->reset();
     }
 }
 

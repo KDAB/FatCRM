@@ -103,16 +103,13 @@ void CampaignsPage::slotCampaignClicked( const QModelIndex &index )
 
 void CampaignsPage::campaignChanged( const Item &item )
 {
-
     if ( item.isValid() && item.hasPayload<SugarCampaign>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w ) {
-            CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
-            cd->setItem( item );
-            mCurrentIndex = mUi.campaignsTV->selectionModel()->currentIndex();
-            connect( cd, SIGNAL( modifyCampaign() ),
+        CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+        cd->setItem( item );
+        mCurrentIndex = mUi.campaignsTV->selectionModel()->currentIndex();
+        connect( cd, SIGNAL( modifyCampaign() ),
                  this, SLOT( slotModifyCampaign( ) ) );
-        }
     }
 }
 
@@ -177,6 +174,11 @@ void CampaignsPage::slotAddCampaign()
     // TODO connect to result() signal for error handling
     ItemCreateJob *job = new ItemCreateJob( item, mCampaignsCollection );
     Q_UNUSED( job );
+
+    w->setEnabled( false );
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+
     updateCampaignCombo( campaign.name(), campaign.id() );
     disconnect( cd, SIGNAL( saveCampaign() ),
                  this, SLOT( slotAddCampaign( ) ) );
@@ -195,6 +197,10 @@ void CampaignsPage::slotModifyCampaign()
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         CampaignDetails *cd = dynamic_cast<CampaignDetails*>( w->detailsWidget( Campaign ) );
+
+        disconnect( cd, SIGNAL( modifyCampaign() ),
+                    this, SLOT( slotModifyCampaign( ) ) );
+
         QMap<QString, QString> data;
         data = cd->campaignData();
 
@@ -224,14 +230,20 @@ void CampaignsPage::slotModifyCampaign()
         campaign.setCampaignType( data.value( "campaignType" ) );
         campaign.setObjective( data.value( "objective" ) );
         campaign.setContent( data.value( "content" ) );
-        item.setPayload<SugarCampaign>( campaign );
 
+        item.setPayload<SugarCampaign>( campaign );
+        item.setRemoteRevision( data.value( "remoteRevision" ) );
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
-        Q_UNUSED( job );
+        if ( !job->exec() )
+            return; //qDebug() << "Error:" << job->errorString();
+
+        w->setEnabled( false );
+        QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+        emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
         updateCampaignCombo( campaign.name(), campaign.id() );
-        cd->initialize();
+        cd->reset();
     }
 }
 

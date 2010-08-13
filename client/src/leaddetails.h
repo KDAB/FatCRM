@@ -50,6 +50,7 @@ private Q_SLOTS:
     void slotCopyFromPrimary( bool );
     void slotSetBirthDate();
     void slotClearDate();
+    void slotResetCursor( const QString& );
 };
 
 #endif /* LEADDETAILS_H */

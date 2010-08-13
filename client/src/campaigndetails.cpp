@@ -1,4 +1,5 @@
 #include "campaigndetails.h"
+#include "sugarclient.h"
 
 #include <akonadi/item.h>
 
@@ -53,6 +54,9 @@ void CampaignDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
+    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotResetCursor( const QString& ) ) );
+
 
     QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
@@ -75,7 +79,7 @@ void CampaignDetails::reset()
 {
     QList<QLineEdit*> lineEdits =  mUi.campaignInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
+        disconnect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
     QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
@@ -88,6 +92,7 @@ void CampaignDetails::reset()
 
     disconnect( mUi.content, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
+    mUi.saveButton->setEnabled( false );
 }
 
 
@@ -139,9 +144,7 @@ void CampaignDetails::clearFields ()
         mUi.campaignInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedDate" )
-            lab->clear();
-        else if ( value == "modifiedBy" ) {
+        if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -179,7 +182,8 @@ void CampaignDetails::slotSetModifyFlag( bool value )
 
 void CampaignDetails::slotEnableSaving()
 {
-    mUi.saveButton->setEnabled( true );
+    if ( sender()->objectName() != "modifiedDate" )
+        mUi.saveButton->setEnabled( true );
 }
 
 bool CampaignDetails::isEditing()
@@ -192,7 +196,7 @@ void CampaignDetails::slotSaveCampaign()
     if ( !mData.empty() )
         mData.clear();
 
-    mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
+    mData["remoteRevision"] = mUi.modifiedDate->text();
 
     QList<QLineEdit*> lineEdits =
         mUi.campaignInformationGB->findChildren<QLineEdit*>();
@@ -203,9 +207,7 @@ void CampaignDetails::slotSaveCampaign()
         mUi.campaignInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString objName = lab->objectName();
-        if ( objName == "modifiedDate" )
-            mData["modifiedDate"] = lab->text();
-        else if ( objName == "modifiedBy" ) {
+        if ( objName == "modifiedBy" ) {
             mData["modifiedBy"] = lab->text();
             mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
             mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
@@ -277,4 +279,15 @@ void CampaignDetails::slotClearDate()
         mUi.startDate->clear();
     else
         mUi.endDate->clear();
+}
+
+void CampaignDetails::slotResetCursor( const QString& text)
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( !text.isEmpty() ) {
+        do {
+            QApplication::restoreOverrideCursor();
+        } while ( QApplication::overrideCursor() != 0 );
+        w->setEnabled( true );
+    }
 }

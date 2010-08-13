@@ -1,4 +1,5 @@
 #include "leaddetails.h"
+#include "sugarclient.h"
 
 #include <akonadi/item.h>
 
@@ -42,6 +43,9 @@ void LeadDetails::initialize()
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
+    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotResetCursor( const QString& ) ) );
+
     QList<QComboBox*> comboBoxes =  mUi.leadInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
@@ -70,6 +74,9 @@ void LeadDetails::reset()
                     this, SLOT( slotEnableSaving() ) );
     disconnect( mUi.description, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
+
+    mUi.saveButton->setEnabled( false );
+
 }
 
 void LeadDetails::setItem (const Item &item )
@@ -138,9 +145,7 @@ void LeadDetails::clearFields ()
         mUi.leadInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedDate" )
-            lab->clear();
-        else if ( value == "modifiedBy" ) {
+        if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
         }
@@ -178,7 +183,8 @@ void LeadDetails::slotSetModifyFlag( bool value )
 
 void LeadDetails::slotEnableSaving()
 {
-    mUi.saveButton->setEnabled( true );
+    if ( sender()->objectName() != "modifiedDate" )
+        mUi.saveButton->setEnabled( true );
 }
 
 bool LeadDetails::isEditing()
@@ -191,7 +197,8 @@ void LeadDetails::slotSaveLead()
     if ( !mData.empty() )
         mData.clear();
 
-    mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
+    mData["remoteRevision"] = mUi.modifiedDate->text();
+
 
     QList<QLineEdit*> lineEdits =
         mUi.leadInformationGB->findChildren<QLineEdit*>();
@@ -202,9 +209,7 @@ void LeadDetails::slotSaveLead()
         mUi.leadInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString objName = lab->objectName();
-        if ( objName == "modifiedDate" )
-            mData["modifiedDate"] = lab->text();
-        else if ( objName == "modifiedBy" ) {
+        if ( objName == "modifiedBy" ) {
             mData["modifiedBy"] = lab->text();
             mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
             mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
@@ -288,4 +293,15 @@ void LeadDetails::slotSetBirthDate()
 void LeadDetails::slotClearDate()
 {
     mUi.birthdate->clear();
+}
+
+void LeadDetails::slotResetCursor( const QString& text)
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( !text.isEmpty() ) {
+        do {
+            QApplication::restoreOverrideCursor();
+        } while ( QApplication::overrideCursor() != 0 );
+        w->setEnabled( true );
+    }
 }

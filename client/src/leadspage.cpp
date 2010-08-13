@@ -104,13 +104,11 @@ void LeadsPage::leadChanged( const Item &item )
 {
     if ( item.isValid() && item.hasPayload<SugarLead>() ) {
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        if ( w ) {
             LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
             ld->setItem( item );
             mCurrentIndex = mUi.leadsTV->selectionModel()->currentIndex();
             connect( ld, SIGNAL( modifyLead() ),
                      this, SLOT( slotModifyLead( ) ) );
-        }
     }
 }
 
@@ -208,6 +206,10 @@ void LeadsPage::slotAddLead()
     ItemCreateJob *job = new ItemCreateJob( item, mLeadsCollection );
     Q_UNUSED( job );
 
+    w->setEnabled( false );
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+
     disconnect( ld, SIGNAL( saveLead() ),
                 this, SLOT( slotAddLead( ) ) );
 }
@@ -225,6 +227,9 @@ void LeadsPage::slotModifyLead()
 
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         LeadDetails *ld = dynamic_cast<LeadDetails*>( w->detailsWidget( Lead ) );
+        disconnect( ld, SIGNAL( modifyLead() ),
+                this, SLOT( slotModifyLead( ) ) );
+
         QMap<QString, QString> data;
         data = ld->leadData();
         lead.setDateEntered( data.value( "dateEntered" ) );
@@ -286,12 +291,18 @@ void LeadsPage::slotModifyLead()
         lead.setPortalApp( data.value( "portalApp" ) );
 
         item.setPayload<SugarLead>( lead );
+        item.setRemoteRevision( data.value( "remoteRevision" ) );
 
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
-        Q_UNUSED( job );
-        ld->initialize();
+        if ( !job->exec() )
+            return; //qDebug() << "Error:" << job->errorString();
+
+        w->setEnabled( false );
+        QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
+        emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+        ld->reset();
     }
 }
 

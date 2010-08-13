@@ -204,7 +204,7 @@ void SugarClient::setupActions()
 
 void SugarClient::slotShowMessage( const QString& message )
 {
-    statusBar()->showMessage( message, 5000 );
+    statusBar()->showMessage( message, 10000 );
 }
 
 void SugarClient::createTabs()

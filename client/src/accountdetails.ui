@@ -27,7 +27,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
       <item row="0" column="0">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QLabel" name="modifiedDateLabel">
           <property name="text">
@@ -36,9 +36,30 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="modifiedDate">
+         <widget class="QLineEdit" name="modifiedDate">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>106</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string/>
+          </property>
+          <property name="frame">
+           <bool>false</bool>
+          </property>
+          <property name="readOnly">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -63,7 +84,7 @@
           </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>167</width>
+            <width>308</width>
             <height>20</height>
            </size>
           </property>

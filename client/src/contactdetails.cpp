@@ -1,4 +1,5 @@
 #include "contactdetails.h"
+#include "sugarclient.h"
 
 #include <akonadi/item.h>
 
@@ -40,6 +41,9 @@ void ContactDetails::initialize()
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
+    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotResetCursor( const QString& ) ) );
+
     QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
@@ -59,7 +63,7 @@ void ContactDetails::reset()
 {
     QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
+        disconnect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
     QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
@@ -72,6 +76,7 @@ void ContactDetails::reset()
 
     disconnect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
                 this, SLOT( slotEnableSaving() ) );
+    mUi.saveButton->setEnabled( false );
 }
 
 void ContactDetails::setItem (const Item &item )
@@ -147,9 +152,7 @@ void ContactDetails::clearFields ()
         mUi.contactInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString value = lab->objectName();
-        if ( value == "modifiedDate" )
-            lab->clear();
-        else if ( value == "modifiedBy" ) {
+        if ( value == "modifiedBy" ) {
             lab->clear();
             lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
             lab->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
@@ -191,7 +194,8 @@ void ContactDetails::slotSetModifyFlag( bool value )
 
 void ContactDetails::slotEnableSaving()
 {
-    mUi.saveButton->setEnabled( true );
+    if ( sender()->objectName() != "modifiedDate" )
+        mUi.saveButton->setEnabled( true );
 }
 
 bool ContactDetails::isEditing()
@@ -205,8 +209,6 @@ void ContactDetails::slotSaveContact()
     if ( !mContactData.empty() )
         mContactData.clear();
 
-    mUi.modifiedDate->setText( QDateTime::currentDateTime().toString( QString( "yyyy-MM-dd hh:mm:ss") ) );
-
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
@@ -216,9 +218,7 @@ void ContactDetails::slotSaveContact()
         mUi.contactInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString objName = lab->objectName();
-        if ( objName == "modifiedDate" )
-            mContactData["modifiedDate"] = lab->text();
-        else if ( objName == "modifiedBy" ) {
+        if ( objName == "modifiedBy" ) {
             mContactData["modifiedBy"] = lab->text();
             mContactData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
             mContactData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
@@ -323,4 +323,15 @@ void ContactDetails::addAssignedToData( const QString &name, const QString &id )
     mAssignedToData.insert( name, id );
     if ( mUi.assignedTo->findText( name ) < 0 )
         mUi.assignedTo->addItem( name );
+}
+
+void ContactDetails::slotResetCursor( const QString& text)
+{
+    SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( !text.isEmpty() ) {
+        do {
+            QApplication::restoreOverrideCursor();
+        } while ( QApplication::overrideCursor() != 0 );
+        w->setEnabled( true );
+    }
 }
