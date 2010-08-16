@@ -22,8 +22,8 @@ def main():
     label = findObject(':Campaign Information.modifiedDate_QLineEdit')
     waitFor("label.text !=''")    
     # new data
-    mDetailsList = [name, status, "2/2", "3/3", "Radio", "US Dollars : $", "m100000", "m200000"]
-    mOtherDetailsList = ["max", "m20000", "m85000", "m100000", "mradio marketting"]      
+    mDetailsList = [name, status, "2/2", "3/3", "Radio", "US Dollars : $", "500000", "6600000"]
+    mOtherDetailsList = ["max", "60000", "9000000", "300000", "mradio marketting"]      
     mDescription = "a modified campaign"
     #modify 
     campaignsHandling.registerDetails(mDetailsList)
