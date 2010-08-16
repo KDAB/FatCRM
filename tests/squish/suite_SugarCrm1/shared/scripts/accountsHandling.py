@@ -11,17 +11,17 @@ def registerDetails( list ):
     type(waitForObject(":Details.website_QLineEdit"), "<Ctrl+A>")    
     type(waitForObject(":Details.website_QLineEdit"), list[1])    
     type(waitForObject(":Details.tyckerSymbol_QLineEdit"), "<Ctrl+A>")
-    type(waitForObject(":Details.tyckerSymbol_QLineEdit"), list[2])  
-    mouseClick(waitForObject(":Details.parentName_QComboBox"), 195, 14, 0, Qt.LeftButton)
-    if(list[3] != ""):
-        type(waitForObject(":Details.parentName_QComboBox"), list[3])
+    type(waitForObject(":Details.tyckerSymbol_QLineEdit"), list[2]) 
+    if(list[3] != ''):         
+        findObject(":Details.parentName_QComboBox")
+        mouseClick(waitForObjectItem(":Details.parentName_QComboBox", list[3]))            
     type(waitForObject(":Details.ownership_QLineEdit"), "<Ctrl+A>")        
     type(waitForObject(":Details.ownership_QLineEdit"), list[4])           
     type(waitForObject(":Details.industry_QComboBox"), list[5])
-    type(waitForObject(":Details.accountType_QComboBox"), list[6])
-    mouseClick(waitForObject(":Details.campaignName_QComboBox"), 183, 10, 0, Qt.LeftButton)
-    if(list[7] != ""):
-        type(waitForObject(":Details.campaignName_QComboBox"), list[7])    
+    type(waitForObject(":Details.accountType_QComboBox"), list[6])    
+    if(list[7] != ''):
+        findObject(":Details.campaignName_QComboBox")
+        mouseClick(waitForObjectItem(":Details.campaignName_QComboBox", list[7]))    
     type(waitForObject(":Details.assignedUserName_QComboBox"), list[8])
     
 def registerOtherDetails( list ):

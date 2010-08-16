@@ -41,7 +41,9 @@ def main():
     accountsHandling.registerDescription(description)
     # save remotely
     accountsHandling.saveAccount()
-    modifyDetailsList = ["test account", "mwww.kdab.net", "ma ticker", "test accoun" , "mAB", "Apparel", "Analyst", "TestCampaign", "max"]
+    label = findObject(':Account Information.modifiedDate_QLineEdit')
+    waitFor("label.text !=''")  
+    modifyDetailsList = ["test account", "mwww.kdab.net", "ma ticker", "test account" , "mAB", "Apparel", "Analyst", "TestCampaign", "max"]
     modifyOtherList = ["m12345", "m67890", "m09876", "m100", "m90", "m3333", "m1000000000", "m@kdab.com"]
     modifyBillingList = ["mbilling","mHagfors", "mVärmland", "m34567", "mSweden"]
     modifyShippingList = ["mshipping", "mHagfors", "mVärmland", "m34567", "mSweden"]

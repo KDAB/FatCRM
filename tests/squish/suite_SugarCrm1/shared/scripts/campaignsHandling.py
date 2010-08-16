@@ -5,7 +5,8 @@ def createCampaign():
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Campaigns")    
     clickButton(waitForObject(":Form.New Campaign_QPushButton"))
     
-def registerDetails(dList):                                                 
+def registerDetails(dList): 
+    type(waitForObject(":Details.name_QLineEdit_3"), "<Ctrl+A>")                                                    
     type(waitForObject(":Details.name_QLineEdit_3"), dList[0]) 
     mouseClick(waitForObject(":Details.status_QComboBox"), 47, 18, 0, Qt.LeftButton)
     mouseClick(waitForObjectItem(":Details.status_QComboBox", dList[1]), 43, 11, 0, Qt.LeftButton)       
@@ -17,17 +18,24 @@ def registerDetails(dList):
     clickItem(":Calendar.qt_calendar_calendarview_QCalendarView", dList[3], 15, 10, 0, Qt.LeftButton)
     type(waitForObject(":Details.campaignType_QComboBox"), dList[4])
     type(waitForObject(":Details.currency_QComboBox"), dList[5])
+    type(waitForObject(":Details.budget_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Details.budget_QLineEdit"), dList[6])
+    type(waitForObject(":Details.expectedRevenue_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Details.expectedRevenue_QLineEdit"), dList[7])    
     
 def registerOtherDetails(oList): 
     type(waitForObject(":Other Details.assignedUserName_QComboBox"), oList[0])
+    type(waitForObject(":Other Details.impressions_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.impressions_QLineEdit"), oList[1])
+    type(waitForObject(":Other Details.actualCost_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.actualCost_QLineEdit"), oList[2])
+    type(waitForObject(":Other Details.expectedCost_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.expectedCost_QLineEdit"), oList[3])
+    type(waitForObject(":Other Details.objective_QTextEdit"), "<Ctrl+A>")
     type(waitForObject(":Other Details.objective_QTextEdit"), oList[4])
     
 def registerDescription(description):
+    type(waitForObject(":Description:.content_QTextEdit"), "<Ctrl+A>")
     type(waitForObject(":Description:.content_QTextEdit"), description)
     
 def saveCampaign():
@@ -38,10 +46,10 @@ def saveCampaign():
 def checkDetailsValues(dList):
     test.compare(findObject(":Details.name_QLineEdit_3").text, dList[0])    
     test.compare(findObject(":Details.status_QComboBox").currentText, dList[1])
-    if(dList[2] == "1/1"):
-        test.compare(findObject(":Details.startDate_QLineEdit").text, "2010-07-25")
-    if(dList[3] == "2/2"):    
-        test.compare(findObject(":Details.endDate_QLineEdit").text, "2010-08-02")    
+    if(dList[2] == "2/2"):
+        test.compare(findObject(":Details.startDate_QLineEdit").text, "2010-08-02")
+    if(dList[3] == "3/3"):    
+        test.compare(findObject(":Details.endDate_QLineEdit").text, "2010-08-10")    
     test.compare(findObject(":Details.campaignType_QComboBox").currentText, dList[4])
     test.compare(findObject(":Details.currency_QComboBox").currentText, dList[5])
     test.compare(findObject(":Details.budget_QLineEdit").text, dList[6])
