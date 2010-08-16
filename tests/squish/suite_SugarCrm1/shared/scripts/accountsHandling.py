@@ -13,19 +13,15 @@ def registerDetails( list ):
     type(waitForObject(":Details.tyckerSymbol_QLineEdit"), "<Ctrl+A>")
     type(waitForObject(":Details.tyckerSymbol_QLineEdit"), list[2])  
     mouseClick(waitForObject(":Details.parentName_QComboBox"), 195, 14, 0, Qt.LeftButton)
-    if(list[3] == ""):
-        mouseClick(waitForObject(":Details.parentName_QComboBox"), 170, 12, 0, Qt.LeftButton)
-    elif(list[3] != ""):  
-        mouseClick(waitForObjectItem(":Details.parentName_QComboBox", list[3]), 156, 11, 0, Qt.LeftButton)
+    if(list[3] != ""):
+        type(waitForObject(":Details.parentName_QComboBox"), list[3])
     type(waitForObject(":Details.ownership_QLineEdit"), "<Ctrl+A>")        
     type(waitForObject(":Details.ownership_QLineEdit"), list[4])           
     type(waitForObject(":Details.industry_QComboBox"), list[5])
     type(waitForObject(":Details.accountType_QComboBox"), list[6])
     mouseClick(waitForObject(":Details.campaignName_QComboBox"), 183, 10, 0, Qt.LeftButton)
-    if(list[7] == ""):
-        mouseClick(waitForObject(":Details_QComboBoxListView"), 164, 7, 0, Qt.LeftButton)  
-    elif(list[7] != ""):      
-        mouseClick(waitForObjectItem(":Details.campaignName_QComboBox", list[7]), 171, 8, 0, Qt.LeftButton)    
+    if(list[7] != ""):
+        type(waitForObject(":Details.campaignName_QComboBox"), list[7])    
     type(waitForObject(":Details.assignedUserName_QComboBox"), list[8])
     
 def registerOtherDetails( list ):
@@ -74,9 +70,7 @@ def registerDescription( description ):
     
 def saveAccount():
     clickButton(waitForObject(":&Account Details.Save_QPushButton"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
-    label = waitForObject(':Account Information.admin_QLabel_2')
+    label = findObject(':Account Information.modifiedDate_QLineEdit')
     waitFor("label.text !=''")  
     
 def checkDetailsValues( dList):
@@ -85,7 +79,7 @@ def checkDetailsValues( dList):
     test.compare(findObject(":Details.tyckerSymbol_QLineEdit").text, dList[2]) 
     test.compare(findObject(":Details.parentName_QComboBox").currentText, dList[3])                  
     test.compare(findObject(":Details.ownership_QLineEdit").text, dList[4])    
-    test.compare(findObject(":Details.industry_QComboBox").currentText, dList[5])    
+    test.compare(findObject(":Details.industry_QComboBox").currentText, dList[5])      
     test.compare(findObject(":Details.accountType_QComboBox").currentText, dList[6])   
     test.compare(findObject(":Details.campaignName_QComboBox").currentText, dList[7])        
     test.compare(findObject(":Details.assignedUserName_QComboBox").currentText, dList[8])

@@ -35,10 +35,8 @@ def registerDescription(description):
     type(waitForObject(":Description:.description_QTextEdit_2"), description)
     
 def saveOpportunity():
-    clickButton(waitForObject(":&Opportunity Details.Save_QPushButton"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
-    label = waitForObject(':Opportunity Information.createdBy_QLabel')
+    clickButton(waitForObject(":&Opportunity Details.Save_QPushButton"))    
+    label = findObject(':Opportunity Information.modifiedDate_QLineEdit')
     waitFor("label.text !=''")
     
 def checkDetailsValues(dList):    

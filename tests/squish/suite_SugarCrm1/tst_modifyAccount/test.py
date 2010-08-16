@@ -19,6 +19,9 @@ def main():
     campaignsHandling.registerDescription(description)
     # save remotely
     campaignsHandling.saveCampaign()
+    # make sure it is saved before proceeding 
+    label = findObject(':Campaign Information.modifiedDate_QLineEdit')
+    waitFor("label.text !=''")    
     # select account tab
     # mainWindowHandling.selectTab("Account")
     # create an account 
@@ -38,7 +41,7 @@ def main():
     accountsHandling.registerDescription(description)
     # save remotely
     accountsHandling.saveAccount()
-    modifyDetailsList = [accountName, "mwww.kdab.net", "ma ticker", accountName, "mAB", "Apparel", "Analyst", name, "max"]
+    modifyDetailsList = ["test account", "mwww.kdab.net", "ma ticker", "test accoun" , "mAB", "Apparel", "Analyst", "TestCampaign", "max"]
     modifyOtherList = ["m12345", "m67890", "m09876", "m100", "m90", "m3333", "m1000000000", "m@kdab.com"]
     modifyBillingList = ["mbilling","mHagfors", "mVärmland", "m34567", "mSweden"]
     modifyShippingList = ["mshipping", "mHagfors", "mVärmland", "m34567", "mSweden"]
@@ -50,13 +53,16 @@ def main():
     accountsHandling.registerDescription(modifyDescription)
     #save
     accountsHandling.saveAccount()
+    # make sure it is saved before proceeding
+    label = findObject(':Account Information.modifiedDate_QLineEdit')
+    waitFor("label.text !=''")  
     #check
     accountsHandling.checkDetailsValues(modifyDetailsList)
     accountsHandling.checkOtherDetailsValues(modifyOtherList)
     accountsHandling.checkAddressesValues(modifyBillingList, modifyShippingList)
     accountsHandling.checkDescriptionValue(modifyDescription)
     #test done - cleanup and quit
-    #accountsHandling.removeAccount(accountName) 
+    accountsHandling.removeAccount(accountName) 
     campaignsHandling.removeCampaign(name)  
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
     activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))

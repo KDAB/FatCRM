@@ -20,6 +20,7 @@
 :Account Information.admin_QLabel	{container=':&Account Details.Account Information_QGroupBox' name='createdBy' text='admin' type='QLabel' visible='1'}
 :Account Information.admin_QLabel_2	{container=':&Account Details.Account Information_QGroupBox' name='modifiedBy' type='QLabel' visible='1'}
 :Account Information.createdDate_QLabel	{container=':&Account Details.Account Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
+:Account Information.modifiedDate_QLineEdit	{container=':&Account Details.Account Information_QGroupBox' name='modifiedDate' type='QLineEdit' visible='1'}
 :Addresses.altAddressCity_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressCity' type='QLineEdit' visible='1'}
 :Addresses.altAddressCountry_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressCountry' type='QLineEdit' visible='1'}
 :Addresses.altAddressPostalcode_QLineEdit	{container=':Lead Information.Addresses_QGroupBox' name='altAddressPostalcode' type='QLineEdit' visible='1'}
@@ -59,6 +60,7 @@
 :Campaign Information.createdBy_QLabel	{container=':&Campaign Details.Campaign Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
 :Campaign Information.createdDate_QLabel	{container=':&Campaign Details.Campaign Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
 :Campaign Information.modifiedBy_QLabel	{container=':&Campaign Details.Campaign Information_QGroupBox' name='modifiedBy' type='QLabel' visible='1'}
+:Campaign Information.modifiedDate_QLineEdit	{container=':&Campaign Details.Campaign Information_QGroupBox' name='modifiedDate' type='QLineEdit' visible='1'}
 :Contact Information.Addresses_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='addressesBox' title='Addresses' type='QGroupBox' visible='1'}
 :Contact Information.Description:_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
 :Contact Information.Details_QGroupBox	{container=':&Contact Details.Contact Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
@@ -66,6 +68,7 @@
 :Contact Information.Other Details_QGroupBox_2	{container=':&Contact Details.Contact Information_QGroupBox_2' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
 :Contact Information.createdBy_QLabel	{container=':&Contact Details.Contact Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
 :Contact Information.createdDate_QLabel	{container=':&Contact Details.Contact Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
+:Contact Information.modifiedDate_QLineEdit	{container=':&Contact Details.Contact Information_QGroupBox' name='modifiedDate' type='QLineEdit' visible='1'}
 :Contacts.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='clearContactSearch' text='Clear' type='QToolButton' visible='1'}
 :Contacts.New Contact_QPushButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='newContactPB' text='New Contact' type='QPushButton' visible='1'}
 :Contacts.Remove Contact_QPushButton	{container=':qt_tabwidget_stackedwidget.Contacts_ContactsPage' name='removeContactPB' text='Remove Contact' type='QPushButton' visible='1'}
@@ -156,11 +159,13 @@
 :Lead Information.Other Details_QGroupBox	{container=':&Lead Details.Lead Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
 :Lead Information.createdBy_QLabel	{container=':&Lead Details.Lead Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
 :Lead Information.createdDate_QLabel	{container=':&Lead Details.Lead Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
+:Lead Information.modifiedDate_QLineEdit	{container=':&Lead Details.Lead Information_QGroupBox' name='modifiedDate' type='QLineEdit' visible='1'}
 :Opportunity Information.Description:_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='descriptionBox' title='Description:' type='QGroupBox' visible='1'}
 :Opportunity Information.Details_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='detailsBox' title='Details' type='QGroupBox' visible='1'}
 :Opportunity Information.Other Details_QGroupBox	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='otherDetailsBox' title='Other Details' type='QGroupBox' visible='1'}
 :Opportunity Information.createdBy_QLabel	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='createdBy' type='QLabel' visible='1'}
 :Opportunity Information.createdDate_QLabel	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='createdDate' type='QLabel' visible='1'}
+:Opportunity Information.modifiedDate_QLineEdit	{container=':&Opportunity Details.Opportunity Information_QGroupBox' name='modifiedDate' type='QLineEdit' visible='1'}
 :Other Details.Clear_QToolButton	{container=':Opportunity Information.Other Details_QGroupBox' name='clearButton' text='Clear' type='QToolButton' visible='1'}
 :Other Details.Edit_EditCalendarButton	{container=':Opportunity Information.Other Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}
 :Other Details.Edit_EditCalendarButton_2	{container=':Contact Information.Other Details_QGroupBox' text='Edit' type='EditCalendarButton' unnamed='1' visible='1'}

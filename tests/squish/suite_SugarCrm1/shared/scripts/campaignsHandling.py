@@ -32,9 +32,7 @@ def registerDescription(description):
     
 def saveCampaign():
     clickButton(waitForObject(":&Campaign Details.Save_QPushButton"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
-    label = waitForObject(':Campaign Information.modifiedBy_QLabel')
+    label = findObject(':Campaign Information.modifiedDate_QLineEdit')
     waitFor("label.text !=''")    
     
 def checkDetailsValues(dList):

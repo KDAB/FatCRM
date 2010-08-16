@@ -54,10 +54,8 @@ def registerDescription(description):
     type(waitForObject(":Description:.description_QTextEdit_3"), description)
     
 def saveLead():
-    clickButton(waitForObject(":&Lead Details.Save_QPushButton"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Syncronize"))
-    label = waitForObject(':Lead Information.createdBy_QLabel')
+    clickButton(waitForObject(":&Lead Details.Save_QPushButton"))    
+    label = findObject(':Lead Information.modifiedDate_QLineEdit')
     waitFor("label.text !=''")
     
 def checkDetailsValues(dList):    
