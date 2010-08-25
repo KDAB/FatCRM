@@ -1,6 +1,7 @@
 #ifndef SUGARACCOUNT_H
 #define SUGARACCOUNT_H
 
+#include <QtCore/QMetaType>
 #include <QtCore/QSharedDataPointer>
 
 #include "kdcrmdata_export.h"
@@ -425,6 +426,8 @@ class KDCRMDATA_EXPORT SugarAccount
     class Private;
     QSharedDataPointer<Private> d;
 };
+
+Q_DECLARE_METATYPE( SugarAccount )
 
 #endif /* SUGARACCOUNT_H */
 

@@ -1,6 +1,7 @@
 #ifndef SUGAROPPORTUNITY_H
 #define SUGAROPPORTUNITY_H
 
+#include <QtCore/QMetaType>
 #include <QtCore/QSharedDataPointer>
 
 #include "kdcrmdata_export.h"
@@ -317,6 +318,8 @@ class KDCRMDATA_EXPORT SugarOpportunity
     class Private;
     QSharedDataPointer<Private> d;
 };
+
+Q_DECLARE_METATYPE( SugarOpportunity )
 
 #endif /* SUGAROPPORTUNITY_H */
 

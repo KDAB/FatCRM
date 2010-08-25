@@ -1,6 +1,7 @@
 #ifndef SUGARLEAD_H
 #define SUGARLEAD_H
 
+#include <QtCore/QMetaType>
 #include <QtCore/QSharedDataPointer>
 
 #include "kdcrmdata_export.h"
@@ -596,6 +597,8 @@ class KDCRMDATA_EXPORT SugarLead
     class Private;
     QSharedDataPointer<Private> d;
 };
+
+Q_DECLARE_METATYPE( SugarLead )
 
 
 #endif /* SUGARLEAD_H */
