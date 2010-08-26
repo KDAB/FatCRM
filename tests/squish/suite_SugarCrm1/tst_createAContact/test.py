@@ -4,7 +4,7 @@ def main():
     import contactsHandling
     # data to be registered
     firstName = "TestContact" 
-    detailsList = ["Mr.", firstName, "Bob", "Director Sales", "Admin", "", "Campaign", "max", "", "michel@kdab.com"]
+    detailsList = ["Mr.", firstName, "Bob", "Director Sales", "Admin", "", "Campaign","" ,"max", "", "michel@kdab.com"]
     otherDetailsList = ["123456", "789012", "345678", "901234", "567890", "3/3", "Mrs Assist", "567890", "true"]
     addressesList = ["jonas väg", "Hagfors", " a state","32456", "Sweden", "jonsons", "väg", "Örebro", "45678", "USA", "false"]   
     description = "a contact created via my refactored functions"

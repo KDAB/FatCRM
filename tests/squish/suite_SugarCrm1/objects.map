@@ -244,6 +244,7 @@
 :SugarClient - Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Opportunity_QMessageBox'}
 :SugarClient - Delete Opportunity_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Opportunity'}
 :_QMessageBox	{type='QMessageBox' unnamed='1' visible='1'}
+:contactsTV_QScrollBar	{container=':Contacts.contactsTV_Akonadi::EntityTreeView' type='QScrollBar' unnamed='1' visible='1'}
 :qt_tabwidget_stackedwidget.Contacts_ContactsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='ContactsPage' type='ContactsPage' visible='1' windowTitle='Contacts'}
 :qt_tabwidget_stackedwidget.Form_AccountsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='AccountsPage' type='AccountsPage' visible='1' windowTitle='Form'}
 :qt_tabwidget_stackedwidget.Form_CampaignsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='CampaignsPage' type='CampaignsPage' visible='1' windowTitle='Form'}
