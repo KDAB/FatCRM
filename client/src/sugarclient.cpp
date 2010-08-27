@@ -2,12 +2,14 @@
 
 #include "enums.h"
 #include "resourceconfigdialog.h"
+#include "shutdowndialog.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
 #include <akonadi/agentinstancemodel.h>
 #include <akonadi/control.h>
 
+#include <QCloseEvent>
 #include <QDockWidget>
 #include <QInputDialog>
 #include <QToolBar>
@@ -183,7 +185,7 @@ void SugarClient::setupActions()
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
-    connect( mUi.actionQuit, SIGNAL( triggered() ), qApp, SLOT( quit() ) );
+    connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
@@ -328,6 +330,34 @@ QWidget* SugarClient::detailsWidget( DetailsType type )
     default:
         return 0;
     }
+}
+
+void SugarClient::closeEvent( QCloseEvent *event )
+{
+    const ShutdownDialog::ShutdownOptions option = ShutdownDialog::getShutdownOption( this );
+    switch ( option ) {
+        case ShutdownDialog::CancelShutdown:
+            event->ignore();
+            return;
+
+        case ShutdownDialog::JustQuit:
+            break;
+
+        case ShutdownDialog::QuitAndStopAkonadi:
+            Akonadi::Control::stop();
+            break;
+
+        case ShutdownDialog::QuitAndAgentsOffline:
+            for ( int i = 0; i < mResourceSelector->count(); ++i ) {
+                AgentInstance agent = mResourceSelector->itemData( i, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+                if ( agent.isValid() ) {
+                    agent.setIsOnline( false );
+                }
+            }
+            break;
+    }
+
+    QMainWindow::closeEvent( event );
 }
 
 void SugarClient::slotDetailsDisplayDisabled( bool value )

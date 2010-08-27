@@ -24,6 +24,7 @@ set(sugarclient_SRCS
     main.cpp
     sugarclient.cpp
     resourceconfigdialog.cpp
+    shutdowndialog.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
@@ -40,6 +41,7 @@ kde4_add_ui_files(sugarclient_SRCS
     campaigndetails.ui
     mainwindow.ui
     resourceconfigdialog.ui
+    shutdowndialog.ui
 )
 
 kde4_add_executable(sugarclient ${sugarclient_SRCS})
