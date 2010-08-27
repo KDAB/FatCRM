@@ -1,6 +1,7 @@
 include_directories ( ${CMAKE_SOURCE_DIR} )
 
 set(sugarclient_SRCS
+    page.cpp
     contactspage.cpp
     accountspage.cpp
     accountstreemodel.cpp
@@ -26,6 +27,7 @@ set(sugarclient_SRCS
 )
 
 kde4_add_ui_files(sugarclient_SRCS
+    page.ui
     contactspage.ui
     accountspage.ui
     opportunitiespage.ui

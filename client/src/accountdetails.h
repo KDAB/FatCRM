@@ -32,7 +32,7 @@ Q_SIGNALS:
     void saveAccount();
     void modifyAccount();
 
-    friend class AccountsPage;
+    friend class Page;
 private:
     void initialize();
     bool isEditing();

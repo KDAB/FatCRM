@@ -11,7 +11,6 @@
 #include <akonadi/collectionfetchscope.h>
 #include <akonadi/collectionstatistics.h>
 #include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemdeletejob.h>
 #include <akonadi/itemfetchscope.h>
@@ -29,113 +28,16 @@
 using namespace Akonadi;
 
 AccountsPage::AccountsPage( QWidget *parent )
-    : QWidget( parent ),
-      mChangeRecorder( new ChangeRecorder( this ) )
+    : Page( parent, QString( "application/x-vnd.kdab.crm.account" ), QString( "Accounts" ))
 {
-    mUi.setupUi( this );
-    initialize();
+    setupModel();
 }
 
 AccountsPage::~AccountsPage()
 {
 }
 
-void AccountsPage::slotResourceSelectionChanged( const QByteArray &identifier )
-{
-
-    if ( mAccountsCollection.isValid() ) {
-        mChangeRecorder->setCollectionMonitored( mAccountsCollection, false );
-    }
-
-    /*
-     * Look for the "Accounts" collection explicitly by listing all collections
-     * of the currently selected resource, filtering by MIME type.
-     * include statistics to get the number of items in each collection
-     */
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
-    job->fetchScope().setResource( identifier );
-    job->fetchScope().setContentMimeTypes( QStringList() << SugarAccount::mimeType() );
-    job->fetchScope().setIncludeStatistics( true );
-    connect( job, SIGNAL( result( KJob* ) ),
-             this, SLOT( slotCollectionFetchResult( KJob* ) ) );
-}
-
-void AccountsPage::slotCollectionFetchResult( KJob *job )
-{
-
-    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
-
-    // look for the "Accounts" collection
-    Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
-        if ( collection.remoteId() == QLatin1String( "Accounts" ) ) {
-            mAccountsCollection = collection;
-            break;
-        }
-    }
-
-    if ( mAccountsCollection.isValid() ) {
-        mUi.newAccountPB->setEnabled( true );
-        mChangeRecorder->setCollectionMonitored( mAccountsCollection, true );
-        // if empty, the collection might not have been loaded yet, try synchronizing
-        if ( mAccountsCollection.statistics().count() == 0 ) {
-            AgentManager::self()->synchronizeCollection( mAccountsCollection );
-        }
-
-        setupCachePolicy();
-    } else {
-        mUi.newAccountPB->setEnabled( false );
-    }
-}
-
-void AccountsPage::slotAccountClicked( const QModelIndex &index )
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
-
-        if ( ad->isEditing() ) {
-            if ( !proceedIsOk() ) {
-                mUi.accountsTV->setCurrentIndex( mCurrentIndex );
-                return;
-            }
-        }
-        Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        accountChanged(item );
-    }
-}
-
-void AccountsPage::accountChanged( const Item &item )
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( item.isValid() && item.hasPayload<SugarAccount>() ) {
-            AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget(Account) );
-            ad->setItem( item );
-            mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
-            connect( ad, SIGNAL( modifyAccount() ),
-                 this, SLOT( slotModifyAccount( ) ) );
-    }
-}
-
-void AccountsPage::slotNewAccountClicked()
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        AccountDetails* ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
-        if ( ad->isEditing() ) {
-            if ( !proceedIsOk() )
-                return;
-        }
-
-        w->displayDockWidgets();
-        ad->clearFields();
-        connect( ad, SIGNAL( saveAccount() ),
-                 this, SLOT( slotAddAccount( ) ) );
-        // reset
-        ad->initialize();
-    }
-}
-
-void AccountsPage::slotAddAccount()
+void AccountsPage::addItem()
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
     AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
@@ -187,7 +89,7 @@ void AccountsPage::slotAddAccount()
 
     // job starts automatically
     // TODO connect to result() signal for error handling
-    ItemCreateJob *job = new ItemCreateJob( item, mAccountsCollection );
+    ItemCreateJob *job = new ItemCreateJob( item, collection() );
     Q_UNUSED( job );
     w->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
@@ -199,11 +101,11 @@ void AccountsPage::slotAddAccount()
                  this, SLOT( slotAddAccount( ) ) );
 }
 
-void AccountsPage::slotModifyAccount()
+void AccountsPage::modifyItem()
 {
 
-    const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
-    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+    const QModelIndex index = treeView()->selectionModel()->currentIndex();
+    Item item = treeView()->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
     if ( item.isValid() ) {
         SugarAccount account;
@@ -278,52 +180,6 @@ void AccountsPage::slotModifyAccount()
     }
 }
 
-void AccountsPage::slotRemoveAccount()
-{
-    const QModelIndex index = mUi.accountsTV->selectionModel()->currentIndex();
-    if ( !index.isValid() )
-        return;
-
-    Item item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-
-    QMessageBox msgBox;
-    msgBox.setWindowTitle( tr( "SugarClient - Delete Account" ) );
-    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
-    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
-    msgBox.setStandardButtons( QMessageBox::Yes |
-                               QMessageBox::Cancel );
-    msgBox.setDefaultButton( QMessageBox::Cancel );
-    int ret = msgBox.exec();
-    if ( ret == QMessageBox::Cancel )
-        return;
-
-    removeAccountsData( item );
-
-    if ( item.isValid() ) {
-        // job starts automatically
-        // TODO connect to result() signal for error handling
-        ItemDeleteJob *job = new ItemDeleteJob( item );
-        Q_UNUSED( job );
-    }
-    const QModelIndex newIndex = mUi.accountsTV->selectionModel()->currentIndex();
-    if ( !newIndex.isValid() )
-        mUi.removeAccountPB->setEnabled( false );
-
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w )
-        w->displayDockWidgets( false );
-}
-
-void AccountsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
-{
-        if ( start == end ) {
-            QModelIndex newIdx = mUi.accountsTV->model()->index(start, 0, index);
-            mUi.accountsTV->setCurrentIndex( newIdx );
-        }
-        //model items are loaded
-        if ( mUi.accountsTV->model()->rowCount() == mAccountsCollection.statistics().count() )
-            addAccountsData();
-}
 
 void AccountsPage::removeAccountsData( const Item &item )
 {
@@ -339,6 +195,7 @@ void AccountsPage::removeAccountsData( const Item &item )
         cd->removeAccountData( account.name() );
         od->removeAccountData( account.name() );
     }
+
 }
 
 void AccountsPage::addAccountsData()
@@ -350,9 +207,9 @@ void AccountsPage::addAccountsData()
     QModelIndex index;
     Item item;
     SugarAccount account;
-    for ( int i = 0; i <  mUi.accountsTV->model()->rowCount(); ++i ) {
-       index  =  mUi.accountsTV->model()->index( i, 0 );
-       item = mUi.accountsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+    for ( int i = 0; i <  treeView()->model()->rowCount(); ++i ) {
+       index  =  treeView()->model()->index( i, 0 );
+       item = treeView()->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
        if ( item.hasPayload<SugarAccount>() ) {
            account = item.payload<SugarAccount>();
            ad->addAccountData( account.name(), account.id() );
@@ -376,21 +233,10 @@ void AccountsPage::updateAccountCombo( const QString& name, const QString& id )
     od->addAccountData( name, id );
 }
 
-void AccountsPage::initialize()
+void AccountsPage::setupModel()
 {
-    mUi.accountsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
 
-    connect( mUi.clearAccountSearch, SIGNAL( clicked() ),
-             this, SLOT( slotResetSearch() ) );
-    connect( mUi.newAccountPB, SIGNAL( clicked() ),
-             this, SLOT( slotNewAccountClicked() ) );
-    connect( mUi.removeAccountPB, SIGNAL( clicked() ),
-             this, SLOT( slotRemoveAccount() ) );
-
-    // automatically get the full data when items change
-    mChangeRecorder->itemFetchScope().fetchFullPayload( true );
-
-    AccountsTreeModel *accountsModel = new AccountsTreeModel( mChangeRecorder, this );
+    AccountsTreeModel *accountsModel = new AccountsTreeModel( recorder(), this );
 
     AccountsTreeModel::Columns columns;
     columns << AccountsTreeModel::Name
@@ -409,79 +255,13 @@ void AccountsPage::initialize()
 
     AccountsFilterProxyModel *filter = new AccountsFilterProxyModel( this );
     filter->setSourceModel( filterModel );
-    mUi.accountsTV->setModel( filter );
+    treeView()->setModel( filter );
 
-    connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
+    connect( search(), SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect( mUi.accountsTV, SIGNAL( clicked( const QModelIndex& ) ),
-             this, SLOT( slotAccountClicked( const QModelIndex& ) ) );
+    connect(treeView()->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
-    connect( mUi.accountsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
-
-    connect( mUi.accountsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
-}
-
-void AccountsPage::syncronize()
-{
-    if ( mUi.accountsTV->model() != 0
-         && mUi.accountsTV->model()->rowCount() > 0 )
-        AgentManager::self()->synchronizeCollection( mAccountsCollection );
-}
-
-void AccountsPage::cachePolicyJobCompleted( KJob* job)
-{
-    if ( job->error() )
-        emit statusMessage( tr("Error when setting cachepolicy: %1").arg( job->errorString() ) );
-    else
-        emit statusMessage( tr("Cache policy set") );
-
-}
-
-void AccountsPage::setupCachePolicy()
-{
-    CachePolicy policy;
-    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
-    policy.setInheritFromParent( false );
-    mAccountsCollection.setCachePolicy( policy );
-    CollectionModifyJob *job = new CollectionModifyJob( mAccountsCollection );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
-}
-
-void AccountsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
-{
-    Q_UNUSED( bottomRight );
-    Item item;
-    SugarAccount account;
-    item = mUi.accountsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    accountChanged( item );
-}
-
-bool AccountsPage::proceedIsOk()
-{
-    bool proceed = true;
-    QMessageBox msgBox;
-    msgBox.setText( tr( "The current item has been modified." ) );
-    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
-    msgBox.setStandardButtons( QMessageBox::Save |
-                               QMessageBox::Discard );
-    msgBox.setDefaultButton( QMessageBox::Save );
-    int ret = msgBox.exec();
-    if ( ret == QMessageBox::Save )
-        proceed = false;
-    return proceed;
-}
-
-void AccountsPage::slotSetItem()
-{
-    mCurrentIndex  = mUi.accountsTV->selectionModel()->currentIndex();
-    if ( mCurrentIndex.isValid() )
-        slotAccountClicked( mCurrentIndex );
-    else
-        slotNewAccountClicked();
-}
-
-void AccountsPage::slotResetSearch()
-{
-    mUi.searchLE->clear();
+    connect( treeView()->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
+    treeView()->reset();
 }
