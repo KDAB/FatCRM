@@ -2,26 +2,13 @@
 #include "accountstreemodel.h"
 #include "accountsfilterproxymodel.h"
 #include "sugarclient.h"
-#include "enums.h"
-
-#include <akonadi/agentmanager.h>
-#include <akonadi/changerecorder.h>
-#include <akonadi/collection.h>
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionfetchscope.h>
-#include <akonadi/collectionstatistics.h>
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemdeletejob.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/itemmodifyjob.h>
-#include <akonadi/cachepolicy.h>
-#include <akonadi/collectionmodifyjob.h>
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <QMessageBox>
-#include <QItemSelectionModel>
+#include <akonadi/entitymimetypefiltermodel.h>
+#include <akonadi/itemcreatejob.h>
+#include <akonadi/itemmodifyjob.h>
+
 #include <QDebug>
 
 
@@ -97,8 +84,8 @@ void AccountsPage::addItem()
     // update Account combos for:
     // accounts - contacts and opportunity details
     updateAccountCombo( account.name(), account.id());
-    disconnect( ad, SIGNAL( saveAccount() ),
-                 this, SLOT( slotAddAccount( ) ) );
+    disconnect( ad, SIGNAL( saveItem() ),
+                 this, SLOT( slotAddItem( ) ) );
 }
 
 void AccountsPage::modifyItem()
@@ -116,8 +103,8 @@ void AccountsPage::modifyItem()
         SugarClient *w = dynamic_cast<SugarClient*>( window() );
         AccountDetails *ad = dynamic_cast<AccountDetails*>( w->detailsWidget( Account ) );
 
-        disconnect( ad, SIGNAL( modifyAccount() ),
-                this, SLOT( slotModifyAccount( ) ) );
+        disconnect( ad, SIGNAL( modifyItem() ),
+                this, SLOT( slotModifyItem( ) ) );
         QMap<QString, QString> data;
         data = ad->accountData();
 

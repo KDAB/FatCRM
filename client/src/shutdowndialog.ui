@@ -24,7 +24,7 @@
      </property>
      <property name="text">
       <string>This application works through a cache service which synchronizes data with the CRM servers you are logged in to.
-When quitting the application you can choose to also switch switch into Offline mode or to completely stop the cache service. </string>
+When quitting the application you can choose to also switch into Offline mode or to completely stop the cache service. </string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>

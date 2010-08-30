@@ -3,7 +3,7 @@ import test
 
 def createAccount():
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Accounts")
-    clickButton(waitForObject(":Form.New Account_QPushButton"))
+    clickButton(waitForObject(":Page.New_QPushButton"))
     
 def registerDetails( list ):    
     type(waitForObject(":Details.name_QLineEdit"), "<Ctrl+A>")   
@@ -110,14 +110,14 @@ def checkDescriptionValue(description):
     test.compare(findObject(":Description:.description_QTextEdit").plainText, description)      
     
 def removeAccount( accountName ):
-     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Accounts")    
-     type(waitForObject(":Form.searchLE_QLineEdit"), accountName)
-     waitForObjectItem(":Form.accountsTV_Akonadi::EntityTreeView", "admin")          
-     clickButton(waitForObject(":Form.Remove Account_QPushButton"))
-     clickButton(waitForObject(":SugarClient - Delete Account.Yes_QPushButton"))
-     clickButton(waitForObject(":Form.Clear_QToolButton"))     
-     type(waitForObject(":Form.searchLE_QLineEdit"), accountName)
-     treeView = waitForObject(":Form.accountsTV_Akonadi::EntityTreeView")
+     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Accounts")
+     type(waitForObject(":Page.searchLE_QLineEdit"), accountName)
+     waitForObjectItem(":Page.treeView_Akonadi::EntityTreeView", "admin")          
+     clickButton(waitForObject(":Page.Remove_QPushButton"))
+     clickButton(waitForObject(":SugarClient - Delete record.Yes_QPushButton"))
+     clickButton(waitForObject(":Page.Clear_QToolButton"))     
+     type(waitForObject(":Page.searchLE_QLineEdit"), accountName)
+     treeView = waitForObject(":Page.treeView_Akonadi::EntityTreeView")
      model = treeView.model()
      count = model.rowCount()
      test.compare(count, 0)

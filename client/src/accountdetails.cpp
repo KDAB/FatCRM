@@ -209,9 +209,9 @@ void AccountDetails::slotSaveAccount()
     mData["description"] = mUi.description->toPlainText();
 
     if ( !mModifyFlag )
-        emit saveAccount();
+        emit saveItem();
     else
-        emit modifyAccount();
+        emit modifyItem();
 
     int index = mUi.parentName->findText( mData["parentName"] );
     if ( index >= 0 )

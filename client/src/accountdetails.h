@@ -29,8 +29,8 @@ public:
     inline QMap<QString, QString> accountData() {return mData;}
 
 Q_SIGNALS:
-    void saveAccount();
-    void modifyAccount();
+    void saveItem();
+    void modifyItem();
 
     friend class Page;
 private:

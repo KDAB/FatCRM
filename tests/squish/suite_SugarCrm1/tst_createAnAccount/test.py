@@ -3,6 +3,7 @@ def main():
     startApplication("sugarclient")
     # load methods 
     import accountsHandling
+    import mainWindowHandling
     # data to be registered
     accountName = "test account"
     detailsList = [accountName, "www.kdab.com", "a ticker", "", "SARL", "Apparel", "Analyst", "", "max"]
@@ -27,5 +28,4 @@ def main():
     # remove account
     accountsHandling.removeAccount(accountName)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

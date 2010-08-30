@@ -66,5 +66,5 @@ def main():
     #test done - cleanup and quit
     accountsHandling.removeAccount(accountName) 
     campaignsHandling.removeCampaign(name)  
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    # quit
+    mainWindowHandling.justQuit()
