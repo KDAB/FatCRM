@@ -90,7 +90,6 @@ void AccountsPage::addItem()
 
 void AccountsPage::modifyItem()
 {
-
     const QModelIndex index = treeView()->selectionModel()->currentIndex();
     Item item = treeView()->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
 
@@ -182,7 +181,6 @@ void AccountsPage::removeAccountsData( const Item &item )
         cd->removeAccountData( account.name() );
         od->removeAccountData( account.name() );
     }
-
 }
 
 void AccountsPage::addAccountsData()
@@ -222,7 +220,6 @@ void AccountsPage::updateAccountCombo( const QString& name, const QString& id )
 
 void AccountsPage::setupModel()
 {
-
     AccountsTreeModel *accountsModel = new AccountsTreeModel( recorder(), this );
 
     AccountsTreeModel::Columns columns;
@@ -247,8 +244,5 @@ void AccountsPage::setupModel()
     connect( search(), SIGNAL( textChanged( const QString& ) ),
              filter, SLOT( setFilterString( const QString& ) ) );
 
-    connect(treeView()->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
-
-    connect( treeView()->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
-    treeView()->reset();
+    Page::setupModel();
 }

@@ -44,9 +44,8 @@ protected:
 
     virtual void addItem() = 0;
     virtual void modifyItem() = 0;
-    virtual void setupModel() = 0;
-
-
+    virtual void addAccountsData() = 0;
+    virtual void setupModel();
 
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );

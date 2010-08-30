@@ -186,6 +186,9 @@ void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
         QModelIndex newIdx = mUi.treeView->model()->index(start, 0, index);
         mUi.treeView->setCurrentIndex( newIdx );
     }
+
+      if ( treeView()->model()->rowCount() == collection().statistics().count() )
+        addAccountsData();
 }
 
 void Page::initialize()
@@ -205,6 +208,18 @@ void Page::initialize()
 
     connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
 
+}
+
+void Page::setupModel()
+{
+    connect( mUi.treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
+
+    if ( mUi.treeView->model()->rowCount() == mCollection.statistics().count() )
+        addAccountsData();
+
+    connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
+
+    mUi.treeView->reset();
 }
 
 void Page::syncronize()

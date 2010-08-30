@@ -18,10 +18,10 @@ protected:
     /*reimp*/ void addItem();
     /*reimp*/ void modifyItem();
     /*reimp*/ void setupModel();
+    /*reimp*/ void addAccountsData();
 
 private:
     void updateAccountCombo( const QString& name, const QString& id );
-    void addAccountsData();
     void removeAccountsData( const Akonadi::Item &item);
 };
 #endif /* ACCOUNTSPAGE_H */
