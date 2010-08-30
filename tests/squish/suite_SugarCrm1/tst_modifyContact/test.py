@@ -5,6 +5,7 @@ def main():
     import accountsHandling
     import campaignsHandling
     import contactsHandling
+    import mainWindowHandling
     
     # create a campaign
     # data to be registered
@@ -90,5 +91,4 @@ def main():
     accountsHandling.removeAccount(accountName) 
     campaignsHandling.removeCampaign(name)  
     #quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

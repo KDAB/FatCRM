@@ -2,6 +2,7 @@ def main():
     startApplication("sugarclient")
     # load methods 
     import leadsHandling
+    import mainWindowHandling
     # data to be registered
     firstName = "Lead" 
     detailsList = ["Self Generated", "This is a self generated lead", "", "Michel", "Mr.", firstName, "Bob", "2/2", "an account", "VD", "Sales", "max"]
@@ -25,5 +26,4 @@ def main():
     # remove opportunity
     leadsHandling.removeLead(firstName)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

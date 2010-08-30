@@ -2,6 +2,7 @@ def main():
     startApplication("sugarclient")
     # load methods 
     import campaignsHandling
+    import mainWindowHandling
     # data to be registered
     name = "TestCampaign" 
     status = "In Queue"
@@ -23,5 +24,4 @@ def main():
     # remove 
     campaignsHandling.removeCampaign(name)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

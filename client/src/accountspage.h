@@ -15,14 +15,10 @@ public:
     ~AccountsPage();
 
 protected:
-    /*reimp*/ void addItem();
-    /*reimp*/ void modifyItem();
+    /*reimp*/ void addItem( QMap<QString, QString> data );
+    /*reimp*/ void modifyItem( Akonadi::Item &item, QMap<QString, QString> data );
     /*reimp*/ void setupModel();
-    /*reimp*/ void addAccountsData();
 
-private:
-    void updateAccountCombo( const QString& name, const QString& id );
-    void removeAccountsData( const Akonadi::Item &item);
 };
 #endif /* ACCOUNTSPAGE_H */
 

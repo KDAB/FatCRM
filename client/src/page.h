@@ -2,8 +2,12 @@
 #define PAGE_H
 
 #include "ui_page.h"
+
 #include "kdcrmdata/sugaraccount.h"
 #include "enums.h"
+
+#include "accountsfilterproxymodel.h"
+//#include <akonadi/entitymimetypefiltermodel.h>
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -18,12 +22,13 @@ namespace Akonadi
 
 class KJob;
 class QModelIndex;
+class SugarClient;
 
 class Page : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Page( QWidget *parent, QString mimeType, QString type );
+    explicit Page( QWidget *parent, QString mimeType, DetailsType type );
 
     ~Page();
 
@@ -35,16 +40,18 @@ public Q_SLOTS:
     void syncronize();
 
 protected:
-    inline QString mimeType() const { return mMimeType; }
-    inline QString type() const { return mType; }
+    void updateAccountCombo( const QString& name, const QString& id );
+
+    inline SugarClient* clientWindow() { return mClientWindow; }
+    inline QString mimeType() { return mMimeType; } const
     inline Akonadi::EntityTreeView* treeView() { return mUi.treeView; }
     inline Akonadi::Collection collection() { return mCollection; }
     inline Akonadi::ChangeRecorder* recorder() { return mChangeRecorder; }
     inline QLineEdit* search() { return mUi.searchLE; }
+    inline void setFilter ( Akonadi::AccountsFilterProxyModel *filter ) { mFilter = filter; }
 
-    virtual void addItem() = 0;
-    virtual void modifyItem() = 0;
-    virtual void addAccountsData() = 0;
+    virtual void addItem( QMap<QString, QString> data ) = 0;
+    virtual void modifyItem( Akonadi::Item &item, QMap<QString, QString> data ) = 0;
     virtual void setupModel();
 
 private Q_SLOTS:
@@ -66,15 +73,20 @@ private:
     void setupCachePolicy();
     void itemChanged(const Akonadi::Item &item );
     bool proceedIsOk();
-    DetailsType typeToDetailsType( const QString &type ) const;
+    // manages accounts combo box
+    void addAccountsData();
+    void removeAccountsData( Akonadi::Item &item );
+
+    QString typeToString( const DetailsType &type ) const;
 
 
+    SugarClient *mClientWindow;
     QString mMimeType;
-    QString mType;
+    DetailsType mType;
+    Akonadi::AccountsFilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCollection;
     QModelIndex mCurrentIndex;
-    DetailsType mDetailsType;
     Ui_page mUi;
 };
 

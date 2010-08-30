@@ -40,5 +40,7 @@ def main():
     campaignsHandling.checkDescriptionValue(mDescription)
     #remove
     campaignsHandling.removeCampaign(name)
+    #quit
+    mainWindowHandling.justQuit()
     
     

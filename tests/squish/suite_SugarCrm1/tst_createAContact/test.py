@@ -2,6 +2,7 @@ def main():
     startApplication("sugarclient")
     # load methods 
     import contactsHandling
+    import mainWindowHandling
     # data to be registered
     firstName = "TestContact" 
     detailsList = ["Mr.", firstName, "Bob", "Director Sales", "Admin", "", "Campaign","" ,"max", "", "michel@kdab.com"]
@@ -25,5 +26,4 @@ def main():
     # remove opportunity
     contactsHandling.removeContact(firstName)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

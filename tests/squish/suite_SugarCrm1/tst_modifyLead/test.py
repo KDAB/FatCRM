@@ -3,6 +3,7 @@ def main():
     # load methods     
     import campaignsHandling
     import leadsHandling
+    import mainWindowHandling
     
     # create a campaign
     # data to be registered
@@ -64,5 +65,4 @@ def main():
     campaignsHandling.removeCampaign(name)  
     leadsHandling.removeLead(firstName)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()

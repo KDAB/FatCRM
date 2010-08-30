@@ -2,6 +2,7 @@ def main():
     startApplication("sugarclient")
     # load methods 
     import opportunitiesHandling
+    import mainWindowHandling
     # data to be registered
     opportunityName = "test opportunity"
     detailsList = [opportunityName, "", "Existing Business", "Employee", "", "Prospecting", "max"]
@@ -22,5 +23,4 @@ def main():
     # remove opportunity
     opportunitiesHandling.removeOpportunity(opportunityName)
     # quit
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar", "File"))
-    activateItem(waitForObjectItem(":SugarCRM Client: admin@SugarCRM on localhost.File_QMenu", "Quit"))
+    mainWindowHandling.justQuit()
