@@ -657,6 +657,95 @@ QString SugarAccount::campaignName() const
     return d->mCampaignName;
 }
 
+void SugarAccount::setData( QMap<QString, QString> data )
+{
+    d->mEmpty = false;
+    d->mId = data.value( "id" );
+    d->mName = data.value( "name" );
+    d->mDateEntered = data.value( "dateEntered" );
+    d->mDateModified = data.value( "dateModified" );
+    d->mModifiedUserId =  data.value( "modifiedUserId" );
+    d->mModifiedByName = data.value( "modifiedByName" );
+    d->mCreatedBy = data.value( "createdBy" );
+    d->mCreatedByName = data.value( "createdByName" );
+    d->mDescription = data.value( "description" );
+    d->mDeleted = data.value( "deleted" );
+    d->mAssignedUserId = data.value( "assignedUserId" );
+    d->mAssignedUserName = data.value( "assignedUserName" );
+    d->mAccountType = data.value( "accountType" );
+    d->mIndustry = data.value( "industry" );
+    d->mAnnualRevenue = data.value( "annualRevenue" );
+    d->mPhoneFax = data.value( "phoneFax" );
+    d->mBillingAddressStreet = data.value( "billingAddressStreet" );
+    d->mBillingAddressCity = data.value( "billingAddressCity" );
+    d->mBillingAddressState = data.value( "billingAddressState" );
+    d->mBillingAddressPostalcode = data.value( "billingAddressPostalcode" );
+    d->mBillingAddressCountry = data.value( "billingAddressCountry" );
+    d->mRating = data.value( "rating" );
+    d->mPhoneOffice = data.value( "phoneOffice" );
+    d->mPhoneAlternate = data.value( "phoneAlternate" );
+    d->mWebsite = data.value( "website" );
+    d->mOwnership = data.value( "ownership" );
+    d->mEmployees = data.value( "employees" );
+    d->mTyckerSymbol = data.value( "tyckerSymbol" );
+    d->mShippingAddressStreet = data.value( "shippingAddressStreet" );
+    d->mShippingAddressCity = data.value( "shippingAddressCity" );
+    d->mShippingAddressState = data.value( "shippingAddressState" );
+    d->mShippingAddressPostalcode = data.value( "shippingAddressPostalcode" );
+    d->mShippingAddressCountry = data.value( "shippingAddressCountry" );
+    d->mEmail1 = data.value ( "email1" );
+    d->mParentId = data.value ( "parentId" );
+    d->mParentName = data.value( "parentName" );
+    d->mSicCode = data.value( "sicCode" );
+    d->mCampaignId = data.value( "campaignId" );
+    d->mCampaignName = data.value( "campaignName" );
+}
+
+QMap<QString, QString> SugarAccount::data()
+{
+    QMap<QString, QString> data;
+    data["id"] = d->mId;
+    data["name"] = d->mName;
+    data["dateEntered"] = d->mDateEntered;
+    data["dateModified"] = d->mDateModified;
+    data["modifiedUserId"] = d->mModifiedUserId;
+    data["modifiedByName"] = d->mModifiedByName;
+    data["createdBy"] = d->mCreatedBy;
+    data["createdByName"] = d->mCreatedByName;
+    data["description"] = d->mDescription;
+    data["deleted"] = d->mDeleted;
+    data["assignedUserId"] = d->mAssignedUserId;
+    data["assignedUserName"] = d->mAssignedUserName;
+    data["accountType"] = d->mAccountType;
+    data["industry"] = d->mIndustry;
+    data["annualRevenue"] = d->mAnnualRevenue;
+    data["phoneFax"] = d->mPhoneFax;
+    data["billingAddressStreet"] = d->mBillingAddressStreet;
+    data["billingAddressCity"] = d->mBillingAddressCity;
+    data["billingAddressState"] = d->mBillingAddressState;
+    data["billingAddressPostalcode"] = d->mBillingAddressPostalcode;
+    data["billingAddressCountry"] = d->mBillingAddressCountry;
+    data["rating"] = d->mRating;
+    data["phoneOffice"] = d->mPhoneOffice;
+    data["phoneAlternate"] = d->mPhoneAlternate;
+    data["website"] = d->mWebsite;
+    data["ownership"] = d->mOwnership;
+    data["employees"] = d->mEmployees;
+    data["tyckerSymbol"] = d->mTyckerSymbol;
+    data["shippingAddressStreet"] = d->mShippingAddressStreet;
+    data["shippingAddressCity"] = d->mShippingAddressCity;
+    data["shippingAddressState"] = d->mShippingAddressState;
+    data["shippingAddressPostalcode"] = d->mShippingAddressPostalcode;
+    data["shippingAddressCountry"] = d->mShippingAddressCountry;
+    data["email1"] = d->mEmail1;
+    data["parentId"] = d->mParentId;
+    data["parentName"] = d->mParentName;
+    data["sicCode"] = d->mSicCode;
+    data["campaignId"] = d->mCampaignId;
+    data["campaignName"] = d->mCampaignName;
+    return data;
+}
+
 QString SugarAccount::mimeType()
 {
     return QLatin1String( "application/x-vnd.kdab.crm.account" );

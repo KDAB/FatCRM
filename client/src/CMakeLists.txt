@@ -15,6 +15,7 @@ set(sugarclient_SRCS
     campaignspage.cpp
     campaignstreemodel.cpp
     campaignsfilterproxymodel.cpp
+    abstractdetails.cpp
     contactdetails.cpp
     accountdetails.cpp
     opportunitydetails.cpp
@@ -30,7 +31,7 @@ set(sugarclient_SRCS
 kde4_add_ui_files(sugarclient_SRCS
     page.ui
     contactspage.ui
-    accountspage.ui
+    #accountspage.ui
     opportunitiespage.ui
     leadspage.ui
     campaignspage.ui

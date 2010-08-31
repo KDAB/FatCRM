@@ -1,22 +1,12 @@
 #ifndef CONTACTSPAGE_H
 #define CONTACTSPAGE_H
 
-#include "ui_contactspage.h"
+#include "page.h"
 
-#include <akonadi/collection.h>
+#include <akonadi/item.h>
 
-#include <QtGui/QWidget>
 
-namespace Akonadi
-{
-    class ChangeRecorder;
-    class Item;
-}
-
-class KJob;
-class QModelIndex;
-
-class ContactsPage : public QWidget
+class ContactsPage : public Page
 {
     Q_OBJECT
 public:
@@ -24,38 +14,10 @@ public:
 
     ~ContactsPage();
 
-     void addAccountsData();
-
-Q_SIGNALS:
-    void statusMessage( const QString& );
-
-public Q_SLOTS:
-    void syncronize();
-
-private:
-    void initialize();
-    void setupCachePolicy();
-    void contactChanged(const Akonadi::Item &item );
-    bool proceedIsOk();
-
-    Akonadi::ChangeRecorder *mChangeRecorder;
-    Akonadi::Collection mContactsCollection;
-    QModelIndex mCurrentIndex;
-    Ui_ContactsPage mUi;
-
-private Q_SLOTS:
-    void slotResourceSelectionChanged( const QByteArray &identifier );
-    void slotCollectionFetchResult( KJob *job );
-    void slotContactClicked( const QModelIndex& index );
-    void slotNewContactClicked();
-    void slotAddContact();
-    void slotModifyContact();
-    void slotRemoveContact();
-    void slotSetCurrent( const QModelIndex&,int,int );
-    void cachePolicyJobCompleted( KJob* );
-    void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
-    void slotSetItem();
-    void slotResetSearch();
+protected:
+    /*reimp*/ void addItem( QMap<QString, QString> data );
+    /*reimp*/ void modifyItem( Akonadi::Item &item, QMap<QString, QString> data );
+    /*reimp*/ void setupModel();
 };
 
-#endif
+#endif /* CONTACTSPAGE_H */

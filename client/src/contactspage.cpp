@@ -4,142 +4,28 @@
 
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactsfilterproxymodel.h>
-#include <akonadi/agentmanager.h>
-#include <akonadi/changerecorder.h>
-#include <akonadi/collection.h>
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionfetchscope.h>
-#include <akonadi/collectionstatistics.h>
 #include <akonadi/entitymimetypefiltermodel.h>
 #include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
-#include <akonadi/itemdeletejob.h>
-#include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
-#include <akonadi/cachepolicy.h>
-#include <akonadi/collectionmodifyjob.h>
 
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
-#include <QMessageBox>
-
 using namespace Akonadi;
 
 ContactsPage::ContactsPage( QWidget *parent )
-    : QWidget( parent ),
-      mChangeRecorder( new ChangeRecorder( this ) )
+    : Page( parent, QString( KABC::Addressee::mimeType() ), Contact )
 {
-    mUi.setupUi( this );
-    initialize();
+    setupModel();
 }
 
 ContactsPage::~ContactsPage()
 {
 }
 
-void ContactsPage::slotResourceSelectionChanged( const QByteArray &identifier )
+void ContactsPage::addItem(const QMap<QString, QString> data)
 {
-    if ( mContactsCollection.isValid() ) {
-        mChangeRecorder->setCollectionMonitored( mContactsCollection, false );
-    }
-
-    /*
-     * Look for the "Contacts" collection explicitly by listing all collections
-     * of the currently selected resource, filtering by MIME type.
-     * include statistics to get the number of items in each collection
-     */
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
-    job->fetchScope().setResource( identifier );
-    job->fetchScope().setContentMimeTypes( QStringList() << KABC::Addressee::mimeType() );
-    job->fetchScope().setIncludeStatistics( true );
-    connect( job, SIGNAL( result( KJob* ) ),
-             this, SLOT( slotCollectionFetchResult( KJob* ) ) );
-}
-
-void ContactsPage::slotCollectionFetchResult( KJob *job )
-{
-
-    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
-
-    // look for the "Contacts" collection
-    Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
-        if ( collection.remoteId() == QLatin1String( "Contacts" ) ) {
-            mContactsCollection = collection;
-            break;
-        }
-    }
-
-    if ( mContactsCollection.isValid() ) {
-        mUi.newContactPB->setEnabled( true );
-        mChangeRecorder->setCollectionMonitored( mContactsCollection, true );
-
-        // if empty, the collection might not have been loaded yet, try synchronizing
-        if ( mContactsCollection.statistics().count() == 0 ) {
-            AgentManager::self()->synchronizeCollection( mContactsCollection );
-        }
-
-        setupCachePolicy();
-    } else {
-        mUi.newContactPB->setEnabled( false );
-    }
-}
-
-void ContactsPage::slotContactClicked( const QModelIndex &index )
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget(Contact) );
-
-        if ( cd->isEditing() ) {
-            if ( !proceedIsOk() ) {
-                mUi.contactsTV->setCurrentIndex( mCurrentIndex );
-                return;
-            }
-        }
-        Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        contactChanged(item );
-    }
-}
-
-void ContactsPage::contactChanged( const Item &item )
-{
-    if ( item.isValid() && item.hasPayload<KABC::Addressee>() ) {
-        SugarClient *w = dynamic_cast<SugarClient*>( window() );
-            ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ));
-            cd->setItem( item );
-            mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
-            connect( cd, SIGNAL( modifyContact() ),
-                     this, SLOT( slotModifyContact( ) ) );
-    }
-}
-
-void ContactsPage::slotNewContactClicked()
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w ) {
-        ContactDetails *cd = dynamic_cast<ContactDetails*>(w->detailsWidget( Contact ) );
-
-        if ( cd->isEditing() ) {
-            if ( !proceedIsOk() )
-                return;
-        }
-        w->displayDockWidgets();
-
-        cd->clearFields();
-        connect( cd, SIGNAL( saveContact() ),
-                 this, SLOT( slotAddContact( ) ) );
-        // reset
-        cd->initialize();
-    }
-}
-
-void ContactsPage::slotAddContact()
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    QMap<QString, QString> data;
-    ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
-    data = cd->contactData();
     KABC::Addressee addressee;
     addressee.setGivenName( data.value( "firstName" ) );
     addressee.setFamilyName( data.value( "lastName" ) );
@@ -205,35 +91,22 @@ void ContactsPage::slotAddContact()
 
     // job starts automatically
     // TODO connect to result() signal for error handling
-    ItemCreateJob *job = new ItemCreateJob( item, mContactsCollection );
+    ItemCreateJob *job = new ItemCreateJob( item, collection() );
     Q_UNUSED( job );
 
-    w->setEnabled( false );
+    clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    disconnect( cd, SIGNAL( saveContact() ),
-                 this, SLOT( slotAddContact( ) ) );
 }
 
-void ContactsPage::slotModifyContact()
+void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> data)
 {
-    const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
-    Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-
     if ( item.isValid() ) {
         KABC::Addressee addressee;
         if ( item.hasPayload<KABC::Addressee>() ) {
             addressee = item.payload<KABC::Addressee>();
-        }
-
-        SugarClient *w = dynamic_cast<SugarClient*>( window() );
-        ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
-
-        disconnect( cd, SIGNAL( modifyContact() ),
-                    this, SLOT( slotModifyContact( ) ) );
-
-        QMap<QString, QString> data;
-        data = cd->contactData();
+        } else
+            return;
         addressee.setGivenName( data.value( "firstName" ) );
         addressee.setFamilyName( data.value( "lastName" ) );
         addressee.setTitle( data.value( "title" ) );
@@ -340,91 +213,14 @@ void ContactsPage::slotModifyContact()
         if ( !job->exec() )
             return; //qDebug() << "Error:" << job->errorString();
 
-        w->setEnabled( false );
+        clientWindow()->setEnabled( false );
         QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
         emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-        cd->reset();
     }
 }
 
-void ContactsPage::slotRemoveContact()
+void ContactsPage::setupModel()
 {
-    const QModelIndex index = mUi.contactsTV->selectionModel()->currentIndex();
-    if ( !index.isValid() )
-        return;
-
-    Item item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-
-    QMessageBox msgBox;
-    msgBox.setWindowTitle( tr( "SugarClient - Delete Contact" ) );
-    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
-    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
-    msgBox.setStandardButtons( QMessageBox::Yes |
-                               QMessageBox::Cancel );
-    msgBox.setDefaultButton( QMessageBox::Cancel );
-    int ret = msgBox.exec();
-    if ( ret == QMessageBox::Cancel )
-        return;
-
-    if ( item.isValid() ) {
-        // job starts automatically
-        // TODO connect to result() signal for error handling
-        ItemDeleteJob *job = new ItemDeleteJob( item );
-        Q_UNUSED( job );
-    }
-    const QModelIndex newIndex = mUi.contactsTV->selectionModel()->currentIndex();
-    if ( !newIndex.isValid() )
-        mUi.removeContactPB->setEnabled( false );
-
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( w )
-        w->displayDockWidgets( false );
-}
-
-void ContactsPage::slotSetCurrent( const QModelIndex& index, int start, int end )
-{
-    if ( start == end ) {
-        QModelIndex newIdx = mUi.contactsTV->model()->index(start, 0, index);
-        mUi.contactsTV->setCurrentIndex( newIdx );
-    }
-     //model items are loaded
-     if ( mUi.contactsTV->model()->rowCount() == mContactsCollection.statistics().count() )
-         addAccountsData();
-}
-
-void ContactsPage::addAccountsData()
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>( w->detailsWidget( Contact ) );
-    QModelIndex index;
-    Item item;
-    KABC::Addressee addressee;
-    for ( int i = 0; i <  mUi.contactsTV->model()->rowCount(); ++i ) {
-       index  =  mUi.contactsTV->model()->index( i, 0 );
-       item = mUi.contactsTV->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-       if ( item.hasPayload<KABC::Addressee>() ) {
-           addressee = item.payload<KABC::Addressee>();
-           QString fullName = addressee.givenName() + " " + addressee.familyName();
-           cd->addReportsToData( fullName, addressee.custom( "FATCRM", "X-ContactId") );
-           cd->addAssignedToData(  addressee.custom( "FATCRM", "X-AssignedUserName" ), addressee.custom( "FATCRM", "X-AssignedUserId" ) );
-       }
-    }
-}
-
-void ContactsPage::initialize()
-{
-
-    mUi.contactsTV->header()->setResizeMode( QHeaderView::ResizeToContents );
-
-    connect( mUi.clearContactSearch, SIGNAL( clicked() ),
-             this, SLOT( slotResetSearch() ) );
-    connect( mUi.newContactPB, SIGNAL( clicked() ),
-             this, SLOT( slotNewContactClicked() ) );
-    connect( mUi.removeContactPB, SIGNAL( clicked() ),
-             this, SLOT( slotRemoveContact() ) );
-
-    // automatically get the full data when items change
-    mChangeRecorder->itemFetchScope().fetchFullPayload( true );
 
     /*
      * convenience model for contacts, allowing us to easily specify the columns
@@ -432,7 +228,7 @@ void ContactsPage::initialize()
      * could use an Akonadi::ItemModel instead because we don't have a tree of
      * collections but only a single one
      */
-    ContactsTreeModel *contactsModel = new ContactsTreeModel( mChangeRecorder, this );
+    ContactsTreeModel *contactsModel = new ContactsTreeModel( recorder(), this );
 
     ContactsTreeModel::Columns columns;
     columns << ContactsTreeModel::FullName
@@ -443,90 +239,13 @@ void ContactsPage::initialize()
             << ContactsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 
-
     // same as for the ContactsTreeModel, not strictly necessary
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( contactsModel );
     filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-
     ContactsFilterProxyModel *filter = new ContactsFilterProxyModel( this );
     filter->setSourceModel( filterModel );
-    mUi.contactsTV->setModel( filter );
-
-    connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
-             filter, SLOT( setFilterString( const QString& ) ) );
-
-    connect( mUi.contactsTV, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotContactClicked( const QModelIndex& ) ) );
-
-    connect( mUi.contactsTV->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
-
-    connect( mUi.contactsTV->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateItemDetails( const QModelIndex&, const QModelIndex& ) ) );
-    mUi.contactsTV->reset();
-
-}
-
-void ContactsPage::syncronize()
-{
-    if ( mUi.contactsTV->model() != 0
-         && mUi.contactsTV->model()->rowCount() > 0 )
-        AgentManager::self()->synchronizeCollection( mContactsCollection );
-
-}
-
-void ContactsPage::cachePolicyJobCompleted( KJob* job)
-{
-    if ( job->error() )
-        emit statusMessage( tr("Error when setting cachepolicy: %1").arg( job->errorString() ) );
-    else
-        emit statusMessage( tr("Cache policy set") );
-
-}
-
-void ContactsPage::setupCachePolicy()
-{
-    CachePolicy policy;
-    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
-    policy.setInheritFromParent( false );
-    mContactsCollection.setCachePolicy( policy );
-    CollectionModifyJob *job = new CollectionModifyJob( mContactsCollection );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
-}
-
-void ContactsPage::slotUpdateItemDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
-{
-    Q_UNUSED( bottomRight );
-    Item item;
-    KABC::Addressee addressee;
-    item = mUi.contactsTV->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    contactChanged( item );
-}
-
-bool ContactsPage::proceedIsOk()
-{
-    bool proceed = true;
-    QMessageBox msgBox;
-    msgBox.setText( tr( "The current item has been modified." ) );
-    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
-    msgBox.setStandardButtons( QMessageBox::Save |
-                               QMessageBox::Discard );
-    msgBox.setDefaultButton( QMessageBox::Save );
-    int ret = msgBox.exec();
-    if ( ret == QMessageBox::Save )
-        proceed = false;
-    return proceed;
-}
-
-void ContactsPage::slotSetItem()
-{
-    mCurrentIndex  = mUi.contactsTV->selectionModel()->currentIndex();
-    if ( mCurrentIndex.isValid() )
-        slotContactClicked( mCurrentIndex );
-    else
-        slotNewContactClicked();
-}
-
-void ContactsPage::slotResetSearch()
-{
-    mUi.searchLE->clear();
+    setFilter( filter );
+    Page::setupModel();
 }

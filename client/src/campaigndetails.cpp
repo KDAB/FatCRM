@@ -9,7 +9,7 @@ using namespace Akonadi;
 
 
 CampaignDetails::CampaignDetails( QWidget *parent )
-    : QWidget( parent )
+    : AbstractDetails( parent )
 
 {
     mUi.setupUi( this );
@@ -56,8 +56,6 @@ void CampaignDetails::initialize()
                  this, SLOT( slotEnableSaving() ) );
     connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
              this, SLOT( slotResetCursor( const QString& ) ) );
-
-
     QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
         connect( cb, SIGNAL( currentIndexChanged( int ) ),
@@ -73,6 +71,7 @@ void CampaignDetails::initialize()
              this, SLOT( slotSaveCampaign() ) );
 
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void CampaignDetails::reset()
@@ -93,6 +92,7 @@ void CampaignDetails::reset()
     disconnect( mUi.content, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 
@@ -182,13 +182,11 @@ void CampaignDetails::slotSetModifyFlag( bool value )
 
 void CampaignDetails::slotEnableSaving()
 {
-    if ( sender()->objectName() != "modifiedDate" )
+    if ( sender()->objectName() != "modifiedDate" ) {
         mUi.saveButton->setEnabled( true );
-}
+        setEditing( true );
+    }
 
-bool CampaignDetails::isEditing()
-{
-    return ( mUi.saveButton->isEnabled() );
 }
 
 void CampaignDetails::slotSaveCampaign()
@@ -227,34 +225,18 @@ void CampaignDetails::slotSaveCampaign()
     mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
     mData["objective"] = mUi.objective->toPlainText();
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
+    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
     mData["content"] = mUi.content->toPlainText();
 
     if ( !mModifyFlag )
-        emit saveCampaign();
+        emit saveItem();
     else
-        emit modifyCampaign();
-}
-
-void CampaignDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
-{
-    QString dataKey;
-    dataKey = mCampaignsData.key( campaignId );
-    removeCampaignData( dataKey );
-
-    mCampaignsData.insert( campaignName, campaignId );
-}
-
-void CampaignDetails::removeCampaignData( const QString &campaignName )
-{
-    if ( campaignName.isEmpty() )
-        return;
-    mCampaignsData.remove( campaignName );
+        emit modifyItem();
 }
 
 void CampaignDetails::addAssignedToData( const QString &name, const QString &id )
 {
-    mAssignedToData.insert( name, id );
+    AbstractDetails::addAssignedToData( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
 }
@@ -281,13 +263,3 @@ void CampaignDetails::slotClearDate()
         mUi.endDate->clear();
 }
 
-void CampaignDetails::slotResetCursor( const QString& text)
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        w->setEnabled( true );
-    }
-}

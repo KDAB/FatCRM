@@ -9,7 +9,7 @@ using namespace Akonadi;
 
 
 LeadDetails::LeadDetails( QWidget *parent )
-    : QWidget( parent )
+    : AbstractDetails( parent )
 
 {
     mUi.setupUi( this );
@@ -59,6 +59,7 @@ void LeadDetails::initialize()
              this, SLOT( slotCopyFromPrimary( bool ) ) );
 
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void LeadDetails::reset()
@@ -76,6 +77,7 @@ void LeadDetails::reset()
                 this,  SLOT( slotEnableSaving() ) );
 
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 
 }
 
@@ -183,13 +185,10 @@ void LeadDetails::slotSetModifyFlag( bool value )
 
 void LeadDetails::slotEnableSaving()
 {
-    if ( sender()->objectName() != "modifiedDate" )
+    if ( sender()->objectName() != "modifiedDate" ) {
         mUi.saveButton->setEnabled( true );
-}
-
-bool LeadDetails::isEditing()
-{
-    return ( mUi.saveButton->isEnabled() );
+        setEditing( true );
+    }
 }
 
 void LeadDetails::slotSaveLead()
@@ -227,29 +226,24 @@ void LeadDetails::slotSaveLead()
     mData["leadSource"] = mUi.leadSource->currentText();
     mData["leadSourceDescription"] = mUi.leadSourceDescription->toPlainText();
     mData["campaignName"] = mUi.campaignName->currentText();
-    mData["campaignId"] = mCampaignsData.value( mUi.campaignName->currentText() );
+    mData["campaignId"] = campaignsData().value( mUi.campaignName->currentText() );
     mData["salutation"] = mUi.salutation->currentText();
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
+    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
     mData["status"] = mUi.status->currentText();
     mData["statusDescription"] = mUi.statusDescription->toPlainText();
     mData["doNotCall"] = mUi.doNotCall->isChecked() ? "1" : "0";
     mData["description"] = mUi.description->toPlainText();
 
     if ( !mModifyFlag )
-        emit saveLead();
+        emit saveItem();
     else
-        emit modifyLead();
+        emit modifyItem();
 }
 
 void LeadDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
-    QString dataKey;
-    dataKey = mCampaignsData.key( campaignId );
-    removeCampaignData( dataKey );
-
-    mCampaignsData.insert( campaignName, campaignId );
-
+    AbstractDetails::addCampaignData( campaignName, campaignId );
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
 }
@@ -258,7 +252,7 @@ void LeadDetails::removeCampaignData( const QString &campaignName )
 {
     if ( campaignName.isEmpty() )
         return;
-    mCampaignsData.remove( campaignName );
+    AbstractDetails::removeCampaignData( campaignName );
     int index = mUi.campaignName->findText( campaignName );
     if ( index > 0 )
         mUi.campaignName->removeItem( index );
@@ -266,7 +260,7 @@ void LeadDetails::removeCampaignData( const QString &campaignName )
 
 void LeadDetails::addAssignedToData( const QString &name, const QString &id )
 {
-    mAssignedToData.insert( name, id );
+    AbstractDetails::addAssignedToData( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
 }
@@ -295,13 +289,3 @@ void LeadDetails::slotClearDate()
     mUi.birthdate->clear();
 }
 
-void LeadDetails::slotResetCursor( const QString& text)
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        w->setEnabled( true );
-    }
-}

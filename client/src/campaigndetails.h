@@ -2,6 +2,7 @@
 #define CAMPAIGNDETAILS_H
 
 #include "ui_campaigndetails.h"
+#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
@@ -10,7 +11,7 @@
 #include <QToolButton>
 
 
-class CampaignDetails : public QWidget
+class CampaignDetails : public AbstractDetails
 {
     Q_OBJECT
 public:
@@ -18,30 +19,21 @@ public:
 
     ~CampaignDetails();
 
-    void setItem( const Akonadi::Item &item );
-    void clearFields();
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &campaignName );
-    void addAssignedToData( const QString &name, const QString &id );
-    void reset();
+friend class CampaignsPage;
+protected:
+    /*reimp*/ void setItem( const Akonadi::Item &item );
+    /*reimp*/ void clearFields();
+    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
+    /*reimp*/ void reset();
+    /*reimp*/ void initialize();
 
-    inline QMap<QString, QString> campaignData() {return mData;}
-    inline  QMap<QString, QString> campaignsData() {return mCampaignsData;}
+    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
 
-Q_SIGNALS:
-    void saveCampaign();
-    void modifyCampaign();
 
-    friend class CampaignsPage;
 private:
-    void initialize();
-    bool isEditing();
-
     EditCalendarButton *mStartDateCalendarButton;
     EditCalendarButton *mEndDateCalendarButton;
     QMap<QString, QString> mData; // this
-    QMap<QString, QString> mCampaignsData;
-    QMap<QString, QString> mAssignedToData;
     bool mModifyFlag;
 
     Ui_CampaignDetails mUi;
@@ -53,7 +45,6 @@ private Q_SLOTS:
     void slotSetStartDate();
     void slotSetEndDate();
     void slotClearDate();
-    void slotResetCursor( const QString& );
 };
 
 

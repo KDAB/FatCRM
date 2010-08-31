@@ -2,6 +2,7 @@
 #define CONTACTDETAILS_H
 
 #include "ui_contactdetails.h"
+#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
@@ -9,7 +10,7 @@
 #include <QtGui/QWidget>
 
 
-class ContactDetails : public QWidget
+class ContactDetails : public AbstractDetails
 {
     Q_OBJECT
 public:
@@ -17,33 +18,25 @@ public:
 
     ~ContactDetails();
 
-    void setItem( const Akonadi::Item &item );
-    void clearFields();
-    void addAccountData( const QString &name, const QString &id );
-    void removeAccountData( const QString &accountName );
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &campaignName );
-    void addReportsToData( const QString &name, const QString &id );
-    void addAssignedToData( const QString &name, const QString &id );
-    void reset();
-
-    inline QMap<QString, QString> contactData() {return mContactData;}
-
-Q_SIGNALS:
-    void saveContact();
-    void modifyContact();
-
     friend class ContactsPage;
-private:
-    void initialize();
-    bool isEditing();
+    friend class CampaignsPage;
+protected:
+    /*reimp*/ void setItem( const Akonadi::Item &item );
+    /*reimp*/ void clearFields();
+    /*reimp*/ void addAccountData( const QString &name, const QString &id );
+    /*reimp*/ void removeAccountData( const QString &accountName );
+    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
+    /*reimp*/ void removeCampaignData( const QString &campaignName );
+    /*reimp*/ void addReportsToData( const QString &name, const QString &id );
+    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
+    /*reimp*/ void reset();
+    /*reimp*/ void initialize();
 
+    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
+
+private:
+    QMap<QString, QString> mData;
     EditCalendarButton *mCalendarButton;
-    QMap<QString, QString> mReportsToData;
-    QMap<QString, QString> mAssignedToData;
-    QMap<QString, QString> mCampaignsData;
-    QMap<QString, QString> mAccountsData;
-    QMap<QString, QString> mContactData;
     bool mModifyFlag;
     Ui_ContactDetails mUi;
 
@@ -53,7 +46,7 @@ private Q_SLOTS:
     void slotSetBirthday();
     void slotSetModifyFlag( bool );
     void slotClearDate();
-    void slotResetCursor( const QString& );
+
 };
 
 #endif /* CONTACTDETAILS_H */

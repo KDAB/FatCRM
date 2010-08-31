@@ -2,6 +2,7 @@
 #define LEADDETAILS_H
 
 #include "ui_leaddetails.h"
+#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
@@ -10,7 +11,7 @@
 #include <QToolButton>
 
 
-class LeadDetails : public QWidget
+class LeadDetails : public AbstractDetails
 {
     Q_OBJECT
 public:
@@ -18,28 +19,21 @@ public:
 
     ~LeadDetails();
 
-    void setItem( const Akonadi::Item &item );
-    void clearFields();
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &campaignName );
-    void addAssignedToData( const QString &name, const QString &id );
-    void reset();
 
-    inline QMap<QString, QString> leadData() {return mData;}
+    /*reimp*/ void setItem( const Akonadi::Item &item );
+    /*reimp*/ void clearFields();
+    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
+    /*reimp*/ void removeCampaignData( const QString &campaignName );
+    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
+    /*reimp*/ void reset();
+    /*reimp*/ void initialize();
 
-Q_SIGNALS:
-    void saveLead();
-    void modifyLead();
+    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
 
     friend class LeadsPage;
 private:
-    void initialize();
-    bool isEditing();
-
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this
-    QMap<QString, QString> mAssignedToData;
-    QMap<QString, QString> mCampaignsData;
     bool mModifyFlag;
     Ui_LeadDetails mUi;
 
@@ -50,7 +44,6 @@ private Q_SLOTS:
     void slotCopyFromPrimary( bool );
     void slotSetBirthDate();
     void slotClearDate();
-    void slotResetCursor( const QString& );
 };
 
 #endif /* LEADDETAILS_H */

@@ -2,6 +2,7 @@
 #define ACCOUNTDETAILS_H
 
 #include "ui_accountdetails.h"
+#include "abstractdetails.h"
 
 #include <akonadi/item.h>
 
@@ -9,7 +10,7 @@
 #include <QToolButton>
 
 
-class AccountDetails : public QWidget
+class AccountDetails : public AbstractDetails
 {
     Q_OBJECT
 public:
@@ -17,30 +18,25 @@ public:
 
     ~AccountDetails();
 
-    void setItem( const Akonadi::Item &item );
-    void clearFields();
-    void addAccountData( const QString &name,  const QString &id );
-    void removeAccountData( const QString &accountName );
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &campaignName );
-    void addAssignedToData( const QString &name, const QString &id );
-    void reset();
-
-    inline QMap<QString, QString> accountData() {return mData;}
-
-Q_SIGNALS:
-    void saveItem();
-    void modifyItem();
-
+    friend class CampaignsPage;
     friend class Page;
-private:
-    void initialize();
-    bool isEditing();
+protected:
+    /*reimp*/ void initialize();
+    /*reimp*/ void setItem( const Akonadi::Item &item );
+    /*reimp*/ void clearFields();
+    /*reimp*/ void addData( const QString &name,  const QString &id );
+    /*reimp*/ void removeData( const QString &Name );
+    /*reimp*/ void reset();
+    /*reimp*/ void addAccountData( const QString &name,  const QString &id );
+    /*reimp*/ void removeAccountData( const QString &name );
+    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
+    /*reimp*/ void removeCampaignData( const QString &name );
+    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
 
+    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
+
+private:
     QMap<QString, QString> mData; // this
-    QMap<QString, QString> mAccountsData;
-    QMap<QString, QString> mAssignedToData;
-    QMap<QString, QString> mCampaignsData;
     bool mModifyFlag;
     Ui_AccountDetails mUi;
 
@@ -48,7 +44,6 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSaveAccount();
     void slotSetModifyFlag( bool );
-    void slotResetCursor( const QString& );
 };
 
 #endif /* ACCOUNTDETAILS_H */

@@ -9,7 +9,7 @@
 using namespace Akonadi;
 
 ContactDetails::ContactDetails( QWidget *parent )
-    : QWidget( parent )
+    : AbstractDetails( parent )
 
 {
     mUi.setupUi( this );
@@ -57,6 +57,7 @@ void ContactDetails::initialize()
              this, SLOT( slotSaveContact() ) );
 
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void ContactDetails::reset()
@@ -77,6 +78,7 @@ void ContactDetails::reset()
     disconnect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
                 this, SLOT( slotEnableSaving() ) );
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void ContactDetails::setItem (const Item &item )
@@ -194,65 +196,62 @@ void ContactDetails::slotSetModifyFlag( bool value )
 
 void ContactDetails::slotEnableSaving()
 {
-    if ( sender()->objectName() != "modifiedDate" )
+    if ( sender()->objectName() != "modifiedDate" ) {
         mUi.saveButton->setEnabled( true );
-}
+        setEditing( true );
+    }
 
-bool ContactDetails::isEditing()
-{
-    return ( mUi.saveButton->isEnabled() );
 }
-
 
 void ContactDetails::slotSaveContact()
 {
-    if ( !mContactData.empty() )
-        mContactData.clear();
+    if ( !mData.empty() )
+        mData.clear();
 
     QList<QLineEdit*> lineEdits =
         mUi.contactInformationGB->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
-        mContactData[le->objectName()] = le->text();
+        mData[le->objectName()] = le->text();
 
     QList<QLabel*> labels =
         mUi.contactInformationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
         QString objName = lab->objectName();
         if ( objName == "modifiedBy" ) {
-            mContactData["modifiedBy"] = lab->text();
-            mContactData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
-            mContactData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
+            mData["modifiedBy"] = lab->text();
+            mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
+            mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
         }
         else if ( objName == "createdDate" ) {
-            mContactData["createdDate"] = lab->text();
-            mContactData["contactId"] = lab->property( "contactId" ).toString();
-            mContactData["opportunityRoleFields"] =  lab->property( "opportunityRoleFields" ).toString();
-            mContactData["cAcceptStatusFields"] = lab->property( "cAcceptStatusFields" ).toString();
-            mContactData["mAcceptStatusFields"] = lab->property( "mAcceptStatusFields" ).toString();
-            mContactData["deleted"] = lab->property( "deleted" ).toString();
+            mData["createdDate"] = lab->text();
+            mData["contactId"] = lab->property( "contactId" ).toString();
+            mData["opportunityRoleFields"] =  lab->property( "opportunityRoleFields" ).toString();
+            mData["cAcceptStatusFields"] = lab->property( "cAcceptStatusFields" ).toString();
+            mData["mAcceptStatusFields"] = lab->property( "mAcceptStatusFields" ).toString();
+            mData["deleted"] = lab->property( "deleted" ).toString();
         }
         else if ( objName == "createdBy" ) {
-            mContactData["createdBy"] = lab->text();
-            mContactData["createdById"] = lab->property( "createdById" ).toString();
+            mData["createdBy"] = lab->text();
+            mData["createdById"] = lab->property( "createdById" ).toString();
         }
     }
-    mContactData["salutation"] = mUi.salutation->currentText();
-    mContactData["campaign"] = mUi.campaign->currentText();
-    mContactData["campaignId"] = mCampaignsData.value( mUi.campaign->currentText() );
-    mContactData["accountName"] = mUi.accountName->currentText();
-    mContactData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
-    mContactData["reportsTo"] = mUi.reportsTo->currentText();
-    mContactData["reportsToId"] = mReportsToData.value( mUi.reportsTo->currentText() );
-    mContactData["assignedTo"] = mUi.assignedTo->currentText();
-    mContactData["assignedToId"] = mAssignedToData.value( mUi.assignedTo->currentText() );
-    mContactData["leadSource"] = mUi.leadSource->currentText();
-    mContactData["description"] = mUi.description->toPlainText();
-    mContactData["doNotCall"] =   mUi.doNotCall->isChecked() ? "1" : "0";
+    mData["salutation"] = mUi.salutation->currentText();
+    mData["campaign"] = mUi.campaign->currentText();
+    mData["campaignId"] = campaignsData().value( mUi.campaign->currentText() );
+    mData["accountName"] = mUi.accountName->currentText();
+    mData["accountId"] = accountsData().value(  mUi.accountName->currentText() );
+    mData["reportsTo"] = mUi.reportsTo->currentText();
+    mData["reportsToId"] = reportsToData().value( mUi.reportsTo->currentText() );
+    mData["assignedTo"] = mUi.assignedTo->currentText();
+    mData["assignedToId"] = assignedToData().value( mUi.assignedTo->currentText() );
+    mData["leadSource"] = mUi.leadSource->currentText();
+    mData["description"] = mUi.description->toPlainText();
+    mData["doNotCall"] =   mUi.doNotCall->isChecked() ? "1" : "0";
 
     if ( !mModifyFlag )
-        emit saveContact();
+        emit saveItem();
     else
-        emit modifyContact();
+        emit modifyItem();
 }
 
 void ContactDetails::slotSetBirthday()
@@ -267,23 +266,19 @@ void ContactDetails::slotClearDate()
     mUi.birthDate->clear();
 }
 
-void ContactDetails::addAccountData( const QString &accountName,  const QString &accountId )
+void ContactDetails::addAccountData( const QString &name,  const QString &id )
 {
-    QString dataKey;
-    dataKey = mAccountsData.key( accountId );
-    removeAccountData( dataKey );
+    AbstractDetails::addAccountData( name, id );
 
-    mAccountsData.insert( accountName, accountId );
-
-    if ( mUi.accountName->findText( accountName ) < 0 )
-        mUi.accountName->addItem( accountName );
+    if ( mUi.accountName->findText( name ) < 0 )
+        mUi.accountName->addItem( name );
 }
 
 void ContactDetails::removeAccountData( const QString &accountName )
 {
     if ( accountName.isEmpty() )
         return;
-    mAccountsData.remove( accountName );
+    AbstractDetails::removeAccountData( accountName );
     int index = mUi.accountName->findText( accountName );
     if ( index > 0 ) // always leave the first blank field
         mUi.accountName->removeItem( index );
@@ -291,12 +286,7 @@ void ContactDetails::removeAccountData( const QString &accountName )
 
 void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
-    QString dataKey;
-    dataKey = mCampaignsData.key( campaignId );
-    removeCampaignData( dataKey );
-
-    mCampaignsData.insert( campaignName, campaignId );
-
+    AbstractDetails::addCampaignData( campaignName, campaignId );
     if ( mUi.campaign->findText( campaignName ) < 0 )
         mUi.campaign->addItem( campaignName );
 }
@@ -305,7 +295,7 @@ void ContactDetails::removeCampaignData( const QString &campaignName )
 {
     if ( campaignName.isEmpty() )
         return;
-    mCampaignsData.remove( campaignName );
+    AbstractDetails::removeCampaignData( campaignName );
     int index = mUi.campaign->findText( campaignName );
     if ( index > 0 ) // always leave the first blank field
         mUi.campaign->removeItem( index );
@@ -313,25 +303,15 @@ void ContactDetails::removeCampaignData( const QString &campaignName )
 
 void ContactDetails::addReportsToData( const QString &name, const QString &id )
 {
-    mReportsToData.insert( name, id );
+    AbstractDetails::addReportsToData( name, id );
     if ( mUi.reportsTo->findText( name ) < 0 )
         mUi.reportsTo->addItem( name );
 }
 
 void ContactDetails::addAssignedToData( const QString &name, const QString &id )
 {
-    mAssignedToData.insert( name, id );
+    AbstractDetails::addAssignedToData( name, id );
     if ( mUi.assignedTo->findText( name ) < 0 )
         mUi.assignedTo->addItem( name );
 }
 
-void ContactDetails::slotResetCursor( const QString& text)
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        w->setEnabled( true );
-    }
-}

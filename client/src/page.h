@@ -48,7 +48,7 @@ protected:
     inline Akonadi::Collection collection() { return mCollection; }
     inline Akonadi::ChangeRecorder* recorder() { return mChangeRecorder; }
     inline QLineEdit* search() { return mUi.searchLE; }
-    inline void setFilter ( Akonadi::AccountsFilterProxyModel *filter ) { mFilter = filter; }
+    inline void setFilter ( QSortFilterProxyModel *filter ) { mFilter = filter; }
 
     virtual void addItem( QMap<QString, QString> data ) = 0;
     virtual void modifyItem( Akonadi::Item &item, QMap<QString, QString> data ) = 0;
@@ -83,7 +83,7 @@ private:
     SugarClient *mClientWindow;
     QString mMimeType;
     DetailsType mType;
-    Akonadi::AccountsFilterProxyModel *mFilter;
+    QSortFilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCollection;
     QModelIndex mCurrentIndex;

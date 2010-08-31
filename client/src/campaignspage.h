@@ -1,24 +1,12 @@
 #ifndef CAMPAIGNSPAGE_H
 #define CAMPAIGNSPAGE_H
 
-#include "ui_campaignspage.h"
+#include "page.h"
 
-#include <akonadi/collection.h>
-#include <akonadi/entitytreemodel.h>
+#include <akonadi/item.h>
 
-#include <QtGui/QWidget>
 
-namespace Akonadi
-{
-    class ChangeRecorder;
-    class Item;
-    class ItemModel;
-}
-
-class KJob;
-class QModelIndex;
-
-class CampaignsPage : public QWidget
+class CampaignsPage : public Page
 {
     Q_OBJECT
 public:
@@ -26,40 +14,10 @@ public:
 
     ~CampaignsPage();
 
-     void addCampaignsData();
-
-Q_SIGNALS:
-    void statusMessage( const QString& );
-
-public Q_SLOTS:
-    void syncronize();
-
-private:
-    void initialize();
-    void setupCachePolicy();
-    void removeCampaignsData( const Akonadi::Item &item );
-    void campaignChanged( const Akonadi::Item &item );
-    bool proceedIsOk();
-    void updateCampaignCombo( const QString& name,  const QString& id );
-
-    Akonadi::ChangeRecorder *mChangeRecorder;
-    Akonadi::Collection mCampaignsCollection;
-    QModelIndex mCurrentIndex;
-    Ui_CampaignsPage mUi;
-
-private Q_SLOTS:
-    void slotResourceSelectionChanged( const QByteArray &identifier );
-    void slotCollectionFetchResult( KJob *job );
-    void slotCampaignClicked( const QModelIndex& index );
-    void slotNewCampaignClicked();
-    void slotAddCampaign();
-    void slotModifyCampaign();
-    void slotRemoveCampaign();
-    void slotSetCurrent( const QModelIndex&,int,int );
-    void cachePolicyJobCompleted( KJob* );
-    void slotUpdateItemDetails( const QModelIndex&, const QModelIndex& );
-    void slotSetItem();
-    void slotResetSearch();
+protected:
+    /*reimp*/ void addItem( QMap<QString, QString> data );
+    /*reimp*/ void modifyItem( Akonadi::Item &item, QMap<QString, QString> data );
+    /*reimp*/ void setupModel();
 };
 
 #endif /* CAMPAIGNSPAGE_H */

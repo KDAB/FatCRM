@@ -15,7 +15,7 @@
 using namespace Akonadi;
 
 AccountsPage::AccountsPage( QWidget *parent )
-    : Page( parent, QString( "application/x-vnd.kdab.crm.account" ), Account )
+    : Page( parent, QString( SugarAccount::mimeType() ), Account )
 {
     setupModel();
 }
@@ -27,44 +27,7 @@ AccountsPage::~AccountsPage()
 void AccountsPage::addItem( const QMap<QString, QString> data )
 {
     SugarAccount account;
-    account.setName( data.value( "name" ) );
-    account.setDateEntered( data.value( "dateEntered" ) );
-    account.setDateModified( data.value( "dateModified" ) );
-    account.setModifiedUserId( data.value( "modifiedUserId" ) );
-    account.setModifiedByName( data.value( "modifiedByName" ) );
-    account.setCreatedBy( data.value( "createdBy" ) ); // id
-    account.setCreatedByName( data.value( "createdByName" ) );
-    account.setDescription( data.value( "description" ) );
-    account.setDeleted( data.value( "deleted" ) );
-    account.setAssignedUserId( data.value( "assignedUserId" ) );
-    account.setAssignedUserName( data.value( "assignedUserName" ) );
-    account.setAccountType( data.value( "accountType" ) );
-    account.setIndustry( data.value( "industry" ) );
-    account.setAnnualRevenue( data.value( "annualRevenue" ) );
-    account.setPhoneFax( data.value( "phoneFax" ) );
-    account.setBillingAddressStreet( data.value( "billingAddressStreet" ) );
-    account.setBillingAddressCity( data.value( "billingAddressCity" ) );
-    account.setBillingAddressState( data.value( "billingAddressState" ) );
-    account.setBillingAddressPostalcode( data.value( "billingAddressPostalcode" ) );
-    account.setBillingAddressCountry( data.value( "billingAddressCountry" ) );
-    account.setRating( data.value( "rating" ) );
-    account.setPhoneOffice( data.value( "phoneOffice" ) );
-    account.setPhoneAlternate( data.value( "phoneAlternate" ) );
-    account.setWebsite( data.value( "website" ) );
-    account.setOwnership( data.value( "ownership" ) );
-    account.setEmployees( data.value( "employees" ) );
-    account.setTyckerSymbol( data.value( "tyckerSymbol" ) );
-    account.setShippingAddressStreet( data.value( "shippingAddressStreet" ) );
-    account.setShippingAddressCity( data.value( "shippingAddressCity" ) );
-    account.setShippingAddressState( data.value( "shippingAddressState" ) );
-    account.setShippingAddressPostalcode( data.value( "shippingAddressPostalcode" ) );
-    account.setShippingAddressCountry( data.value( "shippingAddressCountry" ) );
-    account.setEmail1( data.value( "email1" ) );
-    account.setParentId( data.value( "parentId" ) );
-    account.setParentName( data.value( "parentName" ) );
-    account.setSicCode( data.value( "sicCode" ) );
-    account.setCampaignId( data.value( "campaignId" ) );
-    account.setCampaignName( data.value( "campaignName" ) );
+    account.setData( data );
 
     Item item;
     item.setMimeType( mimeType() );
@@ -90,45 +53,7 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> data  )
     } else
         return;
 
-    account.setName( data.value( "name" ) );
-    account.setDateEntered( data.value( "dateEntered" ) );
-    account.setDateModified( data.value( "dateModified" ) );
-    account.setModifiedUserId( data.value( "modifiedUserId" ) );
-    account.setModifiedByName( data.value( "modifiedByName" ) );
-    account.setCreatedBy( data.value( "createdBy" ) ); // id
-    account.setCreatedByName( data.value( "createdByName" ) );
-    account.setDescription( data.value( "description" ) );
-    account.setDeleted( data.value( "deleted" ) );
-    account.setAssignedUserId( data.value( "assignedUserId" ) );
-    account.setAssignedUserName( data.value( "assignedUserName" ) );
-    account.setAccountType( data.value( "accountType" ) );
-    account.setIndustry( data.value( "industry" ) );
-    account.setAnnualRevenue( data.value( "annualRevenue" ) );
-    account.setPhoneFax( data.value( "phoneFax" ) );
-    account.setBillingAddressStreet( data.value( "billingAddressStreet" ) );
-    account.setBillingAddressCity( data.value( "billingAddressCity" ) );
-    account.setBillingAddressState( data.value( "billingAddressState" ) );
-    account.setBillingAddressPostalcode( data.value( "billingAddressPostalcode" ) );
-    account.setBillingAddressCountry( data.value( "billingAddressCountry" ) );
-    account.setRating( data.value( "rating" ) );
-    account.setPhoneOffice( data.value( "phoneOffice" ) );
-    account.setPhoneAlternate( data.value( "phoneAlternate" ) );
-    account.setWebsite( data.value( "website" ) );
-    account.setOwnership( data.value( "ownership" ) );
-    account.setEmployees( data.value( "employees" ) );
-    account.setTyckerSymbol( data.value( "tyckerSymbol" ) );
-    account.setShippingAddressStreet( data.value( "shippingAddressStreet" ) );
-    account.setShippingAddressCity( data.value( "shippingAddressCity" ) );
-    account.setShippingAddressState( data.value( "shippingAddressState" ) );
-    account.setShippingAddressPostalcode( data.value( "shippingAddressPostalcode" ) );
-    account.setShippingAddressCountry( data.value( "shippingAddressCountry" ) );
-    account.setEmail1( data.value( "email1" ) );
-    account.setParentId( data.value( "parentId" ) );
-    account.setParentName( data.value( "parentName" ) );
-    account.setSicCode( data.value( "sicCode" ) );
-    account.setCampaignId( data.value( "campaignId" ) );
-    account.setCampaignName( data.value( "campaignName" ) );
-
+    account.setData( data );
     item.setPayload<SugarAccount>( account );
     item.setRemoteRevision( data.value( "remoteRevision" ) );
     // job starts automatically

@@ -2,13 +2,14 @@
 #define OPPORTUNITYDETAILS_H
 
 #include "ui_opportunitydetails.h"
+#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
 #include <akonadi/item.h>
 
 #include <QtGui/QWidget>
 
-class OpportunityDetails : public QWidget
+class OpportunityDetails : public AbstractDetails
 {
     Q_OBJECT
 public:
@@ -16,31 +17,23 @@ public:
 
     ~OpportunityDetails();
 
-    void setItem( const Akonadi::Item &item );
-    void clearFields();
-    void addAccountData( const QString &name,  const QString &id );
-    void removeAccountData( const QString &accountName );
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &campaignName );
-    void addAssignedToData( const QString &name, const QString &id );
-    void reset();
+    /*reimp*/ void setItem( const Akonadi::Item &item );
+    /*reimp*/ void clearFields();
+    /*reimp*/ void addAccountData( const QString &name,  const QString &id );
+    /*reimp*/ void removeAccountData( const QString &accountName );
+    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
+    /*reimp*/ void removeCampaignData( const QString &campaignName );
+    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
+    /*reimp*/ void reset();
+    /*reimp*/ void initialize();
 
-    inline QMap<QString, QString> opportunityData() {return mData;}
+    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
 
-Q_SIGNALS:
-    void saveOpportunity();
-    void modifyOpportunity();
 
     friend class OpportunitiesPage;
 private:
-    void initialize();
-    bool isEditing();
-
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this
-    QMap<QString, QString> mAccountsData;
-    QMap<QString, QString> mAssignedToData;
-    QMap<QString, QString> mCampaignsData;
     bool mModifyFlag;
     Ui_OpportunityDetails mUi;
 
@@ -50,7 +43,6 @@ private Q_SLOTS:
     void slotSetModifyFlag( bool );
     void slotSetDateClosed();
     void slotClearDate();
-    void slotResetCursor( const QString& );
 };
 
 

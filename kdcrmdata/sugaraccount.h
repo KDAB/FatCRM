@@ -418,6 +418,16 @@ class KDCRMDATA_EXPORT SugarAccount
     QString campaignName() const;
 
     /**
+      Convenience: Set the data for this account
+     */
+    void setData( QMap<QString, QString> data );
+
+    /**
+      Convenience: Retrieve the data for this account
+     */
+    QMap<QString, QString> data();
+
+    /**
        Return the Mime type
      */
     static QString mimeType();

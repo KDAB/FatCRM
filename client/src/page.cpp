@@ -2,7 +2,6 @@
 #include "enums.h"
 
 #include "sugarclient.h"
-//#include "accountsfilterproxymodel.h"
 
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactsfilterproxymodel.h>
@@ -61,7 +60,6 @@ void Page::slotResourceSelectionChanged( const QByteArray &identifier )
 
 void Page::slotCollectionFetchResult( KJob *job )
 {
-
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
 
     // look for the collection
@@ -89,7 +87,7 @@ void Page::slotCollectionFetchResult( KJob *job )
 
 void Page::slotItemClicked( const QModelIndex &index )
 {
-    AccountDetails *d = dynamic_cast<AccountDetails*>( mClientWindow->detailsWidget(mType) );
+    AbstractDetails *d = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget(mType) );
 
     if ( d->isEditing() ) {
         if ( !proceedIsOk() ) {
@@ -104,7 +102,7 @@ void Page::slotItemClicked( const QModelIndex &index )
 void Page::itemChanged( const Item &item )
 {
     if ( item.isValid() ) {
-        AccountDetails *d = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(mType));
+        AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
         d->setItem( item );
 
         mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
@@ -115,7 +113,7 @@ void Page::itemChanged( const Item &item )
 
 void Page::slotNewClicked()
 {
-    AccountDetails *d = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(mType));
+    AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
 
     if ( d->isEditing() ) {
         if ( !proceedIsOk() )
@@ -132,10 +130,10 @@ void Page::slotNewClicked()
 
 void Page::slotAddItem()
 {
-    AccountDetails *d = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(mType));
+    AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
     disconnect( d, SIGNAL( saveItem() ),
                 this, SLOT( slotAddItem( ) ) );
-    addItem(d->accountData() );
+    addItem(d->data() );
 }
 
 void Page::slotModifyItem()
@@ -145,10 +143,10 @@ void Page::slotModifyItem()
         return;
     Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
     if ( item.isValid() ) {
-        AccountDetails *d = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(mType));
+        AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
         disconnect( d, SIGNAL( modifyItem() ),
-                this, SLOT( slotModifyItem( ) ) );
-        modifyItem( item, d->accountData()  );
+                    this, SLOT( slotModifyItem( ) ) );
+        modifyItem( item, d->data()  );
         d->reset();
     }
 }
@@ -182,7 +180,7 @@ void Page::slotRemoveItem()
     if ( !newIndex.isValid() )
         mUi.removePB->setEnabled( false );
 
-        mClientWindow->displayDockWidgets( false );
+    mClientWindow->displayDockWidgets( false );
     if ( typeToString( mType ) == "Accounts" )
         removeAccountsData( item );
 }
@@ -194,11 +192,9 @@ void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
         mUi.treeView->setCurrentIndex( newIdx );
     }
 
-      if ( mUi.treeView->model()->rowCount() == mCollection.statistics().count() ) {
-          qDebug() << "called ....";
-        if ( mType == Account )
-            addAccountsData();
-      }
+    if ( mUi.treeView->model()->rowCount() == mCollection.statistics().count() ) {
+        addAccountsData();
+    }
 }
 
 void Page::initialize()
@@ -283,7 +279,7 @@ bool Page::proceedIsOk()
 
 void Page::slotSetItem()
 {
-    mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
+    mCurrentIndex  = treeView()->selectionModel()->currentIndex();
     if ( mCurrentIndex.isValid() )
         slotItemClicked( mCurrentIndex );
     else
@@ -313,49 +309,36 @@ QString Page::typeToString( const DetailsType &type ) const
 
 void Page::updateAccountCombo( const QString& name, const QString& id )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>( mClientWindow->detailsWidget( Account ) );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>( mClientWindow->detailsWidget( Contact ) );
-    OpportunityDetails *od =dynamic_cast<OpportunityDetails*>( mClientWindow->detailsWidget( Opportunity ) );
+    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
     ad->addAccountData( name, id );
-    cd->addAccountData( name, id );
-    od->addAccountData( name, id );
 }
 
 void Page::addAccountsData()
 {
 
-    AccountDetails *ad = dynamic_cast<AccountDetails*>( mClientWindow->detailsWidget( Account ) );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>( mClientWindow->detailsWidget( Contact ) );
-    OpportunityDetails *od =dynamic_cast<OpportunityDetails*>( mClientWindow->detailsWidget( Opportunity ) );
+    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
+
     QModelIndex index;
     Item item;
     SugarAccount account;
     for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-       index  =  mUi.treeView->model()->index( i, 0 );
-       item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-       if ( item.hasPayload<SugarAccount>() ) {
-           account = item.payload<SugarAccount>();
-           ad->addAccountData( account.name(), account.id() );
-           cd->addAccountData( account.name(), account.id() );
-           od->addAccountData( account.name(), account.id() );
-           // code below should be executed from
-           // their own pages when implemented
-           ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
-       }
+        index  =  mUi.treeView->model()->index( i, 0 );
+        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        if ( item.hasPayload<SugarAccount>() ) {
+            account = item.payload<SugarAccount>();
+            ad->addAccountData( account.name(), account.id() );
+            ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
+        }
     }
 }
 
 void Page::removeAccountsData( Akonadi::Item &item )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>( mClientWindow->detailsWidget( Account ) );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>( mClientWindow->detailsWidget( Contact ) );
-    OpportunityDetails *od =dynamic_cast<OpportunityDetails*>( mClientWindow->detailsWidget( Opportunity ) );
+    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
 
     if ( item.hasPayload<SugarAccount>() ) {
         SugarAccount account;
         account = item.payload<SugarAccount>();
         ad->removeAccountData( account.name() );
-        cd->removeAccountData( account.name() );
-        od->removeAccountData( account.name() );
     }
 }

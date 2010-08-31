@@ -8,7 +8,7 @@ using namespace Akonadi;
 
 
 AccountDetails::AccountDetails( QWidget *parent )
-    : QWidget( parent )
+    : AbstractDetails( parent )
 
 {
     mUi.setupUi( this );
@@ -25,7 +25,6 @@ void AccountDetails::initialize()
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
-
     connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
              this, SLOT( slotResetCursor( const QString& ) ) );
 
@@ -40,6 +39,7 @@ void AccountDetails::initialize()
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveAccount() ) );
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void AccountDetails::reset()
@@ -49,6 +49,7 @@ void AccountDetails::reset()
         disconnect( le, SIGNAL( textChanged( const QString& ) ),
                  this, SLOT( slotEnableSaving() ) );
 
+
     QList<QComboBox*> comboBoxes =  mUi.accountInformationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes )
         disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
@@ -57,6 +58,7 @@ void AccountDetails::reset()
     disconnect( mUi.description, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void AccountDetails::setItem (const Item &item )
@@ -158,13 +160,10 @@ void AccountDetails::slotSetModifyFlag( bool value )
 void AccountDetails::slotEnableSaving()
 {
     // check for modify flag
-    if ( sender()->objectName() != "modifiedDate" )
+    if ( sender()->objectName() != "modifiedDate" ) {
         mUi.saveButton->setEnabled( true );
-}
-
-bool AccountDetails::isEditing()
-{
-    return ( mUi.saveButton->isEnabled() );
+        setEditing( true );
+    }
 }
 
 void AccountDetails::slotSaveAccount()
@@ -201,12 +200,15 @@ void AccountDetails::slotSaveAccount()
     mData["industry"] = mUi.industry->currentText();
     mData["accountType"] = mUi.accountType->currentText();
     mData["parentName"] = mUi.parentName->currentText();
-    mData["parentId"] = mAccountsData.value( mUi.parentName->currentText() );
+    mData["parentId"] =  accountsData().value( mUi.parentName->currentText() );
     mData["campaignName"] = mUi.campaignName->currentText();
-    mData["campaignId"] = mCampaignsData.value( mUi.campaignName->currentText() );
+    mData["campaignId"] = campaignsData().value( mUi.campaignName->currentText() );
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
+    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
     mData["description"] = mUi.description->toPlainText();
+
+    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
+             this, SLOT( slotResetCursor( const QString& ) ) );
 
     if ( !mModifyFlag )
         emit saveItem();
@@ -216,25 +218,21 @@ void AccountDetails::slotSaveAccount()
     int index = mUi.parentName->findText( mData["parentName"] );
     if ( index >= 0 )
         mUi.parentName->setCurrentIndex( index );
+
 }
 
-void AccountDetails::addAccountData( const QString &accountName,  const QString &accountId )
+void AccountDetails::addAccountData( const QString &name,  const QString &id )
 {
-    QString dataKey;
-    dataKey = mAccountsData.key( accountId );
-    removeAccountData( dataKey );
-
-    mAccountsData.insert( accountName, accountId );
-
-    if ( mUi.parentName->findText( accountName ) < 0 )
-        mUi.parentName->addItem( accountName );
+    AbstractDetails::addAccountData( name, id );
+    if ( mUi.parentName->findText( name ) < 0 )
+        mUi.parentName->addItem( name );
 }
 
 void AccountDetails::removeAccountData( const QString &accountName )
 {
     if ( accountName.isEmpty() )
         return;
-    mAccountsData.remove( accountName );
+    AbstractDetails::removeAccountData( accountName );
     int index = mUi.parentName->findText( accountName );
     if ( index > 0 )// always leave the first blank field
         mUi.parentName->removeItem( index );
@@ -242,11 +240,7 @@ void AccountDetails::removeAccountData( const QString &accountName )
 
 void AccountDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
-    QString dataKey;
-    dataKey = mCampaignsData.key( campaignId );
-    removeCampaignData( dataKey );
-
-    mCampaignsData.insert( campaignName, campaignId );
+    AbstractDetails::addCampaignData( campaignName,  campaignId );
 
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
@@ -256,7 +250,6 @@ void AccountDetails::removeCampaignData( const QString &campaignName )
 {
     if ( campaignName.isEmpty() )
         return;
-    mCampaignsData.remove( campaignName );
     int index = mUi.campaignName->findText( campaignName );
     if ( index > 0 )// always leave the first blank field
         mUi.campaignName->removeItem( index );
@@ -264,22 +257,7 @@ void AccountDetails::removeCampaignData( const QString &campaignName )
 
 void AccountDetails::addAssignedToData( const QString &name, const QString &id )
 {
-    if ( mAssignedToData.values().contains( id ) )
-        mAssignedToData.remove( mAssignedToData.key( id ) );
-    mAssignedToData.insert( name, id );
+    AbstractDetails::addAssignedToData( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
 }
-
-void AccountDetails::slotResetCursor( const QString& text)
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        w->setEnabled( true );
-    }
-}
-
-

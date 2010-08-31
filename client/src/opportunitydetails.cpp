@@ -9,7 +9,7 @@ using namespace Akonadi;
 
 
 OpportunityDetails::OpportunityDetails( QWidget *parent )
-    : QWidget( parent )
+    : AbstractDetails( parent )
 
 {
     mUi.setupUi( this );
@@ -56,6 +56,7 @@ void OpportunityDetails::initialize()
              this, SLOT( slotSaveOpportunity() ) );
 
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void OpportunityDetails::reset()
@@ -73,6 +74,7 @@ void OpportunityDetails::reset()
     disconnect( mUi.description, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
     mUi.saveButton->setEnabled( false );
+    setEditing( false );
 }
 
 void OpportunityDetails::setItem (const Item &item )
@@ -184,13 +186,11 @@ void OpportunityDetails::slotSetModifyFlag( bool value )
 
 void OpportunityDetails::slotEnableSaving()
 {
-    if ( sender()->objectName() != "modifiedDate" )
+    if ( sender()->objectName() != "modifiedDate" ) {
         mUi.saveButton->setEnabled( true );
-}
+        setEditing( true );
+    }
 
-bool OpportunityDetails::isEditing()
-{
-    return ( mUi.saveButton->isEnabled() );
 }
 
 void OpportunityDetails::slotSaveOpportunity()
@@ -226,14 +226,14 @@ void OpportunityDetails::slotSaveOpportunity()
     }
 
     mData["accountName"] = mUi.accountName->currentText();
-    mData["accountId"] = mAccountsData.value(  mUi.accountName->currentText() );
+    mData["accountId"] = accountsData().value(  mUi.accountName->currentText() );
     mData["opportunityType"] = mUi.opportunityType->currentText();
 
     mData["campaignName"] = mUi.campaignName->currentText();
-    mData["campaignId"] = mCampaignsData.value( mUi.campaignName->currentText() );
+    mData["campaignId"] = campaignsData().value( mUi.campaignName->currentText() );
 
     mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = mAssignedToData.value( mUi.assignedUserName->currentText() );
+    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
     mData["leadSource"] = mUi.leadSource->currentText();
     mData["salesStage"] = mUi.salesStage->currentText();
     mData["description"] = mUi.description->toPlainText();
@@ -249,18 +249,14 @@ void OpportunityDetails::slotSaveOpportunity()
     mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
 
     if ( !mModifyFlag )
-        emit saveOpportunity();
+        emit saveItem();
     else
-        emit modifyOpportunity();
+        emit modifyItem();
 }
 
 void OpportunityDetails::addAccountData( const QString &accountName,  const QString &accountId )
 {
-    QString dataKey;
-    dataKey = mAccountsData.key( accountId );
-    removeAccountData( dataKey );
-
-    mAccountsData.insert( accountName, accountId );
+    AbstractDetails::addAccountData( accountName, accountId );
 
     if ( mUi.accountName->findText( accountName ) < 0 )
         mUi.accountName->addItem( accountName );
@@ -270,7 +266,7 @@ void OpportunityDetails::removeAccountData( const QString &accountName )
 {
     if ( accountName.isEmpty() )
         return;
-    mAccountsData.remove( accountName );
+    AbstractDetails::removeAccountData( accountName );
     int index = mUi.accountName->findText( accountName );
     if ( index > 0 ) // always leave the first blank field
         mUi.accountName->removeItem( index );
@@ -278,12 +274,7 @@ void OpportunityDetails::removeAccountData( const QString &accountName )
 
 void OpportunityDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
 {
-    QString dataKey;
-    dataKey = mCampaignsData.key( campaignId );
-    removeCampaignData( dataKey );
-
-    mCampaignsData.insert( campaignName, campaignId );
-
+    AbstractDetails::addCampaignData( campaignName, campaignId );
     if ( mUi.campaignName->findText( campaignName ) < 0 )
         mUi.campaignName->addItem( campaignName );
 }
@@ -292,7 +283,7 @@ void OpportunityDetails::removeCampaignData( const QString &campaignName )
 {
     if ( campaignName.isEmpty() )
         return;
-    mCampaignsData.remove( campaignName );
+    AbstractDetails::removeCampaignData( campaignName );
     int index = mUi.campaignName->findText( campaignName );
     if ( index > 0 )// always leave the first blank field
         mUi.campaignName->removeItem( index );
@@ -300,7 +291,7 @@ void OpportunityDetails::removeCampaignData( const QString &campaignName )
 
 void OpportunityDetails::addAssignedToData( const QString &name, const QString &id )
 {
-    mAssignedToData.insert( name, id );
+    AbstractDetails::addAssignedToData( name, id );
     if ( mUi.assignedUserName->findText( name ) < 0 )
         mUi.assignedUserName->addItem( name );
 }
@@ -317,13 +308,3 @@ void OpportunityDetails::slotClearDate()
     mUi.dateClosed->clear();
 }
 
-void OpportunityDetails::slotResetCursor( const QString& text)
-{
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        w->setEnabled( true );
-    }
-}
