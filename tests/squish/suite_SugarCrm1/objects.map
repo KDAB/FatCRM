@@ -209,11 +209,15 @@
 :Other Details.statusDescription_QTextEdit	{container=':Lead Information.Other Details_QGroupBox' name='statusDescription' type='QTextEdit' visible='1'}
 :Other Details.status_QComboBox	{container=':Lead Information.Other Details_QGroupBox' name='status' type='QComboBox' visible='1'}
 :Page.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='clearSearchPB' text='Clear' type='QToolButton' visible='1'}
+:Page.Clear_QToolButton_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='clearSearchPB' text='Clear' type='QToolButton' visible='1'}
 :Page.New_QPushButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='newPB' text='New' type='QPushButton' visible='1'}
 :Page.New_QPushButton_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='newPB' text='New' type='QPushButton' visible='1'}
 :Page.Remove_QPushButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='removePB' text='Remove' type='QPushButton' visible='1'}
+:Page.Remove_QPushButton_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='removePB' text='Remove' type='QPushButton' visible='1'}
 :Page.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='searchLE' type='QLineEdit' visible='1'}
+:Page.searchLE_QLineEdit_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='searchLE' type='QLineEdit' visible='1'}
 :Page.treeView_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='treeView' type='Akonadi::EntityTreeView' visible='1'}
+:Page.treeView_Akonadi::EntityTreeView_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='treeView' type='Akonadi::EntityTreeView' visible='1'}
 :Quit Application.Quit_QPushButton	{text='Quit' type='QPushButton' unnamed='1' visible='1' window=':Quit Application_ShutdownDialog'}
 :Quit Application_ShutdownDialog	{name='ShutdownDialog' type='ShutdownDialog' visible='1' windowTitle='Quit Application'}
 :Resource: _QComboBox	{buddy=':Select Sugar Resource.Resource: _QLabel' type='QComboBox' unnamed='1' visible='1'}
@@ -262,3 +266,4 @@
 :qt_tabwidget_stackedwidget.Form_OpportunitiesPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='OpportunitiesPage' type='OpportunitiesPage' visible='1' windowTitle='Form'}
 :qt_tabwidget_stackedwidget.Page_AccountsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='page' type='AccountsPage' visible='1' windowTitle='Page'}
 :qt_tabwidget_stackedwidget.Page_CampaignsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='page' type='CampaignsPage' visible='1' windowTitle='Page'}
+:qt_tabwidget_tabbar.Campaigns_TabItem	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar' text='Campaigns' type='TabItem'}

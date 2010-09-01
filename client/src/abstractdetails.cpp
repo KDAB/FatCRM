@@ -52,7 +52,6 @@ void AbstractDetails::addReportsToData( const QString &name, const QString &id )
 {
     if ( mReportsToData.values().contains( id ) )
         mReportsToData.remove( mReportsToData.key( id ) );
-    qDebug() << "AbstractDetails::addReportsToData - inserting " << name;
     mReportsToData.insert( name, id );
 }
 
