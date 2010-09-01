@@ -58,6 +58,8 @@ void AbstractDetails::addReportsToData( const QString &name, const QString &id )
 void AbstractDetails::slotResetCursor( const QString& text)
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );
+    if ( !w )
+        return;
     if ( !text.isEmpty() ) {
         do {
             QApplication::restoreOverrideCursor();

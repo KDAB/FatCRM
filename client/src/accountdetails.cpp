@@ -250,6 +250,7 @@ void AccountDetails::removeCampaignData( const QString &campaignName )
 {
     if ( campaignName.isEmpty() )
         return;
+    AbstractDetails::removeCampaignData( campaignName );
     int index = mUi.campaignName->findText( campaignName );
     if ( index > 0 )// always leave the first blank field
         mUi.campaignName->removeItem( index );

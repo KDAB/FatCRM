@@ -29,12 +29,7 @@ set(sugarclient_SRCS
 )
 
 kde4_add_ui_files(sugarclient_SRCS
-    page.ui
-    contactspage.ui
-    #accountspage.ui
-    opportunitiespage.ui
-    leadspage.ui
-    campaignspage.ui
+    page.ui    
     contactdetails.ui
     accountdetails.ui
     opportunitydetails.ui

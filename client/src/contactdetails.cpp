@@ -303,7 +303,6 @@ void ContactDetails::removeCampaignData( const QString &campaignName )
 
 void ContactDetails::addReportsToData( const QString &name, const QString &id )
 {
-    qDebug() << "ContactDetails::addReportsToData - name " << name;
     AbstractDetails::addReportsToData( name, id );
     if ( mUi.reportsTo->findText( name ) < 0 )
         mUi.reportsTo->addItem( name );
