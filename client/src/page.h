@@ -2,8 +2,6 @@
 #define PAGE_H
 
 #include "ui_page.h"
-
-#include "kdcrmdata/sugaraccount.h"
 #include "enums.h"
 
 #include "accountsfilterproxymodel.h"
@@ -41,6 +39,9 @@ public Q_SLOTS:
 
 protected:
     void updateAccountCombo( const QString& name, const QString& id );
+    void updateAssignedToCombo( const QString& name, const QString& id );
+    void updateCampaignCombo( const QString& name, const QString& id );
+    void updateReportToCombo( const QString& name, const QString& id );
 
     inline SugarClient* clientWindow() { return mClientWindow; }
     inline QString mimeType() { return mMimeType; } const
@@ -75,7 +76,10 @@ private:
     bool proceedIsOk();
     // manages accounts combo box
     void addAccountsData();
+    void addCampaignsData();
+    void addContactsData();
     void removeAccountsData( Akonadi::Item &item );
+    void removeCampaignsData( Akonadi::Item &item );
 
     QString typeToString( const DetailsType &type ) const;
 

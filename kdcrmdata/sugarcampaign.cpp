@@ -489,6 +489,74 @@ QString SugarCampaign::frequency() const
     return d->mFrequency;
 }
 
+void SugarCampaign::setData( QMap<QString, QString> data )
+{
+    d->mEmpty = false;
+    d->mId = data.value( "id" );
+    d->mName = data.value( "name" );
+    d->mDateEntered = data.value( "dateEntered" );
+    d->mDateModified = data.value( "dateModified" );
+    d->mModifiedUserId = data.value( "modifiedUserId" );
+    d->mModifiedByName = data.value( "modifiedUserId" );
+    d->mCreatedBy = data.value( "createdBy" );
+    d->mCreatedByName = data.value( "createdByName" );
+    d->mDeleted = data.value( "deleted" );
+    d->mAssignedUserId = data.value( "assignedUserId" );
+    d->mAssignedUserName = data.value( "assignedUserName" );
+    d->mTrackerKey = data.value( "trackerKey" );
+    d->mTrackerCount = data.value( "trackerCount" );
+    d->mReferUrl = data.value( "referUrl" );
+    d->mTrackerText = data.value( "trackerText" );
+    d->mStartDate = data.value( "startDate" );
+    d->mEndDate = data.value( "endDate" );
+    d->mStatus = data.value( "status" );
+    d->mImpressions = data.value( "impressions" );
+    d->mCurrencyId = data.value( "currencyId" );
+    d->mBudget = data.value( "budget" );
+    d->mExpectedCost = data.value( "expectedCost" );
+    d->mActualCost = data.value( "actualCost" );
+    d->mExpectedRevenue = data.value( "expectedRevenue" );
+    d->mCampaignType = data.value( "campaignType" );
+    d->mObjective = data.value( "objective" );
+    d->mContent = data.value( "content" );
+    d->mFrequency = data.value( "frequency" );
+
+}
+
+QMap<QString, QString> SugarCampaign::data()
+{
+    QMap<QString, QString> data;
+    data["id"] = d->mId;
+    data["name"] = d->mName;
+    data["dateEntered"] = d->mDateEntered;
+    data["dateModified"] = d->mDateModified;
+    data["modifiedUserId"] = d->mModifiedUserId;
+    data["modifiedUserId"] = d->mModifiedByName;
+    data["createdBy"] = d->mCreatedBy;
+    data["createdByName"] = d->mCreatedByName;
+    data["deleted"] = d->mDeleted;
+    data["assignedUserId"] = d->mAssignedUserId;
+    data["assignedUserName"] = d->mAssignedUserName;
+    data["trackerKey"] = d->mTrackerKey;
+    data["trackerCount"] = d->mTrackerCount;
+    data["referUrl"] = d->mReferUrl;
+    data["trackerText"] = d->mTrackerText;
+    data["startDate"] = d->mStartDate;
+    data["endDate"] = d->mEndDate;
+    data["status"] = d->mStatus;
+    data["impressions"] = d->mImpressions;
+    data["currencyId"] = d->mCurrencyId;
+    data["budget"] = d->mBudget;
+    data["expectedCost"] = d->mExpectedCost;
+    data["actualCost"] = d->mActualCost;
+    data["expectedRevenue"] = d->mExpectedRevenue;
+    data["campaignType"] = d->mCampaignType;
+    data["objective"] = d->mObjective;
+    data["content"] = d->mContent;
+    data["frequency"] = d->mFrequency;
+    return data;
+}
+
 QString SugarCampaign::mimeType()
 {
     return QLatin1String( "application/x-vnd.kdab.crm.campaign" );

@@ -3,7 +3,7 @@ import test
 
 def createLead():
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Leads")
-    clickButton(waitForObject(":Form.New Lead_QPushButton"))
+    clickButton(waitForObject(":Page.New_QPushButton"))
           
 def registerDetails(dList):   
     type(waitForObject(":Details.leadSource_QComboBox_2"), dList[0])   

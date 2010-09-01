@@ -17,6 +17,8 @@ public:
 
     ~OpportunityDetails();
 
+    friend class Page;
+protected:
     /*reimp*/ void setItem( const Akonadi::Item &item );
     /*reimp*/ void clearFields();
     /*reimp*/ void addAccountData( const QString &name,  const QString &id );
@@ -26,11 +28,8 @@ public:
     /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
     /*reimp*/ void reset();
     /*reimp*/ void initialize();
-
     /*reimp*/ inline QMap<QString, QString> data() {return mData;}
 
-
-    friend class OpportunitiesPage;
 private:
     EditCalendarButton *mCalendarButton;
     QMap<QString, QString> mData; // this

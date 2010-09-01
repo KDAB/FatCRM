@@ -3,7 +3,7 @@ import test
 
 def createCampaign():    
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Campaigns")    
-    clickButton(waitForObject(":Form.New Campaign_QPushButton"))
+    clickButton(waitForObject(":Page.New_QPushButton_2"))
     
 def registerDetails(dList): 
     type(waitForObject(":Details.name_QLineEdit_3"), "<Ctrl+A>")                                                    

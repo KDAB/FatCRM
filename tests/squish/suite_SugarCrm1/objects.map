@@ -210,6 +210,7 @@
 :Other Details.status_QComboBox	{container=':Lead Information.Other Details_QGroupBox' name='status' type='QComboBox' visible='1'}
 :Page.Clear_QToolButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='clearSearchPB' text='Clear' type='QToolButton' visible='1'}
 :Page.New_QPushButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='newPB' text='New' type='QPushButton' visible='1'}
+:Page.New_QPushButton_2	{container=':qt_tabwidget_stackedwidget.Page_CampaignsPage' name='newPB' text='New' type='QPushButton' visible='1'}
 :Page.Remove_QPushButton	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='removePB' text='Remove' type='QPushButton' visible='1'}
 :Page.searchLE_QLineEdit	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='searchLE' type='QLineEdit' visible='1'}
 :Page.treeView_Akonadi::EntityTreeView	{container=':qt_tabwidget_stackedwidget.Page_AccountsPage' name='treeView' type='Akonadi::EntityTreeView' visible='1'}
@@ -260,3 +261,4 @@
 :qt_tabwidget_stackedwidget.Form_LeadsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='LeadsPage' type='LeadsPage' visible='1' windowTitle='Form'}
 :qt_tabwidget_stackedwidget.Form_OpportunitiesPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='OpportunitiesPage' type='OpportunitiesPage' visible='1' windowTitle='Form'}
 :qt_tabwidget_stackedwidget.Page_AccountsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='page' type='AccountsPage' visible='1' windowTitle='Page'}
+:qt_tabwidget_stackedwidget.Page_CampaignsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='page' type='CampaignsPage' visible='1' windowTitle='Page'}

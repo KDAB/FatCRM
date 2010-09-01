@@ -3,7 +3,7 @@ import test
 
 def createContact():    
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Contacts")        
-    clickButton(waitForObject(":Contacts.New Contact_QPushButton"))
+    clickButton(waitForObject(":Page.New_QPushButton"))
     
 def registerDetails(dList):       
     type(waitForObject(":Details.salutation_QComboBox_2"), dList[0])

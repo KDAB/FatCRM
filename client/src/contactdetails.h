@@ -18,8 +18,7 @@ public:
 
     ~ContactDetails();
 
-    friend class ContactsPage;
-    friend class CampaignsPage;
+    friend class Page;
 protected:
     /*reimp*/ void setItem( const Akonadi::Item &item );
     /*reimp*/ void clearFields();

@@ -938,6 +938,133 @@ QString SugarLead::portalApp() const
     return d->mPortalApp;
 }
 
+void SugarLead::setData( QMap<QString, QString> data )
+{
+    d->mEmpty = false;
+    d->mId = data.value( "id" );
+    d->mDateEntered = data.value( "dateEntered" );
+    d->mDateModified = data.value( "dateModified" );
+    d->mModifiedUserId = data.value( "modifiedUserId" );
+    d->mModifiedByName = data.value( "modifiedByName" );
+    d->mCreatedBy = data.value( "createdBy" );
+    d->mCreatedByName = data.value( "createdByName" );
+    d->mDescription = data.value( "description" );
+    d->mDeleted = data.value( "deleted" );
+    d->mAssignedUserId = data.value( "assignedUserId" );
+    d->mAssignedUserName = data.value( "assignedUserName" );
+    d->mSalutation = data.value( "salutation" );
+    d->mFirstName = data.value( "firstName" );
+    d->mLastName = data.value( "lastName" );
+    d->mTitle = data.value( "title" );
+    d->mDepartment = data.value( "department" );
+    d->mDoNotCall = data.value( "doNotCall" );
+    d->mPhoneHome = data.value( "phoneHome" );
+    d->mPhoneMobile = data.value( "phoneMobile" );
+    d->mPhoneWork = data.value( "phoneWork" );
+    d->mPhoneOther = data.value( "phoneOther" );
+    d->mPhoneFax = data.value( "phoneFax" );
+    d->mEmail1 = data.value( "email1" );
+    d->mEmail2 = data.value( "email2" );
+    d->mPrimaryAddressStreet = data.value( "primaryAddressStreet" );
+    d->mPrimaryAddressCity = data.value( "primaryAddressCity" );
+    d->mPrimaryAddressState = data.value( "primaryAddressState" );
+    d->mPrimaryAddressPostalcode = data.value( "primaryAddressPostalcode" );
+    d->mPrimaryAddressCountry = data.value( "primaryAddressCountry" );
+    d->mAltAddressStreet = data.value( "altAddressStreet" );
+    d->mAltAddressCity = data.value( "altAddressCity" );
+    d->mAltAddressState = data.value( "altAddressState" );
+    d->mAltAddressPostalcode = data.value( "altAddressPostalcode" );
+    d->mAltAddressCountry = data.value( "altAddressCountry" );
+    d->mAssistant = data.value( "assistant" );
+    d->mAssistantPhone = data.value( "assistantPhone" );
+    d->mConverted = data.value( "converted" );
+    d->mReferedBy = data.value( "referedBy" );
+    d->mLeadSource = data.value( "leadSource" );
+    d->mLeadSourceDescription = data.value( "leadSourceDescription" );
+    d->mStatus = data.value( "status" );
+    d->mStatusDescription = data.value( "statusDescription" );
+    d->mReportsToId = data.value( "reportsToId" );
+    d->mReportToName = data.value( "reportToName" );
+    d->mAccountName = data.value( "accountName" );
+    d->mAccountDescription =data.value( "accountDescription" );
+    d->mContactId = data.value( "contactId" );
+    d->mAccountId = data.value( "accountId" );
+    d->mOpportunityId = data.value( "opportunityId" );
+    d->mOpportunityName = data.value( "opportunityName" );
+    d->mOpportunityAmount = data.value( "opportunityAmount" );
+    d->mCampaignId = data.value( "campaignId" );
+    d->mCampaignName = data.value( "campaignName" );
+    d->mCAcceptStatusFields = data.value( "cAcceptStatusFields" );
+    d->mMAcceptStatusFields = data.value( "mAcceptStatusFields" );
+    d->mBirthdate = data.value( "birthdate" );
+    d->mPortalName = data.value( "portalName" );
+    d->mPortalApp = data.value( "portalApp" );
+}
+
+QMap<QString, QString> SugarLead::data()
+{
+    QMap<QString, QString> data;
+    data["id"] = d->mId;
+    data["dateEntered"] = d->mDateEntered;
+    data["dateModified"] = d->mDateModified;
+    data["modifiedUserId"] = d->mModifiedUserId;
+    data["modifiedByName"] = d->mModifiedByName;
+    data["createdBy"] = d->mCreatedBy;
+    data["createdByName"] = d->mCreatedByName;
+    data["description"] = d->mDescription;
+    data["deleted"] = d->mDeleted;
+    data["assignedUserId"] = d->mAssignedUserId;
+    data["assignedUserName"] = d->mAssignedUserName;
+    data["salutation"] = d->mSalutation;
+    data["firstName"] = d->mFirstName;
+    data["lastName"] = d->mLastName;
+    data["title"] = d->mTitle;
+    data["department"] = d->mDepartment;
+    data["doNotCall"] = d->mDoNotCall;
+    data["phoneHome"] = d->mPhoneHome;
+    data["phoneMobile"] = d->mPhoneMobile;
+    data["phoneWork"] = d->mPhoneWork;
+    data["phoneOther"] = d->mPhoneOther;
+    data["phoneFax"] = d->mPhoneFax;
+    data["email1"] = d->mEmail1;
+    data["email2"] = d->mEmail2;
+    data["primaryAddressStreet"] = d->mPrimaryAddressStreet;
+    data["primaryAddressCity"] = d->mPrimaryAddressCity;
+    data["primaryAddressState"] = d->mPrimaryAddressState;
+    data["primaryAddressPostalcode"] = d->mPrimaryAddressPostalcode;
+    data["primaryAddressCountry"] = d->mPrimaryAddressCountry;
+    data["altAddressStreet"] = d->mAltAddressStreet;
+    data["altAddressCity"] = d->mAltAddressCity;
+    data["altAddressState"] = d->mAltAddressState;
+    data["altAddressPostalcode"] = d->mAltAddressPostalcode;
+    data["altAddressCountry"] = d->mAltAddressCountry;
+    data["assistant"] = d->mAssistant;
+    data["assistantPhone"] = d->mAssistantPhone;
+    data["converted"] = d->mConverted;
+    data["referedBy"] = d->mReferedBy;
+    data["leadSource"] = d->mLeadSource;
+    data["leadSourceDescription"] = d->mLeadSourceDescription;
+    data["status"] = d->mStatus;
+    data["statusDescription"] = d->mStatusDescription;
+    data["reportsToId"] = d->mReportsToId;
+    data["reportToName"] = d->mReportToName;
+    data["accountName"] = d->mAccountName;
+    data["accountDescription"] = d->mAccountDescription;
+    data["contactId"] = d->mContactId;
+    data["accountId"] = d->mAccountId;
+    data["opportunityId"] = d->mOpportunityId;
+    data["opportunityName"] = d->mOpportunityName;
+    data["opportunityAmount"] = d->mOpportunityAmount;
+    data["campaignId"] = d->mCampaignId;
+    data["campaignName"] = d->mCampaignName;
+    data["cAcceptStatusFields"] = d->mCAcceptStatusFields;
+    data["mAcceptStatusFields"] = d->mMAcceptStatusFields;
+    data["birthdate"] = d->mBirthdate;
+    data["portalName"] = d->mPortalName;
+    data["portalApp"] = d->mPortalApp;
+    return data;
+}
+
 QString SugarLead::mimeType()
 {
     return QLatin1String( "application/x-vnd.kdab.crm.lead" );

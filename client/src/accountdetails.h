@@ -18,7 +18,6 @@ public:
 
     ~AccountDetails();
 
-    friend class CampaignsPage;
     friend class Page;
 protected:
     /*reimp*/ void initialize();

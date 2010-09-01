@@ -3,7 +3,7 @@ import test
 
 def createOpportunity():
     clickTab(waitForObject(":SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar"), "Opportunities")
-    clickButton(waitForObject(":Form.New Opportunity_QPushButton"))
+    clickButton(waitForObject(":Page.New_QPushButton"))
    
 def registerDetails(dList):    
     type(waitForObject(":Details.name_QLineEdit_2"), "<Ctrl+A>")

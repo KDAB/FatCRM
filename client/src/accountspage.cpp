@@ -43,6 +43,7 @@ void AccountsPage::addItem( const QMap<QString, QString> data )
     // update Account combos for:
     // accounts - contacts and opportunity details
     updateAccountCombo( account.name(), account.id());
+    updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
 
 void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> data  )
@@ -69,6 +70,7 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> data  )
     // update Account combos for:
     // accounts - contacts and opportunity details
     updateAccountCombo( account.name(), account.id());
+    updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
 
 void AccountsPage::setupModel()

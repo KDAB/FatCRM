@@ -1,7 +1,10 @@
 #include "page.h"
 #include "enums.h"
-
 #include "sugarclient.h"
+#include "kdcrmdata/sugaraccount.h"
+#include "kdcrmdata/sugaropportunity.h"
+#include "kdcrmdata/sugarcampaign.h"
+#include "kdcrmdata/sugarlead.h"
 
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactsfilterproxymodel.h>
@@ -181,8 +184,10 @@ void Page::slotRemoveItem()
         mUi.removePB->setEnabled( false );
 
     mClientWindow->displayDockWidgets( false );
-    if ( typeToString( mType ) == "Accounts" )
+    if ( mType == Account )
         removeAccountsData( item );
+    else if ( mType == Campaign )
+        removeCampaignsData( item );
 }
 
 void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
@@ -193,7 +198,12 @@ void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
     }
 
     if ( mUi.treeView->model()->rowCount() == mCollection.statistics().count() ) {
-        addAccountsData();
+        if ( mType == Account )
+            addAccountsData();
+        else if ( mType == Campaign )
+            addCampaignsData();
+        else if ( mType == Contact )
+            addContactsData();
     }
 }
 
@@ -309,15 +319,48 @@ QString Page::typeToString( const DetailsType &type ) const
 
 void Page::updateAccountCombo( const QString& name, const QString& id )
 {
-    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
+    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
     ad->addAccountData( name, id );
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    cd->addAccountData( name, id );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    od->addAccountData( name, id );
+}
+
+void Page::updateAssignedToCombo( const QString& name, const QString& id )
+{
+    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    ad->addAssignedToData( name, id );
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    cd->addAssignedToData( name, id );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    od->addAssignedToData( name, id );
+    CampaignDetails *cad = dynamic_cast<CampaignDetails*>(mClientWindow->detailsWidget(Campaign));
+    cad->addAssignedToData( name, id );
+    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    ld->addAssignedToData( name, id );
+}
+
+void Page::updateCampaignCombo( const QString& name, const QString& id )
+{
+    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    ad->addCampaignData( name, id );
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    cd->addCampaignData( name, id );
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    od->addCampaignData( name, id );
+    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    ld->addCampaignData( name, id );
+}
+
+void Page::updateReportToCombo( const QString& name, const QString& id )
+{
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    cd->addReportsToData( name, id );
 }
 
 void Page::addAccountsData()
 {
-
-    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
-
     QModelIndex index;
     Item item;
     SugarAccount account;
@@ -326,19 +369,71 @@ void Page::addAccountsData()
         item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
         if ( item.hasPayload<SugarAccount>() ) {
             account = item.payload<SugarAccount>();
-            ad->addAccountData( account.name(), account.id() );
-            ad->addAssignedToData( account.assignedUserName(), account.assignedUserId() );
+            updateAccountCombo( account.name(), account.id() );
+            updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
+        }
+    }
+}
+
+void Page::addCampaignsData()
+{
+    QModelIndex index;
+    Item item;
+    SugarCampaign campaign;
+    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
+        index  =  mUi.treeView->model()->index( i, 0 );
+        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        if ( item.hasPayload<SugarCampaign>() ) {
+            campaign = item.payload<SugarCampaign>();
+            updateCampaignCombo( campaign.name(), campaign.id() );
+        }
+    }
+}
+
+void Page::addContactsData()
+{
+    QString fullName;
+    QModelIndex index;
+    Item item;
+    KABC::Addressee addressee;
+    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
+        index  =  mUi.treeView->model()->index( i, 0 );
+        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        if ( item.hasPayload<KABC::Addressee>() ) {
+            addressee = item.payload<KABC::Addressee>();
+            fullName = addressee.givenName() + " " + addressee.familyName();
+            updateReportToCombo( fullName, addressee.custom( "FATCRM", "X-ContactId" ) );
         }
     }
 }
 
 void Page::removeAccountsData( Akonadi::Item &item )
 {
-    AbstractDetails *ad = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget( mType ) );
+    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
 
     if ( item.hasPayload<SugarAccount>() ) {
         SugarAccount account;
         account = item.payload<SugarAccount>();
         ad->removeAccountData( account.name() );
+        cd->removeAccountData( account.name() );
+        od->removeAccountData( account.name() );
+    }
+}
+
+void Page::removeCampaignsData( Akonadi::Item &item )
+{
+    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    if ( item.hasPayload<SugarCampaign>() ) {
+        SugarCampaign campaign;
+        campaign = item.payload<SugarCampaign>();
+        ad->removeCampaignData( campaign.name() );
+        cd->removeCampaignData( campaign.name() );
+        od->removeCampaignData( campaign.name() );
+        ld->removeCampaignData( campaign.name() );
     }
 }

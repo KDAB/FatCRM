@@ -589,6 +589,16 @@ class KDCRMDATA_EXPORT SugarLead
     QString portalApp() const;
 
     /**
+      Convenience method set the data for this lead
+     */
+    void setData( QMap<QString, QString> data );
+
+    /**
+      Convenience method get the data for this lead
+     */
+    QMap<QString, QString> data();
+
+    /**
        Return the Mime type
      */
     static QString mimeType();

@@ -319,6 +319,16 @@ class KDCRMDATA_EXPORT SugarCampaign
     QString frequency() const;
 
     /**
+      Convenience: set the data for this campaign
+     */
+    void setData( QMap<QString, QString> data );
+
+    /**
+      Convenience: retrieve the data for this campaign
+     */
+    QMap<QString, QString> data();
+
+    /**
        Return the Mime type
      */
     static QString mimeType();
