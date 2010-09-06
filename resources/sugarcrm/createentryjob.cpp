@@ -34,6 +34,7 @@ public: // slots
 
 void CreateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
 {
+    kDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId( callResult.id() );
 
     q->emitResult();
