@@ -49,7 +49,7 @@ if (KDSoap_KDWSDL2CPP)
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
               ${_wsdl}
     )
-    
+
     QT4_GENERATE_MOC(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 
@@ -79,16 +79,18 @@ set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )
 ########### next target ###############
 
 set( sugarcrmresource_SRCS
-    contactshandler.cpp
     accountshandler.cpp
-    opportunitieshandler.cpp
-    leadshandler.cpp
     campaignshandler.cpp
-    modulehandler.cpp
+    contactshandler.cpp
+    leadshandler.cpp
     moduledebuginterface.cpp
+    modulehandler.cpp
+    opportunitieshandler.cpp
     resourcedebuginterface.cpp
     sugarconfigdialog.cpp
     sugarcrmresource.cpp
+    sugarjob.cpp
+    sugarsession.cpp
 )
 
 kde4_add_ui_files( sugarcrmresource_SRCS
