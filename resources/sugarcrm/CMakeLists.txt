@@ -95,6 +95,7 @@ set( sugarcrmresource_SRCS
     sugarcrmresource.cpp
     sugarjob.cpp
     sugarsession.cpp
+    updateentryjob.cpp
 )
 
 kde4_add_ui_files( sugarcrmresource_SRCS
