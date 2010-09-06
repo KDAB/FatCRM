@@ -82,6 +82,7 @@ set( sugarcrmresource_SRCS
     accountshandler.cpp
     campaignshandler.cpp
     contactshandler.cpp
+    createentryjob.cpp
     leadshandler.cpp
     listentriesjob.cpp
     listmodulesjob.cpp
