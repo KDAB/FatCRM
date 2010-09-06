@@ -34,6 +34,7 @@ public: // slots
 
 void DeleteEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
 {
+    Q_UNUSED( callResult );
     kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();
@@ -62,6 +63,11 @@ DeleteEntryJob::DeleteEntryJob( const Akonadi::Item &item, SugarSession *session
 DeleteEntryJob::~DeleteEntryJob()
 {
     delete d;
+}
+
+Item DeleteEntryJob::item() const
+{
+    return d->mItem;
 }
 
 void DeleteEntryJob::startSugarTask()

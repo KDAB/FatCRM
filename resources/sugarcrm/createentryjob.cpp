@@ -70,6 +70,11 @@ void CreateEntryJob::setModule( ModuleHandler *handler )
     d->mHandler = handler;
 }
 
+Item CreateEntryJob::item() const
+{
+    return d->mItem;
+}
+
 void CreateEntryJob::startSugarTask()
 {
     Q_ASSERT( d->mItem.isValid() );
