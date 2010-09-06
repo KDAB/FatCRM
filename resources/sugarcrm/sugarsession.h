@@ -9,6 +9,8 @@ class SugarSession : public QObject
 {
     Q_OBJECT
 
+    friend class SugarJob;
+
 public:
     enum RequiredAction {
         None,
@@ -25,13 +27,14 @@ public:
 
     void createSoapInterface();
 
-    void setSessionId( const QString &sessionId );
     QString sessionId() const;
 
     QString userName() const;
     QString password() const;
     QString host() const;
 
+private:
+    void setSessionId( const QString &sessionId );
     Sugarsoap *soap();
 
 private:

@@ -69,11 +69,6 @@ void SugarSession::createSoapInterface()
     d->mSoap->setEndPoint( endPointFromHostString( d->mHost ) );
 }
 
-void SugarSession::setSessionId( const QString &sessionId )
-{
-    d->mSessionId = sessionId;
-}
-
 QString SugarSession::sessionId() const
 {
     return d->mSessionId;
@@ -92,6 +87,11 @@ QString SugarSession::password() const
 QString SugarSession::host() const
 {
     return d->mHost;
+}
+
+void SugarSession::setSessionId( const QString &sessionId )
+{
+    d->mSessionId = sessionId;
 }
 
 Sugarsoap *SugarSession::soap()
