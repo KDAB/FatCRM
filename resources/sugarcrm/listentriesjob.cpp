@@ -39,6 +39,8 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
         kDebug() << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "items";
         emit q->itemsReceived( items );
+
+        mHandler->listEntries( callResult.next_offset(), q->soap(), q->sessionId() );
     } else {
         kDebug() << "List Entries for" << mHandler->moduleName() << "done";
         q->emitResult();
