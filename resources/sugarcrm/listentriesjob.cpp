@@ -18,12 +18,13 @@ class ListEntriesJob::Private
     ListEntriesJob *const q;
 
 public:
-    explicit Private( ListEntriesJob *parent ) : q( parent ), mHandler( 0 )
+    explicit Private( ListEntriesJob *parent, const Akonadi::Collection &collection )
+        : q( parent ), mCollection( collection ), mHandler( 0 )
     {
     }
 
 public:
-    Collection mCollection;
+    const Collection mCollection;
     ModuleHandler *mHandler;
 
 public: // slots
@@ -58,8 +59,8 @@ void ListEntriesJob::Private::listEntriesError( const KDSoapMessage &fault )
     }
 }
 
-ListEntriesJob::ListEntriesJob( SugarSession *session, QObject *parent )
-    : SugarJob( session, parent ), d( new Private( this ) )
+ListEntriesJob::ListEntriesJob( const Akonadi::Collection &collection, SugarSession *session, QObject *parent )
+    : SugarJob( session, parent ), d( new Private( this, collection ) )
 {
     connect( soap(), SIGNAL( get_entry_listDone( TNS__Get_entry_list_result ) ),
              this,  SLOT( listEntriesDone( TNS__Get_entry_list_result ) ) );
@@ -72,9 +73,8 @@ ListEntriesJob::~ListEntriesJob()
     delete d;
 }
 
-void ListEntriesJob::setModule( const Akonadi::Collection &collection, ModuleHandler *handler )
+void ListEntriesJob::setModule( ModuleHandler *handler )
 {
-    d->mCollection = collection;
     d->mHandler = handler;
 }
 

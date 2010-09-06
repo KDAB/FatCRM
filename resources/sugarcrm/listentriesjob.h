@@ -18,11 +18,11 @@ class ListEntriesJob : public SugarJob
     Q_OBJECT
 
 public:
-    explicit ListEntriesJob( SugarSession *session, QObject *parent = 0 );
+    ListEntriesJob( const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0 );
 
     ~ListEntriesJob();
 
-    void setModule( const Akonadi::Collection &collection, ModuleHandler *handler );
+    void setModule( ModuleHandler *handler );
 
 Q_SIGNALS:
     void itemsReceived( const Akonadi::Item::List &items );
