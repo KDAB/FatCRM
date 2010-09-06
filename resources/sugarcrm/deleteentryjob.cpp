@@ -42,7 +42,7 @@ void DeleteEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callRes
 void DeleteEntryJob::Private::setEntryError( const KDSoapMessage &fault )
 {
     if ( !q->handleLoginError( fault ) ) {
-        kWarning() << "Create Entry Error:" << fault.faultAsString();
+        kWarning() << "Delete Entry Error:" << fault.faultAsString();
 
         q->setError( SugarJob::SoapError );
         q->setErrorText( fault.faultAsString() );
