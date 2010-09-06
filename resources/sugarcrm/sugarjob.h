@@ -5,6 +5,7 @@
 
 class KDSoapMessage;
 class SugarSession;
+class Sugarsoap;
 class TNS__Set_entry_result;
 
 class SugarJob : public KJob
@@ -13,7 +14,8 @@ class SugarJob : public KJob
 
 public:
     enum Errors {
-        LoginError
+        LoginError = KJob::UserDefinedError + 1,
+        SoapError
     };
 
     explicit SugarJob( SugarSession* session, QObject* parent = 0);
@@ -26,6 +28,9 @@ protected:
     virtual void startSugarTask() = 0;
 
     bool handleLoginError( const KDSoapMessage &fault );
+
+    QString sessionId() const;
+    Sugarsoap *soap();
 
 private:
     class Private;

@@ -82,7 +82,7 @@ void SugarJob::Private::loginDone( const TNS__Set_entry_result &callResult )
 
 void SugarJob::Private::loginError( const KDSoapMessage &fault )
 {
-    q->setError( LoginError );
+    q->setError( SugarJob::LoginError );
     q->setErrorText( i18nc( "@info:status", "Login for user %1 on %2 failed: %3",
                             mSession->userName(), mSession->host(), fault.faultAsString() ) );
     q->emitResult();
@@ -121,6 +121,16 @@ bool SugarJob::handleLoginError( const KDSoapMessage &fault )
     }
 
     return false;
+}
+
+QString SugarJob::sessionId() const
+{
+    return d->mSession->sessionId();
+}
+
+Sugarsoap *SugarJob::soap()
+{
+    return d->mSession->soap();
 }
 
 #include "sugarjob.moc"
