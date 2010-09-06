@@ -18,7 +18,7 @@ class ListEntriesJob::Private
     ListEntriesJob *const q;
 
 public:
-    explicit Private( ListEntriesJob *parent ) : q( parent )
+    explicit Private( ListEntriesJob *parent ) : q( parent ), mHandler( 0 )
     {
     }
 

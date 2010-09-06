@@ -19,7 +19,7 @@ class CreateEntryJob::Private
 
 public:
     explicit Private( CreateEntryJob *parent, const Item &item )
-        : q( parent ), mItem( item )
+        : q( parent ), mItem( item ), mHandler( 0 )
     {
     }
 
