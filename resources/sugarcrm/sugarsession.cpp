@@ -89,6 +89,13 @@ QString SugarSession::host() const
     return d->mHost;
 }
 
+void SugarSession::logout()
+{
+    if ( !d->mSessionId.isEmpty() && d->mSoap != 0 ) {
+        d->mSoap->logout( d->mSessionId );
+    }
+}
+
 void SugarSession::setSessionId( const QString &sessionId )
 {
     d->mSessionId = sessionId;

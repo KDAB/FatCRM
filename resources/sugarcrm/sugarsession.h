@@ -33,6 +33,8 @@ public:
     QString password() const;
     QString host() const;
 
+    void logout();
+
 private:
     void setSessionId( const QString &sessionId );
     Sugarsoap *soap();
