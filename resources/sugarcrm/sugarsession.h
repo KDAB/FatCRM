@@ -10,6 +10,7 @@ class SugarSession : public QObject
     Q_OBJECT
 
     friend class SugarJob;
+    friend class ModuleDebugInterface;
 
 public:
     enum RequiredAction {

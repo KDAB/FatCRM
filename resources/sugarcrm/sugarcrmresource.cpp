@@ -1,16 +1,22 @@
 #include "sugarcrmresource.h"
 
 #include "accountshandler.h"
-#include "contactshandler.h"
-#include "opportunitieshandler.h"
-#include "leadshandler.h"
 #include "campaignshandler.h"
+#include "contactshandler.h"
+#include "createentryjob.h"
+#include "deleteentryjob.h"
+#include "leadshandler.h"
+#include "listentriesjob.h"
+#include "listmodulesjob.h"
+#include "loginjob.h"
 #include "moduledebuginterface.h"
+#include "opportunitieshandler.h"
 #include "resourcedebuginterface.h"
 #include "settings.h"
 #include "settingsadaptor.h"
 #include "sugarconfigdialog.h"
-#include "sugarsoap.h"
+#include "sugarsession.h"
+#include "updateentryjob.h"
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -27,15 +33,6 @@
 
 using namespace Akonadi;
 
-static QString endPointFromHostString( const QString &host )
-{
-    KUrl url( host );
-    url.setFileName( QLatin1String( "soap.php" ) );
-    url.setQuery( QString() );
-
-    return url.url();
-}
-
 static QString nameFromHostString( const QString &host )
 {
     KUrl url( host );
@@ -45,7 +42,7 @@ static QString nameFromHostString( const QString &host )
 
 SugarCRMResource::SugarCRMResource( const QString &id )
     : ResourceBase( id ),
-      mSoap( new Sugarsoap ),
+      mSession( new SugarSession( this ) ),
       mModuleHandlers( new ModuleHandlerHash )
 {
     new SettingsAdaptor( Settings::self() );
@@ -66,17 +63,15 @@ SugarCRMResource::SugarCRMResource( const QString &id )
     // make sure these call have the collection available as well
     changeRecorder()->fetchCollection( true );
 
-    connectSoapProxy();
-
-    mSoap->setEndPoint( endPointFromHostString( Settings::self()->host() ) );
-    setName( Settings::self()->user() + QLatin1Char( '@' ) + nameFromHostString( Settings::self()->host() ) );
+    mSession->setSessionParameters( Settings::self()->user(), Settings::self()->password(),
+                                    Settings::self()->host() );
+    mSession->createSoapInterface();
 }
 
 SugarCRMResource::~SugarCRMResource()
 {
     qDeleteAll( *mModuleHandlers );
     delete mModuleHandlers;
-    delete mSoap;
 }
 
 void SugarCRMResource::configure( WId windowId )
@@ -98,37 +93,22 @@ void SugarCRMResource::configure( WId windowId )
     const QString user = dialog.user();
     const QString password = dialog.password();
 
-    bool newLogin = false;
+    SugarSession::RequiredAction action = mSession->setSessionParameters( user, password, host );
+    switch ( action ) {
+        case SugarSession::None:
+            break;
 
-    // change of host requires new instance of the SOAP client as its setEndPoint() method
-    // does not change the internal client interface which actually handles the communication
-    if ( host != Settings::self()->host() ) {
-        if ( !mSessionId.isEmpty() ) {
-            mSoap->logout( mSessionId );
-            mSessionId = QString();
-        }
-
-        mSoap->disconnect();
-        mSoap->deleteLater();
-
-        setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
-
-        mSoap = new Sugarsoap;
-        mSoap->setEndPoint( endPointFromHostString( host ) );
-        connectSoapProxy();
-
-        newLogin = true;
-    }
-
-    if ( user != Settings::self()->user() || password != Settings::self()->password() ) {
-        if ( !mSessionId.isEmpty() ) {
-            mSoap->logout( mSessionId );
-            mSessionId = QString();
-        }
-
-        setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
-
-        newLogin = true;
+        case SugarSession::NewLogin:
+            mSession->createSoapInterface();
+            // fall through
+        case SugarSession::ReLogin:
+            setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
+            if ( isOnline() ) {
+                SugarJob *job = new LoginJob( mSession, this );
+                connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
+                job->start();
+            }
+            break;
     }
 
     Settings::self()->setHost( host );
@@ -137,18 +117,12 @@ void SugarCRMResource::configure( WId windowId )
     Settings::self()->writeConfig();
 
     emit configurationDialogAccepted();
-
-    if ( newLogin && isOnline() ) {
-        doLogin();
-    }
 }
 
 void SugarCRMResource::aboutToQuit()
 {
-    if ( !mSessionId.isEmpty() ) {
-        // just a curtesy to the server
-        mSoap->asyncLogout( mSessionId );
-    }
+    // just a curtesy to the server
+    mSession->logout();
 }
 
 void SugarCRMResource::doSetOnline( bool online )
@@ -157,67 +131,38 @@ void SugarCRMResource::doSetOnline( bool online )
 
     if ( online ) {
         if ( Settings::self()->host().isEmpty() ) {
-            const QString message = i18nc( "@status", "No server configured" );
+            const QString message = i18nc( "@info:status", "No server configured" );
             status( Broken, message );
             error( message );
         } else if ( Settings::self()->user().isEmpty() ) {
-            const QString message = i18nc( "@status", "No user name configured" );
+            const QString message = i18nc( "@info:status", "No user name configured" );
             status( Broken, message );
             error( message );
         } else {
-            doLogin();
+            SugarJob *job = new LoginJob( mSession, this );
+            connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
+            job->start();
         }
     }
-}
-
-void SugarCRMResource::doLogin()
-{
-    const QString username = Settings::self()->user();
-    const QString password = Settings::self()->password();
-
-    // TODO krake: SugarCRM docs say that login wants an MD5 hash but it only works with clear text
-    // might depend on SugarCRM configuration
-    // would have the additional advantage of not having to save the password in clear text
-
-    //const QByteArray passwordHash = QCryptographicHash::hash( password.toUtf8(), QCryptographicHash::Md5 );
-    const QByteArray passwordHash = password.toUtf8();
-
-    TNS__User_auth userAuth;
-    userAuth.setUser_name( username );
-    userAuth.setPassword( QString::fromAscii( passwordHash ) );
-    userAuth.setVersion( QLatin1String( ".01"  ) );
-
-    mSessionId = QString();
-
-    // results handled by slots loginDone() and loginError()
-    mSoap->asyncLogin( userAuth, QLatin1String( "SugarClient" ) );
 }
 
 void SugarCRMResource::itemAdded( const Akonadi::Item &item, const Akonadi::Collection &collection )
 {
-    // TODO check if mSessionId is valid?
-
-    QString message;
-
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
-        // save item so we can reference it in the result slots
-        mPendingItem = item;
-
-        // results handled by slots setEntryDone() and setEntryError()
-        if ( !moduleIt.value()->setEntry( item, mSoap, mSessionId ) ) {
-            mPendingItem = Item();
-            message = i18nc( "@status", "Attempting to add malformed item to folder %1", collection.name() );
-        }
-    } else {
-        message = i18nc( "@status", "Cannot add items to folder %1", collection.name() );
-    }
-
-    if ( message.isEmpty() ) {
         status( Running );
+
+        CreateEntryJob *job = new CreateEntryJob( item, mSession, this );
+        job->setModule( *moduleIt );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( createEntryResult( KJob* ) ) );
+        job->start();
     } else {
+        const QString message = i18nc( "@info:status", "Cannot add items to folder %1",
+                                       collection.name() );
+        kWarning() << message;
+
         status( Broken, message );
         error( message );
         cancelTask( message );
@@ -229,30 +174,24 @@ void SugarCRMResource::itemChanged( const Akonadi::Item &item, const QSet<QByteA
     // TODO maybe we can use parts to get only a subset of fields in ModuleHandler::setEntry()
     Q_UNUSED( parts );
 
-    // TODO check if mSessionId is valid?
-    QString message;
-
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
     const Collection collection = item.parentCollection();
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
-        // save item so we can reference it in the result slots
-        mPendingItem = item;
-
-        // get the current remote item for revision comparison to detect remote changes
-        // see getEntryDone() for check and furher setEntry processing
-        if ( !moduleIt.value()->getEntry( item, mSoap, mSessionId ) ) {
-            mPendingItem = Item();
-            message = i18nc( "@status", "Attempting to modify a malformed item in folder %1", collection.name() );
-        }
-    } else {
-        message = i18nc( "@status", "Cannot modify items in folder %1", collection.name() );
-    }
-
-    if ( message.isEmpty() ) {
         status( Running );
+
+        UpdateEntryJob *job = new UpdateEntryJob( item, mSession, this );
+        job->setModule( *moduleIt );
+        connect( job, SIGNAL( conflictDetected( Akonadi::Item, Akonadi::Item ) ),
+                 this, SLOT( updateConflict( Akonadi::Item, Akonadi::Item ) ) );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( updateEntryResult( KJob* ) ) );
+        job->start();
     } else {
+        const QString message = i18nc( "@info:status", "Cannot modify items in folder %1",
+                                       collection.name() );
+        kWarning() << message;
+
         status( Broken, message );
         error( message );
         cancelTask( message );
@@ -269,79 +208,20 @@ void SugarCRMResource::itemRemoved( const Akonadi::Item &item )
         return;
     }
 
-    // TODO check if mSessionId is valid?
-
-    // delete just required identifier and "deleted" field
-    // no need for type specific code
-    TNS__Name_value idField;
-    idField.setName( QLatin1String( "id" ) );
-    idField.setValue( item.remoteId() );
-
-    TNS__Name_value deletedField;
-    deletedField.setName( QLatin1String( "deleted" ) );
-    deletedField.setValue( QLatin1String( "1" ) );
-
-    TNS__Name_value_list valueList;
-    valueList.setItems( QList<TNS__Name_value>() << idField << deletedField );
-
-    // save item so we can reference it in the result slots
-    mPendingItem = item;
-
-    // results handled by slots getEntryDone() and getEntryError()
-    mSoap->asyncSet_entry( mSessionId, collection.remoteId(), valueList );
-
     status( Running );
-}
 
-void SugarCRMResource::connectSoapProxy()
-{
-    Q_ASSERT( mSoap != 0 );
-
-    connect( mSoap, SIGNAL( loginDone( TNS__Set_entry_result ) ), this, SLOT( loginDone( TNS__Set_entry_result ) ) );
-    connect( mSoap, SIGNAL( loginError( KDSoapMessage ) ), this, SLOT( loginError( KDSoapMessage ) ) );
-
-    connect( mSoap, SIGNAL( get_available_modulesDone( TNS__Module_list ) ),
-             this,  SLOT( getAvailableModulesDone( TNS__Module_list ) ) );
-    connect( mSoap, SIGNAL( get_available_modulesError( KDSoapMessage ) ),
-             this,  SLOT( getAvailableModulesError( KDSoapMessage ) ) );
-
-    connect( mSoap, SIGNAL( get_entry_listDone( TNS__Get_entry_list_result ) ),
-             this,  SLOT( getEntryListDone( TNS__Get_entry_list_result ) ) );
-    connect( mSoap, SIGNAL( get_entry_listError( KDSoapMessage ) ),
-             this,  SLOT( getEntryListError( KDSoapMessage ) ) );
-
-    connect( mSoap, SIGNAL( set_entryDone( TNS__Set_entry_result ) ),
-             this,  SLOT( setEntryDone( TNS__Set_entry_result ) ) );
-    connect( mSoap, SIGNAL( set_entryError( KDSoapMessage ) ),
-             this,  SLOT( setEntryError( KDSoapMessage ) ) );
-
-    connect( mSoap, SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
-    connect( mSoap, SIGNAL( get_entryError( KDSoapMessage ) ),
-             this,  SLOT( getEntryError( KDSoapMessage ) ) );
+    SugarJob *job = new DeleteEntryJob( item, mSession, this );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( deleteEntryResult( KJob* ) ) );
+    job->start();
 }
 
 void SugarCRMResource::retrieveCollections()
 {
-    // TODO could attempt automatic login
-    if ( mSessionId.isEmpty() ) {
-        QString message;
-        if ( Settings::host().isEmpty() ) {
-            message = i18nc( "@status", "No server configured" );
-        } else if ( Settings::self()->user().isEmpty() ) {
-            message = i18nc( "@status", "No user name configured" );
-        } else {
-            message = i18nc( "@status", "Unable to login to %1", Settings::host() );
-        }
+    status( Running, i18nc( "@info:status", "Retrieving folders" ) );
 
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-    } else {
-        status( Running, i18nc( "@status", "Retrieving folders" ) );
-        // results handled by slots getAvailableModulesDone() and getAvailableModulesError()
-        mSoap->asyncGet_available_modules( mSessionId );
-    }
+    SugarJob *job = new ListModulesJob( mSession, this );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( listModulesResult( KJob* ) ) );
+    job->start();
 }
 
 void SugarCRMResource::retrieveItems( const Akonadi::Collection &collection )
@@ -351,36 +231,25 @@ void SugarCRMResource::retrieveItems( const Akonadi::Collection &collection )
         return;
     }
 
-    // TODO could attempt automatic login
-    if ( mSessionId.isEmpty() ) {
-        QString message;
-        if ( Settings::host().isEmpty() ) {
-            message = i18nc( "@status", "No server configured" );
-        } else if ( Settings::self()->user().isEmpty() ) {
-            message = i18nc( "@status", "No user name configured" );
-        } else {
-            message = i18nc( "@status", "Unable to login to %1", Settings::host() );
-        }
+    // find the handler for the module represented by the given collection and let it
+    // perform the respective "list entries" operation
+    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
+    if ( moduleIt != mModuleHandlers->constEnd() ) {
+        status( Running, i18nc( "@info:status", "Retrieving contents of folder %1",
+                                collection.name() ) );
 
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
+        // getting items in batches
+        setItemStreamingEnabled( true );
+
+        ListEntriesJob *job = new ListEntriesJob( collection, mSession, this );
+        job->setModule( *moduleIt );
+        connect( job, SIGNAL( itemsReceived( Akonadi::Item::List ) ),
+                 this, SLOT( itemsReceived( Akonadi::Item::List ) ) );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( listEntriesResult( KJob* ) ) );
+        job->start();
     } else {
-        // find the handler for the module represented by the given collection and let it
-        // perform the respective "list entries" operation
-        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
-        if ( moduleIt != mModuleHandlers->constEnd() ) {
-            status( Running, i18nc( "@status", "Retrieving contents of folder %1", collection.name() ) );
-
-            // getting items in batches
-            setItemStreamingEnabled( true );
-
-            // results handled by slots getEntryListDone() and getEntryListError()
-            moduleIt.value()->listEntries( 0, mSoap, mSessionId );
-        } else {
-            kDebug() << "No module handler for collection" << collection;
-            itemsRetrieved( Item::List() );
-        }
+        kDebug() << "No module handler for collection" << collection;
+        itemsRetrieved( Item::List() );
     }
 }
 
@@ -399,292 +268,186 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     return false;
 }
 
-void SugarCRMResource::loginDone( const TNS__Set_entry_result &callResult )
+void SugarCRMResource::explicitLoginResult( KJob *job )
 {
-    QString message;
-    mSessionId = QString();
+    if ( job->error() != 0 ) {
+        QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
 
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
-
-        message = errorValue.description();
-    } else {
-        const QString sessionId = callResult.id();
-        if ( sessionId.isEmpty() ) {
-            message = i18nc( "@status", "Login failed: server returned an empty session identifier" );
-        } else if ( mSessionId == QLatin1String( "-1" ) ) {
-            message = i18nc( "@status", "Login failed: server returned an invalid session identifier" );
+        if ( Settings::host().isEmpty() ) {
+            message = i18nc( "@info:status", "No server configured" );
+        } else if ( Settings::self()->user().isEmpty() ) {
+            message = i18nc( "@info:status", "No user name configured" );
         } else {
-            mSessionId = sessionId;
-            kDebug() << "Login succeeded: sessionId=" << mSessionId;
+            message = i18nc( "@info:status", "Unable to login %1 to %2",
+                             Settings::self()->user(), Settings::self()->host(), message );
         }
-    }
 
-    if ( message.isEmpty() ) {
-        status( Idle );
-
-        synchronizeCollectionTree();
-    } else {
         status( Broken, message );
         error( message );
+        return;
     }
+
+    status( Idle );
+    synchronizeCollectionTree();
 }
 
-void SugarCRMResource::loginError( const KDSoapMessage &fault )
+void SugarCRMResource::listModulesResult( KJob *job )
 {
-    mSessionId = QString();
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
 
-    const QString message = fault.faultAsString();
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+        return;
+    }
 
-    status( Broken, message );
-    error( message );
-}
+    ListModulesJob *listJob = qobject_cast<ListModulesJob*>( job );
+    Q_ASSERT( listJob != 0 );
 
-void SugarCRMResource::getAvailableModulesDone( const TNS__Module_list &callResult )
-{
-    QString message;
     Collection::List collections;
 
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
+    Collection topLevelCollection;
+    topLevelCollection.setRemoteId( identifier() );
+    topLevelCollection.setName( name() );
+    topLevelCollection.setParentCollection( Collection::root() );
 
-        message = errorValue.description();
-    } else {
-        Collection topLevelCollection;
-        topLevelCollection.setRemoteId( identifier() );
-        topLevelCollection.setName( name() );
-        topLevelCollection.setParentCollection( Collection::root() );
+    // Our top level collection only contains other collections (no items) and cannot be
+    // modified by clients
+    topLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
+    topLevelCollection.setRights( Collection::ReadOnly );
 
-        // Our top level collection only contains other collections (no items) and cannot be
-        // modified by clients
-        topLevelCollection.setContentMimeTypes( QStringList() << Collection::mimeType() );
-        topLevelCollection.setRights( Collection::ReadOnly );
+    collections << topLevelCollection;
 
-        collections << topLevelCollection;
+    mAvailableModules.clear();
+    Q_FOREACH( const QString &module, listJob->modules() ) {
+        mAvailableModules << module;
 
-        mAvailableModules.clear();
-        const TNS__Select_fields moduleNames = callResult.modules();
-        Q_FOREACH( const QString &module, moduleNames.items() ) {
-            mAvailableModules << module;
+        ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
+        QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
+                                                    debugInterface,
+                                                    QDBusConnection::ExportScriptableSlots );
 
-            ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
-            QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
-                                                          debugInterface,
-                                                           QDBusConnection::ExportScriptableSlots );
+        Collection collection;
 
-            Collection collection;
-
-            // check if we have a corresponding module handler already
-            // if not see if we can create one
-            ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
-            if ( moduleIt != mModuleHandlers->constEnd() ) {
-                collection = moduleIt.value()->collection();
-            } else {
-                ModuleHandler* handler = 0;
-                if ( module == QLatin1String( "Contacts" ) ) {
-                    handler = new ContactsHandler;
-                } else if ( module == QLatin1String( "Accounts" ) ) {
-                    handler = new AccountsHandler;
-                } else if ( module == QLatin1String( "Opportunities" ) ) {
-                    handler = new OpportunitiesHandler;
-                } else if ( module == QLatin1String( "Leads" ) ) {
-                    handler = new LeadsHandler;
-                } else if ( module == QLatin1String( "Campaigns" ) ) {
-                    handler = new CampaignsHandler;
-                }
-                else {
-                    //kDebug() << "No module handler for" << module;
-                    continue;
-                }
-                mModuleHandlers->insert( module, handler );
-
-                collection = handler->collection();
-            }
-
-            collection.setParentCollection( topLevelCollection );
-            collections << collection;
-        }
-    }
-
-    if ( message.isEmpty() ) {
-        collectionsRetrieved( collections );
-        status( Idle );
-    } else {
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-    }
-}
-
-void SugarCRMResource::getAvailableModulesError( const KDSoapMessage &fault )
-{
-    const QString message = fault.faultAsString();
-
-    status( Broken, message );
-    error( message );
-    cancelTask( message );
-}
-
-void SugarCRMResource::getEntryListDone( const TNS__Get_entry_list_result &callResult )
-{
-    const Collection collection = currentCollection();
-
-    QString message;
-    Item::List items;
-
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
-
-        message = errorValue.description();
-    } else {
-        // find the handler for the module represented by the given collection and let it
-        // "deserialize" the SOAP response into an item payload and perform the respective "list entries" operation
-        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
+        // check if we have a corresponding module handler already
+        // if not see if we can create one
+        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
         if ( moduleIt != mModuleHandlers->constEnd() ) {
-            if ( callResult.result_count() > 0 ) {
-                itemsRetrieved( moduleIt.value()->itemsFromListEntriesResponse( callResult.entry_list(), collection ) );
-
-                moduleIt.value()->listEntries( callResult.next_offset(), mSoap, mSessionId );
-            } else {
-                status( Idle );
-                itemsRetrievalDone();
-            }
-        }
-    }
-
-    if ( !message.isEmpty() ) {
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-    }
-}
-
-void SugarCRMResource::getEntryListError( const KDSoapMessage &fault )
-{
-    const QString message = fault.faultAsString();
-
-    status( Broken, message );
-    error( message );
-    cancelTask( message );
-}
-
-void SugarCRMResource::setEntryDone( const TNS__Set_entry_result &callResult )
-{
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
-
-        const QString message = errorValue.description();
-
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-    } else {
-        status( Idle );
-
-        // setting the remoteId is technically only required for the handling the result of
-        // itemAdded() so Akonadi knows which identifier was assigned to the item on the server.
-        mPendingItem.setRemoteId( callResult.id() );
-        changeCommitted( mPendingItem );
-    }
-
-    mPendingItem = Item();
-}
-
-void SugarCRMResource::setEntryError( const KDSoapMessage &fault )
-{
-    const QString message = fault.faultAsString();
-
-    status( Broken, message );
-    error( message );
-    cancelTask( message );
-
-    mPendingItem = Item();
-}
-
-void SugarCRMResource::getEntryDone( const TNS__Get_entry_result &callResult )
-{
-    QString message;
-
-    const TNS__Error_value errorValue = callResult.error();
-    if ( !errorValue.number().isEmpty() && errorValue.number() != QLatin1String( "0" ) ) {
-        kError() << "SOAP Error: number=" << errorValue.number()
-                 << ", name=" << errorValue.name() << ", description=" << errorValue.description();
-
-        message = errorValue.description();
-    } else {
-        // find the handler for the module represented by the given item's parent collection and let it
-        // "deserialize" the SOAP response into an item payload
-        const Collection collection = mPendingItem.parentCollection();
-
-        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
-        if ( moduleIt != mModuleHandlers->constEnd() ) {
-            const Akonadi::Item::List items = moduleIt.value()->itemsFromListEntriesResponse( callResult.entry_list(), collection );
-            Q_ASSERT( items.count() == 1 );
-
-            const Akonadi::Item remoteItem = items.first();
-
-            kDebug() << "remote=" << remoteItem.remoteRevision()
-                     << "local=" << mPendingItem.remoteRevision();
-            if ( mPendingItem.remoteRevision().isEmpty() ) {
-                kWarning() << "local item (id=" << mPendingItem.id()
-                           << ", remoteId=" << mPendingItem.remoteId()
-                           << ") in collection=" << collection.remoteId()
-                           << "does not have remoteRevision";
-            } else if ( remoteItem.remoteRevision().isEmpty() ) {
-                kWarning() << "remote item (id=" << remoteItem.id()
-                           << ", remoteId=" << remoteItem.remoteId()
-                           << ") in collection=" << collection.remoteId()
-                           << "does not have remoteRevision";
-            } else if ( remoteItem.remoteRevision() > mPendingItem.remoteRevision() ) {
-                // remoteRevision is an ISO date, so string comparisons are accurate for < or >
-                // TODO real conflict handling, e.g. GUI
-
-                message = i18nc( "info:status",
-                                 "Conflict when writing to server. Item has already been modified there" );
-            }
-
-            if ( message.isEmpty() ) {
-                kDebug() << "no conflict, updating entry";
-                if ( !moduleIt.value()->setEntry( mPendingItem, mSoap, mSessionId ) ) {
-                    mPendingItem = Item();
-                    message = i18nc( "@status", "Attempting to modify a malformed item in folder %1", collection.name() );
-                } else {
-                    // results handled by slots setEntryDone() and setEntryError()
-                    return;
-                }
-            }
+            collection = moduleIt.value()->collection();
         } else {
-            message = i18nc( "@status", "Cannot modify items in folder %1", collection.name() );
+            ModuleHandler* handler = 0;
+            if ( module == QLatin1String( "Contacts" ) ) {
+                handler = new ContactsHandler;
+            } else if ( module == QLatin1String( "Accounts" ) ) {
+                handler = new AccountsHandler;
+            } else if ( module == QLatin1String( "Opportunities" ) ) {
+                handler = new OpportunitiesHandler;
+            } else if ( module == QLatin1String( "Leads" ) ) {
+                handler = new LeadsHandler;
+            } else if ( module == QLatin1String( "Campaigns" ) ) {
+                handler = new CampaignsHandler;
+            }
+            else {
+                //kDebug() << "No module handler for" << module;
+                continue;
+            }
+            mModuleHandlers->insert( module, handler );
+
+            collection = handler->collection();
         }
+
+        collection.setParentCollection( topLevelCollection );
+        collections << collection;
     }
 
-    if ( !message.isEmpty() ) {
+    collectionsRetrieved( collections );
+    status( Idle );
+}
+
+void SugarCRMResource::itemsReceived( const Akonadi::Item::List &items )
+{
+    itemsRetrieved( items );
+}
+
+void SugarCRMResource::listEntriesResult( KJob *job )
+{
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
+
         status( Broken, message );
         error( message );
         cancelTask( message );
-        kError() << message;
+        return;
     }
 
-    mPendingItem = Item();
+    itemsRetrievalDone();
+    status( Idle );
 }
 
-void SugarCRMResource::getEntryError( const KDSoapMessage &fault )
+void SugarCRMResource::createEntryResult( KJob *job )
 {
-    const QString message = fault.faultAsString();
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
 
-    status( Broken, message );
-    error( message );
-    cancelTask( message );
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+        return;
+    }
 
-    mPendingItem = Item();
+    CreateEntryJob *createJob = qobject_cast<CreateEntryJob*>( job );
+    Q_ASSERT( createJob != 0 );
+
+    changeCommitted( createJob->item() );
+    status( Idle );
+}
+
+void SugarCRMResource::deleteEntryResult( KJob *job )
+{
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
+
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+        return;
+    }
+
+    DeleteEntryJob *deleteJob = qobject_cast<DeleteEntryJob*>( job );
+    Q_ASSERT( deleteJob != 0 );
+
+    changeCommitted( deleteJob->item() );
+    status( Idle );
+}
+
+void SugarCRMResource::updateConflict( const Item &localItem, const Item &remoteItem )
+{
+    // TODO
+}
+
+void SugarCRMResource::updateEntryResult( KJob *job )
+{
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
+
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+        return;
+    }
+
+    UpdateEntryJob *updateJob = qobject_cast<UpdateEntryJob*>( job );
+    Q_ASSERT( updateJob != 0 );
+
+    changeCommitted( updateJob->item() );
+    status( Idle );
 }
 
 AKONADI_RESOURCE_MAIN( SugarCRMResource )

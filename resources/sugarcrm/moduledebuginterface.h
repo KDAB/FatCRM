@@ -12,7 +12,7 @@ class ModuleDebugInterface : public QObject
     Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ModuleDebug")
 
     public:
-        ModuleDebugInterface( const QString &moduleName,SugarCRMResource *resource );
+        ModuleDebugInterface( const QString &moduleName, SugarCRMResource *resource );
         ~ModuleDebugInterface();
 
     public Q_SLOTS:

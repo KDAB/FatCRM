@@ -2,6 +2,7 @@
 
 #include "modulehandler.h"
 #include "sugarcrmresource.h"
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <QStringList>
@@ -20,8 +21,10 @@ QStringList ModuleDebugInterface::availableFields() const
     if ( mAvailableFields.isEmpty() ) {
         kDebug() << "Available Fields for " << mModuleName
                  << "not fetch yet, getting them now";
-        Sugarsoap *soap = mResource->mSoap;
-        const QString sessionId = mResource->mSessionId;
+
+        SugarSession *session = mResource->mSession;
+        Sugarsoap *soap = session->soap();
+        const QString sessionId = session->sessionId();
 
         const TNS__Module_fields response = soap->get_module_fields( sessionId, mModuleName );
 
