@@ -13,12 +13,13 @@ class SugarJob::Private
     SugarJob *const q;
 public:
     Private( SugarJob *parent, SugarSession* session )
-        : q( parent ), mSession( session )
+        : q( parent ), mSession( session ), mTryRelogin( true )
     {
     }
 
 public:
     SugarSession* mSession;
+    bool mTryRelogin;
 
 public: // slots
     void startLogin();
@@ -34,6 +35,8 @@ public: // slots
 
 void SugarJob::Private::startLogin()
 {
+    mTryRelogin = false;
+
     Sugarsoap *soap = mSession->soap();
     Q_ASSERT( soap != 0 );
 
@@ -114,7 +117,7 @@ void SugarJob::start()
 bool SugarJob::handleLoginError( const KDSoapMessage &fault )
 {
     // TODO check for error indicating that new login is required
-    if ( true ) {
+    if ( d->mTryRelogin ) {
         Q_UNUSED( fault );
         QMetaObject::invokeMethod( this, "startLogin", Qt::QueuedConnection );
         return true;
