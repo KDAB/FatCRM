@@ -1,5 +1,5 @@
-#ifndef LISTENTRIESJOB_H
-#define LISTENTRIESJOB_H
+#ifndef UPDATEENTRYJOB_H
+#define UPDATEENTRYJOB_H
 
 #include "sugarjob.h"
 
