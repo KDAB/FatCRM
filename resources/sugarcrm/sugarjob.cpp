@@ -95,7 +95,7 @@ SugarJob::SugarJob( SugarSession* session, QObject* parent )
     : KJob( parent ), d( new Private( this, session ) )
 {
     connect( session->soap(), SIGNAL( loginDone( TNS__Set_entry_result ) ),
-             this, SLOT( loginDon( TNS__Set_entry_result ) ) );
+             this, SLOT( loginDone( TNS__Set_entry_result ) ) );
     connect( session->soap(), SIGNAL( loginError( KDSoapMessage ) ),
              this, SLOT( loginError( KDSoapMessage ) ) );
 }
