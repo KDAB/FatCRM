@@ -97,6 +97,11 @@ void UpdateEntryJob::Private::setEntryError( const KDSoapMessage &fault )
 UpdateEntryJob::UpdateEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, item ) )
 {
+    connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
+             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
+    connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
+             this,  SLOT( getEntryError( KDSoapMessage ) ) );
+
     connect( soap(), SIGNAL( set_entryDone( TNS__Set_entry_result ) ),
              this,  SLOT( setEntryDone( TNS__Set_entry_result ) ) );
     connect( soap(), SIGNAL( set_entryError( KDSoapMessage ) ),
