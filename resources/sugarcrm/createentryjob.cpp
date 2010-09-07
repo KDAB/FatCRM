@@ -8,6 +8,7 @@
 #include <akonadi/item.h>
 
 #include <KDebug>
+#include <KLocale>
 
 #include <QStringList>
 
@@ -80,7 +81,12 @@ void CreateEntryJob::startSugarTask()
     Q_ASSERT( d->mItem.isValid() );
     Q_ASSERT( d->mHandler != 0 );
 
-    d->mHandler->setEntry( d->mItem, soap(), sessionId() );
+    if ( !d->mHandler->setEntry( d->mItem, soap(), sessionId() ) ) {
+        setError( SugarJob::SoapError ); // TODO should be different error code
+        setErrorText( i18nc( "@info:status", "Attempting to add malformed item to folder %1",
+                             d->mHandler->moduleName() ) );
+        emitResult();
+    }
 }
 
 #include "createentryjob.moc"
