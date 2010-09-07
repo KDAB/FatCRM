@@ -71,7 +71,7 @@ void SugarJob::Private::loginDone( const TNS__Set_entry_result &callResult )
     } else if ( sessionId == QLatin1String( "-1" ) ) {
         message = i18nc( "@info:status", "server returned an invalid session identifier" );
     } else {
-        kDebug() << "Login succeeded: sessionId=" << sessionId;
+        kDebug() << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
         mSession->setSessionId( sessionId );
         q->startSugarTask();
         return;
@@ -85,6 +85,8 @@ void SugarJob::Private::loginDone( const TNS__Set_entry_result &callResult )
 
 void SugarJob::Private::loginError( const KDSoapMessage &fault )
 {
+    mSession->setSessionId( QString() );
+
     q->setError( SugarJob::LoginError );
     q->setErrorText( i18nc( "@info:status", "Login for user %1 on %2 failed: %3",
                             mSession->userName(), mSession->host(), fault.faultAsString() ) );
