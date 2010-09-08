@@ -20,13 +20,16 @@ class UpdateEntryJob::Private
 
 public:
     explicit Private( UpdateEntryJob *parent, const Item &item )
-        : q( parent ), mItem( item ), mHandler( 0 )
+        : q( parent ), mItem( item ), mHandler( 0 ), mHasConflict( false )
     {
     }
 
 public:
     Item mItem;
     ModuleHandler *mHandler;
+
+    bool mHasConflict;
+    Item mConflictItem;
 
 public: // slots
     void getEntryDone( const TNS__Get_entry_result &callResult );
@@ -50,14 +53,19 @@ void UpdateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callRes
                    << ", remoteId=" << mItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
+        mHasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if ( remoteItem.remoteRevision().isEmpty() ) {
         kWarning() << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
-    } else if ( remoteItem.remoteRevision() > mItem.remoteRevision() ) {
+    } else {
         // remoteRevision is an ISO date, so string comparisons are accurate for < or >
-        emit q->conflictDetected( mItem, remoteItem );
+        mHasConflict = ( remoteItem.remoteRevision() > mItem.remoteRevision() );
+    }
+
+    if ( mHasConflict ) {
+        mConflictItem = remoteItem;
         q->emitResult(); // TODO should we set an error?
     } else {
         mHandler->setEntry( mItem, q->soap(), q->sessionId() );
@@ -118,9 +126,24 @@ void UpdateEntryJob::setModule( ModuleHandler *handler )
     d->mHandler = handler;
 }
 
+ModuleHandler *UpdateEntryJob::module() const
+{
+    return d->mHandler;
+}
+
 Item UpdateEntryJob::item() const
 {
     return d->mItem;
+}
+
+bool UpdateEntryJob::hasConflict() const
+{
+    return d->mHasConflict;
+}
+
+Item UpdateEntryJob::conflictItem() const
+{
+    return d->mConflictItem;
 }
 
 void UpdateEntryJob::startSugarTask()

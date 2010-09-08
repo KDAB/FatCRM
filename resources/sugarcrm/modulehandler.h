@@ -14,6 +14,12 @@ class TNS__Entry_list;
 class ModuleHandler
 {
 public:
+    enum ConflictSolution {
+        LocalItem,
+        RemoteItem,
+        BothItems
+    };
+
     explicit ModuleHandler( const QString &moduleName );
 
     virtual ~ModuleHandler();
@@ -32,6 +38,8 @@ public:
 
     virtual Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
                                                               const Akonadi::Collection &parentCollection ) = 0;
+
+    virtual ConflictSolution resolveConflict( const Akonadi::Item &localItem, const Akonadi::Item &remoteItem );
 
 protected:
     QString mModuleName;

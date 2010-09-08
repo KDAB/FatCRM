@@ -9,6 +9,10 @@ class KJob;
 class ModuleHandler;
 class SugarSession;
 
+namespace Akonadi {
+    class Session;
+}
+
 template <typename U, typename V> class QHash;
 
 class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
@@ -31,6 +35,8 @@ protected:
     QStringList mAvailableModules;
     typedef QHash<QString, ModuleHandler*> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
+
+    Akonadi::Session *mConflictSession;
 
 protected:
     void aboutToQuit();
@@ -56,8 +62,13 @@ protected Q_SLOTS:
 
     void deleteEntryResult( KJob *job );
 
-    void updateConflict( const Akonadi::Item &localItem, const Akonadi::Item &remoteItem );
     void updateEntryResult( KJob *job );
+
+    void duplicateLocalItemResult( KJob *job );
+
+private:
+    void updateItem( const Akonadi::Item &item, ModuleHandler *handler );
+    void createDuplicate( const Akonadi::Item &item );
 };
 
 #endif

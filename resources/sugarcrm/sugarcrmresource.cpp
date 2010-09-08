@@ -20,7 +20,10 @@
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
+#include <akonadi/itemcreatejob.h>
 #include <akonadi/itemfetchscope.h>
+#include <akonadi/itemmodifyjob.h>
+#include <akonadi/session.h>
 
 #include <kabc/addressee.h>
 
@@ -43,7 +46,8 @@ static QString nameFromHostString( const QString &host )
 SugarCRMResource::SugarCRMResource( const QString &id )
     : ResourceBase( id ),
       mSession( new SugarSession( this ) ),
-      mModuleHandlers( new ModuleHandlerHash )
+      mModuleHandlers( new ModuleHandlerHash ),
+      mConflictSession( new Session( QString( "%1-%2").arg( id ).arg( "conflictresolution" ).toLatin1(), this ) )
 {
     new SettingsAdaptor( Settings::self() );
     QDBusConnection::sessionBus().registerObject( QLatin1String( "/Settings" ),
@@ -181,12 +185,7 @@ void SugarCRMResource::itemChanged( const Akonadi::Item &item, const QSet<QByteA
     if ( moduleIt != mModuleHandlers->constEnd() ) {
         status( Running );
 
-        UpdateEntryJob *job = new UpdateEntryJob( item, mSession, this );
-        job->setModule( *moduleIt );
-        connect( job, SIGNAL( conflictDetected( Akonadi::Item, Akonadi::Item ) ),
-                 this, SLOT( updateConflict( Akonadi::Item, Akonadi::Item ) ) );
-        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( updateEntryResult( KJob* ) ) );
-        job->start();
+        updateItem( item, *moduleIt );
     } else {
         const QString message = i18nc( "@info:status", "Cannot modify items in folder %1",
                                        collection.name() );
@@ -427,11 +426,6 @@ void SugarCRMResource::deleteEntryResult( KJob *job )
     status( Idle );
 }
 
-void SugarCRMResource::updateConflict( const Item &localItem, const Item &remoteItem )
-{
-    // TODO
-}
-
 void SugarCRMResource::updateEntryResult( KJob *job )
 {
     if ( job->error() != 0 ) {
@@ -447,8 +441,83 @@ void SugarCRMResource::updateEntryResult( KJob *job )
     UpdateEntryJob *updateJob = qobject_cast<UpdateEntryJob*>( job );
     Q_ASSERT( updateJob != 0 );
 
-    changeCommitted( updateJob->item() );
-    status( Idle );
+    if ( updateJob->hasConflict() ) {
+        Item localItem = updateJob->item();
+        Item remoteItem = updateJob->conflictItem();
+
+        ModuleHandler::ConflictSolution solution = updateJob->module()->resolveConflict( localItem, remoteItem );
+
+        switch ( solution ) {
+            case ModuleHandler::LocalItem:
+                // update the local items remote revision and try again
+                localItem.setRemoteRevision( remoteItem.remoteRevision() );
+                updateItem( localItem, updateJob->module() );
+                break;
+
+            case ModuleHandler::RemoteItem: {
+                // use remote item to acknowledge change
+                remoteItem.setId( localItem.id() );
+                remoteItem.setRevision( localItem.revision() );
+                changeCommitted( remoteItem );
+
+                status( Idle );
+                break;
+            }
+            case ModuleHandler::BothItems: {
+                // use remote item to acknowledge change and duplicate local item
+                remoteItem.setId( localItem.id() );
+                remoteItem.setRevision( localItem.revision() );
+                changeCommitted( remoteItem );
+
+                createDuplicate( localItem );
+
+                status( Idle );
+                break;
+            }
+        }
+    } else {
+        changeCommitted( updateJob->item() );
+        status( Idle );
+    }
+}
+
+void SugarCRMResource::duplicateLocalItemResult( KJob *job )
+{
+    ItemCreateJob *createJob = qobject_cast<ItemCreateJob*>( job );
+    Q_ASSERT( createJob != 0 );
+
+    const Item item = createJob->item();
+
+    if ( createJob->error() != 0 ) {
+        kWarning() << "Duplicating local item" << item.id()
+                   << ", collection" << item.parentCollection().name()
+                   << "for conflict resolution failed on local create: "
+                   << "error=" << createJob->error() << "message=" << createJob->errorText();
+    } else {
+        kDebug() << "Duplicating local item" << item.id()
+                 << ", collection" << item.parentCollection().name()
+                 << "for conflict resolution succeeded:";
+    }
+}
+
+void SugarCRMResource::updateItem( const Akonadi::Item &item, ModuleHandler *handler )
+{
+    UpdateEntryJob *job = new UpdateEntryJob( item, mSession, this );
+    job->setModule( handler );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( updateEntryResult( KJob* ) ) );
+    job->start();
+}
+
+void SugarCRMResource::createDuplicate( const Akonadi::Item &item )
+{
+    kDebug() << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
+    Item duplicate( item );
+    duplicate.setId( -1 );
+    duplicate.setRemoteId( QString() );
+    duplicate.setRemoteRevision( QString() );
+
+    ItemCreateJob *job = new ItemCreateJob( duplicate, item.parentCollection(), mConflictSession );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( duplicateLocalItemResult( KJob* ) ) );
 }
 
 AKONADI_RESOURCE_MAIN( SugarCRMResource )

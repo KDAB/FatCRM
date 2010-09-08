@@ -22,11 +22,13 @@ public:
     ~UpdateEntryJob();
 
     void setModule( ModuleHandler *handler );
+    ModuleHandler *module() const;
 
     Akonadi::Item item() const;
 
-Q_SIGNALS:
-    void conflictDetected( const Akonadi::Item &localItem, const Akonadi::Item &remoteItem );
+    bool hasConflict() const;
+
+    Akonadi::Item conflictItem() const;
 
 protected:
     void startSugarTask();
