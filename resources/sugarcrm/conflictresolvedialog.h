@@ -41,6 +41,11 @@ class ConflictResolveDialog : public KDialog
 private:
     class Private;
     Private *const d;
+
+    Q_PRIVATE_SLOT( d, void useLocalItem() )
+    Q_PRIVATE_SLOT( d, void useOtherItem() )
+    Q_PRIVATE_SLOT( d, void useBothItems() )
+    Q_PRIVATE_SLOT( d, void createReport() )
 };
 
 #endif
