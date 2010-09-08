@@ -406,7 +406,7 @@ void SugarCRMResource::createEntryResult( KJob *job )
     changeCommitted( createJob->item() );
     status( Idle );
 
-    // does not update payload, so we modify as well
+    // commit does not update payload, so we modify as well
     ItemModifyJob *modifyJob = new ItemModifyJob( createJob->item(), this );
     modifyJob->disableRevisionCheck();
 }
@@ -464,6 +464,10 @@ void SugarCRMResource::updateEntryResult( KJob *job )
                 remoteItem.setRevision( localItem.revision() );
                 changeCommitted( remoteItem );
 
+                // commit does not update payload, so we modify as well
+                ItemModifyJob *modifyJob = new ItemModifyJob( remoteItem, this );
+                modifyJob->disableRevisionCheck();
+
                 status( Idle );
                 break;
             }
@@ -472,6 +476,10 @@ void SugarCRMResource::updateEntryResult( KJob *job )
                 remoteItem.setId( localItem.id() );
                 remoteItem.setRevision( localItem.revision() );
                 changeCommitted( remoteItem );
+
+                // commit does not update payload, so we modify as well
+                ItemModifyJob *modifyJob = new ItemModifyJob( remoteItem, this );
+                modifyJob->disableRevisionCheck();
 
                 createDuplicate( localItem );
 
