@@ -6,6 +6,9 @@ include(KDE4Defaults)
 find_package(KdepimLibs REQUIRED)
 find_package(Boost REQUIRED)
 
+set(SHARED_MIME_INFO_MINIMUM_VERSION "0.20")
+find_package(SharedMimeInfo REQUIRED)
+
 include_directories( ${KDEPIMLIBS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QT_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 set(kdcrmdata_LIB_SRCS
@@ -38,7 +41,7 @@ kde4_add_plugin(akonadi_serializer_sugaraccount ${akonadi_serializer_sugaraccoun
 target_link_libraries(akonadi_serializer_sugaraccount kdcrmdata ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_AKONADI_LIBS})
 install(TARGETS akonadi_serializer_sugaraccount DESTINATION ${PLUGIN_INSTALL_DIR})
 
-### next target 
+### next target
 set(akonadi_serializer_sugaropportunity_PART_SRCS serializerpluginsugaropportunity.cpp)
 kde4_add_plugin(akonadi_serializer_sugaropportunity ${akonadi_serializer_sugaropportunity_PART_SRCS})
 target_link_libraries(akonadi_serializer_sugaropportunity kdcrmdata ${KDE4_CORE_LIBS} ${KDEPIMLIBS_AKONADI_LIBS})
@@ -71,3 +74,5 @@ install( FILES
   akonadi_serializer_sugarcampaign.desktop
 DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
 
+install(FILES kdabcrm-mime.xml DESTINATION ${XDG_MIME_INSTALL_DIR})
+update_xdg_mimetypes(${XDG_MIME_INSTALL_DIR})
