@@ -97,6 +97,10 @@ set( sugarcrmresource_SRCS
     sugarjob.cpp
     sugarsession.cpp
     updateentryjob.cpp
+
+    # work with local implementations until available from kdepimlibs
+    conflicthandler.cpp
+    conflictresolvedialog.cpp
 )
 
 kde4_add_ui_files( sugarcrmresource_SRCS
