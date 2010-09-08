@@ -13,15 +13,8 @@
 typedef QString (*valueGetter)( const SugarOpportunity& );
 typedef void (*valueSetter)( const QString&, SugarOpportunity&);
 
-static QString getId( const SugarOpportunity &opportunity )
-{
-
-    return opportunity.id();
-}
-
 static void setId( const QString &value, SugarOpportunity &opportunity )
 {
-
     opportunity.setId( value );
 }
 
@@ -302,7 +295,7 @@ OpportunitiesHandler::OpportunitiesHandler()
     : ModuleHandler( QLatin1String( "Opportunities" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( getId, setId ) );
+    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
     mAccessors->insert( QLatin1String( "name" ), AccessorPair( getName, setName ) );
     mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
     mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
@@ -391,6 +384,10 @@ bool OpportunitiesHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap,
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( account ) );

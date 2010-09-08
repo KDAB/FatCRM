@@ -13,15 +13,8 @@
 typedef QString (*valueGetter)( const SugarLead& );
 typedef void (*valueSetter)( const QString&, SugarLead&);
 
-static QString getId( const SugarLead &lead )
-{
-
-    return lead.id();
-}
-
 static void setId( const QString &value, SugarLead &lead )
 {
-
     lead.setId( value );
 }
 
@@ -612,7 +605,7 @@ LeadsHandler::LeadsHandler()
     : ModuleHandler( QLatin1String( "Leads" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( getId, setId ) );
+    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
     mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
     mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
     mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
@@ -731,6 +724,10 @@ bool LeadsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const Q
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( lead ) );

@@ -215,11 +215,6 @@ static void setDateCreated(const QString &value, KABC::Addressee &addressee)
     addressee.insertCustom( "FATCRM", "X-DateCreated", value );
 }
 
-static QString getContactId( const KABC::Addressee &addressee )
-{
-    return addressee.custom( "FATCRM", "X-ContactId" );
-}
-
 static void setContactId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom( "FATCRM", "X-ContactId", value );
@@ -563,7 +558,7 @@ ContactsHandler::ContactsHandler()
     mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
     mAccessors->insert( QLatin1String( "modified_user_name" ), AccessorPair( getModifiedUserName, setModifiedUserName ) );
     mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateCreated, setDateCreated ) );
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( getContactId, setContactId ) );
+    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setContactId ) );
     mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
     mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedById, setCreatedById ) );
     mAccessors->insert( QLatin1String( "salutation" ), AccessorPair( getSalutation, setSalutation ) );
@@ -634,6 +629,10 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( it->getter( addressee ) );
