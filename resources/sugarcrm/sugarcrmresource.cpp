@@ -279,10 +279,11 @@ void SugarCRMResource::explicitLoginResult( KJob *job )
         } else if ( Settings::self()->user().isEmpty() ) {
             message = i18nc( "@info:status", "No user name configured" );
         } else {
-            message = i18nc( "@info:status", "Unable to login %1 to %2",
+            message = i18nc( "@info:status", "Unable to login user %1 on %2: %3",
                              Settings::self()->user(), Settings::self()->host(), message );
         }
 
+        kWarning() << message;
         status( Broken, message );
         error( message );
         return;
