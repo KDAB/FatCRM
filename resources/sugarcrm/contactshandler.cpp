@@ -13,17 +13,15 @@
 
 typedef QString (*valueGetter)( const KABC::Addressee& );
 typedef void (*valueSetter)( const QString&, KABC::Addressee&);
-typedef void( *addressSetter )( const QString&, KABC::Address& );
+typedef void (*addressSetter)( const QString&, KABC::Address& );
 
 static QString getFirstName( const KABC::Addressee &addressee )
 {
-
     return addressee.givenName();
 }
 
 static void setFirstName( const QString &value, KABC::Addressee &addressee )
 {
-
     addressee.setGivenName( value );
 }
 
@@ -465,7 +463,6 @@ static QString getOtherStreet( const KABC::Addressee &addressee )
 static void setOtherStreet(const QString &value, KABC::Address &address )
 {
     address.setStreet( value );
-
 }
 
 static QString getOtherCity( const KABC::Addressee &addressee )
@@ -508,23 +505,20 @@ static void setOtherCountry( const QString &value, KABC::Address &address )
     address.setCountry( value );
 }
 
-
-
-
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ){}
+    AccessorPair( valueGetter get, valueSetter set ) : getter( get ) { setter.vSetter = set; }
 
-    AccessorPair( valueGetter get, addressSetter set ): getter( get ),aSetter( set ){}
+    AccessorPair( valueGetter get, addressSetter set ): getter( get ){ setter.aSetter = set; }
 
 public:
     valueGetter getter;
-    valueSetter setter;
-    addressSetter aSetter;
+    union tsetter {
+        valueSetter vSetter;
+        addressSetter aSetter;
+    } setter;
 };
-
-
 
 ContactsHandler::ContactsHandler()
     : ModuleHandler( QLatin1String( "Contacts" ) ),
@@ -676,8 +670,8 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
         KABC::Addressee addressee;
         addressee.setUid( entry.id() );
         KABC::Address workAddress,  homeAddress;
-        workAddress.setType(KABC::Address::Work|KABC::Address::Pref);
-        homeAddress.setType(KABC::Address::Home);
+        workAddress.setType( KABC::Address::Work | KABC::Address::Pref );
+        homeAddress.setType( KABC::Address::Home );
 
         Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
             const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
@@ -685,16 +679,21 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
                 // no accessor for field
                 continue;
             }
+
             // adjust time to local system
             if ( namedValue.name() == "date_modified" ||
                  namedValue.name() == "date_entered" ) {
-                accessIt->setter( adjustedTime(namedValue.value()), addressee );
+                accessIt->setter.vSetter( adjustedTime(namedValue.value()), addressee );
                 continue;
             }
-            if ( isAddressValue(namedValue.name()) )
-                accessIt->aSetter( namedValue.value(), isPrimaryAddressValue( namedValue.name() )?workAddress:homeAddress );
-            else
-                accessIt->setter( namedValue.value(), addressee );
+
+            if ( isAddressValue( namedValue.name() ) ) {
+                KABC::Address& address =
+                    isPrimaryAddressValue( namedValue.name() ) ? workAddress : homeAddress;
+                accessIt->setter.aSetter( namedValue.value(), address );
+            } else {
+                accessIt->setter.vSetter( namedValue.value(), addressee );
+            }
         }
         addressee.insertAddress( workAddress );
         addressee.insertAddress( homeAddress );
