@@ -405,6 +405,10 @@ void SugarCRMResource::createEntryResult( KJob *job )
 
     changeCommitted( createJob->item() );
     status( Idle );
+
+    // does not update payload, so we modify as well
+    ItemModifyJob *modifyJob = new ItemModifyJob( createJob->item(), this );
+    modifyJob->disableRevisionCheck();
 }
 
 void SugarCRMResource::deleteEntryResult( KJob *job )

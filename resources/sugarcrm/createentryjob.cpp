@@ -22,7 +22,7 @@ public:
     enum Stage {
         Init,
         CreateEntry,
-        GetRevision
+        GetEntry
     };
 
     explicit Private( CreateEntryJob *parent, const Item &item )
@@ -38,8 +38,8 @@ public:
 public: // slots
     void setEntryDone( const TNS__Set_entry_result &callResult );
     void setEntryError( const KDSoapMessage &fault );
-    void getRevisionDone( const TNS__Get_entry_result &callResult );
-    void getRevisionError( const KDSoapMessage &fault );
+    void getEntryDone( const TNS__Get_entry_result &callResult );
+    void getEntryError( const KDSoapMessage &fault );
 };
 
 void CreateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
@@ -49,12 +49,12 @@ void CreateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callRes
     kDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId( callResult.id() );
 
-    mStage = Private::GetRevision;
+    mStage = Private::GetEntry;
 
-    TNS__Select_fields selectedFields;
-    selectedFields.setItems( QStringList() << QLatin1String( "date_modified" ) );
-
-    q->soap()->asyncGet_entry( q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields );
+    if ( !mHandler->getEntry( mItem, q->soap(), q->sessionId() ) ) {
+        // the item has been added we just don't have a server side datetime
+        q->emitResult();
+    }
 }
 
 void CreateEntryJob::Private::setEntryError( const KDSoapMessage &fault )
@@ -70,25 +70,28 @@ void CreateEntryJob::Private::setEntryError( const KDSoapMessage &fault )
     }
 }
 
-void CreateEntryJob::Private::getRevisionDone( const TNS__Get_entry_result &callResult )
+void CreateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callResult )
 {
-    Q_ASSERT( mStage == GetRevision );
+    Q_ASSERT( mStage == GetEntry );
 
     const Akonadi::Item::List items =
         mHandler->itemsFromListEntriesResponse( callResult.entry_list(), mItem.parentCollection() );
     Q_ASSERT( items.count() == 1 );
 
-    mItem.setRemoteRevision( items[ 0 ].remoteRevision() );
-    kDebug() << "Got remote revision" << mItem.remoteRevision();
+    Item item = items[ 0 ];
+    item.setId( mItem.id() );
+    item.setRevision( mItem.revision() );
+    mItem = item;
+    kDebug() << "Got entry with revision" << mItem.remoteRevision();
 
     q->emitResult();
 }
 
-void CreateEntryJob::Private::getRevisionError( const KDSoapMessage &fault )
+void CreateEntryJob::Private::getEntryError( const KDSoapMessage &fault )
 {
-    Q_ASSERT( mStage == GetRevision );
+    Q_ASSERT( mStage == GetEntry );
 
-    kWarning() << "Error when getting remote revision:" << fault.faultAsString();
+    kWarning() << "Error when getting remote version:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();
@@ -102,9 +105,9 @@ CreateEntryJob::CreateEntryJob( const Akonadi::Item &item, SugarSession *session
     connect( soap(), SIGNAL( set_entryError( KDSoapMessage ) ),
              this,  SLOT( setEntryError( KDSoapMessage ) ) );
     connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getRevisionDone( TNS__Get_entry_result ) ) );
+             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
     connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
-             this,  SLOT( getRevisionError( KDSoapMessage ) ) );
+             this,  SLOT( getEntryError( KDSoapMessage ) ) );
 }
 
 CreateEntryJob::~CreateEntryJob()

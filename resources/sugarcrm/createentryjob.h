@@ -34,8 +34,8 @@ private:
 
     Q_PRIVATE_SLOT( d, void setEntryDone( const TNS__Set_entry_result &callResult ) )
     Q_PRIVATE_SLOT( d, void setEntryError( const KDSoapMessage &fault ) )
-    Q_PRIVATE_SLOT( d, void getRevisionDone( const TNS__Get_entry_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void getRevisionError( const KDSoapMessage &fault ) )
+    Q_PRIVATE_SLOT( d, void getEntryDone( const TNS__Get_entry_result &callResult ) )
+    Q_PRIVATE_SLOT( d, void getEntryError( const KDSoapMessage &fault ) )
 };
 
 #endif
