@@ -7,6 +7,7 @@
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
 #include <akonadi/agentinstancemodel.h>
+#include <akonadi/agentmanager.h>
 #include <akonadi/control.h>
 
 #include <QCloseEvent>
@@ -58,6 +59,11 @@ void SugarClient::slotDelayedInit()
         slotLogin();
     else
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
+
+    connect( AgentManager::self(), SIGNAL( instanceError( Akonadi::AgentInstance, QString ) ),
+             this, SLOT( slotResourceError( Akonadi::AgentInstance, QString ) ) );
+    connect( AgentManager::self(), SIGNAL( instanceOnline( Akonadi::AgentInstance, bool ) ),
+             this, SLOT( slotResourceOnline( Akonadi::AgentInstance, bool ) ) );
 }
 
 void SugarClient::initialize()
@@ -151,10 +157,12 @@ void SugarClient::slotResourceSelectionChanged( int index )
 {
     AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
     if ( agent.isValid() ) {
-        QString context = mResourceSelector->itemText( index );
+        const QString context = mResourceSelector->itemText( index );
         emit resourceSelected( agent.identifier().toLatin1() );
-        QString contextTitle = QString ( "SugarCRM Client: " ) + context;
-        setWindowTitle(  contextTitle );
+        const QString contextTitle =
+            agent.isOnline() ? QString ( "SugarCRM Client: %1" ).arg( context )
+                             : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
+        setWindowTitle( contextTitle );
         mUi.actionSyncronize->setEnabled( true );
     }
 }
@@ -363,6 +371,28 @@ void SugarClient::closeEvent( QCloseEvent *event )
 void SugarClient::slotDetailsDisplayDisabled( bool value )
 {
     mUi.showDetails->setChecked( value );
+}
+
+void SugarClient::slotResourceError( const AgentInstance &resource, const QString &message )
+{
+    const AgentInstance currentAgent = mResourceSelector->itemData( mResourceSelector->currentIndex(), AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+    if ( currentAgent.isValid() && currentAgent.identifier() == resource.identifier() ) {
+        slotShowMessage( message );
+    }
+}
+
+void SugarClient::slotResourceOnline( const Akonadi::AgentInstance &resource, bool online )
+{
+    const int index = mResourceSelector->currentIndex();
+    const AgentInstance currentAgent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+    if ( currentAgent.isValid() && currentAgent.identifier() == resource.identifier() ) {
+        const QString context = mResourceSelector->itemText( index );
+        const QString contextTitle =
+            resource.isOnline() ? QString ( "SugarCRM Client: %1" ).arg( context )
+                                : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
+        setWindowTitle( contextTitle );
+    }
+
 }
 
 #include "sugarclient.moc"

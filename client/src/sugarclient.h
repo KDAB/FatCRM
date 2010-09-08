@@ -19,6 +19,10 @@
 class QAction;
 class QToolBar;
 
+namespace Akonadi {
+    class AgentInstance;
+}
+
 class SugarClient : public QMainWindow
 {
     Q_OBJECT
@@ -83,6 +87,8 @@ private Q_SLOTS:
     void slotDetailsDisplayDisabled( bool value );
     void slotLogin();
     void slotConfigureResources();
+    void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
+    void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
 
 private:
     void detachDockViews( bool value );
