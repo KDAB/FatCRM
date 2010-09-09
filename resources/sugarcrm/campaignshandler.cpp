@@ -493,10 +493,7 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
         } else if ( rightValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
                                    it.key(), leftValue, rightValue );
-        } else if ( leftValue == rightValue ) {
-            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
-                                   it.key(), leftValue, rightValue );
-        } else {
+        } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
                                    it.key(), leftValue, rightValue );
         }

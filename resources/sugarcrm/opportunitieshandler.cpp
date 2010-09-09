@@ -483,7 +483,7 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
         } else if ( leftValue == rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
                                    it.key(), leftValue, rightValue );
-        } else {
+        } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
                                    it.key(), leftValue, rightValue );
         }

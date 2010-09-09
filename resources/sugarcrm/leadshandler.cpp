@@ -823,7 +823,7 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
         } else if ( leftValue == rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
                                    it.key(), leftValue, rightValue );
-        } else {
+        } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
                                    it.key(), leftValue, rightValue );
         }
