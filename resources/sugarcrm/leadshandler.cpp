@@ -589,7 +589,6 @@ static void setPortalApp( const QString &value, SugarLead &lead )
     lead.setPortalApp( value );
 }
 
-
 class AccessorPair
 {
 public:
@@ -600,74 +599,131 @@ public:
     valueSetter setter;
 };
 
-
-
 LeadsHandler::LeadsHandler()
     : ModuleHandler( QLatin1String( "Leads" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
-    mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
-    mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
-    mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
-    mAccessors->insert( QLatin1String( "modified_by_name" ), AccessorPair( getModifiedByName, setModifiedByName ) );
-    mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedBy, setCreatedBy ) );
-    mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
-    mAccessors->insert( QLatin1String( "description" ), AccessorPair( getDescription, setDescription ) );
-    mAccessors->insert( QLatin1String( "deleted" ), AccessorPair( getDeleted, setDeleted ) );
-    mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
-    mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
-    mAccessors->insert( QLatin1String( "salutation" ), AccessorPair( getSalutation, setSalutation ) );
-    mAccessors->insert( QLatin1String( "first_name" ), AccessorPair( getFirstName, setFirstName ) );
-    mAccessors->insert( QLatin1String( "last_name" ), AccessorPair( getLastName, setLastName ) );
-    mAccessors->insert( QLatin1String( "title" ), AccessorPair( getTitle, setTitle ) );
-    mAccessors->insert( QLatin1String( "department" ), AccessorPair( getDepartment, setDepartment ) );
-    mAccessors->insert( QLatin1String( "do_not_call" ), AccessorPair( getDoNotCall, setDoNotCall ) );
-    mAccessors->insert( QLatin1String( "phone_home" ), AccessorPair( getPhoneHome, setPhoneHome ) );
-    mAccessors->insert( QLatin1String( "phone_mobile" ), AccessorPair( getPhoneMobile, setPhoneMobile ) );
-    mAccessors->insert( QLatin1String( "phone_work" ), AccessorPair( getPhoneWork, setPhoneWork ) );
-    mAccessors->insert( QLatin1String( "phone_other" ), AccessorPair( getPhoneOther, setPhoneOther ) );
-    mAccessors->insert( QLatin1String( "phone_fax" ), AccessorPair( getPhoneFax, setPhoneFax ) );
-    mAccessors->insert( QLatin1String( "email1" ), AccessorPair( getEmail1, setEmail1 ) );
-    mAccessors->insert( QLatin1String( "email2" ), AccessorPair( getEmail2, setEmail2 ) );
-    mAccessors->insert( QLatin1String( "primary_address_street" ), AccessorPair( getPrimaryAddressStreet, setPrimaryAddressStreet ) );
-    mAccessors->insert( QLatin1String( "primary_address_city" ), AccessorPair( getPrimaryAddressCity, setPrimaryAddressCity ) );
-    mAccessors->insert( QLatin1String( "primary_address_state" ), AccessorPair( getPrimaryAddressState, setPrimaryAddressState ) );
-    mAccessors->insert( QLatin1String( "primary_address_postalcode" ), AccessorPair( getPrimaryAddressPostalcode, setPrimaryAddressPostalcode ) );
-    mAccessors->insert( QLatin1String( "primary_address_country" ), AccessorPair( getPrimaryAddressCountry, setPrimaryAddressCountry ) );
-    mAccessors->insert( QLatin1String( "alt_address_street" ), AccessorPair( getAltAddressStreet, setAltAddressStreet ) );
-    mAccessors->insert( QLatin1String( "alt_address_city" ), AccessorPair( getAltAddressCity, setAltAddressCity ) );
-    mAccessors->insert( QLatin1String( "alt_address_state" ), AccessorPair( getAltAddressState, setAltAddressState ) );
-    mAccessors->insert( QLatin1String( "alt_address_postalcode" ), AccessorPair( getAltAddressPostalcode, setAltAddressPostalcode ) );
-    mAccessors->insert( QLatin1String( "alt_address_country" ), AccessorPair( getAltAddressCountry, setAltAddressCountry ) );
-    mAccessors->insert( QLatin1String( "assistant" ), AccessorPair( getAssistant, setAssistant ) );
-    mAccessors->insert( QLatin1String( "assistant_phone" ), AccessorPair( getAssistantPhone, setAssistantPhone ) );
-    mAccessors->insert( QLatin1String( "converted" ), AccessorPair( getConverted, setConverted ) );
-    mAccessors->insert( QLatin1String( "refered_by" ), AccessorPair( getReferedBy, setReferedBy ) );
-    mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSource, setLeadSource ) );
-    mAccessors->insert( QLatin1String( "lead_source_description" ), AccessorPair( getLeadSourceDescription, setLeadSourceDescription ) );
-    mAccessors->insert( QLatin1String( "status" ), AccessorPair( getStatus, setStatus ) );
-    mAccessors->insert( QLatin1String( "status_description" ), AccessorPair( getStatusDescription, setStatusDescription ) );
-    mAccessors->insert( QLatin1String( "reports_to_id" ), AccessorPair( getReportsToId, setReportsToId ) );
-    mAccessors->insert( QLatin1String( "report_to_name" ), AccessorPair( getReportToName, setReportToName ) );
-    mAccessors->insert( QLatin1String( "account_name" ), AccessorPair( getAccountName, setAccountName ) );
-    mAccessors->insert( QLatin1String( "account_description" ), AccessorPair( getAccountDescription, setAccountDescription ) );
-    mAccessors->insert( QLatin1String( "contact_id" ), AccessorPair( getContactId, setContactId ) );
-    mAccessors->insert( QLatin1String( "account_id" ), AccessorPair( getAccountId, setAccountId ) );
-    mAccessors->insert( QLatin1String( "opportunity_id" ), AccessorPair( getOpportunityId, setOpportunityId ) );
-    mAccessors->insert( QLatin1String( "opportunity_name" ), AccessorPair( getOpportunityName, setOpportunityName ) );
-    mAccessors->insert( QLatin1String( "opportunity_amount" ), AccessorPair( getOpportunityAmount, setOpportunityAmount ) );
-    mAccessors->insert( QLatin1String( "campaign_id" ), AccessorPair( getCampaignId, setCampaignId ) );
-    mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
-    mAccessors->insert( QLatin1String( "c_accept_status_fields" ), AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields ) );
-    mAccessors->insert( QLatin1String( "m_accept_status_fields" ), AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields ) );
-    mAccessors->insert( QLatin1String( "birthdate" ), AccessorPair( getBirthdate, setBirthdate ) );
-    mAccessors->insert( QLatin1String( "portal_name" ), AccessorPair( getPortalName, setPortalName ) );
-    mAccessors->insert( QLatin1String( "portal_app" ), AccessorPair( getPortalApp, setPortalApp ) );
+    mAccessors->insert( QLatin1String( "id" ),
+                        new AccessorPair( 0, setId ) );
+    mAccessors->insert( QLatin1String( "date_entered" ),
+                        new AccessorPair( getDateEntered, setDateEntered ) );
+    mAccessors->insert( QLatin1String( "date_modified" ),
+                        new AccessorPair( getDateModified, setDateModified ) );
+    mAccessors->insert( QLatin1String( "modified_user_id" ),
+                        new AccessorPair( getModifiedUserId, setModifiedUserId ) );
+    mAccessors->insert( QLatin1String( "modified_by_name" ),
+                        new AccessorPair( getModifiedByName, setModifiedByName ) );
+    mAccessors->insert( QLatin1String( "created_by" ),
+                        new AccessorPair( getCreatedBy, setCreatedBy ) );
+    mAccessors->insert( QLatin1String( "created_by_name" ),
+                        new AccessorPair( getCreatedByName, setCreatedByName ) );
+    mAccessors->insert( QLatin1String( "description" ),
+                        new AccessorPair( getDescription, setDescription ) );
+    mAccessors->insert( QLatin1String( "deleted" ),
+                        new AccessorPair( getDeleted, setDeleted ) );
+    mAccessors->insert( QLatin1String( "assigned_user_id" ),
+                        new AccessorPair( getAssignedUserId, setAssignedUserId ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+                        new AccessorPair( getAssignedUserName, setAssignedUserName ) );
+    mAccessors->insert( QLatin1String( "salutation" ),
+                        new AccessorPair( getSalutation, setSalutation ) );
+    mAccessors->insert( QLatin1String( "first_name" ),
+                        new AccessorPair( getFirstName, setFirstName ) );
+    mAccessors->insert( QLatin1String( "last_name" ),
+                        new AccessorPair( getLastName, setLastName ) );
+    mAccessors->insert( QLatin1String( "title" ),
+                        new AccessorPair( getTitle, setTitle ) );
+    mAccessors->insert( QLatin1String( "department" ),
+                        new AccessorPair( getDepartment, setDepartment ) );
+    mAccessors->insert( QLatin1String( "do_not_call" ),
+                        new AccessorPair( getDoNotCall, setDoNotCall ) );
+    mAccessors->insert( QLatin1String( "phone_home" ),
+                        new AccessorPair( getPhoneHome, setPhoneHome ) );
+    mAccessors->insert( QLatin1String( "phone_mobile" ),
+                        new AccessorPair( getPhoneMobile, setPhoneMobile ) );
+    mAccessors->insert( QLatin1String( "phone_work" ),
+                        new AccessorPair( getPhoneWork, setPhoneWork ) );
+    mAccessors->insert( QLatin1String( "phone_other" ),
+                        new AccessorPair( getPhoneOther, setPhoneOther ) );
+    mAccessors->insert( QLatin1String( "phone_fax" ),
+                        new AccessorPair( getPhoneFax, setPhoneFax ) );
+    mAccessors->insert( QLatin1String( "email1" ),
+                        new AccessorPair( getEmail1, setEmail1 ) );
+    mAccessors->insert( QLatin1String( "email2" ),
+                        new AccessorPair( getEmail2, setEmail2 ) );
+    mAccessors->insert( QLatin1String( "primary_address_street" ),
+                        new AccessorPair( getPrimaryAddressStreet, setPrimaryAddressStreet ) );
+    mAccessors->insert( QLatin1String( "primary_address_city" ),
+                        new AccessorPair( getPrimaryAddressCity, setPrimaryAddressCity ) );
+    mAccessors->insert( QLatin1String( "primary_address_state" ),
+                        new AccessorPair( getPrimaryAddressState, setPrimaryAddressState ) );
+    mAccessors->insert( QLatin1String( "primary_address_postalcode" ),
+                        new AccessorPair( getPrimaryAddressPostalcode, setPrimaryAddressPostalcode ) );
+    mAccessors->insert( QLatin1String( "primary_address_country" ),
+                        new AccessorPair( getPrimaryAddressCountry, setPrimaryAddressCountry ) );
+    mAccessors->insert( QLatin1String( "alt_address_street" ),
+                        new AccessorPair( getAltAddressStreet, setAltAddressStreet ) );
+    mAccessors->insert( QLatin1String( "alt_address_city" ),
+                        new AccessorPair( getAltAddressCity, setAltAddressCity ) );
+    mAccessors->insert( QLatin1String( "alt_address_state" ),
+                        new AccessorPair( getAltAddressState, setAltAddressState ) );
+    mAccessors->insert( QLatin1String( "alt_address_postalcode" ),
+                        new AccessorPair( getAltAddressPostalcode, setAltAddressPostalcode ) );
+    mAccessors->insert( QLatin1String( "alt_address_country" ),
+                        new AccessorPair( getAltAddressCountry, setAltAddressCountry ) );
+    mAccessors->insert( QLatin1String( "assistant" ),
+                        new AccessorPair( getAssistant, setAssistant ) );
+    mAccessors->insert( QLatin1String( "assistant_phone" ),
+                        new AccessorPair( getAssistantPhone, setAssistantPhone ) );
+    mAccessors->insert( QLatin1String( "converted" ),
+                        new AccessorPair( getConverted, setConverted ) );
+    mAccessors->insert( QLatin1String( "refered_by" ),
+                        new AccessorPair( getReferedBy, setReferedBy ) );
+    mAccessors->insert( QLatin1String( "lead_source" ),
+                        new AccessorPair( getLeadSource, setLeadSource ) );
+    mAccessors->insert( QLatin1String( "lead_source_description" ),
+                        new AccessorPair( getLeadSourceDescription, setLeadSourceDescription ) );
+    mAccessors->insert( QLatin1String( "status" ),
+                        new AccessorPair( getStatus, setStatus ) );
+    mAccessors->insert( QLatin1String( "status_description" ),
+                        new AccessorPair( getStatusDescription, setStatusDescription ) );
+    mAccessors->insert( QLatin1String( "reports_to_id" ),
+                        new AccessorPair( getReportsToId, setReportsToId ) );
+    mAccessors->insert( QLatin1String( "report_to_name" ),
+                        new AccessorPair( getReportToName, setReportToName ) );
+    mAccessors->insert( QLatin1String( "account_name" ),
+                        new AccessorPair( getAccountName, setAccountName ) );
+    mAccessors->insert( QLatin1String( "account_description" ),
+                        new AccessorPair( getAccountDescription, setAccountDescription ) );
+    mAccessors->insert( QLatin1String( "contact_id" ),
+                        new AccessorPair( getContactId, setContactId ) );
+    mAccessors->insert( QLatin1String( "account_id" ),
+                        new AccessorPair( getAccountId, setAccountId ) );
+    mAccessors->insert( QLatin1String( "opportunity_id" ),
+                        new AccessorPair( getOpportunityId, setOpportunityId ) );
+    mAccessors->insert( QLatin1String( "opportunity_name" ),
+                        new AccessorPair( getOpportunityName, setOpportunityName ) );
+    mAccessors->insert( QLatin1String( "opportunity_amount" ),
+                        new AccessorPair( getOpportunityAmount, setOpportunityAmount ) );
+    mAccessors->insert( QLatin1String( "campaign_id" ),
+                        new AccessorPair( getCampaignId, setCampaignId ) );
+    mAccessors->insert( QLatin1String( "campaign_name" ),
+                        new AccessorPair( getCampaignName, setCampaignName ) );
+    mAccessors->insert( QLatin1String( "c_accept_status_fields" ),
+                        new AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields ) );
+    mAccessors->insert( QLatin1String( "m_accept_status_fields" ),
+                        new AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields ) );
+    mAccessors->insert( QLatin1String( "birthdate" ),
+                        new AccessorPair( getBirthdate, setBirthdate ) );
+    mAccessors->insert( QLatin1String( "portal_name" ),
+                        new AccessorPair( getPortalName, setPortalName ) );
+    mAccessors->insert( QLatin1String( "portal_app" ),
+                        new AccessorPair( getPortalApp, setPortalApp ) );
 }
 
 LeadsHandler::~LeadsHandler()
 {
+    qDeleteAll( *mAccessors );
     delete mAccessors;
 }
 
@@ -726,12 +782,12 @@ bool LeadsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const Q
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
         TNS__Name_value field;
         field.setName( it.key() );
-        field.setValue( it->getter( lead ) );
+        field.setValue( (*it)->getter( lead ) );
         if ( field.name() == "date_modified"  ||
              field.name() == "date_entered" )
             field.setValue( adjustedTime( field.value() ) );
@@ -774,10 +830,10 @@ Akonadi::Item::List LeadsHandler::itemsFromListEntriesResponse( const TNS__Entry
             // adjust time to local system
             if ( namedValue.name() == "date_modified" ||
                  namedValue.name() == "date_entered" ) {
-                accessIt->setter( adjustedTime(namedValue.value()), lead );
+                (*accessIt)->setter( adjustedTime(namedValue.value()), lead );
                 continue;
             }
-            accessIt->setter( namedValue.value(), lead );
+            (*accessIt)->setter( namedValue.value(), lead );
         }
         item.setPayload<SugarLead>( lead );
         item.setRemoteRevision( getDateModified( lead ) );
@@ -803,12 +859,12 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
 
-        const QString leftValue = it->getter( leftLead );
-        const QString rightValue = it->getter( rightLead );
+        const QString leftValue = (*it)->getter( leftLead );
+        const QString rightValue = (*it)->getter( rightLead );
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;

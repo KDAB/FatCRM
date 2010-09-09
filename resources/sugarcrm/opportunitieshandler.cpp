@@ -296,37 +296,65 @@ OpportunitiesHandler::OpportunitiesHandler()
     : ModuleHandler( QLatin1String( "Opportunities" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
-    mAccessors->insert( QLatin1String( "name" ), AccessorPair( getName, setName ) );
-    mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
-    mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
-    mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
-    mAccessors->insert( QLatin1String( "modified_by_name" ), AccessorPair( getModifiedByName, setModifiedByName ) );
-    mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedBy, setCreatedBy ) );
-    mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
-    mAccessors->insert( QLatin1String( "description" ), AccessorPair( getDescription, setDescription ) );
-    mAccessors->insert( QLatin1String( "deleted" ), AccessorPair( getDeleted, setDeleted ) );
-    mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
-    mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
-    mAccessors->insert( QLatin1String( "opportunity_type" ), AccessorPair( getOpportunityType, setOpportunityType ) );
-    mAccessors->insert( QLatin1String( "account_name" ), AccessorPair( getAccountName, setAccountName ) );
-    mAccessors->insert( QLatin1String( "account_id" ), AccessorPair( getAccountId, setAccountId ) );
-    mAccessors->insert( QLatin1String( "campaign_id" ), AccessorPair( getCampaignId, setCampaignId ) );
-    mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
-    mAccessors->insert( QLatin1String( "lead_source" ), AccessorPair( getLeadSource, setLeadSource ) );
-    mAccessors->insert( QLatin1String( "amount" ), AccessorPair( getAmount, setAmount ) );
-    mAccessors->insert( QLatin1String( "amount_usdollar" ), AccessorPair( getAmountUsDollar, setAmountUsDollar ) );
-    mAccessors->insert( QLatin1String( "currency_id" ), AccessorPair( getCurrencyId, setCurrencyId ) );
-    mAccessors->insert( QLatin1String( "currency_name" ), AccessorPair( getCurrencyName, setCurrencyName ) );
-    mAccessors->insert( QLatin1String( "currency_symbol" ), AccessorPair( getCurrencySymbol, setCurrencySymbol ) );
-    mAccessors->insert( QLatin1String( "date_closed" ), AccessorPair( getDateClosed, setDateClosed ) );
-    mAccessors->insert( QLatin1String( "next_step" ), AccessorPair( getNextStep, setNextStep ) );
-    mAccessors->insert( QLatin1String( "sales_stage" ), AccessorPair( getSalesStage, setSalesStage ) );
-    mAccessors->insert( QLatin1String( "probability" ), AccessorPair( getProbability, setProbability ) );
+    mAccessors->insert( QLatin1String( "id" ),
+                        new AccessorPair( 0, setId ) );
+    mAccessors->insert( QLatin1String( "name" ),
+                        new AccessorPair( getName, setName ) );
+    mAccessors->insert( QLatin1String( "date_entered" ),
+                        new AccessorPair( getDateEntered, setDateEntered ) );
+    mAccessors->insert( QLatin1String( "date_modified" ),
+                        new AccessorPair( getDateModified, setDateModified ) );
+    mAccessors->insert( QLatin1String( "modified_user_id" ),
+                        new AccessorPair( getModifiedUserId, setModifiedUserId ) );
+    mAccessors->insert( QLatin1String( "modified_by_name" ),
+                        new AccessorPair( getModifiedByName, setModifiedByName ) );
+    mAccessors->insert( QLatin1String( "created_by" ),
+                        new AccessorPair( getCreatedBy, setCreatedBy ) );
+    mAccessors->insert( QLatin1String( "created_by_name" ),
+                        new AccessorPair( getCreatedByName, setCreatedByName ) );
+    mAccessors->insert( QLatin1String( "description" ),
+                        new AccessorPair( getDescription, setDescription ) );
+    mAccessors->insert( QLatin1String( "deleted" ),
+                        new AccessorPair( getDeleted, setDeleted ) );
+    mAccessors->insert( QLatin1String( "assigned_user_id" ),
+                        new AccessorPair( getAssignedUserId, setAssignedUserId ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+                        new AccessorPair( getAssignedUserName, setAssignedUserName ) );
+    mAccessors->insert( QLatin1String( "opportunity_type" ),
+                        new AccessorPair( getOpportunityType, setOpportunityType ) );
+    mAccessors->insert( QLatin1String( "account_name" ),
+                        new AccessorPair( getAccountName, setAccountName ) );
+    mAccessors->insert( QLatin1String( "account_id" ),
+                        new AccessorPair( getAccountId, setAccountId ) );
+    mAccessors->insert( QLatin1String( "campaign_id" ),
+                        new AccessorPair( getCampaignId, setCampaignId ) );
+    mAccessors->insert( QLatin1String( "campaign_name" ),
+                        new AccessorPair( getCampaignName, setCampaignName ) );
+    mAccessors->insert( QLatin1String( "lead_source" ),
+                        new AccessorPair( getLeadSource, setLeadSource ) );
+    mAccessors->insert( QLatin1String( "amount" ),
+                        new AccessorPair( getAmount, setAmount ) );
+    mAccessors->insert( QLatin1String( "amount_usdollar" ),
+                        new AccessorPair( getAmountUsDollar, setAmountUsDollar ) );
+    mAccessors->insert( QLatin1String( "currency_id" ),
+                        new AccessorPair( getCurrencyId, setCurrencyId ) );
+    mAccessors->insert( QLatin1String( "currency_name" ),
+                        new AccessorPair( getCurrencyName, setCurrencyName ) );
+    mAccessors->insert( QLatin1String( "currency_symbol" ),
+                        new AccessorPair( getCurrencySymbol, setCurrencySymbol ) );
+    mAccessors->insert( QLatin1String( "date_closed" ),
+                        new AccessorPair( getDateClosed, setDateClosed ) );
+    mAccessors->insert( QLatin1String( "next_step" ),
+                        new AccessorPair( getNextStep, setNextStep ) );
+    mAccessors->insert( QLatin1String( "sales_stage" ),
+                        new AccessorPair( getSalesStage, setSalesStage ) );
+    mAccessors->insert( QLatin1String( "probability" ),
+                        new AccessorPair( getProbability, setProbability ) );
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
 {
+    qDeleteAll( *mAccessors );
     delete mAccessors;
 }
 
@@ -386,12 +414,12 @@ bool OpportunitiesHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap,
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
         TNS__Name_value field;
         field.setName( it.key() );
-        field.setValue( it->getter( account ) );
+        field.setValue( (*it)->getter( account ) );
         if ( field.name() == "date_modified"  ||
              field.name() == "date_entered" )
             field.setValue( adjustedTime( field.value() ) );
@@ -434,10 +462,10 @@ Akonadi::Item::List OpportunitiesHandler::itemsFromListEntriesResponse( const TN
             // adjust time to local system
             if ( namedValue.name() == "date_modified" ||
                  namedValue.name() == "date_entered" ) {
-                accessIt->setter( adjustedTime(namedValue.value()), account );
+                (*accessIt)->setter( adjustedTime(namedValue.value()), account );
                 continue;
             }
-            accessIt->setter( namedValue.value(), account );
+            (*accessIt)->setter( namedValue.value(), account );
         }
         item.setPayload<SugarOpportunity>( account );
         item.setRemoteRevision( getDateModified( account ) );
@@ -463,12 +491,12 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
 
-        const QString leftValue = it->getter( leftOpportunity );
-        const QString rightValue = it->getter( rightOpportunity );
+        const QString leftValue = (*it)->getter( leftOpportunity );
+        const QString rightValue = (*it)->getter( rightOpportunity );
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;

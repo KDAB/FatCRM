@@ -30,7 +30,7 @@ public:
 private:
     QString adjustedTime( const QString datetime ) const;
 
-    typedef QHash<QString, AccessorPair> AccessorHash;
+    typedef QHash<QString, AccessorPair*> AccessorHash;
     AccessorHash *mAccessors;
 };
 
