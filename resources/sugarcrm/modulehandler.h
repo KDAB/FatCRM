@@ -1,6 +1,7 @@
 #ifndef MODULEHANDLER_H
 #define MODULEHANDLER_H
 
+#include <akonadi/differencesalgorithminterface.h>
 #include <akonadi/item.h>
 
 namespace Akonadi
@@ -11,7 +12,7 @@ namespace Akonadi
 class Sugarsoap;
 class TNS__Entry_list;
 
-class ModuleHandler
+class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {
 public:
     enum ConflictSolution {

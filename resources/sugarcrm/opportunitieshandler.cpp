@@ -4,6 +4,7 @@
 
 #include <akonadi/collection.h>
 
+#include <akonadi/abstractdifferencesreporter.h>
 #include <kdcrmdata/sugaropportunity.h>
 
 #include <KLocale>
@@ -446,6 +447,49 @@ Akonadi::Item::List OpportunitiesHandler::itemsFromListEntriesResponse( const TN
     return items;
 }
 
+void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
+                                    const Akonadi::Item &leftItem, const Akonadi::Item &rightItem )
+{
+    Q_ASSERT( leftItem.hasPayload<SugarOpportunity>() );
+    Q_ASSERT( rightItem.hasPayload<SugarOpportunity>() );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Opportunity" ) );
+    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Opportunity" ) );
+
+    const SugarOpportunity leftOpportunity = leftItem.payload<SugarOpportunity>();
+    const SugarOpportunity rightOpportunity = rightItem.payload<SugarOpportunity>();
+
+    AccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
+
+        const QString leftValue = it->getter( leftOpportunity );
+        const QString rightValue = it->getter( rightOpportunity );
+
+        if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
+            continue;
+        }
+
+        if ( leftValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( rightValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( leftValue == rightValue ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
+                                   it.key(), leftValue, rightValue );
+        } else {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
+                                   it.key(), leftValue, rightValue );
+        }
+    }
+}
+
 QString OpportunitiesHandler::adjustedTime( const QString dateTime ) const
 {
     QVariant var = QVariant( dateTime );
@@ -455,6 +499,3 @@ QString OpportunitiesHandler::adjustedTime( const QString dateTime ) const
     utctime.setTimeSpec( Qt::OffsetFromUTC );
     return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
 }
-
-
-

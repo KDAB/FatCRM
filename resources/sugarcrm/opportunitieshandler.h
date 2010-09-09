@@ -24,6 +24,9 @@ public:
 
     Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection );
 
+    void compare( Akonadi::AbstractDifferencesReporter *reporter,
+                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );
+
 private:
     QString adjustedTime( const QString datetime ) const;
 

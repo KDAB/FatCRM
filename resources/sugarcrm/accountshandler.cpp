@@ -2,6 +2,7 @@
 
 #include "sugarsoap.h"
 
+#include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 
 #include <kdcrmdata/sugaraccount.h>
@@ -575,6 +576,49 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
     }
 
     return items;
+}
+
+void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
+                               const Akonadi::Item &leftItem, const Akonadi::Item &rightItem )
+{
+    Q_ASSERT( leftItem.hasPayload<SugarAccount>() );
+    Q_ASSERT( rightItem.hasPayload<SugarAccount>() );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Account" ) );
+    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Account" ) );
+
+    const SugarAccount leftAccount = leftItem.payload<SugarAccount>();
+    const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
+
+    AccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
+
+        const QString leftValue = it->getter( leftAccount );
+        const QString rightValue = it->getter( rightAccount );
+
+        if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
+            continue;
+        }
+
+        if ( leftValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( rightValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( leftValue == rightValue ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
+                                   it.key(), leftValue, rightValue );
+        } else {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
+                                   it.key(), leftValue, rightValue );
+        }
+    }
 }
 
 QString AccountsHandler::adjustedTime( const QString dateTime ) const

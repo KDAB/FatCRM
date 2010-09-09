@@ -2,6 +2,7 @@
 
 #include "sugarsoap.h"
 
+#include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 
 #include <kabc/addressee.h>
@@ -704,6 +705,49 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__En
     return items;
 }
 
+void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
+                               const Akonadi::Item &leftItem, const Akonadi::Item &rightItem )
+{
+    Q_ASSERT( leftItem.hasPayload<KABC::Addressee>() );
+    Q_ASSERT( rightItem.hasPayload<KABC::Addressee>() );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Contact" ) );
+    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Contact" ) );
+
+    const KABC::Addressee leftContact = leftItem.payload<KABC::Addressee>();
+    const KABC::Addressee rightContact = rightItem.payload<KABC::Addressee>();
+
+    AccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    for ( ; it != endIt; ++it ) {
+        // check if this is a read-only field
+        if ( it->getter == 0 ) {
+            continue;
+        }
+
+        const QString leftValue = it->getter( leftContact );
+        const QString rightValue = it->getter( rightContact );
+
+        if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
+            continue;
+        }
+
+        if ( leftValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( rightValue.isEmpty() ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
+                                   it.key(), leftValue, rightValue );
+        } else if ( leftValue == rightValue ) {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
+                                   it.key(), leftValue, rightValue );
+        } else {
+            reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
+                                   it.key(), leftValue, rightValue );
+        }
+    }
+}
+
 QString ContactsHandler::adjustedTime( const QString dateTime ) const
 {
     QVariant var = QVariant( dateTime );
@@ -713,4 +757,3 @@ QString ContactsHandler::adjustedTime( const QString dateTime ) const
     utctime.setTimeSpec( Qt::OffsetFromUTC );
     return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
 }
-

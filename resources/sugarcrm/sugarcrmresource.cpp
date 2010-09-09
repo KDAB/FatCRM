@@ -2,6 +2,7 @@
 
 #include "accountshandler.h"
 #include "campaignshandler.h"
+#include "conflicthandler.h"
 #include "contactshandler.h"
 #include "createentryjob.h"
 #include "deleteentryjob.h"
@@ -20,17 +21,13 @@
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
-#include <akonadi/itemcreatejob.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
-#include <akonadi/session.h>
 
 #include <kabc/addressee.h>
 
 #include <KLocale>
 #include <KWindowSystem>
-
-#include <KDSoapMessage.h>
 
 #include <QtDBus/QDBusConnection>
 
@@ -47,7 +44,7 @@ SugarCRMResource::SugarCRMResource( const QString &id )
     : ResourceBase( id ),
       mSession( new SugarSession( this ) ),
       mModuleHandlers( new ModuleHandlerHash ),
-      mConflictSession( new Session( QString( "%1-%2").arg( id ).arg( "conflictresolution" ).toLatin1(), this ) )
+      mConflictHandler( new ConflictHandler( ConflictHandler::BackendConflict, this ) )
 {
     new SettingsAdaptor( Settings::self() );
     QDBusConnection::sessionBus().registerObject( QLatin1String( "/Settings" ),
@@ -70,6 +67,11 @@ SugarCRMResource::SugarCRMResource( const QString &id )
     mSession->setSessionParameters( Settings::self()->user(), Settings::self()->password(),
                                     Settings::self()->host() );
     mSession->createSoapInterface();
+
+    connect( mConflictHandler, SIGNAL( commitChange( Akonadi::Item ) ),
+             this, SLOT( commitChange( Akonadi::Item ) ) );
+    connect( mConflictHandler, SIGNAL( updateOnBackend( Akonadi::Item ) ),
+             this, SLOT( updateOnBackend( Akonadi::Item ) ) );
 }
 
 SugarCRMResource::~SugarCRMResource()
@@ -446,69 +448,35 @@ void SugarCRMResource::updateEntryResult( KJob *job )
     Q_ASSERT( updateJob != 0 );
 
     if ( updateJob->hasConflict() ) {
-        Item localItem = updateJob->item();
-        Item remoteItem = updateJob->conflictItem();
+        const Item localItem = updateJob->item();
+        const Item remoteItem = updateJob->conflictItem();
 
-        ModuleHandler::ConflictSolution solution = updateJob->module()->resolveConflict( localItem, remoteItem );
-
-        switch ( solution ) {
-            case ModuleHandler::LocalItem:
-                // update the local items remote revision and try again
-                localItem.setRemoteRevision( remoteItem.remoteRevision() );
-                updateItem( localItem, updateJob->module() );
-                break;
-
-            case ModuleHandler::RemoteItem: {
-                // use remote item to acknowledge change
-                remoteItem.setId( localItem.id() );
-                remoteItem.setRevision( localItem.revision() );
-                changeCommitted( remoteItem );
-
-                // commit does not update payload, so we modify as well
-                ItemModifyJob *modifyJob = new ItemModifyJob( remoteItem, this );
-                modifyJob->disableRevisionCheck();
-
-                status( Idle );
-                break;
-            }
-            case ModuleHandler::BothItems: {
-                // use remote item to acknowledge change and duplicate local item
-                remoteItem.setId( localItem.id() );
-                remoteItem.setRevision( localItem.revision() );
-                changeCommitted( remoteItem );
-
-                // commit does not update payload, so we modify as well
-                ItemModifyJob *modifyJob = new ItemModifyJob( remoteItem, this );
-                modifyJob->disableRevisionCheck();
-
-                createDuplicate( localItem );
-
-                status( Idle );
-                break;
-            }
-        }
+        mConflictHandler->setConflictingItems( localItem, remoteItem );
+        mConflictHandler->setDifferencesInterface( updateJob->module() );
+        mConflictHandler->setParentWindowId( winIdForDialogs() );
+        mConflictHandler->setParentName( name() );
+        mConflictHandler->start();
     } else {
         changeCommitted( updateJob->item() );
         status( Idle );
     }
 }
 
-void SugarCRMResource::duplicateLocalItemResult( KJob *job )
+void SugarCRMResource::commitChange( const Akonadi::Item &item )
 {
-    ItemCreateJob *createJob = qobject_cast<ItemCreateJob*>( job );
-    Q_ASSERT( createJob != 0 );
+    changeCommitted( item );
+    status( Idle );
+}
 
-    const Item item = createJob->item();
+void SugarCRMResource::updateOnBackend( const Akonadi::Item &item )
+{
+    const Collection collection = item.parentCollection();
 
-    if ( createJob->error() != 0 ) {
-        kWarning() << "Duplicating local item" << item.id()
-                   << ", collection" << item.parentCollection().name()
-                   << "for conflict resolution failed on local create: "
-                   << "error=" << createJob->error() << "message=" << createJob->errorText();
+    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
+    if ( moduleIt != mModuleHandlers->constEnd() ) {
+        updateItem( item, *moduleIt );
     } else {
-        kDebug() << "Duplicating local item" << item.id()
-                 << ", collection" << item.parentCollection().name()
-                 << "for conflict resolution succeeded:";
+        kError() << "No module handler for collection" << collection.remoteId();
     }
 }
 
@@ -518,18 +486,6 @@ void SugarCRMResource::updateItem( const Akonadi::Item &item, ModuleHandler *han
     job->setModule( handler );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( updateEntryResult( KJob* ) ) );
     job->start();
-}
-
-void SugarCRMResource::createDuplicate( const Akonadi::Item &item )
-{
-    kDebug() << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
-    Item duplicate( item );
-    duplicate.setId( -1 );
-    duplicate.setRemoteId( QString() );
-    duplicate.setRemoteRevision( QString() );
-
-    ItemCreateJob *job = new ItemCreateJob( duplicate, item.parentCollection(), mConflictSession );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( duplicateLocalItemResult( KJob* ) ) );
 }
 
 AKONADI_RESOURCE_MAIN( SugarCRMResource )

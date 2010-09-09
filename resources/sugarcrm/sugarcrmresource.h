@@ -5,13 +5,10 @@
 
 #include <QStringList>
 
+class ConflictHandler;
 class KJob;
 class ModuleHandler;
 class SugarSession;
-
-namespace Akonadi {
-    class Session;
-}
 
 template <typename U, typename V> class QHash;
 
@@ -36,7 +33,7 @@ protected:
     typedef QHash<QString, ModuleHandler*> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
 
-    Akonadi::Session *mConflictSession;
+    ConflictHandler *mConflictHandler;
 
 protected:
     void aboutToQuit();
@@ -64,11 +61,12 @@ protected Q_SLOTS:
 
     void updateEntryResult( KJob *job );
 
-    void duplicateLocalItemResult( KJob *job );
+    void commitChange( const Akonadi::Item &item );
+
+    void updateOnBackend( const Akonadi::Item &item );
 
 private:
     void updateItem( const Akonadi::Item &item, ModuleHandler *handler );
-    void createDuplicate( const Akonadi::Item &item );
 };
 
 #endif
