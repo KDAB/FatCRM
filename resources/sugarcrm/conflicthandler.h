@@ -61,6 +61,7 @@ public:
 
     void setDifferencesInterface( Akonadi::DifferencesAlgorithmInterface *interface );
 
+    void setParentName( const QString &name );
     void setParentWindowId( WId windowId );
 
   public Q_SLOTS:

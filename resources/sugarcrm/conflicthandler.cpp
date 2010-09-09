@@ -8,6 +8,7 @@
 #include <akonadi/itemmodifyjob.h>
 #include <akonadi/session.h>
 
+#include <KLocale>
 #include <KWindowSystem>
 
 using namespace Akonadi;
@@ -30,6 +31,7 @@ public:
 
     DifferencesAlgorithmInterface *mDiffInterface;
     WId mWindowId;
+    QString mName;
 
     Session *mSession;
 
@@ -49,6 +51,12 @@ void ConflictHandler::Private::resolve()
         // if we have a "parent" window id, use it
         // otherwise focus stealing prevention might put us behind it
         KWindowSystem::setMainWindow( &dialog, mWindowId );
+    }
+
+    if ( mName.isEmpty() ) {
+        dialog.setWindowTitle( i18nc( "@title:window", "Conflict Resolution" ) );
+    } else {
+        dialog.setWindowTitle( i18nc( "@title:window", "%1: Conflict Resolution", mName ) );
     }
 
     dialog.setConflictingItems( mLocalItem, mRemoteItem );
@@ -142,6 +150,11 @@ void ConflictHandler::setDifferencesInterface( DifferencesAlgorithmInterface *in
 {
     Q_ASSERT( interface != 0 );
     d->mDiffInterface = interface;
+}
+
+void ConflictHandler::setParentName( const QString &name )
+{
+    d->mName = name;
 }
 
 void ConflictHandler::setParentWindowId( WId windowId )
