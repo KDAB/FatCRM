@@ -5,6 +5,8 @@
 #include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 
+#include <kabc/address.h>
+
 #include <kdcrmdata/sugaraccount.h>
 
 #include <KLocale>
@@ -279,12 +281,12 @@ static void setEmployees(const QString &value, SugarAccount &account)
     account.setEmployees( value );
 }
 
-static QString getTyckerSymbol( const SugarAccount &account )
+static QString getTickerSymbol( const SugarAccount &account )
 {
     return account.tyckerSymbol();
 }
 
-static void setTyckerSymbol(const QString &value, SugarAccount &account)
+static void setTickerSymbol(const QString &value, SugarAccount &account)
 {
     account.setTyckerSymbol( value );
 }
@@ -399,66 +401,124 @@ static void setCampaignName( const QString &value, SugarAccount &account )
     account.setCampaignName( value );
 }
 
-
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ){}
+    AccessorPair( valueGetter get, valueSetter set, const QString &name )
+        : getter( get ), setter( set ), diffName( name )
+    {}
 
 public:
     valueGetter getter;
     valueSetter setter;
+    const QString diffName;
 };
-
-
 
 AccountsHandler::AccountsHandler()
     : ModuleHandler( QLatin1String( "Accounts" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
-    mAccessors->insert( QLatin1String( "name" ), AccessorPair( getName, setName ) );
-    mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
-    mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
-    mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
-    mAccessors->insert( QLatin1String( "modified_by_name" ), AccessorPair( getModifiedByName, setModifiedByName ) );
-    mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedBy, setCreatedBy ) );
-    mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
-    mAccessors->insert( QLatin1String( "description" ), AccessorPair( getDescription, setDescription ) );
-    mAccessors->insert( QLatin1String( "deleted" ), AccessorPair( getDeleted, setDeleted ) );
-    mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
-    mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
-    mAccessors->insert( QLatin1String( "account_type" ), AccessorPair( getAccountType, setAccountType ) );
-    mAccessors->insert( QLatin1String( "industry" ), AccessorPair( getIndustry, setIndustry ) );
-    mAccessors->insert( QLatin1String( "annual_revenue" ), AccessorPair( getAnnualRevenue, setAnnualRevenue ) );
-    mAccessors->insert( QLatin1String( "phone_fax" ), AccessorPair( getPhoneFax, setPhoneFax ) );
-    mAccessors->insert( QLatin1String( "billing_address_street" ), AccessorPair( getBillingAddressStreet, setBillingAddressStreet ) );
-    mAccessors->insert( QLatin1String( "billing_address_city" ), AccessorPair( getBillingAddressCity, setBillingAddressCity ) );
-    mAccessors->insert( QLatin1String( "billing_address_state" ), AccessorPair( getBillingAddressState, setBillingAddressState ) );
-    mAccessors->insert( QLatin1String( "billing_address_postalcode" ), AccessorPair( getBillingAddressPostalcode, setBillingAddressPostalcode ) );
-    mAccessors->insert( QLatin1String( "billing_address_country" ), AccessorPair( getBillingAddressCountry, setBillingAddressCountry ) );
-    mAccessors->insert( QLatin1String( "rating" ), AccessorPair( getRating, setRating ) );
-    mAccessors->insert( QLatin1String( "phone_office" ), AccessorPair( getPhoneOffice, setPhoneOffice ) );
-    mAccessors->insert( QLatin1String( "phone_alternate" ), AccessorPair( getPhoneAlternate, setPhoneAlternate ) );
-    mAccessors->insert( QLatin1String( "website" ), AccessorPair( getWebsite, setWebsite ) );
-    mAccessors->insert( QLatin1String( "ownership" ), AccessorPair( getOwnership, setOwnership ) );
-    mAccessors->insert( QLatin1String( "employees" ), AccessorPair( getEmployees, setEmployees ) );
-    mAccessors->insert( QLatin1String( "ticker_symbol" ), AccessorPair( getTyckerSymbol, setTyckerSymbol ) );
-    mAccessors->insert( QLatin1String( "shipping_address_street" ), AccessorPair( getShippingAddressStreet, setShippingAddressStreet ) );
-    mAccessors->insert( QLatin1String( "shipping_address_city" ), AccessorPair( getShippingAddressCity, setShippingAddressCity ) );
-    mAccessors->insert( QLatin1String( "shipping_address_state" ), AccessorPair( getShippingAddressState, setShippingAddressState ) );
-    mAccessors->insert( QLatin1String( "shipping_address_postalcode" ), AccessorPair( getShippingAddressPostalcode, setShippingAddressPostalcode ) );
-    mAccessors->insert( QLatin1String( "shipping_address_country" ), AccessorPair( getShippingAddressCountry, setShippingAddressCountry ) );
-    mAccessors->insert( QLatin1String( "email1" ), AccessorPair( getEmail1, setEmail1 ) );
-    mAccessors->insert( QLatin1String( "parent_id" ), AccessorPair( getParentId, setParentId ) );
-    mAccessors->insert( QLatin1String( "parent_name" ), AccessorPair( getParentName, setParentName ) );
-    mAccessors->insert( QLatin1String( "sic_code" ), AccessorPair( getSicCode, setSicCode ) );
-    mAccessors->insert( QLatin1String( "campaign_id" ), AccessorPair( getCampaignId, setCampaignId ) );
-    mAccessors->insert( QLatin1String( "campaign_name" ), AccessorPair( getCampaignName, setCampaignName ) );
+    mAccessors->insert( QLatin1String( "id" ),
+                        new AccessorPair( 0, setId, QString() ) );
+    mAccessors->insert( QLatin1String( "name" ),
+                        new AccessorPair( getName, setName,
+                                          i18nc( "@item:intable account name", "Name" ) ) );
+    mAccessors->insert( QLatin1String( "date_entered" ),
+                        new AccessorPair( getDateEntered, setDateEntered, QString() ) );
+    mAccessors->insert( QLatin1String( "date_modified" ),
+                        new AccessorPair( getDateModified, setDateModified, QString() ) );
+    mAccessors->insert( QLatin1String( "modified_user_id" ),
+                        new AccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
+    mAccessors->insert( QLatin1String( "modified_by_name" ),
+                        new AccessorPair( getModifiedByName, setModifiedByName, QString() ) );
+    mAccessors->insert( QLatin1String( "created_by" ),
+                        new AccessorPair( getCreatedBy, setCreatedBy, QString() ) );
+    mAccessors->insert( QLatin1String( "created_by_name" ),
+                        new AccessorPair( getCreatedByName, setCreatedByName, QString() ) );
+    mAccessors->insert( QLatin1String( "description" ),
+                        new AccessorPair( getDescription, setDescription,
+                                          i18nc( "@item:intable", "Description" ) ) );
+    mAccessors->insert( QLatin1String( "deleted" ),
+                        new AccessorPair( getDeleted, setDeleted, QString() ) );
+    mAccessors->insert( QLatin1String( "assigned_user_id" ),
+                        new AccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+                        new AccessorPair( getAssignedUserName, setAssignedUserName,
+                                          i18nc( "@item:intable", "Assigned To" ) ) );
+    mAccessors->insert( QLatin1String( "account_type" ),
+                        new AccessorPair( getAccountType, setAccountType,
+                                          i18nc( "@item:intable", "Type" ) ) );
+    mAccessors->insert( QLatin1String( "industry" ),
+                        new AccessorPair( getIndustry, setIndustry,
+                                          i18nc( "@item:intable", "Industry" ) ) );
+    mAccessors->insert( QLatin1String( "annual_revenue" ),
+                        new AccessorPair( getAnnualRevenue, setAnnualRevenue,
+                                          i18nc( "@item:intable", "Annual Revenue" ) ) );
+    mAccessors->insert( QLatin1String( "phone_fax" ),
+                        new AccessorPair( getPhoneFax, setPhoneFax,
+                                          i18nc( "@item:intable", "Fax" ) ) );
+    mAccessors->insert( QLatin1String( "billing_address_street" ),
+                        new AccessorPair( getBillingAddressStreet, setBillingAddressStreet, QString() ) );
+    mAccessors->insert( QLatin1String( "billing_address_city" ),
+                        new AccessorPair( getBillingAddressCity, setBillingAddressCity, QString() ) );
+    mAccessors->insert( QLatin1String( "billing_address_state" ),
+                        new AccessorPair( getBillingAddressState, setBillingAddressState, QString() ) );
+    mAccessors->insert( QLatin1String( "billing_address_postalcode" ),
+                        new AccessorPair( getBillingAddressPostalcode, setBillingAddressPostalcode, QString() ) );
+    mAccessors->insert( QLatin1String( "billing_address_country" ),
+                        new AccessorPair( getBillingAddressCountry, setBillingAddressCountry, QString() ) );
+    mAccessors->insert( QLatin1String( "rating" ),
+                        new AccessorPair( getRating, setRating,
+                                          i18nc( "@item:intable", "Rating" ) ) );
+    mAccessors->insert( QLatin1String( "phone_office" ),
+                        new AccessorPair( getPhoneOffice, setPhoneOffice,
+                                          i18nc( "@item:intable", "Phone (Office)" ) ) );
+    mAccessors->insert( QLatin1String( "phone_alternate" ),
+                        new AccessorPair( getPhoneAlternate, setPhoneAlternate,
+                                          i18nc( "@item:intable", "Phone (Other)" ) ) );
+    mAccessors->insert( QLatin1String( "website" ),
+                        new AccessorPair( getWebsite, setWebsite,
+                                          i18nc( "@item:intable", "Website" ) ) );
+    mAccessors->insert( QLatin1String( "ownership" ),
+                        new AccessorPair( getOwnership, setOwnership,
+                                          i18nc( "@item:intable", "Ownership" ) ) );
+    mAccessors->insert( QLatin1String( "employees" ),
+                        new AccessorPair( getEmployees, setEmployees,
+                                          i18nc( "@item:intable", "Employees" ) ) );
+    mAccessors->insert( QLatin1String( "ticker_symbol" ),
+                        new AccessorPair( getTickerSymbol, setTickerSymbol,
+                                          i18nc( "@item:intable", "Ticker Symbol" ) ) );
+    mAccessors->insert( QLatin1String( "shipping_address_street" ),
+                        new AccessorPair( getShippingAddressStreet, setShippingAddressStreet, QString() ) );
+    mAccessors->insert( QLatin1String( "shipping_address_city" ),
+                        new AccessorPair( getShippingAddressCity, setShippingAddressCity, QString() ) );
+    mAccessors->insert( QLatin1String( "shipping_address_state" ),
+                        new AccessorPair( getShippingAddressState, setShippingAddressState, QString() ) );
+    mAccessors->insert( QLatin1String( "shipping_address_postalcode" ),
+                        new AccessorPair( getShippingAddressPostalcode, setShippingAddressPostalcode, QString() ) );
+    mAccessors->insert( QLatin1String( "shipping_address_country" ),
+                        new AccessorPair( getShippingAddressCountry, setShippingAddressCountry, QString() ) );
+    mAccessors->insert( QLatin1String( "email1" ),
+                        new AccessorPair( getEmail1, setEmail1,
+                                          i18nc( "@item:intable", "Primary Email" ) ) );
+    mAccessors->insert( QLatin1String( "parent_id" ),
+                        new AccessorPair( getParentId, setParentId, QString() ) );
+    mAccessors->insert( QLatin1String( "parent_name" ),
+                        new AccessorPair( getParentName, setParentName,
+                                          i18nc( "@item:intable", "Member Of" ) ) );
+    mAccessors->insert( QLatin1String( "sic_code" ),
+                        new AccessorPair( getSicCode, setSicCode,
+                                          i18nc( "@item:intable", "SIC Code" ) ) );
+    mAccessors->insert( QLatin1String( "campaign_id" ),
+                        new AccessorPair( getCampaignId, setCampaignId, QString() ) );
+    mAccessors->insert( QLatin1String( "campaign_name" ),
+                        new AccessorPair( getCampaignName, setCampaignName,
+                                          i18nc( "@item:intable", "Campaign" ) ) );
 }
 
 AccountsHandler::~AccountsHandler()
 {
+    qDeleteAll( *mAccessors );
     delete mAccessors;
 }
 
@@ -518,12 +578,12 @@ bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
         TNS__Name_value field;
         field.setName( it.key() );
-        field.setValue( it->getter( account ) );
+        field.setValue( (*it)->getter( account ) );
         if ( field.name() == "date_modified"  ||
              field.name() == "date_entered" )
             field.setValue( adjustedTime( field.value() ) );
@@ -565,10 +625,10 @@ Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__En
             // adjust time to local system
             if ( namedValue.name() == "date_modified" ||
                  namedValue.name() == "date_entered" ) {
-                accessIt->setter( adjustedTime(namedValue.value()), account );
+                (*accessIt)->setter( adjustedTime(namedValue.value()), account );
                 continue;
             }
-            accessIt->setter( namedValue.value(), account );
+            (*accessIt)->setter( namedValue.value(), account );
         }
         item.setPayload<SugarAccount>( account );
         item.setRemoteRevision( getDateModified( account ) );
@@ -584,22 +644,90 @@ void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     Q_ASSERT( leftItem.hasPayload<SugarAccount>() );
     Q_ASSERT( rightItem.hasPayload<SugarAccount>() );
 
-    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Account" ) );
-    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Account" ) );
-
     const SugarAccount leftAccount = leftItem.payload<SugarAccount>();
     const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
+
+    const QString modifiedBy = getModifiedByName( rightAccount );
+    // TODO should get date and format it using KLocale
+    const QString modifiedOn = getDateModified( rightAccount );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Account" ) );
+    reporter->setRightPropertyValueTitle(
+        i18nc( "@title:column", "Serverside Account: modified by %1 on %2",
+               modifiedBy, modifiedOn ) );
+
+    bool seenBillingAddress = false;
+    bool seenShippingAddress = false;
 
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
 
-        const QString leftValue = it->getter( leftAccount );
-        const QString rightValue = it->getter( rightAccount );
+        QString leftValue = (*it)->getter( leftAccount );
+        QString rightValue = (*it)->getter( rightAccount );
+
+        QString diffName = (*it)->diffName;
+        if ( diffName.isEmpty() ) {
+            // check for special fields
+            if ( it.key().startsWith( QLatin1String( "billing" ) ) ) {
+                if ( !seenBillingAddress ) {
+                    seenBillingAddress = true;
+                    diffName = i18nc( "@item:intable", "Billing Address" );
+
+                    KABC::Address leftAddress;
+                    leftAddress.setStreet( getBillingAddressStreet( leftAccount ) );
+                    leftAddress.setLocality( getBillingAddressCity( leftAccount ) );
+                    leftAddress.setRegion( getBillingAddressState( leftAccount ) );
+                    leftAddress.setCountry( getBillingAddressCountry( leftAccount ) );
+                    leftAddress.setPostalCode( getBillingAddressPostalcode( leftAccount ) );
+
+                    KABC::Address rightAddress;
+                    rightAddress.setStreet( getBillingAddressStreet( rightAccount ) );
+                    rightAddress.setLocality( getBillingAddressCity( rightAccount ) );
+                    rightAddress.setRegion( getBillingAddressState( rightAccount ) );
+                    rightAddress.setCountry( getBillingAddressCountry( rightAccount ) );
+                    rightAddress.setPostalCode( getBillingAddressPostalcode( rightAccount ) );
+
+                    leftValue = leftAddress.formattedAddress();
+                    rightValue = rightAddress.formattedAddress();
+                } else {
+                    // already printed, skip
+                    continue;
+                }
+            } else if ( it.key().startsWith( QLatin1String( "shipping" ) ) ) {
+                if ( !seenShippingAddress ) {
+                    seenShippingAddress = true;
+                    diffName = i18nc( "@item:intable", "Shipping Address" );
+
+                    KABC::Address leftAddress( KABC::Address::Parcel );
+                    leftAddress.setStreet( getShippingAddressStreet( leftAccount ) );
+                    leftAddress.setLocality( getShippingAddressCity( leftAccount ) );
+                    leftAddress.setRegion( getShippingAddressState( leftAccount ) );
+                    leftAddress.setCountry( getShippingAddressCountry( leftAccount ) );
+                    leftAddress.setPostalCode( getShippingAddressPostalcode( leftAccount ) );
+
+                    KABC::Address rightAddress( KABC::Address::Parcel );
+                    rightAddress.setStreet( getShippingAddressStreet( rightAccount ) );
+                    rightAddress.setLocality( getShippingAddressCity( rightAccount ) );
+                    rightAddress.setRegion( getShippingAddressState( rightAccount ) );
+                    rightAddress.setCountry( getShippingAddressCountry( rightAccount ) );
+                    rightAddress.setPostalCode( getShippingAddressPostalcode( rightAccount ) );
+
+                    leftValue = leftAddress.formattedAddress();
+                    rightValue = rightAddress.formattedAddress();
+                } else {
+                    // already printed, skip
+                    continue;
+                }
+            } else {
+                // internal field, skip
+                continue;
+            }
+        }
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;
@@ -607,13 +735,13 @@ void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
 
         if ( leftValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( rightValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         }
     }
 }
