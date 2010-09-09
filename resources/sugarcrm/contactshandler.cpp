@@ -522,7 +522,7 @@ public:
         valueSetter vSetter;
         addressSetter aSetter;
     } setter;
-    QString diffName;
+    const QString diffName;
 };
 
 ContactsHandler::ContactsHandler()
