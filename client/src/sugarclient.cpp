@@ -1,5 +1,6 @@
 #include "sugarclient.h"
 
+#include "dbuswinidprovider.h"
 #include "enums.h"
 #include "resourceconfigdialog.h"
 #include "shutdowndialog.h"
@@ -29,6 +30,8 @@ SugarClient::SugarClient()
      */
     Akonadi::Control::widgetNeedsAkonadi( this );
     QMetaObject::invokeMethod( this, "slotDelayedInit", Qt::AutoConnection );
+
+    (void)new DBusWinIdProvider( this );
 }
 
 SugarClient::~SugarClient()

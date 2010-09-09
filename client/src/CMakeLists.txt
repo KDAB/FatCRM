@@ -26,10 +26,11 @@ set(sugarclient_SRCS
     sugarclient.cpp
     resourceconfigdialog.cpp
     shutdowndialog.cpp
+    dbuswinidprovider.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
-    page.ui    
+    page.ui
     contactdetails.ui
     accountdetails.ui
     opportunitydetails.ui
