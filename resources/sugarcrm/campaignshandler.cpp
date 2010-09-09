@@ -295,11 +295,14 @@ static void setFrequency(const QString &value, SugarCampaign &campaign)
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ){}
+    AccessorPair( valueGetter get, valueSetter set, const QString &name )
+        : getter( get ), setter( set ), diffName( name )
+    {}
 
 public:
     valueGetter getter;
     valueSetter setter;
+    const QString diffName;
 };
 
 
@@ -308,38 +311,84 @@ CampaignsHandler::CampaignsHandler()
     : ModuleHandler( QLatin1String( "Campaigns" ) ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ), AccessorPair( 0, setId ) );
-    mAccessors->insert( QLatin1String( "name" ), AccessorPair( getName, setName ) );
-    mAccessors->insert( QLatin1String( "date_entered" ), AccessorPair( getDateEntered, setDateEntered ) );
-    mAccessors->insert( QLatin1String( "date_modified" ), AccessorPair( getDateModified, setDateModified ) );
-    mAccessors->insert( QLatin1String( "modified_user_id" ), AccessorPair( getModifiedUserId, setModifiedUserId ) );
-    mAccessors->insert( QLatin1String( "modified_by_name" ), AccessorPair( getModifiedByName, setModifiedByName ) );
-    mAccessors->insert( QLatin1String( "created_by" ), AccessorPair( getCreatedBy, setCreatedBy ) );
-    mAccessors->insert( QLatin1String( "created_by_name" ), AccessorPair( getCreatedByName, setCreatedByName ) );
-    mAccessors->insert( QLatin1String( "deleted" ), AccessorPair( getDeleted, setDeleted ) );
-    mAccessors->insert( QLatin1String( "assigned_user_id" ), AccessorPair( getAssignedUserId, setAssignedUserId ) );
-    mAccessors->insert( QLatin1String( "assigned_user_name" ), AccessorPair( getAssignedUserName, setAssignedUserName ) );
-    mAccessors->insert( QLatin1String( "tracker_key" ), AccessorPair( getTrackerKey, setTrackerKey ) );
-    mAccessors->insert( QLatin1String( "tracker_count" ), AccessorPair( getTrackerCount, setTrackerCount ) );
-    mAccessors->insert( QLatin1String( "refer_url" ), AccessorPair( getReferUrl, setReferUrl ) );
-    mAccessors->insert( QLatin1String( "tracker_text" ), AccessorPair( getTrackerText, setTrackerText ) );
-    mAccessors->insert( QLatin1String( "start_date" ), AccessorPair( getStartDate, setStartDate ) );
-    mAccessors->insert( QLatin1String( "end_date" ), AccessorPair( getEndDate, setEndDate ) );
-    mAccessors->insert( QLatin1String( "status" ), AccessorPair( getStatus, setStatus ) );
-    mAccessors->insert( QLatin1String( "impressions" ), AccessorPair( getImpressions, setImpressions ) );
-    mAccessors->insert( QLatin1String( "currency_id" ), AccessorPair( getCurrencyId, setCurrencyId ) );
-    mAccessors->insert( QLatin1String( "budget" ), AccessorPair( getBudget, setBudget ) );
-    mAccessors->insert( QLatin1String( "expected_cost" ), AccessorPair( getExpectedCost, setExpectedCost ) );
-    mAccessors->insert( QLatin1String( "actual_cost" ), AccessorPair( getActualCost, setActualCost ) );
-    mAccessors->insert( QLatin1String( "expected_revenue" ), AccessorPair( getExpectedRevenue, setExpectedRevenue ) );
-    mAccessors->insert( QLatin1String( "campaign_type" ), AccessorPair( getCampaignType, setCampaignType ) );
-    mAccessors->insert( QLatin1String( "objective" ), AccessorPair( getObjective, setObjective ) );
-    mAccessors->insert( QLatin1String( "content" ), AccessorPair( getContent, setContent ) );
-    mAccessors->insert( QLatin1String( "frequency" ), AccessorPair( getFrequency, setFrequency ) );
+    mAccessors->insert( QLatin1String( "id" ),
+                        new AccessorPair( 0, setId, QString() ) );
+    mAccessors->insert( QLatin1String( "name" ),
+                        new AccessorPair( getName, setName,
+                                          i18nc( "@item:intable campaign name", "Name" ) ) );
+    mAccessors->insert( QLatin1String( "date_entered" ),
+                        new AccessorPair( getDateEntered, setDateEntered, QString() ) );
+    mAccessors->insert( QLatin1String( "date_modified" ),
+                        new AccessorPair( getDateModified, setDateModified, QString() ) );
+    mAccessors->insert( QLatin1String( "modified_user_id" ),
+                        new AccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
+    mAccessors->insert( QLatin1String( "modified_by_name" ),
+                        new AccessorPair( getModifiedByName, setModifiedByName, QString() ) );
+    mAccessors->insert( QLatin1String( "created_by" ),
+                        new AccessorPair( getCreatedBy, setCreatedBy, QString() ) );
+    mAccessors->insert( QLatin1String( "created_by_name" ),
+                        new AccessorPair( getCreatedByName, setCreatedByName, QString() ) );
+    mAccessors->insert( QLatin1String( "deleted" ),
+                        new AccessorPair( getDeleted, setDeleted, QString() ) );
+    mAccessors->insert( QLatin1String( "assigned_user_id" ),
+                        new AccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+                        new AccessorPair( getAssignedUserName, setAssignedUserName,
+                                          i18nc( "@item:intable", "Assigned To" ) ) );
+    mAccessors->insert( QLatin1String( "tracker_key" ),
+                        new AccessorPair( getTrackerKey, setTrackerKey, QString() ) );
+    mAccessors->insert( QLatin1String( "tracker_count" ),
+                        new AccessorPair( getTrackerCount, setTrackerCount, QString() ) );
+    mAccessors->insert( QLatin1String( "refer_url" ),
+                        new AccessorPair( getReferUrl, setReferUrl,
+                                          i18nc( "@item:intable", "Referer URL" ) ) );
+    mAccessors->insert( QLatin1String( "tracker_text" ),
+                        new AccessorPair( getTrackerText, setTrackerText,
+                                          i18nc( "@item:intable", "Tracker" ) ) );
+    mAccessors->insert( QLatin1String( "start_date" ),
+                        new AccessorPair( getStartDate, setStartDate,
+                                          i18nc( "@item:intable", "Start Date" ) ) );
+    mAccessors->insert( QLatin1String( "end_date" ),
+                        new AccessorPair( getEndDate, setEndDate,
+                                          i18nc( "@item:intable", "End Date" ) ) );
+    mAccessors->insert( QLatin1String( "status" ),
+                        new AccessorPair( getStatus, setStatus,
+                                          i18nc( "@item:intable", "Status" ) ) );
+    mAccessors->insert( QLatin1String( "impressions" ),
+                        new AccessorPair( getImpressions, setImpressions,
+                                          i18nc( "@item:intable", "Impressions" ) ) );
+    mAccessors->insert( QLatin1String( "currency_id" ),
+                        new AccessorPair( getCurrencyId, setCurrencyId,
+                                          i18nc( "@item:intable", "Currency" ) ) );
+    mAccessors->insert( QLatin1String( "budget" ),
+                        new AccessorPair( getBudget, setBudget,
+                                          i18nc( "@item:intable", "Budget" ) ) );
+    mAccessors->insert( QLatin1String( "expected_cost" ),
+                        new AccessorPair( getExpectedCost, setExpectedCost,
+                                          i18nc( "@item:intable", "Expected Costs" ) ) );
+    mAccessors->insert( QLatin1String( "actual_cost" ),
+                        new AccessorPair( getActualCost, setActualCost,
+                                          i18nc( "@item:intable", "Actual Costs" ) ) );
+    mAccessors->insert( QLatin1String( "expected_revenue" ),
+                        new AccessorPair( getExpectedRevenue, setExpectedRevenue,
+                                          i18nc( "@item:intable", "Expected Revenue" ) ) );
+    mAccessors->insert( QLatin1String( "campaign_type" ),
+                        new AccessorPair( getCampaignType, setCampaignType,
+                                          i18nc( "@item:intable", "Type" ) ) );
+    mAccessors->insert( QLatin1String( "objective" ),
+                        new AccessorPair( getObjective, setObjective,
+                                          i18nc( "@item:intable", "Objective" ) ) );
+    mAccessors->insert( QLatin1String( "content" ),
+                        new AccessorPair( getContent, setContent,
+                                          i18nc( "@item:intable", "Content" ) ) );
+    mAccessors->insert( QLatin1String( "frequency" ),
+                        new AccessorPair( getFrequency, setFrequency,
+                                          i18nc( "@item:intable", "Frequency" ) ) );
 }
 
 CampaignsHandler::~CampaignsHandler()
 {
+    qDeleteAll( *mAccessors );
     delete mAccessors;
 }
 
@@ -355,8 +404,8 @@ Akonadi::Collection CampaignsHandler::collection() const
     campaignCollection.setContentMimeTypes( QStringList() << SugarCampaign::mimeType() );
     campaignCollection.setName( i18nc( "@item folder name", "Campaigns" ) );
     campaignCollection.setRights( Akonadi::Collection::CanChangeItem |
-                                 Akonadi::Collection::CanCreateItem |
-                                 Akonadi::Collection::CanDeleteItem );
+                                  Akonadi::Collection::CanCreateItem |
+                                  Akonadi::Collection::CanDeleteItem );
 
     return campaignCollection;
 }
@@ -399,12 +448,12 @@ bool CampaignsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, con
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
         TNS__Name_value field;
         field.setName( it.key() );
-        field.setValue( it->getter( campaign ) );
+        field.setValue( (*it)->getter( campaign ) );
         if ( field.name() == "date_modified"  ||
              field.name() == "date_entered" )
             field.setValue( adjustedTime( field.value() ) );
@@ -447,10 +496,10 @@ Akonadi::Item::List CampaignsHandler::itemsFromListEntriesResponse( const TNS__E
             // adjust time to local system
             if ( namedValue.name() == "date_modified" ||
                  namedValue.name() == "date_entered" ) {
-                accessIt->setter( adjustedTime(namedValue.value()), campaign );
+                (*accessIt)->setter( adjustedTime(namedValue.value()), campaign );
                 continue;
             }
-            accessIt->setter( namedValue.value(), campaign );
+            (*accessIt)->setter( namedValue.value(), campaign );
         }
         item.setPayload<SugarCampaign>( campaign );
         item.setRemoteRevision( getDateModified( campaign ) );
@@ -476,12 +525,19 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( it->getter == 0 ) {
+        if ( (*it)->getter == 0 ) {
             continue;
         }
 
-        const QString leftValue = it->getter( leftCampaign );
-        const QString rightValue = it->getter( rightCampaign );
+        const QString diffName = (*it)->diffName;
+        if ( diffName.isEmpty() ) {
+            // TODO some fields like currency_id should be handled as special fields instead
+            // i.e. currency string, dates formatted with KLocale
+            continue;
+        }
+
+        const QString leftValue = (*it)->getter( leftCampaign );
+        const QString rightValue = (*it)->getter( rightCampaign );
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;
@@ -489,13 +545,13 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
 
         if ( leftValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( rightValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         }
     }
 }
