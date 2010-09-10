@@ -87,6 +87,7 @@ set( sugarcrmresource_SRCS
     leadshandler.cpp
     listentriesjob.cpp
     listmodulesjob.cpp
+    loginerrordialog.cpp
     loginjob.cpp
     moduledebuginterface.cpp
     modulehandler.cpp
