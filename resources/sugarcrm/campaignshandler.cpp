@@ -515,11 +515,17 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     Q_ASSERT( leftItem.hasPayload<SugarCampaign>() );
     Q_ASSERT( rightItem.hasPayload<SugarCampaign>() );
 
-    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Campaign" ) );
-    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Campaign" ) );
-
     const SugarCampaign leftCampaign = leftItem.payload<SugarCampaign>();
     const SugarCampaign rightCampaign = rightItem.payload<SugarCampaign>();
+
+    const QString modifiedBy = getModifiedByName( rightCampaign );
+    // TODO should get date and format it using KLocale
+    const QString modifiedOn = getDateModified( rightCampaign );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Campaign" ) );
+    reporter->setRightPropertyValueTitle(
+        i18nc( "@title:column", "Serverside Campaign: modified by %1 on %2",
+               modifiedBy, modifiedOn ) );
 
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();

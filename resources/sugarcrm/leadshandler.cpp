@@ -884,15 +884,20 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     Q_ASSERT( leftItem.hasPayload<SugarLead>() );
     Q_ASSERT( rightItem.hasPayload<SugarLead>() );
 
-    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Lead" ) );
-    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Lead" ) );
-
     const SugarLead leftLead = leftItem.payload<SugarLead>();
     const SugarLead rightLead = rightItem.payload<SugarLead>();
 
+    const QString modifiedBy = getModifiedByName( rightLead );
+    // TODO should get date and format it using KLocale
+    const QString modifiedOn = getDateModified( rightLead );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Lead" ) );
+    reporter->setRightPropertyValueTitle(
+        i18nc( "@title:column", "Serverside Lead: modified by %1 on %2",
+               modifiedBy, modifiedOn ) );
+
     bool seenPrimaryAddress = false;
     bool seenOtherAddress = false;
-
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
@@ -983,16 +988,13 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
 
         if ( leftValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( rightValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
-                                   it.key(), leftValue, rightValue );
-        } else if ( leftValue == rightValue ) {
-            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         }
     }
 }
