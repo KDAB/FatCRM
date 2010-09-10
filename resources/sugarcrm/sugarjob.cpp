@@ -121,6 +121,8 @@ void SugarJob::start()
 void SugarJob::restart()
 {
     setAutoDelete( true );
+    setError( 0 );
+    setErrorText( QString() );
     start();
 }
 
