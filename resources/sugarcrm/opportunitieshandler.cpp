@@ -279,77 +279,92 @@ static void setProbability(const QString &value, SugarOpportunity &opportunity)
     opportunity.setProbability( value );
 }
 
-
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ){}
+    AccessorPair( valueGetter get, valueSetter set, const QString &name )
+        : getter( get ), setter( set ), diffName( name )
+    {}
 
 public:
     valueGetter getter;
     valueSetter setter;
+    const QString diffName;
 };
-
-
 
 OpportunitiesHandler::OpportunitiesHandler()
     : ModuleHandler( QLatin1String( "Opportunities" ) ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "id" ),
-                        new AccessorPair( 0, setId ) );
+                        new AccessorPair( 0, setId, QString() ) );
     mAccessors->insert( QLatin1String( "name" ),
-                        new AccessorPair( getName, setName ) );
+                        new AccessorPair( getName, setName,
+                                          i18nc( "@item:intable", "Name" ) ) );
     mAccessors->insert( QLatin1String( "date_entered" ),
-                        new AccessorPair( getDateEntered, setDateEntered ) );
+                        new AccessorPair( getDateEntered, setDateEntered, QString() ) );
     mAccessors->insert( QLatin1String( "date_modified" ),
-                        new AccessorPair( getDateModified, setDateModified ) );
+                        new AccessorPair( getDateModified, setDateModified, QString() ) );
     mAccessors->insert( QLatin1String( "modified_user_id" ),
-                        new AccessorPair( getModifiedUserId, setModifiedUserId ) );
+                        new AccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
     mAccessors->insert( QLatin1String( "modified_by_name" ),
-                        new AccessorPair( getModifiedByName, setModifiedByName ) );
+                        new AccessorPair( getModifiedByName, setModifiedByName, QString() ) );
     mAccessors->insert( QLatin1String( "created_by" ),
-                        new AccessorPair( getCreatedBy, setCreatedBy ) );
+                        new AccessorPair( getCreatedBy, setCreatedBy, QString() ) );
     mAccessors->insert( QLatin1String( "created_by_name" ),
-                        new AccessorPair( getCreatedByName, setCreatedByName ) );
+                        new AccessorPair( getCreatedByName, setCreatedByName,
+                                          i18nc( "@item:intable", "Created By" ) ) );
     mAccessors->insert( QLatin1String( "description" ),
-                        new AccessorPair( getDescription, setDescription ) );
+                        new AccessorPair( getDescription, setDescription,
+                                          i18nc( "@item:intable", "Description" ) ) );
     mAccessors->insert( QLatin1String( "deleted" ),
-                        new AccessorPair( getDeleted, setDeleted ) );
+                        new AccessorPair( getDeleted, setDeleted, QString() ) );
     mAccessors->insert( QLatin1String( "assigned_user_id" ),
-                        new AccessorPair( getAssignedUserId, setAssignedUserId ) );
+                        new AccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
     mAccessors->insert( QLatin1String( "assigned_user_name" ),
-                        new AccessorPair( getAssignedUserName, setAssignedUserName ) );
+                        new AccessorPair( getAssignedUserName, setAssignedUserName,
+                                          i18nc( "@item:intable", "Assigned To" ) ) );
     mAccessors->insert( QLatin1String( "opportunity_type" ),
-                        new AccessorPair( getOpportunityType, setOpportunityType ) );
+                        new AccessorPair( getOpportunityType, setOpportunityType,
+                                          i18nc( "@item:intable", "Type" ) ) );
     mAccessors->insert( QLatin1String( "account_name" ),
-                        new AccessorPair( getAccountName, setAccountName ) );
+                        new AccessorPair( getAccountName, setAccountName,
+                                          i18nc( "@item:intable", "Account" ) ) );
     mAccessors->insert( QLatin1String( "account_id" ),
-                        new AccessorPair( getAccountId, setAccountId ) );
+                        new AccessorPair( getAccountId, setAccountId, QString() ) );
     mAccessors->insert( QLatin1String( "campaign_id" ),
-                        new AccessorPair( getCampaignId, setCampaignId ) );
+                        new AccessorPair( getCampaignId, setCampaignId, QString() ) );
     mAccessors->insert( QLatin1String( "campaign_name" ),
-                        new AccessorPair( getCampaignName, setCampaignName ) );
+                        new AccessorPair( getCampaignName, setCampaignName,
+                                          i18nc( "@item:intable", "Campaign" ) ) );
     mAccessors->insert( QLatin1String( "lead_source" ),
-                        new AccessorPair( getLeadSource, setLeadSource ) );
+                        new AccessorPair( getLeadSource, setLeadSource,
+                                          i18nc( "@item:intable", "Lead Source" ) ) );
     mAccessors->insert( QLatin1String( "amount" ),
-                        new AccessorPair( getAmount, setAmount ) );
+                        new AccessorPair( getAmount, setAmount,
+                                          i18nc( "@item:intable", "Amount" ) ) );
     mAccessors->insert( QLatin1String( "amount_usdollar" ),
-                        new AccessorPair( getAmountUsDollar, setAmountUsDollar ) );
+                        new AccessorPair( getAmountUsDollar, setAmountUsDollar,
+                                          i18nc( "@item:intable", "Account in USD" ) ) );
     mAccessors->insert( QLatin1String( "currency_id" ),
-                        new AccessorPair( getCurrencyId, setCurrencyId ) );
+                        new AccessorPair( getCurrencyId, setCurrencyId, QString() ) );
     mAccessors->insert( QLatin1String( "currency_name" ),
-                        new AccessorPair( getCurrencyName, setCurrencyName ) );
+                        new AccessorPair( getCurrencyName, setCurrencyName,
+                                          i18nc( "@item:intable", "Currency" ) ) );
     mAccessors->insert( QLatin1String( "currency_symbol" ),
-                        new AccessorPair( getCurrencySymbol, setCurrencySymbol ) );
+                        new AccessorPair( getCurrencySymbol, setCurrencySymbol, QString() ) );
     mAccessors->insert( QLatin1String( "date_closed" ),
-                        new AccessorPair( getDateClosed, setDateClosed ) );
+                        new AccessorPair( getDateClosed, setDateClosed,
+                                          i18nc( "@item:intable", "Expected Close Date" ) ) );
     mAccessors->insert( QLatin1String( "next_step" ),
-                        new AccessorPair( getNextStep, setNextStep ) );
+                        new AccessorPair( getNextStep, setNextStep,
+                                          i18nc( "@item:intable", "Next Step" ) ) );
     mAccessors->insert( QLatin1String( "sales_stage" ),
-                        new AccessorPair( getSalesStage, setSalesStage ) );
+                        new AccessorPair( getSalesStage, setSalesStage,
+                                          i18nc( "@item:intable", "Sales Stage" ) ) );
     mAccessors->insert( QLatin1String( "probability" ),
-                        new AccessorPair( getProbability, setProbability ) );
+                        new AccessorPair( getProbability, setProbability,
+                                          i18nc( "@item:intable", "Probability (percent)" ) ) );
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
@@ -481,11 +496,17 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
     Q_ASSERT( leftItem.hasPayload<SugarOpportunity>() );
     Q_ASSERT( rightItem.hasPayload<SugarOpportunity>() );
 
-    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Opportunity" ) );
-    reporter->setRightPropertyValueTitle( i18nc( "@title:column", "Serverside Opportunity" ) );
-
     const SugarOpportunity leftOpportunity = leftItem.payload<SugarOpportunity>();
     const SugarOpportunity rightOpportunity = rightItem.payload<SugarOpportunity>();
+
+    const QString modifiedBy = getModifiedByName( rightOpportunity );
+    // TODO should get date and format it using KLocale
+    const QString modifiedOn = getDateModified( rightOpportunity );
+
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Opportunity" ) );
+    reporter->setRightPropertyValueTitle(
+        i18nc( "@title:column", "Serverside Opportunity: modified by %1 on %2",
+               modifiedBy, modifiedOn ) );
 
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
@@ -495,8 +516,15 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
             continue;
         }
 
-        const QString leftValue = (*it)->getter( leftOpportunity );
-        const QString rightValue = (*it)->getter( rightOpportunity );
+        QString leftValue = (*it)->getter( leftOpportunity );
+        QString rightValue = (*it)->getter( rightOpportunity );
+
+        QString diffName = (*it)->diffName;
+        if ( diffName.isEmpty() ) {
+            // TODO some fields like date_closed should be handled as special fields instead
+            // i.e. formatted with KLocale
+            continue;
+        }
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;
@@ -504,16 +532,13 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
 
         if ( leftValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalRightMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( rightValue.isEmpty() ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::AdditionalLeftMode,
-                                   it.key(), leftValue, rightValue );
-        } else if ( leftValue == rightValue ) {
-            reporter->addProperty( Akonadi::AbstractDifferencesReporter::NormalMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         } else if ( leftValue != rightValue ) {
             reporter->addProperty( Akonadi::AbstractDifferencesReporter::ConflictMode,
-                                   it.key(), leftValue, rightValue );
+                                   diffName, leftValue, rightValue );
         }
     }
 }
