@@ -24,6 +24,9 @@ public:
 
     void start();
 
+public Q_SLOTS:
+    void restart();
+
 protected:
     virtual void startSugarTask() = 0;
 

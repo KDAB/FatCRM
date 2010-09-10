@@ -109,11 +109,19 @@ SugarJob::~SugarJob()
 
 void SugarJob::start()
 {
+    d->mTryRelogin = true;
+
     if ( d->mSession->sessionId().isEmpty() ) {
         QMetaObject::invokeMethod( this, "startLogin", Qt::QueuedConnection );
     } else {
         QMetaObject::invokeMethod( this, "startTask", Qt::QueuedConnection );
     }
+}
+
+void SugarJob::restart()
+{
+    setAutoDelete( true );
+    start();
 }
 
 bool SugarJob::handleLoginError( const KDSoapMessage &fault )
