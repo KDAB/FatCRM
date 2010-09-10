@@ -9,7 +9,7 @@ class SugarConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SugarConfigDialog( Settings *settings );
+    explicit SugarConfigDialog( Settings *settings, QWidget *parent = 0 );
 
     ~SugarConfigDialog();
 

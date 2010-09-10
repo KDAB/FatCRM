@@ -2,8 +2,8 @@
 
 #include "settings.h"
 
-SugarConfigDialog::SugarConfigDialog( Settings *settings )
-    : QDialog()
+SugarConfigDialog::SugarConfigDialog( Settings *settings, QWidget *parent )
+    : QDialog( parent )
 {
     mUi.setupUi( this );
 
