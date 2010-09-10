@@ -9,6 +9,7 @@
 #include "leadshandler.h"
 #include "listentriesjob.h"
 #include "listmodulesjob.h"
+#include "loginerrordialog.h"
 #include "loginjob.h"
 #include "moduledebuginterface.h"
 #include "opportunitieshandler.h"
@@ -271,6 +272,10 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
 
 void SugarCRMResource::explicitLoginResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -296,6 +301,10 @@ void SugarCRMResource::explicitLoginResult( KJob *job )
 
 void SugarCRMResource::listModulesResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -376,6 +385,10 @@ void SugarCRMResource::itemsReceived( const Akonadi::Item::List &items )
 
 void SugarCRMResource::listEntriesResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -392,6 +405,10 @@ void SugarCRMResource::listEntriesResult( KJob *job )
 
 void SugarCRMResource::createEntryResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -415,6 +432,10 @@ void SugarCRMResource::createEntryResult( KJob *job )
 
 void SugarCRMResource::deleteEntryResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -434,6 +455,10 @@ void SugarCRMResource::deleteEntryResult( KJob *job )
 
 void SugarCRMResource::updateEntryResult( KJob *job )
 {
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
     if ( job->error() != 0 ) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -480,12 +505,49 @@ void SugarCRMResource::updateOnBackend( const Akonadi::Item &item )
     }
 }
 
+void SugarCRMResource::userOrHostChanged( const QString &user, const QString &host )
+{
+    setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
+}
+
 void SugarCRMResource::updateItem( const Akonadi::Item &item, ModuleHandler *handler )
 {
     UpdateEntryJob *job = new UpdateEntryJob( item, mSession, this );
     job->setModule( handler );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( updateEntryResult( KJob* ) ) );
     job->start();
+}
+
+bool SugarCRMResource::handleLoginError( KJob *job )
+{
+    if ( job->error() != SugarJob::LoginError ) {
+        return false;
+    }
+
+    const QString message = job->errorText();
+    kWarning() << "error=" << job->error() << ":" << message;
+
+    LoginErrorDialog dialog( job, mSession );
+
+    WId windowId = winIdForDialogs();
+    if ( windowId != 0 ) {
+        KWindowSystem::setMainWindow( &dialog, windowId );
+    }
+
+    if ( dialog.exec() == QDialog::Rejected ) {
+        setOnline( false );
+
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+    } else {
+        // handleLoginError is called in the jobs result slot
+        // we can not restart before processing that has ended, otherwise
+        // auto delete will delete the job prematurely
+        QMetaObject::invokeMethod(job, "restart", Qt::QueuedConnection );
+    }
+
+    return true;
 }
 
 AKONADI_RESOURCE_MAIN( SugarCRMResource )
