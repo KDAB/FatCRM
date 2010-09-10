@@ -5,6 +5,8 @@
 #include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 
+#include <kabc/address.h>
+
 #include <kdcrmdata/sugarlead.h>
 
 #include <KLocale>
@@ -592,11 +594,14 @@ static void setPortalApp( const QString &value, SugarLead &lead )
 class AccessorPair
 {
 public:
-    AccessorPair( valueGetter get, valueSetter set ) : getter( get ), setter( set ){}
+    AccessorPair( valueGetter get, valueSetter set, const QString &name )
+        : getter( get ), setter( set ), diffName( name )
+    {}
 
 public:
     valueGetter getter;
     valueSetter setter;
+    const QString diffName;
 };
 
 LeadsHandler::LeadsHandler()
@@ -604,121 +609,151 @@ LeadsHandler::LeadsHandler()
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "id" ),
-                        new AccessorPair( 0, setId ) );
+                        new AccessorPair( 0, setId, QString() ) );
     mAccessors->insert( QLatin1String( "date_entered" ),
-                        new AccessorPair( getDateEntered, setDateEntered ) );
+                        new AccessorPair( getDateEntered, setDateEntered, QString() ) );
     mAccessors->insert( QLatin1String( "date_modified" ),
-                        new AccessorPair( getDateModified, setDateModified ) );
+                        new AccessorPair( getDateModified, setDateModified, QString() ) );
     mAccessors->insert( QLatin1String( "modified_user_id" ),
-                        new AccessorPair( getModifiedUserId, setModifiedUserId ) );
+                        new AccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
     mAccessors->insert( QLatin1String( "modified_by_name" ),
-                        new AccessorPair( getModifiedByName, setModifiedByName ) );
+                        new AccessorPair( getModifiedByName, setModifiedByName, QString() ) );
     mAccessors->insert( QLatin1String( "created_by" ),
-                        new AccessorPair( getCreatedBy, setCreatedBy ) );
+                        new AccessorPair( getCreatedBy, setCreatedBy, QString() ) );
     mAccessors->insert( QLatin1String( "created_by_name" ),
-                        new AccessorPair( getCreatedByName, setCreatedByName ) );
+                        new AccessorPair( getCreatedByName, setCreatedByName, QString() ) );
     mAccessors->insert( QLatin1String( "description" ),
-                        new AccessorPair( getDescription, setDescription ) );
+                        new AccessorPair( getDescription, setDescription,
+                                          i18nc( "@item:intable", "Description" ) ) );
     mAccessors->insert( QLatin1String( "deleted" ),
-                        new AccessorPair( getDeleted, setDeleted ) );
+                        new AccessorPair( getDeleted, setDeleted, QString() ) );
     mAccessors->insert( QLatin1String( "assigned_user_id" ),
-                        new AccessorPair( getAssignedUserId, setAssignedUserId ) );
+                        new AccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
     mAccessors->insert( QLatin1String( "assigned_user_name" ),
-                        new AccessorPair( getAssignedUserName, setAssignedUserName ) );
+                        new AccessorPair( getAssignedUserName, setAssignedUserName,
+                                          i18nc( "@item:intable", "Assigned To" ) ) );
     mAccessors->insert( QLatin1String( "salutation" ),
-                        new AccessorPair( getSalutation, setSalutation ) );
+                        new AccessorPair( getSalutation, setSalutation,
+                                          i18nc( "@item:intable", "Salutation" ) ) );
     mAccessors->insert( QLatin1String( "first_name" ),
-                        new AccessorPair( getFirstName, setFirstName ) );
+                        new AccessorPair( getFirstName, setFirstName,
+                                          i18nc( "@item:intable", "First Name" ) ) );
     mAccessors->insert( QLatin1String( "last_name" ),
-                        new AccessorPair( getLastName, setLastName ) );
+                        new AccessorPair( getLastName, setLastName,
+                                          i18nc( "@item:intable", "Last Name" ) ) );
     mAccessors->insert( QLatin1String( "title" ),
-                        new AccessorPair( getTitle, setTitle ) );
+                        new AccessorPair( getTitle, setTitle,
+                                          i18nc( "@item:intable job title", "Title" ) ) );
     mAccessors->insert( QLatin1String( "department" ),
-                        new AccessorPair( getDepartment, setDepartment ) );
+                        new AccessorPair( getDepartment, setDepartment,
+                                          i18nc( "@item:intable", "Department" ) ) );
     mAccessors->insert( QLatin1String( "do_not_call" ),
-                        new AccessorPair( getDoNotCall, setDoNotCall ) );
+                        new AccessorPair( getDoNotCall, setDoNotCall, QString() ) );
     mAccessors->insert( QLatin1String( "phone_home" ),
-                        new AccessorPair( getPhoneHome, setPhoneHome ) );
+                        new AccessorPair( getPhoneHome, setPhoneHome,
+                                          i18nc( "@item:intable", "Phone (Home)" ) ) );
     mAccessors->insert( QLatin1String( "phone_mobile" ),
-                        new AccessorPair( getPhoneMobile, setPhoneMobile ) );
+                        new AccessorPair( getPhoneMobile, setPhoneMobile,
+                                          i18nc( "@item:intable", "Phone (Mobile)" ) ) );
     mAccessors->insert( QLatin1String( "phone_work" ),
-                        new AccessorPair( getPhoneWork, setPhoneWork ) );
+                        new AccessorPair( getPhoneWork, setPhoneWork,
+                                          i18nc( "@item:intable", "Phone (Office)" ) ) );
     mAccessors->insert( QLatin1String( "phone_other" ),
-                        new AccessorPair( getPhoneOther, setPhoneOther ) );
+                        new AccessorPair( getPhoneOther, setPhoneOther,
+                                          i18nc( "@item:intable", "Phone (Other)" ) ) );
     mAccessors->insert( QLatin1String( "phone_fax" ),
-                        new AccessorPair( getPhoneFax, setPhoneFax ) );
+                        new AccessorPair( getPhoneFax, setPhoneFax,
+                                          i18nc( "@item:intable", "Fax" ) ) );
     mAccessors->insert( QLatin1String( "email1" ),
-                        new AccessorPair( getEmail1, setEmail1 ) );
+                        new AccessorPair( getEmail1, setEmail1,
+                                          i18nc( "@item:intable", "Primary Email" ) ) );
     mAccessors->insert( QLatin1String( "email2" ),
-                        new AccessorPair( getEmail2, setEmail2 ) );
+                        new AccessorPair( getEmail2, setEmail2,
+                                          i18nc( "@item:intable", "Other Email" ) ) );
     mAccessors->insert( QLatin1String( "primary_address_street" ),
-                        new AccessorPair( getPrimaryAddressStreet, setPrimaryAddressStreet ) );
+                        new AccessorPair( getPrimaryAddressStreet, setPrimaryAddressStreet, QString() ) );
     mAccessors->insert( QLatin1String( "primary_address_city" ),
-                        new AccessorPair( getPrimaryAddressCity, setPrimaryAddressCity ) );
+                        new AccessorPair( getPrimaryAddressCity, setPrimaryAddressCity, QString() ) );
     mAccessors->insert( QLatin1String( "primary_address_state" ),
-                        new AccessorPair( getPrimaryAddressState, setPrimaryAddressState ) );
+                        new AccessorPair( getPrimaryAddressState, setPrimaryAddressState, QString() ) );
     mAccessors->insert( QLatin1String( "primary_address_postalcode" ),
-                        new AccessorPair( getPrimaryAddressPostalcode, setPrimaryAddressPostalcode ) );
+                        new AccessorPair( getPrimaryAddressPostalcode, setPrimaryAddressPostalcode, QString() ) );
     mAccessors->insert( QLatin1String( "primary_address_country" ),
-                        new AccessorPair( getPrimaryAddressCountry, setPrimaryAddressCountry ) );
+                        new AccessorPair( getPrimaryAddressCountry, setPrimaryAddressCountry, QString() ) );
     mAccessors->insert( QLatin1String( "alt_address_street" ),
-                        new AccessorPair( getAltAddressStreet, setAltAddressStreet ) );
+                        new AccessorPair( getAltAddressStreet, setAltAddressStreet, QString() ) );
     mAccessors->insert( QLatin1String( "alt_address_city" ),
-                        new AccessorPair( getAltAddressCity, setAltAddressCity ) );
+                        new AccessorPair( getAltAddressCity, setAltAddressCity, QString() ) );
     mAccessors->insert( QLatin1String( "alt_address_state" ),
-                        new AccessorPair( getAltAddressState, setAltAddressState ) );
+                        new AccessorPair( getAltAddressState, setAltAddressState, QString() ) );
     mAccessors->insert( QLatin1String( "alt_address_postalcode" ),
-                        new AccessorPair( getAltAddressPostalcode, setAltAddressPostalcode ) );
+                        new AccessorPair( getAltAddressPostalcode, setAltAddressPostalcode, QString() ) );
     mAccessors->insert( QLatin1String( "alt_address_country" ),
-                        new AccessorPair( getAltAddressCountry, setAltAddressCountry ) );
+                        new AccessorPair( getAltAddressCountry, setAltAddressCountry, QString() ) );
     mAccessors->insert( QLatin1String( "assistant" ),
-                        new AccessorPair( getAssistant, setAssistant ) );
+                        new AccessorPair( getAssistant, setAssistant,
+                                          i18nc( "@item:intable", "Assistant" ) ) );
     mAccessors->insert( QLatin1String( "assistant_phone" ),
-                        new AccessorPair( getAssistantPhone, setAssistantPhone ) );
+                        new AccessorPair( getAssistantPhone, setAssistantPhone,
+                                          i18nc( "@item:intable", "Assistant Phone" ) ) );
     mAccessors->insert( QLatin1String( "converted" ),
-                        new AccessorPair( getConverted, setConverted ) );
+                        new AccessorPair( getConverted, setConverted, QString() ) );
     mAccessors->insert( QLatin1String( "refered_by" ),
-                        new AccessorPair( getReferedBy, setReferedBy ) );
+                        new AccessorPair( getReferedBy, setReferedBy,
+                                          i18nc( "@item:intable", "Referred By" ) ) );
     mAccessors->insert( QLatin1String( "lead_source" ),
-                        new AccessorPair( getLeadSource, setLeadSource ) );
+                        new AccessorPair( getLeadSource, setLeadSource,
+                                          i18nc( "@item:intable", "Lead Source" ) ) );
     mAccessors->insert( QLatin1String( "lead_source_description" ),
-                        new AccessorPair( getLeadSourceDescription, setLeadSourceDescription ) );
+                        new AccessorPair( getLeadSourceDescription, setLeadSourceDescription,
+                                          i18nc( "@item:intable", "Lead Source Description" ) ) );
     mAccessors->insert( QLatin1String( "status" ),
-                        new AccessorPair( getStatus, setStatus ) );
+                        new AccessorPair( getStatus, setStatus,
+                                          i18nc( "@item:intable", "Status" ) ) );
     mAccessors->insert( QLatin1String( "status_description" ),
-                        new AccessorPair( getStatusDescription, setStatusDescription ) );
+                        new AccessorPair( getStatusDescription, setStatusDescription,
+                                          i18nc( "@item:intable", "Status Description" ) ) );
     mAccessors->insert( QLatin1String( "reports_to_id" ),
-                        new AccessorPair( getReportsToId, setReportsToId ) );
+                        new AccessorPair( getReportsToId, setReportsToId, QString() ) );
     mAccessors->insert( QLatin1String( "report_to_name" ),
-                        new AccessorPair( getReportToName, setReportToName ) );
+                        new AccessorPair( getReportToName, setReportToName,
+                                          i18nc( "@item:intable", "Reports To" ) ) );
     mAccessors->insert( QLatin1String( "account_name" ),
-                        new AccessorPair( getAccountName, setAccountName ) );
+                        new AccessorPair( getAccountName, setAccountName,
+                                          i18nc( "@item:intable", "Account" ) ) );
     mAccessors->insert( QLatin1String( "account_description" ),
-                        new AccessorPair( getAccountDescription, setAccountDescription ) );
+                        new AccessorPair( getAccountDescription, setAccountDescription,
+                                          i18nc( "@item:intable", "Account Description" ) ) );
     mAccessors->insert( QLatin1String( "contact_id" ),
-                        new AccessorPair( getContactId, setContactId ) );
+                        new AccessorPair( getContactId, setContactId, QString() ) );
     mAccessors->insert( QLatin1String( "account_id" ),
-                        new AccessorPair( getAccountId, setAccountId ) );
+                        new AccessorPair( getAccountId, setAccountId, QString() ) );
     mAccessors->insert( QLatin1String( "opportunity_id" ),
-                        new AccessorPair( getOpportunityId, setOpportunityId ) );
+                        new AccessorPair( getOpportunityId, setOpportunityId, QString() ) );
     mAccessors->insert( QLatin1String( "opportunity_name" ),
-                        new AccessorPair( getOpportunityName, setOpportunityName ) );
+                        new AccessorPair( getOpportunityName, setOpportunityName,
+                                          i18nc( "@item:intable", "Opportunity" ) ) );
     mAccessors->insert( QLatin1String( "opportunity_amount" ),
-                        new AccessorPair( getOpportunityAmount, setOpportunityAmount ) );
+                        new AccessorPair( getOpportunityAmount, setOpportunityAmount,
+                                          i18nc( "@item:intable", "Opportunity Amount" ) ) );
     mAccessors->insert( QLatin1String( "campaign_id" ),
-                        new AccessorPair( getCampaignId, setCampaignId ) );
+                        new AccessorPair( getCampaignId, setCampaignId, QString() ) );
     mAccessors->insert( QLatin1String( "campaign_name" ),
-                        new AccessorPair( getCampaignName, setCampaignName ) );
+                        new AccessorPair( getCampaignName, setCampaignName,
+                                          i18nc( "@item:intable", "Campaign" ) ) );
     mAccessors->insert( QLatin1String( "c_accept_status_fields" ),
-                        new AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields ) );
+                        new AccessorPair( getCAcceptStatusFields, setCAcceptStatusFields, QString() ) );
     mAccessors->insert( QLatin1String( "m_accept_status_fields" ),
-                        new AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields ) );
+                        new AccessorPair( getMAcceptStatusFields, setMAcceptStatusFields, QString() ) );
     mAccessors->insert( QLatin1String( "birthdate" ),
-                        new AccessorPair( getBirthdate, setBirthdate ) );
+                        new AccessorPair( getBirthdate, setBirthdate,
+                                          i18nc( "@item:intable", "Birthdate" ) ) );
     mAccessors->insert( QLatin1String( "portal_name" ),
-                        new AccessorPair( getPortalName, setPortalName ) );
+                        new AccessorPair( getPortalName, setPortalName,
+                                          i18nc( "@item:intable", "Portal" ) ) );
     mAccessors->insert( QLatin1String( "portal_app" ),
-                        new AccessorPair( getPortalApp, setPortalApp ) );
+                        new AccessorPair( getPortalApp, setPortalApp,
+                                          i18nc( "@item:intable", "Portal Application" ) ) );
 }
 
 LeadsHandler::~LeadsHandler()
@@ -855,6 +890,9 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarLead leftLead = leftItem.payload<SugarLead>();
     const SugarLead rightLead = rightItem.payload<SugarLead>();
 
+    bool seenPrimaryAddress = false;
+    bool seenOtherAddress = false;
+
     AccessorHash::const_iterator it    = mAccessors->constBegin();
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
@@ -863,8 +901,81 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
             continue;
         }
 
-        const QString leftValue = (*it)->getter( leftLead );
-        const QString rightValue = (*it)->getter( rightLead );
+        QString leftValue = (*it)->getter( leftLead );
+        QString rightValue = (*it)->getter( rightLead );
+
+        QString diffName = (*it)->diffName;
+        if ( diffName.isEmpty() ) {
+            // check for special fields
+            if ( isAddressValue( it.key() ) ) {
+                if ( isPrimaryAddressValue( it.key() ) ) {
+                    if ( !seenPrimaryAddress ) {
+                        seenPrimaryAddress = true;
+                        diffName = i18nc( "@item:intable", "Primary Address" );
+
+                        KABC::Address leftAddress( KABC::Address::Work | KABC::Address::Pref );
+                        leftAddress.setStreet( getPrimaryAddressStreet( leftLead ) );
+                        leftAddress.setLocality( getPrimaryAddressCity( leftLead ) );
+                        leftAddress.setRegion( getPrimaryAddressState( leftLead ) );
+                        leftAddress.setCountry( getPrimaryAddressCountry( leftLead ) );
+                        leftAddress.setPostalCode( getPrimaryAddressPostalcode( leftLead ) );
+
+                        KABC::Address rightAddress( KABC::Address::Work | KABC::Address::Pref );
+                        rightAddress.setStreet( getPrimaryAddressStreet( rightLead ) );
+                        rightAddress.setLocality( getPrimaryAddressCity( rightLead ) );
+                        rightAddress.setRegion( getPrimaryAddressState( rightLead ) );
+                        rightAddress.setCountry( getPrimaryAddressCountry( rightLead ) );
+                        rightAddress.setPostalCode( getPrimaryAddressPostalcode( rightLead ) );
+
+                        leftValue = leftAddress.formattedAddress();
+                        rightValue = rightAddress.formattedAddress();
+                    } else {
+                        // already printed, skip
+                        continue;
+                    }
+                } else {
+                    if ( !seenOtherAddress ) {
+                        seenOtherAddress = true;
+                        diffName = i18nc( "@item:intable", "Other Address" );
+
+                        KABC::Address leftAddress( KABC::Address::Home );
+                        leftAddress.setStreet( getAltAddressStreet( leftLead ) );
+                        leftAddress.setLocality( getAltAddressCity( leftLead ) );
+                        leftAddress.setRegion( getAltAddressState( leftLead ) );
+                        leftAddress.setCountry( getAltAddressCountry( leftLead ) );
+                        leftAddress.setPostalCode( getAltAddressPostalcode( leftLead ) );
+
+                        KABC::Address rightAddress( KABC::Address::Home );
+                        rightAddress.setStreet( getAltAddressStreet( rightLead ) );
+                        rightAddress.setLocality( getAltAddressCity( rightLead ) );
+                        rightAddress.setRegion( getAltAddressState( rightLead ) );
+                        rightAddress.setCountry( getAltAddressCountry( rightLead ) );
+                        rightAddress.setPostalCode( getAltAddressPostalcode( rightLead ) );
+
+                        leftValue = leftAddress.formattedAddress();
+                        rightValue = rightAddress.formattedAddress();
+                    } else {
+                        // already printed, skip
+                        continue;
+                    }
+                }
+            } else if ( it.key() == "do_not_call" ) {
+                diffName = i18nc( "@item:intable", "Do Not Call" );
+                leftValue = getDoNotCall( leftLead ) == QLatin1String( "1" )
+                                ? QLatin1String( "Yes" ) : QLatin1String( "No" );
+                rightValue = getDoNotCall( rightLead ) == QLatin1String( "1" )
+                                ? QLatin1String( "Yes" ) : QLatin1String( "No" );
+            } else if ( it.key() == "converted" ) {
+                diffName = i18nc( "@item:intable", "Converted" );
+                leftValue = getConverted( leftLead ) == QLatin1String( "1" )
+                                ? QLatin1String( "Yes" ) : QLatin1String( "No" );
+                rightValue = getConverted( rightLead ) == QLatin1String( "1" )
+                                ? QLatin1String( "Yes" ) : QLatin1String( "No" );
+            } else {
+                // internal field, skip
+                continue;
+            }
+        }
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {
             continue;

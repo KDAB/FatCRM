@@ -29,6 +29,12 @@ public:
 
 private:
     QString adjustedTime( const QString datetime ) const;
+    inline bool isAddressValue( const QString& value ) const
+    { return ( isAltAddressValue( value ) || isPrimaryAddressValue( value ) );}
+    inline bool isAltAddressValue( const QString& value ) const
+    { return value.startsWith( QString( "alt_address_" ) );}
+    inline bool isPrimaryAddressValue( const QString& value ) const
+    { return value.startsWith( QString( "primary_address_" ) );}
 
     typedef QHash<QString, AccessorPair*> AccessorHash;
     AccessorHash *mAccessors;
