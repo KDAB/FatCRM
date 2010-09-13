@@ -542,15 +542,16 @@ Akonadi::Collection AccountsHandler::collection() const
 
 void AccountsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
 {
-    const QString query = QLatin1String( "" );
+    const QString query = scope.query( QLatin1String( "accounts" ) );
     const QString orderBy = QLatin1String( "accounts.name" );
+    const int offset = scope.offset();
     const int maxResults = 100;
-    const int fetchDeleted = 0; // do not fetch deleted items
+    const int fetchDeleted = scope.deleted();
 
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, scope.offset, selectedFields, maxResults, fetchDeleted );
+    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
 }
 
 bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )

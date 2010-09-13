@@ -16,7 +16,24 @@ class TNS__Entry_value;
 class ListEntriesScope
 {
 public:
-    int offset;
+    void setOffset( int offset );
+    int offset() const;
+    int deleted() const;
+    QString query( const QString &module ) const;
+
+public:
+    static ListEntriesScope scopeForAll();
+    static ListEntriesScope scopeForUpdatedSince( const QString &timestamp );
+    static ListEntriesScope scopeForDeletedSince( const QString &timestamp );
+
+private:
+    ListEntriesScope();
+    ListEntriesScope( const QString &timestamp );
+
+private:
+    int mOffset;
+    QString mUpdateTimestamp;
+    bool mGetDeleted;
 };
 
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface

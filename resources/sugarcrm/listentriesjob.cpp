@@ -19,13 +19,15 @@ class ListEntriesJob::Private
 
 public:
     explicit Private( ListEntriesJob *parent, const Akonadi::Collection &collection )
-        : q( parent ), mCollection( collection ), mHandler( 0 )
+        : q( parent ), mCollection( collection ), mHandler( 0 ),
+          mListScope( ListEntriesScope::scopeForAll() )
     {
     }
 
 public:
     const Collection mCollection;
     ModuleHandler *mHandler;
+    ListEntriesScope mListScope;
 
 public: // slots
     void listEntriesDone( const TNS__Get_entry_list_result &callResult );
@@ -41,9 +43,8 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
                  << "received" << items.count() << "items";
         emit q->itemsReceived( items );
 
-        ListEntriesScope scope;
-        scope.offset = callResult.next_offset();
-        mHandler->listEntries( scope, q->soap(), q->sessionId() );
+        mListScope.setOffset( callResult.next_offset() );
+        mHandler->listEntries( mListScope, q->soap(), q->sessionId() );
     } else {
         kDebug() << "List Entries for" << mHandler->moduleName() << "done";
         q->emitResult();
@@ -85,9 +86,8 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT( d->mCollection.isValid() );
     Q_ASSERT( d->mHandler != 0 );
 
-    ListEntriesScope scope;
-    scope.offset = 0;
-    d->mHandler->listEntries( scope, soap(), sessionId() );
+    d->mListScope.setOffset( 0 );
+    d->mHandler->listEntries( d->mListScope, soap(), sessionId() );
 }
 
 #include "listentriesjob.moc"

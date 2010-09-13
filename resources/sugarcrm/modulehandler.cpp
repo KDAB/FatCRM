@@ -7,6 +7,61 @@
 #include <QInputDialog>
 #include <QStringList>
 
+void ListEntriesScope::setOffset( int offset )
+{
+    mOffset = offset;
+}
+
+int ListEntriesScope::offset() const
+{
+    return mOffset;
+}
+
+int ListEntriesScope::deleted() const
+{
+    return mGetDeleted ? 1 : 0;
+}
+
+QString ListEntriesScope::query( const QString &module ) const
+{
+    if ( mUpdateTimestamp.isEmpty() ) {
+        return QLatin1String( "" );
+    }
+
+    return module + QLatin1String( ".date_modified >= '") + mUpdateTimestamp + QLatin1String( "'" );
+}
+
+ListEntriesScope ListEntriesScope::scopeForAll()
+{
+    return ListEntriesScope();
+}
+
+ListEntriesScope ListEntriesScope::scopeForUpdatedSince( const QString &timestamp )
+{
+    return ListEntriesScope( timestamp );
+}
+
+ListEntriesScope ListEntriesScope::scopeForDeletedSince( const QString &timestamp )
+{
+    ListEntriesScope scope( timestamp );
+    scope.mGetDeleted = true;
+    return scope;
+}
+
+ListEntriesScope::ListEntriesScope()
+    : mOffset( 0 ),
+      mGetDeleted( false )
+{
+}
+
+ListEntriesScope::ListEntriesScope( const QString &timestamp )
+    : mOffset( 0 ),
+      mUpdateTimestamp( timestamp ),
+      mGetDeleted( false )
+{
+}
+
+
 ModuleHandler::ModuleHandler( const QString &moduleName )
     : mModuleName( moduleName )
 {

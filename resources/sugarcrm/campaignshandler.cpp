@@ -412,15 +412,16 @@ Akonadi::Collection CampaignsHandler::collection() const
 
 void CampaignsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
 {
-    const QString query = QLatin1String( "" );
+    const QString query = scope.query( QLatin1String( "campaigns" ) );
     const QString orderBy = QLatin1String( "campaigns.name" );
+    const int offset = scope.offset();
     const int maxResults = 100;
-    const int fetchDeleted = 0; // do not fetch deleted items
+    const int fetchDeleted = scope.deleted();
 
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, scope.offset, selectedFields, maxResults, fetchDeleted );
+    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
 }
 
 bool CampaignsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
