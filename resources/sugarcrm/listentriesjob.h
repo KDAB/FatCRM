@@ -26,6 +26,7 @@ public:
 
 Q_SIGNALS:
     void itemsReceived( const Akonadi::Item::List &items );
+    void deletedReceived( const Akonadi::Item::List &items );
 
 protected:
     void startSugarTask();

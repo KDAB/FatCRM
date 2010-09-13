@@ -7,6 +7,24 @@
 #include <QInputDialog>
 #include <QStringList>
 
+ListEntriesScope::ListEntriesScope()
+    : mOffset( 0 ),
+      mGetDeleted( false )
+{
+}
+
+ListEntriesScope::ListEntriesScope( const QString &timestamp )
+    : mOffset( 0 ),
+      mUpdateTimestamp( timestamp ),
+      mGetDeleted( false )
+{
+}
+
+bool ListEntriesScope::isUpdateScope() const
+{
+    return !mUpdateTimestamp.isEmpty();
+}
+
 void ListEntriesScope::setOffset( int offset )
 {
     mOffset = offset;
@@ -15,6 +33,11 @@ void ListEntriesScope::setOffset( int offset )
 int ListEntriesScope::offset() const
 {
     return mOffset;
+}
+
+void ListEntriesScope::fetchDeleted()
+{
+    mGetDeleted = true;
 }
 
 int ListEntriesScope::deleted() const
@@ -31,37 +54,6 @@ QString ListEntriesScope::query( const QString &module ) const
     return module + QLatin1String( ".date_modified >= '") + mUpdateTimestamp + QLatin1String( "'" );
 }
 
-ListEntriesScope ListEntriesScope::scopeForAll()
-{
-    return ListEntriesScope();
-}
-
-ListEntriesScope ListEntriesScope::scopeForUpdatedSince( const QString &timestamp )
-{
-    return ListEntriesScope( timestamp );
-}
-
-ListEntriesScope ListEntriesScope::scopeForDeletedSince( const QString &timestamp )
-{
-    ListEntriesScope scope( timestamp );
-    scope.mGetDeleted = true;
-    return scope;
-}
-
-ListEntriesScope::ListEntriesScope()
-    : mOffset( 0 ),
-      mGetDeleted( false )
-{
-}
-
-ListEntriesScope::ListEntriesScope( const QString &timestamp )
-    : mOffset( 0 ),
-      mUpdateTimestamp( timestamp ),
-      mGetDeleted( false )
-{
-}
-
-
 ModuleHandler::ModuleHandler( const QString &moduleName )
     : mModuleName( moduleName )
 {
@@ -74,6 +66,16 @@ ModuleHandler::~ModuleHandler()
 QString ModuleHandler::moduleName() const
 {
     return mModuleName;
+}
+
+QString ModuleHandler::latestTimestamp() const
+{
+    return mLatestTimestamp;
+}
+
+void ModuleHandler::resetLatestTimestamp()
+{
+    mLatestTimestamp = QString();
 }
 
 bool ModuleHandler::getEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
@@ -98,6 +100,9 @@ Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse( const TNS__Entr
         const Akonadi::Item item = itemFromEntry( entry, parentCollection );
         if ( !item.remoteId().isEmpty() ) {
             items << item;
+            if ( mLatestTimestamp.isNull() || item.remoteRevision() > mLatestTimestamp ) {
+                mLatestTimestamp = item.remoteRevision();
+            }
         }
     }
 

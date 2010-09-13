@@ -18,9 +18,13 @@ class ListEntriesJob::Private
     ListEntriesJob *const q;
 
 public:
+    enum Stage {
+        GetExisting,
+        GetDeleted
+    };
+
     explicit Private( ListEntriesJob *parent, const Akonadi::Collection &collection )
-        : q( parent ), mCollection( collection ), mHandler( 0 ),
-          mListScope( ListEntriesScope::scopeForAll() )
+        : q( parent ), mCollection( collection ), mHandler( 0 ), mStage( GetExisting )
     {
     }
 
@@ -28,6 +32,7 @@ public:
     const Collection mCollection;
     ModuleHandler *mHandler;
     ListEntriesScope mListScope;
+    Stage mStage;
 
 public: // slots
     void listEntriesDone( const TNS__Get_entry_list_result &callResult );
@@ -39,16 +44,35 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
     if ( callResult.result_count() > 0 ) {
         const Item::List items =
             mHandler->itemsFromListEntriesResponse( callResult.entry_list(), mCollection );
-        kDebug() << "List Entries for" << mHandler->moduleName()
-                 << "received" << items.count() << "items";
-        emit q->itemsReceived( items );
-
-        mListScope.setOffset( callResult.next_offset() );
-        mHandler->listEntries( mListScope, q->soap(), q->sessionId() );
+        switch ( mStage ) {
+            case GetExisting:
+                kDebug() << "List Entries for" << mHandler->moduleName()
+                         << "received" << items.count() << "items";
+                emit q->itemsReceived( items );
+                break;
+            case GetDeleted:
+                kDebug() << "List Entries for" << mHandler->moduleName()
+                         << "received" << items.count() << "deletes";
+                emit q->deletedReceived( items );
+                break;
+        }
     } else {
-        kDebug() << "List Entries for" << mHandler->moduleName() << "done";
-        q->emitResult();
+        if ( mStage == GetDeleted || !mListScope.isUpdateScope() ) {
+            kDebug() << "List Entries for" << mHandler->moduleName() << "done";
+            q->emitResult();
+            return;
+        }
+
+        Q_ASSERT( mListScope.isUpdateScope() && mStage == GetExisting );
+
+        // if GetExisting is finished, continue getting the deleted
+        mStage = GetDeleted;
+        kDebug() << "Listing updates for" << mHandler->moduleName()
+                 << "done, getting deletes";
     }
+
+    mListScope.setOffset( callResult.next_offset() );
+    mHandler->listEntries( mListScope, q->soap(), q->sessionId() );
 }
 
 void ListEntriesJob::Private::listEntriesError( const KDSoapMessage &fault )
@@ -86,7 +110,9 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT( d->mCollection.isValid() );
     Q_ASSERT( d->mHandler != 0 );
 
-    d->mListScope.setOffset( 0 );
+    d->mStage = Private::GetExisting;
+    d->mListScope = ListEntriesScope( d->mHandler->latestTimestamp() );
+
     d->mHandler->listEntries( d->mListScope, soap(), sessionId() );
 }
 

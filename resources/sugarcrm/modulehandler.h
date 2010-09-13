@@ -16,19 +16,20 @@ class TNS__Entry_value;
 class ListEntriesScope
 {
 public:
-    void setOffset( int offset );
-    int offset() const;
-    int deleted() const;
-    QString query( const QString &module ) const;
-
-public:
-    static ListEntriesScope scopeForAll();
-    static ListEntriesScope scopeForUpdatedSince( const QString &timestamp );
-    static ListEntriesScope scopeForDeletedSince( const QString &timestamp );
-
-private:
     ListEntriesScope();
     ListEntriesScope( const QString &timestamp );
+
+    bool isUpdateScope() const;
+
+    void setOffset( int offset );
+
+    int offset() const;
+
+    void fetchDeleted();
+
+    int deleted() const;
+
+    QString query( const QString &module ) const;
 
 private:
     int mOffset;
@@ -44,6 +45,9 @@ public:
     virtual ~ModuleHandler();
 
     QString moduleName() const;
+
+    QString latestTimestamp() const;
+    void resetLatestTimestamp();
 
     virtual QStringList supportedFields() const = 0;
 
@@ -63,6 +67,7 @@ public:
 
 protected:
     QString mModuleName;
+    QString mLatestTimestamp;
 };
 
 #endif

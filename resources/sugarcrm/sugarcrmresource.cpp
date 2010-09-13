@@ -237,8 +237,10 @@ void SugarCRMResource::retrieveItems( const Akonadi::Collection &collection )
     // perform the respective "list entries" operation
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
-        status( Running, i18nc( "@info:status", "Retrieving contents of folder %1",
-                                collection.name() ) );
+        const QString message = i18nc( "@info:status", "Retrieving contents of folder %1",
+                                       collection.name() );
+        kDebug() << message;
+        status( Running, message );
 
         // getting items in batches
         setItemStreamingEnabled( true );
@@ -247,6 +249,8 @@ void SugarCRMResource::retrieveItems( const Akonadi::Collection &collection )
         job->setModule( *moduleIt );
         connect( job, SIGNAL( itemsReceived( Akonadi::Item::List ) ),
                  this, SLOT( itemsReceived( Akonadi::Item::List ) ) );
+        connect( job, SIGNAL( deletedReceived( Akonadi::Item::List ) ),
+                 this, SLOT( deletedReceived( Akonadi::Item::List ) ) );
         connect( job, SIGNAL( result( KJob* ) ), this, SLOT( listEntriesResult( KJob* ) ) );
         job->start();
     } else {
@@ -348,6 +352,7 @@ void SugarCRMResource::listModulesResult( KJob *job )
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( module );
         if ( moduleIt != mModuleHandlers->constEnd() ) {
             collection = moduleIt.value()->collection();
+            moduleIt.value()->resetLatestTimestamp();
         } else {
             ModuleHandler* handler = 0;
             if ( module == QLatin1String( "Contacts" ) ) {
@@ -378,9 +383,14 @@ void SugarCRMResource::listModulesResult( KJob *job )
     status( Idle );
 }
 
-void SugarCRMResource::itemsReceived( const Akonadi::Item::List &items )
+void SugarCRMResource::itemsReceived( const Item::List &items )
 {
-    itemsRetrieved( items );
+    itemsRetrievedIncremental( items, Item::List() );
+}
+
+void SugarCRMResource::deletedReceived( const Item::List &items )
+{
+    itemsRetrievedIncremental( Item::List(), items );
 }
 
 void SugarCRMResource::listEntriesResult( KJob *job )
@@ -398,6 +408,9 @@ void SugarCRMResource::listEntriesResult( KJob *job )
         cancelTask( message );
         return;
     }
+
+    // ensure the incremental mode is ON even if there were neither an update nor a delete
+    itemsRetrievedIncremental( Item::List(), Item::List() );
 
     itemsRetrievalDone();
     status( Idle );
