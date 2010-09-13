@@ -18,6 +18,8 @@ class ModuleDebugInterface : public QObject
     public Q_SLOTS:
         Q_SCRIPTABLE QStringList availableFields() const;
         Q_SCRIPTABLE QStringList supportedFields() const;
+        Q_SCRIPTABLE QString lastestTimestamp() const;
+        Q_SCRIPTABLE void resetLatestTimestamp();
 
     private:
         const QString mModuleName;
