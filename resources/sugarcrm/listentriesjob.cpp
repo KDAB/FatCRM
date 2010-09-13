@@ -67,6 +67,7 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
 
         // if GetExisting is finished, continue getting the deleted
         mStage = GetDeleted;
+        mListScope.fetchDeleted();
         kDebug() << "Listing updates for" << mHandler->moduleName()
                  << "done, getting deletes";
     }
