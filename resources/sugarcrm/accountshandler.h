@@ -22,7 +22,7 @@ public:
 
     bool setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId );
 
-    Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection );
+    Akonadi::Item itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
 
     void compare( Akonadi::AbstractDifferencesReporter *reporter,
                   const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );

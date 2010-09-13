@@ -597,45 +597,40 @@ bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
     return true;
 }
 
-Akonadi::Item::List AccountsHandler::itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
-                                                                   const Akonadi::Collection &parentCollection )
+Akonadi::Item AccountsHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
 {
-    Akonadi::Item::List items;
+    Akonadi::Item item;
 
-    Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
-        const QList<TNS__Name_value> valueList = entry.name_value_list().items();
-        if ( valueList.isEmpty() ) {
-            kWarning() << "Accounts entry for id=" << entry.id() << "has no values";
-            continue;
-        }
-
-        Akonadi::Item item;
-        item.setRemoteId( entry.id() );
-        item.setParentCollection( parentCollection );
-        item.setMimeType( SugarAccount::mimeType() );
-
-        SugarAccount account;
-        account.setId( entry.id() );
-        Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
-            const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
-            if ( accessIt == mAccessors->constEnd() ) {
-                // no accessor for field
-                continue;
-            }
-            // adjust time to local system
-            if ( namedValue.name() == "date_modified" ||
-                 namedValue.name() == "date_entered" ) {
-                (*accessIt)->setter( adjustedTime(namedValue.value()), account );
-                continue;
-            }
-            (*accessIt)->setter( namedValue.value(), account );
-        }
-        item.setPayload<SugarAccount>( account );
-        item.setRemoteRevision( getDateModified( account ) );
-        items << item;
+    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+    if ( valueList.isEmpty() ) {
+        kWarning() << "Accounts entry for id=" << entry.id() << "has no values";
+        return item;
     }
 
-    return items;
+    item.setRemoteId( entry.id() );
+    item.setParentCollection( parentCollection );
+    item.setMimeType( SugarAccount::mimeType() );
+
+    SugarAccount account;
+    account.setId( entry.id() );
+    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+        const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
+        if ( accessIt == mAccessors->constEnd() ) {
+            // no accessor for field
+            continue;
+        }
+        // adjust time to local system
+        if ( namedValue.name() == "date_modified" ||
+                namedValue.name() == "date_entered" ) {
+            (*accessIt)->setter( adjustedTime(namedValue.value()), account );
+            continue;
+        }
+        (*accessIt)->setter( namedValue.value(), account );
+    }
+    item.setPayload<SugarAccount>( account );
+    item.setRemoteRevision( getDateModified( account ) );
+
+    return item;
 }
 
 void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,

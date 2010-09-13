@@ -11,6 +11,7 @@ namespace Akonadi
 
 class Sugarsoap;
 class TNS__Entry_list;
+class TNS__Entry_value;
 
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {
@@ -31,8 +32,11 @@ public:
 
     virtual bool getEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId );
 
-    virtual Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
-                                                              const Akonadi::Collection &parentCollection ) = 0;
+    virtual Akonadi::Item itemFromEntry( const TNS__Entry_value &entry,
+                                         const Akonadi::Collection &parentCollection ) = 0;
+
+    Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
+                                                      const Akonadi::Collection &parentCollection );
 
 protected:
     QString mModuleName;

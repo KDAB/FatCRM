@@ -448,46 +448,41 @@ bool OpportunitiesHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap,
     return true;
 }
 
-Akonadi::Item::List OpportunitiesHandler::itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
-                                                                   const Akonadi::Collection &parentCollection )
+Akonadi::Item OpportunitiesHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
 {
-    Akonadi::Item::List items;
+    Akonadi::Item item;
 
-    Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
-        const QList<TNS__Name_value> valueList = entry.name_value_list().items();
-        if ( valueList.isEmpty() ) {
-            kWarning() << "Opportunities entry for id=" << entry.id() << "has no values";
+    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+    if ( valueList.isEmpty() ) {
+        kWarning() << "Opportunities entry for id=" << entry.id() << "has no values";
+        return item;
+    }
+
+    item.setRemoteId( entry.id() );
+    item.setParentCollection( parentCollection );
+    item.setMimeType( SugarOpportunity::mimeType() );
+
+    SugarOpportunity account;
+    account.setId( entry.id() );
+    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+        const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
+        if ( accessIt == mAccessors->constEnd() ) {
+            // no accessor for field
             continue;
         }
 
-        Akonadi::Item item;
-        item.setRemoteId( entry.id() );
-        item.setParentCollection( parentCollection );
-        item.setMimeType( SugarOpportunity::mimeType() );
-
-        SugarOpportunity account;
-        account.setId( entry.id() );
-        Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
-            const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
-            if ( accessIt == mAccessors->constEnd() ) {
-                // no accessor for field
-                continue;
-            }
-
-            // adjust time to local system
-            if ( namedValue.name() == "date_modified" ||
-                 namedValue.name() == "date_entered" ) {
-                (*accessIt)->setter( adjustedTime(namedValue.value()), account );
-                continue;
-            }
-            (*accessIt)->setter( namedValue.value(), account );
+        // adjust time to local system
+        if ( namedValue.name() == "date_modified" ||
+                namedValue.name() == "date_entered" ) {
+            (*accessIt)->setter( adjustedTime(namedValue.value()), account );
+            continue;
         }
-        item.setPayload<SugarOpportunity>( account );
-        item.setRemoteRevision( getDateModified( account ) );
-        items << item;
+        (*accessIt)->setter( namedValue.value(), account );
     }
+    item.setPayload<SugarOpportunity>( account );
+    item.setRemoteRevision( getDateModified( account ) );
 
-    return items;
+    return item;
 }
 
 void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,

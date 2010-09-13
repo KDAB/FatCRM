@@ -467,46 +467,41 @@ bool CampaignsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, con
     return true;
 }
 
-Akonadi::Item::List CampaignsHandler::itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
-                                                                   const Akonadi::Collection &parentCollection )
+Akonadi::Item CampaignsHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
 {
-    Akonadi::Item::List items;
+    Akonadi::Item item;
 
-    Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
-        const QList<TNS__Name_value> valueList = entry.name_value_list().items();
-        if ( valueList.isEmpty() ) {
-            kWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
+    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+    if ( valueList.isEmpty() ) {
+        kWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
+        return item;
+    }
+
+    item.setRemoteId( entry.id() );
+    item.setParentCollection( parentCollection );
+    item.setMimeType( SugarCampaign::mimeType() );
+
+    SugarCampaign campaign;
+    campaign.setId( entry.id() );
+    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+        const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
+        if ( accessIt == mAccessors->constEnd() ) {
+            // no accessor for field
             continue;
         }
 
-        Akonadi::Item item;
-        item.setRemoteId( entry.id() );
-        item.setParentCollection( parentCollection );
-        item.setMimeType( SugarCampaign::mimeType() );
-
-        SugarCampaign campaign;
-        campaign.setId( entry.id() );
-        Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
-            const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
-            if ( accessIt == mAccessors->constEnd() ) {
-                // no accessor for field
-                continue;
-            }
-
-            // adjust time to local system
-            if ( namedValue.name() == "date_modified" ||
-                 namedValue.name() == "date_entered" ) {
-                (*accessIt)->setter( adjustedTime(namedValue.value()), campaign );
-                continue;
-            }
-            (*accessIt)->setter( namedValue.value(), campaign );
+        // adjust time to local system
+        if ( namedValue.name() == "date_modified" ||
+                namedValue.name() == "date_entered" ) {
+            (*accessIt)->setter( adjustedTime(namedValue.value()), campaign );
+            continue;
         }
-        item.setPayload<SugarCampaign>( campaign );
-        item.setRemoteRevision( getDateModified( campaign ) );
-        items << item;
+        (*accessIt)->setter( namedValue.value(), campaign );
     }
+    item.setPayload<SugarCampaign>( campaign );
+    item.setRemoteRevision( getDateModified( campaign ) );
 
-    return items;
+    return item;
 }
 
 void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,

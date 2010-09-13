@@ -74,11 +74,11 @@ void CreateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callRes
 {
     Q_ASSERT( mStage == GetEntry );
 
-    const Akonadi::Item::List items =
-        mHandler->itemsFromListEntriesResponse( callResult.entry_list(), mItem.parentCollection() );
-    Q_ASSERT( items.count() == 1 );
+    const QList<TNS__Entry_value> entries = callResult.entry_list().items();
+    Q_ASSERT( entries.count() == 1 );
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry( entries.first(), mItem.parentCollection() );
 
-    Item item = items[ 0 ];
+    Item item = remoteItem;
     item.setId( mItem.id() );
     item.setRevision( mItem.revision() );
     mItem = item;

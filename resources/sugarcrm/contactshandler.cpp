@@ -728,59 +728,54 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
     return true;
 }
 
-Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
-                                                                   const Akonadi::Collection &parentCollection )
+Akonadi::Item ContactsHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
 {
-    Akonadi::Item::List items;
+    Akonadi::Item item;
 
-    Q_FOREACH( const TNS__Entry_value &entry, entryList.items() ) {
-        const QList<TNS__Name_value> valueList = entry.name_value_list().items();
-        if ( valueList.isEmpty() ) {
-            kWarning() << "Contacts entry for id=" << entry.id() << "has no values";
+    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+    if ( valueList.isEmpty() ) {
+        kWarning() << "Contacts entry for id=" << entry.id() << "has no values";
+        return item;
+    }
+
+    item.setRemoteId( entry.id() );
+    item.setParentCollection( parentCollection );
+    item.setMimeType( KABC::Addressee::mimeType() );
+
+    KABC::Addressee addressee;
+    addressee.setUid( entry.id() );
+    KABC::Address workAddress,  homeAddress;
+    workAddress.setType( KABC::Address::Work | KABC::Address::Pref );
+    homeAddress.setType( KABC::Address::Home );
+
+    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+        const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
+        if ( accessIt == mAccessors->constEnd() ) {
+            // no accessor for field
             continue;
         }
 
-        Akonadi::Item item;
-        item.setRemoteId( entry.id() );
-        item.setParentCollection( parentCollection );
-        item.setMimeType( KABC::Addressee::mimeType() );
-
-        KABC::Addressee addressee;
-        addressee.setUid( entry.id() );
-        KABC::Address workAddress,  homeAddress;
-        workAddress.setType( KABC::Address::Work | KABC::Address::Pref );
-        homeAddress.setType( KABC::Address::Home );
-
-        Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
-            const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
-            if ( accessIt == mAccessors->constEnd() ) {
-                // no accessor for field
-                continue;
-            }
-
-            // adjust time to local system
-            if ( namedValue.name() == "date_modified" ||
-                 namedValue.name() == "date_entered" ) {
-                (*accessIt)->setter.vSetter( adjustedTime(namedValue.value()), addressee );
-                continue;
-            }
-
-            if ( isAddressValue( namedValue.name() ) ) {
-                KABC::Address& address =
-                    isPrimaryAddressValue( namedValue.name() ) ? workAddress : homeAddress;
-                (*accessIt)->setter.aSetter( namedValue.value(), address );
-            } else {
-                (*accessIt)->setter.vSetter( namedValue.value(), addressee );
-            }
+        // adjust time to local system
+        if ( namedValue.name() == "date_modified" ||
+                namedValue.name() == "date_entered" ) {
+            (*accessIt)->setter.vSetter( adjustedTime(namedValue.value()), addressee );
+            continue;
         }
-        addressee.insertAddress( workAddress );
-        addressee.insertAddress( homeAddress );
-        item.setPayload<KABC::Addressee>( addressee );
-        item.setRemoteRevision( getDateModified( addressee ) );
-        items << item;
-    }
 
-    return items;
+        if ( isAddressValue( namedValue.name() ) ) {
+            KABC::Address& address =
+                isPrimaryAddressValue( namedValue.name() ) ? workAddress : homeAddress;
+            (*accessIt)->setter.aSetter( namedValue.value(), address );
+        } else {
+            (*accessIt)->setter.vSetter( namedValue.value(), addressee );
+        }
+    }
+    addressee.insertAddress( workAddress );
+    addressee.insertAddress( homeAddress );
+    item.setPayload<KABC::Addressee>( addressee );
+    item.setRemoteRevision( getDateModified( addressee ) );
+
+    return item;
 }
 
 void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
