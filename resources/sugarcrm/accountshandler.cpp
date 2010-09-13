@@ -540,7 +540,7 @@ Akonadi::Collection AccountsHandler::collection() const
     return accountCollection;
 }
 
-void AccountsHandler::listEntries( int offset, Sugarsoap* soap, const QString &sessionId )
+void AccountsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
 {
     const QString query = QLatin1String( "" );
     const QString orderBy = QLatin1String( "accounts.name" );
@@ -550,7 +550,7 @@ void AccountsHandler::listEntries( int offset, Sugarsoap* soap, const QString &s
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, scope.offset, selectedFields, maxResults, fetchDeleted );
 }
 
 bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )

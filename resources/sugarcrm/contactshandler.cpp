@@ -671,7 +671,7 @@ Akonadi::Collection ContactsHandler::collection() const
     return contactCollection;
 }
 
-void ContactsHandler::listEntries( int offset, Sugarsoap* soap, const QString &sessionId )
+void ContactsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
 {
     const QString query = QLatin1String( "" );
     const QString orderBy = QLatin1String( "contacts.last_name" );
@@ -681,7 +681,7 @@ void ContactsHandler::listEntries( int offset, Sugarsoap* soap, const QString &s
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, scope.offset, selectedFields, maxResults, fetchDeleted );
 }
 
 bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )

@@ -41,7 +41,9 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
                  << "received" << items.count() << "items";
         emit q->itemsReceived( items );
 
-        mHandler->listEntries( callResult.next_offset(), q->soap(), q->sessionId() );
+        ListEntriesScope scope;
+        scope.offset = callResult.next_offset();
+        mHandler->listEntries( scope, q->soap(), q->sessionId() );
     } else {
         kDebug() << "List Entries for" << mHandler->moduleName() << "done";
         q->emitResult();
@@ -83,7 +85,9 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT( d->mCollection.isValid() );
     Q_ASSERT( d->mHandler != 0 );
 
-    d->mHandler->listEntries( 0, soap(), sessionId() );
+    ListEntriesScope scope;
+    scope.offset = 0;
+    d->mHandler->listEntries( scope, soap(), sessionId() );
 }
 
 #include "listentriesjob.moc"

@@ -13,6 +13,12 @@ class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
 
+class ListEntriesScope
+{
+public:
+    int offset;
+};
+
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {
 public:
@@ -26,7 +32,7 @@ public:
 
     virtual Akonadi::Collection collection() const = 0;
 
-    virtual void listEntries( int offset, Sugarsoap* soap, const QString &sessionId ) = 0;
+    virtual void listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId ) = 0;
 
     virtual bool setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId ) = 0;
 
