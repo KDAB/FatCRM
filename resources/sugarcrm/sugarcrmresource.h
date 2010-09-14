@@ -7,6 +7,7 @@
 
 class ConflictHandler;
 class KJob;
+class ModuleDebugInterface;
 class ModuleHandler;
 class SugarSession;
 
@@ -32,6 +33,8 @@ protected:
     QStringList mAvailableModules;
     typedef QHash<QString, ModuleHandler*> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
+    typedef QHash<QString, ModuleDebugInterface*> ModuleDebugInterfaceHash;
+    ModuleDebugInterfaceHash *mModuleDebugInterfaces;
 
     ConflictHandler *mConflictHandler;
 

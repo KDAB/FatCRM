@@ -45,6 +45,7 @@ SugarCRMResource::SugarCRMResource( const QString &id )
     : ResourceBase( id ),
       mSession( new SugarSession( this ) ),
       mModuleHandlers( new ModuleHandlerHash ),
+      mModuleDebugInterfaces( new ModuleDebugInterfaceHash ),
       mConflictHandler( new ConflictHandler( ConflictHandler::BackendConflict, this ) )
 {
     new SettingsAdaptor( Settings::self() );
@@ -79,6 +80,7 @@ SugarCRMResource::~SugarCRMResource()
 {
     qDeleteAll( *mModuleHandlers );
     delete mModuleHandlers;
+    delete mModuleDebugInterfaces; // interface instances destroyed by parent QObject
 }
 
 void SugarCRMResource::configure( WId windowId )
@@ -336,14 +338,20 @@ void SugarCRMResource::listModulesResult( KJob *job )
 
     collections << topLevelCollection;
 
+    QSet<QString> availableHandlers;
     mAvailableModules.clear();
     Q_FOREACH( const QString &module, listJob->modules() ) {
         mAvailableModules << module;
 
-        ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
-        QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
-                                                    debugInterface,
-                                                    QDBusConnection::ExportScriptableSlots );
+        // check if we already created one for the module
+        ModuleDebugInterfaceHash::const_iterator debugIt = mModuleDebugInterfaces->constFind( module );
+        if ( debugIt == mModuleDebugInterfaces->constEnd() ) {
+            ModuleDebugInterface *debugInterface = new ModuleDebugInterface( module, this );
+            QDBusConnection::sessionBus().registerObject( QLatin1String( "/CRMDebug/modules/" ) + module,
+                                                          debugInterface,
+                                                          QDBusConnection::ExportScriptableSlots );
+            mModuleDebugInterfaces->insert( module, debugInterface );
+        }
 
         Collection collection;
 
@@ -365,8 +373,7 @@ void SugarCRMResource::listModulesResult( KJob *job )
                 handler = new LeadsHandler;
             } else if ( module == QLatin1String( "Campaigns" ) ) {
                 handler = new CampaignsHandler;
-            }
-            else {
+            } else {
                 //kDebug() << "No module handler for" << module;
                 continue;
             }
@@ -374,9 +381,17 @@ void SugarCRMResource::listModulesResult( KJob *job )
 
             collection = handler->collection();
         }
+        availableHandlers << module;
 
         collection.setParentCollection( topLevelCollection );
         collections << collection;
+    }
+
+    Q_FOREACH( const QString &module, mAvailableModules ) {
+        if ( !availableHandlers.contains( module ) ) {
+            ModuleHandler *handler = mModuleHandlers->take( module );
+            delete handler;
+        }
     }
 
     collectionsRetrieved( collections );
