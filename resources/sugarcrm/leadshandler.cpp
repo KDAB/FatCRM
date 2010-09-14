@@ -824,9 +824,7 @@ bool LeadsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const Q
         TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( (*it)->getter( lead ) );
-        if ( field.name() == "date_modified"  ||
-             field.name() == "date_entered" )
-            field.setValue( adjustedTime( field.value() ) );
+
         itemList << field;
     }
 
@@ -860,12 +858,6 @@ Akonadi::Item LeadsHandler::itemFromEntry( const TNS__Entry_value &entry, const 
             continue;
         }
 
-        // adjust time to local system
-        if ( namedValue.name() == "date_modified" ||
-                namedValue.name() == "date_entered" ) {
-            (*accessIt)->setter( adjustedTime(namedValue.value()), lead );
-            continue;
-        }
         (*accessIt)->setter( namedValue.value(), lead );
     }
     item.setPayload<SugarLead>( lead );
@@ -993,14 +985,4 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
                                    diffName, leftValue, rightValue );
         }
     }
-}
-
-QString LeadsHandler::adjustedTime( const QString dateTime ) const
-{
-    QVariant var = QVariant( dateTime );
-    QDateTime dt = var.toDateTime();
-    QDateTime system =  QDateTime::currentDateTime();
-    QDateTime utctime( system );
-    utctime.setTimeSpec( Qt::OffsetFromUTC );
-    return dt.addSecs( system.secsTo( utctime ) ).toString("yyyy-MM-dd hh:mm");
 }
