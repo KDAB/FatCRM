@@ -5,4 +5,4 @@ Comment=An Akonadi serializer plugin for CRM Campaign objects
 [Plugin]
 Type=application/x-vnd.kdab.crm.campaign
 X-KDE-Library=akonadi_serializer_sugarcampaign
-X-Akonadi-Class=legacy;default;SugarCompaign;
+X-Akonadi-Class=legacy;default;SugarCampaign;
