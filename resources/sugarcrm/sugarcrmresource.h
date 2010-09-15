@@ -64,6 +64,8 @@ protected Q_SLOTS:
 
     void deleteEntryResult( KJob *job );
 
+    void fetchEntryResult( KJob *job );
+
     void updateEntryResult( KJob *job );
 
     void commitChange( const Akonadi::Item &item );

@@ -6,6 +6,7 @@
 #include "contactshandler.h"
 #include "createentryjob.h"
 #include "deleteentryjob.h"
+#include "fetchentryjob.h"
 #include "leadshandler.h"
 #include "listentriesjob.h"
 #include "listmodulesjob.h"
@@ -270,15 +271,26 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
 {
     Q_UNUSED( parts );
 
-    // TODO not implemented yet
-    // retrieveItems() provides full items anyway so this one is not called
-    // (no need for getting additional data)
-    // should be implemented for consistency though
-    kError() << "Akonadi requesting item, module handler should have delivered full items already";
-    kError() << "item.remoteId=" << item.remoteId()
-             << "item.mimeType=" << item.mimeType()
-             << "parentCollection.remoteId=" << item.parentCollection().remoteId();
-    return false;
+    const Collection collection = item.parentCollection();
+
+    // find the handler for the module represented by the given collection and let it
+    // perform the respective "get entry" operation
+    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
+    if ( moduleIt != mModuleHandlers->constEnd() ) {
+        const QString message = i18nc( "@info:status", "Retrieving entry from folder %1",
+                                       collection.name() );
+        kDebug() << message;
+        status( Running, message );
+
+        FetchEntryJob *job = new FetchEntryJob( item, mSession, this );
+        job->setModule( *moduleIt );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchEntryResult( KJob* ) ) );
+        job->start();
+        return true;
+    } else {
+        kDebug() << "No module handler for collection" << collection;
+        return false;
+    }
 }
 
 void SugarCRMResource::startExplicitLogin()
@@ -492,6 +504,29 @@ void SugarCRMResource::deleteEntryResult( KJob *job )
     Q_ASSERT( deleteJob != 0 );
 
     changeCommitted( deleteJob->item() );
+    status( Idle );
+}
+
+void SugarCRMResource::fetchEntryResult( KJob *job )
+{
+    if ( handleLoginError( job ) ) {
+        return;
+    }
+
+    if ( job->error() != 0 ) {
+        const QString message = job->errorText();
+        kWarning() << "error=" << job->error() << ":" << message;
+
+        status( Broken, message );
+        error( message );
+        cancelTask( message );
+        return;
+    }
+
+    FetchEntryJob *fetchJob = qobject_cast<FetchEntryJob*>( job );
+    Q_ASSERT( fetchJob != 0 );
+
+    itemRetrieved( fetchJob->item() );
     status( Idle );
 }
 
