@@ -16,7 +16,7 @@ macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processo
 
 # To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
 find_package(KDSoap REQUIRED)
-#TODO macro_log_feature for KDSoap
+macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
 
 if (XSLTPROC_EXECUTABLE)
   # generates a D-Bus interface description from a KConfigXT file
