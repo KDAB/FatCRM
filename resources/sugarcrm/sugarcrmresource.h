@@ -51,6 +51,7 @@ protected Q_SLOTS:
     void retrieveItems( const Akonadi::Collection &col );
     bool retrieveItem( const Akonadi::Item &item, const QSet<QByteArray> &parts );
 
+    void startExplicitLogin();
     void explicitLoginResult( KJob *job );
 
     void listModulesResult( KJob *job );

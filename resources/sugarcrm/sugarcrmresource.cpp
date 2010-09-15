@@ -113,9 +113,8 @@ void SugarCRMResource::configure( WId windowId )
         case SugarSession::ReLogin:
             setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
             if ( isOnline() ) {
-                SugarJob *job = new LoginJob( mSession, this );
-                connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
-                job->start();
+                // schedule login as a prepended custom task to hold all other until finished
+                scheduleCustomTask( this, "startExplicitLogin", QVariant(), ResourceBase::Prepend );
             }
             break;
     }
@@ -136,8 +135,6 @@ void SugarCRMResource::aboutToQuit()
 
 void SugarCRMResource::doSetOnline( bool online )
 {
-    ResourceBase::doSetOnline( online );
-
     if ( online ) {
         if ( Settings::self()->host().isEmpty() ) {
             const QString message = i18nc( "@info:status", "No server configured" );
@@ -148,11 +145,14 @@ void SugarCRMResource::doSetOnline( bool online )
             status( Broken, message );
             error( message );
         } else {
-            SugarJob *job = new LoginJob( mSession, this );
-            connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
-            job->start();
+            // schedule login as a prepended custom task to hold all other until finished
+            scheduleCustomTask( this, "startExplicitLogin", QVariant(), ResourceBase::Prepend );
         }
+    } else {
+        mSession->logout();
     }
+
+    ResourceBase::doSetOnline( online );
 }
 
 void SugarCRMResource::itemAdded( const Akonadi::Item &item, const Akonadi::Collection &collection )
@@ -276,6 +276,13 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
     return false;
 }
 
+void SugarCRMResource::startExplicitLogin()
+{
+    SugarJob *job = new LoginJob( mSession, this );
+    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
+    job->start();
+}
+
 void SugarCRMResource::explicitLoginResult( KJob *job )
 {
     if ( handleLoginError( job ) ) {
@@ -298,9 +305,11 @@ void SugarCRMResource::explicitLoginResult( KJob *job )
         kWarning() << message;
         status( Broken, message );
         error( message );
+        cancelTask( message );
         return;
     }
 
+    taskDone();
     status( Idle );
     synchronizeCollectionTree();
 }
@@ -567,7 +576,13 @@ bool SugarCRMResource::handleLoginError( KJob *job )
 
         status( Broken, message );
         error( message );
-        cancelTask( message );
+
+        // if this is any other job than an explicit login, defer to next attempt
+        if ( qobject_cast<LoginJob*>( job ) == 0 ) {
+            deferTask();
+        } else {
+            taskDone();
+        }
     } else {
         // handleLoginError is called in the jobs result slot
         // we can not restart before processing that has ended, otherwise
