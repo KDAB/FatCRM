@@ -94,6 +94,7 @@ void SugarSession::logout()
     if ( !d->mSessionId.isEmpty() && d->mSoap != 0 ) {
         d->mSoap->logout( d->mSessionId );
     }
+    d->mSessionId = QString();
 }
 
 void SugarSession::setSessionId( const QString &sessionId )
