@@ -91,7 +91,7 @@ void FetchEntryJob::startSugarTask()
     Q_ASSERT( d->mHandler != 0 );
 
     if ( !d->mHandler->getEntry( d->mItem, soap(), sessionId() ) ) {
-        setError( SugarJob::SoapError ); // TODO should be a different error code
+        setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to fetch a malformed item from folder %1",
                              d->mHandler->moduleName() ) );
         emitResult();

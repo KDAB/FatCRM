@@ -27,7 +27,7 @@ public:
     };
 
     explicit Private( UpdateEntryJob *parent, const Item &item )
-        : q( parent ), mItem( item ), mHandler( 0 ), mHasConflict( false ), mStage( Init )
+        : q( parent ), mItem( item ), mHandler( 0 ), mStage( Init )
     {
     }
 
@@ -35,7 +35,6 @@ public:
     Item mItem;
     ModuleHandler *mHandler;
 
-    bool mHasConflict;
     Item mConflictItem;
 
     Stage mStage;
@@ -62,12 +61,13 @@ void UpdateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callRes
 
     kDebug() << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
+    bool hasConflict = false;
     if ( mItem.remoteRevision().isEmpty() ) {
         kWarning() << "local item (id=" << mItem.id()
                    << ", remoteId=" << mItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
-        mHasConflict = !remoteItem.remoteRevision().isEmpty();
+        hasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if ( remoteItem.remoteRevision().isEmpty() ) {
         kWarning() << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
@@ -75,12 +75,16 @@ void UpdateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callRes
                    << "does not have remoteRevision";
     } else {
         // remoteRevision is an ISO date, so string comparisons are accurate for < or >
-        mHasConflict = ( remoteItem.remoteRevision() > mItem.remoteRevision() );
+        hasConflict = ( remoteItem.remoteRevision() > mItem.remoteRevision() );
     }
 
-    if ( mHasConflict ) {
+    if ( hasConflict ) {
         mConflictItem = remoteItem;
-        q->emitResult(); // TODO should we set an error?
+        q->setError( UpdateEntryJob::ConflictError );
+        q->setErrorText( i18nc( "info:status parameter is module name",
+                                "%1 entry on server is newer than the one the local update was based on",
+                                mHandler->moduleName() ) );
+        q->emitResult();
     } else {
         mStage = UpdateEntry;
 
@@ -197,11 +201,6 @@ Item UpdateEntryJob::item() const
     return d->mItem;
 }
 
-bool UpdateEntryJob::hasConflict() const
-{
-    return d->mHasConflict;
-}
-
 Item UpdateEntryJob::conflictItem() const
 {
     return d->mConflictItem;
@@ -215,7 +214,7 @@ void UpdateEntryJob::startSugarTask()
     d->mStage = Private::GetEntry;
 
     if ( !d->mHandler->getEntry( d->mItem, soap(), sessionId() ) ) {
-        setError( SugarJob::SoapError ); // TODO should be a different error code
+        setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to modify a malformed item in folder %1",
                              d->mHandler->moduleName() ) );
         emitResult();

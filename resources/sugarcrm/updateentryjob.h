@@ -16,6 +16,10 @@ class UpdateEntryJob : public SugarJob
     Q_OBJECT
 
 public:
+    enum UpdateErrors {
+        ConflictError = SugarJob::TaskError + 1
+    };
+
     UpdateEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent = 0 );
 
     ~UpdateEntryJob();
@@ -24,8 +28,6 @@ public:
     ModuleHandler *module() const;
 
     Akonadi::Item item() const;
-
-    bool hasConflict() const;
 
     Akonadi::Item conflictItem() const;
 

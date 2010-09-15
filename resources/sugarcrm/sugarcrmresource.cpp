@@ -536,20 +536,20 @@ void SugarCRMResource::updateEntryResult( KJob *job )
         return;
     }
 
-    if ( job->error() != 0 ) {
-        const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
-
-        status( Broken, message );
-        error( message );
-        cancelTask( message );
-        return;
-    }
-
     UpdateEntryJob *updateJob = qobject_cast<UpdateEntryJob*>( job );
     Q_ASSERT( updateJob != 0 );
 
-    if ( updateJob->hasConflict() ) {
+    if ( job->error() != 0 ) {
+        if ( job->error() != UpdateEntryJob::ConflictError ) {
+            const QString message = job->errorText();
+            kWarning() << "error=" << job->error() << ":" << message;
+
+            status( Broken, message );
+            error( message );
+            cancelTask( message );
+            return;
+        }
+
         const Item localItem = updateJob->item();
         const Item remoteItem = updateJob->conflictItem();
 

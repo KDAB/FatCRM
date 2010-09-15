@@ -15,7 +15,9 @@ class SugarJob : public KJob
 public:
     enum Errors {
         LoginError = KJob::UserDefinedError + 1,
-        SoapError
+        SoapError,
+        InvalidContextError,
+        TaskError
     };
 
     explicit SugarJob( SugarSession* session, QObject* parent = 0);

@@ -133,7 +133,7 @@ void CreateEntryJob::startSugarTask()
     d->mStage = Private::CreateEntry;
 
     if ( !d->mHandler->setEntry( d->mItem, soap(), sessionId() ) ) {
-        setError( SugarJob::SoapError ); // TODO should be different error code
+        setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to add malformed item to folder %1",
                              d->mHandler->moduleName() ) );
         emitResult();
