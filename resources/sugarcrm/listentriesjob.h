@@ -10,7 +10,6 @@ namespace Akonadi {
 }
 
 class ModuleHandler;
-class QStringList;
 class TNS__Get_entry_list_result;
 
 class ListEntriesJob : public SugarJob

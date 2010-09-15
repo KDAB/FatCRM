@@ -80,11 +80,6 @@ void FetchEntryJob::setModule( ModuleHandler *handler )
     d->mHandler = handler;
 }
 
-ModuleHandler *FetchEntryJob::module() const
-{
-    return d->mHandler;
-}
-
 Item FetchEntryJob::item() const
 {
     return d->mItem;

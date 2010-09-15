@@ -20,7 +20,6 @@ public:
     ~FetchEntryJob();
 
     void setModule( ModuleHandler *handler );
-    ModuleHandler *module() const;
 
     Akonadi::Item item() const;
 

@@ -8,7 +8,6 @@ namespace Akonadi {
 }
 
 class ModuleHandler;
-class QStringList;
 class TNS__Set_entry_result;
 
 class DeleteEntryJob : public SugarJob
