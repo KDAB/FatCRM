@@ -2,6 +2,8 @@
 
 #include "sugarsoap.h"
 
+#include <akonadi/kabc/contactparts.h>
+
 #include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 
@@ -768,6 +770,16 @@ Akonadi::Item ContactsHandler::itemFromEntry( const TNS__Entry_value &entry, con
     item.setRemoteRevision( getDateModified( addressee ) );
 
     return item;
+}
+
+bool ContactsHandler::needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const
+{
+    if ( ModuleHandler::needBackendChange( item, modifiedParts ) ) {
+        return true;
+    }
+
+    return modifiedParts.contains( Akonadi::ContactPart::Lookup ) ||
+           modifiedParts.contains( Akonadi::ContactPart::Standard );
 }
 
 void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,

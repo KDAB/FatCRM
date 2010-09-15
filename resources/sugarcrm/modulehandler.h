@@ -65,6 +65,8 @@ public:
     Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
                                                       const Akonadi::Collection &parentCollection );
 
+    virtual bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
+
 protected:
     QString mModuleName;
     QString mLatestTimestamp;

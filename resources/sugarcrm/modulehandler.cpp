@@ -108,3 +108,8 @@ Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse( const TNS__Entr
 
     return items;
 }
+
+bool ModuleHandler::needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const
+{
+    return modifiedParts.contains( Akonadi::Item::FullPayload );
+}

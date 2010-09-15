@@ -24,6 +24,8 @@ public:
 
     Akonadi::Item itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
 
+    bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
+
     void compare( Akonadi::AbstractDifferencesReporter *reporter,
                   const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );
 

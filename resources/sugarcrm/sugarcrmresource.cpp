@@ -180,14 +180,19 @@ void SugarCRMResource::itemAdded( const Akonadi::Item &item, const Akonadi::Coll
 
 void SugarCRMResource::itemChanged( const Akonadi::Item &item, const QSet<QByteArray> &parts )
 {
-    // TODO maybe we can use parts to get only a subset of fields in ModuleHandler::setEntry()
-    Q_UNUSED( parts );
-
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
     const Collection collection = item.parentCollection();
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind( collection.remoteId() );
     if ( moduleIt != mModuleHandlers->constEnd() ) {
+        if ( !(*moduleIt)->needBackendChange( item, parts ) ) {
+            kWarning() << "Handler for module" << (*moduleIt)->moduleName()
+                       << "indicates that backend change for item id=" << item.id()
+                       << ", remoteId=" << item.remoteId()
+                       << "is not required for given modified parts: " << parts;
+            changeCommitted( item );
+            return;
+        }
         status( Running );
 
         updateItem( item, *moduleIt );

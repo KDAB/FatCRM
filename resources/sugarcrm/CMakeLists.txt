@@ -123,6 +123,7 @@ kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource
 target_link_libraries(akonadi_sugarcrm_resource
     kdcrmdata
     ${KDSoap_LIBRARIES}
+    ${KDE4_AKONADI_KABC_LIBS}
     ${KDE4_AKONADI_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
     ${KDE4_KDECORE_LIBS}
