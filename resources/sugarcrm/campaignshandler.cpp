@@ -507,8 +507,7 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarCampaign rightCampaign = rightItem.payload<SugarCampaign>();
 
     const QString modifiedBy = getModifiedByName( rightCampaign );
-    // TODO should get date and format it using KLocale
-    const QString modifiedOn = getDateModified( rightCampaign );
+    const QString modifiedOn = formatDate( getDateModified( rightCampaign ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Campaign" ) );
     reporter->setRightPropertyValueTitle(

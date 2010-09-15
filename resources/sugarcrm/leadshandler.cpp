@@ -876,8 +876,7 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarLead rightLead = rightItem.payload<SugarLead>();
 
     const QString modifiedBy = getModifiedByName( rightLead );
-    // TODO should get date and format it using KLocale
-    const QString modifiedOn = getDateModified( rightLead );
+    const QString modifiedOn = formatDate( getDateModified( rightLead ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Lead" ) );
     reporter->setRightPropertyValueTitle(

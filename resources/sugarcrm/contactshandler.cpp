@@ -792,8 +792,7 @@ void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const KABC::Addressee rightContact = rightItem.payload<KABC::Addressee>();
 
     const QString modifiedBy = getModifiedByName( rightContact );
-    // TODO should get date and format it using KLocale
-    const QString modifiedOn = getDateModified( rightContact );
+    const QString modifiedOn = formatDate( getDateModified( rightContact ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Contact" ) );
     reporter->setRightPropertyValueTitle(

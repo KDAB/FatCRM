@@ -70,6 +70,9 @@ public:
 protected:
     QString mModuleName;
     QString mLatestTimestamp;
+
+protected:
+    static QString formatDate( const QString &dateString );
 };
 
 #endif

@@ -2,6 +2,7 @@
 
 #include "sugarsoap.h"
 
+#include <KGlobal>
 #include <KLocale>
 
 #include <QInputDialog>
@@ -114,4 +115,10 @@ bool ModuleHandler::needBackendChange( const Akonadi::Item &item, const QSet<QBy
     Q_UNUSED( item );
 
     return modifiedParts.contains( Akonadi::Item::FullPayload );
+}
+
+QString ModuleHandler::formatDate( const QString &dateString )
+{
+    const QDateTime dateTime = QDateTime::fromString( dateString, Qt::ISODate );
+    return KGlobal::locale()->formatDateTime( dateTime, KLocale::LongDate, true );
 }

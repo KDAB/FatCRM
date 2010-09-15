@@ -354,8 +354,7 @@ OpportunitiesHandler::OpportunitiesHandler()
     mAccessors->insert( QLatin1String( "currency_symbol" ),
                         new AccessorPair( getCurrencySymbol, setCurrencySymbol, QString() ) );
     mAccessors->insert( QLatin1String( "date_closed" ),
-                        new AccessorPair( getDateClosed, setDateClosed,
-                                          i18nc( "@item:intable", "Expected Close Date" ) ) );
+                        new AccessorPair( getDateClosed, setDateClosed, QString() ) );
     mAccessors->insert( QLatin1String( "next_step" ),
                         new AccessorPair( getNextStep, setNextStep,
                                           i18nc( "@item:intable", "Next Step" ) ) );
@@ -488,8 +487,7 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
     const SugarOpportunity rightOpportunity = rightItem.payload<SugarOpportunity>();
 
     const QString modifiedBy = getModifiedByName( rightOpportunity );
-    // TODO should get date and format it using KLocale
-    const QString modifiedOn = getDateModified( rightOpportunity );
+    const QString modifiedOn = formatDate( getDateModified( rightOpportunity ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Opportunity" ) );
     reporter->setRightPropertyValueTitle(
@@ -509,9 +507,14 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
 
         QString diffName = (*it)->diffName;
         if ( diffName.isEmpty() ) {
-            // TODO some fields like date_closed should be handled as special fields instead
-            // i.e. formatted with KLocale
-            continue;
+            if ( it.key() == "date_closed" ) {
+                diffName = i18nc( "@item:intable", "Expected Close Date" );
+                leftValue = formatDate( getDateClosed( leftOpportunity ) );
+                rightValue = formatDate( getDateClosed( rightOpportunity ) );
+            } else {
+                // internal field, skip
+                continue;
+            }
         }
 
         if ( leftValue.isEmpty() && rightValue.isEmpty() ) {

@@ -637,8 +637,7 @@ void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
 
     const QString modifiedBy = getModifiedByName( rightAccount );
-    // TODO should get date and format it using KLocale
-    const QString modifiedOn = getDateModified( rightAccount );
+    const QString modifiedOn = formatDate( getDateModified( rightAccount ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Account" ) );
     reporter->setRightPropertyValueTitle(
