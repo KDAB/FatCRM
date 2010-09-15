@@ -73,11 +73,13 @@ void SugarJob::Private::loginDone( const TNS__Set_entry_result &callResult )
     } else {
         kDebug() << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
         mSession->setSessionId( sessionId );
+        q->setError( 0 );
+        q->setErrorText( QString() );
         q->startSugarTask();
         return;
     }
 
-    q->setError( LoginError );
+    q->setError( SugarJob::LoginError );
     q->setErrorText( i18nc( "@info:status", "Login for user %1 on %2 failed: %3",
                             mSession->userName(), mSession->host(), message ) );
     q->emitResult();
