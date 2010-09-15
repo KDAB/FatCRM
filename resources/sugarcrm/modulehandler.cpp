@@ -111,5 +111,7 @@ Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse( const TNS__Entr
 
 bool ModuleHandler::needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const
 {
+    Q_UNUSED( item );
+
     return modifiedParts.contains( Akonadi::Item::FullPayload );
 }
