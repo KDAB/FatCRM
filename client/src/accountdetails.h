@@ -1,16 +1,14 @@
 #ifndef ACCOUNTDETAILS_H
 #define ACCOUNTDETAILS_H
 
-#include "ui_accountdetails.h"
-#include "abstractdetails.h"
+#include <kdcrmdata/sugaraccount.h>
 
-#include <akonadi/item.h>
 
 #include <QtGui/QWidget>
-#include <QToolButton>
+#include <QComboBox>
+#include <QGroupBox>
 
-
-class AccountDetails : public AbstractDetails
+class AccountDetails : public QWidget
 {
     Q_OBJECT
 public:
@@ -18,31 +16,50 @@ public:
 
     ~AccountDetails();
 
-    friend class Page;
-protected:
-    /*reimp*/ void initialize();
-    /*reimp*/ void setItem( const Akonadi::Item &item );
-    /*reimp*/ void clearFields();
-    /*reimp*/ void addData( const QString &name,  const QString &id );
-    /*reimp*/ void removeData( const QString &Name );
-    /*reimp*/ void reset();
-    /*reimp*/ void addAccountData( const QString &name,  const QString &id );
-    /*reimp*/ void removeAccountData( const QString &name );
-    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
-    /*reimp*/ void removeCampaignData( const QString &name );
-    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
-
-    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
-
 private:
-    QMap<QString, QString> mData; // this
-    bool mModifyFlag;
-    Ui_AccountDetails mUi;
+    void initialize();
+    QGroupBox *buildDetailsGroupBox();
+    QGroupBox *buildOtherDetailsGroupBox();
+    QGroupBox *buildAddressesGroupBox();
+    QStringList industryItems() const;
+    QStringList typeItems() const;
 
-private Q_SLOTS:
-    void slotEnableSaving();
-    void slotSaveAccount();
-    void slotSetModifyFlag( bool );
+    // Details
+    QGroupBox *mDetailsBox;
+    QLineEdit *mName;
+    QLineEdit *mWebsite;
+    QLineEdit *mTyckerSymbol;
+    QComboBox *mParentName;
+    QLineEdit *mOwnership;
+    QComboBox *mIndustry;
+    QComboBox *mAccountType;
+    QComboBox *mCampaignName;
+    QComboBox *mAssignedUserName;
+
+    //Other Details
+    QGroupBox *mOtherDetailsBox;
+    QLineEdit *mPhoneOffice;
+    QLineEdit *mPhoneFax;
+    QLineEdit *mPhoneAlternate;
+    QLineEdit *mEmployees;
+    QLineEdit *mRating;
+    QLineEdit *mSicCode;
+    QLineEdit *mAnnualRevenue;
+    QLineEdit *mEmail1;
+
+    //Addresses
+    QGroupBox *mAddressesBox;
+    QLineEdit *mBillingAddressStreet;
+    QLineEdit *mBillingAddressCity;
+    QLineEdit *mBillingAddressState;
+    QLineEdit *mBillingAddressPostalCode;
+    QLineEdit *mBillingAddressCountry;
+    QLineEdit *mShippingAddressStreet;
+    QLineEdit *mShippingAddressCity;
+    QLineEdit *mShippingAddressState;
+    QLineEdit *mShippingAddressPostalCode;
+    QLineEdit *mShippingAddressCountry;
+
 };
 
 #endif /* ACCOUNTDETAILS_H */

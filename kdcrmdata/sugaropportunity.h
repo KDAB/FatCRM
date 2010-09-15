@@ -310,6 +310,17 @@ class KDCRMDATA_EXPORT SugarOpportunity
     QString probability() const;
 
     /**
+      Convenience: Set the data for this opportunity
+     */
+    void setData( QMap<QString, QString> data );
+
+    /**
+      Convenience: Retrieve the data for this opportunity
+     */
+    QMap<QString, QString> data();
+
+
+    /**
        Return the Mime type
      */
     static QString mimeType();

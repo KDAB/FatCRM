@@ -9,302 +9,196 @@ using namespace Akonadi;
 
 
 OpportunityDetails::OpportunityDetails( QWidget *parent )
-    : AbstractDetails( parent )
+    : QWidget( parent )
 
 {
-    mUi.setupUi( this );
-
-    // calendars
-    mCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( mCalendarButton );
-    mUi.calendarWidget->setLayout( buttonLayout );
-
-    connect( mUi.clearButton, SIGNAL( clicked() ), this,
-             SLOT( slotClearDate() ) );
-
-    connect( mCalendarButton->calendarWidget(),
-             SIGNAL( clicked( const QDate& ) ),
-             this, SLOT( slotSetDateClosed() ) );
-
     initialize();
 }
 
 OpportunityDetails::~OpportunityDetails()
 {
-    delete mCalendarButton;
+
 }
 
 void OpportunityDetails::initialize()
 {
-    QList<QLineEdit*> lineEdits =  mUi.opportunityInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
-    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-
-    QList<QComboBox*> comboBoxes =  mUi.opportunityInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        connect( cb, SIGNAL( currentIndexChanged( int ) ),
-                 this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.description, SIGNAL( textChanged() ),
-             this,  SLOT( slotEnableSaving() ) );
-
-    connect( mUi.saveButton, SIGNAL( clicked() ),
-             this, SLOT( slotSaveOpportunity() ) );
-
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    // build the group boxes
+    hLayout->addWidget( buildDetailsGroupBox() );
+    hLayout->addWidget( buildOtherDetailsGroupBox() );
+    setLayout( hLayout );
 }
 
-void OpportunityDetails::reset()
+QGroupBox* OpportunityDetails::buildDetailsGroupBox()
 {
-    QList<QLineEdit*> lineEdits =  mUi.opportunityInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        disconnect( le, SIGNAL( textChanged( const QString& ) ),
-                    this, SLOT( slotEnableSaving() ) );
+    mDetailsBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mDetailsBox->setLayout( vLayout );
+    mDetailsBox->setTitle( tr( "Details" ) );
 
-    QList<QComboBox*> comboBoxes =  mUi.opportunityInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
-                    this, SLOT( slotEnableSaving() ) );
+    QLabel *opportunityNameLabel = new QLabel( tr("Opportunity name: "  ) );
+    mName = new QLineEdit();
+    mName->setObjectName( "name" );
+    detailGrid->addWidget( opportunityNameLabel, 0, 0 );
+    detailGrid->addWidget( mName, 0, 1 );
+    QLabel *accountNameLabel = new QLabel( tr( "Account name: " ) );
+    mAccountName = new QComboBox();
+    mAccountName->setObjectName( "accountName" );
+    mAccountName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( accountNameLabel, 1, 0 );
+    detailGrid->addWidget( mAccountName, 1, 1 );
+    QLabel *typeLabel = new QLabel( tr( "Type: " ) );
+    mOpportunityType = new QComboBox();
+    mOpportunityType->setObjectName( "opportunityType" );
+    mOpportunityType->addItems( typeItems() );
+    detailGrid->addWidget( typeLabel, 2, 0 );
+    detailGrid->addWidget( mOpportunityType, 2, 1 );
+    QLabel *leadSourceLabel = new QLabel( tr( "Lead source: " ) );
+    mLeadSource = new QComboBox();
+    mLeadSource->setObjectName( "leadSource" );
+    mLeadSource->addItems( sourceItems() );
+    detailGrid->addWidget( leadSourceLabel, 3, 0 );
+    detailGrid->addWidget( mLeadSource, 3, 1 );
+    QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
+    mCampaignName = new QComboBox();
+    mCampaignName->setObjectName( "campaignName" );
+    mCampaignName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( campaignLabel, 4, 0 );
+    detailGrid->addWidget( mCampaignName, 4, 1 );
+    QLabel *salesStageLabel = new QLabel( tr( "Sales stage: " ) );
+    mSalesStage = new QComboBox();
+    mSalesStage->setObjectName( "salesStage" );
+    mSalesStage->addItems( stageItems() );
+    detailGrid->addWidget( salesStageLabel, 5, 0 );
+    detailGrid->addWidget( mSalesStage, 5, 1 );
+    QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
+    mAssignedUserName = new QComboBox();
+    mAssignedUserName->setObjectName( "assignedUserName" );
+    mAssignedUserName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( assignedToLabel, 6, 0 );
+    detailGrid->addWidget( mAssignedUserName, 6, 1 );
 
-    disconnect( mUi.description, SIGNAL( textChanged() ),
-                this,  SLOT( slotEnableSaving() ) );
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    return mDetailsBox;
 }
 
-void OpportunityDetails::setItem (const Item &item )
+QGroupBox* OpportunityDetails::buildOtherDetailsGroupBox()
 {
-    // new item selected reset flag and saving
-    mModifyFlag = true;
-    reset();
+        /* build a BirthDate calendar widget */
+    // Calendar widgets
+    mDateClosed = new QLineEdit();
+    mDateClosed->setObjectName( "dateClosed" );
+    mClearDateButton = new QToolButton();
+    mClearDateButton->setText( tr( "Clear" ) );
 
-    // opportunity info
-    const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-    mUi.modifiedDate->setText( opportunity.dateModified() );
-    mUi.modifiedBy->setText( opportunity.modifiedByName() );
-    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( opportunity.modifiedUserId() ) );
-    mUi.createdDate->setText( opportunity.dateEntered() );
-    mUi.createdDate->setProperty( "id", qVariantFromValue<QString>( opportunity.id( ) ) );
-    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( opportunity.deleted( ) ) );
-    mUi.createdBy->setText( opportunity.createdByName() );
-    mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( opportunity.createdBy( ) ) ); // id
-    mUi.name->setText( opportunity.name() );
-    mUi.accountName->setCurrentIndex( mUi.accountName->findText( opportunity.accountName() ) );
-    mUi.opportunityType->setCurrentIndex( mUi.opportunityType->findText( opportunity.opportunityType() ) );
-    mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( opportunity.leadSource() ) );
-    mUi.campaignName->setCurrentIndex(mUi.campaignName->findText( opportunity.campaignName() ) );
-    mUi.salesStage->setCurrentIndex(mUi.salesStage->findText( opportunity.salesStage() ) );
-    mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( opportunity.assignedUserName() ) );
-    // Pending (michel)
-    // we dont get the name and symbol value atm
-    // setting a default value so long
-    mUi.currency->setProperty( "currencyId",qVariantFromValue<QString>( opportunity.currencyId() ) );
-    QString currencyName = opportunity.currencyName();
-    if ( currencyName.isEmpty() )
-        currencyName = "US Dollars";
-    mUi.currency->setProperty( "currencyName", qVariantFromValue<QString>( currencyName ) );
-    currencyName += QString( " : " );
-    QString currencySymbol = opportunity.currencySymbol();
-    if ( currencySymbol.isEmpty() )
-        currencySymbol = "$";
-    mUi.currency->setProperty( "currencySymbol", qVariantFromValue<QString>(  currencySymbol ) );
-    QString currencyItem = currencyName + currencySymbol;
-    int index = mUi.currency->findText( currencyItem );
-    if ( index < 0  ) {
-        mUi.currency->addItem( currencyItem );
-        mUi.currency->setCurrentIndex( mUi.currency->findText( currencyItem ) );
-    }
-    else
-        mUi.currency->setCurrentIndex( index );
+    connect( mClearDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
 
-    mUi.amount->setText( opportunity.amount() );
-    mUi.dateClosed->setText( opportunity.dateClosed() );
-    mUi.nextStep->setText( opportunity.nextStep() );
-    mUi.probability->setText( opportunity.probability() );
-    mUi.description->setPlainText( opportunity.description() );
-    initialize();
-}
+    QWidget *calendarWidget = new QWidget();
+    mCalendarButton = new EditCalendarButton( this );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->addWidget( mDateClosed );
+    hLayout->addWidget( mClearDateButton );
+    hLayout->addWidget( mCalendarButton );
+    calendarWidget->setLayout( hLayout );
 
-void OpportunityDetails::clearFields ()
-{
-    // reset line edits
-    QList<QLineEdit*> lineEdits =
-        mUi.opportunityInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setText(QString());
+    connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetDateClosed()));
 
-    // reset label and properties
-    QList<QLabel*> labels =
-        mUi.opportunityInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
-            lab->clear();
-            lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdDate" ) {
-            lab->clear();
-            lab->setProperty( "id", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "deleted", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdBy" ) {
-            lab->clear();
-            lab->setProperty( "createdBy", qVariantFromValue<QString>( QString() ) );
-        }
-    }
+    mOtherDetailsBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mOtherDetailsBox->setLayout( vLayout );
+    mOtherDetailsBox->setTitle( tr( "Other details" ) );
 
-    // reset combos
-    QList<QComboBox*> comboBoxes =
-        mUi.opportunityInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes ) {
-        QString value = cb->objectName();
-        cb->setCurrentIndex( 0 );
-        if ( value =="currency" ) {
-            cb->setProperty( "currencyName", qVariantFromValue<QString>( QString() ) );
-            cb->setProperty( "currencyId", qVariantFromValue<QString>( QString() ) );
-            cb->setProperty( "currencySymbol", qVariantFromValue<QString>( QString() ) );
+    QLabel *currencyLabel = new QLabel( tr("Currency: "  ) );
+    mCurrency = new QComboBox();
+    mCurrency->setObjectName( "currency" );
+    mCurrency->addItems( currencyItems() );
+    detailGrid->addWidget( currencyLabel, 0, 0 );
+    detailGrid->addWidget( mCurrency, 0, 1 );
+    QLabel *amountLabel = new QLabel( tr( "Amount: " ) );
+    mAmount = new QLineEdit();
+    mAmount->setObjectName( "amount" );
+    detailGrid->addWidget( amountLabel, 1, 0 );
+    detailGrid->addWidget( mAmount, 1, 1 );
+    QLabel *closeDateLabel = new QLabel( tr( "Expected close date: " ) );
+    detailGrid->addWidget( closeDateLabel, 2, 0 );
+    detailGrid->addWidget( calendarWidget, 2, 1 );
+    QLabel *nextStepLabel = new QLabel( tr( "Next step: " ) );
+    mNextStep = new QLineEdit();
+    mNextStep->setObjectName( "nextStep" );
+    detailGrid->addWidget( nextStepLabel, 3, 0 );
+    detailGrid->addWidget( mNextStep, 3, 1 );
+    QLabel *probabilityLabel = new QLabel( tr( "Probability(%): " ) );
+    mProbability = new QLineEdit();
+    mProbability->setObjectName( "probability" );
+    detailGrid->addWidget( probabilityLabel, 4, 0 );
+    detailGrid->addWidget( mProbability, 4, 1 );
 
-        }
-    }
-    // initialize other fields
-    mUi.description->clear();
-    mUi.name->setFocus();
-
-    // we are creating a new opportunity
-    slotSetModifyFlag( false );
-}
-
-void OpportunityDetails::slotSetModifyFlag( bool value )
-{
-    mModifyFlag = value;
-}
-
-void OpportunityDetails::slotEnableSaving()
-{
-    if ( sender()->objectName() != "modifiedDate" ) {
-        mUi.saveButton->setEnabled( true );
-        setEditing( true );
-    }
-
-}
-
-void OpportunityDetails::slotSaveOpportunity()
-{
-    if ( !mData.empty() )
-        mData.clear();
-
-    mData["remoteRevision"] = mUi.modifiedDate->text();
-
-    QList<QLineEdit*> lineEdits =
-        mUi.opportunityInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        mData[le->objectName()] = le->text();
-
-    QList<QLabel*> labels =
-        mUi.opportunityInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString objName = lab->objectName();
-        if ( objName == "modifiedBy" ) {
-            mData["modifiedBy"] = lab->text();
-            mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
-            mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
-        }
-        else if ( objName == "createdDate" ) {
-            mData["createdDate"] = lab->text();
-            mData["id"] = lab->property( "id" ).toString();
-            mData["deleted"] = lab->property( "deleted" ).toString();
-        }
-        else if ( objName == "createdBy" ) {
-            mData["createdByName"] = lab->text();
-            mData["createdBy"] = lab->property( "createdBy" ).toString();
-        }
-    }
-
-    mData["accountName"] = mUi.accountName->currentText();
-    mData["accountId"] = accountsData().value(  mUi.accountName->currentText() );
-    mData["opportunityType"] = mUi.opportunityType->currentText();
-
-    mData["campaignName"] = mUi.campaignName->currentText();
-    mData["campaignId"] = campaignsData().value( mUi.campaignName->currentText() );
-
-    mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
-    mData["leadSource"] = mUi.leadSource->currentText();
-    mData["salesStage"] = mUi.salesStage->currentText();
-    mData["description"] = mUi.description->toPlainText();
-    QString currencyName = QString();
-    QString currencySymbol = QString();
-    // read currency combo and parse - Name : Symbol
-    if ( !mUi.currency->currentText().isEmpty() ) {
-        currencyName = mUi.currency->currentText().split( ":" )[0].trimmed();
-        currencySymbol = mUi.currency->currentText().split( ":")[1].trimmed();
-    }
-    mData["currencyName"] = currencyName;
-    mData["currencySymbol"] = currencySymbol;
-    mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
-
-    if ( !mModifyFlag )
-        emit saveItem();
-    else
-        emit modifyItem();
-}
-
-void OpportunityDetails::addAccountData( const QString &accountName,  const QString &accountId )
-{
-    AbstractDetails::addAccountData( accountName, accountId );
-
-    if ( mUi.accountName->findText( accountName ) < 0 )
-        mUi.accountName->addItem( accountName );
-}
-
-void OpportunityDetails::removeAccountData( const QString &accountName )
-{
-    if ( accountName.isEmpty() )
-        return;
-    AbstractDetails::removeAccountData( accountName );
-    int index = mUi.accountName->findText( accountName );
-    if ( index > 0 ) // always leave the first blank field
-        mUi.accountName->removeItem( index );
-}
-
-void OpportunityDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
-{
-    AbstractDetails::addCampaignData( campaignName, campaignId );
-    if ( mUi.campaignName->findText( campaignName ) < 0 )
-        mUi.campaignName->addItem( campaignName );
-}
-
-void OpportunityDetails::removeCampaignData( const QString &campaignName )
-{
-    if ( campaignName.isEmpty() )
-        return;
-    AbstractDetails::removeCampaignData( campaignName );
-    int index = mUi.campaignName->findText( campaignName );
-    if ( index > 0 )// always leave the first blank field
-        mUi.campaignName->removeItem( index );
-}
-
-void OpportunityDetails::addAssignedToData( const QString &name, const QString &id )
-{
-    AbstractDetails::addAssignedToData( name, id );
-    if ( mUi.assignedUserName->findText( name ) < 0 )
-        mUi.assignedUserName->addItem( name );
+    return mOtherDetailsBox;
 }
 
 void OpportunityDetails::slotSetDateClosed()
 {
-    mUi.dateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mDateClosed->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
     mCalendarButton->calendarDialog()->close();
 }
 
 void OpportunityDetails::slotClearDate()
 {
-    mUi.dateClosed->clear();
+    mDateClosed->clear();
 }
 
+QStringList OpportunityDetails::typeItems() const
+{
+    QStringList types;
+    types << QString("") << QString( "Existing Business" )
+          << QString("New Business" );
+    return types;
+}
+
+QStringList OpportunityDetails::sourceItems() const
+{
+    QStringList sources;
+    sources << QString("") << QString( "Cold Call" )
+            << QString( "Existing Customer" ) << QString( "Self Generated" )
+            << QString( "Employee" ) << QString( "Partner" )
+            << QString( "Public Relations" ) << QString( "Direct Mail" )
+            << QString( "Conference" ) << QString( "Trade Show" )
+            << QString( "Web Site" ) << QString( "Word of mouth" )
+            << QString( "Email" ) << QString( "Campaign" )
+            << QString( "Other" );
+    return sources;
+}
+
+QStringList OpportunityDetails::stageItems() const
+{
+    QStringList stages;
+    stages << QString("")
+            << QString( "Prospecting" )
+            << QString( "Qualification" )
+            << QString( "Needs Analysis" )
+            << QString( "Value Proposition" )
+            << QString( "Id.Decision Makers" )
+            << QString( "Perception Analysis" )
+            << QString( "Proposal/Price Quote" )
+            << QString( "Negociation/Review" )
+            << QString( "Closed Won" )
+            << QString( "Closed Lost" );
+    return stages;
+}
+
+QStringList OpportunityDetails::currencyItems() const
+{
+    // we do not have the choice here
+    // Should be set remotely by admin
+    QStringList currencies;
+    currencies << QString( "US Dollars : $" );
+    return currencies;
+}

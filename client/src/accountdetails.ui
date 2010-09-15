@@ -36,7 +36,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="modifiedDate">
+         <widget class="QLineEdit" name="dateModified">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -98,7 +98,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="createdDate">
+         <widget class="QLabel" name="dateEntered">
           <property name="text">
            <string>TextLabel</string>
           </property>

@@ -1,15 +1,17 @@
 #ifndef OPPORTUNITYDETAILS_H
 #define OPPORTUNITYDETAILS_H
 
-#include "ui_opportunitydetails.h"
-#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
-#include <akonadi/item.h>
+#include <kdcrmdata/sugaropportunity.h>
 
-#include <QtGui/QWidget>
+#include <QWidget>
+#include <QGroupBox>
+#include <QComboBox>
+#include <QLineEdit>
 
-class OpportunityDetails : public AbstractDetails
+
+class OpportunityDetails : public QWidget
 {
     Q_OBJECT
 public:
@@ -17,31 +19,39 @@ public:
 
     ~OpportunityDetails();
 
-    friend class Page;
-protected:
-    /*reimp*/ void setItem( const Akonadi::Item &item );
-    /*reimp*/ void clearFields();
-    /*reimp*/ void addAccountData( const QString &name,  const QString &id );
-    /*reimp*/ void removeAccountData( const QString &accountName );
-    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
-    /*reimp*/ void removeCampaignData( const QString &campaignName );
-    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
-    /*reimp*/ void reset();
-    /*reimp*/ void initialize();
-    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
+private Q_SLOTS:
+    void slotClearDate();
+    void slotSetDateClosed();
 
 private:
-    EditCalendarButton *mCalendarButton;
-    QMap<QString, QString> mData; // this
-    bool mModifyFlag;
-    Ui_OpportunityDetails mUi;
+    void initialize();
+    QGroupBox *buildDetailsGroupBox();
+    QGroupBox *buildOtherDetailsGroupBox();
+    QStringList typeItems() const;
+    QStringList sourceItems() const;
+    QStringList stageItems() const;
+    QStringList currencyItems() const;
 
-private Q_SLOTS:
-    void slotEnableSaving();
-    void slotSaveOpportunity();
-    void slotSetModifyFlag( bool );
-    void slotSetDateClosed();
-    void slotClearDate();
+    // Details
+    QGroupBox *mDetailsBox;
+    QLineEdit *mName;
+    QComboBox *mAccountName;
+    QComboBox *mOpportunityType;
+    QComboBox *mLeadSource;
+    QComboBox *mCampaignName;
+    QComboBox *mSalesStage;
+    QComboBox *mAssignedUserName;
+
+    //Other Details
+    QGroupBox *mOtherDetailsBox;
+    QComboBox *mCurrency;
+    QLineEdit *mAmount;
+    QLineEdit *mDateClosed;
+    QLineEdit *mNextStep;
+    QLineEdit *mProbability;
+
+    EditCalendarButton *mCalendarButton;
+    QToolButton *mClearDateButton;
 };
 
 

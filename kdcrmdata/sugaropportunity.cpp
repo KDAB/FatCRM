@@ -476,6 +476,73 @@ QString SugarOpportunity::probability() const
     return d->mProbability;
 }
 
+void SugarOpportunity::setData( QMap<QString, QString> data )
+{
+    d->mEmpty = false;
+
+    d->mId = data.value( "id" );
+    d->mName = data.value( "name" );
+    d->mDateEntered = data.value( "dateEntered" );
+    d->mDateModified = data.value( "dateModified" );
+    d->mModifiedUserId =  data.value( "modifiedUserId" );
+    d->mModifiedByName = data.value( "modifiedByName" );
+    d->mCreatedBy = data.value( "createdBy" );
+    d->mCreatedByName = data.value( "createdByName" );
+    d->mDescription = data.value( "description" );
+    d->mDeleted = data.value( "deleted" );
+    d->mAssignedUserId = data.value( "assignedUserId" );
+    d->mAssignedUserName = data.value( "assignedUserName" );
+    d->mOpportunityType = data.value( "opportunityType" );
+    d->mAccountName = data.value( "accountName" );
+    d->mAccountId = data.value( "accountId" );
+    d->mCampaignId = data.value( "campaignId" );
+    d->mCampaignName = data.value( "campaignName" );
+    d->mLeadSource = data.value( "leadSource" );
+    d->mAmount = data.value( "amount" );
+    d->mAmountUsDollar = data.value( "amountUsDollar" );
+    d->mCurrencyId = data.value( "currencyId" );
+    d->mCurrencyName = data.value( "currencyName" );
+    d->mCurrencySymbol = data.value( "currencySymbol" );
+    d->mDateClosed = data.value( "dateClosed" );
+    d->mNextStep = data.value( "nextStep" );
+    d->mSalesStage = data.value( "salesStage" );
+    d->mProbability = data.value( "probability" );
+
+}
+
+QMap<QString, QString> SugarOpportunity::data()
+{
+    QMap<QString, QString> data;
+    data["id"] = d->mId;
+    data["name"] = d->mName;
+    data["dateEntered"] = d->mDateEntered;
+    data["dateModified"] = d->mDateModified;
+    data["modifiedUserId"] = d->mModifiedUserId;
+    data["modifiedByName"] = d->mModifiedByName;
+    data["createdBy"] = d->mCreatedBy;
+    data["createdByName"] = d->mCreatedByName;
+    data["description"] = d->mDescription;
+    data["deleted"] = d->mDeleted;
+    data["assignedUserId"] = d->mAssignedUserId;
+    data["assignedUserName"] = d->mAssignedUserName;
+    data["opportunityType"] = d->mOpportunityType;
+    data["accountName"] = d->mAccountName;
+    data["accountId"] = d->mAccountName;
+    data["campaignId"] = d->mCampaignId;
+    data["campaignName"] = d->mCampaignName;
+    data["leadSource"] = d->mLeadSource;
+    data["amount"] = d->mAmount;
+    data["amountUsDollar"] = d->mAmountUsDollar;
+    data["currencyId"] = d->mCurrencyId;
+    data["currencyName"] = d->mCurrencyName;
+    data["currencySymbol"] = d->mCurrencySymbol;
+    data["dateClosed"] = d->mDateClosed;
+    data["nextStep"] = d->mNextStep;
+    data["salesStage"] = d->mSalesStage;
+    data["probability"] = d->mProbability;
+    return data;
+}
+
 QString SugarOpportunity::mimeType()
 {
     return QLatin1String( "application/x-vnd.kdab.crm.opportunity" );

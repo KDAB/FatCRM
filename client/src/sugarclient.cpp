@@ -15,6 +15,7 @@
 #include <QDockWidget>
 #include <QInputDialog>
 #include <QToolBar>
+#include <QComboBox>
 
 using namespace Akonadi;
 
@@ -98,35 +99,35 @@ void SugarClient::createToolBar()
 void SugarClient::createDockWidgets()
 {
     mContactDetailsDock = new QDockWidget(tr("Contact Details"), this );
-    mContactDetailsWidget = new ContactDetails(mContactDetailsDock);
+    mContactDetailsWidget = new DetailsWidget( Contact, mContactDetailsDock);
     mContactDetailsDock->setWidget( mContactDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
     mViewContactAction = mContactDetailsDock->toggleViewAction();
     mViewMenu->addAction(mViewContactAction);
 
     mAccountDetailsDock = new QDockWidget(tr("Account Details"), this );
-    mAccountDetailsWidget = new AccountDetails(mAccountDetailsDock);
+    mAccountDetailsWidget = new DetailsWidget( Account, mAccountDetailsDock);
     mAccountDetailsDock->setWidget( mAccountDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mAccountDetailsDock );
     mViewAccountAction = mAccountDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewAccountAction );
 
     mOpportunityDetailsDock = new QDockWidget(tr("Opportunity Details"), this );
-    mOpportunityDetailsWidget = new OpportunityDetails(mOpportunityDetailsDock);
+    mOpportunityDetailsWidget = new DetailsWidget( Opportunity, mOpportunityDetailsDock);
     mOpportunityDetailsDock->setWidget( mOpportunityDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mOpportunityDetailsDock );
     mViewOpportunityAction = mOpportunityDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewOpportunityAction );
 
     mLeadDetailsDock = new QDockWidget(tr("Lead Details"), this );
-    mLeadDetailsWidget = new LeadDetails(mLeadDetailsDock);
+    mLeadDetailsWidget = new DetailsWidget( Lead, mLeadDetailsDock);
     mLeadDetailsDock ->setWidget( mLeadDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mLeadDetailsDock );
     mViewLeadAction = mLeadDetailsDock->toggleViewAction();
     mViewMenu->addAction( mViewLeadAction );
 
     mCampaignDetailsDock = new QDockWidget(tr("Campaign Details"), this );
-    mCampaignDetailsWidget = new CampaignDetails(mCampaignDetailsDock);
+    mCampaignDetailsWidget = new DetailsWidget( Campaign, mCampaignDetailsDock);
     mCampaignDetailsDock->setWidget( mCampaignDetailsWidget );
     addDockWidget( Qt::BottomDockWidgetArea, mCampaignDetailsDock );
     mViewCampaignAction = mCampaignDetailsDock->toggleViewAction();
@@ -325,7 +326,7 @@ QComboBox* SugarClient::getResourcesCombo()
     return container;
 }
 
-QWidget* SugarClient::detailsWidget( DetailsType type )
+DetailsWidget* SugarClient::detailsWidget( DetailsType type )
 {
     switch( type  ) {
     case Account:

@@ -2,11 +2,7 @@
 #define SUGARCLIENT_H
 
 #include "ui_mainwindow.h"
-#include <accountdetails.h>
-#include <opportunitydetails.h>
-#include <leaddetails.h>
-#include <campaigndetails.h>
-#include <contactdetails.h>
+#include <detailswidget.h>
 #include <accountspage.h>
 #include <opportunitiespage.h>
 #include <leadspage.h>
@@ -18,6 +14,7 @@
 
 class QAction;
 class QToolBar;
+class QComboBox;
 
 namespace Akonadi {
     class AgentInstance;
@@ -33,7 +30,7 @@ public:
 
     inline void displayDockWidgets( bool value = true )
     { mUi.showDetails->setChecked( value ); }
-    QWidget *detailsWidget( DetailsType type );
+    DetailsWidget *detailsWidget( DetailsType type );
 
 Q_SIGNALS:
     void resourceSelected( const QByteArray &identifier );
@@ -53,19 +50,19 @@ private:
     QMenu *mViewMenu;
     QToolBar *mToolBar;
     QDockWidget *mAccountDetailsDock;
-    AccountDetails *mAccountDetailsWidget;
+    DetailsWidget *mAccountDetailsWidget;
     QAction *mViewAccountAction;
     QDockWidget *mOpportunityDetailsDock;
-    OpportunityDetails *mOpportunityDetailsWidget;
+    DetailsWidget *mOpportunityDetailsWidget;
     QAction *mViewOpportunityAction;
     QDockWidget *mLeadDetailsDock;
-    LeadDetails *mLeadDetailsWidget;
+    DetailsWidget *mLeadDetailsWidget;
     QAction *mViewLeadAction;
     QDockWidget *mContactDetailsDock;
-    ContactDetails *mContactDetailsWidget;
+    DetailsWidget *mContactDetailsWidget;
     QAction *mViewContactAction;
     QDockWidget *mCampaignDetailsDock;
-    CampaignDetails *mCampaignDetailsWidget;
+    DetailsWidget *mCampaignDetailsWidget;
     QAction *mViewCampaignAction;
     AccountsPage *mAccountsPage;
     OpportunitiesPage *mOpportunitiesPage;

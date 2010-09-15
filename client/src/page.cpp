@@ -90,7 +90,7 @@ void Page::slotCollectionFetchResult( KJob *job )
 
 void Page::slotItemClicked( const QModelIndex &index )
 {
-    AbstractDetails *d = dynamic_cast<AbstractDetails*>( mClientWindow->detailsWidget(mType) );
+    DetailsWidget *d = dynamic_cast<DetailsWidget*>( mClientWindow->detailsWidget(mType) );
 
     if ( d->isEditing() ) {
         if ( !proceedIsOk() ) {
@@ -105,7 +105,7 @@ void Page::slotItemClicked( const QModelIndex &index )
 void Page::itemChanged( const Item &item )
 {
     if ( item.isValid() ) {
-        AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
+        DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
         d->setItem( item );
 
         mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
@@ -116,7 +116,7 @@ void Page::itemChanged( const Item &item )
 
 void Page::slotNewClicked()
 {
-    AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
+    DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
 
     if ( d->isEditing() ) {
         if ( !proceedIsOk() )
@@ -127,13 +127,11 @@ void Page::slotNewClicked()
     d->clearFields();
     connect( d, SIGNAL( saveItem() ),
              this, SLOT( slotAddItem( ) ) );
-    // reset
-    d->initialize();
 }
 
 void Page::slotAddItem()
 {
-    AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
+    DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
     disconnect( d, SIGNAL( saveItem() ),
                 this, SLOT( slotAddItem( ) ) );
     addItem(d->data() );
@@ -146,11 +144,11 @@ void Page::slotModifyItem()
         return;
     Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
     if ( item.isValid() ) {
-        AbstractDetails *d = dynamic_cast<AbstractDetails*>(mClientWindow->detailsWidget(mType));
+        DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
         disconnect( d, SIGNAL( modifyItem() ),
-                    this, SLOT( slotModifyItem( ) ) );
-        modifyItem( item, d->data()  );
+                    this,  SLOT( slotModifyItem() ) );
         d->reset();
+        modifyItem( item, d->data()  );
     }
 }
 
@@ -319,43 +317,43 @@ QString Page::typeToString( const DetailsType &type ) const
 
 void Page::updateAccountCombo( const QString& name, const QString& id )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
     ad->addAccountData( name, id );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
     cd->addAccountData( name, id );
-    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
     od->addAccountData( name, id );
 }
 
 void Page::updateAssignedToCombo( const QString& name, const QString& id )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
     ad->addAssignedToData( name, id );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
     cd->addAssignedToData( name, id );
-    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
     od->addAssignedToData( name, id );
-    CampaignDetails *cad = dynamic_cast<CampaignDetails*>(mClientWindow->detailsWidget(Campaign));
+    DetailsWidget *cad = mClientWindow->detailsWidget(Campaign);
     cad->addAssignedToData( name, id );
-    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
     ld->addAssignedToData( name, id );
 }
 
 void Page::updateCampaignCombo( const QString& name, const QString& id )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
+    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
     ad->addCampaignData( name, id );
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
     cd->addCampaignData( name, id );
-    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
     od->addCampaignData( name, id );
-    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
     ld->addCampaignData( name, id );
 }
 
 void Page::updateReportToCombo( const QString& name, const QString& id )
 {
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
     cd->addReportsToData( name, id );
 }
 
@@ -409,9 +407,9 @@ void Page::addContactsData()
 
 void Page::removeAccountsData( Akonadi::Item &item )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
-    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
+    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
+    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
 
     if ( item.hasPayload<SugarAccount>() ) {
         SugarAccount account;
@@ -424,10 +422,10 @@ void Page::removeAccountsData( Akonadi::Item &item )
 
 void Page::removeCampaignsData( Akonadi::Item &item )
 {
-    AccountDetails *ad = dynamic_cast<AccountDetails*>(mClientWindow->detailsWidget(Account));
-    ContactDetails *cd = dynamic_cast<ContactDetails*>(mClientWindow->detailsWidget(Contact));
-    OpportunityDetails *od = dynamic_cast<OpportunityDetails*>(mClientWindow->detailsWidget(Opportunity));
-    LeadDetails *ld = dynamic_cast<LeadDetails*>(mClientWindow->detailsWidget(Lead));
+    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
+    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
+    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
+    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
     if ( item.hasPayload<SugarCampaign>() ) {
         SugarCampaign campaign;
         campaign = item.payload<SugarCampaign>();

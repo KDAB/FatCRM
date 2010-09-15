@@ -9,309 +9,279 @@
 using namespace Akonadi;
 
 ContactDetails::ContactDetails( QWidget *parent )
-    : AbstractDetails( parent )
+    : QWidget( parent )
 
 {
-    mUi.setupUi( this );
-
-    //calendar
-    mCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *buttonLayout = new QVBoxLayout;
-    buttonLayout->addWidget( mCalendarButton );
-    mUi.calendarWidget->setLayout( buttonLayout );
-
-    connect( mUi.clearButton, SIGNAL( clicked() ),
-             this, SLOT( slotClearDate() ) );
-
-    connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
-             this, SLOT(slotSetBirthday()));
-
     initialize();
 }
 
 ContactDetails::~ContactDetails()
 {
-    delete mCalendarButton;
+
 }
 
 void ContactDetails::initialize()
 {
-    QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-
-    QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        connect( cb, SIGNAL( currentIndexChanged( int ) ),
-                 this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.description, SIGNAL( textChanged() ),
-             this,  SLOT( slotEnableSaving() ) );
-    connect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
-             this, SLOT( slotEnableSaving() ) );
-    connect( mUi.saveButton, SIGNAL( clicked() ),
-             this, SLOT( slotSaveContact() ) );
-
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    // build the group boxes
+    hLayout->addWidget( buildDetailsGroupBox() );
+    hLayout->addWidget( buildOtherDetailsGroupBox() );
+    hLayout->addWidget( buildAddressesGroupBox() );
+    setLayout( hLayout );
 }
 
-void ContactDetails::reset()
+QGroupBox* ContactDetails::buildDetailsGroupBox()
 {
-    QList<QLineEdit*> lineEdits =  mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        disconnect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
+    mDetailsBox = new QGroupBox;
 
-    QList<QComboBox*> comboBoxes =  mUi.contactInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
-                    this, SLOT( slotEnableSaving() ) );
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mDetailsBox->setLayout( vLayout );
+    mDetailsBox->setTitle( tr( "Details" ) );
 
-    disconnect( mUi.description, SIGNAL( textChanged() ),
-                this,  SLOT( slotEnableSaving() ) );
+    QLabel *fakedSpace = new QLabel( QString() );
+    mSalutation = new QComboBox();
+    mSalutation->setObjectName( "salutation" );
+    mSalutation->addItems( salutationItems() );
+    detailGrid->addWidget( fakedSpace, 0, 0 );
+    detailGrid->addWidget( mSalutation, 0, 1 );
+    QLabel *firstNameLabel = new QLabel( tr( "First name:" ) );
+    mFirstName = new QLineEdit();
+    mFirstName->setObjectName( "firstName" );
+    detailGrid->addWidget( firstNameLabel, 0, 0 );
+    detailGrid->addWidget( mFirstName, 0, 1 );
+    QLabel *lastNameLabel = new QLabel( tr( "Last name: " ) );
+    mLastName = new QLineEdit();
+    mLastName->setObjectName( "lastName" );
+    detailGrid->addWidget( lastNameLabel, 1, 0 );
+    detailGrid->addWidget( mLastName, 1, 1 );
+    QLabel *titleLabel = new QLabel( tr( "Job title: " ) );
+    mTitle = new QLineEdit();
+    mTitle->setObjectName( "title" );
+    detailGrid->addWidget( titleLabel, 2, 0 );
+    detailGrid->addWidget( mTitle, 2, 1 );
+    QLabel *departmentLabel = new QLabel( tr( "Department: " ) );
+    mDepartment = new QLineEdit();
+    mDepartment->setObjectName( "department" );
+    detailGrid->addWidget( departmentLabel, 3, 0 );
+    detailGrid->addWidget( mDepartment, 3, 1 );
+    QLabel *accountNameLabel = new QLabel( tr( "Account name: " ) );
+    mAccountName = new QComboBox();
+    mAccountName->setObjectName( "accountName" );
+    mAccountName->addItem( 0,  QString( "" ) );
+    detailGrid->addWidget( accountNameLabel, 4, 0 );
+    detailGrid->addWidget( mAccountName, 4, 1 );
+    QLabel *leadSourceLabel = new QLabel( tr( "Lead source: " ) );
+    mLeadSource = new QComboBox();
+    mLeadSource->setObjectName( "leadSource" );
+    mLeadSource->addItems( sourceItems() );
+    detailGrid->addWidget( leadSourceLabel, 5, 0 );
+    detailGrid->addWidget( mLeadSource, 5, 1 );
+    QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
+    mCampaign = new QComboBox();
+    mCampaign->setObjectName( "campaign" );
+    mCampaign->addItem( 0, QString( "" ) );
+    detailGrid->addWidget( campaignLabel, 6, 0 );
+    detailGrid->addWidget( mCampaign, 6, 1 );
+    QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
+    mAssignedTo = new QComboBox();
+    mAssignedTo->setObjectName( "assignedTo" );
+    mAssignedTo->addItem( 0, QString( "" ) );
+    detailGrid->addWidget( assignedToLabel, 7, 0 );
+    detailGrid->addWidget( mAssignedTo, 7, 1 );
+    QLabel *reportsToLabel = new QLabel( tr( "Reports to: " ) );
+    mReportsTo = new QComboBox();
+    mReportsTo->setObjectName( "reportsTo" );
+    mReportsTo->addItem( 0, QString( "" ) );
+    detailGrid->addWidget( reportsToLabel, 8, 0 );
+    detailGrid->addWidget( mReportsTo, 8, 1 );
+    QLabel *primaryEmailLabel = new QLabel( tr( "Primary email: " ) );
+    mPrimaryEmail = new QLineEdit();
+    mPrimaryEmail->setObjectName( "primaryEmail" );
+    detailGrid->addWidget( primaryEmailLabel, 9, 0 );
+    detailGrid->addWidget( mPrimaryEmail, 9, 1 );
 
-    disconnect (mUi.doNotCall, SIGNAL( stateChanged( int ) ),
-                this, SLOT( slotEnableSaving() ) );
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    return mDetailsBox;
 }
 
-void ContactDetails::setItem (const Item &item )
+QGroupBox* ContactDetails::buildOtherDetailsGroupBox()
 {
-    // new item selected reset flag and saving
-    mModifyFlag = true;
-    reset();
 
-    // contact info
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    mUi.salutation->setCurrentIndex( mUi.salutation->findText( addressee.custom( "FATCRM", "X-Salutation" ) ) );
-    mUi.firstName->setText( addressee.givenName() );
-    mUi.lastName->setText( addressee.familyName() );
-    mUi.title->setText( addressee.title() );
-    mUi.department->setText( addressee.department() );
-    mUi.accountName->setCurrentIndex( mUi.accountName->findText( addressee.organization() ) );
-    mUi.primaryEmail->setText( addressee.preferredEmail() );
-    mUi.homePhone->setText(addressee.phoneNumber( KABC::PhoneNumber::Home ).number() );
-    mUi.mobilePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Cell ).number() );
-    mUi.officePhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Work ).number() );
-    mUi.otherPhone->setText( addressee.phoneNumber( KABC::PhoneNumber::Car ).number() );
-    mUi.fax->setText( addressee.phoneNumber( KABC::PhoneNumber::Fax ).number() );
+    // Calendar widgets
+    mBirthDate = new QLineEdit();
+    mBirthDate->setObjectName( "birthDate" );
+    mClearDateButton = new QToolButton();
+    mClearDateButton->setText( tr( "Clear" ) );
 
-    const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
-    mUi.primaryAddress->setText( address.street() );
-    mUi.city->setText( address.locality() );
-    mUi.state->setText( address.region() );
-    mUi.postalCode->setText( address.postalCode() );
-    mUi.country->setText( address.country() );
+    connect( mClearDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
 
-    const KABC::Address other = addressee.address( KABC::Address::Home );
-    mUi.otherAddress->setText( other.street() );
-    mUi.otherCity->setText( other.locality() );
-    mUi.otherState->setText( other.region() );
-    mUi.otherPostalCode->setText( other.postalCode() );
-    mUi.otherCountry->setText( other.country() );
-    mUi.birthDate->setText( QDateTime( addressee.birthday() ).date().toString( QString("yyyy-MM-dd" ) ) );
-    mUi.description->setPlainText( addressee.note() );
-    mUi.assistant->setText( addressee.custom( "KADDRESSBOOK", "X-AssistantsName" ) );
-    mUi.assistantPhone->setText( addressee.custom( "FATCRM", "X-AssistantsPhone" ) );
-    mUi.leadSource->setCurrentIndex( mUi.leadSource->findText( addressee.custom( "FATCRM", "X-LeadSourceName" ) ) );
-    mUi.campaign->setCurrentIndex( mUi.campaign->findText( addressee.custom( "FATCRM", "X-CampaignName" ) ) );
+    QWidget *calendarWidget = new QWidget();
+    mCalendarButton = new EditCalendarButton( this );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    hLayout->addWidget( mBirthDate );
+    hLayout->addWidget( mClearDateButton );
+    hLayout->addWidget( mCalendarButton );
+    calendarWidget->setLayout( hLayout );
 
-    mUi.assignedTo->setCurrentIndex( mUi.assignedTo->findText( addressee.custom( "FATCRM", "X-AssignedUserName" ) ) );
-    mUi.reportsTo->setCurrentIndex( mUi.reportsTo->findText( addressee.custom( "FATCRM", "X-ReportsToUserName" ) ) );
-    mUi.modifiedBy->setText( addressee.custom( "FATCRM", "X-ModifiedByName" ) );
-    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserId" ) ) );
-    mUi.modifiedBy->setProperty( "modifiedUserName", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ModifiedUserName" ) ) );
-    mUi.modifiedDate->setText( addressee.custom( "FATCRM", "X-DateModified" ) );
-    mUi.createdDate->setText( addressee.custom( "FATCRM", "X-DateCreated"));
-    mUi.createdDate->setProperty( "contactId", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-ContactId" ) ) );
-    mUi.createdDate->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-OpportunityRoleFields" ) ) );
-    mUi.createdDate->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CacceptStatusFields" ) ) );
-    mUi.createdDate->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-MacceptStatusFields" ) ) );
-    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-Deleted" ) ) );
-    bool donotcall = ( addressee.custom( "FATCRM", "X-DoNotCall" ).isEmpty() || addressee.custom( "FATCRM", "X-DoNotCall" ) == "0" ) ? false : true;
-    mUi.doNotCall->setChecked( donotcall );
-    mUi.createdBy->setText( addressee.custom( "FATCRM","X-CreatedByName" ) );
-    mUi.createdBy->setProperty( "createdById", qVariantFromValue<QString>( addressee.custom( "FATCRM", "X-CreatedById" ) ) );
-    initialize();
+    connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetBirthday()));
+
+    mOtherDetailsBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mOtherDetailsBox->setLayout( vLayout );
+    mOtherDetailsBox->setTitle( tr( "Other details" ) );
+
+    QLabel *officePhoneLabel = new QLabel( tr( "Office phone: " ) );
+    mOfficePhone = new QLineEdit();
+    mOfficePhone->setObjectName( "officePhone" );
+    detailGrid->addWidget( officePhoneLabel, 0, 0 );
+    detailGrid->addWidget( mOfficePhone, 0, 1 );
+    QLabel *mobileLabel = new QLabel( tr( "Mobile: " ) );
+    mMobilePhone = new QLineEdit();
+    mMobilePhone->setObjectName( "mobilePhone" );
+    detailGrid->addWidget( mobileLabel, 1, 0 );
+    detailGrid->addWidget( mMobilePhone, 1, 1 );
+    QLabel *homePhoneLabel = new QLabel( tr( "Home phone: " ) );
+    mHomePhone = new QLineEdit();
+    mHomePhone->setObjectName( "homePhone" );
+    detailGrid->addWidget( homePhoneLabel, 2, 0 );
+    detailGrid->addWidget( mHomePhone, 2, 1 );
+    QLabel *otherPhoneLabel = new QLabel( tr( "Other Phone: " ) );
+    mOtherPhone = new QLineEdit();
+    mOtherPhone->setObjectName( "otherPhone" );
+    detailGrid->addWidget( otherPhoneLabel, 3, 0 );
+    detailGrid->addWidget( mOtherPhone, 3, 1 );
+    QLabel *faxLabel = new QLabel( tr( "Fax: " ) );
+    mFax = new QLineEdit();
+    mFax->setObjectName( "fax" );
+    detailGrid->addWidget( faxLabel, 4, 0 );
+    detailGrid->addWidget( mFax, 4, 1 );
+    QLabel *birthDateLabel = new QLabel( tr( "Birthdate: ") );
+    detailGrid->addWidget( birthDateLabel, 5, 0 );
+    detailGrid->addWidget( calendarWidget, 5, 1 );
+    QLabel *assistantLabel = new QLabel( tr( "Assistant: " ) );
+    mAssistant = new QLineEdit();
+    mAssistant->setObjectName( "assistant" );
+    detailGrid->addWidget( assistantLabel, 6, 0 );
+    detailGrid->addWidget( mAssistant, 6, 1 );
+    QLabel *assistantPhoneLabel = new QLabel( tr( "Assistant phone: " ) );
+    mAssistantPhone = new QLineEdit();
+    mAssistantPhone->setObjectName( "assistantPhone" );
+    detailGrid->addWidget( assistantPhoneLabel, 7, 0 );
+    detailGrid->addWidget( mAssistantPhone, 7, 1 );
+    QLabel *doNotCallLabel = new QLabel( tr( "Do not call: " ) );
+    mDoNotCall = new QCheckBox( QString() );
+    mDoNotCall->setObjectName( "doNotCall" );
+    detailGrid->addWidget( doNotCallLabel, 8, 0 );
+    detailGrid->addWidget( mDoNotCall, 8, 1 );
+
+    return mOtherDetailsBox;
 }
 
-void ContactDetails::clearFields ()
+QGroupBox* ContactDetails::buildAddressesGroupBox()
 {
-    // reset line edits
-    QList<QLineEdit*> lineEdits =
-        mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setText(QString());
+    mAddressesBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mAddressesBox->setLayout( vLayout );
+    mAddressesBox->setTitle( tr( "Addresses" ) );
 
-    // reset label and properties
-    QList<QLabel*> labels =
-        mUi.contactInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
-            lab->clear();
-            lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "modifiedUserName", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdDate" ) {
-            lab->clear();
-            lab->setProperty( "contactId", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "opportunityRoleFields", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "cAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "mAcceptStatusFields",  qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "deleted", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdBy" ) {
-            lab->clear();
-            lab->setProperty( "createdById", qVariantFromValue<QString>( QString() ) );
-        }
-    }
+    QLabel *primaryLabel = new QLabel( tr( "Primary address: " ) );
+    mPrimaryAddress = new QLineEdit();
+    mPrimaryAddress->setObjectName( "primaryAddress" );
+    detailGrid->addWidget( primaryLabel, 0, 0 );
+    detailGrid->addWidget( mPrimaryAddress, 0, 1 );
+    QLabel *cityLabel = new QLabel( tr( "City: " ) );
+    mCity = new QLineEdit();
+    mCity->setObjectName( "city" );
+    detailGrid->addWidget( cityLabel, 1, 0 );
+    detailGrid->addWidget( mCity, 1, 1 );
+    QLabel *stateLabel = new QLabel( tr( "State: " ) );
+    mState = new QLineEdit();
+    mState->setObjectName( "state" );
+    detailGrid->addWidget( stateLabel, 2, 0 );
+    detailGrid->addWidget( mState, 2, 1 );
+    QLabel *postalCodeLabel = new QLabel( tr( "Postal code: " ) );
+    mPostalCode = new QLineEdit();
+    mPostalCode->setObjectName( "postalCode" );
+    detailGrid->addWidget( postalCodeLabel, 3, 0 );
+    detailGrid->addWidget( mPostalCode, 3, 1 );
+    QLabel *countryLabel = new QLabel( tr( "Country: " ) );
+    mCountry = new QLineEdit();
+    mCountry->setObjectName( "country" );
+    detailGrid->addWidget( countryLabel, 4, 0 );
+    detailGrid->addWidget( mCountry, 4, 1 );
+    QLabel *otherAddressLabel = new QLabel( tr( "Other address: " ) );
+    mOtherAddress = new QLineEdit();
+    mOtherAddress->setObjectName( "otherAddress" );
+    detailGrid->addWidget( otherAddressLabel, 5, 0 );
+    detailGrid->addWidget( mOtherAddress, 5, 1 );
+    QLabel *otherCityLabel = new QLabel( tr( "City: " ) );
+    mOtherCity = new QLineEdit();
+    mOtherCity->setObjectName( "otherCity" );
+    detailGrid->addWidget( otherCityLabel, 6, 0 );
+    detailGrid->addWidget( mOtherCity, 6, 1 );
+    QLabel *otherStateLabel = new QLabel( tr( "State: " ) );
+    mOtherState = new QLineEdit();
+    mOtherState->setObjectName( "otherState" );
+    detailGrid->addWidget( otherStateLabel, 7, 0 );
+    detailGrid->addWidget( mOtherState, 7, 1 );
+    QLabel *otherPostalCodeLabel = new QLabel( tr( "Postal code: " ) );
+    mOtherPostalCode = new QLineEdit();
+    mOtherPostalCode->setObjectName( "otherPostalCode" );
+    detailGrid->addWidget( otherPostalCodeLabel, 8, 0 );
+    detailGrid->addWidget( mOtherPostalCode, 8, 1 );
+    QLabel *otherCountryLabel = new QLabel( tr( "Country: " ) );
+    mOtherCountry = new QLineEdit();
+    mOtherCountry->setObjectName( "otherCountry" );
+    detailGrid->addWidget( otherCountryLabel, 9, 0 );
+    detailGrid->addWidget( mOtherCountry, 9, 1 );
 
-    // reset combos
-    QList<QComboBox*> comboBoxes =
-        mUi.contactInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        cb->setCurrentIndex( 0 );
-
-    // initialize other fields
-    mUi.doNotCall->setChecked( false );
-    mUi.description->clear();
-    mUi.firstName->setFocus();
-
-
-    // we are creating a new contact
-    slotSetModifyFlag( false );
-}
-
-void ContactDetails::slotSetModifyFlag( bool value )
-{
-    mModifyFlag = value;
-}
-
-void ContactDetails::slotEnableSaving()
-{
-    if ( sender()->objectName() != "modifiedDate" ) {
-        mUi.saveButton->setEnabled( true );
-        setEditing( true );
-    }
-
-}
-
-void ContactDetails::slotSaveContact()
-{
-    if ( !mData.empty() )
-        mData.clear();
-
-    QList<QLineEdit*> lineEdits =
-        mUi.contactInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        mData[le->objectName()] = le->text();
-
-    QList<QLabel*> labels =
-        mUi.contactInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString objName = lab->objectName();
-        if ( objName == "modifiedBy" ) {
-            mData["modifiedBy"] = lab->text();
-            mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
-            mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
-        }
-        else if ( objName == "createdDate" ) {
-            mData["createdDate"] = lab->text();
-            mData["contactId"] = lab->property( "contactId" ).toString();
-            mData["opportunityRoleFields"] =  lab->property( "opportunityRoleFields" ).toString();
-            mData["cAcceptStatusFields"] = lab->property( "cAcceptStatusFields" ).toString();
-            mData["mAcceptStatusFields"] = lab->property( "mAcceptStatusFields" ).toString();
-            mData["deleted"] = lab->property( "deleted" ).toString();
-        }
-        else if ( objName == "createdBy" ) {
-            mData["createdBy"] = lab->text();
-            mData["createdById"] = lab->property( "createdById" ).toString();
-        }
-    }
-    mData["salutation"] = mUi.salutation->currentText();
-    mData["campaign"] = mUi.campaign->currentText();
-    mData["campaignId"] = campaignsData().value( mUi.campaign->currentText() );
-    mData["accountName"] = mUi.accountName->currentText();
-    mData["accountId"] = accountsData().value(  mUi.accountName->currentText() );
-    mData["reportsTo"] = mUi.reportsTo->currentText();
-    mData["reportsToId"] = reportsToData().value( mUi.reportsTo->currentText() );
-    mData["assignedTo"] = mUi.assignedTo->currentText();
-    mData["assignedToId"] = assignedToData().value( mUi.assignedTo->currentText() );
-    mData["leadSource"] = mUi.leadSource->currentText();
-    mData["description"] = mUi.description->toPlainText();
-    mData["doNotCall"] =   mUi.doNotCall->isChecked() ? "1" : "0";
-
-    if ( !mModifyFlag )
-        emit saveItem();
-    else
-        emit modifyItem();
+    return mAddressesBox;
 }
 
 void ContactDetails::slotSetBirthday()
 {
-    mUi.birthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+
+   mBirthDate->setText( mCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
     mCalendarButton->calendarDialog()->close();
+
 }
 
 void ContactDetails::slotClearDate()
 {
-    mUi.birthDate->clear();
+   mBirthDate->clear();
 }
 
-void ContactDetails::addAccountData( const QString &name,  const QString &id )
+
+QStringList ContactDetails::salutationItems() const
 {
-    AbstractDetails::addAccountData( name, id );
-
-    if ( mUi.accountName->findText( name ) < 0 )
-        mUi.accountName->addItem( name );
+    QStringList salutations;
+    salutations << QString("") << QString( "Mr." )
+            << QString( "Ms." ) << QString( "Mrs." )
+            << QString( "Dr." ) << QString( "Prof." );
+    return salutations;
 }
 
-void ContactDetails::removeAccountData( const QString &accountName )
+QStringList ContactDetails::sourceItems() const
 {
-    if ( accountName.isEmpty() )
-        return;
-    AbstractDetails::removeAccountData( accountName );
-    int index = mUi.accountName->findText( accountName );
-    if ( index > 0 ) // always leave the first blank field
-        mUi.accountName->removeItem( index );
+    QStringList sources;
+    sources << QString("") << QString( "Cold Call" )
+            << QString( "Existing Customer" ) << QString( "Self Generated" )
+            << QString( "Employee" ) << QString( "Partner" )
+            << QString( "Public Relations" ) << QString( "Direct Mail" )
+            << QString( "Conference" ) << QString( "Trade Show" )
+            << QString( "Web Site" ) << QString( "Word of mouth" )
+            << QString( "Email" ) << QString( "Campaign" )
+            << QString( "Other" );
+    return sources;
 }
-
-void ContactDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
-{
-    AbstractDetails::addCampaignData( campaignName, campaignId );
-    if ( mUi.campaign->findText( campaignName ) < 0 )
-        mUi.campaign->addItem( campaignName );
-}
-
-void ContactDetails::removeCampaignData( const QString &campaignName )
-{
-    if ( campaignName.isEmpty() )
-        return;
-    AbstractDetails::removeCampaignData( campaignName );
-    int index = mUi.campaign->findText( campaignName );
-    if ( index > 0 ) // always leave the first blank field
-        mUi.campaign->removeItem( index );
-}
-
-void ContactDetails::addReportsToData( const QString &name, const QString &id )
-{
-    AbstractDetails::addReportsToData( name, id );
-    if ( mUi.reportsTo->findText( name ) < 0 )
-        mUi.reportsTo->addItem( name );
-}
-
-void ContactDetails::addAssignedToData( const QString &name, const QString &id )
-{
-    AbstractDetails::addAssignedToData( name, id );
-    if ( mUi.assignedTo->findText( name ) < 0 )
-        mUi.assignedTo->addItem( name );
-}
-

@@ -1,265 +1,203 @@
+
 #include "campaigndetails.h"
-#include "sugarclient.h"
 
-#include <akonadi/item.h>
-
-#include <kdcrmdata/sugarcampaign.h>
-
-using namespace Akonadi;
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
 
 
 CampaignDetails::CampaignDetails( QWidget *parent )
-    : AbstractDetails( parent )
+    : QWidget( parent )
 
 {
-    mUi.setupUi( this );
-
-    // calendars
-    mStartDateCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *startLayout = new QVBoxLayout;
-    startLayout->addWidget( mStartDateCalendarButton );
-    mUi.startCalendarWidget->setLayout( startLayout );
-
-    mEndDateCalendarButton = new EditCalendarButton(this);
-    QVBoxLayout *endLayout = new QVBoxLayout;
-    endLayout->addWidget( mEndDateCalendarButton );
-    mUi.endCalendarWidget->setLayout( endLayout );
-
-    connect( mUi.clearStartDateButton, SIGNAL( clicked() ),
-             this, SLOT( slotClearDate() ) );
-
-    connect( mStartDateCalendarButton->calendarWidget(),
-             SIGNAL( clicked( const QDate& ) ),
-             this, SLOT( slotSetStartDate() ) );
-
-    connect( mUi.clearEndDateButton, SIGNAL( clicked() ),
-             this, SLOT( slotClearDate() ) );
-
-    connect( mEndDateCalendarButton->calendarWidget(),
-             SIGNAL( clicked( const QDate& ) ),
-             this, SLOT( slotSetEndDate() ) );
-
     initialize();
 }
 
 CampaignDetails::~CampaignDetails()
 {
-    delete mStartDateCalendarButton;
-    delete mEndDateCalendarButton;
+
 }
 
 void CampaignDetails::initialize()
 {
-    QList<QLineEdit*> lineEdits =  mUi.campaignInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
-    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-    QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        connect( cb, SIGNAL( currentIndexChanged( int ) ),
-                 this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.objective, SIGNAL( textChanged() ),
-             this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.content, SIGNAL( textChanged() ),
-             this,  SLOT( slotEnableSaving() ) );
-
-    connect( mUi.saveButton, SIGNAL( clicked() ),
-             this, SLOT( slotSaveCampaign() ) );
-
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    // build the group boxes
+    hLayout->addWidget( buildDetailsGroupBox() );
+    hLayout->addWidget( buildOtherDetailsGroupBox() );
+    setLayout( hLayout );
 }
 
-void CampaignDetails::reset()
+QGroupBox* CampaignDetails::buildDetailsGroupBox()
 {
-    QList<QLineEdit*> lineEdits =  mUi.campaignInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        disconnect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
+    // Calendar widgets
+    mStartDate = new QLineEdit();
+    mStartDate->setObjectName( "startDate" );
+    mClearStartDateButton = new QToolButton();
+    mClearStartDateButton->setText( tr( "Clear" ) );
 
-    QList<QComboBox*> comboBoxes =  mUi.campaignInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
-                    this, SLOT( slotEnableSaving() ) );
+    connect( mClearStartDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
 
-    disconnect( mUi.objective, SIGNAL( textChanged() ),
-                this, SLOT( slotEnableSaving() ) );
+    QWidget *startCalendarWidget = new QWidget();
+    mStartDateCalendarButton = new EditCalendarButton( this );
+    QHBoxLayout *startLayout = new QHBoxLayout;
+    startLayout->addWidget( mStartDate );
+    startLayout->addWidget( mClearStartDateButton );
+    startLayout->addWidget( mStartDateCalendarButton );
+    startCalendarWidget->setLayout( startLayout );
 
-    disconnect( mUi.content, SIGNAL( textChanged() ),
-                this,  SLOT( slotEnableSaving() ) );
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    connect( mStartDateCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetStartDate()));
+
+    mEndDate = new QLineEdit();
+    mEndDate->setObjectName( "endDate" );
+    mClearEndDateButton = new QToolButton();
+    mClearEndDateButton->setText( tr( "Clear" ) );
+
+    connect( mClearEndDateButton, SIGNAL( clicked() ),
+             this, SLOT( slotClearDate() ) );
+
+    QWidget *endCalendarWidget = new QWidget();
+    mEndDateCalendarButton = new EditCalendarButton( this );
+    QHBoxLayout *endLayout = new QHBoxLayout;
+    endLayout->addWidget( mEndDate );
+    endLayout->addWidget( mClearEndDateButton );
+    endLayout->addWidget( mEndDateCalendarButton );
+    endCalendarWidget->setLayout( endLayout );
+
+    connect( mEndDateCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
+             this, SLOT(slotSetEndDate()));
+
+    // Box
+    mDetailsBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mDetailsBox->setLayout( vLayout );
+    mDetailsBox->setTitle( tr( "Details" ) );
+
+    QLabel *nameLabel = new QLabel( tr( "Name:" ) );
+    mName = new QLineEdit();
+    mName->setObjectName( "name" );
+    detailGrid->addWidget( nameLabel, 0, 0 );
+    detailGrid->addWidget( mName, 0, 1 );
+    QLabel *statusLabel = new QLabel( tr( "Status: " ) );
+    mStatus = new QComboBox();
+    mStatus->setObjectName( "status" );
+    mStatus->addItems( statusItems() );
+    detailGrid->addWidget( statusLabel, 1, 0 );
+    detailGrid->addWidget( mStatus, 1, 1 );
+    QLabel *startDateLabel = new QLabel( tr( "Start date: " ) );
+    detailGrid->addWidget( startDateLabel, 2, 0 );
+    detailGrid->addWidget( startCalendarWidget, 2, 1 );
+    QLabel *endDateLabel = new QLabel( tr( "End date: " ) );
+    detailGrid->addWidget( endDateLabel, 3, 0 );
+    detailGrid->addWidget( endCalendarWidget, 3, 1 );
+    QLabel *typeLabel = new QLabel( tr( "Type: " ) );
+    mCampaignType = new QComboBox();
+    mCampaignType->setObjectName( "campaignType" );
+    mCampaignType->addItems( typeItems() );
+    detailGrid->addWidget( typeLabel, 4, 0 );
+    detailGrid->addWidget( mCampaignType, 4, 1 );
+    QLabel *currencyLabel = new QLabel( tr( "Currency: " ) );
+    mCurrency = new QComboBox();
+    mCurrency->setObjectName( "currency" );
+    mCurrency->addItems( currencyItems() );
+    detailGrid->addWidget( currencyLabel, 5, 0 );
+    detailGrid->addWidget( mCurrency, 5, 1 );
+
+    return mDetailsBox;
 }
 
-
-void CampaignDetails::setItem (const Item &item )
+QGroupBox* CampaignDetails::buildOtherDetailsGroupBox()
 {
-    // new item selected reset flag and saving
-    mModifyFlag = true;
-    reset();
+    mOtherDetailsBox = new QGroupBox;
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mOtherDetailsBox->setLayout( vLayout );
+    mOtherDetailsBox->setTitle( tr( "Other details" ) );
 
-    // campaign info
-    const SugarCampaign campaign = item.payload<SugarCampaign>();
-    mUi.name->setText( campaign.name() );
-    mUi.status->setCurrentIndex( mUi.status->findText( campaign.status() ) );
-    mUi.startDate->setText( campaign.startDate() );
-    mUi.endDate->setText( campaign.endDate() );
-    mUi.campaignType->setCurrentIndex( mUi.campaignType->findText( campaign.campaignType() ) );
-    // Pending (michel) - figure out
-    mUi.currency->setCurrentIndex(1);
-    mUi.currency->setProperty( "currencyId", qVariantFromValue<QString>( campaign.currencyId() ) );
-    mUi.budget->setText( campaign.budget() );
-    mUi.expectedRevenue->setText( campaign.expectedRevenue() );
-    mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( campaign.assignedUserName() ) );
-    mUi.impressions->setText( campaign.impressions() );
-    mUi.actualCost->setText( campaign.actualCost() );
-    mUi.expectedCost->setText( campaign.expectedCost() );
-    mUi.objective->setPlainText( campaign.objective() );
-    mUi.content->setText( campaign.content() );
-    mUi.modifiedBy->setText( campaign.modifiedByName() );
-    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( campaign.modifiedUserId() ) );
-    mUi.modifiedDate->setText( campaign.dateModified() );
-    mUi.createdDate->setText( campaign.dateEntered() );
-    mUi.createdDate->setProperty( "id", qVariantFromValue<QString>( campaign.id( ) ) );
-    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( campaign.deleted( ) ) );
-    mUi.createdBy->setText( campaign.createdByName() );
-    mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( campaign.createdBy( ) ) );
-    initialize();
-}
+    QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
+    mAssignedUserName = new QComboBox();
+    mAssignedUserName->setObjectName( "assignedUserName" );
+    mAssignedUserName->addItem( 0, QString( "" ) );
+    detailGrid->addWidget( assignedToLabel, 0, 0 );
+    detailGrid->addWidget( mAssignedUserName, 0, 1 );
+    QLabel *impressionsLabel = new QLabel( tr( "Impressions: " ) );
+    mImpressions = new QLineEdit();
+    mImpressions->setObjectName( "impressions" );
+    detailGrid->addWidget( impressionsLabel, 1, 0 );
+    detailGrid->addWidget( mImpressions, 1, 1 );
+    QLabel *actualCostLabel = new QLabel( tr( "Actual cost: " ) );
+    mActualCost = new QLineEdit();
+    mActualCost->setObjectName( "actualCost" );
+    detailGrid->addWidget( actualCostLabel, 2, 0 );
+    detailGrid->addWidget( mActualCost, 2, 1 );
+    QLabel *expectedCostLabel = new QLabel( tr( "Expected cost: " ) );
+    mExpectedCost = new QLineEdit();
+    mExpectedCost->setObjectName( "expectedCost" );
+    detailGrid->addWidget( expectedCostLabel, 3, 0 );
+    detailGrid->addWidget( mExpectedCost, 3, 1 );
+    QLabel *objectiveLabel = new QLabel( tr( "Objective: " ) );
+    mObjective = new QTextEdit();
+    mObjective->setObjectName( "objective" );
+    detailGrid->addWidget( objectiveLabel, 4, 0 );
+    detailGrid->addWidget( mObjective, 4, 1 );
 
-void CampaignDetails::clearFields ()
-{
-    // reset line edits
-    QList<QLineEdit*> lineEdits =
-        mUi.campaignInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setText(QString());
-
-    // reset label and properties
-    QList<QLabel*> labels =
-        mUi.campaignInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
-            lab->clear();
-            lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdDate" ) {
-            lab->clear();
-            lab->setProperty( "id", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "deleted", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdBy" ) {
-            lab->clear();
-            lab->setProperty( "createdBy", qVariantFromValue<QString>( QString() ) );
-        }
-    }
-
-    // reset combos
-    QList<QComboBox*> comboBoxes =
-        mUi.campaignInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        cb->setCurrentIndex( 0 );
-
-    // initialize other fields
-    mUi.objective->clear();
-    mUi.content->clear();
-    mUi.name->setFocus();
-
-
-    // we are creating a new campaign
-    slotSetModifyFlag( false );
-}
-
-void CampaignDetails::slotSetModifyFlag( bool value )
-{
-    mModifyFlag = value;
-}
-
-void CampaignDetails::slotEnableSaving()
-{
-    if ( sender()->objectName() != "modifiedDate" ) {
-        mUi.saveButton->setEnabled( true );
-        setEditing( true );
-    }
-
-}
-
-void CampaignDetails::slotSaveCampaign()
-{
-    if ( !mData.empty() )
-        mData.clear();
-
-    mData["remoteRevision"] = mUi.modifiedDate->text();
-
-    QList<QLineEdit*> lineEdits =
-        mUi.campaignInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        mData[le->objectName()] = le->text();
-
-    QList<QLabel*> labels =
-        mUi.campaignInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString objName = lab->objectName();
-        if ( objName == "modifiedBy" ) {
-            mData["modifiedBy"] = lab->text();
-            mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
-            mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
-        }
-        else if ( objName == "createdDate" ) {
-            mData["createdDate"] = lab->text();
-            mData["id"] = lab->property( "id" ).toString();
-            mData["deleted"] = lab->property( "deleted" ).toString();
-        }
-        else if ( objName == "createdBy" ) {
-            mData["createdByName"] = lab->text();
-            mData["createdBy"] = lab->property( "createdBy" ).toString();
-        }
-    }
-    mData["status"] = mUi.status->currentText();
-    mData["campaignType"] = mUi.campaignType->currentText();
-    mData["currencyId"] = mUi.currency->property( "currencyId" ).toString();
-    mData["objective"] = mUi.objective->toPlainText();
-    mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
-    mData["content"] = mUi.content->toPlainText();
-
-    if ( !mModifyFlag )
-        emit saveItem();
-    else
-        emit modifyItem();
-}
-
-void CampaignDetails::addAssignedToData( const QString &name, const QString &id )
-{
-    AbstractDetails::addAssignedToData( name, id );
-    if ( mUi.assignedUserName->findText( name ) < 0 )
-        mUi.assignedUserName->addItem( name );
+    return mOtherDetailsBox;
 }
 
 void CampaignDetails::slotSetStartDate()
 {
-    mUi.startDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mStartDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mStartDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    mStartDateCalendarButton->calendarDialog()->close();
+    mStartDateCalendarButton->calendarWidget()->close();
 }
 
 void CampaignDetails::slotSetEndDate()
 {
-    mUi.endDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mEndDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mEndDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    mEndDateCalendarButton->calendarDialog()->close();
+    mEndDateCalendarButton->calendarWidget()->close();
 }
 
 void CampaignDetails::slotClearDate()
 {
     if ( sender()->objectName() == "clearStartDateButton" )
-        mUi.startDate->clear();
+        mStartDate->clear();
     else
-        mUi.endDate->clear();
+        mEndDate->clear();
 }
 
+QStringList CampaignDetails::statusItems() const
+{
+    QStringList status;
+    status << QString( "" ) << QString( "Planning" )
+           << QString( "Active" ) << QString( "Inactive" )
+           << QString( "Complete" ) << QString( "In Queue" )
+           << QString( "Sending" );
+    return status;
+}
+
+QStringList CampaignDetails::typeItems() const
+{
+    QStringList types;
+    types << QString( "" ) << QString( "Telesales" )
+          << QString( "Mail" ) << QString( "Email" )
+          << QString( "Print" ) << QString( "Web" )
+          << QString( "Radio" ) << QString( "Television" )
+          << QString( "Newsletter" );
+    return types;
+}
+
+QStringList CampaignDetails::currencyItems() const
+{
+    // we do not have the choice here
+    // Should be set remotely by admin
+    QStringList currencies;
+    currencies << QString( "US Dollars : $" );
+    return currencies;
+}

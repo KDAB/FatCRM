@@ -8,10 +8,9 @@ using namespace Akonadi;
 
 
 AccountDetails::AccountDetails( QWidget *parent )
-    : AbstractDetails( parent )
+    : QWidget( parent )
 
 {
-    mUi.setupUi( this );
     initialize();
 }
 
@@ -21,244 +20,227 @@ AccountDetails::~AccountDetails()
 
 void AccountDetails::initialize()
 {
-    QList<QLineEdit*> lineEdits =  mUi.accountInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        connect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
-    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-
-    QList<QComboBox*> comboBoxes =  mUi.accountInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        connect( cb, SIGNAL( currentIndexChanged( int ) ),
-                 this, SLOT( slotEnableSaving() ) );
-
-    connect( mUi.description, SIGNAL( textChanged() ),
-             this,  SLOT( slotEnableSaving() ) );
-
-    connect( mUi.saveButton, SIGNAL( clicked() ),
-             this, SLOT( slotSaveAccount() ) );
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    setObjectName( "accountDetails" );
+    QHBoxLayout *hLayout = new QHBoxLayout;
+    // build the group boxes
+    hLayout->addWidget( buildDetailsGroupBox() );
+    hLayout->addWidget( buildOtherDetailsGroupBox() );
+    hLayout->addWidget( buildAddressesGroupBox() );
+    setLayout( hLayout );
 }
 
-void AccountDetails::reset()
+QGroupBox* AccountDetails::buildDetailsGroupBox()
 {
-    QList<QLineEdit*> lineEdits =  mUi.accountInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        disconnect( le, SIGNAL( textChanged( const QString& ) ),
-                 this, SLOT( slotEnableSaving() ) );
+    mDetailsBox = new QGroupBox;
 
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mDetailsBox->setLayout( vLayout );
+    mDetailsBox->setTitle( tr( "Details" ) );
+    QLabel *nameLabel = new QLabel( tr( "Name:" ) );
+    mName = new QLineEdit();
+    mName->setObjectName( "name" );
+    detailGrid->addWidget( nameLabel, 0, 0 );
+    detailGrid->addWidget( mName, 0, 1 );
+    QLabel *websiteLabel = new QLabel( tr( "Website: " ) );
+    mWebsite = new QLineEdit();
+    mWebsite->setObjectName( "website" );
+    detailGrid->addWidget( websiteLabel, 1, 0 );
+    detailGrid->addWidget( mWebsite, 1, 1 );
+    QLabel *tyckerLabel = new QLabel( tr( "Ticker symbol: " ) );
+    mTyckerSymbol = new QLineEdit();
+    mTyckerSymbol->setObjectName( "tyckerSymbol" );
+    detailGrid->addWidget( tyckerLabel, 2, 0 );
+    detailGrid->addWidget( mTyckerSymbol, 2, 1 );
+    QLabel *memberOfLabel = new QLabel( tr( "Member of: " ) );
+    mParentName = new QComboBox();
+    mParentName->setObjectName( "parentName" );
+    mParentName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( memberOfLabel, 3, 0 );
+    detailGrid->addWidget( mParentName, 3, 1 );
+    QLabel *ownerShipLabel = new QLabel( tr( "Ownership: " ) );
+    mOwnership = new QLineEdit();
+    mOwnership->setObjectName( "ownership" );
+    detailGrid->addWidget( ownerShipLabel, 4, 0 );
+    detailGrid->addWidget( mOwnership, 4, 1 );
+    QLabel *industryLabel = new QLabel( tr( "Industry: " ) );
+    mIndustry = new QComboBox();
+    mIndustry->setObjectName( "industry" );
+    mIndustry->addItems( industryItems() );
+    detailGrid->addWidget( industryLabel, 5, 0 );
+    detailGrid->addWidget( mIndustry, 5, 1 );
+    QLabel *typeLabel = new QLabel( tr( "Type: " ) );
+    mAccountType = new QComboBox();
+    mAccountType->setObjectName( "accountType" );
+    mAccountType->addItems( typeItems() );
+    detailGrid->addWidget( typeLabel, 6, 0 );
+    detailGrid->addWidget( mAccountType, 6, 1 );
+    QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
+    mCampaignName = new QComboBox();
+    mCampaignName->setObjectName( "campaignName" );
+    mCampaignName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( campaignLabel, 7, 0 );
+    detailGrid->addWidget( mCampaignName, 7, 1 );
+    QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
+    mAssignedUserName = new QComboBox();
+    mAssignedUserName->setObjectName( "assignedUserName" );
+    mAssignedUserName->insertItem( 0, QString( "" ) );
+    detailGrid->addWidget( assignedToLabel, 8, 0 );
+    detailGrid->addWidget( mAssignedUserName, 8, 1 );
 
-    QList<QComboBox*> comboBoxes =  mUi.accountInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        disconnect( cb, SIGNAL( currentIndexChanged( int ) ),
-                    this, SLOT( slotEnableSaving() ) );
-
-    disconnect( mUi.description, SIGNAL( textChanged() ),
-                this,  SLOT( slotEnableSaving() ) );
-    mUi.saveButton->setEnabled( false );
-    setEditing( false );
+    return mDetailsBox;
 }
 
-void AccountDetails::setItem (const Item &item )
+QGroupBox* AccountDetails::buildOtherDetailsGroupBox()
 {
-    // new item selected reset flag and saving
-    mModifyFlag = true;
-    reset();
+    mOtherDetailsBox = new QGroupBox;
 
-    // account info
-    const SugarAccount account = item.payload<SugarAccount>();
-    mUi.name->setText( account.name() );
-    mUi.website->setText( account.website() );
-    mUi.tyckerSymbol->setText( account.tyckerSymbol() );
-    mUi.parentName->setCurrentIndex( mUi.parentName->findText( account.parentName() ) );
-    mUi.ownership->setText( account.ownership() );
-    mUi.industry->setCurrentIndex(mUi.industry->findText( account.industry() ) );
-    mUi.accountType->setCurrentIndex(mUi.accountType->findText( account.accountType() ) );
-    mUi.campaignName->setCurrentIndex(mUi.campaignName->findText( account.campaignName() ) );
-    mUi.assignedUserName->setCurrentIndex(mUi.assignedUserName->findText( account.assignedUserName() ) );
-    mUi.phoneOffice->setText( account.phoneOffice() );
-    mUi.phoneFax->setText( account.phoneFax() );
-    mUi.phoneAlternate->setText( account.phoneAlternate() );
-    mUi.employees->setText( account.employees() );
-    mUi.rating->setText( account.rating() );
-    mUi.sicCode->setText( account.sicCode() );
-    mUi.annualRevenue->setText( account.annualRevenue() );
-    mUi.email1->setText( account.email1() );
-    mUi.billingAddressStreet->setText( account.billingAddressStreet() );
-    mUi.billingAddressCity->setText( account.billingAddressCity() );
-    mUi.billingAddressState->setText( account.billingAddressState() );
-    mUi.billingAddressPostalcode->setText( account.billingAddressPostalcode() );
-    mUi.billingAddressCountry->setText( account.billingAddressCountry() );
-    mUi.shippingAddressStreet->setText( account.shippingAddressStreet() );
-    mUi.shippingAddressCity->setText( account.shippingAddressCity() );
-    mUi.shippingAddressState->setText( account.shippingAddressState() );
-    mUi.shippingAddressPostalcode->setText( account.shippingAddressPostalcode() );
-    mUi.shippingAddressCountry->setText( account.shippingAddressCountry() );
-    mUi.description->setPlainText( account.description() );
-    mUi.modifiedBy->setText( account.modifiedByName() );
-    mUi.modifiedBy->setProperty( "modifiedUserId", qVariantFromValue<QString>( account.modifiedUserId() ) );
-    mUi.modifiedDate->setText( account.dateModified() );
-    mUi.createdDate->setText( account.dateEntered() );
-    mUi.createdDate->setProperty( "id", qVariantFromValue<QString>( account.id( ) ) );
-    mUi.createdDate->setProperty( "deleted",  qVariantFromValue<QString>( account.deleted( ) ) );
-    mUi.createdBy->setText( account.createdByName() );
-    mUi.createdBy->setProperty( "createdBy", qVariantFromValue<QString>( account.createdBy( ) ) );
-    initialize();
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mOtherDetailsBox->setLayout( vLayout );
+    mOtherDetailsBox->setTitle( tr( "Other details" ) );
+
+    QLabel *phoneOfficeLabel = new QLabel( tr( "Phone office: " ) );
+    mPhoneOffice = new QLineEdit();
+    mPhoneOffice->setObjectName( "phoneOffice" );
+    detailGrid->addWidget( phoneOfficeLabel, 0, 0 );
+    detailGrid->addWidget( mPhoneOffice, 0, 1 );
+    QLabel *phoneFaxLabel = new QLabel( tr( "Fax: " ) );
+    mPhoneFax = new QLineEdit();
+    mPhoneFax->setObjectName( "phoneFax" );
+    detailGrid->addWidget( phoneFaxLabel, 1, 0 );
+    detailGrid->addWidget( mPhoneFax, 1, 1 );
+    QLabel *phoneAltLabel = new QLabel( tr( "Other phone: " ) );
+    mPhoneAlternate = new QLineEdit();
+    mPhoneAlternate->setObjectName( "phoneAlternate" );
+    detailGrid->addWidget( phoneAltLabel, 2, 0 );
+    detailGrid->addWidget( mPhoneAlternate, 2, 1 );
+    QLabel *employeesLabel = new QLabel( tr( "Employees: " ) );
+    mEmployees = new QLineEdit();
+    mEmployees->setObjectName( "employees" );
+    detailGrid->addWidget( employeesLabel, 3, 0 );
+    detailGrid->addWidget( mEmployees, 3, 1 );
+    QLabel *ratingLabel = new QLabel( tr( "Rating: " ) );
+    mRating = new QLineEdit();
+    mRating->setObjectName( "rating" );
+    detailGrid->addWidget( ratingLabel, 4, 0 );
+    detailGrid->addWidget( mRating, 4, 1 );
+    QLabel *sicCodeLabel = new QLabel( tr( "SIC code: ") );
+    mSicCode = new QLineEdit();
+    mSicCode->setObjectName( "sicCode" );
+    detailGrid->addWidget( sicCodeLabel, 5, 0 );
+    detailGrid->addWidget( mSicCode, 5, 1 );
+    QLabel *annualRevenueLabel = new QLabel( tr( "Annual revenue: " ) );
+    mAnnualRevenue = new QLineEdit();
+    mAnnualRevenue->setObjectName( "annualRevenue" );
+    detailGrid->addWidget( annualRevenueLabel, 6, 0 );
+    detailGrid->addWidget( mAnnualRevenue, 6, 1 );
+    QLabel *emailLabel = new QLabel( tr( "Email address: " ) );
+    mEmail1 = new QLineEdit();
+    mEmail1->setObjectName( "email1" );
+    detailGrid->addWidget( emailLabel, 7, 0 );
+    detailGrid->addWidget( mEmail1, 7, 1 );
+
+    return mOtherDetailsBox;
 }
 
-void AccountDetails::clearFields ()
+QGroupBox* AccountDetails::buildAddressesGroupBox()
 {
-    // reset line edits
-    QList<QLineEdit*> lineEdits =
-        mUi.accountInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setText(QString());
+    mAddressesBox = new QGroupBox;
 
-    // reset label and properties
-    QList<QLabel*> labels =
-        mUi.accountInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString value = lab->objectName();
-        if ( value == "modifiedBy" ) {
-            lab->clear();
-            lab->setProperty( "modifiedUserId", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdDate" ) {
-            lab->clear();
-            lab->setProperty( "id", qVariantFromValue<QString>( QString() ) );
-            lab->setProperty( "deleted", qVariantFromValue<QString>( QString() ) );
-        }
-        else if ( value == "createdBy" ) {
-            lab->clear();
-            lab->setProperty( "createdBy", qVariantFromValue<QString>( QString() ) );
-        }
-    }
+    QVBoxLayout *vLayout = new QVBoxLayout;
+    QGridLayout *detailGrid = new QGridLayout;
+    vLayout->addLayout( detailGrid );
+    vLayout->addStretch();
+    mAddressesBox->setLayout( vLayout );
+    mAddressesBox->setTitle( tr( "Addresses" ) );
 
-    // reset combos
-    QList<QComboBox*> comboBoxes =
-        mUi.accountInformationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        cb->setCurrentIndex( 0 );
+    QLabel *billingStreetLabel = new QLabel( tr( "Billing address: " ) );
+    mBillingAddressStreet = new QLineEdit();
+    mBillingAddressStreet->setObjectName( "billingAddressStreet" );
+    detailGrid->addWidget( billingStreetLabel, 0, 0 );
+    detailGrid->addWidget( mBillingAddressStreet, 0, 1 );
+    QLabel *billingCityLabel = new QLabel( tr( "City: " ) );
+    mBillingAddressCity = new QLineEdit();
+    mBillingAddressCity->setObjectName( "billingAddressCity" );
+    detailGrid->addWidget( billingCityLabel, 1, 0 );
+    detailGrid->addWidget( mBillingAddressCity, 1, 1 );
+    QLabel *billingStateLabel = new QLabel( tr( "State: " ) );
+    mBillingAddressState = new QLineEdit();
+    mBillingAddressState->setObjectName( "billingAddressState" );
+    detailGrid->addWidget( billingStateLabel, 2, 0 );
+    detailGrid->addWidget( mBillingAddressState, 2, 1 );
+    QLabel *billingPostalCodeLabel = new QLabel( tr( "Postal code: " ) );
+    mBillingAddressPostalCode = new QLineEdit();
+    mBillingAddressPostalCode->setObjectName( "billingAddressPostalcode" );
+    detailGrid->addWidget( billingPostalCodeLabel, 3, 0 );
+    detailGrid->addWidget( mBillingAddressPostalCode, 3, 1 );
+    QLabel *billingCountryLabel = new QLabel( tr( "Country: " ) );
+    mBillingAddressCountry = new QLineEdit();
+    mBillingAddressCountry->setObjectName( "billingAddressCountry" );
+    detailGrid->addWidget( billingCountryLabel, 4, 0 );
+    detailGrid->addWidget( mBillingAddressCountry, 4, 1 );
+    QLabel *shippingStreetLabel = new QLabel( tr( "Shipping address: " ) );
+    mShippingAddressStreet = new QLineEdit();
+    mShippingAddressStreet->setObjectName( "shippingAddressStreet" );
+    detailGrid->addWidget( shippingStreetLabel, 5, 0 );
+    detailGrid->addWidget( mShippingAddressStreet, 5, 1 );
+    QLabel *shippingCityLabel = new QLabel( tr( "City: " ) );
+    mShippingAddressCity = new QLineEdit();
+    mShippingAddressCity->setObjectName( "shippingAddressCity" );
+    detailGrid->addWidget( shippingCityLabel, 6, 0 );
+    detailGrid->addWidget( mShippingAddressCity, 6, 1 );
+    QLabel *shippingStateLabel = new QLabel( tr( "State: " ) );
+    mShippingAddressState = new QLineEdit();
+    mShippingAddressState->setObjectName( "shippingAddressState" );
+    detailGrid->addWidget( shippingStateLabel, 7, 0 );
+    detailGrid->addWidget( mShippingAddressState, 7, 1 );
+    QLabel *shippingPostalCodeLabel = new QLabel( tr( "Postal code: " ) );
+    mShippingAddressPostalCode = new QLineEdit();
+    mShippingAddressPostalCode->setObjectName( "shippingAddressPostalcode" );
+    detailGrid->addWidget( shippingPostalCodeLabel, 8, 0 );
+    detailGrid->addWidget( mShippingAddressPostalCode, 8, 1 );
+    QLabel *shippingCountryLabel = new QLabel( tr( "Country: " ) );
+    mShippingAddressCountry = new QLineEdit();
+    mShippingAddressCountry->setObjectName( "shippingAddressCountry" );
+    detailGrid->addWidget( shippingCountryLabel, 9, 0 );
+    detailGrid->addWidget( mShippingAddressCountry, 9, 1 );
 
-    // initialize other fields
-    mUi.description->clear();
-    mUi.name->setFocus();
-
-
-    // we are creating a new account
-    slotSetModifyFlag( false );
+    return mAddressesBox;
 }
 
-
-void AccountDetails::slotSetModifyFlag( bool value )
+QStringList AccountDetails::industryItems() const
 {
-    mModifyFlag = value;
+    QStringList industries;
+    industries << QString("") << QString( "Apparel" ) << QString( "Banking" )
+               << QString( "Biotechnology" ) << QString("Chemicals" )
+               << QString("Communications" ) << QString("Construction" )
+               << QString("Consulting" ) << QString("Education" )
+               << QString("Electronics" )<< QString("Energy" )
+               << QString("Engineering" ) << QString("Entertainment" )
+               << QString("Environmental" ) << QString("Finance" )
+               << QString("Government" ) << QString("Healthcare" )
+               << QString("Hospitality" ) << QString("Insurance" )
+               << QString("Machinery" ) << QString("Manufacturing" )
+               << QString("Media" ) << QString("Not For Profit" )
+               << QString("Recreation" ) << QString("Retail" )
+               << QString("Shipping" ) << QString("Technology" )
+               << QString("Telecommunication" ) << QString("Transportation" )
+               << QString("Utilities" ) << QString("Other" );
+    return industries;
 }
 
-void AccountDetails::slotEnableSaving()
+QStringList AccountDetails::typeItems() const
 {
-    // check for modify flag
-    if ( sender()->objectName() != "modifiedDate" ) {
-        mUi.saveButton->setEnabled( true );
-        setEditing( true );
-    }
-}
-
-void AccountDetails::slotSaveAccount()
-{
-    if ( !mData.empty() )
-        mData.clear();
-
-    mData["remoteRevision"] = mUi.modifiedDate->text();
-
-    QList<QLineEdit*> lineEdits =
-        mUi.accountInformationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        mData[le->objectName()] = le->text();
-
-    QList<QLabel*> labels =
-        mUi.accountInformationGB->findChildren<QLabel*>();
-    Q_FOREACH( QLabel* lab, labels ) {
-        QString objName = lab->objectName();
-        if ( objName == "modifiedBy" ) {
-            mData["modifiedBy"] = lab->text();
-            mData["modifiedUserId"] = lab->property( "modifiedUserId" ).toString();
-            mData["modifiedUserName"] = lab->property( "modifiedUserName" ).toString();
-        }
-        else if ( objName == "createdDate" ) {
-            mData["createdDate"] = lab->text();
-            mData["id"] = lab->property( "id" ).toString();
-            mData["deleted"] = lab->property( "deleted" ).toString();
-        }
-        else if ( objName == "createdBy" ) {
-            mData["createdByName"] = lab->text();
-            mData["createdBy"] = lab->property( "createdBy" ).toString();
-        }
-    }
-    mData["industry"] = mUi.industry->currentText();
-    mData["accountType"] = mUi.accountType->currentText();
-    mData["parentName"] = mUi.parentName->currentText();
-    mData["parentId"] =  accountsData().value( mUi.parentName->currentText() );
-    mData["campaignName"] = mUi.campaignName->currentText();
-    mData["campaignId"] = campaignsData().value( mUi.campaignName->currentText() );
-    mData["assignedUserName"] = mUi.assignedUserName->currentText();
-    mData["assignedUserId"] = assignedToData().value( mUi.assignedUserName->currentText() );
-    mData["description"] = mUi.description->toPlainText();
-
-    connect( mUi.modifiedDate, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-
-    if ( !mModifyFlag )
-        emit saveItem();
-    else
-        emit modifyItem();
-
-    int index = mUi.parentName->findText( mData["parentName"] );
-    if ( index >= 0 )
-        mUi.parentName->setCurrentIndex( index );
-
-}
-
-void AccountDetails::addAccountData( const QString &name,  const QString &id )
-{
-    AbstractDetails::addAccountData( name, id );
-    if ( mUi.parentName->findText( name ) < 0 )
-        mUi.parentName->addItem( name );
-}
-
-void AccountDetails::removeAccountData( const QString &accountName )
-{
-    if ( accountName.isEmpty() )
-        return;
-    AbstractDetails::removeAccountData( accountName );
-    int index = mUi.parentName->findText( accountName );
-    if ( index > 0 )// always leave the first blank field
-        mUi.parentName->removeItem( index );
-}
-
-void AccountDetails::addCampaignData( const QString &campaignName,  const QString &campaignId )
-{
-    AbstractDetails::addCampaignData( campaignName,  campaignId );
-
-    if ( mUi.campaignName->findText( campaignName ) < 0 )
-        mUi.campaignName->addItem( campaignName );
-}
-
-void AccountDetails::removeCampaignData( const QString &campaignName )
-{
-    if ( campaignName.isEmpty() )
-        return;
-    AbstractDetails::removeCampaignData( campaignName );
-    int index = mUi.campaignName->findText( campaignName );
-    if ( index > 0 )// always leave the first blank field
-        mUi.campaignName->removeItem( index );
-}
-
-void AccountDetails::addAssignedToData( const QString &name, const QString &id )
-{
-    AbstractDetails::addAssignedToData( name, id );
-    if ( mUi.assignedUserName->findText( name ) < 0 )
-        mUi.assignedUserName->addItem( name );
+    QStringList types;
+    types << QString("") << QString( "Analyst" ) << QString("Competitor" )
+          << QString("Customer" ) << QString("Integrator" )
+          << QString("Investor" ) << QString("Partner" )
+          << QString("Press" ) << QString("Prospect" )
+          << QString("Reseller" ) << QString("Other" );
+    return types;
 }

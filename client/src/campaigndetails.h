@@ -1,17 +1,18 @@
 #ifndef CAMPAIGNDETAILS_H
 #define CAMPAIGNDETAILS_H
 
-#include "ui_campaigndetails.h"
-#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
-#include <akonadi/item.h>
+#include <kdcrmdata/sugarcampaign.h>
 
 #include <QtGui/QWidget>
+#include <QGroupBox>
 #include <QToolButton>
+#include <QLineEdit>
+#include <QTextEdit>
+#include <QComboBox>
 
-
-class CampaignDetails : public AbstractDetails
+class CampaignDetails : public QWidget
 {
     Q_OBJECT
 public:
@@ -19,29 +20,41 @@ public:
 
     ~CampaignDetails();
 
-friend class Page;
-protected:
-    /*reimp*/ void setItem( const Akonadi::Item &item );
-    /*reimp*/ void clearFields();
-    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
-    /*reimp*/ void reset();
-    /*reimp*/ void initialize();
-
-    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
-
-
 private:
+    void initialize();
+    QGroupBox *buildDetailsGroupBox();
+    QGroupBox *buildOtherDetailsGroupBox();
+    QStringList statusItems() const;
+    QStringList typeItems() const;
+    QStringList currencyItems() const;
+
+    // Details
+    QGroupBox *mDetailsBox;
+    QLineEdit *mName;
+    QComboBox *mStatus;
+    QLineEdit *mStartDate;
+    QToolButton *mClearStartDateButton;
+    QLineEdit *mEndDate;
+    QToolButton *mClearEndDateButton;
+    QComboBox *mCampaignType;
+    QComboBox *mCurrency;
+    QLineEdit *mBudget;
+    QLineEdit *mExpectedRevenue;
+
+    //Other Details
+    QGroupBox *mOtherDetailsBox;
+    QComboBox *mAssignedUserName;
+    QLineEdit *mImpressions;
+    QLineEdit *mActualCost;
+    QLineEdit *mExpectedCost;
+    QTextEdit *mObjective;
+
     EditCalendarButton *mStartDateCalendarButton;
     EditCalendarButton *mEndDateCalendarButton;
-    QMap<QString, QString> mData; // this
-    bool mModifyFlag;
 
-    Ui_CampaignDetails mUi;
+    QMap<QString, QString> mData;
 
 private Q_SLOTS:
-    void slotEnableSaving();
-    void slotSaveCampaign();
-    void slotSetModifyFlag( bool );
     void slotSetStartDate();
     void slotSetEndDate();
     void slotClearDate();

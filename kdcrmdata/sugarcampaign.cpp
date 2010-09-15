@@ -531,7 +531,7 @@ QMap<QString, QString> SugarCampaign::data()
     data["dateEntered"] = d->mDateEntered;
     data["dateModified"] = d->mDateModified;
     data["modifiedUserId"] = d->mModifiedUserId;
-    data["modifiedUserId"] = d->mModifiedByName;
+    data["modifiedUserName"] = d->mModifiedByName;
     data["createdBy"] = d->mCreatedBy;
     data["createdByName"] = d->mCreatedByName;
     data["deleted"] = d->mDeleted;

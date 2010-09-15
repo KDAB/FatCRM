@@ -1,16 +1,13 @@
 #ifndef CONTACTDETAILS_H
 #define CONTACTDETAILS_H
 
-#include "ui_contactdetails.h"
-#include "abstractdetails.h"
 #include "editcalendarbutton.h"
 
-#include <akonadi/item.h>
+#include <kabc/addressee.h>
 
-#include <QtGui/QWidget>
+#include <QtGui>
 
-
-class ContactDetails : public AbstractDetails
+class ContactDetails : public QWidget
 {
     Q_OBJECT
 public:
@@ -18,32 +15,60 @@ public:
 
     ~ContactDetails();
 
-    friend class Page;
-protected:
-    /*reimp*/ void setItem( const Akonadi::Item &item );
-    /*reimp*/ void clearFields();
-    /*reimp*/ void addAccountData( const QString &name, const QString &id );
-    /*reimp*/ void removeAccountData( const QString &accountName );
-    /*reimp*/ void addCampaignData( const QString &name,  const QString &id );
-    /*reimp*/ void removeCampaignData( const QString &campaignName );
-    /*reimp*/ void addReportsToData( const QString &name, const QString &id );
-    /*reimp*/ void addAssignedToData( const QString &name, const QString &id );
-    /*reimp*/ void reset();
-    /*reimp*/ void initialize();
-
-    /*reimp*/ inline QMap<QString, QString> data() {return mData;}
-
 private:
+    void initialize();
+    QGroupBox *buildDetailsGroupBox();
+    QGroupBox *buildOtherDetailsGroupBox();
+    QGroupBox *buildAddressesGroupBox();
+    QStringList salutationItems() const;
+    QStringList sourceItems() const;
+
+     // Details
+    QGroupBox *mDetailsBox;
+    QComboBox *mSalutation;
+    QLineEdit *mFirstName;
+    QLineEdit *mLastName;
+    QLineEdit *mTitle;
+    QLineEdit *mDepartment;
+    QComboBox *mAccountName;
+    QComboBox *mLeadSource;
+    QComboBox *mCampaign;
+    QComboBox *mAssignedTo;
+    QComboBox *mReportsTo;
+    QLineEdit *mPrimaryEmail;
+
+    //Other Details
+    QGroupBox *mOtherDetailsBox;
+    QLineEdit *mOfficePhone;
+    QLineEdit *mMobilePhone;
+    QLineEdit *mHomePhone;
+    QLineEdit *mOtherPhone;
+    QLineEdit *mFax;
+    QToolButton *mClearDateButton;
+    QLineEdit *mBirthDate;
+    QLineEdit *mAssistant;
+    QLineEdit *mAssistantPhone;
+    QCheckBox *mDoNotCall;
+
+    //Addresses
+    QGroupBox *mAddressesBox;
+    QLineEdit *mPrimaryAddress;
+    QLineEdit *mCity;
+    QLineEdit *mState;
+    QLineEdit *mPostalCode;
+    QLineEdit *mCountry;
+    QLineEdit *mOtherAddress;
+    QLineEdit *mOtherCity;
+    QLineEdit *mOtherState;
+    QLineEdit *mOtherPostalCode;
+    QLineEdit *mOtherCountry;
+
     QMap<QString, QString> mData;
     EditCalendarButton *mCalendarButton;
-    bool mModifyFlag;
-    Ui_ContactDetails mUi;
+
 
 private Q_SLOTS:
-    void slotEnableSaving();
-    void slotSaveContact();
     void slotSetBirthday();
-    void slotSetModifyFlag( bool );
     void slotClearDate();
 
 };
