@@ -114,11 +114,16 @@ bool ModuleHandler::needBackendChange( const Akonadi::Item &item, const QSet<QBy
 {
     Q_UNUSED( item );
 
-    return modifiedParts.contains( Akonadi::Item::FullPayload );
+    return modifiedParts.contains( partIdFromPayloadPart( Akonadi::Item::FullPayload ) );
 }
 
 QString ModuleHandler::formatDate( const QString &dateString )
 {
     const QDateTime dateTime = QDateTime::fromString( dateString, Qt::ISODate );
     return KGlobal::locale()->formatDateTime( dateTime, KLocale::LongDate, true );
+}
+
+QByteArray ModuleHandler::partIdFromPayloadPart( const char *part )
+{
+    return QByteArray( "PLD:" ) + part;
 }

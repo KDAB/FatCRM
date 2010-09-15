@@ -778,8 +778,8 @@ bool ContactsHandler::needBackendChange( const Akonadi::Item &item, const QSet<Q
         return true;
     }
 
-    return modifiedParts.contains( Akonadi::ContactPart::Lookup ) ||
-           modifiedParts.contains( Akonadi::ContactPart::Standard );
+    return modifiedParts.contains( partIdFromPayloadPart( Akonadi::ContactPart::Lookup ) ) ||
+           modifiedParts.contains( partIdFromPayloadPart( Akonadi::ContactPart::Standard ) );
 }
 
 void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,

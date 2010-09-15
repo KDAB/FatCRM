@@ -73,6 +73,7 @@ protected:
 
 protected:
     static QString formatDate( const QString &dateString );
+    static QByteArray partIdFromPayloadPart( const char *part );
 };
 
 #endif
