@@ -219,6 +219,7 @@ void Page::initialize()
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
+    mChangeRecorder->setMimeTypeMonitored( mMimeType );
 
     connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
 }
