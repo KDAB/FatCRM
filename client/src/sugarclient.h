@@ -66,11 +66,7 @@ private:
     QDockWidget *mCampaignDetailsDock;
     DetailsWidget *mCampaignDetailsWidget;
     QAction *mViewCampaignAction;
-    AccountsPage *mAccountsPage;
-    OpportunitiesPage *mOpportunitiesPage;
-    LeadsPage *mLeadsPage;
-    ContactsPage *mContactsPage;
-    CampaignsPage *mCampaignsPage;
+    QList<Page*> mPages;
 
     QComboBox * mResourceSelector; // Login;
 

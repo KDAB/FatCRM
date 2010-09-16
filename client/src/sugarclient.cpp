@@ -45,16 +45,10 @@ SugarClient::~SugarClient()
 
 void SugarClient::slotDelayedInit()
 {
-    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mContactsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mAccountsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mOpportunitiesPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mLeadsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
-    connect( this, SIGNAL( resourceSelected( QByteArray ) ),
-             mCampaignsPage, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+    Q_FOREACH( const Page *page, mPages ) {
+        connect( this, SIGNAL( resourceSelected( QByteArray ) ),
+                 page, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
+    }
 
     //initialize member
     mResourceSelector = getResourcesCombo();
@@ -211,25 +205,17 @@ void SugarClient::slotReload()
 void SugarClient::setupActions()
 {
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
-    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mContactsPage, SLOT( synchronize() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
-    connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mAccountsPage, SLOT( synchronize() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
-    connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mOpportunitiesPage, SLOT( synchronize() ) );
-    connect( mOpportunitiesPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mLeadsPage, SLOT( synchronize() ) );
-    connect( mLeadsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mCampaignsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( this, SIGNAL( displayDetails() ), mAccountsPage, SLOT( slotSetItem() ) );
-    connect( this, SIGNAL( displayDetails() ), mCampaignsPage, SLOT( slotSetItem() ) );
-    connect( this, SIGNAL( displayDetails() ), mContactsPage, SLOT( slotSetItem() ) );
-    connect( this, SIGNAL( displayDetails() ), mLeadsPage, SLOT( slotSetItem() ) );
-    connect( this, SIGNAL( displayDetails() ), mOpportunitiesPage, SLOT( slotSetItem() ) );
     connect( mUi.actionConfigureResources, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
+
+    Q_FOREACH( const Page *page, mPages ) {
+        connect( mUi.actionSynchronize, SIGNAL( triggered() ), page, SLOT( synchronize() ) );
+        connect( page, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
+        connect( this, SIGNAL( displayDetails() ), page, SLOT( slotSetItem() ) );
+    }
 }
 
 void SugarClient::slotShowMessage( const QString& message )
@@ -239,16 +225,25 @@ void SugarClient::slotShowMessage( const QString& message )
 
 void SugarClient::createTabs()
 {
-    mAccountsPage = new AccountsPage( this );
-    mUi.tabWidget->addTab( mAccountsPage, tr( "&Accounts" ) );
-    mOpportunitiesPage = new OpportunitiesPage( this );
-    mUi.tabWidget->addTab( mOpportunitiesPage, tr( "&Opportunities" ) );
-    mLeadsPage = new LeadsPage( this );
-    mUi.tabWidget->addTab( mLeadsPage, tr( "&Leads" ) );
-    mContactsPage = new ContactsPage( this );
-    mUi.tabWidget->addTab( mContactsPage, tr( "&Contacts" ) );
-    mCampaignsPage = new CampaignsPage( this );
-    mUi.tabWidget->addTab( mCampaignsPage, tr( "&Campaigns" ) );
+    Page *page = new AccountsPage( this );
+    mPages << page;
+    mUi.tabWidget->addTab( page, tr( "&Accounts" ) );
+
+    page = new OpportunitiesPage( this );
+    mPages << page;
+    mUi.tabWidget->addTab( page, tr( "&Opportunities" ) );
+
+    page = new LeadsPage( this );
+    mPages << page;
+    mUi.tabWidget->addTab( page, tr( "&Leads" ) );
+
+    page = new ContactsPage( this );
+    mPages << page;
+    mUi.tabWidget->addTab( page, tr( "&Contacts" ) );
+
+    page = new CampaignsPage( this );
+    mPages << page;
+    mUi.tabWidget->addTab( page, tr( "&Campaigns" ) );
 
 
     //set Accounts page as current
