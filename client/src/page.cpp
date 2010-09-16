@@ -28,7 +28,7 @@
 
 using namespace Akonadi;
 
-Page::Page( QWidget *parent, QString mimeType,  DetailsType type )
+Page::Page( QWidget *parent, const QString &mimeType,  DetailsType type )
     : QWidget( parent ),
       mMimeType( mimeType ),
       mType( type ),

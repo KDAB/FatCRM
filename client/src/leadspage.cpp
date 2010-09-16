@@ -26,7 +26,7 @@ LeadsPage::~LeadsPage()
 }
 
 
-void LeadsPage::addItem( const QMap<QString, QString> data )
+void LeadsPage::addItem( const QMap<QString, QString> &data )
 {
 
     SugarLead lead;
@@ -46,7 +46,7 @@ void LeadsPage::addItem( const QMap<QString, QString> data )
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
 }
 
-void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> data)
+void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
     SugarLead lead;
     if ( item.hasPayload<SugarLead>() ) {

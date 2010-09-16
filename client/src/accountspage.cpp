@@ -24,7 +24,7 @@ AccountsPage::~AccountsPage()
 {
 }
 
-void AccountsPage::addItem( const QMap<QString, QString> data )
+void AccountsPage::addItem( const QMap<QString, QString> &data )
 {
     SugarAccount account;
     account.setData( data );
@@ -46,7 +46,7 @@ void AccountsPage::addItem( const QMap<QString, QString> data )
     updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
 
-void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> data  )
+void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
 {
     SugarAccount account;
     if ( item.hasPayload<SugarAccount>() ) {

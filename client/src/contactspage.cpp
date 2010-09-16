@@ -24,7 +24,7 @@ ContactsPage::~ContactsPage()
 {
 }
 
-void ContactsPage::addItem(const QMap<QString, QString> data)
+void ContactsPage::addItem( const QMap<QString, QString> &data)
 {
     KABC::Addressee addressee;
     addressee.setGivenName( data.value( "firstName" ) );
@@ -101,7 +101,7 @@ void ContactsPage::addItem(const QMap<QString, QString> data)
                          addressee.custom( "FATCRM", "X-ReportsToUserId" ) );
 }
 
-void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> data)
+void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
     if ( item.isValid() ) {
         KABC::Addressee addressee;

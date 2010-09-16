@@ -25,7 +25,7 @@ OpportunitiesPage::~OpportunitiesPage()
 {
 }
 
-void OpportunitiesPage::addItem( const QMap<QString, QString> data )
+void OpportunitiesPage::addItem( const QMap<QString, QString> &data )
 {
     SugarOpportunity opportunity;
     opportunity.setName( data.value( "name" ) );
@@ -68,7 +68,7 @@ void OpportunitiesPage::addItem( const QMap<QString, QString> data )
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
 }
 
-void OpportunitiesPage::modifyItem( Item &item, const QMap<QString, QString> data )
+void OpportunitiesPage::modifyItem( Item &item, const QMap<QString, QString> &data )
 {
         SugarOpportunity opportunity;
         if ( item.hasPayload<SugarOpportunity>() ) {

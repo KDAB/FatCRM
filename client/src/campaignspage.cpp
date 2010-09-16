@@ -24,7 +24,7 @@ CampaignsPage::~CampaignsPage()
 {
 }
 
-void CampaignsPage::addItem(const QMap<QString, QString> data )
+void CampaignsPage::addItem( const QMap<QString, QString> &data )
 {
     SugarCampaign campaign;
     campaign.setData( data );
@@ -43,7 +43,7 @@ void CampaignsPage::addItem(const QMap<QString, QString> data )
     updateCampaignCombo( campaign.name(), campaign.id() );
 }
 
-void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> data)
+void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
     SugarCampaign campaign;
     if ( item.hasPayload<SugarCampaign>() ) {

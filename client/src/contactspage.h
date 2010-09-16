@@ -15,8 +15,8 @@ public:
     ~ContactsPage();
 
 protected:
-    /*reimp*/ void addItem( QMap<QString, QString> data );
-    /*reimp*/ void modifyItem( Akonadi::Item &item, QMap<QString, QString> data );
+    /*reimp*/ void addItem( const QMap<QString, QString> &data );
+    /*reimp*/ void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data );
     /*reimp*/ void setupModel();
 };
 

@@ -26,7 +26,7 @@ class Page : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Page( QWidget *parent, QString mimeType, DetailsType type );
+    explicit Page( QWidget *parent, const QString &mimeType, DetailsType type );
 
     ~Page();
 
@@ -51,8 +51,8 @@ protected:
     inline QLineEdit* search() { return mUi.searchLE; }
     inline void setFilter ( QSortFilterProxyModel *filter ) { mFilter = filter; }
 
-    virtual void addItem( QMap<QString, QString> data ) = 0;
-    virtual void modifyItem( Akonadi::Item &item, QMap<QString, QString> data ) = 0;
+    virtual void addItem( const QMap<QString, QString> &data ) = 0;
+    virtual void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data ) = 0;
     virtual void setupModel();
 
 private Q_SLOTS:
