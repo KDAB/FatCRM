@@ -87,7 +87,7 @@ void SugarClient::initialize()
     mResourceSelector = 0;
     // initialize view actions
     slotManageItemDetailsView( 0 );
-    mUi.actionSyncronize->setEnabled( false );
+    mUi.actionSynchronize->setEnabled( false );
 
     mProgressBar = new QProgressBar( this );
     mProgressBar->setRange( 0, 100 );
@@ -183,7 +183,7 @@ void SugarClient::slotResourceSelectionChanged( int index )
             agent.isOnline() ? QString ( "SugarCRM Client: %1" ).arg( context )
                              : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
-        mUi.actionSyncronize->setEnabled( true );
+        mUi.actionSynchronize->setEnabled( true );
     }
 }
 
@@ -203,7 +203,7 @@ void SugarClient::slotReload()
         AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
         if ( agent.isValid() ) {
             emit resourceSelected( agent.identifier().toLatin1() );
-            mUi.actionSyncronize->setEnabled( true );
+            mUi.actionSynchronize->setEnabled( true );
         }
     }
 }
@@ -211,17 +211,17 @@ void SugarClient::slotReload()
 void SugarClient::setupActions()
 {
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
-    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mContactsPage, SLOT( syncronize() ) );
+    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mContactsPage, SLOT( synchronize() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mContactsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mAccountsPage, SLOT( syncronize() ) );
+    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mAccountsPage, SLOT( synchronize() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mAccountsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mOpportunitiesPage, SLOT( syncronize() ) );
+    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mOpportunitiesPage, SLOT( synchronize() ) );
     connect( mOpportunitiesPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
-    connect( mUi.actionSyncronize, SIGNAL( triggered() ), mLeadsPage, SLOT( syncronize() ) );
+    connect( mUi.actionSynchronize, SIGNAL( triggered() ), mLeadsPage, SLOT( synchronize() ) );
     connect( mLeadsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( mCampaignsPage, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
     connect( this, SIGNAL( displayDetails() ), mAccountsPage, SLOT( slotSetItem() ) );

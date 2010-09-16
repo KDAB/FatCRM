@@ -35,7 +35,7 @@ Q_SIGNALS:
     void statusMessage( const QString& );
 
 public Q_SLOTS:
-    void syncronize();
+    void synchronize();
 
 protected:
     void updateAccountCombo( const QString& name, const QString& id );

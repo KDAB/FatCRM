@@ -235,7 +235,7 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
 }
 
-void Page::syncronize()
+void Page::synchronize()
 {
     if ( mUi.treeView->model() != 0
          && mUi.treeView->model()->rowCount() > 0 )
