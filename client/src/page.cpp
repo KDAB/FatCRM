@@ -246,9 +246,15 @@ void Page::cachePolicyJobCompleted( KJob* job)
 
 void Page::setupCachePolicy()
 {
-    CachePolicy policy;
-    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
+    CachePolicy policy = mCollection.cachePolicy();
+    if ( !policy.inheritFromParent() ) {
+        kDebug() << "Collection" << mCollection.name()
+                 << "already has a cache policy. Will not overwrite it.";
+        return;
+    }
+
     policy.setInheritFromParent( false );
+    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
     mCollection.setCachePolicy( policy );
     CollectionModifyJob *job = new CollectionModifyJob( mCollection );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
