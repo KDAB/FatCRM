@@ -12,15 +12,19 @@
 #include <akonadi/control.h>
 
 #include <QCloseEvent>
+#include <QComboBox>
 #include <QDockWidget>
 #include <QInputDialog>
+#include <QProgressBar>
 #include <QToolBar>
-#include <QComboBox>
+#include <QTimer>
 
 using namespace Akonadi;
 
 SugarClient::SugarClient()
-    : QMainWindow()
+    : QMainWindow(),
+      mProgressBar( 0 ),
+      mProgressBarHideTimer( 0 )
 {
     mUi.setupUi( this );
     initialize();
@@ -68,6 +72,8 @@ void SugarClient::slotDelayedInit()
              this, SLOT( slotResourceError( Akonadi::AgentInstance, QString ) ) );
     connect( AgentManager::self(), SIGNAL( instanceOnline( Akonadi::AgentInstance, bool ) ),
              this, SLOT( slotResourceOnline( Akonadi::AgentInstance, bool ) ) );
+    connect( AgentManager::self(), SIGNAL( instanceProgressChanged( Akonadi::AgentInstance ) ),
+             this, SLOT( slotResourceProgress( Akonadi::AgentInstance ) ) );
 }
 
 void SugarClient::initialize()
@@ -82,6 +88,16 @@ void SugarClient::initialize()
     // initialize view actions
     slotManageItemDetailsView( 0 );
     mUi.actionSyncronize->setEnabled( false );
+
+    mProgressBar = new QProgressBar( this );
+    mProgressBar->setRange( 0, 100 );
+    mProgressBar->setMaximumWidth( 100 );
+    statusBar()->addPermanentWidget( mProgressBar );
+    mProgressBar->hide();
+
+    mProgressBarHideTimer = new QTimer( this );
+    mProgressBarHideTimer->setInterval( 1000 );
+    connect( mProgressBarHideTimer, SIGNAL( timeout() ), mProgressBar, SLOT( hide() ) );
 }
 
 void SugarClient::createMenus()
@@ -379,24 +395,47 @@ void SugarClient::slotDetailsDisplayDisabled( bool value )
 
 void SugarClient::slotResourceError( const AgentInstance &resource, const QString &message )
 {
-    const AgentInstance currentAgent = mResourceSelector->itemData( mResourceSelector->currentIndex(), AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+    const AgentInstance currentAgent = currentResource();
     if ( currentAgent.isValid() && currentAgent.identifier() == resource.identifier() ) {
         slotShowMessage( message );
     }
 }
 
-void SugarClient::slotResourceOnline( const Akonadi::AgentInstance &resource, bool online )
+void SugarClient::slotResourceOnline( const AgentInstance &resource, bool online )
 {
-    const int index = mResourceSelector->currentIndex();
-    const AgentInstance currentAgent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+    const AgentInstance currentAgent = currentResource();
     if ( currentAgent.isValid() && currentAgent.identifier() == resource.identifier() ) {
+        const int index = mResourceSelector->currentIndex();
         const QString context = mResourceSelector->itemText( index );
         const QString contextTitle =
-            resource.isOnline() ? QString ( "SugarCRM Client: %1" ).arg( context )
-                                : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
+            online ? QString ( "SugarCRM Client: %1" ).arg( context )
+                   : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
     }
+}
 
+void SugarClient::slotResourceProgress( const AgentInstance &resource )
+{
+    const AgentInstance currentAgent = currentResource();
+    if ( currentAgent.isValid() && currentAgent.identifier() == resource.identifier() ) {
+        const int progress = resource.progress();
+        const QString message = resource.statusMessage();
+
+        mProgressBar->show();
+        mProgressBar->setValue( progress );
+        if ( progress == 100 ) {
+            mProgressBarHideTimer->start();
+        } else {
+            mProgressBarHideTimer->stop();
+        }
+        statusBar()->showMessage( message, mProgressBarHideTimer->interval() );
+    }
+}
+
+AgentInstance SugarClient::currentResource() const
+{
+    const int index = mResourceSelector->currentIndex();
+    return mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
 }
 
 #include "sugarclient.moc"

@@ -13,8 +13,10 @@
 #include <QMainWindow>
 
 class QAction;
-class QToolBar;
 class QComboBox;
+class QProgressBar;
+class QTimer;
+class QToolBar;
 
 namespace Akonadi {
     class AgentInstance;
@@ -74,6 +76,9 @@ private:
 
     Ui_MainWindow mUi;
 
+    QProgressBar *mProgressBar;
+    QTimer *mProgressBarHideTimer;
+
 private Q_SLOTS:
     void slotDelayedInit();
     void slotReload();
@@ -86,10 +91,12 @@ private Q_SLOTS:
     void slotConfigureResources();
     void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
     void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
+    void slotResourceProgress( const Akonadi::AgentInstance &resource );
 
 private:
     void detachDockViews( bool value );
     QComboBox* getResourcesCombo();
+    Akonadi::AgentInstance currentResource() const;
 };
 
 #endif
