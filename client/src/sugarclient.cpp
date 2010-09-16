@@ -202,17 +202,26 @@ void SugarClient::slotReload()
     }
 }
 
+void SugarClient::slotSynchronize()
+{
+    AgentInstance currentAgent = currentResource();
+    if ( currentAgent.isValid() ) {
+        slotShowMessage( tr( "Synchronizing with server" ) );
+        currentAgent.synchronize();
+    }
+}
+
 void SugarClient::setupActions()
 {
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
+    connect( mUi.actionSynchronize, SIGNAL( triggered() ), this, SLOT( slotSynchronize() ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mUi.actionConfigureResources, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
 
     Q_FOREACH( const Page *page, mPages ) {
-        connect( mUi.actionSynchronize, SIGNAL( triggered() ), page, SLOT( synchronize() ) );
         connect( page, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
         connect( this, SIGNAL( displayDetails() ), page, SLOT( slotSetItem() ) );
     }

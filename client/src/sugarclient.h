@@ -78,6 +78,7 @@ private:
 private Q_SLOTS:
     void slotDelayedInit();
     void slotReload();
+    void slotSynchronize();
     void slotResourceSelectionChanged( int index );
     void slotShowMessage( const QString& );
     void slotManageItemDetailsView( int currentTab );

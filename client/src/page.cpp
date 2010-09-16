@@ -235,14 +235,6 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
 }
 
-void Page::synchronize()
-{
-    if ( mUi.treeView->model() != 0
-         && mUi.treeView->model()->rowCount() > 0 )
-        AgentManager::self()->synchronizeCollection( mCollection );
-
-}
-
 void Page::cachePolicyJobCompleted( KJob* job)
 {
     if ( job->error() )
