@@ -183,22 +183,10 @@ void SugarClient::slotResourceSelectionChanged( int index )
 
 void SugarClient::slotReload()
 {
-    if ( mResourceSelector == 0 )
-        return;
-
-    int index = -1;
-    for ( int i = 0; i < mResourceSelector->count(); ++i ) {
-        if ( mResourceSelector->itemText( i ).contains( "SugarCRM" ) ) {
-            index = i;
-            break;
-        }
-    }
-    if ( index >= 0 ) {
-        AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
-        if ( agent.isValid() ) {
-            emit resourceSelected( agent.identifier().toLatin1() );
-            mUi.actionSynchronize->setEnabled( true );
-        }
+    const AgentInstance currentAgent = currentResource();
+    if ( currentAgent.isValid() ) {
+        emit resourceSelected( currentAgent.identifier().toLatin1() );
+        mUi.actionSynchronize->setEnabled( true );
     }
 }
 
