@@ -61,7 +61,6 @@ private:
     void initialize();
     void setConnections();
     void reset();
-    void clearDetailsWidget();
     QString currentAccountName() const;
     QString currentAssignedUserName() const;
     QString currentCampaignName() const;

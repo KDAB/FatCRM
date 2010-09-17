@@ -17,6 +17,30 @@ void Details::initialize()
 {
 }
 
+/*
+ *  Reset all widgets
+ *
+ */
+void Details::clear()
+{
+    QList<QLineEdit*> lineEdits =  findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits )
+        le->setText( QString() );
+    QList<QComboBox*> comboBoxes =  findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes )
+        cb->setCurrentIndex( 0 );
+    QList<QCheckBox*> checkBoxes =  findChildren<QCheckBox*>();
+    Q_FOREACH( QCheckBox* cb, checkBoxes )
+        cb->setChecked( false );
+    QList<QTextEdit*> textEdits = findChildren<QTextEdit*>();
+    Q_FOREACH( QTextEdit* te, textEdits )
+        te->setPlainText( QString() );
+}
+
+/*
+ * Return the list of items for the industry combo boxes
+ *
+ */
 QStringList Details::industryItems() const
 {
     QStringList industries;
@@ -38,7 +62,10 @@ QStringList Details::industryItems() const
     return industries;
 }
 
-
+/*
+ * Return the list of items for the source combo boxes
+ *
+ */
 QStringList Details::sourceItems() const
 {
     QStringList sources;
@@ -53,6 +80,10 @@ QStringList Details::sourceItems() const
     return sources;
 }
 
+/*
+ * Return the list of items for the currency combo boxes
+ *
+ */
 QStringList Details::currencyItems() const
 {
     // we do not have the choice here
@@ -62,6 +93,10 @@ QStringList Details::currencyItems() const
     return currencies;
 }
 
+/*
+ * Return the list of items for the salutation combo boxes
+ *
+ */
 QStringList Details::salutationItems() const
 {
     QStringList salutations;

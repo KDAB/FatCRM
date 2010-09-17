@@ -16,6 +16,8 @@ public:
 
     virtual QMap<QString, QString> data( const Akonadi::Item item ) const = 0;
 
+    void clear();
+
 protected:
     virtual void initialize();
 

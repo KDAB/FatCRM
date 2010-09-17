@@ -118,7 +118,8 @@ void DetailsWidget::reset()
 
 void DetailsWidget::clearFields ()
 {
-    clearDetailsWidget();
+    mDetails->clear();
+
     // reset this - label and properties
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lab, labels ) {
@@ -149,22 +150,6 @@ void DetailsWidget::clearFields ()
 
     // we are creating a new account
     slotSetModifyFlag( false );
-}
-
-void DetailsWidget::clearDetailsWidget()
-{
-    QList<QLineEdit*> lineEdits =  mDetails->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits )
-        le->setText( QString() );
-    QList<QComboBox*> comboBoxes =  mDetails->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes )
-        cb->setCurrentIndex( 0 );
-    QList<QCheckBox*> checkBoxes =  mDetails->findChildren<QCheckBox*>();
-    Q_FOREACH( QCheckBox* cb, checkBoxes )
-        cb->setChecked( false );
-    QList<QTextEdit*> textEdits = mDetails->findChildren<QTextEdit*>();
-    Q_FOREACH( QTextEdit* te, textEdits )
-        te->setPlainText( QString() );
 }
 
 void DetailsWidget::setItem (const Item &item )
