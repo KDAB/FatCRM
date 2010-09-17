@@ -1,41 +1,41 @@
-include_directories ( ${CMAKE_SOURCE_DIR} )
+include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utilities )
 
 set(sugarclient_SRCS
-    main.cpp
-    sugarclient.cpp
-    page.cpp
-    accountspage.cpp
-    campaignspage.cpp
-    contactspage.cpp
-    leadspage.cpp
-    opportunitiespage.cpp
-    accountstreemodel.cpp
-    accountsfilterproxymodel.cpp
-    campaignstreemodel.cpp
-    campaignsfilterproxymodel.cpp
-    leadstreemodel.cpp
-    leadsfilterproxymodel.cpp
-    opportunitiestreemodel.cpp
-    opportunitiesfilterproxymodel.cpp
-    detailswidget.cpp
-    details.cpp
-    accountdetails.cpp
-    campaigndetails.cpp
-    contactdetails.cpp
-    leaddetails.cpp
-    opportunitydetails.cpp
-    editcalendarbutton.cpp
-    resourceconfigdialog.cpp
-    shutdowndialog.cpp
-    dbuswinidprovider.cpp
+    app/main.cpp
+    app/sugarclient.cpp
+    pages/page.cpp
+    pages/accountspage.cpp
+    pages/campaignspage.cpp
+    pages/contactspage.cpp
+    pages/leadspage.cpp
+    pages/opportunitiespage.cpp
+    models/accountstreemodel.cpp
+    models/accountsfilterproxymodel.cpp
+    models/campaignstreemodel.cpp
+    models/campaignsfilterproxymodel.cpp
+    models/leadstreemodel.cpp
+    models/leadsfilterproxymodel.cpp
+    models/opportunitiestreemodel.cpp
+    models/opportunitiesfilterproxymodel.cpp
+    details/detailswidget.cpp
+    details/details.cpp
+    details/accountdetails.cpp
+    details/campaigndetails.cpp
+    details/contactdetails.cpp
+    details/leaddetails.cpp
+    details/opportunitydetails.cpp
+    dialogs/resourceconfigdialog.cpp
+    dialogs/shutdowndialog.cpp
+    utilities/editcalendarbutton.cpp
+    utilities/dbuswinidprovider.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
-    mainwindow.ui
-    page.ui  
-    detailswidget.ui 
-    resourceconfigdialog.ui
-    shutdowndialog.ui
+    app/mainwindow.ui
+    pages/page.ui  
+    details/detailswidget.ui 
+    dialogs/resourceconfigdialog.ui
+    dialogs/shutdowndialog.ui
 )
 
 kde4_add_executable(sugarclient ${sugarclient_SRCS})
