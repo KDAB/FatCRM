@@ -1,18 +1,10 @@
 #ifndef CAMPAIGNDETAILS_H
 #define CAMPAIGNDETAILS_H
 
+#include "details.h"
 #include "editcalendarbutton.h"
 
-#include <kdcrmdata/sugarcampaign.h>
-
-#include <QtGui/QWidget>
-#include <QGroupBox>
-#include <QToolButton>
-#include <QLineEdit>
-#include <QTextEdit>
-#include <QComboBox>
-
-class CampaignDetails : public QWidget
+class CampaignDetails : public Details
 {
     Q_OBJECT
 public:
@@ -20,13 +12,17 @@ public:
 
     ~CampaignDetails();
 
+protected:
+    virtual void initialize();
+
+
 private:
-    void initialize();
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
-    QStringList statusItems() const;
+
     QStringList typeItems() const;
-    QStringList currencyItems() const;
+    QStringList statusItems() const;
+
 
     // Details
     QGroupBox *mDetailsBox;

@@ -1,17 +1,10 @@
 #ifndef OPPORTUNITYDETAILS_H
 #define OPPORTUNITYDETAILS_H
 
+#include "details.h"
 #include "editcalendarbutton.h"
 
-#include <kdcrmdata/sugaropportunity.h>
-
-#include <QWidget>
-#include <QGroupBox>
-#include <QComboBox>
-#include <QLineEdit>
-
-
-class OpportunityDetails : public QWidget
+class OpportunityDetails : public Details
 {
     Q_OBJECT
 public:
@@ -19,18 +12,18 @@ public:
 
     ~OpportunityDetails();
 
+protected:
+    void initialize();
+
 private Q_SLOTS:
     void slotClearDate();
     void slotSetDateClosed();
 
 private:
-    void initialize();
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QStringList typeItems() const;
-    QStringList sourceItems() const;
     QStringList stageItems() const;
-    QStringList currencyItems() const;
 
     // Details
     QGroupBox *mDetailsBox;

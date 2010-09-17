@@ -1,14 +1,9 @@
 #ifndef ACCOUNTDETAILS_H
 #define ACCOUNTDETAILS_H
 
-#include <kdcrmdata/sugaraccount.h>
+#include "details.h"
 
-
-#include <QtGui/QWidget>
-#include <QComboBox>
-#include <QGroupBox>
-
-class AccountDetails : public QWidget
+class AccountDetails : public Details
 {
     Q_OBJECT
 public:
@@ -16,12 +11,15 @@ public:
 
     ~AccountDetails();
 
+protected:
+    virtual void initialize();
+
+
 private:
-    void initialize();
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();
-    QStringList industryItems() const;
+
     QStringList typeItems() const;
 
     // Details

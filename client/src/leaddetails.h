@@ -1,18 +1,10 @@
 #ifndef LEADDETAILS_H
 #define LEADDETAILS_H
 
+#include "details.h"
 #include "editcalendarbutton.h"
 
-#include <kdcrmdata/sugarlead.h>
-
-#include <QtGui/QWidget>
-#include <QComboBox>
-#include <QGroupBox>
-#include <QTextEdit>
-#include <QCheckBox>
-
-
-class LeadDetails : public QWidget
+class LeadDetails : public Details
 {
     Q_OBJECT
 public:
@@ -20,18 +12,18 @@ public:
 
     ~LeadDetails();
 
+protected:
+    void initialize();
+
 private Q_SLOTS:
     void slotCopyFromPrimary( bool );
     void slotSetBirthDate();
     void slotClearDate();
 
 private:
-    void initialize();
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();
-    QStringList sourceItems() const;
-    QStringList salutationItems() const;
     QStringList statusItems() const;
 
     // Details

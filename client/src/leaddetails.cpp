@@ -1,15 +1,7 @@
 #include "leaddetails.h"
-#include "sugarclient.h"
-
-#include <akonadi/item.h>
-
-#include <kdcrmdata/sugarlead.h>
-
-using namespace Akonadi;
-
 
 LeadDetails::LeadDetails( QWidget *parent )
-    : QWidget( parent )
+    : Details( parent )
 
 {
     initialize();
@@ -296,29 +288,6 @@ void LeadDetails::slotSetBirthDate()
 void LeadDetails::slotClearDate()
 {
     mBirthdate->clear();
-}
-
-QStringList LeadDetails::sourceItems() const
-{
-    QStringList sources;
-    sources << QString("") << QString( "Cold Call" )
-            << QString( "Existing Customer" ) << QString( "Self Generated" )
-            << QString( "Employee" ) << QString( "Partner" )
-            << QString( "Public Relations" ) << QString( "Direct Mail" )
-            << QString( "Conference" ) << QString( "Trade Show" )
-            << QString( "Web Site" ) << QString( "Word of mouth" )
-            << QString( "Email" ) << QString( "Campaign" )
-            << QString( "Other" );
-    return sources;
-}
-
-QStringList LeadDetails::salutationItems() const
-{
-    QStringList salutations;
-    salutations << QString("") << QString( "Mr." )
-            << QString( "Ms." ) << QString( "Mrs." )
-            << QString( "Dr." ) << QString( "Prof." );
-    return salutations;
 }
 
 QStringList LeadDetails::statusItems() const

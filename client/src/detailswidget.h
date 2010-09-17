@@ -1,8 +1,9 @@
 #ifndef DETAILSWIDGET_H
 #define DETAILSWIDGET_H
 
-#include "ui_details.h"
+#include "ui_detailswidget.h"
 #include "enums.h"
+#include "details.h"
 
 #include <kdcrmdata/sugaraccount.h>
 #include <kdcrmdata/sugarlead.h>
@@ -69,7 +70,7 @@ private:
     void setData( QMap<QString,QString> data );
     QMap<QString, QString> contactData( KABC::Addressee addressee);
 
-    QWidget *mDetails;
+    Details *mDetails;
 
     QMap<QString, QString> mReportsToData;
     QMap<QString, QString> mAccountsData;
@@ -80,7 +81,7 @@ private:
     DetailsType mType;
     bool mEditing;
     bool mModifyFlag;
-    Ui_details mUi;
+    Ui_detailswidget mUi;
 };
 
 #endif /* DETAILSWIDGET_H */

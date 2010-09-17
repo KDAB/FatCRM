@@ -1,14 +1,7 @@
 #include "accountdetails.h"
-#include "sugarclient.h"
-#include <akonadi/item.h>
-
-#include <kdcrmdata/sugaraccount.h>
-
-using namespace Akonadi;
-
 
 AccountDetails::AccountDetails( QWidget *parent )
-    : QWidget( parent )
+    : Details( parent )
 
 {
     initialize();
@@ -213,26 +206,6 @@ QGroupBox* AccountDetails::buildAddressesGroupBox()
     return mAddressesBox;
 }
 
-QStringList AccountDetails::industryItems() const
-{
-    QStringList industries;
-    industries << QString("") << QString( "Apparel" ) << QString( "Banking" )
-               << QString( "Biotechnology" ) << QString("Chemicals" )
-               << QString("Communications" ) << QString("Construction" )
-               << QString("Consulting" ) << QString("Education" )
-               << QString("Electronics" )<< QString("Energy" )
-               << QString("Engineering" ) << QString("Entertainment" )
-               << QString("Environmental" ) << QString("Finance" )
-               << QString("Government" ) << QString("Healthcare" )
-               << QString("Hospitality" ) << QString("Insurance" )
-               << QString("Machinery" ) << QString("Manufacturing" )
-               << QString("Media" ) << QString("Not For Profit" )
-               << QString("Recreation" ) << QString("Retail" )
-               << QString("Shipping" ) << QString("Technology" )
-               << QString("Telecommunication" ) << QString("Transportation" )
-               << QString("Utilities" ) << QString("Other" );
-    return industries;
-}
 
 QStringList AccountDetails::typeItems() const
 {

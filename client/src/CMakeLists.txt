@@ -1,38 +1,39 @@
 include_directories ( ${CMAKE_SOURCE_DIR} )
 
 set(sugarclient_SRCS
-    page.cpp
-    contactspage.cpp
-    accountspage.cpp
-    accountstreemodel.cpp
-    accountsfilterproxymodel.cpp
-    opportunitiespage.cpp
-    opportunitiestreemodel.cpp
-    opportunitiesfilterproxymodel.cpp
-    leadspage.cpp
-    leadstreemodel.cpp
-    leadsfilterproxymodel.cpp
-    campaignspage.cpp
-    campaignstreemodel.cpp
-    campaignsfilterproxymodel.cpp
-    detailswidget.cpp
-    contactdetails.cpp
-    accountdetails.cpp
-    opportunitydetails.cpp
-    leaddetails.cpp
-    campaigndetails.cpp
-    editcalendarbutton.cpp
     main.cpp
     sugarclient.cpp
+    page.cpp
+    accountspage.cpp
+    campaignspage.cpp
+    contactspage.cpp
+    leadspage.cpp
+    opportunitiespage.cpp
+    accountstreemodel.cpp
+    accountsfilterproxymodel.cpp
+    campaignstreemodel.cpp
+    campaignsfilterproxymodel.cpp
+    leadstreemodel.cpp
+    leadsfilterproxymodel.cpp
+    opportunitiestreemodel.cpp
+    opportunitiesfilterproxymodel.cpp
+    detailswidget.cpp
+    details.cpp
+    accountdetails.cpp
+    campaigndetails.cpp
+    contactdetails.cpp
+    leaddetails.cpp
+    opportunitydetails.cpp
+    editcalendarbutton.cpp
     resourceconfigdialog.cpp
     shutdowndialog.cpp
     dbuswinidprovider.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
-    page.ui  
-    details.ui 
     mainwindow.ui
+    page.ui  
+    detailswidget.ui 
     resourceconfigdialog.ui
     shutdowndialog.ui
 )

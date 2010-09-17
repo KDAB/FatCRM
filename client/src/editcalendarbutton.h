@@ -25,8 +25,9 @@ private:
     inline QCalendarWidget* calendarWidget() { return mCalendar; }
     inline QDialog * calendarDialog() { return mDialog; }
 
-    QDialog *mDialog;
     QCalendarWidget *mCalendar;
+    QDialog *mDialog;
+
 };
 
 

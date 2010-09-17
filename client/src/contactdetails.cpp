@@ -1,15 +1,10 @@
 #include "contactdetails.h"
-#include "sugarclient.h"
-
-#include <akonadi/item.h>
 
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
-using namespace Akonadi;
-
 ContactDetails::ContactDetails( QWidget *parent )
-    : QWidget( parent )
+    : Details( parent )
 
 {
     initialize();
@@ -260,28 +255,4 @@ void ContactDetails::slotSetBirthday()
 void ContactDetails::slotClearDate()
 {
    mBirthDate->clear();
-}
-
-
-QStringList ContactDetails::salutationItems() const
-{
-    QStringList salutations;
-    salutations << QString("") << QString( "Mr." )
-            << QString( "Ms." ) << QString( "Mrs." )
-            << QString( "Dr." ) << QString( "Prof." );
-    return salutations;
-}
-
-QStringList ContactDetails::sourceItems() const
-{
-    QStringList sources;
-    sources << QString("") << QString( "Cold Call" )
-            << QString( "Existing Customer" ) << QString( "Self Generated" )
-            << QString( "Employee" ) << QString( "Partner" )
-            << QString( "Public Relations" ) << QString( "Direct Mail" )
-            << QString( "Conference" ) << QString( "Trade Show" )
-            << QString( "Web Site" ) << QString( "Word of mouth" )
-            << QString( "Email" ) << QString( "Campaign" )
-            << QString( "Other" );
-    return sources;
 }

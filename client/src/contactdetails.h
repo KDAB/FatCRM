@@ -1,13 +1,10 @@
 #ifndef CONTACTDETAILS_H
 #define CONTACTDETAILS_H
 
+#include "details.h"
 #include "editcalendarbutton.h"
 
-#include <kabc/addressee.h>
-
-#include <QtGui>
-
-class ContactDetails : public QWidget
+class ContactDetails : public Details
 {
     Q_OBJECT
 public:
@@ -20,8 +17,6 @@ private:
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();
-    QStringList salutationItems() const;
-    QStringList sourceItems() const;
 
      // Details
     QGroupBox *mDetailsBox;

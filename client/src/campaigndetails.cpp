@@ -1,13 +1,9 @@
 
 #include "campaigndetails.h"
 
-#include <QHBoxLayout>
-#include <QGridLayout>
-#include <QLabel>
-
 
 CampaignDetails::CampaignDetails( QWidget *parent )
-    : QWidget( parent )
+    : Details( parent )
 
 {
     initialize();
@@ -191,13 +187,4 @@ QStringList CampaignDetails::typeItems() const
           << QString( "Radio" ) << QString( "Television" )
           << QString( "Newsletter" );
     return types;
-}
-
-QStringList CampaignDetails::currencyItems() const
-{
-    // we do not have the choice here
-    // Should be set remotely by admin
-    QStringList currencies;
-    currencies << QString( "US Dollars : $" );
-    return currencies;
 }

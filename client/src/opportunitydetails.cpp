@@ -1,15 +1,7 @@
 #include "opportunitydetails.h"
-#include "sugarclient.h"
-
-#include <akonadi/item.h>
-
-#include <kdcrmdata/sugaropportunity.h>
-
-using namespace Akonadi;
-
 
 OpportunityDetails::OpportunityDetails( QWidget *parent )
-    : QWidget( parent )
+    : Details( parent )
 
 {
     initialize();
@@ -163,20 +155,6 @@ QStringList OpportunityDetails::typeItems() const
     return types;
 }
 
-QStringList OpportunityDetails::sourceItems() const
-{
-    QStringList sources;
-    sources << QString("") << QString( "Cold Call" )
-            << QString( "Existing Customer" ) << QString( "Self Generated" )
-            << QString( "Employee" ) << QString( "Partner" )
-            << QString( "Public Relations" ) << QString( "Direct Mail" )
-            << QString( "Conference" ) << QString( "Trade Show" )
-            << QString( "Web Site" ) << QString( "Word of mouth" )
-            << QString( "Email" ) << QString( "Campaign" )
-            << QString( "Other" );
-    return sources;
-}
-
 QStringList OpportunityDetails::stageItems() const
 {
     QStringList stages;
@@ -192,13 +170,4 @@ QStringList OpportunityDetails::stageItems() const
             << QString( "Closed Won" )
             << QString( "Closed Lost" );
     return stages;
-}
-
-QStringList OpportunityDetails::currencyItems() const
-{
-    // we do not have the choice here
-    // Should be set remotely by admin
-    QStringList currencies;
-    currencies << QString( "US Dollars : $" );
-    return currencies;
 }
