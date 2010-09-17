@@ -4,6 +4,7 @@
 #define CONFLICTHANDLER_H
 
 #include <QObject>
+#include <qwindowdefs.h>
 
 class KJob;
 
@@ -11,8 +12,6 @@ namespace Akonadi {
     class DifferencesAlgorithmInterface;
     class Item;
 }
-
-typedef ulong WId;
 
 class ConflictHandler : public QObject
 {
