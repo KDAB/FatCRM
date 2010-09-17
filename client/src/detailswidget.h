@@ -68,7 +68,6 @@ private:
     QString currentReportsToName() const;
 
     void setData( QMap<QString,QString> data );
-    QMap<QString, QString> contactData( KABC::Addressee addressee);
 
     Details *mDetails;
 

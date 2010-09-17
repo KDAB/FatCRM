@@ -1,5 +1,7 @@
 #include "leaddetails.h"
 
+#include <kdcrmdata/sugarlead.h>
+
 LeadDetails::LeadDetails( QWidget *parent )
     : Details( parent )
 
@@ -298,4 +300,10 @@ QStringList LeadDetails::statusItems() const
            << QString( "Converted" ) << QString( "Recycled" )
            << QString( "Dead" );
     return status;
+}
+
+QMap<QString, QString> LeadDetails::data( const Akonadi::Item item ) const
+{
+    SugarLead lead = item.payload<SugarLead>();
+    return lead.data();
 }

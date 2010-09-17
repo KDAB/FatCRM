@@ -4,6 +4,8 @@
 #include "details.h"
 #include "editcalendarbutton.h"
 
+#include <kdcrmdata/sugaropportunity.h>
+
 class OpportunityDetails : public Details
 {
     Q_OBJECT
@@ -12,14 +14,14 @@ public:
 
     ~OpportunityDetails();
 
-protected:
-    void initialize();
-
 private Q_SLOTS:
     void slotClearDate();
     void slotSetDateClosed();
 
 private:
+    /*reimp*/ void initialize();
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QStringList typeItems() const;

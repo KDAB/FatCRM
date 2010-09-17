@@ -169,50 +169,11 @@ void DetailsWidget::clearDetailsWidget()
 
 void DetailsWidget::setItem (const Item &item )
 {
-
     // new item selected reset flag and saving
     mModifyFlag = true;
     reset();
-
-    // Pending ( michel )
-    // We need an Sugar<Type> base class to handle common properties
-    // and avoid the following
     QMap<QString, QString> data;
-
-    switch( mType ) {
-    case Account:
-    {
-        SugarAccount account = item.payload<SugarAccount>();
-        data = account.data();
-        break;
-    }
-    case Opportunity:
-    {
-        SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-        data = opportunity.data();
-        break;
-    }
-    case Contact:
-    {
-        KABC::Addressee contact = item.payload<KABC::Addressee>();
-        data = contactData( contact ); // Pending(michel) - we need a data method.
-        break;
-    }
-    case Lead:
-    {
-        SugarLead lead = item.payload<SugarLead>();
-        data = lead.data();
-        break;
-    }
-    case Campaign:
-    {
-        SugarCampaign campaign = item.payload<SugarCampaign>();
-        data = campaign.data();
-        break;
-    }
-    default:
-        return;
-    }
+    data = mDetails->data( item );
     setData( data );
     setConnections();
 }
@@ -358,59 +319,6 @@ QMap<QString, QString> DetailsWidget::data()
     return currentData;
 }
 
-QMap<QString,QString> DetailsWidget::contactData( KABC::Addressee addressee )
-{
-    QMap<QString, QString> data;
-    data["salutation"] = addressee.custom( "FATCRM", "X-Salutation" );
-    data["firstName"] = addressee.givenName();
-    data["lastName"] = addressee.familyName();
-    data["title"] = addressee.title();
-    data["department"] = addressee.department();
-    data["accountName"] = addressee.organization();
-    data["primaryEmail"] = addressee.preferredEmail();
-    data["homePhone"] =addressee.phoneNumber( KABC::PhoneNumber::Home ).number();
-    data["mobilePhone"] = addressee.phoneNumber( KABC::PhoneNumber::Cell ).number();
-    data["officePhone"] = addressee.phoneNumber( KABC::PhoneNumber::Work ).number();
-    data["otherPhone"] = addressee.phoneNumber( KABC::PhoneNumber::Car ).number();
-    data["fax"] = addressee.phoneNumber( KABC::PhoneNumber::Fax ).number();
-
-    const KABC::Address address = addressee.address( KABC::Address::Work|KABC::Address::Pref);
-    data["primaryAddress"] = address.street();
-    data["city"] = address.locality();
-    data["state"] = address.region();
-    data["postalCode"] = address.postalCode();
-    data["country"] = address.country();
-
-    const KABC::Address other = addressee.address( KABC::Address::Home );
-    data["otherAddress"] = other.street();
-    data["otherCity"] = other.locality();
-    data["otherState"] = other.region();
-    data["otherPostalCode"] = other.postalCode();
-    data["otherCountry"] = other.country();
-    data["birthDate"] = QDateTime( addressee.birthday() ).date().toString( QString("yyyy-MM-dd" ) );
-    data["assistant"] = addressee.custom( "KADDRESSBOOK", "X-AssistantsName" );
-    data["assistantPhone"] = addressee.custom( "FATCRM", "X-AssistantsPhone" );
-    data["leadSource"] = addressee.custom( "FATCRM", "X-LeadSourceName" );
-    data["campaign"] = addressee.custom( "FATCRM", "X-CampaignName" );
-    data["assignedTo"] = addressee.custom( "FATCRM", "X-AssignedUserName" );
-    data["reportsTo"] = addressee.custom( "FATCRM", "X-ReportsToUserName" );
-    bool donotcall = addressee.custom( "FATCRM", "X-DoNotCall" ).isEmpty() || addressee.custom( "FATCRM", "X-DoNotCall" ) == "0" ? false : true;
-    data["doNotCall"] = donotcall;
-    data["description"] = addressee.note();
-    data["modifiedBy"] = addressee.custom( "FATCRM", "X-ModifiedByName" );
-    data["dateModified"] = addressee.custom( "FATCRM", "X-DateModified" );
-    data["dateEntered"] = addressee.custom( "FATCRM", "X-DateCreated" );
-    data["createdBy"] = addressee.custom( "FATCRM","X-CreatedByName" );
-    data["modifiedUserId"] = addressee.custom( "FATCRM", "X-ModifiedUserId" );
-    data["modifiedUserName"] = addressee.custom( "FATCRM", "X-ModifiedUserName" );
-    data["contactId"] = addressee.custom( "FATCRM", "X-ContactId" );
-    data["opportunityRoleFields"] = addressee.custom( "FATCRM", "X-OpportunityRoleFields" );
-    data["cAcceptStatusFields"] = addressee.custom( "FATCRM", "X-CacceptStatusFields" );
-    data["mAcceptStatusFields"] = addressee.custom( "FATCRM", "X-MacceptStatusFields" );
-    data["deleted"] = addressee.custom( "FATCRM", "X-Deleted" );
-    data["createdById"] = addressee.custom( "FATCRM", "X-CreatedById" );
-    return data;
-}
 
 void DetailsWidget::slotSetModifyFlag( bool value )
 {

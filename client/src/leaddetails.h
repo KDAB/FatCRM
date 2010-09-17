@@ -12,15 +12,15 @@ public:
 
     ~LeadDetails();
 
-protected:
-    void initialize();
-
 private Q_SLOTS:
     void slotCopyFromPrimary( bool );
     void slotSetBirthDate();
     void slotClearDate();
 
 private:
+    /*reimp*/ void initialize();
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();

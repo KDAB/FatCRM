@@ -1,5 +1,7 @@
 #include "accountdetails.h"
 
+#include <kdcrmdata/sugaraccount.h>
+
 AccountDetails::AccountDetails( QWidget *parent )
     : Details( parent )
 
@@ -216,4 +218,10 @@ QStringList AccountDetails::typeItems() const
           << QString("Press" ) << QString("Prospect" )
           << QString("Reseller" ) << QString("Other" );
     return types;
+}
+
+QMap<QString, QString> AccountDetails::data( const Akonadi::Item item ) const
+{
+    SugarAccount account = item.payload<SugarAccount>();
+    return account.data();
 }

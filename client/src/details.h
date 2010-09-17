@@ -3,6 +3,8 @@
 
 #include <QtGui>
 
+#include <akonadi/item.h>
+
 class Details : public QWidget
 {
     Q_OBJECT
@@ -12,8 +14,11 @@ public:
 
     ~Details();
 
+    virtual QMap<QString, QString> data( const Akonadi::Item item ) const = 0;
+
 protected:
     virtual void initialize();
+
     QStringList industryItems() const;
     QStringList sourceItems() const;
     QStringList currencyItems() const;

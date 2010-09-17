@@ -4,6 +4,8 @@
 #include "details.h"
 #include "editcalendarbutton.h"
 
+#include <kabc/addressee.h>
+
 class ContactDetails : public Details
 {
     Q_OBJECT
@@ -13,10 +15,13 @@ public:
     ~ContactDetails();
 
 private:
-    void initialize();
+    /*reimp*/ void initialize();
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();
+    QMap<QString, QString> contactData( KABC::Addressee contact  ) const;
 
      // Details
     QGroupBox *mDetailsBox;

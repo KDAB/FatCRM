@@ -171,3 +171,9 @@ QStringList OpportunityDetails::stageItems() const
             << QString( "Closed Lost" );
     return stages;
 }
+
+QMap<QString, QString> OpportunityDetails::data( const Akonadi::Item item ) const
+{
+    SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+    return opportunity.data();
+}

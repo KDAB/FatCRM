@@ -12,11 +12,10 @@ public:
 
     ~CampaignDetails();
 
-protected:
-    virtual void initialize();
-
-
 private:
+    /*reimp*/ void initialize();
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
 

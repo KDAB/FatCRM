@@ -1,5 +1,6 @@
 #include "details.h"
 
+using namespace Akonadi;
 
 Details::Details( QWidget *parent )
     : QWidget( parent )

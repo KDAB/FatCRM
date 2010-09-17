@@ -1,6 +1,7 @@
 
 #include "campaigndetails.h"
 
+#include <kdcrmdata/sugarcampaign.h>
 
 CampaignDetails::CampaignDetails( QWidget *parent )
     : Details( parent )
@@ -187,4 +188,10 @@ QStringList CampaignDetails::typeItems() const
           << QString( "Radio" ) << QString( "Television" )
           << QString( "Newsletter" );
     return types;
+}
+
+QMap<QString, QString> CampaignDetails::data( const Akonadi::Item item ) const
+{
+    SugarCampaign campaign = item.payload<SugarCampaign>();
+    return campaign.data();
 }
