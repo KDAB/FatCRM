@@ -26,37 +26,7 @@ private:
     QGroupBox *buildAddressesGroupBox();
     QStringList statusItems() const;
 
-    // Details
-    QGroupBox *mDetailsBox;
-    QComboBox *mLeadSource;
-    QTextEdit *mLeadSourceDescription;
-    QComboBox *mCampaignName;
-    QLineEdit *mReferedBy;
-    QComboBox *mSalutation;
-    QLineEdit *mFirstName;
-    QLineEdit *mLastName;
-    QLineEdit *mBirthdate;
-    QLineEdit *mAccountName;
-    QLineEdit *mTitle;
-    QLineEdit *mDepartment;
-    QComboBox *mAssignedUserName;
-
-    //Other Details
-    QGroupBox *mOtherDetailsBox;
-    QComboBox *mStatus;
-    QTextEdit *mStatusDescription;
-    QLineEdit *mOpportunityAmount;
-    QLineEdit *mPhoneWork;
-    QLineEdit *mPhoneMobile;
-    QLineEdit *mPhoneHome;
-    QLineEdit *mPhoneOther;
-    QLineEdit *mPhoneFax;
-    QCheckBox *mDoNotCall;
-    QLineEdit *mEmail1;
-    QLineEdit *mEmail2;
-
     //Addresses
-    QGroupBox *mAddressesBox;
     QLineEdit *mPrimaryAddressStreet;
     QLineEdit *mPrimaryAddressCity;
     QLineEdit *mPrimaryAddressState;
@@ -70,6 +40,7 @@ private:
     QCheckBox *mCopyAddressFromPrimary;
 
     EditCalendarButton *mCalendarButton;
+    QLineEdit* mBirthdate;
     QToolButton *mClearDateButton;
 };
 

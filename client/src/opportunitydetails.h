@@ -27,24 +27,7 @@ private:
     QStringList typeItems() const;
     QStringList stageItems() const;
 
-    // Details
-    QGroupBox *mDetailsBox;
-    QLineEdit *mName;
-    QComboBox *mAccountName;
-    QComboBox *mOpportunityType;
-    QComboBox *mLeadSource;
-    QComboBox *mCampaignName;
-    QComboBox *mSalesStage;
-    QComboBox *mAssignedUserName;
-
-    //Other Details
-    QGroupBox *mOtherDetailsBox;
-    QComboBox *mCurrency;
-    QLineEdit *mAmount;
-    QLineEdit *mDateClosed;
-    QLineEdit *mNextStep;
-    QLineEdit *mProbability;
-
+    QLineEdit* mDateClosed;
     EditCalendarButton *mCalendarButton;
     QToolButton *mClearDateButton;
 };

@@ -22,6 +22,10 @@ DetailsWidget::~DetailsWidget()
 
 }
 
+/*
+ * Create a detail widget of mType and layout it
+ *
+ */
 void DetailsWidget::initialize()
 {
     if ( mUi.detailsContainer->layout() )
@@ -65,9 +69,12 @@ void DetailsWidget::initialize()
 
 }
 
+/*
+ * Enable the save button when changes happen
+ *
+ */
 void DetailsWidget::setConnections()
 {
-    // Pending(michel ) - ToDo CalendarWidget - checkBoxes
     QList<QLineEdit*> lineEdits =  mDetails->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         connect( le, SIGNAL( textChanged( const QString& ) ),
@@ -89,12 +96,15 @@ void DetailsWidget::setConnections()
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveData() ) );
     mUi.saveButton->setEnabled( false );
-
 }
 
+/*
+ * Disconnect changes signal. e.g When filling the details
+ * widgets with existing data, selection change etc ....
+ *
+ */
 void DetailsWidget::reset()
 {
-    // Pending(michel ) - ToDo CalendarWidget - checkBoxes
     QList<QLineEdit*> lineEdits =  mDetails->findChildren<QLineEdit*>();
     Q_FOREACH( QLineEdit* le, lineEdits )
         disconnect( le, SIGNAL( textChanged( const QString& ) ),
@@ -116,9 +126,15 @@ void DetailsWidget::reset()
     mUi.saveButton->setEnabled( false );
 }
 
+/*
+ * Reset all the widgets and properties
+ *
+ */
 void DetailsWidget::clearFields ()
 {
     mDetails->clear();
+
+    mUi.dateModified->clear();
 
     // reset this - label and properties
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
@@ -152,6 +168,10 @@ void DetailsWidget::clearFields ()
     slotSetModifyFlag( false );
 }
 
+/*
+ * Retrieve the item data, before calling setData.
+ *
+ */
 void DetailsWidget::setItem (const Item &item )
 {
     // new item selected reset flag and saving
@@ -163,36 +183,19 @@ void DetailsWidget::setItem (const Item &item )
     setConnections();
 }
 
+/*
+ * Fill in the widgets with their data and properties.
+ * It covers all the item types.
+ *
+ */
 void DetailsWidget::setData( QMap<QString, QString> data )
 {
+    mDetails->setData( data );
+
+    mUi.dateModified->setText( data.value( "dateModified" ) );
+
     QString key;
 
-    QList<QLineEdit*> lineEdits =  mUi.informationGB->findChildren<QLineEdit*>();
-
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        key = le->objectName();
-        le->setText( data.value( key ) );
-    }
-    QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes ) {
-        key = cb->objectName();
-        cb->setCurrentIndex( cb->findText( data.value( key ) ) );
-        // currency is unique an cannot be changed from the client atm
-        if ( key == "currency" ) {
-            cb->setCurrentIndex( 0 ); // default
-            cb->setProperty( "currencyId",
-                               qVariantFromValue<QString>( data.value( "currencyId" ) ) );
-            cb->setProperty( "currencyName",
-                               qVariantFromValue<QString>( data.value( "currencyName" ) ) );
-            cb->setProperty( "currencySymbol",
-                               qVariantFromValue<QString>( data.value( "currencySymbol" ) ) );
-        }
-    }
-    QList<QTextEdit*> textEdits = mUi.informationGB->findChildren<QTextEdit*>();
-    Q_FOREACH( QTextEdit* te, textEdits ) {
-        key = te->objectName();
-        te->setPlainText( data.value( key ) );
-    }
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lb, labels ) {
         key = lb->objectName();
@@ -237,36 +240,25 @@ void DetailsWidget::setData( QMap<QString, QString> data )
                              qVariantFromValue<QString>( data.value( "createdById" ) ) );
         }
     }
+
     mUi.description->setPlainText( ( mType != Campaign )?
                                    data.value( "description" ):
                                    data.value( "content") );
 }
 
+
+/*
+ * Return a map containing the data (and properties) from all the widgets
+ *
+ */
 QMap<QString, QString> DetailsWidget::data()
 {
-    QMap<QString, QString> currentData;
+    QMap<QString, QString> currentData = mDetails->getData();
+
     QString key;
 
-    QList<QLineEdit*> lineEdits =  mUi.informationGB->findChildren<QLineEdit*>();
-    Q_FOREACH( QLineEdit* le, lineEdits ) {
-        key = le->objectName();
-        currentData[key] = le->text();
-    }
-    QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes ) {
-        key = cb->objectName();
-        currentData[key] = cb->currentText();
-        if ( key == "currency" ) {
-            currentData["currencyId"] = cb->property( "currencyId" ).toString();
-            currentData["currencyName"] = cb->property( "currencyName" ).toString();
-            currentData["currencySymbol"] = cb->property( "currencySymbol" ).toString();
-        }
-    }
-    QList<QTextEdit*> textEdits = mUi.informationGB->findChildren<QTextEdit*>();
-    Q_FOREACH( QTextEdit* te, textEdits ) {
-        key = te->objectName();
-        currentData[key] = te->toPlainText();
-    }
+    currentData["dateModified"] = mUi.dateModified->text();
+
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lb, labels ) {
         key = lb->objectName();
@@ -304,7 +296,11 @@ QMap<QString, QString> DetailsWidget::data()
     return currentData;
 }
 
-
+/*
+ * The modify flag indicate if we are modifying an existing item or creating
+ * a new item
+ *
+ */
 void DetailsWidget::slotSetModifyFlag( bool value )
 {
     mModifyFlag = value;
@@ -315,6 +311,10 @@ void DetailsWidget::slotEnableSaving()
     mUi.saveButton->setEnabled( true );
 }
 
+/*
+ * Fill in the data map with the current data and emit a signal
+ *
+ */
 void DetailsWidget::slotSaveData()
 {
     if ( !mData.empty() )
@@ -337,6 +337,11 @@ void DetailsWidget::slotSaveData()
         emit modifyItem();
 }
 
+/*
+ * Add accounts to the inventory for the available "Account Name"
+ * or "Parent Name", and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::addAccountData( const QString &name,  const QString &id )
 {
     QString dataKey;
@@ -356,6 +361,11 @@ void DetailsWidget::addAccountData( const QString &name,  const QString &id )
     }
 }
 
+/*
+ * Return the selected "Account Name" or "Parent Name",
+ * and updates the related combo boxes.
+ *
+ */
 QString DetailsWidget::currentAccountName() const
 {
     if ( mType != Campaign && mType != Lead ) {
@@ -370,6 +380,11 @@ QString DetailsWidget::currentAccountName() const
     return QString();
 }
 
+/*
+ * This method remove accounts to the inventory for the available
+ * "Account Name" or "Parent Name", and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::removeAccountData( const QString &name )
 {
     mAccountsData.remove( name );
@@ -387,6 +402,11 @@ void DetailsWidget::removeAccountData( const QString &name )
     }
 }
 
+/*
+ * This method add campaing name to the inventory for the available
+ * Campaigns and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::addCampaignData( const QString &name,  const QString &id )
 {
     QString dataKey;
@@ -406,6 +426,10 @@ void DetailsWidget::addCampaignData( const QString &name,  const QString &id )
     }
 }
 
+/*
+ * Return the selected Campaign name.
+ *
+ */
 QString DetailsWidget::currentCampaignName() const
 {
     if ( mType != Campaign ) {
@@ -420,6 +444,11 @@ QString DetailsWidget::currentCampaignName() const
     return QString();
 }
 
+/*
+ * Remove Campaign from the inventory for the available
+ * Campaigns, and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::removeCampaignData( const QString &name )
 {
     mCampaignsData.remove( name );
@@ -437,6 +466,11 @@ void DetailsWidget::removeCampaignData( const QString &name )
     }
 }
 
+/*
+ * Add name to the inventory for the available "Assigned User Name"
+ * and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::addAssignedToData( const QString &name, const QString &id )
 {
     if ( mAssignedToData.values().contains( id ) )
@@ -453,6 +487,11 @@ void DetailsWidget::addAssignedToData( const QString &name, const QString &id )
     }
 }
 
+/*
+ * Return the selected "Assigned User Name",
+ * and updates the related combo boxes.
+ *
+ */
 QString DetailsWidget::currentAssignedUserName() const
 {
     QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
@@ -465,6 +504,11 @@ QString DetailsWidget::currentAssignedUserName() const
     return QString();
 }
 
+/*
+ * Add name to the inventory for the available "Reports to User Name"
+ * and updates the related combo boxes.
+ *
+ */
 void DetailsWidget::addReportsToData( const QString &name, const QString &id )
 {
     if ( mReportsToData.values().contains( id ) )
@@ -483,6 +527,11 @@ void DetailsWidget::addReportsToData( const QString &name, const QString &id )
     }
 }
 
+/*
+ * Return the selected "Reports to User Name",
+ * and updates the related combo boxes.
+ *
+ */
 QString DetailsWidget::currentReportsToName() const
 {
     if ( mType == Contact ) {
@@ -497,6 +546,11 @@ QString DetailsWidget::currentReportsToName() const
     return QString();
 }
 
+/*
+ * Reset the cursor and enable the main window when a job
+ * is done.
+ *
+ */
 void DetailsWidget::slotResetCursor( const QString& text)
 {
     SugarClient *w = dynamic_cast<SugarClient*>( window() );

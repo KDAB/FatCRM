@@ -23,47 +23,8 @@ private:
     QGroupBox *buildAddressesGroupBox();
     QMap<QString, QString> contactData( KABC::Addressee contact  ) const;
 
-     // Details
-    QGroupBox *mDetailsBox;
-    QComboBox *mSalutation;
-    QLineEdit *mFirstName;
-    QLineEdit *mLastName;
-    QLineEdit *mTitle;
-    QLineEdit *mDepartment;
-    QComboBox *mAccountName;
-    QComboBox *mLeadSource;
-    QComboBox *mCampaign;
-    QComboBox *mAssignedTo;
-    QComboBox *mReportsTo;
-    QLineEdit *mPrimaryEmail;
-
-    //Other Details
-    QGroupBox *mOtherDetailsBox;
-    QLineEdit *mOfficePhone;
-    QLineEdit *mMobilePhone;
-    QLineEdit *mHomePhone;
-    QLineEdit *mOtherPhone;
-    QLineEdit *mFax;
+    QLineEdit* mBirthDate;
     QToolButton *mClearDateButton;
-    QLineEdit *mBirthDate;
-    QLineEdit *mAssistant;
-    QLineEdit *mAssistantPhone;
-    QCheckBox *mDoNotCall;
-
-    //Addresses
-    QGroupBox *mAddressesBox;
-    QLineEdit *mPrimaryAddress;
-    QLineEdit *mCity;
-    QLineEdit *mState;
-    QLineEdit *mPostalCode;
-    QLineEdit *mCountry;
-    QLineEdit *mOtherAddress;
-    QLineEdit *mOtherCity;
-    QLineEdit *mOtherState;
-    QLineEdit *mOtherPostalCode;
-    QLineEdit *mOtherCountry;
-
-    QMap<QString, QString> mData;
     EditCalendarButton *mCalendarButton;
 
 

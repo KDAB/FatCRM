@@ -23,62 +23,61 @@ void OpportunityDetails::initialize()
 
 QGroupBox* OpportunityDetails::buildDetailsGroupBox()
 {
-    mDetailsBox = new QGroupBox;
+    QGroupBox* detailsBox = new QGroupBox;
     QVBoxLayout *vLayout = new QVBoxLayout;
     QGridLayout *detailGrid = new QGridLayout;
     vLayout->addLayout( detailGrid );
     vLayout->addStretch();
-    mDetailsBox->setLayout( vLayout );
-    mDetailsBox->setTitle( tr( "Details" ) );
+    detailsBox->setLayout( vLayout );
+    detailsBox->setTitle( tr( "Details" ) );
 
     QLabel *opportunityNameLabel = new QLabel( tr("Opportunity name: "  ) );
-    mName = new QLineEdit();
-    mName->setObjectName( "name" );
+    QLineEdit* name = new QLineEdit();
+    name->setObjectName( "name" );
     detailGrid->addWidget( opportunityNameLabel, 0, 0 );
-    detailGrid->addWidget( mName, 0, 1 );
+    detailGrid->addWidget( name, 0, 1 );
     QLabel *accountNameLabel = new QLabel( tr( "Account name: " ) );
-    mAccountName = new QComboBox();
-    mAccountName->setObjectName( "accountName" );
-    mAccountName->insertItem( 0, QString( "" ) );
+    QComboBox* accountName = new QComboBox();
+    accountName->setObjectName( "accountName" );
+    accountName->insertItem( 0, QString( "" ) );
     detailGrid->addWidget( accountNameLabel, 1, 0 );
-    detailGrid->addWidget( mAccountName, 1, 1 );
+    detailGrid->addWidget( accountName, 1, 1 );
     QLabel *typeLabel = new QLabel( tr( "Type: " ) );
-    mOpportunityType = new QComboBox();
-    mOpportunityType->setObjectName( "opportunityType" );
-    mOpportunityType->addItems( typeItems() );
+    QComboBox* opportunityType = new QComboBox();
+    opportunityType->setObjectName( "opportunityType" );
+    opportunityType->addItems( typeItems() );
     detailGrid->addWidget( typeLabel, 2, 0 );
-    detailGrid->addWidget( mOpportunityType, 2, 1 );
+    detailGrid->addWidget( opportunityType, 2, 1 );
     QLabel *leadSourceLabel = new QLabel( tr( "Lead source: " ) );
-    mLeadSource = new QComboBox();
-    mLeadSource->setObjectName( "leadSource" );
-    mLeadSource->addItems( sourceItems() );
+    QComboBox* leadSource = new QComboBox();
+    leadSource->setObjectName( "leadSource" );
+    leadSource->addItems( sourceItems() );
     detailGrid->addWidget( leadSourceLabel, 3, 0 );
-    detailGrid->addWidget( mLeadSource, 3, 1 );
+    detailGrid->addWidget( leadSource, 3, 1 );
     QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
-    mCampaignName = new QComboBox();
-    mCampaignName->setObjectName( "campaignName" );
-    mCampaignName->insertItem( 0, QString( "" ) );
+    QComboBox* campaignName = new QComboBox();
+    campaignName->setObjectName( "campaignName" );
+    campaignName->insertItem( 0, QString( "" ) );
     detailGrid->addWidget( campaignLabel, 4, 0 );
-    detailGrid->addWidget( mCampaignName, 4, 1 );
+    detailGrid->addWidget( campaignName, 4, 1 );
     QLabel *salesStageLabel = new QLabel( tr( "Sales stage: " ) );
-    mSalesStage = new QComboBox();
-    mSalesStage->setObjectName( "salesStage" );
-    mSalesStage->addItems( stageItems() );
+    QComboBox* salesStage = new QComboBox();
+    salesStage->setObjectName( "salesStage" );
+    salesStage->addItems( stageItems() );
     detailGrid->addWidget( salesStageLabel, 5, 0 );
-    detailGrid->addWidget( mSalesStage, 5, 1 );
+    detailGrid->addWidget( salesStage, 5, 1 );
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
-    mAssignedUserName = new QComboBox();
-    mAssignedUserName->setObjectName( "assignedUserName" );
-    mAssignedUserName->insertItem( 0, QString( "" ) );
+    QComboBox* assignedUserName = new QComboBox();
+    assignedUserName->setObjectName( "assignedUserName" );
+    assignedUserName->insertItem( 0, QString( "" ) );
     detailGrid->addWidget( assignedToLabel, 6, 0 );
-    detailGrid->addWidget( mAssignedUserName, 6, 1 );
+    detailGrid->addWidget( assignedUserName, 6, 1 );
 
-    return mDetailsBox;
+    return detailsBox;
 }
 
 QGroupBox* OpportunityDetails::buildOtherDetailsGroupBox()
 {
-        /* build a BirthDate calendar widget */
     // Calendar widgets
     mDateClosed = new QLineEdit();
     mDateClosed->setObjectName( "dateClosed" );
@@ -99,40 +98,40 @@ QGroupBox* OpportunityDetails::buildOtherDetailsGroupBox()
     connect( mCalendarButton->calendarWidget(), SIGNAL(clicked(const QDate&)),
              this, SLOT(slotSetDateClosed()));
 
-    mOtherDetailsBox = new QGroupBox;
+    QGroupBox* otherDetailsBox = new QGroupBox;
     QVBoxLayout *vLayout = new QVBoxLayout;
     QGridLayout *detailGrid = new QGridLayout;
     vLayout->addLayout( detailGrid );
     vLayout->addStretch();
-    mOtherDetailsBox->setLayout( vLayout );
-    mOtherDetailsBox->setTitle( tr( "Other details" ) );
+    otherDetailsBox->setLayout( vLayout );
+    otherDetailsBox->setTitle( tr( "Other details" ) );
 
     QLabel *currencyLabel = new QLabel( tr("Currency: "  ) );
-    mCurrency = new QComboBox();
-    mCurrency->setObjectName( "currency" );
-    mCurrency->addItems( currencyItems() );
+    QComboBox* currency = new QComboBox();
+    currency->setObjectName( "currency" );
+    currency->addItems( currencyItems() );
     detailGrid->addWidget( currencyLabel, 0, 0 );
-    detailGrid->addWidget( mCurrency, 0, 1 );
+    detailGrid->addWidget( currency, 0, 1 );
     QLabel *amountLabel = new QLabel( tr( "Amount: " ) );
-    mAmount = new QLineEdit();
-    mAmount->setObjectName( "amount" );
+    QLineEdit* amount = new QLineEdit();
+    amount->setObjectName( "amount" );
     detailGrid->addWidget( amountLabel, 1, 0 );
-    detailGrid->addWidget( mAmount, 1, 1 );
+    detailGrid->addWidget( amount, 1, 1 );
     QLabel *closeDateLabel = new QLabel( tr( "Expected close date: " ) );
     detailGrid->addWidget( closeDateLabel, 2, 0 );
     detailGrid->addWidget( calendarWidget, 2, 1 );
     QLabel *nextStepLabel = new QLabel( tr( "Next step: " ) );
-    mNextStep = new QLineEdit();
-    mNextStep->setObjectName( "nextStep" );
+    QLineEdit* nextStep = new QLineEdit();
+    nextStep->setObjectName( "nextStep" );
     detailGrid->addWidget( nextStepLabel, 3, 0 );
-    detailGrid->addWidget( mNextStep, 3, 1 );
+    detailGrid->addWidget( nextStep, 3, 1 );
     QLabel *probabilityLabel = new QLabel( tr( "Probability(%): " ) );
-    mProbability = new QLineEdit();
-    mProbability->setObjectName( "probability" );
+    QLineEdit* probability = new QLineEdit();
+    probability->setObjectName( "probability" );
     detailGrid->addWidget( probabilityLabel, 4, 0 );
-    detailGrid->addWidget( mProbability, 4, 1 );
+    detailGrid->addWidget( probability, 4, 1 );
 
-    return mOtherDetailsBox;
+    return otherDetailsBox;
 }
 
 void OpportunityDetails::slotSetDateClosed()

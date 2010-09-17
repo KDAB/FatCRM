@@ -66,25 +66,25 @@ QGroupBox* CampaignDetails::buildDetailsGroupBox()
              this, SLOT(slotSetEndDate()));
 
     // Box
-    mDetailsBox = new QGroupBox;
+    QGroupBox* detailsBox = new QGroupBox;
     QVBoxLayout *vLayout = new QVBoxLayout;
     QGridLayout *detailGrid = new QGridLayout;
     vLayout->addLayout( detailGrid );
     vLayout->addStretch();
-    mDetailsBox->setLayout( vLayout );
-    mDetailsBox->setTitle( tr( "Details" ) );
+    detailsBox->setLayout( vLayout );
+    detailsBox->setTitle( tr( "Details" ) );
 
     QLabel *nameLabel = new QLabel( tr( "Name:" ) );
-    mName = new QLineEdit();
-    mName->setObjectName( "name" );
+    QLineEdit *name = new QLineEdit();
+    name->setObjectName( "name" );
     detailGrid->addWidget( nameLabel, 0, 0 );
-    detailGrid->addWidget( mName, 0, 1 );
+    detailGrid->addWidget( name, 0, 1 );
     QLabel *statusLabel = new QLabel( tr( "Status: " ) );
-    mStatus = new QComboBox();
-    mStatus->setObjectName( "status" );
-    mStatus->addItems( statusItems() );
+    QComboBox* status = new QComboBox();
+    status->setObjectName( "status" );
+    status->addItems( statusItems() );
     detailGrid->addWidget( statusLabel, 1, 0 );
-    detailGrid->addWidget( mStatus, 1, 1 );
+    detailGrid->addWidget( status, 1, 1 );
     QLabel *startDateLabel = new QLabel( tr( "Start date: " ) );
     detailGrid->addWidget( startDateLabel, 2, 0 );
     detailGrid->addWidget( startCalendarWidget, 2, 1 );
@@ -92,59 +92,59 @@ QGroupBox* CampaignDetails::buildDetailsGroupBox()
     detailGrid->addWidget( endDateLabel, 3, 0 );
     detailGrid->addWidget( endCalendarWidget, 3, 1 );
     QLabel *typeLabel = new QLabel( tr( "Type: " ) );
-    mCampaignType = new QComboBox();
-    mCampaignType->setObjectName( "campaignType" );
-    mCampaignType->addItems( typeItems() );
+    QComboBox* campaignType = new QComboBox();
+    campaignType->setObjectName( "campaignType" );
+    campaignType->addItems( typeItems() );
     detailGrid->addWidget( typeLabel, 4, 0 );
-    detailGrid->addWidget( mCampaignType, 4, 1 );
+    detailGrid->addWidget( campaignType, 4, 1 );
     QLabel *currencyLabel = new QLabel( tr( "Currency: " ) );
-    mCurrency = new QComboBox();
-    mCurrency->setObjectName( "currency" );
-    mCurrency->addItems( currencyItems() );
+    QComboBox* currency = new QComboBox();
+    currency->setObjectName( "currency" );
+    currency->addItems( currencyItems() );
     detailGrid->addWidget( currencyLabel, 5, 0 );
-    detailGrid->addWidget( mCurrency, 5, 1 );
+    detailGrid->addWidget( currency, 5, 1 );
 
-    return mDetailsBox;
+    return detailsBox;
 }
 
 QGroupBox* CampaignDetails::buildOtherDetailsGroupBox()
 {
-    mOtherDetailsBox = new QGroupBox;
+    QGroupBox* otherDetailsBox = new QGroupBox;
     QVBoxLayout *vLayout = new QVBoxLayout;
     QGridLayout *detailGrid = new QGridLayout;
     vLayout->addLayout( detailGrid );
     vLayout->addStretch();
-    mOtherDetailsBox->setLayout( vLayout );
-    mOtherDetailsBox->setTitle( tr( "Other details" ) );
+    otherDetailsBox->setLayout( vLayout );
+    otherDetailsBox->setTitle( tr( "Other details" ) );
 
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
-    mAssignedUserName = new QComboBox();
-    mAssignedUserName->setObjectName( "assignedUserName" );
-    mAssignedUserName->addItem( 0, QString( "" ) );
+    QComboBox* assignedUserName = new QComboBox();
+    assignedUserName->setObjectName( "assignedUserName" );
+    assignedUserName->addItem( 0, QString( "" ) );
     detailGrid->addWidget( assignedToLabel, 0, 0 );
-    detailGrid->addWidget( mAssignedUserName, 0, 1 );
+    detailGrid->addWidget( assignedUserName, 0, 1 );
     QLabel *impressionsLabel = new QLabel( tr( "Impressions: " ) );
-    mImpressions = new QLineEdit();
-    mImpressions->setObjectName( "impressions" );
+    QLineEdit* impressions = new QLineEdit();
+    impressions->setObjectName( "impressions" );
     detailGrid->addWidget( impressionsLabel, 1, 0 );
-    detailGrid->addWidget( mImpressions, 1, 1 );
+    detailGrid->addWidget( impressions, 1, 1 );
     QLabel *actualCostLabel = new QLabel( tr( "Actual cost: " ) );
-    mActualCost = new QLineEdit();
-    mActualCost->setObjectName( "actualCost" );
+    QLineEdit* actualCost = new QLineEdit();
+    actualCost->setObjectName( "actualCost" );
     detailGrid->addWidget( actualCostLabel, 2, 0 );
-    detailGrid->addWidget( mActualCost, 2, 1 );
+    detailGrid->addWidget( actualCost, 2, 1 );
     QLabel *expectedCostLabel = new QLabel( tr( "Expected cost: " ) );
-    mExpectedCost = new QLineEdit();
-    mExpectedCost->setObjectName( "expectedCost" );
+    QLineEdit* expectedCost = new QLineEdit();
+    expectedCost->setObjectName( "expectedCost" );
     detailGrid->addWidget( expectedCostLabel, 3, 0 );
-    detailGrid->addWidget( mExpectedCost, 3, 1 );
+    detailGrid->addWidget( expectedCost, 3, 1 );
     QLabel *objectiveLabel = new QLabel( tr( "Objective: " ) );
-    mObjective = new QTextEdit();
-    mObjective->setObjectName( "objective" );
+    QTextEdit* objective = new QTextEdit();
+    objective->setObjectName( "objective" );
     detailGrid->addWidget( objectiveLabel, 4, 0 );
-    detailGrid->addWidget( mObjective, 4, 1 );
+    detailGrid->addWidget( objective, 4, 1 );
 
-    return mOtherDetailsBox;
+    return otherDetailsBox;
 }
 
 void CampaignDetails::slotSetStartDate()

@@ -38,6 +38,89 @@ void Details::clear()
 }
 
 /*
+ * Fill in the widgets with the data and properties that belong to
+ * them
+ *
+ */
+void Details::setData( const QMap<QString, QString> data ) const
+{
+    QString key;
+
+    QList<QLineEdit*> lineEdits =  findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits ) {
+        key = le->objectName();
+        le->setText( data.value( key ) );
+    }
+    QList<QComboBox*> comboBoxes =  findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes ) {
+        key = cb->objectName();
+        cb->setCurrentIndex( cb->findText( data.value( key ) ) );
+        // currency is unique an cannot be changed from the client atm
+        if ( key == "currency" ) {
+            cb->setCurrentIndex( 0 ); // default
+            cb->setProperty( "currencyId",
+                               qVariantFromValue<QString>( data.value( "currencyId" ) ) );
+            cb->setProperty( "currencyName",
+                               qVariantFromValue<QString>( data.value( "currencyName" ) ) );
+            cb->setProperty( "currencySymbol",
+                               qVariantFromValue<QString>( data.value( "currencySymbol" ) ) );
+        }
+    }
+
+    QList<QCheckBox*> checkBoxes = findChildren<QCheckBox*>();
+    Q_FOREACH( QCheckBox* cb, checkBoxes ) {
+        key = cb->objectName();
+        cb->setChecked( data.value( key ) == "1" ? true : false );
+    }
+
+    QList<QTextEdit*> textEdits = findChildren<QTextEdit*>();
+    Q_FOREACH( QTextEdit* te, textEdits ) {
+        key = te->objectName();
+        te->setPlainText( data.value( key ) );
+    }
+}
+
+/*
+ *
+ * Return a Map with the widgets data.
+ *
+ */
+const QMap<QString, QString> Details::getData() const
+{
+    QMap<QString, QString> currentData;
+    QString key;
+    QList<QLineEdit*> lineEdits = findChildren<QLineEdit*>();
+    Q_FOREACH( QLineEdit* le, lineEdits ) {
+        key = le->objectName();
+        currentData[key] = le->text();
+    }
+
+    QList<QComboBox*> comboBoxes = findChildren<QComboBox*>();
+    Q_FOREACH( QComboBox* cb, comboBoxes ) {
+        key = cb->objectName();
+        currentData[key] = cb->currentText();
+        if ( key == "currency" ) {
+            currentData["currencyId"] = cb->property( "currencyId" ).toString();
+            currentData["currencyName"] = cb->property( "currencyName" ).toString();
+            currentData["currencySymbol"] = cb->property( "currencySymbol" ).toString();
+        }
+    }
+
+    QList<QCheckBox*> checkBoxes = findChildren<QCheckBox*>();
+    Q_FOREACH( QCheckBox* cb, checkBoxes ) {
+        key = cb->objectName();
+        currentData[key] = cb->isChecked() ? "1" : "0";
+    }
+
+    QList<QTextEdit*> textEdits = findChildren<QTextEdit*>();
+    Q_FOREACH( QTextEdit* te, textEdits ) {
+        key = te->objectName();
+        currentData[key] = te->toPlainText();
+    }
+    return currentData;
+}
+
+/*
  * Return the list of items for the industry combo boxes
  *
  */

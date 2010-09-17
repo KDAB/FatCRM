@@ -22,28 +22,10 @@ private:
     QStringList typeItems() const;
     QStringList statusItems() const;
 
-
-    // Details
-    QGroupBox *mDetailsBox;
-    QLineEdit *mName;
-    QComboBox *mStatus;
-    QLineEdit *mStartDate;
+    QLineEdit* mStartDate;
+    QLineEdit* mEndDate;
     QToolButton *mClearStartDateButton;
-    QLineEdit *mEndDate;
     QToolButton *mClearEndDateButton;
-    QComboBox *mCampaignType;
-    QComboBox *mCurrency;
-    QLineEdit *mBudget;
-    QLineEdit *mExpectedRevenue;
-
-    //Other Details
-    QGroupBox *mOtherDetailsBox;
-    QComboBox *mAssignedUserName;
-    QLineEdit *mImpressions;
-    QLineEdit *mActualCost;
-    QLineEdit *mExpectedCost;
-    QTextEdit *mObjective;
-
     EditCalendarButton *mStartDateCalendarButton;
     EditCalendarButton *mEndDateCalendarButton;
 
