@@ -3,9 +3,7 @@
 
 #include "ui_page.h"
 #include "enums.h"
-
-#include "accountsfilterproxymodel.h"
-//#include <akonadi/entitymimetypefiltermodel.h>
+#include "filterproxymodel.h"
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
@@ -46,7 +44,7 @@ protected:
     inline Akonadi::Collection collection() { return mCollection; }
     inline Akonadi::ChangeRecorder* recorder() { return mChangeRecorder; }
     inline QLineEdit* search() { return mUi.searchLE; }
-    inline void setFilter ( QSortFilterProxyModel *filter ) { mFilter = filter; }
+    inline void setFilter ( Akonadi::FilterProxyModel *filter ) { mFilter = filter; }
 
     virtual void addItem( const QMap<QString, QString> &data ) = 0;
     virtual void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data ) = 0;
@@ -84,7 +82,7 @@ private:
     SugarClient *mClientWindow;
     QString mMimeType;
     DetailsType mType;
-    QSortFilterProxyModel *mFilter;
+    Akonadi::FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCollection;
     QModelIndex mCurrentIndex;
