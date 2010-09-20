@@ -51,16 +51,12 @@ void SugarClient::slotDelayedInit()
     }
 
     //initialize member
-    mResourceSelector = getResourcesCombo();
+    mResourceSelector = createResourcesCombo();
 
     connect( mResourceSelector, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotResourceSelectionChanged( int ) ) );
 
-    int selectors = mResourceSelector->count();
-    if ( selectors > 1 ) // several resources
-        slotLogin();
-    else
-        slotResourceSelectionChanged( mResourceSelector->currentIndex());
+    initialResourceSelection();
 
     connect( AgentManager::self(), SIGNAL( instanceError( Akonadi::AgentInstance, QString ) ),
              this, SLOT( slotResourceError( Akonadi::AgentInstance, QString ) ) );
@@ -178,6 +174,10 @@ void SugarClient::slotResourceSelectionChanged( int index )
                              : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
         mUi.actionSynchronize->setEnabled( true );
+        mUi.actionLogout->setEnabled( true );
+    } else {
+        mUi.actionSynchronize->setEnabled( false );
+        mUi.actionLogout->setEnabled( false );
     }
 }
 
@@ -202,6 +202,7 @@ void SugarClient::slotSynchronize()
 void SugarClient::setupActions()
 {
     connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
+    connect( mUi.actionLogout, SIGNAL( triggered() ), this, SLOT( slotLogout() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mUi.actionSynchronize, SIGNAL( triggered() ), this, SLOT( slotSynchronize() ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
@@ -303,8 +304,9 @@ void SugarClient::detachDockViews( bool value )
 void SugarClient::slotLogin()
 {
     QStringList items;
-    for ( int i = 0; i < mResourceSelector->count(); ++i )
+    for ( int i = 0; i < mResourceSelector->count(); ++i ) {
         items << mResourceSelector->itemText( i );
+    }
     bool ok;
     QString item = QInputDialog::getItem( this, "Select Sugar Resource",
                                           "Resource: ", items, 0, false,
@@ -319,13 +321,23 @@ void SugarClient::slotLogin()
     }
 }
 
+void SugarClient::slotLogout()
+{
+    AgentInstance agent = currentResource();
+    if ( agent.isValid() ) {
+        agent.setIsOnline( false );
+        mUi.actionSynchronize->setEnabled( false );
+        mUi.actionLogout->setEnabled( false );
+    }
+}
+
 void SugarClient::slotConfigureResources()
 {
     ResourceConfigDialog dialog( this );
     dialog.exec();
 }
 
-QComboBox* SugarClient::getResourcesCombo()
+QComboBox* SugarClient::createResourcesCombo()
 {
     // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
@@ -433,6 +445,32 @@ AgentInstance SugarClient::currentResource() const
 {
     const int index = mResourceSelector->currentIndex();
     return mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+}
+
+void SugarClient::initialResourceSelection()
+{
+    const int selectors = mResourceSelector->count();
+    if ( selectors == 1 ) {
+        slotResourceSelectionChanged( mResourceSelector->currentIndex());
+    } else {
+        QStringList items;
+        for ( int i = 0; i < mResourceSelector->count(); ++i ) {
+            items << mResourceSelector->itemText( i );
+            bool ok;
+            const QString item = QInputDialog::getItem( this, tr( "Select Sugar Resource" ),
+                                                        tr( "Resource:" ), items, 0, false,
+                                                        &ok );
+            if ( !ok && item.isEmpty() ) {
+                return;
+            }
+            mResourceSelector->setCurrentIndex( mResourceSelector->findText( item ) );
+        }
+    }
+
+    AgentInstance agent = currentResource();
+    if ( agent.isValid() && !agent.isOnline() ) {
+        agent.setIsOnline( true );
+    }
 }
 
 #include "sugarclient.moc"

@@ -85,6 +85,7 @@ private Q_SLOTS:
     void slotManageDetailsDisplay( bool value );
     void slotDetailsDisplayDisabled( bool value );
     void slotLogin();
+    void slotLogout();
     void slotConfigureResources();
     void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
     void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
@@ -92,8 +93,9 @@ private Q_SLOTS:
 
 private:
     void detachDockViews( bool value );
-    QComboBox* getResourcesCombo();
+    QComboBox* createResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
+    void initialResourceSelection();
 };
 
 #endif

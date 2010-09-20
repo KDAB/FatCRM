@@ -68,6 +68,7 @@
      <string>File</string>
     </property>
     <addaction name="actionLogin"/>
+    <addaction name="actionLogout"/>
     <addaction name="separator"/>
     <addaction name="actionSynchronize"/>
     <addaction name="actionReload"/>
@@ -80,7 +81,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLogin">
    <property name="text">
-    <string>Login</string>
+    <string>Login...</string>
    </property>
   </action>
   <action name="actionSynchronize">
@@ -97,10 +98,21 @@
    <property name="text">
     <string>Quit</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
   </action>
   <action name="actionConfigureResources">
    <property name="text">
     <string>Configure CRM Accounts...</string>
+   </property>
+  </action>
+  <action name="actionLogout">
+   <property name="text">
+    <string>Logout</string>
+   </property>
+   <property name="toolTip">
+    <string>Disconnect from current server</string>
    </property>
   </action>
  </widget>
