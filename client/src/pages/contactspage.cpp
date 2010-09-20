@@ -1,5 +1,5 @@
 #include "contactspage.h"
-#include "contactstreemodel.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
 
@@ -224,15 +224,15 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 void ContactsPage::setupModel()
 {
 
-    ContactsTreeModel *contactsModel = new ContactsTreeModel( recorder(), this );
+    ItemsTreeModel *contactsModel = new ItemsTreeModel( recorder(), this );
 
-    ContactsTreeModel::Columns columns;
-    columns << ContactsTreeModel::FullName
-            << ContactsTreeModel::Role
-            << ContactsTreeModel::Organization
-            << ContactsTreeModel::PreferredEmail
-            << ContactsTreeModel::PhoneNumber
-            << ContactsTreeModel::GivenName;
+    ItemsTreeModel::Columns columns;
+    columns << ItemsTreeModel::FullName
+            << ItemsTreeModel::Role
+            << ItemsTreeModel::Organization
+            << ItemsTreeModel::PreferredEmail
+            << ItemsTreeModel::PhoneNumber
+            << ItemsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );

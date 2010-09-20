@@ -1,14 +1,12 @@
 #include "campaignspage.h"
 
-#include "campaignstreemodel.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
-#include "enums.h"
 
 #include "kdcrmdata/sugarcampaign.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemmodifyjob.h>
 
@@ -69,14 +67,14 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 
 void CampaignsPage::setupModel()
 {
-    CampaignsTreeModel *campaignsModel = new CampaignsTreeModel( recorder(), this );
+    ItemsTreeModel *campaignsModel = new ItemsTreeModel( recorder(), this );
 
-    CampaignsTreeModel::Columns columns;
-    columns << CampaignsTreeModel::Campaign
-            << CampaignsTreeModel::Status
-            << CampaignsTreeModel::Type
-            << CampaignsTreeModel::EndDate
-            << CampaignsTreeModel::User;
+    ItemsTreeModel::Columns columns;
+    columns << ItemsTreeModel::Campaign
+            << ItemsTreeModel::Status
+            << ItemsTreeModel::Type
+            << ItemsTreeModel::EndDate
+            << ItemsTreeModel::User;
     campaignsModel->setColumns( columns );
 
     // same as for the ContactsTreeModel, not strictly necessary

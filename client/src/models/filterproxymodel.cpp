@@ -1,9 +1,5 @@
 #include "filterproxymodel.h"
-#include "accountstreemodel.h"
-#include "campaignstreemodel.h"
-#include "contactstreemodel.h"
-#include "leadstreemodel.h"
-#include "opportunitiestreemodel.h"
+#include "itemstreemodel.h"
 
 #include <kdcrmdata/sugaraccount.h>
 #include <kdcrmdata/sugarcampaign.h>

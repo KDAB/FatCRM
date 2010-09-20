@@ -1,13 +1,11 @@
 #include "leadspage.h"
-#include "leadstreemodel.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
-#include "enums.h"
 
 #include "kdcrmdata/sugarlead.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemmodifyjob.h>
 
@@ -71,14 +69,14 @@ void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 
 void LeadsPage::setupModel()
 {
-    LeadsTreeModel *leadsModel = new LeadsTreeModel( recorder(), this );
+    ItemsTreeModel *leadsModel = new ItemsTreeModel( recorder(), this );
 
-    LeadsTreeModel::Columns columns;
-    columns << LeadsTreeModel::Name
-            << LeadsTreeModel::Status
-            << LeadsTreeModel::AccountName
-            << LeadsTreeModel::Email
-            << LeadsTreeModel::User;
+    ItemsTreeModel::Columns columns;
+    columns << ItemsTreeModel::LeadName
+            << ItemsTreeModel::LeadStatus
+            << ItemsTreeModel::LeadAccountName
+            << ItemsTreeModel::LeadEmail
+            << ItemsTreeModel::LeadUser;
     leadsModel->setColumns( columns );
 
     // same as for the ContactsTreeModel, not strictly necessary

@@ -1,8 +1,7 @@
 #include "opportunitiespage.h"
-#include "opportunitiestreemodel.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
-#include "enums.h"
 
 #include "kdcrmdata/sugaropportunity.h"
 
@@ -118,15 +117,15 @@ void OpportunitiesPage::modifyItem( Item &item, const QMap<QString, QString> &da
 
 void OpportunitiesPage::setupModel()
 {
-    OpportunitiesTreeModel *opportunitiesModel = new OpportunitiesTreeModel( recorder(), this );
+    ItemsTreeModel *opportunitiesModel = new ItemsTreeModel( recorder(), this );
 
-    OpportunitiesTreeModel::Columns columns;
-    columns << OpportunitiesTreeModel::Name
-            << OpportunitiesTreeModel::AccountName
-            << OpportunitiesTreeModel::SalesStage
-            << OpportunitiesTreeModel::Amount
-            << OpportunitiesTreeModel::Close
-            << OpportunitiesTreeModel::AssignedTo;
+    ItemsTreeModel::Columns columns;
+    columns << ItemsTreeModel::OpportunityName
+            << ItemsTreeModel::OpportunityAccountName
+            << ItemsTreeModel::SalesStage
+            << ItemsTreeModel::Amount
+            << ItemsTreeModel::Close
+            << ItemsTreeModel::AssignedTo;
     opportunitiesModel->setColumns( columns );
 
     // same as for the ContactsTreeModel, not strictly necessary

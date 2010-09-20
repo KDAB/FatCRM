@@ -1,5 +1,5 @@
 #include "accountspage.h"
-#include "accountstreemodel.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
 
@@ -75,15 +75,15 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
 
 void AccountsPage::setupModel()
 {
-    AccountsTreeModel *accountsModel = new AccountsTreeModel( recorder(), this );
+    ItemsTreeModel *accountsModel = new ItemsTreeModel( recorder(), this );
 
-    AccountsTreeModel::Columns columns;
-    columns << AccountsTreeModel::Name
-            << AccountsTreeModel::City
-            << AccountsTreeModel::Country
-            << AccountsTreeModel::Phone
-            << AccountsTreeModel::Email
-            << AccountsTreeModel::CreatedBy;
+    ItemsTreeModel::Columns columns;
+    columns << ItemsTreeModel::Name
+            << ItemsTreeModel::City
+            << ItemsTreeModel::Country
+            << ItemsTreeModel::Phone
+            << ItemsTreeModel::Email
+            << ItemsTreeModel::CreatedBy;
     accountsModel->setColumns( columns );
 
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
