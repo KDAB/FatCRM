@@ -309,9 +309,14 @@ void SugarClient::slotLogin()
     QString item = QInputDialog::getItem( this, "Select Sugar Resource",
                                           "Resource: ", items, 0, false,
                                           &ok );
-    if ( ok && !item.isEmpty() )
+    if ( ok && !item.isEmpty() ) {
         mResourceSelector->setCurrentIndex( mResourceSelector->findText( item ) );
 
+        AgentInstance agent = currentResource();
+        if ( agent.isValid() && !agent.isOnline() ) {
+            agent.setIsOnline( true );
+        }
+    }
 }
 
 void SugarClient::slotConfigureResources()
