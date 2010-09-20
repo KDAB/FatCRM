@@ -1,6 +1,6 @@
 #include "accountspage.h"
 #include "accountstreemodel.h"
-#include "accountsfilterproxymodel.h"
+#include "filterproxymodel.h"
 #include "sugarclient.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -86,12 +86,11 @@ void AccountsPage::setupModel()
             << AccountsTreeModel::CreatedBy;
     accountsModel->setColumns( columns );
 
-    // same as for the ContactsTreeModel, not strictly necessary
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( accountsModel );
     filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    AccountsFilterProxyModel *filter = new AccountsFilterProxyModel( this );
+    FilterProxyModel *filter = new FilterProxyModel( this );
     filter->setSourceModel( filterModel );
     setFilter( filter );
     Page::setupModel();

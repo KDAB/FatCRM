@@ -1,6 +1,6 @@
 #include "opportunitiespage.h"
 #include "opportunitiestreemodel.h"
-#include "opportunitiesfilterproxymodel.h"
+#include "filterproxymodel.h"
 #include "sugarclient.h"
 #include "enums.h"
 
@@ -135,7 +135,7 @@ void OpportunitiesPage::setupModel()
     filterModel->addMimeTypeInclusionFilter( SugarOpportunity::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    OpportunitiesFilterProxyModel *filter = new OpportunitiesFilterProxyModel( this );
+    FilterProxyModel *filter = new FilterProxyModel( this );
     filter->setSourceModel( filterModel );
     setFilter( filter );
     Page::setupModel();

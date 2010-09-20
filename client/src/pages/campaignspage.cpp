@@ -1,7 +1,7 @@
 #include "campaignspage.h"
 
 #include "campaignstreemodel.h"
-#include "campaignsfilterproxymodel.h"
+#include "filterproxymodel.h"
 #include "sugarclient.h"
 #include "enums.h"
 
@@ -85,7 +85,7 @@ void CampaignsPage::setupModel()
     filterModel->addMimeTypeInclusionFilter( SugarCampaign::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    CampaignsFilterProxyModel *filter = new CampaignsFilterProxyModel( this );
+    FilterProxyModel *filter = new FilterProxyModel( this );
     filter->setSourceModel( filterModel );
     setFilter( filter );
     Page::setupModel();

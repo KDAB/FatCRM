@@ -10,15 +10,11 @@ set(sugarclient_SRCS
     pages/leadspage.cpp
     pages/opportunitiespage.cpp
     models/accountstreemodel.cpp
-    models/accountsfilterproxymodel.cpp
     models/campaignstreemodel.cpp
-    models/campaignsfilterproxymodel.cpp
     models/contactstreemodel.cpp
-    models/contactsfilterproxymodel.cpp
     models/leadstreemodel.cpp
-    models/leadsfilterproxymodel.cpp
     models/opportunitiestreemodel.cpp
-    models/opportunitiesfilterproxymodel.cpp
+    models/filterproxymodel.cpp
     details/detailswidget.cpp
     details/details.cpp
     details/accountdetails.cpp

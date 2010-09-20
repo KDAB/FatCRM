@@ -1,6 +1,6 @@
 #include "leadspage.h"
 #include "leadstreemodel.h"
-#include "leadsfilterproxymodel.h"
+#include "filterproxymodel.h"
 #include "sugarclient.h"
 #include "enums.h"
 
@@ -87,7 +87,7 @@ void LeadsPage::setupModel()
     filterModel->addMimeTypeInclusionFilter( SugarLead::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
 
-    LeadsFilterProxyModel *filter = new LeadsFilterProxyModel( this );
+    FilterProxyModel *filter = new FilterProxyModel( this );
     filter->setSourceModel( filterModel );
     setFilter( filter );
     Page::setupModel();

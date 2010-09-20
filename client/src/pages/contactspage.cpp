@@ -1,13 +1,12 @@
 #include "contactspage.h"
 #include "contactstreemodel.h"
-#include "contactsfilterproxymodel.h"
+#include "filterproxymodel.h"
 #include "sugarclient.h"
-//#include "enums.h"
+
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
 #include <akonadi/entitymimetypefiltermodel.h>
-//#include <akonadi/item.h>
 #include <akonadi/itemcreatejob.h>
 #include <akonadi/itemmodifyjob.h>
 
@@ -236,12 +235,11 @@ void ContactsPage::setupModel()
             << ContactsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 
-    // same as for the ContactsTreeModel, not strictly necessary
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
     filterModel->setSourceModel( contactsModel );
     filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
     filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    ContactsFilterProxyModel *filter = new ContactsFilterProxyModel( this );
+    FilterProxyModel *filter = new FilterProxyModel( this );
     filter->setSourceModel( filterModel );
     setFilter( filter );
     Page::setupModel();
