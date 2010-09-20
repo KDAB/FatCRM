@@ -26,8 +26,8 @@ set(sugarclient_SRCS
 
 kde4_add_ui_files(sugarclient_SRCS
     app/mainwindow.ui
-    pages/page.ui  
-    details/detailswidget.ui 
+    pages/page.ui
+    details/detailswidget.ui
     dialogs/resourceconfigdialog.ui
     dialogs/shutdowndialog.ui
 )
@@ -39,7 +39,6 @@ target_link_libraries(sugarclient
     ${KDE4_KDECORE_LIBS}
     ${KDE4_AKONADI_LIBS}
     ${KDEPIMLIBS_KABC_LIBS}
-    ${KDEPIMLIBS_AKONADI_CONTACT_LIBS}
     ${QT_QTGUI_LIBS}
 )
 
