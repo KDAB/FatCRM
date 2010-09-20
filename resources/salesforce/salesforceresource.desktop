@@ -6,5 +6,5 @@ Exec=akonadi_salesforce_resource
 Icon=text-directory
 
 X-Akonadi-MimeTypes=inode/directory,text/directory
-X-Akonadi-Capabilities=Resource,SugarCRM
+X-Akonadi-Capabilities=Resource,KDCRM
 X-Akonadi-Identifier=akonadi_salesforce_resource

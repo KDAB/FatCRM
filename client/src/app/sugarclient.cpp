@@ -322,13 +322,13 @@ void SugarClient::slotConfigureResources()
 
 QComboBox* SugarClient::getResourcesCombo()
 {
-    // monitor Akonadi agents so we can check for SugarCRM specific resources
+    // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel( this );
     AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel( this );
     agentFilterModel->setSourceModel( agentModel );
     //initialize member
     QComboBox *container = new QComboBox();
-    agentFilterModel->addCapabilityFilter( QString( "SugarCRM" ).toLatin1() );
+    agentFilterModel->addCapabilityFilter( QString( "KDCRM" ).toLatin1() );
     container->setModel( agentFilterModel );
 
     return container;

@@ -65,7 +65,7 @@ void ResourceConfigDialog::Private::addResource()
     AgentTypeDialog dialog( q );
 
     AgentFilterProxyModel* filterModel = dialog.agentFilterProxyModel();
-    filterModel->addCapabilityFilter( QLatin1String( "SugarCRM" ) );
+    filterModel->addCapabilityFilter( QLatin1String( "KDCRM" ) );
 
     if ( dialog.exec() == QDialog::Accepted ) {
         const AgentType resourceType = dialog.agentType();
@@ -110,7 +110,7 @@ ResourceConfigDialog::ResourceConfigDialog( QWidget *parent )
     d->mUi.setupUi( this );
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
-    filterModel->addCapabilityFilter( QLatin1String( "SugarCRM" ) );
+    filterModel->addCapabilityFilter( QLatin1String( "KDCRM" ) );
 
     connect( d->mUi.resources->view()->selectionModel(),
              SIGNAL( selectionChanged( QItemSelection, QItemSelection ) ),
