@@ -1,16 +1,15 @@
 #include "contactspage.h"
+#include "contactstreemodel.h"
+#include "contactsfilterproxymodel.h"
 #include "sugarclient.h"
-#include "enums.h"
-
-#include <akonadi/contact/contactstreemodel.h>
-#include <akonadi/contact/contactsfilterproxymodel.h>
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/item.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodifyjob.h>
-
+//#include "enums.h"
 #include <kabc/addressee.h>
 #include <kabc/address.h>
+
+#include <akonadi/entitymimetypefiltermodel.h>
+//#include <akonadi/item.h>
+#include <akonadi/itemcreatejob.h>
+#include <akonadi/itemmodifyjob.h>
 
 using namespace Akonadi;
 
@@ -226,12 +225,6 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 void ContactsPage::setupModel()
 {
 
-    /*
-     * convenience model for contacts, allowing us to easily specify the columns
-     * to show
-     * could use an Akonadi::ItemModel instead because we don't have a tree of
-     * collections but only a single one
-     */
     ContactsTreeModel *contactsModel = new ContactsTreeModel( recorder(), this );
 
     ContactsTreeModel::Columns columns;
@@ -239,7 +232,7 @@ void ContactsPage::setupModel()
             << ContactsTreeModel::Role
             << ContactsTreeModel::Organization
             << ContactsTreeModel::PreferredEmail
-            << ContactsTreeModel::PhoneNumbers
+            << ContactsTreeModel::PhoneNumber
             << ContactsTreeModel::GivenName;
     contactsModel->setColumns( columns );
 

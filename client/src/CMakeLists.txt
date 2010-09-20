@@ -13,6 +13,8 @@ set(sugarclient_SRCS
     models/accountsfilterproxymodel.cpp
     models/campaignstreemodel.cpp
     models/campaignsfilterproxymodel.cpp
+    models/contactstreemodel.cpp
+    models/contactsfilterproxymodel.cpp
     models/leadstreemodel.cpp
     models/leadsfilterproxymodel.cpp
     models/opportunitiestreemodel.cpp
