@@ -76,6 +76,7 @@ private:
 
     DetailsType mType;
     bool mEditing;
+    QString mLocalTime;
     bool mModifyFlag;
     Ui_detailswidget mUi;
 };

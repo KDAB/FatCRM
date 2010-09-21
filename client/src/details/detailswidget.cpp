@@ -13,7 +13,10 @@
 using namespace Akonadi;
 
 DetailsWidget::DetailsWidget( DetailsType type, QWidget* parent )
-    : QWidget( parent ), mType( type ), mEditing( false )
+    : QWidget( parent ),
+      mType( type ),
+      mEditing( false ),
+      mLocalTime( QString() )
 {
     mUi.setupUi( this );
     initialize();
@@ -196,6 +199,12 @@ void DetailsWidget::setData( QMap<QString, QString> data )
     // Transform the time returned by the server to system time
     // before it is displayed.
     QString localTime = getTimeZoneOffset( data.value( "dateModified" ) );
+    if ( localTime.isEmpty() ) {
+        // set to current until we receive the data back
+        QDateTime dt = QDateTime::currentDateTime().toUTC();
+        localTime = mLocalTime;
+    }
+
     mUi.dateModified->setText( localTime );
 
     QString key;
@@ -332,9 +341,11 @@ void DetailsWidget::slotSaveData()
         mData[i.key()] = mData[i.value()];
         ++i;
     }
-    // set to current until we receive the data back
-    mUi.dateModified->setText( QDateTime::currentDateTime().toUTC()
-                               .toString( "yyyy-mm-dd hh:mm:ss" ) );
+
+     // set to current until we receive the data back
+    QDateTime dt = QDateTime::currentDateTime().toUTC();
+    mLocalTime = getTimeZoneOffset( dt.toString( Qt::ISODate ) );
+
     if ( !mModifyFlag )
         emit saveItem();
     else
