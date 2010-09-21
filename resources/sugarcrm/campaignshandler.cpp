@@ -2,6 +2,7 @@
 
 #include "campaignshandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <akonadi/abstractdifferencesreporter.h>
@@ -506,7 +507,7 @@ void CampaignsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarCampaign leftCampaign = leftItem.payload<SugarCampaign>();
     const SugarCampaign rightCampaign = rightItem.payload<SugarCampaign>();
 
-    const QString modifiedBy = getModifiedByName( rightCampaign );
+    const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( rightCampaign ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Campaign" ) );

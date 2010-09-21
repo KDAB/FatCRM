@@ -1,5 +1,6 @@
 #include "leadshandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <akonadi/abstractdifferencesreporter.h>
@@ -875,7 +876,7 @@ void LeadsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarLead leftLead = leftItem.payload<SugarLead>();
     const SugarLead rightLead = rightItem.payload<SugarLead>();
 
-    const QString modifiedBy = getModifiedByName( rightLead );
+    const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( rightLead ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Lead" ) );

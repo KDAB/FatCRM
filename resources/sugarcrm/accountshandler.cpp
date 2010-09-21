@@ -1,5 +1,6 @@
 #include "accountshandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <akonadi/abstractdifferencesreporter.h>
@@ -636,7 +637,7 @@ void AccountsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const SugarAccount leftAccount = leftItem.payload<SugarAccount>();
     const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
 
-    const QString modifiedBy = getModifiedByName( rightAccount );
+    const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( rightAccount ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Account" ) );

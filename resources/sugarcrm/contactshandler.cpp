@@ -1,5 +1,6 @@
 #include "contactshandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <akonadi/kabc/contactparts.h>
@@ -791,7 +792,7 @@ void ContactsHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const KABC::Addressee leftContact = leftItem.payload<KABC::Addressee>();
     const KABC::Addressee rightContact = rightItem.payload<KABC::Addressee>();
 
-    const QString modifiedBy = getModifiedByName( rightContact );
+    const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( rightContact ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Contact" ) );

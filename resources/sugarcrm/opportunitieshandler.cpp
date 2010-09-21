@@ -1,5 +1,6 @@
 #include "opportunitieshandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include <akonadi/collection.h>
@@ -486,7 +487,7 @@ void OpportunitiesHandler::compare( Akonadi::AbstractDifferencesReporter *report
     const SugarOpportunity leftOpportunity = leftItem.payload<SugarOpportunity>();
     const SugarOpportunity rightOpportunity = rightItem.payload<SugarOpportunity>();
 
-    const QString modifiedBy = getModifiedByName( rightOpportunity );
+    const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( rightOpportunity ) );
 
     reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Opportunity" ) );
