@@ -242,6 +242,8 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
+    connect( mUi.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
+             this,  SLOT( slotShowDetails( const QModelIndex& ) ) );
 
 }
 
@@ -276,6 +278,12 @@ void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bot
     Item item;
     item = mUi.treeView->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     itemChanged( item );
+}
+
+void Page::slotShowDetails( const QModelIndex& index )
+{
+    if ( index.isValid() )
+        mClientWindow->displayDockWidgets();
 }
 
 bool Page::proceedIsOk()

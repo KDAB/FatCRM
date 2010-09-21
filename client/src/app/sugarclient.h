@@ -30,8 +30,7 @@ public:
 
     ~SugarClient();
 
-    inline void displayDockWidgets( bool value = true )
-    { mUi.showDetails->setChecked( value ); }
+    void displayDockWidgets( bool value = true );
     DetailsWidget *detailsWidget( DetailsType type );
 
 Q_SIGNALS:

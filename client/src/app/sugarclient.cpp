@@ -473,4 +473,10 @@ void SugarClient::initialResourceSelection()
     }
 }
 
+void SugarClient::displayDockWidgets( bool value )
+{
+    if ( mUi.showDetails->isChecked() != value )
+        mUi.showDetails->setChecked( value );
+}
+
 #include "sugarclient.moc"

@@ -57,6 +57,7 @@ private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
     void slotCollectionFetchResult( KJob *job );
     void slotItemClicked( const QModelIndex &index );
+    void slotShowDetails( const QModelIndex &index );
     void slotNewClicked();
     void slotAddItem();
     void slotModifyItem();
