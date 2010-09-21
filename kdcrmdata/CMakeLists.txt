@@ -9,7 +9,12 @@ find_package(Boost REQUIRED)
 set(SHARED_MIME_INFO_MINIMUM_VERSION "0.20")
 find_package(SharedMimeInfo REQUIRED)
 
-include_directories( ${KDEPIMLIBS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QT_INCLUDES} ${Boost_INCLUDE_DIR} )
+include_directories(
+    ${KDE4_INCLUDES}
+    ${KDEPIMLIBS_INCLUDE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${QT_INCLUDES}
+    ${Boost_INCLUDE_DIR} )
 
 set(kdcrmdata_LIB_SRCS
     kdcrmutils.cpp

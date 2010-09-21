@@ -1,5 +1,8 @@
 #include "kdcrmutils.h"
 
+#include <KGlobal>
+#include <KLocale>
+
 #include <QDateTime>
 
 #define TIMESTAMPFORMAT QLatin1String( "yyyy-MM-dd hh:mm:ss" )
@@ -14,13 +17,13 @@ static QDateTime fromString( const QString &serverTimestamp )
 QString KDCRMUtils::formatTimestamp( const QString &serverTimestamp )
 {
     const QDateTime dt = fromString( serverTimestamp ).toLocalTime();
-    return dt.toString( Qt::DefaultLocaleShortDate );
+    return KGlobal::locale()->formatDateTime( dt, KLocale::ShortDate, true );
 }
 
 QString KDCRMUtils::formatTimestampLong( const QString &serverTimestamp )
 {
     const QDateTime dt = fromString( serverTimestamp ).toLocalTime();
-    return dt.toString( Qt::DefaultLocaleLongDate );
+    return KGlobal::locale()->formatDateTime( dt, KLocale::LongDate, true );
 }
 
 QString KDCRMUtils::currentTimestamp()
