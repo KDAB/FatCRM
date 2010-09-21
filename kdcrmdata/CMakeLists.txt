@@ -12,6 +12,7 @@ find_package(SharedMimeInfo REQUIRED)
 include_directories( ${KDEPIMLIBS_INCLUDE_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${QT_INCLUDES} ${Boost_INCLUDE_DIR} )
 
 set(kdcrmdata_LIB_SRCS
+    kdcrmutils.cpp
     sugaraccount.cpp
     sugaraccountio.cpp
     sugaropportunity.cpp
