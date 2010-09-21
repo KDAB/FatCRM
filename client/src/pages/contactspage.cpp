@@ -192,7 +192,7 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
         addressee.removeCustom( "FATCRM", "X-ModifiedByName" );
         addressee.insertCustom( "FATCRM", "X-ModifiedByName", data.value( "modifiedBy" ) );
         addressee.removeCustom( "FATCRM", "X-DateModified" );
-        addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "modifiedDate" ) );
+        addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "dateModified" ) );
         addressee.removeCustom( "FATCRM", "X-ModifiedUserId" );
         addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
         addressee.removeCustom( "FATCRM", "X-ModifiedUserName" );
