@@ -63,7 +63,7 @@ private:
     QString currentCampaignName() const;
     QString currentReportsToName() const;
 
-    void setData( QMap<QString,QString> data );
+    void setData( const QMap<QString,QString> &data );
 
     Details *mDetails;
 

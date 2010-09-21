@@ -219,7 +219,7 @@ QStringList AccountDetails::typeItems() const
     return types;
 }
 
-QMap<QString, QString> AccountDetails::data( const Akonadi::Item item ) const
+QMap<QString, QString> AccountDetails::data( const Akonadi::Item &item ) const
 {
     SugarAccount account = item.payload<SugarAccount>();
     return account.data();

@@ -194,7 +194,7 @@ void DetailsWidget::setItem (const Item &item )
  * It covers all the item types.
  *
  */
-void DetailsWidget::setData( QMap<QString, QString> data )
+void DetailsWidget::setData( const QMap<QString, QString> &data )
 {
     mDetails->setData( data );
     // Transform the time returned by the server to system time

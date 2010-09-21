@@ -257,13 +257,13 @@ void ContactDetails::slotClearDate()
    mBirthDate->clear();
 }
 
-QMap<QString, QString> ContactDetails::data( const Akonadi::Item item ) const
+QMap<QString, QString> ContactDetails::data( const Akonadi::Item &item ) const
 {
     KABC::Addressee contact = item.payload<KABC::Addressee>();
     return contactData( contact );
 }
 
-QMap<QString,QString> ContactDetails::contactData( KABC::Addressee addressee ) const
+QMap<QString,QString> ContactDetails::contactData( const KABC::Addressee &addressee ) const
 {
     QMap<QString, QString> data;
     data["salutation"] = addressee.custom( "FATCRM", "X-Salutation" );

@@ -190,7 +190,7 @@ QStringList CampaignDetails::typeItems() const
     return types;
 }
 
-QMap<QString, QString> CampaignDetails::data( const Akonadi::Item item ) const
+QMap<QString, QString> CampaignDetails::data( const Akonadi::Item &item ) const
 {
     SugarCampaign campaign = item.payload<SugarCampaign>();
     return campaign.data();

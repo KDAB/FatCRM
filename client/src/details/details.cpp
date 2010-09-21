@@ -42,7 +42,7 @@ void Details::clear()
  * them
  *
  */
-void Details::setData( const QMap<QString, QString> data ) const
+void Details::setData( const QMap<QString, QString> &data ) const
 {
     QString key;
 

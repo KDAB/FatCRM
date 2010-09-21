@@ -14,7 +14,7 @@ public:
 
 private:
     /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
 
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();

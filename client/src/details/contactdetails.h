@@ -16,12 +16,12 @@ public:
 
 private:
     /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item item ) const;
+    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
 
     QGroupBox *buildDetailsGroupBox();
     QGroupBox *buildOtherDetailsGroupBox();
     QGroupBox *buildAddressesGroupBox();
-    QMap<QString, QString> contactData( KABC::Addressee contact  ) const;
+    QMap<QString, QString> contactData( const KABC::Addressee &contact ) const;
 
     QLineEdit* mBirthDate;
     QToolButton *mClearDateButton;

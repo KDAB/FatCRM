@@ -14,9 +14,9 @@ public:
 
     ~Details();
 
-    virtual QMap<QString, QString> data( const Akonadi::Item item ) const = 0;
+    virtual QMap<QString, QString> data( const Akonadi::Item &item ) const = 0;
 
-    void setData( const QMap<QString, QString> data ) const;
+    void setData( const QMap<QString, QString> &data ) const;
     const QMap<QString, QString> getData() const;
     void clear();
 

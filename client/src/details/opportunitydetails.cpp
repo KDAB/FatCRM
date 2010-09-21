@@ -171,7 +171,7 @@ QStringList OpportunityDetails::stageItems() const
     return stages;
 }
 
-QMap<QString, QString> OpportunityDetails::data( const Akonadi::Item item ) const
+QMap<QString, QString> OpportunityDetails::data( const Akonadi::Item &item ) const
 {
     SugarOpportunity opportunity = item.payload<SugarOpportunity>();
     return opportunity.data();

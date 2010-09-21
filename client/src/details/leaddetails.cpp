@@ -302,7 +302,7 @@ QStringList LeadDetails::statusItems() const
     return status;
 }
 
-QMap<QString, QString> LeadDetails::data( const Akonadi::Item item ) const
+QMap<QString, QString> LeadDetails::data( const Akonadi::Item &item ) const
 {
     SugarLead lead = item.payload<SugarLead>();
     return lead.data();
