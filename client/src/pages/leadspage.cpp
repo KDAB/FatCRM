@@ -54,7 +54,6 @@ void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 
     lead.setData( data );
     item.setPayload<SugarLead>( lead );
-    item.setRemoteRevision( data.value( "remoteRevision" ) );
 
     // job starts automatically
     // TODO connect to result() signal for error handling

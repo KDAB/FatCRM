@@ -52,7 +52,6 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     campaign.setData( data );
 
     item.setPayload<SugarCampaign>( campaign );
-    item.setRemoteRevision( data.value( "remoteRevision" ) );
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemModifyJob *job = new ItemModifyJob( item );

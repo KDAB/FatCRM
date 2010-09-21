@@ -103,7 +103,6 @@ void OpportunitiesPage::modifyItem( Item &item, const QMap<QString, QString> &da
         opportunity.setProbability( data.value( "probability" ) );
 
         item.setPayload<SugarOpportunity>( opportunity );
-        item.setRemoteRevision( data.value( "remoteRevision" ) );
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );

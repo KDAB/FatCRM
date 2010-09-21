@@ -56,7 +56,6 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
 
     account.setData( data );
     item.setPayload<SugarAccount>( account );
-    item.setRemoteRevision( data.value( "remoteRevision" ) );
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemModifyJob *job = new ItemModifyJob( item );

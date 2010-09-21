@@ -205,8 +205,6 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
         addressee.insertCustom( "FATCRM", "X-DoNotCall", data.value( "doNotCall" ) );
 
         item.setPayload<KABC::Addressee>( addressee );
-        item.setRemoteRevision( data.value( "remoteRevision" ) );
-
         // job starts automatically
         // TODO connect to result() signal for error handling
         ItemModifyJob *job = new ItemModifyJob( item );
