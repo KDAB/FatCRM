@@ -48,6 +48,8 @@ void Page::slotResourceSelectionChanged( const QByteArray &identifier )
         mChangeRecorder->setCollectionMonitored( mCollection, false );
     }
 
+    mCollection = Collection();
+
     /*
      * Look for the wanted collection explicitly by listing all collections
      * of the currently selected resource, filtering by MIME type.
@@ -61,6 +63,7 @@ void Page::slotResourceSelectionChanged( const QByteArray &identifier )
              this, SLOT( slotCollectionFetchResult( KJob* ) ) );
 
     mUi.reloadPB->setEnabled( false );
+    mUi.reloadSB->setEnabled( false );
 }
 
 void Page::slotCollectionFetchResult( KJob *job )
@@ -78,6 +81,7 @@ void Page::slotCollectionFetchResult( KJob *job )
     if ( mCollection.isValid() ) {
         mUi.newPB->setEnabled( true );
         mUi.reloadPB->setEnabled( true );
+        mUi.reloadSB->setEnabled( true );
         mChangeRecorder->setCollectionMonitored( mCollection, true );
 
         // if empty, the collection might not have been loaded yet, try synchronizing
@@ -89,6 +93,7 @@ void Page::slotCollectionFetchResult( KJob *job )
     } else {
         mUi.newPB->setEnabled( false );
         mUi.reloadPB->setEnabled( false );
+        mUi.reloadSB->setEnabled( false );
     }
 }
 
@@ -219,6 +224,7 @@ void Page::initialize()
         mUi.reloadPB->setIcon( icon );
     }
     mUi.reloadPB->setEnabled( false );
+    mUi.reloadSB->setEnabled( false );
 
     connect( mUi.clearSearchPB, SIGNAL( clicked() ),
              this, SLOT( slotResetSearch() ) );
@@ -228,10 +234,15 @@ void Page::initialize()
              this, SLOT( slotRemoveItem() ) );
     connect( mUi.reloadPB, SIGNAL( clicked() ),
              this, SLOT( slotReloadCollection() ) );
+    connect( mUi.reloadSB, SIGNAL( editingFinished() ),
+             this, SLOT( slotReloadIntervalChanged() ) );
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
     mChangeRecorder->setMimeTypeMonitored( mMimeType );
+
+    connect( mChangeRecorder, SIGNAL( collectionChanged( Akonadi::Collection ) ),
+             this, SLOT( slotCollectionChanged( Akonadi::Collection ) ) );
 
     connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
 }
@@ -274,14 +285,16 @@ void Page::setupCachePolicy()
     if ( !policy.inheritFromParent() ) {
         kDebug() << "Collection" << mCollection.name()
                  << "already has a cache policy. Will not overwrite it.";
-        return;
+    } else {
+        policy.setInheritFromParent( false );
+        policy.setIntervalCheckTime( 1 ); // Check for new data every minute
+        mCollection.setCachePolicy( policy );
+        CollectionModifyJob *job = new CollectionModifyJob( mCollection );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
     }
 
-    policy.setInheritFromParent( false );
-    policy.setIntervalCheckTime( 1 ); // Check for new data every minute
-    mCollection.setCachePolicy( policy );
-    CollectionModifyJob *job = new CollectionModifyJob( mCollection );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+    mUi.reloadSB->setValue( policy.intervalCheckTime() );
+    mUi.reloadSB->setEnabled( true );
 }
 
 void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
@@ -338,6 +351,35 @@ void Page::slotReloadCollection()
 {
     if ( mCollection.isValid() ) {
         AgentManager::self()->synchronizeCollection( mCollection );
+    }
+}
+
+void Page::slotReloadIntervalChanged()
+{
+    const int value = mUi.reloadSB->value();
+    kDebug() << "value=" << value;
+
+    if ( mCollection.isValid() ) {
+        CachePolicy policy = mCollection.cachePolicy();
+        policy.setInheritFromParent( false );
+        policy.setIntervalCheckTime( value == 0 ? -1 : value );
+        mCollection.setCachePolicy( policy );
+        CollectionModifyJob *job = new CollectionModifyJob( mCollection );
+        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+    }
+}
+
+void Page::slotCollectionChanged( const Akonadi::Collection &collection )
+{
+    if ( mCollection.isValid() && collection == mCollection ) {
+        mCollection = collection;
+
+        const CachePolicy policy = mCollection.cachePolicy();
+        if ( policy.inheritFromParent() ) {
+            mUi.reloadSB->setValue( 0 );
+        } else {
+            mUi.reloadSB->setValue( policy.intervalCheckTime() );
+        }
     }
 }
 

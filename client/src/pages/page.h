@@ -68,6 +68,8 @@ private Q_SLOTS:
     void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
+    void slotReloadIntervalChanged();
+    void slotCollectionChanged( const Akonadi::Collection &collection );
 
 private:
     void initialize();

@@ -44,6 +44,29 @@
       </spacer>
      </item>
      <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Automatic Reload</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="reloadSB">
+       <property name="specialValueText">
+        <string>Disabled</string>
+       </property>
+       <property name="suffix">
+        <string>min</string>
+       </property>
+       <property name="maximum">
+        <number>1000</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="reloadPB">
        <property name="text">
         <string>Reload</string>
