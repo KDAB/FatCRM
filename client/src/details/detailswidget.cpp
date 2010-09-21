@@ -329,8 +329,6 @@ void DetailsWidget::slotSaveData()
     if ( !mData.empty() )
         mData.clear();
 
-    mData["remoteRevision"] = mUi.dateModified->text();
-
     QMap<QString, QString> detailsMap = data();
     QMap<QString, QString>::const_iterator i = detailsMap.constBegin();
     while ( i != detailsMap.constEnd() ) {
