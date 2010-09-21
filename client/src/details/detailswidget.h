@@ -58,7 +58,6 @@ private:
     void initialize();
     void setConnections();
     void reset();
-    QString getTimeZoneOffset( const QString &localTime ) const;
     QString currentAccountName() const;
     QString currentAssignedUserName() const;
     QString currentCampaignName() const;
@@ -76,7 +75,6 @@ private:
 
     DetailsType mType;
     bool mEditing;
-    QString mLocalTime;
     bool mModifyFlag;
     Ui_detailswidget mUi;
 };

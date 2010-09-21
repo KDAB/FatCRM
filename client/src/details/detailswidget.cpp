@@ -6,6 +6,8 @@
 #include "opportunitydetails.h"
 #include "campaigndetails.h"
 
+#include "kdcrmdata/kdcrmutils.h"
+
 #include <akonadi/item.h>
 
 #include <KDateTime>
@@ -15,8 +17,7 @@ using namespace Akonadi;
 DetailsWidget::DetailsWidget( DetailsType type, QWidget* parent )
     : QWidget( parent ),
       mType( type ),
-      mEditing( false ),
-      mLocalTime( QString() )
+      mEditing( false )
 {
     mUi.setupUi( this );
     initialize();
@@ -198,13 +199,7 @@ void DetailsWidget::setData( QMap<QString, QString> data )
     mDetails->setData( data );
     // Transform the time returned by the server to system time
     // before it is displayed.
-    QString localTime = getTimeZoneOffset( data.value( "dateModified" ) );
-    if ( localTime.isEmpty() ) {
-        // set to current until we receive the data back
-        QDateTime dt = QDateTime::currentDateTime().toUTC();
-        localTime = mLocalTime;
-    }
-
+    const QString localTime = KDCRMUtils::formatTimestamp( data.value( "dateModified" ) );
     mUi.dateModified->setText( localTime );
 
     QString key;
@@ -213,7 +208,7 @@ void DetailsWidget::setData( QMap<QString, QString> data )
     Q_FOREACH( QLabel* lb, labels ) {
         key = lb->objectName();
         if ( key == "dateEntered" )
-            lb->setText( data.value( "dateEntered" ) );
+            lb->setText( KDCRMUtils::formatTimestamp( data.value( "dateEntered" ) ) );
         if ( key == "modifiedBy" ) {
             if ( !data.value( "modifiedByName" ).isEmpty() )
                 lb->setText( data.value( "modifiedByName" ) );
@@ -270,7 +265,8 @@ QMap<QString, QString> DetailsWidget::data()
 
     QString key;
 
-    currentData["dateModified"] = mUi.dateModified->text();
+    // will be overwritten by the server, but good to have for comparison in case of change conflict
+    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
 
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lb, labels ) {
@@ -341,10 +337,6 @@ void DetailsWidget::slotSaveData()
         mData[i.key()] = mData[i.value()];
         ++i;
     }
-
-     // set to current until we receive the data back
-    QDateTime dt = QDateTime::currentDateTime().toUTC();
-    mLocalTime = getTimeZoneOffset( dt.toString( Qt::ISODate ) );
 
     if ( !mModifyFlag )
         emit saveItem();
@@ -559,20 +551,4 @@ QString DetailsWidget::currentReportsToName() const
         }
     }
     return QString();
-}
-
-/**
- * Get the number of secs between localTime and UTC time
- *
- */
-QString DetailsWidget::getTimeZoneOffset( const QString& localTime ) const
-{
-    QString time = localTime;
-    time.replace( QString( " " ),  "T" );
-    QDateTime dt1 = QDateTime::fromString( time, Qt::ISODate );
-    QDateTime dt2 = dt1.toUTC();
-    dt1.setTimeSpec( Qt::UTC );
-    int sec = dt2.secsTo( dt1 );
-    dt1 = dt1.addSecs( sec );
-    return dt1.toString("yyyy-mm-dd hh:mm:ss");
 }
