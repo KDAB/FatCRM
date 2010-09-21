@@ -114,28 +114,3 @@ void OpportunitiesPage::modifyItem( Item &item, const QMap<QString, QString> &da
         QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
         emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
 }
-
-void OpportunitiesPage::setupModel()
-{
-    ItemsTreeModel *opportunitiesModel = new ItemsTreeModel( recorder(), this );
-
-    ItemsTreeModel::Columns columns;
-    columns << ItemsTreeModel::OpportunityName
-            << ItemsTreeModel::OpportunityAccountName
-            << ItemsTreeModel::SalesStage
-            << ItemsTreeModel::Amount
-            << ItemsTreeModel::Close
-            << ItemsTreeModel::AssignedTo;
-    opportunitiesModel->setColumns( columns );
-
-    // same as for the ContactsTreeModel, not strictly necessary
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( opportunitiesModel );
-    filterModel->addMimeTypeInclusionFilter( SugarOpportunity::mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    Page::setupModel();
-}

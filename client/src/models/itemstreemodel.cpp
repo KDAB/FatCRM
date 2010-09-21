@@ -28,9 +28,10 @@ class ItemsTreeModel::Private
     const int mIconSize;
 };
 
-ItemsTreeModel::ItemsTreeModel( ChangeRecorder *monitor, QObject *parent )
-  : EntityTreeModel( monitor, parent ), d( new Private )
+ItemsTreeModel::ItemsTreeModel( DetailsType type, ChangeRecorder *monitor, QObject *parent )
+  : EntityTreeModel( monitor, parent ), d( new Private ), mType( type )
 {
+    setColumns();
 }
 
 ItemsTreeModel::~ItemsTreeModel()
@@ -41,11 +42,11 @@ ItemsTreeModel::~ItemsTreeModel()
 /**
  * Sets the columns that the model should show.
  */
-void ItemsTreeModel::setColumns( const Columns &columns )
+void ItemsTreeModel::setColumns()
 {
-  emit layoutAboutToBeChanged();
-  d->mColumns = columns;
-  emit layoutChanged();
+    emit layoutAboutToBeChanged();
+    d->mColumns = columnsGroup( mType );
+    emit layoutChanged();
 }
 
 /**
@@ -140,7 +141,7 @@ QVariant ItemsTreeModel::entityHeaderData( int section, Qt::Orientation orientat
             return i18nc( "@title:column email", "Email" );
         case CreatedBy:
             return i18nc( "@title:column created by user", "Created By" );
-        case Campaign:
+        case CampaignName:
             return i18nc( "@title:column name of a campaign ", "Campaign" );
         case Status:
             return i18nc( "@title:column status - status", "Status" );
@@ -245,7 +246,7 @@ QVariant ItemsTreeModel::campaignData( const Item &item, int column, int role ) 
 
     if ( (role == Qt::DisplayRole) || (role == Qt::EditRole) ) {
         switch ( columns().at( column ) ) {
-        case Campaign:
+        case CampaignName:
             return campaign.name();
         case Status:
             return campaign.status();
@@ -369,6 +370,55 @@ QVariant ItemsTreeModel::opportunityData( const Item &item, int column, int role
       }
     }
   return QVariant();
+}
+
+ItemsTreeModel::Columns ItemsTreeModel::columnsGroup( DetailsType type ) const
+{
+    ItemsTreeModel::Columns columns;
+
+    switch( type ) {
+    case Account:
+        columns << ItemsTreeModel::Name
+                << ItemsTreeModel::City
+                << ItemsTreeModel::Country
+                << ItemsTreeModel::Phone
+                << ItemsTreeModel::Email
+                << ItemsTreeModel::CreatedBy;
+        break;
+    case Contact:
+        columns << ItemsTreeModel::FullName
+                << ItemsTreeModel::Role
+                << ItemsTreeModel::Organization
+                << ItemsTreeModel::PreferredEmail
+                << ItemsTreeModel::PhoneNumber
+                << ItemsTreeModel::GivenName;
+        break;
+    case Lead:
+        columns << ItemsTreeModel::LeadName
+                << ItemsTreeModel::LeadStatus
+                << ItemsTreeModel::LeadAccountName
+                << ItemsTreeModel::LeadEmail
+                << ItemsTreeModel::LeadUser;
+        break;
+    case Opportunity:
+        columns << ItemsTreeModel::OpportunityName
+                << ItemsTreeModel::OpportunityAccountName
+                << ItemsTreeModel::SalesStage
+                << ItemsTreeModel::Amount
+                << ItemsTreeModel::Close
+                << ItemsTreeModel::AssignedTo;
+        break;
+    case Campaign:
+        columns << ItemsTreeModel::CampaignName
+                << ItemsTreeModel::Status
+                << ItemsTreeModel::Type
+                << ItemsTreeModel::EndDate
+                << ItemsTreeModel::User;
+    default:
+        return columns;
+    }
+
+    return columns;
 }
 
 #include "itemstreemodel.moc"

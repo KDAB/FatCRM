@@ -67,27 +67,3 @@ void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
 }
 
-void LeadsPage::setupModel()
-{
-    ItemsTreeModel *leadsModel = new ItemsTreeModel( recorder(), this );
-
-    ItemsTreeModel::Columns columns;
-    columns << ItemsTreeModel::LeadName
-            << ItemsTreeModel::LeadStatus
-            << ItemsTreeModel::LeadAccountName
-            << ItemsTreeModel::LeadEmail
-            << ItemsTreeModel::LeadUser;
-    leadsModel->setColumns( columns );
-
-    // same as for the ContactsTreeModel, not strictly necessary
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( leadsModel );
-    filterModel->addMimeTypeInclusionFilter( SugarLead::mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    Page::setupModel();
-}
-

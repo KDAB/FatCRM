@@ -2,6 +2,7 @@
 #define ITEMSTREEMODEL_H
 
 #include <akonadi/entitytreemodel.h>
+#include "enums.h"
 
 namespace Akonadi {
 
@@ -27,7 +28,7 @@ class ItemsTreeModel : public EntityTreeModel
       Phone,
       Email,
       CreatedBy,
-      Campaign,
+      CampaignName,
       Status,
       Type,
       EndDate,
@@ -64,11 +65,11 @@ class ItemsTreeModel : public EntityTreeModel
      * represented in the model.
      * param: parent The parent object.
      */
-    explicit ItemsTreeModel( ChangeRecorder *monitor, QObject *parent = 0 );
+    explicit ItemsTreeModel( DetailsType type, ChangeRecorder *monitor, QObject *parent = 0 );
 
     virtual ~ItemsTreeModel();
 
-    void setColumns( const Columns &columns );
+    void setColumns();
     Columns columns() const;
 
     /*reimp*/ QVariant entityData( const Item &item, int column, int role = Qt::DisplayRole ) const;
@@ -82,9 +83,12 @@ private:
     QVariant contactData( const Item &item, int column, int role ) const;
     QVariant leadData( const Item &item, int column, int role ) const;
     QVariant opportunityData( const Item &item, int column, int role ) const;
+    Columns  columnsGroup( DetailsType type ) const;
+
   private:
     class Private;
     Private* const d;
+    DetailsType mType;
 };
 }
 

@@ -64,27 +64,3 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
     updateCampaignCombo( campaign.name(), campaign.id() );
 }
-
-void CampaignsPage::setupModel()
-{
-    ItemsTreeModel *campaignsModel = new ItemsTreeModel( recorder(), this );
-
-    ItemsTreeModel::Columns columns;
-    columns << ItemsTreeModel::Campaign
-            << ItemsTreeModel::Status
-            << ItemsTreeModel::Type
-            << ItemsTreeModel::EndDate
-            << ItemsTreeModel::User;
-    campaignsModel->setColumns( columns );
-
-    // same as for the ContactsTreeModel, not strictly necessary
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( campaignsModel );
-    filterModel->addMimeTypeInclusionFilter( SugarCampaign::mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    Page::setupModel();
-}

@@ -226,7 +226,15 @@ void Page::initialize()
 
 void Page::setupModel()
 {
-    mUi.treeView->setModel( mFilter );
+    ItemsTreeModel *model = new ItemsTreeModel( mType, recorder(), this );
+    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
+    filterModel->setSourceModel( model );
+    filterModel->addMimeTypeInclusionFilter( mimeType() );
+    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
+    FilterProxyModel *filter = new FilterProxyModel( this );
+    filter->setSourceModel( filterModel );
+    setFilter( filter );
+    mUi.treeView->setModel( filter );
 
     connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
              mFilter, SLOT( setFilterString( const QString& ) ) );
@@ -234,6 +242,7 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
+
 }
 
 void Page::cachePolicyJobCompleted( KJob* job)

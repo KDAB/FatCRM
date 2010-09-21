@@ -72,26 +72,3 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
     updateAccountCombo( account.name(), account.id());
     updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
-
-void AccountsPage::setupModel()
-{
-    ItemsTreeModel *accountsModel = new ItemsTreeModel( recorder(), this );
-
-    ItemsTreeModel::Columns columns;
-    columns << ItemsTreeModel::Name
-            << ItemsTreeModel::City
-            << ItemsTreeModel::Country
-            << ItemsTreeModel::Phone
-            << ItemsTreeModel::Email
-            << ItemsTreeModel::CreatedBy;
-    accountsModel->setColumns( columns );
-
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( accountsModel );
-    filterModel->addMimeTypeInclusionFilter( SugarAccount::mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    Page::setupModel();
-}

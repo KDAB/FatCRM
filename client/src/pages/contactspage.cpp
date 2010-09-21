@@ -220,27 +220,3 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
                              addressee.custom( "FATCRM", "X-ReportsToUserId" ) );
     }
 }
-
-void ContactsPage::setupModel()
-{
-
-    ItemsTreeModel *contactsModel = new ItemsTreeModel( recorder(), this );
-
-    ItemsTreeModel::Columns columns;
-    columns << ItemsTreeModel::FullName
-            << ItemsTreeModel::Role
-            << ItemsTreeModel::Organization
-            << ItemsTreeModel::PreferredEmail
-            << ItemsTreeModel::PhoneNumber
-            << ItemsTreeModel::GivenName;
-    contactsModel->setColumns( columns );
-
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( contactsModel );
-    filterModel->addMimeTypeInclusionFilter( KABC::Addressee::mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    Page::setupModel();
-}

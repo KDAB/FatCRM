@@ -3,6 +3,7 @@
 
 #include "ui_page.h"
 #include "enums.h"
+#include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
 #include <akonadi/changerecorder.h>
@@ -46,9 +47,11 @@ protected:
     inline QLineEdit* search() { return mUi.searchLE; }
     inline void setFilter ( Akonadi::FilterProxyModel *filter ) { mFilter = filter; }
 
+
     virtual void addItem( const QMap<QString, QString> &data ) = 0;
     virtual void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data ) = 0;
-    virtual void setupModel();
+
+    void setupModel();
 
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );
@@ -77,7 +80,6 @@ private:
     void removeCampaignsData( Akonadi::Item &item );
 
     QString typeToString( const DetailsType &type ) const;
-
 
     SugarClient *mClientWindow;
     QString mMimeType;
