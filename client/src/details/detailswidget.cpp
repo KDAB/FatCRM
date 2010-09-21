@@ -207,8 +207,6 @@ void DetailsWidget::setData( const QMap<QString, QString> &data )
     QList<QLabel*> labels = mUi.informationGB->findChildren<QLabel*>();
     Q_FOREACH( QLabel* lb, labels ) {
         key = lb->objectName();
-        if ( key == "dateEntered" )
-            lb->setText( KDCRMUtils::formatTimestamp( data.value( "dateEntered" ) ) );
         if ( key == "modifiedBy" ) {
             if ( !data.value( "modifiedByName" ).isEmpty() )
                 lb->setText( data.value( "modifiedByName" ) );
@@ -223,7 +221,7 @@ void DetailsWidget::setData( const QMap<QString, QString> &data )
                              qVariantFromValue<QString>( data.value( "modifiedUserName" ) ) );
         }
         if ( key == "dateEntered" ) {
-            lb->setText( data.value( "dateEntered" ) );
+            lb->setText( KDCRMUtils::formatTimestamp( data.value( "dateEntered" ) ) );
             lb->setProperty( "deleted",
                              qVariantFromValue<QString>( data.value( "deleted" ) ) );
             lb->setProperty( "id",
