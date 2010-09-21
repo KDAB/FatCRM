@@ -88,7 +88,7 @@ void UpdateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callRes
     } else {
         mStage = UpdateEntry;
 
-        mHandler->setEntry( mItem, q->soap(), q->sessionId() );
+        mHandler->setEntry( mItem );
     }
 }
 
@@ -213,7 +213,7 @@ void UpdateEntryJob::startSugarTask()
 
     d->mStage = Private::GetEntry;
 
-    if ( !d->mHandler->getEntry( d->mItem, soap(), sessionId() ) ) {
+    if ( !d->mHandler->getEntry( d->mItem ) ) {
         setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to modify a malformed item in folder %1",
                              d->mHandler->moduleName() ) );

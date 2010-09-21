@@ -9,6 +9,7 @@ namespace Akonadi
     class Collection;
 }
 
+class SugarSession;
 class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
@@ -40,7 +41,7 @@ private:
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {
 public:
-    explicit ModuleHandler( const QString &moduleName );
+    explicit ModuleHandler( const QString &moduleName, SugarSession *session );
 
     virtual ~ModuleHandler();
 
@@ -53,11 +54,11 @@ public:
 
     virtual Akonadi::Collection collection() const = 0;
 
-    virtual void listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId ) = 0;
+    virtual void listEntries( const ListEntriesScope &scope ) = 0;
 
-    virtual bool setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId ) = 0;
+    virtual bool setEntry( const Akonadi::Item &item ) = 0;
 
-    virtual bool getEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId );
+    virtual bool getEntry( const Akonadi::Item &item );
 
     virtual Akonadi::Item itemFromEntry( const TNS__Entry_value &entry,
                                          const Akonadi::Collection &parentCollection ) = 0;
@@ -68,12 +69,16 @@ public:
     virtual bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
 
 protected:
+    SugarSession *mSession;
     QString mModuleName;
     QString mLatestTimestamp;
 
 protected:
     static QString formatDate( const QString &dateString );
     static QByteArray partIdFromPayloadPart( const char *part );
+
+    QString sessionId() const;
+    Sugarsoap *soap() const;
 };
 
 #endif

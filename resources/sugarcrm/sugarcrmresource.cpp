@@ -390,15 +390,15 @@ void SugarCRMResource::listModulesResult( KJob *job )
         } else {
             ModuleHandler* handler = 0;
             if ( module == QLatin1String( "Contacts" ) ) {
-                handler = new ContactsHandler;
+                handler = new ContactsHandler( mSession );
             } else if ( module == QLatin1String( "Accounts" ) ) {
-                handler = new AccountsHandler;
+                handler = new AccountsHandler( mSession );
             } else if ( module == QLatin1String( "Opportunities" ) ) {
-                handler = new OpportunitiesHandler;
+                handler = new OpportunitiesHandler( mSession );
             } else if ( module == QLatin1String( "Leads" ) ) {
-                handler = new LeadsHandler;
+                handler = new LeadsHandler( mSession );
             } else if ( module == QLatin1String( "Campaigns" ) ) {
-                handler = new CampaignsHandler;
+                handler = new CampaignsHandler( mSession );
             } else {
                 //kDebug() << "No module handler for" << module;
                 continue;

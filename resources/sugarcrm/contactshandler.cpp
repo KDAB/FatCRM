@@ -527,8 +527,8 @@ public:
     const QString diffName;
 };
 
-ContactsHandler::ContactsHandler()
-    : ModuleHandler( QLatin1String( "Contacts" ) ),
+ContactsHandler::ContactsHandler( SugarSession *session )
+    : ModuleHandler( QLatin1String( "Contacts" ), session ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "first_name" ),
@@ -673,7 +673,7 @@ Akonadi::Collection ContactsHandler::collection() const
     return contactCollection;
 }
 
-void ContactsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
+void ContactsHandler::listEntries( const ListEntriesScope &scope )
 {
     const QString query = scope.query( QLatin1String( "contacts" ) );
     const QString orderBy = QLatin1String( "contacts.last_name" );
@@ -684,10 +684,10 @@ void ContactsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soa
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+    soap()->asyncGet_entry_list( sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
 }
 
-bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
+bool ContactsHandler::setEntry( const Akonadi::Item &item )
 {
     if ( !item.hasPayload<KABC::Addressee>() ) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
@@ -724,7 +724,7 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
 
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
-    soap->asyncSet_entry( sessionId, moduleName(), valueList );
+    soap()->asyncSet_entry( sessionId(), moduleName(), valueList );
 
     return true;
 }

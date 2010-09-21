@@ -51,7 +51,7 @@ void CreateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callRes
 
     mStage = Private::GetEntry;
 
-    if ( !mHandler->getEntry( mItem, q->soap(), q->sessionId() ) ) {
+    if ( !mHandler->getEntry( mItem ) ) {
         // the item has been added we just don't have a server side datetime
         q->emitResult();
     }
@@ -132,7 +132,7 @@ void CreateEntryJob::startSugarTask()
 
     d->mStage = Private::CreateEntry;
 
-    if ( !d->mHandler->setEntry( d->mItem, soap(), sessionId() ) ) {
+    if ( !d->mHandler->setEntry( d->mItem ) ) {
         setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to add malformed item to folder %1",
                              d->mHandler->moduleName() ) );

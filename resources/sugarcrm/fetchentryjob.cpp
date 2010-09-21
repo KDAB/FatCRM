@@ -90,7 +90,7 @@ void FetchEntryJob::startSugarTask()
     Q_ASSERT( d->mItem.isValid() );
     Q_ASSERT( d->mHandler != 0 );
 
-    if ( !d->mHandler->getEntry( d->mItem, soap(), sessionId() ) ) {
+    if ( !d->mHandler->getEntry( d->mItem ) ) {
         setError( SugarJob::InvalidContextError );
         setErrorText( i18nc( "@info:status", "Attempting to fetch a malformed item from folder %1",
                              d->mHandler->moduleName() ) );

@@ -307,8 +307,8 @@ public:
 
 
 
-CampaignsHandler::CampaignsHandler()
-    : ModuleHandler( QLatin1String( "Campaigns" ) ),
+CampaignsHandler::CampaignsHandler( SugarSession *session )
+    : ModuleHandler( QLatin1String( "Campaigns" ), session ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "id" ),
@@ -410,7 +410,7 @@ Akonadi::Collection CampaignsHandler::collection() const
     return campaignCollection;
 }
 
-void CampaignsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
+void CampaignsHandler::listEntries( const ListEntriesScope &scope )
 {
     const QString query = scope.query( QLatin1String( "campaigns" ) );
     const QString orderBy = QLatin1String( "campaigns.name" );
@@ -421,10 +421,10 @@ void CampaignsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *so
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+    soap()->asyncGet_entry_list( sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
 }
 
-bool CampaignsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
+bool CampaignsHandler::setEntry( const Akonadi::Item &item )
 {
     if ( !item.hasPayload<SugarCampaign>() ) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
@@ -461,7 +461,7 @@ bool CampaignsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, con
 
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
-    soap->asyncSet_entry( sessionId, moduleName(), valueList );
+    soap()->asyncSet_entry( sessionId(), moduleName(), valueList );
 
     return true;
 }

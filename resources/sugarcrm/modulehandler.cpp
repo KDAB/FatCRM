@@ -1,5 +1,6 @@
 #include "modulehandler.h"
 
+#include "sugarsession.h"
 #include "sugarsoap.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -56,9 +57,10 @@ QString ListEntriesScope::query( const QString &module ) const
     return module + QLatin1String( ".date_modified >= '") + mUpdateTimestamp + QLatin1String( "'" );
 }
 
-ModuleHandler::ModuleHandler( const QString &moduleName )
-    : mModuleName( moduleName )
+ModuleHandler::ModuleHandler( const QString &moduleName, SugarSession *session )
+    : mSession( session ), mModuleName( moduleName )
 {
+    Q_ASSERT( mSession != 0 );
 }
 
 ModuleHandler::~ModuleHandler()
@@ -80,7 +82,7 @@ void ModuleHandler::resetLatestTimestamp()
     mLatestTimestamp = QString();
 }
 
-bool ModuleHandler::getEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
+bool ModuleHandler::getEntry( const Akonadi::Item &item )
 {
     if ( item.remoteId().isEmpty() ) {
         kError() << "Item remoteId is empty. id=" << item.id();
@@ -90,7 +92,7 @@ bool ModuleHandler::getEntry( const Akonadi::Item &item, Sugarsoap *soap, const 
     TNS__Select_fields selectedFields;
     selectedFields.setItems( supportedFields() );
 
-    soap->asyncGet_entry( sessionId, mModuleName, item.remoteId(), selectedFields );
+    soap()->asyncGet_entry( sessionId(), mModuleName, item.remoteId(), selectedFields );
     return true;
 }
 
@@ -126,4 +128,14 @@ QString ModuleHandler::formatDate( const QString &dateString )
 QByteArray ModuleHandler::partIdFromPayloadPart( const char *part )
 {
     return QByteArray( "PLD:" ) + part;
+}
+
+QString ModuleHandler::sessionId() const
+{
+    return mSession->sessionId();
+}
+
+Sugarsoap *ModuleHandler::soap() const
+{
+    return mSession->soap();
 }

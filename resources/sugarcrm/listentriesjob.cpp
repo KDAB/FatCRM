@@ -73,7 +73,7 @@ void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result 
     }
 
     mListScope.setOffset( callResult.next_offset() );
-    mHandler->listEntries( mListScope, q->soap(), q->sessionId() );
+    mHandler->listEntries( mListScope );
 }
 
 void ListEntriesJob::Private::listEntriesError( const KDSoapMessage &fault )
@@ -114,7 +114,7 @@ void ListEntriesJob::startSugarTask()
     d->mStage = Private::GetExisting;
     d->mListScope = ListEntriesScope( d->mHandler->latestTimestamp() );
 
-    d->mHandler->listEntries( d->mListScope, soap(), sessionId() );
+    d->mHandler->listEntries( d->mListScope );
 }
 
 #include "listentriesjob.moc"

@@ -10,7 +10,7 @@ template <typename U, typename V> class QHash;
 class OpportunitiesHandler : public ModuleHandler
 {
 public:
-    OpportunitiesHandler();
+    OpportunitiesHandler( SugarSession *session );
 
     ~OpportunitiesHandler();
 
@@ -18,9 +18,9 @@ public:
 
     Akonadi::Collection collection() const;
 
-    void listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId );
+    void listEntries( const ListEntriesScope &scope );
 
-    bool setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId );
+    bool setEntry( const Akonadi::Item &item );
 
     Akonadi::Item itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
 

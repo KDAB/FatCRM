@@ -414,8 +414,8 @@ public:
     const QString diffName;
 };
 
-AccountsHandler::AccountsHandler()
-    : ModuleHandler( QLatin1String( "Accounts" ) ),
+AccountsHandler::AccountsHandler( SugarSession *session )
+    : ModuleHandler( QLatin1String( "Accounts" ), session ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( QLatin1String( "id" ),
@@ -540,7 +540,7 @@ Akonadi::Collection AccountsHandler::collection() const
     return accountCollection;
 }
 
-void AccountsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soap, const QString &sessionId )
+void AccountsHandler::listEntries( const ListEntriesScope &scope )
 {
     const QString query = scope.query( QLatin1String( "accounts" ) );
     const QString orderBy = QLatin1String( "accounts.name" );
@@ -551,10 +551,10 @@ void AccountsHandler::listEntries( const ListEntriesScope &scope, Sugarsoap *soa
     TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
-    soap->asyncGet_entry_list( sessionId, moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+    soap()->asyncGet_entry_list( sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
 }
 
-bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, const QString &sessionId )
+bool AccountsHandler::setEntry( const Akonadi::Item &item )
 {
     if ( !item.hasPayload<SugarAccount>() ) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
@@ -591,7 +591,7 @@ bool AccountsHandler::setEntry( const Akonadi::Item &item, Sugarsoap *soap, cons
 
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
-    soap->asyncSet_entry( sessionId, moduleName(), valueList );
+    soap()->asyncSet_entry( sessionId(), moduleName(), valueList );
 
     return true;
 }
