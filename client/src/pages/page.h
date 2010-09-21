@@ -67,6 +67,7 @@ private Q_SLOTS:
     void slotUpdateDetails( const QModelIndex&, const QModelIndex& );
     void slotSetItem();
     void slotResetSearch();
+    void slotReloadCollection();
 
 private:
     void initialize();

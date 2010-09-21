@@ -59,6 +59,8 @@ void Page::slotResourceSelectionChanged( const QByteArray &identifier )
     job->fetchScope().setIncludeStatistics( true );
     connect( job, SIGNAL( result( KJob* ) ),
              this, SLOT( slotCollectionFetchResult( KJob* ) ) );
+
+    mUi.reloadPB->setEnabled( false );
 }
 
 void Page::slotCollectionFetchResult( KJob *job )
@@ -75,6 +77,7 @@ void Page::slotCollectionFetchResult( KJob *job )
 
     if ( mCollection.isValid() ) {
         mUi.newPB->setEnabled( true );
+        mUi.reloadPB->setEnabled( true );
         mChangeRecorder->setCollectionMonitored( mCollection, true );
 
         // if empty, the collection might not have been loaded yet, try synchronizing
@@ -85,6 +88,7 @@ void Page::slotCollectionFetchResult( KJob *job )
         setupCachePolicy();
     } else {
         mUi.newPB->setEnabled( false );
+        mUi.reloadPB->setEnabled( false );
     }
 }
 
@@ -210,12 +214,20 @@ void Page::initialize()
     mClientWindow = dynamic_cast<SugarClient*>( window() );
     mUi.treeView->header()->setResizeMode( QHeaderView::ResizeToContents );
 
+    const QIcon icon = ( style() != 0 ? style()->standardIcon( QStyle::SP_BrowserReload, 0, mUi.reloadPB ) : QIcon() );
+    if ( !icon.isNull() ) {
+        mUi.reloadPB->setIcon( icon );
+    }
+    mUi.reloadPB->setEnabled( false );
+
     connect( mUi.clearSearchPB, SIGNAL( clicked() ),
              this, SLOT( slotResetSearch() ) );
     connect( mUi.newPB, SIGNAL( clicked() ),
              this, SLOT( slotNewClicked() ) );
     connect( mUi.removePB, SIGNAL( clicked() ),
              this, SLOT( slotRemoveItem() ) );
+    connect( mUi.reloadPB, SIGNAL( clicked() ),
+             this, SLOT( slotReloadCollection() ) );
 
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload( true );
@@ -313,6 +325,13 @@ void Page::slotSetItem()
 void Page::slotResetSearch()
 {
     mUi.searchLE->clear();
+}
+
+void Page::slotReloadCollection()
+{
+    if ( mCollection.isValid() ) {
+        AgentManager::self()->synchronizeCollection( mCollection );
+    }
 }
 
 QString Page::typeToString( const DetailsType &type ) const
