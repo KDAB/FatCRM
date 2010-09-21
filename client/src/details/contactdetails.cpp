@@ -299,8 +299,7 @@ QMap<QString,QString> ContactDetails::contactData( KABC::Addressee addressee ) c
     data["campaign"] = addressee.custom( "FATCRM", "X-CampaignName" );
     data["assignedTo"] = addressee.custom( "FATCRM", "X-AssignedUserName" );
     data["reportsTo"] = addressee.custom( "FATCRM", "X-ReportsToUserName" );
-    bool donotcall = addressee.custom( "FATCRM", "X-DoNotCall" ).isEmpty() || addressee.custom( "FATCRM", "X-DoNotCall" ) == "0" ? false : true;
-    data["doNotCall"] = donotcall;
+    data["doNotCall"] = addressee.custom( "FATCRM", "X-DoNotCall" );
     data["description"] = addressee.note();
     data["modifiedBy"] = addressee.custom( "FATCRM", "X-ModifiedByName" );
     data["dateModified"] = addressee.custom( "FATCRM", "X-DateModified" );
