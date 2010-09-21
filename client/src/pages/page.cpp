@@ -286,7 +286,14 @@ void Page::setupCachePolicy()
 
 void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
 {
+    if ( !mClientWindow->isEnabled() ) {
+        do {
+            QApplication::restoreOverrideCursor();
+        } while ( QApplication::overrideCursor() != 0 );
+          mClientWindow->setEnabled( true );
+    }
     Q_UNUSED( bottomRight );
+
     Item item;
     item = mUi.treeView->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
     itemChanged( item );

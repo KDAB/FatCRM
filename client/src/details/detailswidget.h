@@ -49,9 +49,6 @@ protected:
     void addAssignedToData( const QString &name, const QString &id );
     void addReportsToData( const QString &name, const QString &id );
 
-protected Q_SLOTS:
-    void slotResetCursor( const QString& );
-
 private Q_SLOTS:
     void slotEnableSaving();
     void slotSetModifyFlag( bool );
@@ -61,6 +58,7 @@ private:
     void initialize();
     void setConnections();
     void reset();
+    QString getTimeZoneOffset( const QString &localTime ) const;
     QString currentAccountName() const;
     QString currentAssignedUserName() const;
     QString currentCampaignName() const;

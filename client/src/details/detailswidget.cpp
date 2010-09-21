@@ -8,6 +8,8 @@
 
 #include <akonadi/item.h>
 
+#include <KDateTime>
+
 using namespace Akonadi;
 
 DetailsWidget::DetailsWidget( DetailsType type, QWidget* parent )
@@ -191,8 +193,10 @@ void DetailsWidget::setItem (const Item &item )
 void DetailsWidget::setData( QMap<QString, QString> data )
 {
     mDetails->setData( data );
-
-    mUi.dateModified->setText( data.value( "dateModified" ) );
+    // Transform the time returned by the server to system time
+    // before it is displayed.
+    QString localTime = getTimeZoneOffset( data.value( "dateModified" ) );
+    mUi.dateModified->setText( localTime );
 
     QString key;
 
@@ -328,9 +332,9 @@ void DetailsWidget::slotSaveData()
         mData[i.key()] = mData[i.value()];
         ++i;
     }
-    connect( mUi.dateModified, SIGNAL( textChanged( const QString& ) ),
-             this, SLOT( slotResetCursor( const QString& ) ) );
-
+    // set to current until we receive the data back
+    mUi.dateModified->setText( QDateTime::currentDateTime().toUTC()
+                               .toString( "yyyy-mm-dd hh:mm:ss" ) );
     if ( !mModifyFlag )
         emit saveItem();
     else
@@ -546,21 +550,18 @@ QString DetailsWidget::currentReportsToName() const
     return QString();
 }
 
-/*
- * Reset the cursor and enable the main window when a job
- * is done.
+/**
+ * Get the number of secs between localTime and UTC time
  *
  */
-void DetailsWidget::slotResetCursor( const QString& text)
+QString DetailsWidget::getTimeZoneOffset( const QString& localTime ) const
 {
-    SugarClient *w = dynamic_cast<SugarClient*>( window() );
-    if ( !w )
-        return;
-    if ( !text.isEmpty() ) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-        if ( !w->isEnabled() )
-            w->setEnabled( true );
-    }
+    QString time = localTime;
+    time.replace( QString( " " ),  "T" );
+    QDateTime dt1 = QDateTime::fromString( time, Qt::ISODate );
+    QDateTime dt2 = dt1.toUTC();
+    dt1.setTimeSpec( Qt::UTC );
+    int sec = dt2.secsTo( dt1 );
+    dt1 = dt1.addSecs( sec );
+    return dt1.toString("yyyy-mm-dd hh:mm:ss");
 }
