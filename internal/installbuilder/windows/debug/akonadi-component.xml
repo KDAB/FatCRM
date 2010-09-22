@@ -83,9 +83,6 @@
                     <origin>bin/akonadiserver.exe</origin>
                 </distributionFile>
                 <distributionFile>
-                    <origin>bin/dbus-1d.dll</origin>
-                </distributionFile>
-                <distributionFile>
                     <origin>bin/dbus-daemon.exe</origin>
                 </distributionFile>
                 <distributionFile>
@@ -105,9 +102,6 @@
                 </distributionFile>
                 <distributionFile>
                     <origin>bin/mysqld.exe</origin>
-                </distributionFile>
-                <distributionFile>
-                    <origin>bin/sopranod.dll</origin>
                 </distributionFile>
                 <distributionFile>
                     <origin>scripts/mysql_install_db.pl</origin>
