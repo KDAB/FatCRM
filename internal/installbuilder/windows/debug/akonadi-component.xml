@@ -38,11 +38,6 @@
             <destination>${installdir}</destination>
             <name>programfileswindows</name>
             <platforms>windows</platforms>
-            <distributionFileList>
-                <distributionDirectory>
-                    <origin>plugins</origin>
-                </distributionDirectory>
-            </distributionFileList>
         </folder>
         <folder>
             <description>Program Files</description>
@@ -109,6 +104,12 @@
                 <distributionFile>
                     <origin>bin/libmysql.dll</origin>
                 </distributionFile>
+                <distributionFile>
+                    <origin>bin/akonadi_agent_server.exe</origin>
+                </distributionFile>
+                <distributionFile>
+                    <origin>bin/qt.conf</origin>
+                </distributionFile>
             </distributionFileList>
         </folder>
         <folder>
@@ -130,6 +131,17 @@
             <distributionFileList>
                 <distributionDirectory>
                     <origin>share/english</origin>
+                </distributionDirectory>
+            </distributionFileList>
+        </folder>
+        <folder>
+            <description>Qt Plugins</description>
+            <destination>${installdir}/plugins</destination>
+            <name>qtplugins</name>
+            <platforms>all</platforms>
+            <distributionFileList>
+                <distributionDirectory>
+                    <origin>plugins/sqldrivers</origin>
                 </distributionDirectory>
             </distributionFileList>
         </folder>
