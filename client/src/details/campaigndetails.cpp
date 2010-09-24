@@ -151,14 +151,14 @@ void CampaignDetails::slotSetStartDate()
 {
     mStartDate->setText( mStartDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mStartDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    mStartDateCalendarButton->calendarWidget()->close();
+    mStartDateCalendarButton->calendarDialog()->close();
 }
 
 void CampaignDetails::slotSetEndDate()
 {
     mEndDate->setText( mEndDateCalendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mEndDateCalendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
-    mEndDateCalendarButton->calendarWidget()->close();
+    mEndDateCalendarButton->calendarDialog()->close();
 }
 
 void CampaignDetails::slotClearDate()

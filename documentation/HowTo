@@ -1,0 +1,125 @@
+
+2010-09-24
+
+Here is a quick description about how to use SugarClient.
+We are still in the implementation stage and the step described 
+below will most probably change during the development process.
+
+
+1/ Best way is to start the akonadi controller from its own terminal.
+====================================================================
+Open a shell. and run: 
+'akonadictl start' ( to stop run 'akonadictl stop' ).
+
+
+2/ Start the SugarClient from another shell by running:
+======================================================
+'sugarclient'
+
+If you did not start akonadictl as recommended in 1 - sugarclient will start it by itself. Or you can even login for its File menu.
+
+Akonadictl being started, the treeviews for the different modules 
+supported at the moment should be dilled up with data.
+
+N.B: The following description is the same for all the supported types 
+of items  ( Accounts, Opportunities, Leads, Contacts, Campaign ).
+
+3/ Show the data ( details) for an item.
+=======================================
+
+- Double click on it 
+- Select it and check the Show Details CheckBox.
+- Run (View -> <Type Details> or Alt-V - A (e.g for Accounts )
+
+The detail widget should be displayed as a DockWidget.
+Check the Detach check box to have it in a floating state. Or uncheck it 
+to have it back docked.
+
+4/ Modify data
+==============
+
+- Modify any data displayed ( details widget ), that should enable the 
+Save button at the bootm of the detail widget.
+- Click on Save. The widget is disabled until the cache and the model (local) 
+have been updated. If you are in a connected state ( remote server ) you can 
+see the Date Modified and by label top of the details widget being updated when the data returns back ( after an automated sync  ) 
+
+N.B: it is also possible to run:
+ File -> Synchroize ( Alt-F - S ) 
+ or click on the reload icone top right of the details widget to force a Sync.
+
+5/ Add New Data (items)
+=======================
+
+- Click on the New button at the top left of each page (tab widgets)
+  or run 'Alt-N'
+
+The details widget will reset itself and clear all its fields 
+(if it was already diplayed ) or will be displayed empty.
+
+- Add the data you want to register. This will enable the save button
+
+-Click on Save. The widget is disabled until the cache and the model (local) 
+have been updated. If you are in a connected state ( remote server ) you can 
+see the Date Modified and by label top of the details widget being updated when the data returns back ( after an automated sync  )  
+
+6/ Remove an item
+=================
+
+- Select the item you want to remove 
+- Click on the Remove button or run Alt-R
+- A dialog is displayed asking for confirmation.
+- Click Yes 
+
+The item is permanentely removed.
+
+7/ Search an item 
+=================
+
+N.B: The search function is taking in account any text displayed in any column 
+for the page you are searching.
+
+- Click your search string in the search edit field.
+- The model will only show the items related to your search string.
+- reset by clearing the search field ( Clear button on its right side )
+ 
+
+ 
+Main Menu
+=========
+
+File
+====
+File -> Login: 
+- let you connect to one of available resources available 
+  (right now only SugarCrm )
+
+File -> Logout: 
+
+- If you did connect yourself from the sugarclient, let you logout. 
+
+File -> Synchronize 
+- Force a sync, instead of waiting for the next automated one.
+
+File -> Reload: 
+- Reload the data 
+
+
+Settings:
+========
+
+Settings -> Configure CRM Accounts... 
+
+- Let you Add new resources.
+- Configure the existing resource.
+- Remove existing resources.
+
+View Menu:
+==========
+
+Show details widget for a particular module
+
+
+
+
+
