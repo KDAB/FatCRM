@@ -5,6 +5,9 @@ Here is a quick description about how to use SugarClient.
 We are still in the implementation stage and the step described 
 below will most probably change during the development process.
 
+When using the Windows installer, just click the SugarClient item in Windows
+start menu, Folder "FatCRM" and skip to (3).
+When running for the first time, check Appendix (B).
 
 1/ Best way is to start the akonadi controller from its own terminal.
 ====================================================================
@@ -83,30 +86,29 @@ for the page you are searching.
 - The model will only show the items related to your search string.
 - reset by clearing the search field ( Clear button on its right side )
  
-
  
-Main Menu
-=========
-
-File
-====
+Appendix (A): File Menu
+=======================
 File -> Login: 
-- let you connect to one of available resources available 
-  (right now only SugarCrm )
+- Switches which resource's data is being shown in the client.
+- If the resource is in "Offline" mode, it will be switched to "Online",
+  meaning it will attempt to login to the server and synchronize data.
 
 File -> Logout: 
 
-- If you did connect yourself from the sugarclient, let you logout. 
+- Switches the resource who's data is currently worked on into "Offline"
+  mode. It will logout from the server and stop synchronizing data.
 
 File -> Synchronize 
 - Force a sync, instead of waiting for the next automated one.
 
 File -> Reload: 
-- Reload the data 
+- Locallly reload the data, i.e. refresh the view's from data cached in
+  Akonadi. No interaction with the server.
 
 
-Settings:
-========
+Appendix (B) Settings Menu
+==========================
 
 Settings -> Configure CRM Accounts... 
 
@@ -114,8 +116,22 @@ Settings -> Configure CRM Accounts...
 - Configure the existing resource.
 - Remove existing resources.
 
-View Menu:
-==========
+This dialog will also show the state of each resource, e.g. whether they are
+online/offline, if they've reported an error, etc.
+
+1) Configuration SugarCRM resources
+-----------------------------------
+
+SugarCRM resources need three configuration values:
+- host URL: this can be copy&paste from a browser which is logged in using
+  the CMR's web interface. Usually something like http://host/crm/index.php
+
+- user name
+- user password. The password is only displayed in clear text during input.
+
+
+Appendix (C) View Menu
+======================
 
 Show details widget for a particular module
 
