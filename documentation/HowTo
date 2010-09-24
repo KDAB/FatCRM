@@ -101,9 +101,11 @@ File -> Logout:
 
 File -> Synchronize 
 - Force a sync, instead of waiting for the next automated one.
+  Each tab has its own button for doing that for just one module.
+  They also have settings for automatic (interval based) synchronizing.
 
 File -> Reload: 
-- Locallly reload the data, i.e. refresh the view's from data cached in
+- Locally reload the data, i.e. refresh the view's from data cached in
   Akonadi. No interaction with the server.
 
 
