@@ -57,18 +57,11 @@
      <height>19</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuSettings">
-    <property name="title">
-     <string>Settings</string>
-    </property>
-    <addaction name="actionConfigureResources"/>
-   </widget>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionLogin"/>
-    <addaction name="actionLogout"/>
+    <addaction name="actionCRMAccounts"/>
     <addaction name="separator"/>
     <addaction name="actionSynchronize"/>
     <addaction name="actionReload"/>
@@ -76,12 +69,14 @@
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionLogin">
+  <action name="actionCRMAccounts">
    <property name="text">
-    <string>Login...</string>
+    <string>CRM Accounts...</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage CRM Accounts</string>
    </property>
   </action>
   <action name="actionSynchronize">
@@ -100,19 +95,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
-   </property>
-  </action>
-  <action name="actionConfigureResources">
-   <property name="text">
-    <string>Configure CRM Accounts...</string>
-   </property>
-  </action>
-  <action name="actionLogout">
-   <property name="text">
-    <string>Logout</string>
-   </property>
-   <property name="toolTip">
-    <string>Disconnect from current server</string>
    </property>
   </action>
  </widget>

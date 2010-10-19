@@ -3,6 +3,11 @@
 
 #include <QDialog>
 
+namespace Akonadi
+{
+    class AgentInstance;
+}
+
 class KJob;
 
 class ResourceConfigDialog : public QDialog
@@ -13,6 +18,12 @@ public:
 
     ~ResourceConfigDialog();
 
+Q_SIGNALS:
+    void resourceSelected( const Akonadi::AgentInstance &resource );
+
+public Q_SLOTS:
+    void resourceSelectionChanged( const Akonadi::AgentInstance &resource );
+
 private:
     class Private;
     Private *const d;
@@ -20,8 +31,13 @@ private:
     Q_PRIVATE_SLOT( d, void updateButtonStates() )
     Q_PRIVATE_SLOT( d, void addResource() )
     Q_PRIVATE_SLOT( d, void configureResource() )
+    Q_PRIVATE_SLOT( d, void syncResources() )
     Q_PRIVATE_SLOT( d, void removeResource() )
     Q_PRIVATE_SLOT( d, void resourceCreateResult( KJob* ) )
+    Q_PRIVATE_SLOT( d, void applyResourceSelection() )
+    Q_PRIVATE_SLOT( d, void accountNameChanged() )
+    Q_PRIVATE_SLOT( d, void accountModeChanged( int ) )
+    Q_PRIVATE_SLOT( d, void agentInstanceChanged( const Akonadi::AgentInstance& ) )
 };
 
 #endif

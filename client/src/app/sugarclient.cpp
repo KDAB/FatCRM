@@ -50,11 +50,15 @@ void SugarClient::slotDelayedInit()
                  page, SLOT( slotResourceSelectionChanged( QByteArray ) ) );
     }
 
-    //initialize member
+    // initialize additional UI
     mResourceSelector = createResourcesCombo();
 
     connect( mResourceSelector, SIGNAL( currentIndexChanged( int ) ),
              this, SLOT( slotResourceSelectionChanged( int ) ) );
+
+    mResourceDialog = new ResourceConfigDialog( this );
+    connect( mResourceDialog, SIGNAL( resourceSelected( Akonadi::AgentInstance ) ),
+             this, SLOT( slotResourceSelected( Akonadi::AgentInstance ) ) );
 
     initialResourceSelection();
 
@@ -97,9 +101,9 @@ void SugarClient::createMenus()
 
 void SugarClient::createToolBar()
 {
-    mToolBar = addToolBar( QString( "Details controller" ) );
-    mToolBar->addWidget( mUi.showDetails );
-    mToolBar->addWidget( mUi.detachDetails );
+    mDetailsToolBar = addToolBar( tr( "Details controller" ) );
+    mDetailsToolBar->addWidget( mUi.showDetails );
+    mDetailsToolBar->addWidget( mUi.detachDetails );
 }
 
 void SugarClient::createDockWidgets()
@@ -174,10 +178,20 @@ void SugarClient::slotResourceSelectionChanged( int index )
                              : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
         mUi.actionSynchronize->setEnabled( true );
-        mUi.actionLogout->setEnabled( true );
+        mResourceDialog->resourceSelectionChanged( agent );
     } else {
         mUi.actionSynchronize->setEnabled( false );
-        mUi.actionLogout->setEnabled( false );
+    }
+}
+
+void SugarClient::slotResourceSelected( const Akonadi::AgentInstance &resource )
+{
+    for ( int index = 0; index < mResourceSelector->count(); ++index ) {
+        const AgentInstance agent = mResourceSelector->itemData( index, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
+        if ( agent.isValid() && agent == resource ) {
+            mResourceSelector->setCurrentIndex( index );
+            return;
+        }
     }
 }
 
@@ -201,14 +215,12 @@ void SugarClient::slotSynchronize()
 
 void SugarClient::setupActions()
 {
-    connect( mUi.actionLogin, SIGNAL( triggered() ), this, SLOT( slotLogin() ) );
-    connect( mUi.actionLogout, SIGNAL( triggered() ), this, SLOT( slotLogout() ) );
+    connect( mUi.actionCRMAccounts, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
     connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
     connect( mUi.actionSynchronize, SIGNAL( triggered() ), this, SLOT( slotSynchronize() ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
     connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
-    connect( mUi.actionConfigureResources, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
 
     Q_FOREACH( const Page *page, mPages ) {
         connect( page, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
@@ -301,40 +313,10 @@ void SugarClient::detachDockViews( bool value )
     mContactDetailsDock->setFloating( value );
 }
 
-void SugarClient::slotLogin()
-{
-    QStringList items;
-    for ( int i = 0; i < mResourceSelector->count(); ++i ) {
-        items << mResourceSelector->itemText( i );
-    }
-    bool ok;
-    QString item = QInputDialog::getItem( this, "Select Sugar Resource",
-                                          "Resource: ", items, 0, false,
-                                          &ok );
-    if ( ok && !item.isEmpty() ) {
-        mResourceSelector->setCurrentIndex( mResourceSelector->findText( item ) );
-
-        AgentInstance agent = currentResource();
-        if ( agent.isValid() && !agent.isOnline() ) {
-            agent.setIsOnline( true );
-        }
-    }
-}
-
-void SugarClient::slotLogout()
-{
-    AgentInstance agent = currentResource();
-    if ( agent.isValid() ) {
-        agent.setIsOnline( false );
-        mUi.actionSynchronize->setEnabled( false );
-        mUi.actionLogout->setEnabled( false );
-    }
-}
-
 void SugarClient::slotConfigureResources()
 {
-    ResourceConfigDialog dialog( this );
-    dialog.exec();
+    mResourceDialog->show();
+    mResourceDialog->raise();
 }
 
 QComboBox* SugarClient::createResourcesCombo()
@@ -347,6 +329,9 @@ QComboBox* SugarClient::createResourcesCombo()
     QComboBox *container = new QComboBox();
     agentFilterModel->addCapabilityFilter( QString( "KDCRM" ).toLatin1() );
     container->setModel( agentFilterModel );
+
+    QToolBar *resourceToolBar = addToolBar( tr( "CRM Account Selection" ) );
+    resourceToolBar->addWidget( container );
 
     return container;
 }
@@ -453,23 +438,8 @@ void SugarClient::initialResourceSelection()
     if ( selectors == 1 ) {
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
     } else {
-        QStringList items;
-        for ( int i = 0; i < mResourceSelector->count(); ++i ) {
-            items << mResourceSelector->itemText( i );
-            bool ok;
-            const QString item = QInputDialog::getItem( this, tr( "Select Sugar Resource" ),
-                                                        tr( "Resource:" ), items, 0, false,
-                                                        &ok );
-            if ( !ok && item.isEmpty() ) {
-                return;
-            }
-            mResourceSelector->setCurrentIndex( mResourceSelector->findText( item ) );
-        }
-    }
-
-    AgentInstance agent = currentResource();
-    if ( agent.isValid() && !agent.isOnline() ) {
-        agent.setIsOnline( true );
+        mResourceDialog->show();
+        mResourceDialog->raise();
     }
 }
 

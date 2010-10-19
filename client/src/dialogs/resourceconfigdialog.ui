@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>566</width>
-    <height>303</height>
+    <height>329</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>CRM Accounts</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
@@ -33,6 +33,9 @@
          <property name="text">
           <string>Add...</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -40,12 +43,28 @@
          <property name="text">
           <string>Configure...</string>
          </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="syncResource">
+         <property name="text">
+          <string>Synchronize</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="removeResource">
          <property name="text">
           <string>Remove</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -67,12 +86,52 @@
     </layout>
    </item>
    <item>
+    <widget class="QGroupBox" name="accountDetails">
+     <property name="title">
+      <string>Account Details</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Name:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="accountName"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Access Mode:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="accountMode">
+        <item>
+         <property name="text">
+          <string>Online Mode</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Offline Mode</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close</set>
      </property>
     </widget>
    </item>

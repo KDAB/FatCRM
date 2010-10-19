@@ -17,6 +17,7 @@ class QComboBox;
 class QProgressBar;
 class QTimer;
 class QToolBar;
+class ResourceConfigDialog;
 
 namespace Akonadi {
     class AgentInstance;
@@ -49,7 +50,7 @@ private:
     void createTabs();
 
     QMenu *mViewMenu;
-    QToolBar *mToolBar;
+    QToolBar *mDetailsToolBar;
     QDockWidget *mAccountDetailsDock;
     DetailsWidget *mAccountDetailsWidget;
     QAction *mViewAccountAction;
@@ -74,17 +75,18 @@ private:
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
 
+    ResourceConfigDialog *mResourceDialog;
+
 private Q_SLOTS:
     void slotDelayedInit();
     void slotReload();
     void slotSynchronize();
     void slotResourceSelectionChanged( int index );
+    void slotResourceSelected( const Akonadi::AgentInstance &resource );
     void slotShowMessage( const QString& );
     void slotManageItemDetailsView( int currentTab );
     void slotManageDetailsDisplay( bool value );
     void slotDetailsDisplayDisabled( bool value );
-    void slotLogin();
-    void slotLogout();
     void slotConfigureResources();
     void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
     void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
