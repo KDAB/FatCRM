@@ -79,7 +79,7 @@ private:
 
 private Q_SLOTS:
     void slotDelayedInit();
-    void slotReload();
+    void slotToggleOffline( bool offline );
     void slotSynchronize();
     void slotResourceSelectionChanged( int index );
     void slotResourceSelected( const Akonadi::AgentInstance &resource );

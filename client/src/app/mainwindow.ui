@@ -64,7 +64,7 @@
     <addaction name="actionCRMAccounts"/>
     <addaction name="separator"/>
     <addaction name="actionSynchronize"/>
-    <addaction name="actionReload"/>
+    <addaction name="actionOfflineMode"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -83,10 +83,19 @@
    <property name="text">
     <string>Synchronize</string>
    </property>
+   <property name="toolTip">
+    <string>Synchronize current CRM Account</string>
+   </property>
+   <property name="statusTip">
+    <string>Synchronize current CRM Account</string>
+   </property>
   </action>
-  <action name="actionReload">
+  <action name="actionOfflineMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Reload</string>
+    <string>Offline Mode</string>
    </property>
   </action>
   <action name="actionQuit">

@@ -82,6 +82,7 @@ void SugarClient::initialize()
     // initialize view actions
     slotManageItemDetailsView( 0 );
     mUi.actionSynchronize->setEnabled( false );
+    mUi.actionOfflineMode->setEnabled( false );
 
     mProgressBar = new QProgressBar( this );
     mProgressBar->setRange( 0, 100 );
@@ -178,8 +179,11 @@ void SugarClient::slotResourceSelectionChanged( int index )
                              : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
         mUi.actionSynchronize->setEnabled( true );
+        mUi.actionOfflineMode->setEnabled( true );
+        mUi.actionOfflineMode->setChecked( !agent.isOnline() );
         mResourceDialog->resourceSelectionChanged( agent );
     } else {
+        mUi.actionSynchronize->setEnabled( false );
         mUi.actionSynchronize->setEnabled( false );
     }
 }
@@ -195,12 +199,11 @@ void SugarClient::slotResourceSelected( const Akonadi::AgentInstance &resource )
     }
 }
 
-void SugarClient::slotReload()
+void SugarClient::slotToggleOffline( bool offline )
 {
-    const AgentInstance currentAgent = currentResource();
+    AgentInstance currentAgent = currentResource();
     if ( currentAgent.isValid() ) {
-        emit resourceSelected( currentAgent.identifier().toLatin1() );
-        mUi.actionSynchronize->setEnabled( true );
+        currentAgent.setIsOnline( !offline );
     }
 }
 
@@ -215,8 +218,15 @@ void SugarClient::slotSynchronize()
 
 void SugarClient::setupActions()
 {
+    const QIcon reloadIcon =
+        ( style() != 0 ? style()->standardIcon( QStyle::SP_BrowserReload, 0, 0 )
+                       : QIcon() );
+    if ( !reloadIcon.isNull() ) {
+        mUi.actionSynchronize->setIcon( reloadIcon );
+    }
+
     connect( mUi.actionCRMAccounts, SIGNAL( triggered() ), SLOT( slotConfigureResources() ) );
-    connect( mUi.actionReload, SIGNAL( triggered() ), this, SLOT( slotReload( ) ) );
+    connect( mUi.actionOfflineMode, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleOffline( bool ) ) );
     connect( mUi.actionSynchronize, SIGNAL( triggered() ), this, SLOT( slotSynchronize() ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
     connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
@@ -332,6 +342,7 @@ QComboBox* SugarClient::createResourcesCombo()
 
     QToolBar *resourceToolBar = addToolBar( tr( "CRM Account Selection" ) );
     resourceToolBar->addWidget( container );
+    resourceToolBar->addAction( mUi.actionSynchronize );
 
     return container;
 }
@@ -405,6 +416,7 @@ void SugarClient::slotResourceOnline( const AgentInstance &resource, bool online
             online ? QString ( "SugarCRM Client: %1" ).arg( context )
                    : QString ( "SugarCRM Client: %1 (offline)" ).arg( context );
         setWindowTitle( contextTitle );
+        mUi.actionOfflineMode->setChecked( !online );
     }
 }
 
