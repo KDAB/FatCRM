@@ -332,6 +332,7 @@ void SugarClient::initialResourceSelection()
     if ( selectors == 1 ) {
         slotResourceSelectionChanged( mResourceSelector->currentIndex());
     } else {
+        mResourceSelector->setCurrentIndex( -1 );
         mResourceDialog->show();
         mResourceDialog->raise();
     }
