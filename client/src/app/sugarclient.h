@@ -53,6 +53,7 @@ private:
     DetailsWidget *mContactDetailsWidget;
     DetailsWidget *mCampaignDetailsWidget;
     QList<Page*> mPages;
+    QCheckBox *mShowDetails;
 
     QComboBox * mResourceSelector; // Login;
 
@@ -75,6 +76,9 @@ private Q_SLOTS:
     void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
     void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
     void slotResourceProgress( const Akonadi::AgentInstance &resource );
+    void slotShowDetails( bool on );
+    void slotPageShowDetailsChanged();
+    void slotCurrentTabChanged( int index );
 
 private:
     QComboBox* createResourcesCombo();

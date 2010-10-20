@@ -35,8 +35,11 @@ public:
 
     QAction *showDetailsAction( const QString &title ) const;
 
+    bool showsDetails() const;
+
 Q_SIGNALS:
     void statusMessage( const QString& );
+    void showDetailsChanged( bool on );
 
 public Q_SLOTS:
     void showDetails( bool on );

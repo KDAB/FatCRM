@@ -60,6 +60,11 @@ QAction *Page::showDetailsAction( const QString &title ) const
     return mShowDetailsAction;
 }
 
+bool Page::showsDetails() const
+{
+    return mShowDetailsAction->isChecked();
+}
+
 void Page::showDetails( bool on )
 {
     mUi.detailsWidget->setVisible( on );
@@ -276,8 +281,7 @@ void Page::initialize()
     mShowDetailsAction = new QAction( this );
     mShowDetailsAction->setCheckable( true );
     connect( mShowDetailsAction, SIGNAL( toggled( bool ) ), this, SLOT( showDetails( bool ) ) );
-
-    connect( mUi.splitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( slotSplitterMoved() ) );
+    connect( mShowDetailsAction, SIGNAL( toggled( bool ) ), this, SIGNAL( showDetailsChanged( bool ) ) );
 }
 
 void Page::setupModel()
@@ -300,7 +304,6 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
     connect( mUi.treeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
              this,  SLOT( slotUpdateDetails( const QModelIndex& ) ) );
-
 }
 
 void Page::cachePolicyJobCompleted( KJob* job)

@@ -100,6 +100,10 @@ void SugarClient::createMenus()
 
 void SugarClient::createToolBar()
 {
+    QToolBar *detailsToolBar = addToolBar( tr( "Details Toolbar" ) );
+    mShowDetails = new QCheckBox( tr( "Show Details" ) );
+    detailsToolBar->addWidget( mShowDetails );
+    connect( mShowDetails, SIGNAL( toggled( bool ) ), SLOT( slotShowDetails( bool ) ) );
 }
 
 void SugarClient::slotResourceSelectionChanged( int index )
@@ -167,6 +171,7 @@ void SugarClient::setupActions()
     Q_FOREACH( const Page *page, mPages ) {
         connect( page, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
         connect( this, SIGNAL( displayDetails() ), page, SLOT( slotSetItem() ) );
+        connect( page, SIGNAL( showDetailsChanged( bool ) ), this, SLOT( slotPageShowDetailsChanged() ) );
     }
 }
 
@@ -212,7 +217,10 @@ void SugarClient::createTabs()
     page->setDetailsWidget( mCampaignDetailsWidget );
     mViewMenu->addAction( page->showDetailsAction( tr( "C&ampaign Details" ) ) );
 
+    connect( mUi.tabWidget, SIGNAL( currentChanged( int ) ), SLOT( slotCurrentTabChanged( int ) ) );
+
     //set Accounts page as current
+    mShowDetails->setChecked( mPages[ 0 ]->showsDetails() );
     mUi.tabWidget->setCurrentIndex( 0 );
 }
 
@@ -324,6 +332,21 @@ void SugarClient::slotResourceProgress( const AgentInstance &resource )
         }
         statusBar()->showMessage( message, mProgressBarHideTimer->interval() );
     }
+}
+
+void SugarClient::slotShowDetails( bool on )
+{
+    mPages[ mUi.tabWidget->currentIndex() ]->showDetails( on );
+}
+
+void SugarClient::slotPageShowDetailsChanged()
+{
+    mShowDetails->setChecked( mPages[ mUi.tabWidget->currentIndex() ]->showsDetails() );
+}
+
+void SugarClient::slotCurrentTabChanged( int index )
+{
+    mShowDetails->setChecked( mPages[ index ]->showsDetails() );
 }
 
 AgentInstance SugarClient::currentResource() const
