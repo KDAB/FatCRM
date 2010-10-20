@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotEnableSaving();
     void slotSetModifyFlag( bool );
     void slotSaveData();
+    void slotDiscardData();
 
 private:
     void initialize();
@@ -65,6 +66,7 @@ private:
 
     void setData( const QMap<QString,QString> &data );
 
+private:
     Details *mDetails;
 
     QMap<QString, QString> mReportsToData;
@@ -77,6 +79,7 @@ private:
     bool mEditing;
     bool mModifyFlag;
     Ui_detailswidget mUi;
+    Akonadi::Item mItem;
 };
 
 #endif /* DETAILSWIDGET_H */

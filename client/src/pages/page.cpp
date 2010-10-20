@@ -28,10 +28,11 @@
 
 using namespace Akonadi;
 
-Page::Page( QWidget *parent, const QString &mimeType,  DetailsType type )
+Page::Page( QWidget *parent, const QString &mimeType, DetailsType type )
     : QWidget( parent ),
       mMimeType( mimeType ),
       mType( type ),
+      mDetailsWidget( 0 ),
       mChangeRecorder( new ChangeRecorder( this ) )
 {
     mUi.setupUi( this );
@@ -40,6 +41,13 @@ Page::Page( QWidget *parent, const QString &mimeType,  DetailsType type )
 
 Page::~Page()
 {
+}
+
+void Page::setDetailsWidget( DetailsWidget *widget )
+{
+    mDetailsWidget = widget;
+    mUi.detailsScrollArea->setWidget( widget );
+    widget->show();
 }
 
 void Page::slotResourceSelectionChanged( const QByteArray &identifier )
@@ -99,51 +107,49 @@ void Page::slotCollectionFetchResult( KJob *job )
 
 void Page::slotItemClicked( const QModelIndex &index )
 {
-    DetailsWidget *d = dynamic_cast<DetailsWidget*>( mClientWindow->detailsWidget(mType) );
-
-    if ( d->isEditing() ) {
-        if ( !proceedIsOk() ) {
-            mUi.treeView->setCurrentIndex( mCurrentIndex );
-            return;
+    if ( mDetailsWidget != 0 ){
+        if ( mDetailsWidget->isEditing() ) {
+            if ( !proceedIsOk() ) {
+                mUi.treeView->setCurrentIndex( mCurrentIndex );
+                return;
+            }
         }
+        Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        itemChanged(item );
     }
-    Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-    itemChanged(item );
 }
 
 void Page::itemChanged( const Item &item )
 {
     if ( item.isValid() ) {
-        DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
-        d->setItem( item );
+        if ( mDetailsWidget != 0 ) {
+            mDetailsWidget->setItem( item );
+            connect( mDetailsWidget, SIGNAL( modifyItem() ), this, SLOT( slotModifyItem( ) ) );
+        }
 
         mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
-        connect( d, SIGNAL( modifyItem() ),
-                 this, SLOT( slotModifyItem( ) ) );
     }
 }
 
 void Page::slotNewClicked()
 {
-    DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
+    if ( mDetailsWidget != 0 ) {
+        if ( mDetailsWidget->isEditing() ) {
+            if ( !proceedIsOk() )
+                return;
+        }
 
-    if ( d->isEditing() ) {
-        if ( !proceedIsOk() )
-            return;
+        mDetailsWidget->clearFields();
+        connect( mDetailsWidget, SIGNAL( saveItem() ), this, SLOT( slotAddItem() ) );
     }
-    mClientWindow->displayDockWidgets();
-
-    d->clearFields();
-    connect( d, SIGNAL( saveItem() ),
-             this, SLOT( slotAddItem( ) ) );
 }
 
 void Page::slotAddItem()
 {
-    DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
-    disconnect( d, SIGNAL( saveItem() ),
-                this, SLOT( slotAddItem( ) ) );
-    addItem(d->data() );
+    if ( mDetailsWidget != 0 ) {
+        disconnect( mDetailsWidget, SIGNAL( saveItem() ), this, SLOT( slotAddItem() ) );
+        addItem( mDetailsWidget->data() );
+    }
 }
 
 void Page::slotModifyItem()
@@ -152,12 +158,10 @@ void Page::slotModifyItem()
     if ( !index.isValid() )
         return;
     Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-    if ( item.isValid() ) {
-        DetailsWidget *d = dynamic_cast<DetailsWidget*>(mClientWindow->detailsWidget(mType));
-        disconnect( d, SIGNAL( modifyItem() ),
-                    this,  SLOT( slotModifyItem() ) );
-        d->reset();
-        modifyItem( item, d->data()  );
+    if ( item.isValid() && mDetailsWidget != 0 ) {
+        disconnect( mDetailsWidget, SIGNAL( modifyItem() ), this,  SLOT( slotModifyItem() ) );
+        mDetailsWidget->reset();
+        modifyItem( item, mDetailsWidget->data()  );
     }
 }
 
@@ -190,7 +194,10 @@ void Page::slotRemoveItem()
     if ( !newIndex.isValid() )
         mUi.removePB->setEnabled( false );
 
-    mClientWindow->displayDockWidgets( false );
+    if ( mDetailsWidget != 0 ) {
+        mDetailsWidget->setItem( Item() );
+    }
+
     if ( mType == Account )
         removeAccountsData( item );
     else if ( mType == Campaign )
@@ -265,7 +272,7 @@ void Page::setupModel()
     connect( mUi.treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
 
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
-    connect( mUi.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ),
+    connect( mUi.treeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
              this,  SLOT( slotShowDetails( const QModelIndex& ) ) );
 
 }
@@ -314,8 +321,11 @@ void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bot
 
 void Page::slotShowDetails( const QModelIndex& index )
 {
-    if ( index.isValid() )
-        mClientWindow->displayDockWidgets();
+    if ( index.isValid() ) {
+        Item item;
+        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        itemChanged( item );
+    }
 }
 
 bool Page::proceedIsOk()

@@ -14,37 +14,9 @@
    <string>SugarCRM Client</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QGridLayout" name="gridLayout">
-    <item row="0" column="0">
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <widget class="QTabWidget" name="tabWidget"/>
-      </item>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QCheckBox" name="showDetails">
-          <property name="toolTip">
-           <string>Always show the Details widget if checked!</string>
-          </property>
-          <property name="text">
-           <string>&amp;Show Details</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="detachDetails">
-          <property name="toolTip">
-           <string>Display the Details  widget as a floating widget if checked  </string>
-          </property>
-          <property name="text">
-           <string>&amp;Detach</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-     </layout>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget"/>
     </item>
    </layout>
   </widget>

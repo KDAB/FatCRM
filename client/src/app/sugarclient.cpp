@@ -76,11 +76,9 @@ void SugarClient::initialize()
     createMenus();
     createToolBar();
     createTabs();
-    createDockWidgets();
     setupActions();
     mResourceSelector = 0;
     // initialize view actions
-    slotManageItemDetailsView( 0 );
     mUi.actionSynchronize->setEnabled( false );
     mUi.actionOfflineMode->setEnabled( false );
 
@@ -97,76 +95,11 @@ void SugarClient::initialize()
 
 void SugarClient::createMenus()
 {
-    mViewMenu = menuBar()->addMenu( tr( "&View" ) );
 }
 
 void SugarClient::createToolBar()
 {
-    mDetailsToolBar = addToolBar( tr( "Details controller" ) );
-    mDetailsToolBar->addWidget( mUi.showDetails );
-    mDetailsToolBar->addWidget( mUi.detachDetails );
 }
-
-void SugarClient::createDockWidgets()
-{
-    mContactDetailsDock = new QDockWidget(tr("Contact Details"), this );
-    mContactDetailsWidget = new DetailsWidget( Contact, mContactDetailsDock);
-    mContactDetailsDock->setWidget( mContactDetailsWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, mContactDetailsDock );
-    mViewContactAction = mContactDetailsDock->toggleViewAction();
-    mViewMenu->addAction(mViewContactAction);
-
-    mAccountDetailsDock = new QDockWidget(tr("Account Details"), this );
-    mAccountDetailsWidget = new DetailsWidget( Account, mAccountDetailsDock);
-    mAccountDetailsDock->setWidget( mAccountDetailsWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, mAccountDetailsDock );
-    mViewAccountAction = mAccountDetailsDock->toggleViewAction();
-    mViewMenu->addAction( mViewAccountAction );
-
-    mOpportunityDetailsDock = new QDockWidget(tr("Opportunity Details"), this );
-    mOpportunityDetailsWidget = new DetailsWidget( Opportunity, mOpportunityDetailsDock);
-    mOpportunityDetailsDock->setWidget( mOpportunityDetailsWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, mOpportunityDetailsDock );
-    mViewOpportunityAction = mOpportunityDetailsDock->toggleViewAction();
-    mViewMenu->addAction( mViewOpportunityAction );
-
-    mLeadDetailsDock = new QDockWidget(tr("Lead Details"), this );
-    mLeadDetailsWidget = new DetailsWidget( Lead, mLeadDetailsDock);
-    mLeadDetailsDock ->setWidget( mLeadDetailsWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, mLeadDetailsDock );
-    mViewLeadAction = mLeadDetailsDock->toggleViewAction();
-    mViewMenu->addAction( mViewLeadAction );
-
-    mCampaignDetailsDock = new QDockWidget(tr("Campaign Details"), this );
-    mCampaignDetailsWidget = new DetailsWidget( Campaign, mCampaignDetailsDock);
-    mCampaignDetailsDock->setWidget( mCampaignDetailsWidget );
-    addDockWidget( Qt::BottomDockWidgetArea, mCampaignDetailsDock );
-    mViewCampaignAction = mCampaignDetailsDock->toggleViewAction();
-    mViewMenu->addAction( mViewCampaignAction );
-
-    connect( mAccountDetailsDock, SIGNAL( visibilityChanged( bool ) ),
-             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
-    connect( mOpportunityDetailsDock, SIGNAL( visibilityChanged( bool ) ),
-             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
-    connect( mLeadDetailsDock, SIGNAL( visibilityChanged( bool ) ),
-             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
-    connect( mContactDetailsDock, SIGNAL( visibilityChanged( bool ) ),
-             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
-    connect( mCampaignDetailsDock, SIGNAL( visibilityChanged( bool ) ),
-             this, SLOT( slotDetailsDisplayDisabled( bool ) ) );
-}
-
-void SugarClient::slotManageDetailsDisplay( bool value )
-{
-    if ( sender() == mUi.showDetails ) {
-        slotManageItemDetailsView( mUi.tabWidget->currentIndex() );
-        if ( value ) // initialize the detail widget fields
-            emit displayDetails();
-    }
-    else // mUi.detachDetails
-        detachDockViews( value );
-}
-
 
 void SugarClient::slotResourceSelectionChanged( int index )
 {
@@ -229,8 +162,6 @@ void SugarClient::setupActions()
     connect( mUi.actionOfflineMode, SIGNAL( toggled( bool ) ), this, SLOT( slotToggleOffline( bool ) ) );
     connect( mUi.actionSynchronize, SIGNAL( triggered() ), this, SLOT( slotSynchronize() ) );
     connect( mUi.actionQuit, SIGNAL( triggered() ), this, SLOT( close() ) );
-    connect( mUi.showDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
-    connect( mUi.detachDetails, SIGNAL( toggled( bool ) ), this, SLOT( slotManageDetailsDisplay( bool ) ) );
 
     Q_FOREACH( const Page *page, mPages ) {
         connect( page, SIGNAL( statusMessage( QString ) ), this, SLOT( slotShowMessage( QString ) ) );
@@ -248,79 +179,35 @@ void SugarClient::createTabs()
     Page *page = new AccountsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Accounts" ) );
+    mAccountDetailsWidget = new DetailsWidget( Account );
+    page->setDetailsWidget( mAccountDetailsWidget );
 
     page = new OpportunitiesPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Opportunities" ) );
+    mOpportunityDetailsWidget = new DetailsWidget( Opportunity );
+    page->setDetailsWidget( mOpportunityDetailsWidget );
 
     page = new LeadsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Leads" ) );
+    mLeadDetailsWidget = new DetailsWidget( Lead );
+    page->setDetailsWidget( mLeadDetailsWidget );
 
     page = new ContactsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Contacts" ) );
+    mContactDetailsWidget = new DetailsWidget( Contact );
+    page->setDetailsWidget( mContactDetailsWidget );
 
     page = new CampaignsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Campaigns" ) );
-
+    mCampaignDetailsWidget = new DetailsWidget( Campaign );
+    page->setDetailsWidget( mCampaignDetailsWidget );
 
     //set Accounts page as current
     mUi.tabWidget->setCurrentIndex( 0 );
-    connect( mUi.tabWidget, SIGNAL( currentChanged( int ) ),
-             this, SLOT( slotManageItemDetailsView( int ) ) );
-}
-
-void SugarClient::slotManageItemDetailsView( int currentTab )
-{
-
-    bool show = mUi.showDetails->isChecked();
-    if ( currentTab == 0 ) { // Accounts
-        mContactDetailsDock->setVisible( false );
-        mOpportunityDetailsDock->setVisible( false );
-        mLeadDetailsDock->setVisible( false );
-        mCampaignDetailsDock->setVisible( false );
-
-        mAccountDetailsDock->setVisible( show );
-    }
-    else if ( currentTab == 1 ) { // Opportunities
-        mAccountDetailsDock->setVisible( false );
-        mContactDetailsDock->setVisible( false );
-        mLeadDetailsDock->setVisible( false );
-        mCampaignDetailsDock->setVisible( false );
-        mOpportunityDetailsDock->setVisible( show );
-    }
-    else if ( currentTab == 2 ) { // Leads
-        mAccountDetailsDock->setVisible( false );
-        mContactDetailsDock->setVisible( false );
-        mOpportunityDetailsDock->setVisible( false );
-        mCampaignDetailsDock->setVisible( false );
-        mLeadDetailsDock->setVisible( show );
-    }
-    else if ( currentTab == 3 ) { // Contacts
-        mAccountDetailsDock->setVisible( false );
-        mOpportunityDetailsDock->setVisible( false );
-        mLeadDetailsDock->setVisible( false );
-        mCampaignDetailsDock->setVisible( false );
-        mContactDetailsDock->setVisible( show );
-    }
-    else if ( currentTab == 4 ) { // Campaigns
-        mAccountDetailsDock->setVisible( false );
-        mOpportunityDetailsDock->setVisible( false );
-        mLeadDetailsDock->setVisible( false );
-        mContactDetailsDock->setVisible( false );
-        mCampaignDetailsDock->setVisible( show );
-    }
-}
-
-void SugarClient::detachDockViews( bool value )
-{
-    mAccountDetailsDock->setFloating( value );
-    mOpportunityDetailsDock->setFloating( value );
-    mLeadDetailsDock->setFloating( value );
-    mCampaignDetailsDock->setFloating( value );
-    mContactDetailsDock->setFloating( value );
 }
 
 void SugarClient::slotConfigureResources()
@@ -393,11 +280,6 @@ void SugarClient::closeEvent( QCloseEvent *event )
     QMainWindow::closeEvent( event );
 }
 
-void SugarClient::slotDetailsDisplayDisabled( bool value )
-{
-    mUi.showDetails->setChecked( value );
-}
-
 void SugarClient::slotResourceError( const AgentInstance &resource, const QString &message )
 {
     const AgentInstance currentAgent = currentResource();
@@ -453,12 +335,6 @@ void SugarClient::initialResourceSelection()
         mResourceDialog->show();
         mResourceDialog->raise();
     }
-}
-
-void SugarClient::displayDockWidgets( bool value )
-{
-    if ( mUi.showDetails->isChecked() != value )
-        mUi.showDetails->setChecked( value );
 }
 
 #include "sugarclient.moc"

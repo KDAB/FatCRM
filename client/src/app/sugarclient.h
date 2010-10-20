@@ -31,7 +31,6 @@ public:
 
     ~SugarClient();
 
-    void displayDockWidgets( bool value = true );
     DetailsWidget *detailsWidget( DetailsType type );
 
 Q_SIGNALS:
@@ -45,27 +44,14 @@ private:
     void initialize();
     void createMenus();
     void createToolBar();
-    void createDockWidgets();
     void setupActions();
     void createTabs();
 
-    QMenu *mViewMenu;
-    QToolBar *mDetailsToolBar;
-    QDockWidget *mAccountDetailsDock;
     DetailsWidget *mAccountDetailsWidget;
-    QAction *mViewAccountAction;
-    QDockWidget *mOpportunityDetailsDock;
     DetailsWidget *mOpportunityDetailsWidget;
-    QAction *mViewOpportunityAction;
-    QDockWidget *mLeadDetailsDock;
     DetailsWidget *mLeadDetailsWidget;
-    QAction *mViewLeadAction;
-    QDockWidget *mContactDetailsDock;
     DetailsWidget *mContactDetailsWidget;
-    QAction *mViewContactAction;
-    QDockWidget *mCampaignDetailsDock;
     DetailsWidget *mCampaignDetailsWidget;
-    QAction *mViewCampaignAction;
     QList<Page*> mPages;
 
     QComboBox * mResourceSelector; // Login;
@@ -84,16 +70,12 @@ private Q_SLOTS:
     void slotResourceSelectionChanged( int index );
     void slotResourceSelected( const Akonadi::AgentInstance &resource );
     void slotShowMessage( const QString& );
-    void slotManageItemDetailsView( int currentTab );
-    void slotManageDetailsDisplay( bool value );
-    void slotDetailsDisplayDisabled( bool value );
     void slotConfigureResources();
     void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
     void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
     void slotResourceProgress( const Akonadi::AgentInstance &resource );
 
 private:
-    void detachDockViews( bool value );
     QComboBox* createResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();

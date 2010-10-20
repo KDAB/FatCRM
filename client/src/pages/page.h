@@ -17,6 +17,7 @@ namespace Akonadi
     class Item;
 }
 
+class DetailsWidget;
 class KJob;
 class QModelIndex;
 class SugarClient;
@@ -29,6 +30,7 @@ public:
 
     ~Page();
 
+    void setDetailsWidget( DetailsWidget *widget );
 
 Q_SIGNALS:
     void statusMessage( const QString& );
@@ -85,9 +87,11 @@ private:
 
     QString typeToString( const DetailsType &type ) const;
 
+private:
     SugarClient *mClientWindow;
     QString mMimeType;
     DetailsType mType;
+    DetailsWidget *mDetailsWidget;
     Akonadi::FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     Akonadi::Collection mCollection;

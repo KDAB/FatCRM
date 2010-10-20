@@ -101,7 +101,10 @@ void DetailsWidget::setConnections()
              this,  SLOT( slotEnableSaving() ) );
     connect( mUi.saveButton, SIGNAL( clicked() ),
              this, SLOT( slotSaveData() ) );
+    connect( mUi.discardButton, SIGNAL( clicked() ),
+             this, SLOT( slotDiscardData() ) );
     mUi.saveButton->setEnabled( false );
+    mUi.discardButton->setEnabled( false );
 }
 
 /*
@@ -130,6 +133,7 @@ void DetailsWidget::reset()
     disconnect( mUi.description, SIGNAL( textChanged() ),
                 this,  SLOT( slotEnableSaving() ) );
     mUi.saveButton->setEnabled( false );
+    mUi.discardButton->setEnabled( false );
 }
 
 /*
@@ -180,6 +184,8 @@ void DetailsWidget::clearFields ()
  */
 void DetailsWidget::setItem (const Item &item )
 {
+    mItem = item;
+
     // new item selected reset flag and saving
     mModifyFlag = true;
     reset();
@@ -316,6 +322,7 @@ void DetailsWidget::slotSetModifyFlag( bool value )
 void DetailsWidget::slotEnableSaving()
 {
     mUi.saveButton->setEnabled( true );
+    mUi.discardButton->setEnabled( true );
 }
 
 /*
@@ -338,6 +345,11 @@ void DetailsWidget::slotSaveData()
         emit saveItem();
     else
         emit modifyItem();
+}
+
+void DetailsWidget::slotDiscardData()
+{
+    setItem( mItem );
 }
 
 /*
