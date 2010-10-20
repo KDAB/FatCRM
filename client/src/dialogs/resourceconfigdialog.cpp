@@ -138,6 +138,7 @@ void ResourceConfigDialog::Private::resourceCreateResult( KJob *job )
 
 void ResourceConfigDialog::Private::applyResourceSelection()
 {
+    q->accept(); // TODO make this depend on a checkbox state
     emit q->resourceSelected( mCurrentResource );
 }
 
