@@ -95,6 +95,7 @@ void SugarClient::initialize()
 
 void SugarClient::createMenus()
 {
+    mViewMenu = menuBar()->addMenu( tr( "&View" ) );
 }
 
 void SugarClient::createToolBar()
@@ -181,30 +182,35 @@ void SugarClient::createTabs()
     mUi.tabWidget->addTab( page, tr( "&Accounts" ) );
     mAccountDetailsWidget = new DetailsWidget( Account );
     page->setDetailsWidget( mAccountDetailsWidget );
+    mViewMenu->addAction( page->showDetailsAction( tr( "&Account Details" ) ) );
 
     page = new OpportunitiesPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Opportunities" ) );
     mOpportunityDetailsWidget = new DetailsWidget( Opportunity );
     page->setDetailsWidget( mOpportunityDetailsWidget );
+    mViewMenu->addAction( page->showDetailsAction( tr( "&Opportunity Details" ) ) );
 
     page = new LeadsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Leads" ) );
     mLeadDetailsWidget = new DetailsWidget( Lead );
     page->setDetailsWidget( mLeadDetailsWidget );
+    mViewMenu->addAction( page->showDetailsAction( tr( "&Lead Details" ) ) );
 
     page = new ContactsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Contacts" ) );
     mContactDetailsWidget = new DetailsWidget( Contact );
     page->setDetailsWidget( mContactDetailsWidget );
+    mViewMenu->addAction( page->showDetailsAction( tr( "&Contact Details" ) ) );
 
     page = new CampaignsPage( this );
     mPages << page;
     mUi.tabWidget->addTab( page, tr( "&Campaigns" ) );
     mCampaignDetailsWidget = new DetailsWidget( Campaign );
     page->setDetailsWidget( mCampaignDetailsWidget );
+    mViewMenu->addAction( page->showDetailsAction( tr( "C&ampaign Details" ) ) );
 
     //set Accounts page as current
     mUi.tabWidget->setCurrentIndex( 0 );

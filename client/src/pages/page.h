@@ -19,6 +19,7 @@ namespace Akonadi
 
 class DetailsWidget;
 class KJob;
+class QAction;
 class QModelIndex;
 class SugarClient;
 
@@ -32,8 +33,13 @@ public:
 
     void setDetailsWidget( DetailsWidget *widget );
 
+    QAction *showDetailsAction( const QString &title ) const;
+
 Q_SIGNALS:
     void statusMessage( const QString& );
+
+public Q_SLOTS:
+    void showDetails( bool on );
 
 protected:
     void updateAccountCombo( const QString& name, const QString& id );
@@ -67,11 +73,13 @@ private Q_SLOTS:
     void slotSetCurrent( const QModelIndex&,int,int );
     void cachePolicyJobCompleted( KJob* );
     void slotUpdateDetails( const QModelIndex&, const QModelIndex& );
+    void slotUpdateDetails( const QModelIndex& );
     void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
     void slotReloadIntervalChanged();
     void slotCollectionChanged( const Akonadi::Collection &collection );
+    void slotEnsureDetailsVisible();
 
 private:
     void initialize();
@@ -97,6 +105,7 @@ private:
     Akonadi::Collection mCollection;
     QModelIndex mCurrentIndex;
     Ui_page mUi;
+    QAction *mShowDetailsAction;
 };
 
 #endif

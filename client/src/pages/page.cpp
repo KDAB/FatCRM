@@ -33,9 +33,11 @@ Page::Page( QWidget *parent, const QString &mimeType, DetailsType type )
       mMimeType( mimeType ),
       mType( type ),
       mDetailsWidget( 0 ),
-      mChangeRecorder( new ChangeRecorder( this ) )
+      mChangeRecorder( new ChangeRecorder( this ) ),
+      mShowDetailsAction( 0 )
 {
     mUi.setupUi( this );
+    mUi.splitter->setCollapsible( 0, false );
     initialize();
 }
 
@@ -45,9 +47,26 @@ Page::~Page()
 
 void Page::setDetailsWidget( DetailsWidget *widget )
 {
+    QVBoxLayout* detailLayout = new QVBoxLayout( mUi.detailsWidget );
+    detailLayout->setMargin( 0 );
+    detailLayout->addWidget( widget );
     mDetailsWidget = widget;
-    mUi.detailsScrollArea->setWidget( widget );
-    widget->show();
+    mShowDetailsAction->setChecked( true );
+}
+
+QAction *Page::showDetailsAction( const QString &title ) const
+{
+    mShowDetailsAction->setText( title );
+    return mShowDetailsAction;
+}
+
+void Page::showDetails( bool on )
+{
+    mUi.detailsWidget->setVisible( on );
+    if ( on ) {
+        QMetaObject::invokeMethod( this, "slotEnsureDetailsVisible", Qt::QueuedConnection );
+    }
+    mShowDetailsAction->setChecked( on );
 }
 
 void Page::slotResourceSelectionChanged( const QByteArray &identifier )
@@ -252,6 +271,13 @@ void Page::initialize()
              this, SLOT( slotCollectionChanged( Akonadi::Collection ) ) );
 
     connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
+    connect( mUi.treeView, SIGNAL( activated( const QModelIndex& ) ), this, SLOT( slotShowDetails( const QModelIndex& ) ) );
+
+    mShowDetailsAction = new QAction( this );
+    mShowDetailsAction->setCheckable( true );
+    connect( mShowDetailsAction, SIGNAL( toggled( bool ) ), this, SLOT( showDetails( bool ) ) );
+
+    connect( mUi.splitter, SIGNAL( splitterMoved( int, int ) ), this, SLOT( slotSplitterMoved() ) );
 }
 
 void Page::setupModel()
@@ -273,7 +299,7 @@ void Page::setupModel()
 
     connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
     connect( mUi.treeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
-             this,  SLOT( slotShowDetails( const QModelIndex& ) ) );
+             this,  SLOT( slotUpdateDetails( const QModelIndex& ) ) );
 
 }
 
@@ -319,13 +345,19 @@ void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bot
     itemChanged( item );
 }
 
-void Page::slotShowDetails( const QModelIndex& index )
+void Page::slotUpdateDetails( const QModelIndex& index )
 {
     if ( index.isValid() ) {
         Item item;
         item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
         itemChanged( item );
     }
+}
+
+void Page::slotShowDetails( const QModelIndex& index )
+{
+    slotUpdateDetails( index );
+    slotEnsureDetailsVisible();
 }
 
 bool Page::proceedIsOk()
@@ -390,6 +422,19 @@ void Page::slotCollectionChanged( const Akonadi::Collection &collection )
         } else {
             mUi.reloadSB->setValue( policy.intervalCheckTime() );
         }
+    }
+}
+
+void Page::slotEnsureDetailsVisible()
+{
+    if ( mShowDetailsAction->isChecked() ) {
+        QList<int> splitterSizes = mUi.splitter->sizes();
+        if ( splitterSizes[ 1 ] == 0 ) {
+            splitterSizes[ 1 ] = mUi.splitter->height() / 2;
+            mUi.splitter->setSizes( splitterSizes );
+        }
+    } else {
+        mShowDetailsAction->setChecked( true );
     }
 }
 

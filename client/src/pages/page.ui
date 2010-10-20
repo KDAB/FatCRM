@@ -131,21 +131,7 @@
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
      </widget>
-     <widget class="QScrollArea" name="detailsScrollArea">
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>402</width>
-         <height>68</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
+     <widget class="QWidget" name="detailsWidget" native="true"/>
     </widget>
    </item>
   </layout>

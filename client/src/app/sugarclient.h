@@ -57,6 +57,7 @@ private:
     QComboBox * mResourceSelector; // Login;
 
     Ui_MainWindow mUi;
+    QMenu *mViewMenu;
 
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
