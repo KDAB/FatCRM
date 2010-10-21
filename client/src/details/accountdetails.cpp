@@ -3,7 +3,7 @@
 #include <kdcrmdata/sugaraccount.h>
 
 AccountDetails::AccountDetails( QWidget *parent )
-    : Details( parent )
+    : Details( Account, parent )
 
 {
     initialize();
@@ -223,4 +223,16 @@ QMap<QString, QString> AccountDetails::data( const Akonadi::Item &item ) const
 {
     SugarAccount account = item.payload<SugarAccount>();
     return account.data();
+}
+
+void AccountDetails::updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const
+{
+    SugarAccount account;
+    if ( item.hasPayload<SugarAccount>() ) {
+        account = item.payload<SugarAccount>();
+    }
+    account.setData( data );
+
+    item.setMimeType( SugarAccount::mimeType() );
+    item.setPayload<SugarAccount>( account );
 }

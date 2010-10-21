@@ -4,7 +4,7 @@
 #include <kabc/address.h>
 
 ContactDetails::ContactDetails( QWidget *parent )
-    : Details( parent )
+    : Details( Contact, parent )
 
 {
     initialize();
@@ -314,4 +314,73 @@ QMap<QString,QString> ContactDetails::contactData( const KABC::Addressee &addres
     data["deleted"] = addressee.custom( "FATCRM", "X-Deleted" );
     data["createdById"] = addressee.custom( "FATCRM", "X-CreatedById" );
     return data;
+}
+
+void ContactDetails::updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const
+{
+    KABC::Addressee addressee;
+    if ( item.hasPayload<KABC::Addressee>() ) {
+        addressee = item.payload<KABC::Addressee>();
+    }
+
+    addressee.setGivenName( data.value( "firstName" ) );
+    addressee.setFamilyName( data.value( "lastName" ) );
+    addressee.setTitle( data.value( "title" ) );
+    addressee.setDepartment( data.value( "department" ) );
+    addressee.setOrganization( data.value( "accountName" ) );
+    addressee.insertCustom( "FATCRM", "X-AccountId", data.value( "accountId" ) );
+    addressee.insertEmail( data.value( "primaryEmail" ), true );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "homePhone" ) , KABC::PhoneNumber::Home ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "mobilePhone" ) , KABC::PhoneNumber::Cell ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "officePhone" ) , KABC::PhoneNumber::Work ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "otherPhone" ) , KABC::PhoneNumber::Car ) );
+    addressee.insertPhoneNumber( KABC::PhoneNumber( data.value( "fax" ) , KABC::PhoneNumber::Work|KABC::PhoneNumber::Fax ) );
+
+    KABC::Address primaryAddress;
+    primaryAddress.setType( KABC::Address::Work|KABC::Address::Pref );
+    primaryAddress.setStreet( data.value( "primaryAddress" ) );
+    primaryAddress.setLocality( data.value( "city" ) );
+    primaryAddress.setRegion( data.value( "state" ) );
+    primaryAddress.setPostalCode( data.value( "postalCode" ) );
+    primaryAddress.setCountry( data.value( "country" ) );
+    addressee.insertAddress( primaryAddress );
+
+    KABC::Address otherAddress;
+    otherAddress.setType( KABC::Address::Home );
+    otherAddress.setStreet( data.value( "otherAddress" ) );
+    otherAddress.setLocality( data.value( "otherCity" ) );
+    otherAddress.setRegion( data.value( "otherState" ) );
+    otherAddress.setPostalCode( data.value( "otherPostalCode" ) );
+    otherAddress.setCountry( data.value( "otherCountry" ) );
+    addressee.insertAddress( otherAddress );
+
+    addressee.setBirthday( QDateTime::fromString( data.value( "birthDate" ), QString( "yyyy-MM-dd" ) ) );
+
+    addressee.setNote( data.value( "description" ) );
+    addressee.insertCustom( "KADDRESSBOOK", "X-AssistantsName", data.value( "assistant" ) );
+    addressee.insertCustom( "FATCRM", "X-AssistantsPhone", data.value( "assistantPhone" ) );
+    addressee.insertCustom( "FATCRM", "X-LeadSourceName",data.value( "leadSource" ) );
+    addressee.insertCustom( "FATCRM", "X-CampaignName",data.value( "campaign" ) );
+    addressee.insertCustom( "FATCRM", "X-CampaignId", data.value( "campaignId" ) );
+    addressee.insertCustom( "FATCRM", "X-CacceptStatusFields", data.value( "cAcceptStatusFields" ) );
+    addressee.insertCustom( "FATCRM", "X-MacceptStatusFields", data.value( "mAcceptStatusFields" ) );
+    addressee.insertCustom( "FATCRM", "X-AssignedUserName",data.value( "assignedTo" ) );
+    addressee.insertCustom( "FATCRM", "X-AssignedUserId", data.value( "assignedToId" ) );
+    addressee.insertCustom( "FATCRM", "X-ReportsToUserName",data.value( "reportsTo" ) );
+    addressee.insertCustom( "FATCRM", "X-ReportsToUserId",data.value( "reportsToId" ) );
+    addressee.insertCustom( "FATCRM", "X-OpportunityRoleFields", data.value( "opportunityRoleFields" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedByName", data.value( "modifiedBy" ) );
+    addressee.insertCustom( "FATCRM", "X-DateModified", data.value( "modifiedDate" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserId", data.value( "modifiedUserId" ) );
+    addressee.insertCustom( "FATCRM", "X-ModifiedUserName", data.value( "modifiedUserName" ) );
+    addressee.insertCustom( "FATCRM", "X-DateCreated", data.value( "createdDate" ) );
+    addressee.insertCustom( "FATCRM", "X-CreatedByName", data.value( "createdBy" ) );
+    addressee.insertCustom( "FATCRM", "X-CreatedById", data.value( "createdById" ) );
+    addressee.insertCustom( "FATCRM", "X-ContactId", data.value( "contactId" ) );
+    addressee.insertCustom( "FATCRM", "X-Salutation", data.value( "salutation" ) );
+    addressee.insertCustom( "FATCRM", "X-Deleted", data.value( "deleted" ) );
+    addressee.insertCustom( "FATCRM", "X-DoNotCall", data.value( "doNotCall" ) );
+
+    item.setMimeType( KABC::Addressee::mimeType() );
+    item.setPayload<KABC::Addressee>( addressee );
 }

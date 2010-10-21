@@ -26,12 +26,8 @@ AccountsPage::~AccountsPage()
 
 void AccountsPage::addItem( const QMap<QString, QString> &data )
 {
-    SugarAccount account;
-    account.setData( data );
-
     Item item;
-    item.setMimeType( mimeType() );
-    item.setPayload<SugarAccount>( account );
+    details()->updateItem( item, data );
 
     // job starts automatically
     // TODO connect to result() signal for error handling
@@ -42,20 +38,15 @@ void AccountsPage::addItem( const QMap<QString, QString> &data )
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
     // update Account combos for:
     // accounts - contacts and opportunity details
+    const SugarAccount account = item.payload<SugarAccount>();
     updateAccountCombo( account.name(), account.id());
     updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
 
 void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
 {
-    SugarAccount account;
-    if ( item.hasPayload<SugarAccount>() ) {
-        account = item.payload<SugarAccount>();
-    } else
-        return;
+    details()->updateItem( item, data );
 
-    account.setData( data );
-    item.setPayload<SugarAccount>( account );
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemModifyJob *job = new ItemModifyJob( item );
@@ -68,6 +59,7 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
     // update Account combos for:
     // accounts - contacts and opportunity details
+    const SugarAccount account = item.payload<SugarAccount>();
     updateAccountCombo( account.name(), account.id());
     updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }

@@ -3,7 +3,7 @@
 #include <kdcrmdata/sugarlead.h>
 
 LeadDetails::LeadDetails( QWidget *parent )
-    : Details( parent )
+    : Details( Lead, parent )
 
 {
     initialize();
@@ -306,4 +306,16 @@ QMap<QString, QString> LeadDetails::data( const Akonadi::Item &item ) const
 {
     SugarLead lead = item.payload<SugarLead>();
     return lead.data();
+}
+
+void LeadDetails::updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const
+{
+    SugarLead lead;
+    if ( item.hasPayload<SugarLead>() ) {
+        lead = item.payload<SugarLead>();
+    }
+    lead.setData( data );
+
+    item.setMimeType( SugarLead::mimeType() );
+    item.setPayload<SugarLead>( lead );
 }

@@ -1,7 +1,7 @@
 #include "opportunitydetails.h"
 
 OpportunityDetails::OpportunityDetails( QWidget *parent )
-    : Details( parent )
+    : Details( Opportunity, parent )
 
 {
     initialize();
@@ -175,4 +175,16 @@ QMap<QString, QString> OpportunityDetails::data( const Akonadi::Item &item ) con
 {
     SugarOpportunity opportunity = item.payload<SugarOpportunity>();
     return opportunity.data();
+}
+
+void OpportunityDetails::updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const
+{
+    SugarOpportunity opportunity;
+    if ( item.hasPayload<SugarOpportunity>() ) {
+        opportunity = item.payload<SugarOpportunity>();
+    }
+    opportunity.setData( data );
+
+    item.setMimeType( SugarOpportunity::mimeType() );
+    item.setPayload<SugarOpportunity>( opportunity );
 }

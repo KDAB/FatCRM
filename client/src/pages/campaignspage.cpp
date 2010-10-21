@@ -24,11 +24,8 @@ CampaignsPage::~CampaignsPage()
 
 void CampaignsPage::addItem( const QMap<QString, QString> &data )
 {
-    SugarCampaign campaign;
-    campaign.setData( data );
     Item item;
-    item.setMimeType( SugarCampaign::mimeType() );
-    item.setPayload<SugarCampaign>( campaign );
+    details()->updateItem( item, data );
 
     // job starts automatically
     // TODO connect to result() signal for error handling
@@ -38,20 +35,14 @@ void CampaignsPage::addItem( const QMap<QString, QString> &data )
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+    const SugarCampaign campaign = item.payload<SugarCampaign>();
     updateCampaignCombo( campaign.name(), campaign.id() );
 }
 
 void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
-    SugarCampaign campaign;
-    if ( item.hasPayload<SugarCampaign>() ) {
-        campaign = item.payload<SugarCampaign>();
-    } else
-        return;
+    details()->updateItem( item, data );
 
-    campaign.setData( data );
-
-    item.setPayload<SugarCampaign>( campaign );
     // job starts automatically
     // TODO connect to result() signal for error handling
     ItemModifyJob *job = new ItemModifyJob( item );
@@ -61,5 +52,6 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+    const SugarCampaign campaign = item.payload<SugarCampaign>();
     updateCampaignCombo( campaign.name(), campaign.id() );
 }

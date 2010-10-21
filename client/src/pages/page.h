@@ -17,6 +17,7 @@ namespace Akonadi
     class Item;
 }
 
+class Details;
 class DetailsWidget;
 class KJob;
 class QAction;
@@ -63,6 +64,8 @@ protected:
     virtual void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data ) = 0;
 
     void setupModel();
+
+    Details *details() const;
 
 private Q_SLOTS:
     void slotResourceSelectionChanged( const QByteArray &identifier );

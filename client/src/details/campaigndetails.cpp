@@ -4,7 +4,7 @@
 #include <kdcrmdata/sugarcampaign.h>
 
 CampaignDetails::CampaignDetails( QWidget *parent )
-    : Details( parent )
+    : Details( Campaign, parent )
 
 {
     initialize();
@@ -194,4 +194,16 @@ QMap<QString, QString> CampaignDetails::data( const Akonadi::Item &item ) const
 {
     SugarCampaign campaign = item.payload<SugarCampaign>();
     return campaign.data();
+}
+
+void CampaignDetails::updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const
+{
+    SugarCampaign campaign;
+    if ( item.hasPayload<SugarCampaign>() ) {
+        campaign = item.payload<SugarCampaign>();
+    }
+    campaign.setData( data );
+
+    item.setMimeType( SugarCampaign::mimeType() );
+    item.setPayload<SugarCampaign>( campaign );
 }

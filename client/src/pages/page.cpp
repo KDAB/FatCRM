@@ -306,6 +306,11 @@ void Page::setupModel()
              this,  SLOT( slotUpdateDetails( const QModelIndex& ) ) );
 }
 
+Details *Page::details() const
+{
+    return mDetailsWidget->mDetails;
+}
+
 void Page::cachePolicyJobCompleted( KJob* job)
 {
     if ( job->error() )

@@ -37,35 +37,7 @@ void DetailsWidget::initialize()
     if ( mUi.detailsContainer->layout() )
         delete mUi.detailsContainer->layout();
 
-    switch( mType ) {
-    case Account:
-    {
-        mDetails = new AccountDetails;
-        break;
-    }
-    case Opportunity:
-    {
-        mDetails = new OpportunityDetails;
-        break;
-    }
-    case Contact:
-    {
-        mDetails = new ContactDetails;
-        break;
-    }
-    case Lead:
-    {
-        mDetails = new LeadDetails;
-        break;
-    }
-    case Campaign:
-    {
-        mDetails = new CampaignDetails;
-        break;
-    }
-    default:
-        return;
-    }
+    mDetails = createDetailsForType( mType );
 
     setConnections();
 
@@ -559,4 +531,17 @@ QString DetailsWidget::currentReportsToName() const
         }
     }
     return QString();
+}
+
+Details *DetailsWidget::createDetailsForType( DetailsType type )
+{
+    switch( type ) {
+        case Account: return new AccountDetails;
+        case Opportunity: return new OpportunityDetails;
+        case Contact: return new ContactDetails;
+        case Lead: return new LeadDetails;
+        case Campaign: return new CampaignDetails;
+    }
+
+    return 0;
 }

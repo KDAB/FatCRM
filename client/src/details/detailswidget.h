@@ -17,6 +17,7 @@
 
 class DetailsWidget : public QWidget
 {
+    friend class Page;
     Q_OBJECT
 public:
     explicit DetailsWidget( DetailsType type, QWidget * parent = 0 );
@@ -28,7 +29,6 @@ Q_SIGNALS:
     void saveItem();
     void modifyItem();
 
-    friend class Page;
 protected:
     inline QMap<QString, QString> accountsData() { return mAccountsData; }
     inline QMap<QString, QString> campaignsData() { return mCampaignsData; }
@@ -48,6 +48,8 @@ protected:
     void removeCampaignData( const QString &name );
     void addAssignedToData( const QString &name, const QString &id );
     void addReportsToData( const QString &name, const QString &id );
+
+    static Details *createDetailsForType( DetailsType type );
 
 private Q_SLOTS:
     void slotEnableSaving();

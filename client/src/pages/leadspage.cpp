@@ -26,13 +26,8 @@ LeadsPage::~LeadsPage()
 
 void LeadsPage::addItem( const QMap<QString, QString> &data )
 {
-
-    SugarLead lead;
-    lead.setData( data );
-
     Item item;
-    item.setMimeType( SugarLead::mimeType() );
-    item.setPayload<SugarLead>( lead );
+    details()->updateItem( item, data );
 
     // job starts automatically
     // TODO connect to result() signal for error handling
@@ -46,14 +41,7 @@ void LeadsPage::addItem( const QMap<QString, QString> &data )
 
 void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
-    SugarLead lead;
-    if ( item.hasPayload<SugarLead>() ) {
-        lead = item.payload<SugarLead>();
-    } else
-        return;
-
-    lead.setData( data );
-    item.setPayload<SugarLead>( lead );
+    details()->updateItem( item, data );
 
     // job starts automatically
     // TODO connect to result() signal for error handling

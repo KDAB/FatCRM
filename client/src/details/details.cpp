@@ -2,8 +2,8 @@
 
 using namespace Akonadi;
 
-Details::Details( QWidget *parent )
-    : QWidget( parent )
+Details::Details( DetailsType type, QWidget *parent )
+    : QWidget( parent ), mType( type )
 
 {
     initialize();
