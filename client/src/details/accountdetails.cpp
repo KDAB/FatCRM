@@ -43,11 +43,11 @@ QGroupBox* AccountDetails::buildDetailsGroupBox()
     website->setObjectName( "website" );
     detailGrid->addWidget( websiteLabel, 1, 0 );
     detailGrid->addWidget( website, 1, 1 );
-    QLabel *tyckerLabel = new QLabel( tr( "Ticker symbol: " ) );
-    QLineEdit* tyckerSymbol = new QLineEdit();
-    tyckerSymbol->setObjectName( "tyckerSymbol" );
-    detailGrid->addWidget( tyckerLabel, 2, 0 );
-    detailGrid->addWidget( tyckerSymbol, 2, 1 );
+    QLabel *tickerLabel = new QLabel( tr( "Ticker symbol: " ) );
+    QLineEdit* tickerSymbol = new QLineEdit();
+    tickerSymbol->setObjectName( "tickerSymbol" );
+    detailGrid->addWidget( tickerLabel, 2, 0 );
+    detailGrid->addWidget( tickerSymbol, 2, 1 );
     QLabel *memberOfLabel = new QLabel( tr( "Member of: " ) );
     QComboBox* parentName = new QComboBox();
     parentName->setObjectName( "parentName" );

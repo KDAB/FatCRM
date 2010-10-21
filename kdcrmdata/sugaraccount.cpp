@@ -45,7 +45,7 @@ class SugarAccount::Private : public QSharedData
       mWebsite = other.mWebsite;
       mOwnership = other.mOwnership;
       mEmployees = other.mEmployees;
-      mTyckerSymbol = other.mTyckerSymbol;
+      mTickerSymbol = other.mTickerSymbol;
       mShippingAddressStreet = other.mShippingAddressStreet;
       mShippingAddressCity = other.mShippingAddressCity;
       mShippingAddressState = other.mShippingAddressState;
@@ -88,7 +88,7 @@ class SugarAccount::Private : public QSharedData
     QString mWebsite;
     QString mOwnership;
     QString mEmployees;
-    QString mTyckerSymbol;
+    QString mTickerSymbol;
     QString mShippingAddressStreet;
     QString mShippingAddressCity;
     QString mShippingAddressState;
@@ -182,7 +182,7 @@ bool SugarAccount::operator==( const SugarAccount &other ) const
         return false;
     if ( d->mEmployees != other.d->mEmployees )
         return false;
-    if ( d->mTyckerSymbol != other.d->mTyckerSymbol )
+    if ( d->mTickerSymbol != other.d->mTickerSymbol )
         return false;
     if ( d->mShippingAddressStreet != other.d->mShippingAddressStreet )
         return false;
@@ -523,15 +523,15 @@ QString SugarAccount::employees() const
     return d->mEmployees;
 }
 
-void SugarAccount::setTyckerSymbol( const QString &value )
+void SugarAccount::setTickerSymbol( const QString &value )
 {
     d->mEmpty = false;
-    d->mTyckerSymbol = value;
+    d->mTickerSymbol = value;
 }
 
-QString SugarAccount::tyckerSymbol() const
+QString SugarAccount::tickerSymbol() const
 {
-    return d->mTyckerSymbol;
+    return d->mTickerSymbol;
 }
 
 void SugarAccount::setShippingAddressStreet( const QString &value )
@@ -687,7 +687,7 @@ void SugarAccount::setData( QMap<QString, QString> data )
     d->mWebsite = data.value( "website" );
     d->mOwnership = data.value( "ownership" );
     d->mEmployees = data.value( "employees" );
-    d->mTyckerSymbol = data.value( "tyckerSymbol" );
+    d->mTickerSymbol = data.value( "tickerSymbol" );
     d->mShippingAddressStreet = data.value( "shippingAddressStreet" );
     d->mShippingAddressCity = data.value( "shippingAddressCity" );
     d->mShippingAddressState = data.value( "shippingAddressState" );
@@ -731,7 +731,7 @@ QMap<QString, QString> SugarAccount::data()
     data["website"] = d->mWebsite;
     data["ownership"] = d->mOwnership;
     data["employees"] = d->mEmployees;
-    data["tyckerSymbol"] = d->mTyckerSymbol;
+    data["tickerSymbol"] = d->mTickerSymbol;
     data["shippingAddressStreet"] = d->mShippingAddressStreet;
     data["shippingAddressCity"] = d->mShippingAddressCity;
     data["shippingAddressState"] = d->mShippingAddressState;

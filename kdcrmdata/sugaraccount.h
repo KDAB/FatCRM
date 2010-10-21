@@ -310,13 +310,13 @@ class KDCRMDATA_EXPORT SugarAccount
     QString employees() const;
 
     /**
-      Set Tycker Symbol.
+      Set Ticker Symbol.
      */
-    void setTyckerSymbol( const QString &value );
+    void setTickerSymbol( const QString &value );
     /**
-      Return Tycker Symbol.
+      Return Ticker Symbol.
      */
-    QString tyckerSymbol() const;
+    QString tickerSymbol() const;
 
     /**
       Set Shipping Address street.

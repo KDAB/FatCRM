@@ -284,12 +284,12 @@ static void setEmployees(const QString &value, SugarAccount &account)
 
 static QString getTickerSymbol( const SugarAccount &account )
 {
-    return account.tyckerSymbol();
+    return account.tickerSymbol();
 }
 
 static void setTickerSymbol(const QString &value, SugarAccount &account)
 {
-    account.setTyckerSymbol( value );
+    account.setTickerSymbol( value );
 }
 
 static QString getShippingAddressStreet( const SugarAccount &account )
