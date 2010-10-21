@@ -37,6 +37,20 @@ void Details::clear()
         te->setPlainText( QString() );
 }
 
+// TODO should probably be virtual and include item specific data, e.g. a contact's full name
+QString Details::windowTitle() const
+{
+    switch ( mType ) {
+        case Account: return tr( "Account Details" );
+        case Campaign: return tr( "Campaign Details" );
+        case Contact: return tr( "Contact Details" );
+        case Lead: return tr( "Lead Details" );
+        case Opportunity: return tr( "Opportunity Details" );
+    }
+
+    return QString();
+}
+
 /*
  * Fill in the widgets with the data and properties that belong to
  * them

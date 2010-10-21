@@ -1,6 +1,9 @@
 #include "page.h"
+
+#include "detailsdialog.h"
 #include "enums.h"
 #include "sugarclient.h"
+
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -157,7 +160,8 @@ void Page::itemChanged( const Item &item )
 
 void Page::slotNewClicked()
 {
-    if ( mDetailsWidget != 0 ) {
+    if ( mDetailsWidget != 0 && mShowDetailsAction->isChecked() ) {
+        kDebug() << "inline";
         if ( mDetailsWidget->isEditing() ) {
             if ( !proceedIsOk() )
                 return;
@@ -165,6 +169,13 @@ void Page::slotNewClicked()
 
         mDetailsWidget->clearFields();
         connect( mDetailsWidget, SIGNAL( saveItem() ), this, SLOT( slotAddItem() ) );
+    } else {
+        DetailsDialog *dialog = new DetailsDialog( DetailsWidget::createDetailsForType( mType ), this );
+
+        Item item;
+        item.setParentCollection( mCollection );
+        dialog->setItem( item );
+        dialog->show();
     }
 }
 
@@ -276,7 +287,7 @@ void Page::initialize()
              this, SLOT( slotCollectionChanged( Akonadi::Collection ) ) );
 
     connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
-    connect( mUi.treeView, SIGNAL( activated( const QModelIndex& ) ), this, SLOT( slotShowDetails( const QModelIndex& ) ) );
+    connect( mUi.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
 
     mShowDetailsAction = new QAction( this );
     mShowDetailsAction->setCheckable( true );
@@ -340,6 +351,12 @@ void Page::setupCachePolicy()
 
 void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
 {
+    for ( int row = topLeft.row(); row <= bottomRight.row(); ++row ) {
+        const QModelIndex index = mUi.treeView->model()->index( row, 0, QModelIndex() );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        emit modelItemChanged( item );
+    }
+
     if ( !mClientWindow->isEnabled() ) {
         do {
             QApplication::restoreOverrideCursor();
@@ -443,6 +460,18 @@ void Page::slotEnsureDetailsVisible()
         }
     } else {
         mShowDetailsAction->setChecked( true );
+    }
+}
+
+void Page::slotItemDoubleClicked( const QModelIndex &index )
+{
+    const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+    if ( item.isValid() ) {
+        DetailsDialog *dialog = new DetailsDialog( DetailsWidget::createDetailsForType( mType ), this );
+        dialog->setItem( item );
+        connect( this, SIGNAL( modelItemChanged( Akonadi::Item ) ),
+                 dialog, SLOT( updateItem( Akonadi::Item ) ) );
+        dialog->show();
     }
 }
 

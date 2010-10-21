@@ -25,6 +25,8 @@ public:
 
     DetailsType type() const { return mType; }
 
+    QString windowTitle() const;
+
 protected:
     virtual void initialize();
 

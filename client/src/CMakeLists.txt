@@ -18,6 +18,7 @@ set(sugarclient_SRCS
     details/contactdetails.cpp
     details/leaddetails.cpp
     details/opportunitydetails.cpp
+    dialogs/detailsdialog.cpp
     dialogs/resourceconfigdialog.cpp
     dialogs/shutdowndialog.cpp
     utilities/editcalendarbutton.cpp
@@ -28,6 +29,7 @@ kde4_add_ui_files(sugarclient_SRCS
     app/mainwindow.ui
     pages/page.ui
     details/detailswidget.ui
+    dialogs/detailsdialog.ui
     dialogs/resourceconfigdialog.ui
     dialogs/shutdowndialog.ui
 )

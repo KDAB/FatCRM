@@ -25,16 +25,16 @@ public:
 
     inline bool isEditing() { return mEditing; }
 
-Q_SIGNALS:
-    void saveItem();
-    void modifyItem();
-
-protected:
     inline QMap<QString, QString> accountsData() { return mAccountsData; }
     inline QMap<QString, QString> campaignsData() { return mCampaignsData; }
     inline QMap<QString, QString> assignedToData() { return mAssignedToData; }
     inline QMap<QString, QString> reportsToData() { return mReportsToData; }
 
+Q_SIGNALS:
+    void saveItem();
+    void modifyItem();
+
+protected:
     inline void setEditing( bool value ) { mEditing = value; }
 
     void setItem( const Akonadi::Item &item );

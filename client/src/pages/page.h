@@ -41,6 +41,7 @@ public:
 Q_SIGNALS:
     void statusMessage( const QString& );
     void showDetailsChanged( bool on );
+    void modelItemChanged( const Akonadi::Item &item );
 
 public Q_SLOTS:
     void showDetails( bool on );
@@ -86,6 +87,7 @@ private Q_SLOTS:
     void slotReloadIntervalChanged();
     void slotCollectionChanged( const Akonadi::Collection &collection );
     void slotEnsureDetailsVisible();
+    void slotItemDoubleClicked( const QModelIndex& );
 
 private:
     void initialize();
