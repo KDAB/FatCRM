@@ -9,8 +9,9 @@ set(sugarclient_SRCS
     pages/contactspage.cpp
     pages/leadspage.cpp
     pages/opportunitiespage.cpp
-    models/itemstreemodel.cpp
     models/filterproxymodel.cpp
+    models/itemstreemodel.cpp
+    models/referenceddatamodel.cpp
     details/detailswidget.cpp
     details/details.cpp
     details/accountdetails.cpp
@@ -21,8 +22,9 @@ set(sugarclient_SRCS
     dialogs/detailsdialog.cpp
     dialogs/resourceconfigdialog.cpp
     dialogs/shutdowndialog.cpp
-    utilities/editcalendarbutton.cpp
     utilities/dbuswinidprovider.cpp
+    utilities/editcalendarbutton.cpp
+    utilities/referenceddata.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
