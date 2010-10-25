@@ -1,10 +1,12 @@
 #include "detailswidget.h"
-#include "sugarclient.h"
+
 #include "accountdetails.h"
-#include "leaddetails.h"
-#include "contactdetails.h"
-#include "opportunitydetails.h"
 #include "campaigndetails.h"
+#include "contactdetails.h"
+#include "leaddetails.h"
+#include "opportunitydetails.h"
+#include "referenceddatamodel.h"
+#include "sugarclient.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 
@@ -272,12 +274,14 @@ QMap<QString, QString> DetailsWidget::data()
     currentData["description"] = mUi.description->toPlainText();
     currentData["content"] = mUi.description->toPlainText();
 
-    currentData["parentId"] =  accountsData().value( currentAccountName() );
-    currentData["accountId"] = accountsData().value(  currentAccountName() );
-    currentData["campaignId"] = campaignsData().value( currentCampaignName() );
-    currentData["assignedUserId"] = assignedToData().value( currentAssignedUserName() );
-    currentData["assignedToId"] = assignedToData().value( currentAssignedUserName() );
-    currentData["reportsToId"] = reportsToData().value( currentReportsToName() );
+    const QString accountId = currentAccountId();
+    currentData["parentId"] = accountId;
+    currentData["accountId"] = accountId;
+    currentData["campaignId"] = currentCampaignId();
+    const QString assignedToId = currentAssignedToId();
+    currentData["assignedUserId"] = assignedToId;
+    currentData["assignedToId"] = assignedToId;
+    currentData["reportsToId"] = currentReportsToId();
     return currentData;
 }
 
@@ -325,209 +329,66 @@ void DetailsWidget::slotDiscardData()
 }
 
 /*
- * Add accounts to the inventory for the available "Account Name"
- * or "Parent Name", and updates the related combo boxes.
- *
+ * Return the selected Id of "Account Name" or "Parent Name"
  */
-void DetailsWidget::addAccountData( const QString &name,  const QString &id )
+QString DetailsWidget::currentAccountId() const
 {
-    QString dataKey;
-    dataKey = mAccountsData.key( id );
-    removeAccountData( dataKey );
-    mAccountsData.insert( name, id );
     if ( mType != Campaign && mType != Lead ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "parentName" || key == "accountName" ) {
-                if ( cb->findText( name ) < 0 )
-                    cb->addItem( name );
+            const QString key = cb->objectName();
+            if ( key == QLatin1String( "parentName" ) || key == QLatin1String( "accountName" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
             }
-        }
-    }
-}
-
-/*
- * Return the selected "Account Name" or "Parent Name",
- * and updates the related combo boxes.
- *
- */
-QString DetailsWidget::currentAccountName() const
-{
-    if ( mType != Campaign && mType != Lead ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "parentName" || key == "accountName" )
-                return cb->currentText();
         }
     }
     return QString();
 }
 
 /*
- * This method remove accounts to the inventory for the available
- * "Account Name" or "Parent Name", and updates the related combo boxes.
- *
+ * Return the selected Campaign Id.
  */
-void DetailsWidget::removeAccountData( const QString &name )
-{
-    mAccountsData.remove( name );
-    if ( mType != Campaign && mType != Lead ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "parentName" || key == "accountName" ) {
-                int index = cb->findText( name );
-                if ( index > 0 ) // always leave the first blank field
-                    cb->removeItem( index );
-            }
-        }
-    }
-}
-
-/*
- * This method add campaing name to the inventory for the available
- * Campaigns and updates the related combo boxes.
- *
- */
-void DetailsWidget::addCampaignData( const QString &name,  const QString &id )
-{
-    QString dataKey;
-    dataKey = mCampaignsData.key( id );
-    removeCampaignData( dataKey );
-    mCampaignsData.insert( name, id );
-    if ( mType != Campaign ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "campaignName" || key == "campaign" ) {
-                if ( cb->findText( name ) < 0 )
-                    cb->addItem( name );
-            }
-        }
-    }
-}
-
-/*
- * Return the selected Campaign name.
- *
- */
-QString DetailsWidget::currentCampaignName() const
+QString DetailsWidget::currentCampaignId() const
 {
     if ( mType != Campaign ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "campaignName" || key == "campaign" )
-                return cb->currentText();
+            const QString key = cb->objectName();
+            if ( key == QLatin1String( "campaignName" ) || key == QLatin1String( "campaign" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
+            }
         }
     }
     return QString();
 }
 
 /*
- * Remove Campaign from the inventory for the available
- * Campaigns, and updates the related combo boxes.
- *
+ * Return the selected "Assigned To" Id
  */
-void DetailsWidget::removeCampaignData( const QString &name )
+QString DetailsWidget::currentAssignedToId() const
 {
-    mCampaignsData.remove( name );
-    if ( mType != Campaign ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "campaignName" || key == "campaign" ) {
-                int index = cb->findText( name );
-                if ( index > 0 ) // always leave the first blank field
-                cb->removeItem( index );
-            }
-        }
-    }
-}
-
-/*
- * Add name to the inventory for the available "Assigned User Name"
- * and updates the related combo boxes.
- *
- */
-void DetailsWidget::addAssignedToData( const QString &name, const QString &id )
-{
-    if ( mAssignedToData.values().contains( id ) )
-        mAssignedToData.remove( mAssignedToData.key( id ) );
-    mAssignedToData.insert( name, id );
-    QString key;
-    QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+    const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes ) {
-        key = cb->objectName();
-        if ( key == "assignedUserName" || key == "assignedTo" ) {
-            if ( cb->findText( name ) < 0 )
-                cb->addItem( name );
+        const QString key = cb->objectName();
+        if ( key == QLatin1String( "assignedUserName" ) || key == QLatin1String( "assignedTo" ) ) {
+            return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
         }
-    }
-}
-
-/*
- * Return the selected "Assigned User Name",
- * and updates the related combo boxes.
- *
- */
-QString DetailsWidget::currentAssignedUserName() const
-{
-    QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-    Q_FOREACH( QComboBox* cb, comboBoxes ) {
-        QString key;
-        key = cb->objectName();
-        if ( key == "assignedUserName" || key == "assignedTo" )
-            return cb->currentText();
     }
     return QString();
 }
 
 /*
- * Add name to the inventory for the available "Reports to User Name"
- * and updates the related combo boxes.
- *
+ * Return the selected "Reports To" Id
  */
-void DetailsWidget::addReportsToData( const QString &name, const QString &id )
-{
-    if ( mReportsToData.values().contains( id ) )
-        mReportsToData.remove( mReportsToData.key( id ) );
-    mReportsToData.insert( name, id );
-    if ( mType == Contact ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "reportsTo" ) {
-                if ( cb->findText( name ) < 0 )
-                    cb->addItem( name );
-            }
-        }
-    }
-}
-
-/*
- * Return the selected "Reports to User Name",
- * and updates the related combo boxes.
- *
- */
-QString DetailsWidget::currentReportsToName() const
+QString DetailsWidget::currentReportsToId() const
 {
     if ( mType == Contact ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "reportsTo" )
-                return cb->currentText();
+            const QString key = cb->objectName();
+            if ( key == QLatin1String( "reportsTo" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
+            }
         }
     }
     return QString();

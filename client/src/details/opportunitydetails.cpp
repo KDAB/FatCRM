@@ -1,5 +1,7 @@
 #include "opportunitydetails.h"
 
+#include "referenceddatamodel.h"
+
 OpportunityDetails::OpportunityDetails( QWidget *parent )
     : Details( Opportunity, parent )
 
@@ -39,7 +41,7 @@ QGroupBox* OpportunityDetails::buildDetailsGroupBox()
     QLabel *accountNameLabel = new QLabel( tr( "Account name: " ) );
     QComboBox* accountName = new QComboBox();
     accountName->setObjectName( "accountName" );
-    accountName->insertItem( 0, QString( "" ) );
+    accountName->setModel( new ReferencedDataModel( AccountRef, this ) );
     detailGrid->addWidget( accountNameLabel, 1, 0 );
     detailGrid->addWidget( accountName, 1, 1 );
     QLabel *typeLabel = new QLabel( tr( "Type: " ) );
@@ -57,7 +59,7 @@ QGroupBox* OpportunityDetails::buildDetailsGroupBox()
     QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
     QComboBox* campaignName = new QComboBox();
     campaignName->setObjectName( "campaignName" );
-    campaignName->insertItem( 0, QString( "" ) );
+    campaignName->setModel( new ReferencedDataModel( CampaignRef, this ) );
     detailGrid->addWidget( campaignLabel, 4, 0 );
     detailGrid->addWidget( campaignName, 4, 1 );
     QLabel *salesStageLabel = new QLabel( tr( "Sales stage: " ) );
@@ -69,7 +71,7 @@ QGroupBox* OpportunityDetails::buildDetailsGroupBox()
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
     QComboBox* assignedUserName = new QComboBox();
     assignedUserName->setObjectName( "assignedUserName" );
-    assignedUserName->insertItem( 0, QString( "" ) );
+    assignedUserName->setModel( new ReferencedDataModel( AssignedToRef, this ) );
     detailGrid->addWidget( assignedToLabel, 6, 0 );
     detailGrid->addWidget( assignedUserName, 6, 1 );
 

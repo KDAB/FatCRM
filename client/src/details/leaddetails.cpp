@@ -1,5 +1,7 @@
 #include "leaddetails.h"
 
+#include "referenceddatamodel.h"
+
 #include <kdcrmdata/sugarlead.h>
 
 LeadDetails::LeadDetails( QWidget *parent )
@@ -70,7 +72,7 @@ QGroupBox* LeadDetails::buildDetailsGroupBox()
     QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
     QComboBox* campaignName = new QComboBox();
     campaignName->setObjectName( "campaignName" );
-    campaignName->addItem( 0, QString( "" ) );
+    campaignName->setModel( new ReferencedDataModel( CampaignRef, this ) );
     detailGrid->addWidget( campaignLabel, 2, 0 );
     detailGrid->addWidget( campaignName, 2, 1 );
     QLabel *referredByLabel = new QLabel( tr( "Referred by: " ) );
@@ -117,7 +119,7 @@ QGroupBox* LeadDetails::buildDetailsGroupBox()
     QLabel *assignedUserLabel = new QLabel( tr( "Assigned to: " ) );
     QComboBox* assignedUserName = new QComboBox();
     assignedUserName->setObjectName( "assignedUserName" );
-    assignedUserName->addItem( 0, QString() );
+    assignedUserName->setModel( new ReferencedDataModel( AssignedToRef, this ) );
     detailGrid->addWidget( assignedUserLabel, 10, 0 );
     detailGrid->addWidget( assignedUserName, 10, 1 );
 

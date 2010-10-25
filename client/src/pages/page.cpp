@@ -2,6 +2,7 @@
 
 #include "detailsdialog.h"
 #include "enums.h"
+#include "referenceddata.h"
 #include "sugarclient.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -253,6 +254,10 @@ void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
             addCampaignsData();
         else if ( mType == Contact )
             addContactsData();
+        else if ( mType == Lead )
+            addLeadsData();
+        else if ( mType == Opportunity )
+            addOpportunitiesData();
     }
 }
 
@@ -491,123 +496,89 @@ QString Page::typeToString( const DetailsType &type ) const
         return QString();
 }
 
-void Page::updateAccountCombo( const QString& name, const QString& id )
-{
-    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
-    ad->addAccountData( name, id );
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    cd->addAccountData( name, id );
-    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
-    od->addAccountData( name, id );
-}
-
-void Page::updateAssignedToCombo( const QString& name, const QString& id )
-{
-    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
-    ad->addAssignedToData( name, id );
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    cd->addAssignedToData( name, id );
-    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
-    od->addAssignedToData( name, id );
-    DetailsWidget *cad = mClientWindow->detailsWidget(Campaign);
-    cad->addAssignedToData( name, id );
-    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
-    ld->addAssignedToData( name, id );
-}
-
-void Page::updateCampaignCombo( const QString& name, const QString& id )
-{
-    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
-    ad->addCampaignData( name, id );
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    cd->addCampaignData( name, id );
-    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
-    od->addCampaignData( name, id );
-    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
-    ld->addCampaignData( name, id );
-}
-
-void Page::updateReportToCombo( const QString& name, const QString& id )
-{
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    cd->addReportsToData( name, id );
-}
-
 void Page::addAccountsData()
 {
-    QModelIndex index;
-    Item item;
-    SugarAccount account;
+    ReferencedData *data = ReferencedData::instance();
     for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        index  =  mUi.treeView->model()->index( i, 0 );
-        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
         if ( item.hasPayload<SugarAccount>() ) {
-            account = item.payload<SugarAccount>();
-            updateAccountCombo( account.name(), account.id() );
-            updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
+            const SugarAccount account = item.payload<SugarAccount>();
+            data->setReferencedData( AccountRef, account.id(), account.name() );
+            data->setReferencedData( AssignedToRef, account.assignedUserId(), account.assignedUserName() );
         }
     }
 }
 
 void Page::addCampaignsData()
 {
-    QModelIndex index;
-    Item item;
-    SugarCampaign campaign;
+    ReferencedData *data = ReferencedData::instance();
     for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        index  =  mUi.treeView->model()->index( i, 0 );
-        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
         if ( item.hasPayload<SugarCampaign>() ) {
-            campaign = item.payload<SugarCampaign>();
-            updateCampaignCombo( campaign.name(), campaign.id() );
+            const SugarCampaign campaign = item.payload<SugarCampaign>();
+            data->setReferencedData( CampaignRef, campaign.id(), campaign.name() );
+            data->setReferencedData( AssignedToRef, campaign.assignedUserId(), campaign.assignedUserName() );
         }
     }
 }
 
 void Page::addContactsData()
 {
-    QString fullName;
-    QModelIndex index;
-    Item item;
-    KABC::Addressee addressee;
+    ReferencedData *data = ReferencedData::instance();
     for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        index  =  mUi.treeView->model()->index( i, 0 );
-        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
         if ( item.hasPayload<KABC::Addressee>() ) {
-            addressee = item.payload<KABC::Addressee>();
-            fullName = addressee.givenName() + " " + addressee.familyName();
-            updateReportToCombo( fullName, addressee.custom( "FATCRM", "X-ContactId" ) );
+            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+            const QString fullName = addressee.givenName() + " " + addressee.familyName();
+            data->setReferencedData( ReportsToRef, addressee.custom( "FATCRM", "X-ContactId" ), fullName );
+            data->setReferencedData( AssignedToRef, addressee.custom( "FATCRM", "X-AssignedUserId"), addressee.custom( "FATCRM", "X-AssignedUserName") );
+        }
+    }
+}
+
+void Page::addLeadsData()
+{
+    ReferencedData *data = ReferencedData::instance();
+    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
+        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        if ( item.hasPayload<SugarLead>() ) {
+            const SugarLead lead = item.payload<SugarLead>();
+            data->setReferencedData( AssignedToRef, lead.assignedUserId(), lead.assignedUserName() );
+        }
+    }
+}
+
+void Page::addOpportunitiesData()
+{
+    ReferencedData *data = ReferencedData::instance();
+    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
+        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
+        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+        if ( item.hasPayload<SugarOpportunity>() ) {
+            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            data->setReferencedData( AssignedToRef, opportunity.assignedUserId(), opportunity.assignedUserName() );
         }
     }
 }
 
 void Page::removeAccountsData( Akonadi::Item &item )
 {
-    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
-
     if ( item.hasPayload<SugarAccount>() ) {
-        SugarAccount account;
-        account = item.payload<SugarAccount>();
-        ad->removeAccountData( account.name() );
-        cd->removeAccountData( account.name() );
-        od->removeAccountData( account.name() );
+        const SugarAccount account = item.payload<SugarAccount>();
+        ReferencedData *data = ReferencedData::instance();
+        data->removeReferencedData( AccountRef, account.id() );
     }
 }
 
 void Page::removeCampaignsData( Akonadi::Item &item )
 {
-    DetailsWidget *ad = mClientWindow->detailsWidget(Account);
-    DetailsWidget *cd = mClientWindow->detailsWidget(Contact);
-    DetailsWidget *od = mClientWindow->detailsWidget(Opportunity);
-    DetailsWidget *ld = mClientWindow->detailsWidget(Lead);
     if ( item.hasPayload<SugarCampaign>() ) {
-        SugarCampaign campaign;
-        campaign = item.payload<SugarCampaign>();
-        ad->removeCampaignData( campaign.name() );
-        cd->removeCampaignData( campaign.name() );
-        od->removeCampaignData( campaign.name() );
-        ld->removeCampaignData( campaign.name() );
+        const SugarCampaign campaign = item.payload<SugarCampaign>();
+        ReferencedData *data = ReferencedData::instance();
+        data->removeReferencedData( CampaignRef, campaign.id() );
     }
 }

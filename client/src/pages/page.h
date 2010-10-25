@@ -47,11 +47,6 @@ public Q_SLOTS:
     void showDetails( bool on );
 
 protected:
-    void updateAccountCombo( const QString& name, const QString& id );
-    void updateAssignedToCombo( const QString& name, const QString& id );
-    void updateCampaignCombo( const QString& name, const QString& id );
-    void updateReportToCombo( const QString& name, const QString& id );
-
     inline SugarClient* clientWindow() { return mClientWindow; }
     inline QString mimeType() { return mMimeType; } const
     inline Akonadi::EntityTreeView* treeView() { return mUi.treeView; }
@@ -98,6 +93,8 @@ private:
     void addAccountsData();
     void addCampaignsData();
     void addContactsData();
+    void addLeadsData();
+    void addOpportunitiesData();
     void removeAccountsData( Akonadi::Item &item );
     void removeCampaignsData( Akonadi::Item &item );
 

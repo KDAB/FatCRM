@@ -1,5 +1,7 @@
 #include "accountdetails.h"
 
+#include "referenceddatamodel.h"
+
 #include <kdcrmdata/sugaraccount.h>
 
 AccountDetails::AccountDetails( QWidget *parent )
@@ -51,7 +53,7 @@ QGroupBox* AccountDetails::buildDetailsGroupBox()
     QLabel *memberOfLabel = new QLabel( tr( "Member of: " ) );
     QComboBox* parentName = new QComboBox();
     parentName->setObjectName( "parentName" );
-    parentName->insertItem( 0, QString( "" ) );
+    parentName->setModel( new ReferencedDataModel( AccountRef, this ) );
     detailGrid->addWidget( memberOfLabel, 3, 0 );
     detailGrid->addWidget( parentName, 3, 1 );
     QLabel *ownerShipLabel = new QLabel( tr( "Ownership: " ) );
@@ -74,13 +76,13 @@ QGroupBox* AccountDetails::buildDetailsGroupBox()
     QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
     QComboBox* campaignName = new QComboBox();
     campaignName->setObjectName( "campaignName" );
-    campaignName->insertItem( 0, QString( "" ) );
+    campaignName->setModel( new ReferencedDataModel( CampaignRef, this ) );
     detailGrid->addWidget( campaignLabel, 7, 0 );
     detailGrid->addWidget( campaignName, 7, 1 );
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
     QComboBox* assignedUserName = new QComboBox();
     assignedUserName->setObjectName( "assignedUserName" );
-    assignedUserName->insertItem( 0, QString( "" ) );
+    assignedUserName->setModel( new ReferencedDataModel( AssignedToRef, this ) );
     detailGrid->addWidget( assignedToLabel, 8, 0 );
     detailGrid->addWidget( assignedUserName, 8, 1 );
 

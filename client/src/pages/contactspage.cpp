@@ -35,9 +35,6 @@ void ContactsPage::addItem( const QMap<QString, QString> &data)
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    updateReportToCombo( addressee.custom( "FATCRM", "X-ReportsToUserName" ),
-                         addressee.custom( "FATCRM", "X-ReportsToUserId" ) );
 }
 
 void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
@@ -53,7 +50,4 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    updateReportToCombo( addressee.custom( "FATCRM", "X-ReportsToUserName" ),
-                         addressee.custom( "FATCRM", "X-ReportsToUserId" ) );
 }

@@ -1,5 +1,6 @@
-
 #include "campaigndetails.h"
+
+#include "referenceddatamodel.h"
 
 #include <kdcrmdata/sugarcampaign.h>
 
@@ -120,7 +121,7 @@ QGroupBox* CampaignDetails::buildOtherDetailsGroupBox()
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
     QComboBox* assignedUserName = new QComboBox();
     assignedUserName->setObjectName( "assignedUserName" );
-    assignedUserName->addItem( 0, QString( "" ) );
+    assignedUserName->setModel( new ReferencedDataModel( AssignedToRef, this ) );
     detailGrid->addWidget( assignedToLabel, 0, 0 );
     detailGrid->addWidget( assignedUserName, 0, 1 );
     QLabel *impressionsLabel = new QLabel( tr( "Impressions: " ) );

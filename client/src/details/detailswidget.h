@@ -25,11 +25,6 @@ public:
 
     inline bool isEditing() { return mEditing; }
 
-    inline QMap<QString, QString> accountsData() { return mAccountsData; }
-    inline QMap<QString, QString> campaignsData() { return mCampaignsData; }
-    inline QMap<QString, QString> assignedToData() { return mAssignedToData; }
-    inline QMap<QString, QString> reportsToData() { return mReportsToData; }
-
 Q_SIGNALS:
     void saveItem();
     void modifyItem();
@@ -41,13 +36,6 @@ protected:
     void clearFields();
 
     QMap<QString, QString> data();
-
-    void addAccountData( const QString &name,  const QString &id );
-    void removeAccountData( const QString &name );
-    void addCampaignData( const QString &name,  const QString &id );
-    void removeCampaignData( const QString &name );
-    void addAssignedToData( const QString &name, const QString &id );
-    void addReportsToData( const QString &name, const QString &id );
 
     static Details *createDetailsForType( DetailsType type );
 
@@ -61,20 +49,16 @@ private:
     void initialize();
     void setConnections();
     void reset();
-    QString currentAccountName() const;
-    QString currentAssignedUserName() const;
-    QString currentCampaignName() const;
-    QString currentReportsToName() const;
+    QString currentAccountId() const;
+    QString currentAssignedToId() const;
+    QString currentCampaignId() const;
+    QString currentReportsToId() const;
 
     void setData( const QMap<QString,QString> &data );
 
 private:
     Details *mDetails;
 
-    QMap<QString, QString> mReportsToData;
-    QMap<QString, QString> mAccountsData;
-    QMap<QString, QString> mCampaignsData;
-    QMap<QString, QString> mAssignedToData;
     QMap<QString, QString> mData;
 
     DetailsType mType;

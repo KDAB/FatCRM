@@ -1,5 +1,7 @@
 #include "contactdetails.h"
 
+#include "referenceddatamodel.h"
+
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
@@ -65,7 +67,7 @@ QGroupBox* ContactDetails::buildDetailsGroupBox()
     QLabel *accountNameLabel = new QLabel( tr( "Account name: " ) );
     QComboBox* accountName = new QComboBox();
     accountName->setObjectName( "accountName" );
-    accountName->addItem( 0,  QString( "" ) );
+    accountName->setModel( new ReferencedDataModel( AccountRef, this ) );
     detailGrid->addWidget( accountNameLabel, 4, 0 );
     detailGrid->addWidget( accountName, 4, 1 );
     QLabel *leadSourceLabel = new QLabel( tr( "Lead source: " ) );
@@ -77,19 +79,19 @@ QGroupBox* ContactDetails::buildDetailsGroupBox()
     QLabel *campaignLabel = new QLabel( tr( "Campaign: " ) );
     QComboBox* campaign = new QComboBox();
     campaign->setObjectName( "campaign" );
-    campaign->addItem( 0, QString( "" ) );
+    campaign->setModel( new ReferencedDataModel( CampaignRef, this ) );
     detailGrid->addWidget( campaignLabel, 6, 0 );
     detailGrid->addWidget( campaign, 6, 1 );
     QLabel *assignedToLabel = new QLabel( tr( "Assigned to: " ) );
     QComboBox* assignedTo = new QComboBox();
     assignedTo->setObjectName( "assignedTo" );
-    assignedTo->addItem( 0, QString( "" ) );
+    assignedTo->setModel( new ReferencedDataModel( AssignedToRef, this ) );
     detailGrid->addWidget( assignedToLabel, 7, 0 );
     detailGrid->addWidget( assignedTo, 7, 1 );
     QLabel *reportsToLabel = new QLabel( tr( "Reports to: " ) );
     QComboBox* reportsTo = new QComboBox();
     reportsTo->setObjectName( "reportsTo" );
-    reportsTo->addItem( 0, QString( "" ) );
+    reportsTo->setModel( new ReferencedDataModel( ReportsToRef, this ) );
     detailGrid->addWidget( reportsToLabel, 8, 0 );
     detailGrid->addWidget( reportsTo, 8, 1 );
     QLabel *primaryEmailLabel = new QLabel( tr( "Primary email: " ) );

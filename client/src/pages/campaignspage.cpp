@@ -35,8 +35,6 @@ void CampaignsPage::addItem( const QMap<QString, QString> &data )
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    const SugarCampaign campaign = item.payload<SugarCampaign>();
-    updateCampaignCombo( campaign.name(), campaign.id() );
 }
 
 void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
@@ -52,6 +50,4 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    const SugarCampaign campaign = item.payload<SugarCampaign>();
-    updateCampaignCombo( campaign.name(), campaign.id() );
 }

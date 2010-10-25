@@ -36,11 +36,6 @@ void AccountsPage::addItem( const QMap<QString, QString> &data )
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    // update Account combos for:
-    // accounts - contacts and opportunity details
-    const SugarAccount account = item.payload<SugarAccount>();
-    updateAccountCombo( account.name(), account.id());
-    updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }
 
 void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
@@ -57,9 +52,4 @@ void AccountsPage::modifyItem( Item &item, const QMap<QString, QString> &data  )
     clientWindow()->setEnabled( false );
     QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
     emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
-    // update Account combos for:
-    // accounts - contacts and opportunity details
-    const SugarAccount account = item.payload<SugarAccount>();
-    updateAccountCombo( account.name(), account.id());
-    updateAssignedToCombo( account.assignedUserName(), account.assignedUserId() );
 }

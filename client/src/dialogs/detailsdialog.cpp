@@ -2,6 +2,7 @@
 
 #include "details.h"
 #include "ui_detailsdialog.h"
+#include "referenceddatamodel.h"
 #include "sugarclient.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -47,10 +48,10 @@ public: // slots
     void saveResult( KJob *job );
 
 private:
-    QString currentAccountName() const;
-    QString currentAssignedUserName() const;
-    QString currentCampaignName() const;
-    QString currentReportsToName() const;
+    QString currentAccountId() const;
+    QString currentAssignedToId() const;
+    QString currentCampaignId() const;
+    QString currentReportsToId() const;
 };
 
 // TODO copied from detailswidget, this needs to be refactored
@@ -151,14 +152,14 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     // TODO FIXME
     SugarClient *client = dynamic_cast<SugarClient*>( q->parentWidget()->window() );
     if ( client != 0 ) {
-        DetailsWidget *d = client->detailsWidget( mDetails->type() );
-
-        currentData["parentId"] = d->accountsData().value( currentAccountName() );
-        currentData["accountId"] = d->accountsData().value(  currentAccountName() );
-        currentData["campaignId"] = d->campaignsData().value( currentCampaignName() );
-        currentData["assignedUserId"] = d->assignedToData().value( currentAssignedUserName() );
-        currentData["assignedToId"] = d->assignedToData().value( currentAssignedUserName() );
-        currentData["reportsToId"] = d->reportsToData().value( currentReportsToName() );
+        const QString accountId = currentAccountId();
+        currentData["parentId"] = accountId;
+        currentData["accountId"] = accountId;
+        currentData["campaignId"] = currentCampaignId();
+        const QString assignedToId = currentAssignedToId();
+        currentData["assignedUserId"] = assignedToId;
+        currentData["assignedToId"] = assignedToId;
+        currentData["reportsToId"] = currentReportsToId();
     }
 
     return currentData;
@@ -209,52 +210,55 @@ void DetailsDialog::Private::saveResult( KJob *job )
     }
 }
 
-QString DetailsDialog::Private::currentAccountName() const
+QString DetailsDialog::Private::currentAccountId() const
 {
     if ( mDetails->type() != Campaign && mDetails->type() != Lead ) {
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
             const QString key = cb->objectName();
-            if ( key == "parentName" || key == "accountName" )
-                return cb->currentText();
+            if ( key == QLatin1String( "parentName" ) || key == QLatin1String( "accountName" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
+            }
         }
     }
     return QString();
 }
 
-QString DetailsDialog::Private::currentAssignedUserName() const
+QString DetailsDialog::Private::currentAssignedToId() const
 {
-    QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+    const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
     Q_FOREACH( QComboBox* cb, comboBoxes ) {
         const QString key = cb->objectName();
-        if ( key == "assignedUserName" || key == "assignedTo" )
-            return cb->currentText();
-    }
-    return QString();
-}
-
-QString DetailsDialog::Private::currentCampaignName() const
-{
-    if ( mDetails->type() != Campaign ) {
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
-        Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            const QString key = cb->objectName();
-            if ( key == "campaignName" || key == "campaign" )
-                return cb->currentText();
+        if ( key == QLatin1String( "assignedUserName" ) || key == QLatin1String( "assignedTo" ) ) {
+            return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
         }
     }
     return QString();
 }
 
-QString DetailsDialog::Private::currentReportsToName() const
+QString DetailsDialog::Private::currentCampaignId() const
+{
+    if ( mDetails->type() != Campaign ) {
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        Q_FOREACH( QComboBox* cb, comboBoxes ) {
+            const QString key = cb->objectName();
+            if ( key == QLatin1String( "campaignName" ) || key == QLatin1String( "campaign" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
+            }
+        }
+    }
+    return QString();
+}
+
+QString DetailsDialog::Private::currentReportsToId() const
 {
     if ( mDetails->type() == Contact ) {
-        QString key;
-        QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
+        const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
-            key = cb->objectName();
-            if ( key == "reportsTo" )
-                return cb->currentText();
+            const QString key = cb->objectName();
+            if ( key == QLatin1String( "reportsTo" ) ) {
+                return cb->itemData( cb->currentIndex(), ReferencedDataModel::IdRole ).toString();
+            }
         }
     }
     return QString();
