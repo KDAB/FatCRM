@@ -212,7 +212,7 @@ void DetailsDialog::Private::saveResult( KJob *job )
 
 QString DetailsDialog::Private::currentAccountId() const
 {
-    if ( mDetails->type() != Campaign && mDetails->type() != Lead ) {
+    if ( mDetails->type() != Campaign ) {
         const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
             const QString key = cb->objectName();
