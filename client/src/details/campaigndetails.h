@@ -2,7 +2,10 @@
 #define CAMPAIGNDETAILS_H
 
 #include "details.h"
-#include "editcalendarbutton.h"
+
+namespace Ui {
+    class CampaignDetails;
+}
 
 class CampaignDetails : public Details
 {
@@ -13,29 +16,21 @@ public:
     ~CampaignDetails();
 
 private:
+    Ui::CampaignDetails *mUi;
+
+private:
     /*reimp*/ void initialize();
     /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
     /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
 
-    QGroupBox *buildDetailsGroupBox();
-    QGroupBox *buildOtherDetailsGroupBox();
-
     QStringList typeItems() const;
     QStringList statusItems() const;
-
-    QLineEdit* mStartDate;
-    QLineEdit* mEndDate;
-    QToolButton *mClearStartDateButton;
-    QToolButton *mClearEndDateButton;
-    EditCalendarButton *mStartDateCalendarButton;
-    EditCalendarButton *mEndDateCalendarButton;
-
-    QMap<QString, QString> mData;
 
 private Q_SLOTS:
     void slotSetStartDate();
     void slotSetEndDate();
-    void slotClearDate();
+    void slotClearStartDate();
+    void slotClearEndDate();
 };
 
 
