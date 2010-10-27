@@ -24,6 +24,7 @@ void LeadDetails::initialize()
     mUi->leadSource->addItems( sourceItems() );
     mUi->campaignName->setModel( new ReferencedDataModel( CampaignRef, this ) );
     mUi->salutation->addItems( salutationItems() );
+    // TODO FIXME: leads can refer to account names which are do not match sugar accounts
     mUi->accountName->setModel( new ReferencedDataModel( AccountRef, this ) );
     mUi->assignedUserName->setModel( new ReferencedDataModel( AssignedToRef, this ) );
 
