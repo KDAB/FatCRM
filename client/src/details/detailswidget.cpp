@@ -333,7 +333,7 @@ void DetailsWidget::slotDiscardData()
  */
 QString DetailsWidget::currentAccountId() const
 {
-    if ( mType != Campaign && mType != Lead ) {
+    if ( mType != Campaign ) {
         const QList<QComboBox*> comboBoxes =  mUi.informationGB->findChildren<QComboBox*>();
         Q_FOREACH( QComboBox* cb, comboBoxes ) {
             const QString key = cb->objectName();
