@@ -6,6 +6,10 @@
 
 #include <kdcrmdata/sugaropportunity.h>
 
+namespace Ui {
+    class OpportunityDetails;
+}
+
 class OpportunityDetails : public Details
 {
     Q_OBJECT
@@ -19,18 +23,15 @@ private Q_SLOTS:
     void slotSetDateClosed();
 
 private:
+    Ui::OpportunityDetails *mUi;
+
+private:
     /*reimp*/ void initialize();
     /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
     /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
 
-    QGroupBox *buildDetailsGroupBox();
-    QGroupBox *buildOtherDetailsGroupBox();
     QStringList typeItems() const;
     QStringList stageItems() const;
-
-    QLineEdit* mDateClosed;
-    EditCalendarButton *mCalendarButton;
-    QToolButton *mClearDateButton;
 };
 
 
