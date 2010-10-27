@@ -1,7 +1,10 @@
 #include "opportunitydetails.h"
 
+#include "editcalendarbutton.h"
 #include "ui_opportunitydetails.h"
 #include "referenceddatamodel.h"
+
+#include <kdcrmdata/sugaropportunity.h>
 
 OpportunityDetails::OpportunityDetails( QWidget *parent )
     : Details( Opportunity, parent ), mUi( new Ui::OpportunityDetails )

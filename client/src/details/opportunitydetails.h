@@ -2,9 +2,6 @@
 #define OPPORTUNITYDETAILS_H
 
 #include "details.h"
-#include "editcalendarbutton.h"
-
-#include <kdcrmdata/sugaropportunity.h>
 
 namespace Ui {
     class OpportunityDetails;
