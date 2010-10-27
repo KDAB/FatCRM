@@ -2,9 +2,14 @@
 #define CONTACTDETAILS_H
 
 #include "details.h"
-#include "editcalendarbutton.h"
 
-#include <kabc/addressee.h>
+namespace KABC {
+    class Addressee;
+}
+
+namespace Ui {
+    class ContactDetails;
+}
 
 class ContactDetails : public Details
 {
@@ -15,24 +20,18 @@ public:
     ~ContactDetails();
 
 private:
+    Ui::ContactDetails *mUi;
+
+private:
     /*reimp*/ void initialize();
     /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
     /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
 
-    QGroupBox *buildDetailsGroupBox();
-    QGroupBox *buildOtherDetailsGroupBox();
-    QGroupBox *buildAddressesGroupBox();
     QMap<QString, QString> contactData( const KABC::Addressee &contact ) const;
-
-    QLineEdit* mBirthDate;
-    QToolButton *mClearDateButton;
-    EditCalendarButton *mCalendarButton;
-
 
 private Q_SLOTS:
     void slotSetBirthday();
     void slotClearDate();
-
 };
 
 #endif /* CONTACTDETAILS_H */
