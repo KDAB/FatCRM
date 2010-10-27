@@ -37,7 +37,7 @@ void ContactDetails::initialize()
 void ContactDetails::slotSetBirthday()
 {
     // TODO FIXME: use locale formatting
-   mUi->birthdate->setText( mUi->calendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
+    mUi->birthdate->setText( mUi->calendarButton->calendarWidget()->selectedDate().toString( QString("yyyy-MM-dd" ) ) );
     mUi->calendarButton->calendarWidget()->setSelectedDate( QDate::currentDate() );
     mUi->calendarButton->calendarDialog()->close();
 }
@@ -61,7 +61,7 @@ QMap<QString,QString> ContactDetails::contactData( const KABC::Addressee &addres
     data["lastName"] = addressee.familyName();
     data["title"] = addressee.title();
     data["department"] = addressee.department();
-    //data["accountName"] = addressee.organization();
+    data["accountName"] = addressee.organization();
     data["email1"] = addressee.preferredEmail();
     QStringList emails = addressee.emails();
     emails.removeAll( addressee.preferredEmail() );
