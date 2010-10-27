@@ -30,6 +30,7 @@ set(sugarclient_SRCS
 kde4_add_ui_files(sugarclient_SRCS
     app/mainwindow.ui
     pages/page.ui
+    details/accountdetails.ui
     details/detailswidget.ui
     dialogs/detailsdialog.ui
     dialogs/resourceconfigdialog.ui

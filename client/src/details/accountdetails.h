@@ -3,6 +3,10 @@
 
 #include "details.h"
 
+namespace Ui {
+    class AccountDetails;
+}
+
 class AccountDetails : public Details
 {
     Q_OBJECT
@@ -12,12 +16,12 @@ public:
     ~AccountDetails();
 
 private:
+    Ui::AccountDetails *mUi;
+
+private:
     /*reimp*/ void initialize();
     /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
     /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
-    QGroupBox *buildDetailsGroupBox();
-    QGroupBox *buildOtherDetailsGroupBox();
-    QGroupBox *buildAddressesGroupBox();
 
     QStringList typeItems() const;
 };
