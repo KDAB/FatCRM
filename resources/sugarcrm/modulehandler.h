@@ -10,9 +10,11 @@ namespace Akonadi
 }
 
 class SugarSession;
-class Sugarsoap;
-class TNS__Entry_list;
-class TNS__Entry_value;
+namespace KDSoapGenerated {
+    class Sugarsoap;
+    class TNS__Entry_list;
+    class TNS__Entry_value;
+}
 
 class ListEntriesScope
 {
@@ -60,10 +62,10 @@ public:
 
     virtual bool getEntry( const Akonadi::Item &item );
 
-    virtual Akonadi::Item itemFromEntry( const TNS__Entry_value &entry,
+    virtual Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry,
                                          const Akonadi::Collection &parentCollection ) = 0;
 
-    Akonadi::Item::List itemsFromListEntriesResponse( const TNS__Entry_list &entryList,
+    Akonadi::Item::List itemsFromListEntriesResponse( const KDSoapGenerated::TNS__Entry_list &entryList,
                                                       const Akonadi::Collection &parentCollection );
 
     virtual bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
@@ -78,7 +80,7 @@ protected:
     static QByteArray partIdFromPayloadPart( const char *part );
 
     QString sessionId() const;
-    Sugarsoap *soap() const;
+    KDSoapGenerated::Sugarsoap *soap() const;
 };
 
 #endif

@@ -15,8 +15,9 @@ find_program(XSLTPROC_EXECUTABLE xsltproc)
 macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources. Recommended.")
 
 # To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
-find_package(KDSoap REQUIRED)
-#TODO macro_log_feature for KDSoap
+find_package(KDSoap CONFIG) # first try KDSoapConfig.cmake
+find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
+macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the Salesforce SOAP webservice. Required.")
 
 if (XSLTPROC_EXECUTABLE)
   # generates a D-Bus interface description from a KConfigXT file
@@ -52,6 +53,7 @@ if (KDSoap_KDWSDL2CPP)
     
     QT4_GENERATE_MOC(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp PROPERTIES SKIP_AUTOMOC TRUE)
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 
     SET(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
   endmacro( kdsoap_generate_soap_bindings )

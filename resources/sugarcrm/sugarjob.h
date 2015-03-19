@@ -5,8 +5,10 @@
 
 class KDSoapMessage;
 class SugarSession;
-class Sugarsoap;
-class TNS__Set_entry_result;
+namespace KDSoapGenerated {
+    class Sugarsoap;
+    class TNS__Set_entry_result;
+}
 
 class SugarJob : public KJob
 {
@@ -35,7 +37,7 @@ protected:
     bool handleLoginError( const KDSoapMessage &fault );
 
     QString sessionId() const;
-    Sugarsoap *soap();
+    KDSoapGenerated::Sugarsoap *soap();
 
 private:
     class Private;
@@ -43,7 +45,7 @@ private:
 
     Q_PRIVATE_SLOT( d, void startLogin() )
     Q_PRIVATE_SLOT( d, void startTask() )
-    Q_PRIVATE_SLOT( d, void loginDone( const TNS__Set_entry_result &callResult ) )
+    Q_PRIVATE_SLOT( d, void loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult ) )
     Q_PRIVATE_SLOT( d, void loginError( const KDSoapMessage &fault ) )
 };
 

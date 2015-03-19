@@ -3,7 +3,8 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 
-#include <KDSoapMessage.h>
+using namespace KDSoapGenerated;
+#include <KDSoapClient/KDSoapMessage.h>
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
@@ -54,8 +55,8 @@ void DeleteEntryJob::Private::setEntryError( const KDSoapMessage &fault )
 DeleteEntryJob::DeleteEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, item ) )
 {
-    connect( soap(), SIGNAL( set_entryDone( TNS__Set_entry_result ) ),
-             this,  SLOT( setEntryDone( TNS__Set_entry_result ) ) );
+    connect( soap(), SIGNAL( set_entryDone( KDSoapGenerated::TNS__Set_entry_result ) ),
+             this,  SLOT( setEntryDone( KDSoapGenerated::TNS__Set_entry_result ) ) );
     connect( soap(), SIGNAL( set_entryError( KDSoapMessage ) ),
              this,  SLOT( setEntryError( KDSoapMessage ) ) );
 }

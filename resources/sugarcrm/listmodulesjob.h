@@ -4,7 +4,10 @@
 #include "sugarjob.h"
 
 class QStringList;
-class TNS__Module_list;
+
+namespace KDSoapGenerated {
+    class TNS__Module_list;
+}
 
 class ListModulesJob : public SugarJob
 {

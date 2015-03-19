@@ -2,6 +2,7 @@
 
 #include "sugarsoap.h"
 
+using namespace KDSoapGenerated;
 #include <KUrl>
 
 static QString endPointFromHostString( const QString &host )

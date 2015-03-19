@@ -5,6 +5,7 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
+using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h>
 #include <akonadi/collection.h>
 

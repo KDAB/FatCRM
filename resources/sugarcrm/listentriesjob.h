@@ -10,7 +10,9 @@ namespace Akonadi {
 }
 
 class ModuleHandler;
+namespace KDSoapGenerated {
 class TNS__Get_entry_list_result;
+}
 
 class ListEntriesJob : public SugarJob
 {
@@ -34,7 +36,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void listEntriesDone( const TNS__Get_entry_list_result &callResult ) )
+    Q_PRIVATE_SLOT( d, void listEntriesDone( const KDSoapGenerated::TNS__Get_entry_list_result &callResult ) )
     Q_PRIVATE_SLOT( d, void listEntriesError( const KDSoapMessage &fault ) )
 };
 

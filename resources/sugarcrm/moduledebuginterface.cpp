@@ -5,6 +5,7 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
+using namespace KDSoapGenerated;
 #include <QStringList>
 
 ModuleDebugInterface::ModuleDebugInterface( const QString &moduleName, SugarCRMResource *resource )

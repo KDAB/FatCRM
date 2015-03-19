@@ -3,7 +3,9 @@
 
 #include <QObject>
 
-class Sugarsoap;
+namespace KDSoapGenerated {
+    class Sugarsoap;
+}
 
 class SugarSession : public QObject
 {
@@ -39,7 +41,7 @@ public:
 
 private:
     void setSessionId( const QString &sessionId );
-    Sugarsoap *soap();
+    KDSoapGenerated::Sugarsoap *soap();
 
 private:
     class Private;

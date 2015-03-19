@@ -8,8 +8,10 @@ namespace Akonadi {
 }
 
 class ModuleHandler;
-class TNS__Get_entry_result;
-class TNS__Set_entry_result;
+namespace KDSoapGenerated {
+    class TNS__Get_entry_result;
+    class TNS__Set_entry_result;
+}
 
 class UpdateEntryJob : public SugarJob
 {

@@ -3,7 +3,8 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 
-#include <KDSoapMessage.h>
+using namespace KDSoapGenerated;
+#include <KDSoapClient/KDSoapMessage.h>
 
 #include <akonadi/collection.h>
 
@@ -35,11 +36,11 @@ public:
     Stage mStage;
 
 public: // slots
-    void listEntriesDone( const TNS__Get_entry_list_result &callResult );
+    void listEntriesDone( const KDSoapGenerated::TNS__Get_entry_list_result &callResult );
     void listEntriesError( const KDSoapMessage &fault );
 };
 
-void ListEntriesJob::Private::listEntriesDone( const TNS__Get_entry_list_result &callResult )
+void ListEntriesJob::Private::listEntriesDone( const KDSoapGenerated::TNS__Get_entry_list_result &callResult )
 {
     if ( callResult.result_count() > 0 ) {
         const Item::List items =
@@ -90,8 +91,8 @@ void ListEntriesJob::Private::listEntriesError( const KDSoapMessage &fault )
 ListEntriesJob::ListEntriesJob( const Akonadi::Collection &collection, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, collection ) )
 {
-    connect( soap(), SIGNAL( get_entry_listDone( TNS__Get_entry_list_result ) ),
-             this,  SLOT( listEntriesDone( TNS__Get_entry_list_result ) ) );
+    connect( soap(), SIGNAL( get_entry_listDone( KDSoapGenerated::TNS__Get_entry_list_result ) ),
+             this,  SLOT( listEntriesDone( KDSoapGenerated::TNS__Get_entry_list_result ) ) );
     connect( soap(), SIGNAL( get_entry_listError( KDSoapMessage ) ),
              this,  SLOT( listEntriesError( KDSoapMessage ) ) );
 }

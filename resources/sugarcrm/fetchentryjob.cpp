@@ -3,7 +3,8 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 
-#include <KDSoapMessage.h>
+using namespace KDSoapGenerated;
+#include <KDSoapClient/KDSoapMessage.h>
 
 #include <akonadi/item.h>
 

@@ -15,7 +15,7 @@
 #include <KLocale>
 #include <KWindowSystem>
 
-#include <KDSoapMessage.h>
+#include <KDSoapClient/KDSoapMessage.h>
 
 #include <QtDBus/QDBusConnection>
 

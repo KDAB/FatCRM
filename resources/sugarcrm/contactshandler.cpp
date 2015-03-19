@@ -3,6 +3,7 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
+using namespace KDSoapGenerated;
 #include <akonadi/kabc/contactparts.h>
 
 #include <akonadi/abstractdifferencesreporter.h>

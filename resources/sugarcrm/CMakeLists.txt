@@ -15,7 +15,8 @@ find_program(XSLTPROC_EXECUTABLE xsltproc)
 macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources. Recommended.")
 
 # To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
-find_package(KDSoap REQUIRED)
+find_package(KDSoap CONFIG) # first try KDSoapConfig.cmake
+find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
 macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
 
 if (XSLTPROC_EXECUTABLE)
@@ -33,18 +34,18 @@ if (XSLTPROC_EXECUTABLE)
   endmacro( kcfg_generate_dbus_interface )
 endif (XSLTPROC_EXECUTABLE)
 
-if (KDSoap_KDWSDL2CPP)
+if (KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
   macro ( kdsoap_generate_soap_bindings _sources _wsdl _name )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
-      COMMAND ${KDSoap_KDWSDL2CPP} -o ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -namespace KDSoapGenerated -o ${_name}.h
               ${_wsdl}
       DEPENDS ${_wsdl}
     )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp
-      COMMAND ${KDSoap_KDWSDL2CPP} -o ${_name}.cpp -impl ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.cpp -namespace KDSoapGenerated -impl ${_name}.h
               ${_wsdl}
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
               ${_wsdl}
@@ -55,7 +56,7 @@ if (KDSoap_KDWSDL2CPP)
 
     SET(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
   endmacro( kdsoap_generate_soap_bindings )
-endif (KDSoap_KDWSDL2CPP)
+endif (KDSoap_CODEGENERATOR)
 
 if(WIN32)
     set(LIB_INSTALL_DIR ${LIB_INSTALL_DIR}

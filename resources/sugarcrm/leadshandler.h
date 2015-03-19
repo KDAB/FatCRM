@@ -22,7 +22,7 @@ public:
 
     bool setEntry( const Akonadi::Item &item );
 
-    Akonadi::Item itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
+    Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
 
     void compare( Akonadi::AbstractDifferencesReporter *reporter,
                   const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );

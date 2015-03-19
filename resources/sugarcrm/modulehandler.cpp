@@ -3,6 +3,7 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
+using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 
 #include <KLocale>
