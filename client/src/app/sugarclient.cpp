@@ -3,7 +3,6 @@
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "resourceconfigdialog.h"
-#include "shutdowndialog.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -268,29 +267,6 @@ DetailsWidget* SugarClient::detailsWidget( DetailsType type )
 
 void SugarClient::closeEvent( QCloseEvent *event )
 {
-    const ShutdownDialog::ShutdownOptions option = ShutdownDialog::getShutdownOption( this );
-    switch ( option ) {
-        case ShutdownDialog::CancelShutdown:
-            event->ignore();
-            return;
-
-        case ShutdownDialog::JustQuit:
-            break;
-
-        case ShutdownDialog::QuitAndStopAkonadi:
-            Akonadi::Control::stop();
-            break;
-
-        case ShutdownDialog::QuitAndAgentsOffline:
-            for ( int i = 0; i < mResourceSelector->count(); ++i ) {
-                AgentInstance agent = mResourceSelector->itemData( i, AgentInstanceModel::InstanceRole ).value<AgentInstance>();
-                if ( agent.isValid() ) {
-                    agent.setIsOnline( false );
-                }
-            }
-            break;
-    }
-
     QMainWindow::closeEvent( event );
 }
 

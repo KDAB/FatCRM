@@ -21,7 +21,6 @@ set(sugarclient_SRCS
     details/opportunitydetails.cpp
     dialogs/detailsdialog.cpp
     dialogs/resourceconfigdialog.cpp
-    dialogs/shutdowndialog.cpp
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
     utilities/referenceddata.cpp
@@ -38,7 +37,6 @@ kde4_add_ui_files(sugarclient_SRCS
     details/opportunitydetails.ui
     dialogs/detailsdialog.ui
     dialogs/resourceconfigdialog.ui
-    dialogs/shutdowndialog.ui
 )
 
 kde4_add_executable(sugarclient ${sugarclient_SRCS})
