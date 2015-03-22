@@ -2,8 +2,8 @@
 
 #include "salesforcesoap.h"
 
-ModuleHandler::ModuleHandler( const QString &moduleName )
-    : mModuleName( moduleName )
+ModuleHandler::ModuleHandler(const QString &moduleName)
+    : mModuleName(moduleName)
 {
 }
 
@@ -21,12 +21,12 @@ QStringList ModuleHandler::availableFields() const
     return mAvailableFields;
 }
 
-void ModuleHandler::setDescriptionResult( const TNS__DescribeSObjectResult &description )
+void ModuleHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
 {
     mAvailableFields.clear();
 
     const QList<TNS__Field> fields = description.fields();
-    Q_FOREACH( const TNS__Field &field, fields ) {
+    Q_FOREACH (const TNS__Field &field, fields) {
         mAvailableFields << field.name();
     }
 

@@ -20,28 +20,34 @@ class DetailsWidget : public QWidget
     friend class Page;
     Q_OBJECT
 public:
-    explicit DetailsWidget( DetailsType type, QWidget * parent = 0 );
+    explicit DetailsWidget(DetailsType type, QWidget *parent = 0);
     ~DetailsWidget();
 
-    inline bool isEditing() { return mEditing; }
+    inline bool isEditing()
+    {
+        return mEditing;
+    }
 
 Q_SIGNALS:
     void saveItem();
     void modifyItem();
 
 protected:
-    inline void setEditing( bool value ) { mEditing = value; }
+    inline void setEditing(bool value)
+    {
+        mEditing = value;
+    }
 
-    void setItem( const Akonadi::Item &item );
+    void setItem(const Akonadi::Item &item);
     void clearFields();
 
     QMap<QString, QString> data();
 
-    static Details *createDetailsForType( DetailsType type );
+    static Details *createDetailsForType(DetailsType type);
 
 private Q_SLOTS:
     void slotEnableSaving();
-    void slotSetModifyFlag( bool );
+    void slotSetModifyFlag(bool);
     void slotSaveData();
     void slotDiscardData();
 
@@ -54,7 +60,7 @@ private:
     QString currentCampaignId() const;
     QString currentReportsToId() const;
 
-    void setData( const QMap<QString,QString> &data );
+    void setData(const QMap<QString, QString> &data);
 
 private:
     Details *mDetails;

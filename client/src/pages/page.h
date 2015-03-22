@@ -13,8 +13,8 @@
 
 namespace Akonadi
 {
-    class ChangeRecorder;
-    class Item;
+class ChangeRecorder;
+class Item;
 }
 
 class Details;
@@ -28,66 +28,86 @@ class Page : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Page( QWidget *parent, const QString &mimeType, DetailsType type );
+    explicit Page(QWidget *parent, const QString &mimeType, DetailsType type);
 
     ~Page();
 
-    void setDetailsWidget( DetailsWidget *widget );
+    void setDetailsWidget(DetailsWidget *widget);
 
-    QAction *showDetailsAction( const QString &title ) const;
+    QAction *showDetailsAction(const QString &title) const;
 
     bool showsDetails() const;
 
 Q_SIGNALS:
-    void statusMessage( const QString& );
-    void showDetailsChanged( bool on );
-    void modelItemChanged( const Akonadi::Item &item );
+    void statusMessage(const QString &);
+    void showDetailsChanged(bool on);
+    void modelItemChanged(const Akonadi::Item &item);
 
 public Q_SLOTS:
-    void showDetails( bool on );
+    void showDetails(bool on);
 
 protected:
-    inline SugarClient* clientWindow() { return mClientWindow; }
-    inline QString mimeType() { return mMimeType; } const
-    inline Akonadi::EntityTreeView* treeView() { return mUi.treeView; }
-    inline Akonadi::Collection collection() { return mCollection; }
-    inline Akonadi::ChangeRecorder* recorder() { return mChangeRecorder; }
-    inline QLineEdit* search() { return mUi.searchLE; }
-    inline void setFilter ( Akonadi::FilterProxyModel *filter ) { mFilter = filter; }
+    inline SugarClient *clientWindow()
+    {
+        return mClientWindow;
+    }
+    inline QString mimeType()
+    {
+        return mMimeType;
+    } const
+    inline Akonadi::EntityTreeView *treeView()
+    {
+        return mUi.treeView;
+    }
+    inline Akonadi::Collection collection()
+    {
+        return mCollection;
+    }
+    inline Akonadi::ChangeRecorder *recorder()
+    {
+        return mChangeRecorder;
+    }
+    inline QLineEdit *search()
+    {
+        return mUi.searchLE;
+    }
+    inline void setFilter(Akonadi::FilterProxyModel *filter)
+    {
+        mFilter = filter;
+    }
 
-
-    virtual void addItem( const QMap<QString, QString> &data ) = 0;
-    virtual void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data ) = 0;
+    virtual void addItem(const QMap<QString, QString> &data) = 0;
+    virtual void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data) = 0;
 
     void setupModel();
 
     Details *details() const;
 
 private Q_SLOTS:
-    void slotResourceSelectionChanged( const QByteArray &identifier );
-    void slotCollectionFetchResult( KJob *job );
-    void slotItemClicked( const QModelIndex &index );
-    void slotShowDetails( const QModelIndex &index );
+    void slotResourceSelectionChanged(const QByteArray &identifier);
+    void slotCollectionFetchResult(KJob *job);
+    void slotItemClicked(const QModelIndex &index);
+    void slotShowDetails(const QModelIndex &index);
     void slotNewClicked();
     void slotAddItem();
     void slotModifyItem();
     void slotRemoveItem();
-    void slotSetCurrent( const QModelIndex&,int,int );
-    void cachePolicyJobCompleted( KJob* );
-    void slotUpdateDetails( const QModelIndex&, const QModelIndex& );
-    void slotUpdateDetails( const QModelIndex& );
+    void slotSetCurrent(const QModelIndex &, int, int);
+    void cachePolicyJobCompleted(KJob *);
+    void slotUpdateDetails(const QModelIndex &, const QModelIndex &);
+    void slotUpdateDetails(const QModelIndex &);
     void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
     void slotReloadIntervalChanged();
-    void slotCollectionChanged( const Akonadi::Collection &collection );
+    void slotCollectionChanged(const Akonadi::Collection &collection);
     void slotEnsureDetailsVisible();
-    void slotItemDoubleClicked( const QModelIndex& );
+    void slotItemDoubleClicked(const QModelIndex &);
 
 private:
     void initialize();
     void setupCachePolicy();
-    void itemChanged(const Akonadi::Item &item );
+    void itemChanged(const Akonadi::Item &item);
     bool proceedIsOk();
     // manages accounts combo box
     void addAccountsData();
@@ -95,10 +115,10 @@ private:
     void addContactsData();
     void addLeadsData();
     void addOpportunitiesData();
-    void removeAccountsData( Akonadi::Item &item );
-    void removeCampaignsData( Akonadi::Item &item );
+    void removeAccountsData(Akonadi::Item &item);
+    void removeCampaignsData(Akonadi::Item &item);
 
-    QString typeToString( const DetailsType &type ) const;
+    QString typeToString(const DetailsType &type) const;
 
 private:
     SugarClient *mClientWindow;

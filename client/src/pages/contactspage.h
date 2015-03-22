@@ -5,18 +5,17 @@
 
 #include <akonadi/item.h>
 
-
 class ContactsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit ContactsPage( QWidget *parent = 0 );
+    explicit ContactsPage(QWidget *parent = 0);
 
     ~ContactsPage();
 
 protected:
-    /*reimp*/ void addItem( const QMap<QString, QString> &data );
-    /*reimp*/ void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data );
+    /*reimp*/ void addItem(const QMap<QString, QString> &data);
+    /*reimp*/ void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data);
 };
 
 #endif /* CONTACTSPAGE_H */

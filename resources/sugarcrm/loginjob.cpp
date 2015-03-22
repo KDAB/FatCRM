@@ -2,10 +2,10 @@
 
 #include <KDebug>
 
-LoginJob::LoginJob( SugarSession *session, QObject *parent )
-    : SugarJob( session, parent )
+LoginJob::LoginJob(SugarSession *session, QObject *parent)
+    : SugarJob(session, parent)
 {
-    if ( !sessionId().isEmpty() ) {
+    if (!sessionId().isEmpty()) {
         kWarning() << "Creating Login job when there is a valid session ID. Will not change anything";
     }
 }

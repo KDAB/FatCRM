@@ -11,8 +11,8 @@ class KDCRMDATA_EXPORT SugarOpportunityIO
 {
 public:
     SugarOpportunityIO();
-    bool readSugarOpportunity( QIODevice *device, SugarOpportunity &opportunity );
-    bool writeSugarOpportunity( const SugarOpportunity &opportunity, QIODevice *device );
+    bool readSugarOpportunity(QIODevice *device, SugarOpportunity &opportunity);
+    bool writeSugarOpportunity(const SugarOpportunity &opportunity, QIODevice *device);
     QString errorString() const;
 
 private:

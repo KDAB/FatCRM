@@ -12,8 +12,8 @@
 
 using namespace Akonadi;
 
-CampaignsPage::CampaignsPage( QWidget *parent )
-    : Page( parent, QString( SugarCampaign::mimeType() ), Campaign )
+CampaignsPage::CampaignsPage(QWidget *parent)
+    : Page(parent, QString(SugarCampaign::mimeType()), Campaign)
 {
     setupModel();
 }
@@ -22,32 +22,33 @@ CampaignsPage::~CampaignsPage()
 {
 }
 
-void CampaignsPage::addItem( const QMap<QString, QString> &data )
+void CampaignsPage::addItem(const QMap<QString, QString> &data)
 {
     Item item;
-    details()->updateItem( item, data );
+    details()->updateItem(item, data);
 
     // job starts automatically
     // TODO connect to result() signal for error handling
-    ItemCreateJob *job = new ItemCreateJob( item, collection() );
-    Q_UNUSED( job );
+    ItemCreateJob *job = new ItemCreateJob(item, collection());
+    Q_UNUSED(job);
 
-    clientWindow()->setEnabled( false );
-    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
-    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+    clientWindow()->setEnabled(false);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }
 
 void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
 {
-    details()->updateItem( item, data );
+    details()->updateItem(item, data);
 
     // job starts automatically
     // TODO connect to result() signal for error handling
-    ItemModifyJob *job = new ItemModifyJob( item );
-    if ( !job->exec() )
-        return; //qDebug() << "Error:" << job->errorString();
+    ItemModifyJob *job = new ItemModifyJob(item);
+    if (!job->exec()) {
+        return;    //qDebug() << "Error:" << job->errorString();
+    }
 
-    clientWindow()->setEnabled( false );
-    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ));
-    emit statusMessage( tr( "Be patient the data is being saved remotely!..." ) );
+    clientWindow()->setEnabled(false);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }

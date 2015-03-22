@@ -5,12 +5,14 @@
 
 #include <akonadi/item.h>
 
-namespace Akonadi {
-    class Collection;
+namespace Akonadi
+{
+class Collection;
 }
 
 class ModuleHandler;
-namespace KDSoapGenerated {
+namespace KDSoapGenerated
+{
 class TNS__Get_entry_list_result;
 }
 
@@ -19,15 +21,15 @@ class ListEntriesJob : public SugarJob
     Q_OBJECT
 
 public:
-    ListEntriesJob( const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0 );
+    ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
 
     ~ListEntriesJob();
 
-    void setModule( ModuleHandler *handler );
+    void setModule(ModuleHandler *handler);
 
 Q_SIGNALS:
-    void itemsReceived( const Akonadi::Item::List &items );
-    void deletedReceived( const Akonadi::Item::List &items );
+    void itemsReceived(const Akonadi::Item::List &items);
+    void deletedReceived(const Akonadi::Item::List &items);
 
 protected:
     void startSugarTask();
@@ -36,8 +38,8 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void listEntriesDone( const KDSoapGenerated::TNS__Get_entry_list_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void listEntriesError( const KDSoapMessage &fault ) )
+    Q_PRIVATE_SLOT(d, void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult))
+    Q_PRIVATE_SLOT(d, void listEntriesError(const KDSoapMessage &fault))
 };
 
 #endif

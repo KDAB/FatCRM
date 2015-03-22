@@ -3,15 +3,16 @@
 
 #include "details.h"
 
-namespace Ui {
-    class OpportunityDetails;
+namespace Ui
+{
+class OpportunityDetails;
 }
 
 class OpportunityDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit OpportunityDetails( QWidget *parent = 0 );
+    explicit OpportunityDetails(QWidget *parent = 0);
 
     ~OpportunityDetails();
 
@@ -24,13 +25,12 @@ private:
 
 private:
     /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
-    /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
+    /*reimp*/ QMap<QString, QString> data(const Akonadi::Item &item) const;
+    /*reimp*/ void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const;
 
     QStringList typeItems() const;
     QStringList stageItems() const;
 };
-
 
 #endif /* OPPORTUNITYDETAILS_H */
 

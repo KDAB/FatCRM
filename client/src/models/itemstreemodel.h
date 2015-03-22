@@ -4,7 +4,8 @@
 #include <akonadi/entitytreemodel.h>
 #include "enums.h"
 
-namespace Akonadi {
+namespace Akonadi
+{
 
 /**
  * A model for sugar items.
@@ -13,50 +14,48 @@ namespace Akonadi {
  */
 class ItemsTreeModel : public EntityTreeModel
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     /**
      * Describes the columns that can be shown by the model.
      */
-    enum Column
-    {
+    enum Column {
 
-      Name,
-      City,
-      Country,
-      Phone,
-      Email,
-      CreatedBy,
-      CampaignName,
-      Status,
-      Type,
-      EndDate,
-      User,
-      FullName,
-      Role,
-      Organization,
-      PreferredEmail,
-      PhoneNumber,
-      GivenName,
-      LeadName,
-      LeadAccountName,
-      LeadEmail,
-      LeadStatus,
-      LeadUser,
-      OpportunityName,
-      OpportunityAccountName,
-      SalesStage,
-      Amount,
-      Close,
-      AssignedTo
+        Name,
+        City,
+        Country,
+        Phone,
+        Email,
+        CreatedBy,
+        CampaignName,
+        Status,
+        Type,
+        EndDate,
+        User,
+        FullName,
+        Role,
+        Organization,
+        PreferredEmail,
+        PhoneNumber,
+        GivenName,
+        LeadName,
+        LeadAccountName,
+        LeadEmail,
+        LeadStatus,
+        LeadUser,
+        OpportunityName,
+        OpportunityAccountName,
+        SalesStage,
+        Amount,
+        Close,
+        AssignedTo
     };
 
     /**
      * Describes a list of columns of the items tree model.
      */
     typedef QList<Column> Columns;
-
 
     /**
      * Creates a new items tree model.
@@ -65,33 +64,32 @@ class ItemsTreeModel : public EntityTreeModel
      * represented in the model.
      * param: parent The parent object.
      */
-    explicit ItemsTreeModel( DetailsType type, ChangeRecorder *monitor, QObject *parent = 0 );
+    explicit ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObject *parent = 0);
 
     virtual ~ItemsTreeModel();
 
     void setColumns();
     Columns columns() const;
 
-    /*reimp*/ QVariant entityData( const Item &item, int column, int role = Qt::DisplayRole ) const;
-    /*reimp*/ QVariant entityData( const Collection &collection, int column, int role = Qt::DisplayRole ) const;
-    /*reimp*/ QVariant entityHeaderData( int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup ) const;
-    /*reimp*/ int entityColumnCount( HeaderGroup headerGroup ) const;
+    /*reimp*/ QVariant entityData(const Item &item, int column, int role = Qt::DisplayRole) const;
+    /*reimp*/ QVariant entityData(const Collection &collection, int column, int role = Qt::DisplayRole) const;
+    /*reimp*/ QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
+    /*reimp*/ int entityColumnCount(HeaderGroup headerGroup) const;
 
 private:
-    QVariant accountData( const Item &item, int column, int role ) const;
-    QVariant campaignData( const Item &item, int column, int role ) const;
-    QVariant contactData( const Item &item, int column, int role ) const;
-    QVariant leadData( const Item &item, int column, int role ) const;
-    QVariant opportunityData( const Item &item, int column, int role ) const;
-    Columns  columnsGroup( DetailsType type ) const;
+    QVariant accountData(const Item &item, int column, int role) const;
+    QVariant campaignData(const Item &item, int column, int role) const;
+    QVariant contactData(const Item &item, int column, int role) const;
+    QVariant leadData(const Item &item, int column, int role) const;
+    QVariant opportunityData(const Item &item, int column, int role) const;
+    Columns  columnsGroup(DetailsType type) const;
 
-  private:
+private:
     class Private;
-    Private* const d;
+    Private *const d;
     DetailsType mType;
 };
 }
-
 
 #endif /* ITEMSTREEMODEL_H */
 

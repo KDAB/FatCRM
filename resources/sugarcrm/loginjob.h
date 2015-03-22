@@ -8,7 +8,7 @@ class LoginJob : public SugarJob
     Q_OBJECT
 
 public:
-    explicit LoginJob( SugarSession *session, QObject *parent = 0 );
+    explicit LoginJob(SugarSession *session, QObject *parent = 0);
 
     ~LoginJob();
 

@@ -8,8 +8,8 @@
 using namespace KDSoapGenerated;
 #include <QStringList>
 
-ModuleDebugInterface::ModuleDebugInterface( const QString &moduleName, SugarCRMResource *resource )
-    : QObject( resource ), mModuleName( moduleName ), mResource( resource )
+ModuleDebugInterface::ModuleDebugInterface(const QString &moduleName, SugarCRMResource *resource)
+    : QObject(resource), mModuleName(moduleName), mResource(resource)
 {
 }
 
@@ -19,7 +19,7 @@ ModuleDebugInterface::~ModuleDebugInterface()
 
 QStringList ModuleDebugInterface::availableFields() const
 {
-    if ( mAvailableFields.isEmpty() ) {
+    if (mAvailableFields.isEmpty()) {
         kDebug() << "Available Fields for " << mModuleName
                  << "not fetch yet, getting them now";
 
@@ -27,12 +27,12 @@ QStringList ModuleDebugInterface::availableFields() const
         Sugarsoap *soap = session->soap();
         const QString sessionId = session->sessionId();
 
-        const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields( sessionId, mModuleName );
+        const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, mModuleName);
 
         const KDSoapGenerated::TNS__Error_value error = response.error();
-        if ( error.number().isEmpty() || error.number() == QLatin1String( "0" ) ) {
+        if (error.number().isEmpty() || error.number() == QLatin1String("0")) {
             const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
-            Q_FOREACH( const KDSoapGenerated::TNS__Field &field, fieldList.items() ) {
+            Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
                 mAvailableFields << field.name();
             }
             kDebug() << "Got" << mAvailableFields << "fields";
@@ -49,7 +49,7 @@ QStringList ModuleDebugInterface::availableFields() const
 QStringList ModuleDebugInterface::supportedFields() const
 {
     ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
-    if ( handler != 0 ) {
+    if (handler != 0) {
         return handler->supportedFields();
     }
 
@@ -59,7 +59,7 @@ QStringList ModuleDebugInterface::supportedFields() const
 QString ModuleDebugInterface::lastestTimestamp() const
 {
     ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
-    if ( handler != 0 ) {
+    if (handler != 0) {
         return handler->latestTimestamp();
     }
 
@@ -69,7 +69,7 @@ QString ModuleDebugInterface::lastestTimestamp() const
 void ModuleDebugInterface::resetLatestTimestamp()
 {
     ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
-    if ( handler != 0 ) {
+    if (handler != 0) {
         handler->resetLatestTimestamp();
     }
 }

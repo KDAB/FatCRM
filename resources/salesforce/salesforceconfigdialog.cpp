@@ -5,19 +5,19 @@
 SalesforceConfigDialog::SalesforceConfigDialog(Settings *settings, const QString &accountName)
     : QDialog()
 {
-    mUi.setupUi( this );
+    mUi.setupUi(this);
 
-    mUi.accountName->setText( accountName );
+    mUi.accountName->setText(accountName);
 #if 0
-    mUi.host->setText( settings->host() );
+    mUi.host->setText(settings->host());
 #else
     // hide the host/endpoint input until we find a way to determine the
     // end point URL from some user visible one
-    mUi.label->setVisible( false );
-    mUi.host->setVisible( false );
+    mUi.label->setVisible(false);
+    mUi.host->setVisible(false);
 #endif
-    mUi.user->setText( settings->user() );
-    mUi.password->setText( settings->password() );
+    mUi.user->setText(settings->user());
+    mUi.password->setText(settings->password());
 }
 
 SalesforceConfigDialog::~SalesforceConfigDialog()

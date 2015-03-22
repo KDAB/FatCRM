@@ -8,10 +8,10 @@ class QWidget;
 class DBusWinIdProvider : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO( "D-Bus Interface", "org.freedesktop.akonaditray" )
+    Q_CLASSINFO("D-Bus Interface", "org.freedesktop.akonaditray")
 
 public:
-    explicit DBusWinIdProvider( QWidget *referenceWindow );
+    explicit DBusWinIdProvider(QWidget *referenceWindow);
 
     ~DBusWinIdProvider();
 
@@ -22,7 +22,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void tryRegister() )
+    Q_PRIVATE_SLOT(d, void tryRegister())
 };
 
 #endif

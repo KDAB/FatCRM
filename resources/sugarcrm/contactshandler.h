@@ -10,7 +10,7 @@ template <typename U, typename V> class QHash;
 class ContactsHandler : public ModuleHandler
 {
 public:
-    ContactsHandler( SugarSession *session );
+    ContactsHandler(SugarSession *session);
 
     ~ContactsHandler();
 
@@ -18,28 +18,34 @@ public:
 
     Akonadi::Collection collection() const;
 
-    void listEntries( const ListEntriesScope &scope );
+    void listEntries(const ListEntriesScope &scope);
 
-    bool setEntry( const Akonadi::Item &item );
+    bool setEntry(const Akonadi::Item &item);
 
-    Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection);
 
-    bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
+    bool needBackendChange(const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts) const;
 
-    void compare( Akonadi::AbstractDifferencesReporter *reporter,
-                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );
+    void compare(Akonadi::AbstractDifferencesReporter *reporter,
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    inline bool isAddressValue( const QString& value ) const
-    { return ( isAltAddressValue( value ) || isPrimaryAddressValue( value ) );}
-    inline bool isAltAddressValue( const QString& value ) const
-    { return value.startsWith( QString( "alt_address_" ) );}
-    inline bool isPrimaryAddressValue( const QString& value ) const
-    { return value.startsWith( QString( "primary_address_" ) );}
+    inline bool isAddressValue(const QString &value) const
+    {
+        return (isAltAddressValue(value) || isPrimaryAddressValue(value));
+    }
+    inline bool isAltAddressValue(const QString &value) const
+    {
+        return value.startsWith(QString("alt_address_"));
+    }
+    inline bool isPrimaryAddressValue(const QString &value) const
+    {
+        return value.startsWith(QString("primary_address_"));
+    }
 
-    QString adjustedTime( const QString datetime ) const;
+    QString adjustedTime(const QString datetime) const;
 
-    typedef QHash<QString, AccessorPair*> AccessorHash;
+    typedef QHash<QString, AccessorPair *> AccessorHash;
     AccessorHash *mAccessors;
 };
 

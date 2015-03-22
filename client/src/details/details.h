@@ -12,18 +12,21 @@ class Details : public QWidget
     Q_OBJECT
 
 public:
-    explicit Details( DetailsType type, QWidget *parent = 0 );
+    explicit Details(DetailsType type, QWidget *parent = 0);
 
     ~Details();
 
-    virtual QMap<QString, QString> data( const Akonadi::Item &item ) const = 0;
-    virtual void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const = 0;
+    virtual QMap<QString, QString> data(const Akonadi::Item &item) const = 0;
+    virtual void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const = 0;
 
-    void setData( const QMap<QString, QString> &data ) const;
+    void setData(const QMap<QString, QString> &data) const;
     const QMap<QString, QString> getData() const;
     void clear();
 
-    DetailsType type() const { return mType; }
+    DetailsType type() const
+    {
+        return mType;
+    }
 
     QString windowTitle() const;
 

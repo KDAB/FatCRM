@@ -5,18 +5,17 @@
 
 #include <akonadi/item.h>
 
-
 class LeadsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit LeadsPage( QWidget *parent = 0 );
+    explicit LeadsPage(QWidget *parent = 0);
 
     ~LeadsPage();
 
 protected:
-    /*reimp*/ void addItem( const QMap<QString, QString> &data );
-    /*reimp*/ void modifyItem( Akonadi::Item &item, const QMap<QString, QString> &data );
+    /*reimp*/ void addItem(const QMap<QString, QString> &data);
+    /*reimp*/ void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data);
 
 };
 

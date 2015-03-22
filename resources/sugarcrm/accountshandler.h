@@ -10,7 +10,7 @@ template <typename U, typename V> class QHash;
 class AccountsHandler : public ModuleHandler
 {
 public:
-    AccountsHandler( SugarSession *session );
+    AccountsHandler(SugarSession *session);
 
     ~AccountsHandler();
 
@@ -18,19 +18,19 @@ public:
 
     Akonadi::Collection collection() const;
 
-    void listEntries( const ListEntriesScope &scope );
+    void listEntries(const ListEntriesScope &scope);
 
-    bool setEntry( const Akonadi::Item &item );
+    bool setEntry(const Akonadi::Item &item);
 
-    Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection);
 
-    void compare( Akonadi::AbstractDifferencesReporter *reporter,
-                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );
+    void compare(Akonadi::AbstractDifferencesReporter *reporter,
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    QString adjustedTime( const QString datetime ) const;
+    QString adjustedTime(const QString datetime) const;
 
-    typedef QHash<QString, AccessorPair*> AccessorHash;
+    typedef QHash<QString, AccessorPair *> AccessorHash;
     AccessorHash *mAccessors;
 };
 

@@ -11,8 +11,8 @@ class KDCRMDATA_EXPORT SugarAccountIO
 {
 public:
     SugarAccountIO();
-    bool readSugarAccount( QIODevice *device, SugarAccount &account );
-    bool writeSugarAccount( const SugarAccount &account, QIODevice *device );
+    bool readSugarAccount(QIODevice *device, SugarAccount &account);
+    bool writeSugarAccount(const SugarAccount &account, QIODevice *device);
     QString errorString() const;
 
 private:

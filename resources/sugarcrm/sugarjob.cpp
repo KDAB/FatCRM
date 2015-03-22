@@ -13,13 +13,13 @@ class SugarJob::Private
 {
     SugarJob *const q;
 public:
-    Private( SugarJob *parent, SugarSession* session )
-        : q( parent ), mSession( session ), mTryRelogin( true )
+    Private(SugarJob *parent, SugarSession *session)
+        : q(parent), mSession(session), mTryRelogin(true)
     {
     }
 
 public:
-    SugarSession* mSession;
+    SugarSession *mSession;
     bool mTryRelogin;
 
 public: // slots
@@ -30,8 +30,8 @@ public: // slots
         q->startSugarTask();
     }
 
-    void loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult );
-    void loginError( const KDSoapMessage &fault );
+    void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
+    void loginError(const KDSoapMessage &fault);
 };
 
 void SugarJob::Private::startLogin()
@@ -39,7 +39,7 @@ void SugarJob::Private::startLogin()
     mTryRelogin = false;
 
     Sugarsoap *soap = mSession->soap();
-    Q_ASSERT( soap != 0 );
+    Q_ASSERT(soap != 0);
 
     const QString username = mSession->userName();
     const QString password = mSession->password();
@@ -52,57 +52,57 @@ void SugarJob::Private::startLogin()
     const QByteArray passwordHash = password.toUtf8();
 
     KDSoapGenerated::TNS__User_auth userAuth;
-    userAuth.setUser_name( username );
-    userAuth.setPassword( QString::fromAscii( passwordHash ) );
-    userAuth.setVersion( QLatin1String( ".01"  ) );
+    userAuth.setUser_name(username);
+    userAuth.setPassword(QString::fromAscii(passwordHash));
+    userAuth.setVersion(QLatin1String(".01"));
 
-    mSession->setSessionId( QString() );
+    mSession->setSessionId(QString());
 
     // results handled by slots loginDone() and loginError()
-    soap->asyncLogin( userAuth, QLatin1String( "SugarClient" ) );
+    soap->asyncLogin(userAuth, QLatin1String("SugarClient"));
 }
 
-void SugarJob::Private::loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult )
+void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
     const QString sessionId = callResult.id();
 
     QString message;
-    if ( sessionId.isEmpty() ) {
-        message = i18nc( "@info:status", "server returned an empty session identifier" );
-    } else if ( sessionId == QLatin1String( "-1" ) ) {
-        message = i18nc( "@info:status", "server returned an invalid session identifier" );
+    if (sessionId.isEmpty()) {
+        message = i18nc("@info:status", "server returned an empty session identifier");
+    } else if (sessionId == QLatin1String("-1")) {
+        message = i18nc("@info:status", "server returned an invalid session identifier");
     } else {
         kDebug() << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
-        mSession->setSessionId( sessionId );
-        q->setError( 0 );
-        q->setErrorText( QString() );
+        mSession->setSessionId(sessionId);
+        q->setError(0);
+        q->setErrorText(QString());
         q->startSugarTask();
         return;
     }
 
-    q->setError( SugarJob::LoginError );
-    q->setErrorText( i18nc( "@info:status", "Login for user %1 on %2 failed: %3",
-                            mSession->userName(), mSession->host(), message ) );
+    q->setError(SugarJob::LoginError);
+    q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
+                          mSession->userName(), mSession->host(), message));
     q->emitResult();
 }
 
-void SugarJob::Private::loginError( const KDSoapMessage &fault )
+void SugarJob::Private::loginError(const KDSoapMessage &fault)
 {
-    mSession->setSessionId( QString() );
+    mSession->setSessionId(QString());
 
-    q->setError( SugarJob::LoginError );
-    q->setErrorText( i18nc( "@info:status", "Login for user %1 on %2 failed: %3",
-                            mSession->userName(), mSession->host(), fault.faultAsString() ) );
+    q->setError(SugarJob::LoginError);
+    q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
+                          mSession->userName(), mSession->host(), fault.faultAsString()));
     q->emitResult();
 }
 
-SugarJob::SugarJob( SugarSession* session, QObject* parent )
-    : KJob( parent ), d( new Private( this, session ) )
+SugarJob::SugarJob(SugarSession *session, QObject *parent)
+    : KJob(parent), d(new Private(this, session))
 {
-    connect( session->soap(), SIGNAL( loginDone( KDSoapGenerated::TNS__Set_entry_result ) ),
-             this, SLOT( loginDone( KDSoapGenerated::TNS__Set_entry_result ) ) );
-    connect( session->soap(), SIGNAL( loginError( KDSoapMessage ) ),
-             this, SLOT( loginError( KDSoapMessage ) ) );
+    connect(session->soap(), SIGNAL(loginDone(KDSoapGenerated::TNS__Set_entry_result)),
+            this, SLOT(loginDone(KDSoapGenerated::TNS__Set_entry_result)));
+    connect(session->soap(), SIGNAL(loginError(KDSoapMessage)),
+            this, SLOT(loginError(KDSoapMessage)));
 }
 
 SugarJob::~SugarJob()
@@ -114,27 +114,27 @@ void SugarJob::start()
 {
     d->mTryRelogin = true;
 
-    if ( d->mSession->sessionId().isEmpty() ) {
-        QMetaObject::invokeMethod( this, "startLogin", Qt::QueuedConnection );
+    if (d->mSession->sessionId().isEmpty()) {
+        QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
     } else {
-        QMetaObject::invokeMethod( this, "startTask", Qt::QueuedConnection );
+        QMetaObject::invokeMethod(this, "startTask", Qt::QueuedConnection);
     }
 }
 
 void SugarJob::restart()
 {
-    setAutoDelete( true );
-    setError( 0 );
-    setErrorText( QString() );
+    setAutoDelete(true);
+    setError(0);
+    setErrorText(QString());
     start();
 }
 
-bool SugarJob::handleLoginError( const KDSoapMessage &fault )
+bool SugarJob::handleLoginError(const KDSoapMessage &fault)
 {
     // TODO check for error indicating that new login is required
-    if ( d->mTryRelogin ) {
-        Q_UNUSED( fault );
-        QMetaObject::invokeMethod( this, "startLogin", Qt::QueuedConnection );
+    if (d->mTryRelogin) {
+        Q_UNUSED(fault);
+        QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
         return true;
     }
 

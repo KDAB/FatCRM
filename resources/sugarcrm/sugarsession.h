@@ -3,8 +3,9 @@
 
 #include <QObject>
 
-namespace KDSoapGenerated {
-    class Sugarsoap;
+namespace KDSoapGenerated
+{
+class Sugarsoap;
 }
 
 class SugarSession : public QObject
@@ -22,12 +23,12 @@ public:
         NewLogin
     };
 
-    explicit SugarSession( QObject* parent = 0 );
+    explicit SugarSession(QObject *parent = 0);
 
     ~SugarSession();
 
-    RequiredAction setSessionParameters( const QString &username, const QString &password,
-                                         const QString &host );
+    RequiredAction setSessionParameters(const QString &username, const QString &password,
+                                        const QString &host);
 
     void createSoapInterface();
 
@@ -40,7 +41,7 @@ public:
     void logout();
 
 private:
-    void setSessionId( const QString &sessionId );
+    void setSessionId(const QString &sessionId);
     KDSoapGenerated::Sugarsoap *soap();
 
 private:

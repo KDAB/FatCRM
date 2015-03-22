@@ -3,19 +3,21 @@
 
 #include "details.h"
 
-namespace KABC {
-    class Addressee;
+namespace KABC
+{
+class Addressee;
 }
 
-namespace Ui {
-    class ContactDetails;
+namespace Ui
+{
+class ContactDetails;
 }
 
 class ContactDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit ContactDetails( QWidget *parent = 0 );
+    explicit ContactDetails(QWidget *parent = 0);
 
     ~ContactDetails();
 
@@ -24,10 +26,10 @@ private:
 
 private:
     /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
-    /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
+    /*reimp*/ QMap<QString, QString> data(const Akonadi::Item &item) const;
+    /*reimp*/ void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const;
 
-    QMap<QString, QString> contactData( const KABC::Addressee &contact ) const;
+    QMap<QString, QString> contactData(const KABC::Addressee &contact) const;
 
 private Q_SLOTS:
     void slotSetBirthday();

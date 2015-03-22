@@ -9,15 +9,15 @@
 
 class ConflictResolveDialog : public KDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     /**
      * Creates a new conflict resolve dialog.
      *
      * @param parent The parent widget.
      */
-    explicit ConflictResolveDialog( QWidget *parent = 0 );
+    explicit ConflictResolveDialog(QWidget *parent = 0);
 
     ~ConflictResolveDialog();
 
@@ -29,9 +29,9 @@ class ConflictResolveDialog : public KDialog
      *
      * @note Both items need the full payload set.
      */
-    void setConflictingItems( const Akonadi::Item &localItem, const Akonadi::Item &otherItem );
+    void setConflictingItems(const Akonadi::Item &localItem, const Akonadi::Item &otherItem);
 
-    void setDifferencesInterface( Akonadi::DifferencesAlgorithmInterface *interface );
+    void setDifferencesInterface(Akonadi::DifferencesAlgorithmInterface *interface);
 
     /**
      * Returns the resolve strategy the user choose.
@@ -42,10 +42,10 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void useLocalItem() )
-    Q_PRIVATE_SLOT( d, void useOtherItem() )
-    Q_PRIVATE_SLOT( d, void useBothItems() )
-    Q_PRIVATE_SLOT( d, void createReport() )
+    Q_PRIVATE_SLOT(d, void useLocalItem())
+    Q_PRIVATE_SLOT(d, void useOtherItem())
+    Q_PRIVATE_SLOT(d, void useBothItems())
+    Q_PRIVATE_SLOT(d, void createReport())
 };
 
 #endif

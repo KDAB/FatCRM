@@ -11,8 +11,8 @@ class KDCRMDATA_EXPORT SugarCampaignIO
 {
 public:
     SugarCampaignIO();
-    bool readSugarCampaign( QIODevice *device, SugarCampaign &campaign );
-    bool writeSugarCampaign( const SugarCampaign &campaign, QIODevice *device );
+    bool readSugarCampaign(QIODevice *device, SugarCampaign &campaign);
+    bool writeSugarCampaign(const SugarCampaign &campaign, QIODevice *device);
     QString errorString() const;
 
 private:

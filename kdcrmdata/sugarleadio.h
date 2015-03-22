@@ -11,8 +11,8 @@ class KDCRMDATA_EXPORT SugarLeadIO
 {
 public:
     SugarLeadIO();
-    bool readSugarLead( QIODevice *device, SugarLead &lead );
-    bool writeSugarLead( const SugarLead &lead, QIODevice *device );
+    bool readSugarLead(QIODevice *device, SugarLead &lead);
+    bool writeSugarLead(const SugarLead &lead, QIODevice *device);
     QString errorString() const;
 
 private:

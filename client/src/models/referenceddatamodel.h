@@ -13,18 +13,18 @@ public:
         IdRole = Qt::UserRole + 1
     };
 
-    explicit ReferencedDataModel( ReferencedDataType type, QObject *parent = 0 );
+    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = 0);
 
     ~ReferencedDataModel();
 
-    /* reimpl */ QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    /* reimpl */ int rowCount( const QModelIndex &index ) const;
+    /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
+    /* reimpl */ int rowCount(const QModelIndex &index) const;
 
 private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void dataChanged( ReferencedDataType type ) )
+    Q_PRIVATE_SLOT(d, void dataChanged(ReferencedDataType type))
 };
 
 #endif

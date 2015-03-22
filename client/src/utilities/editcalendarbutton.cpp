@@ -4,16 +4,16 @@
 #include <QDialog>
 #include <QVBoxLayout>
 
-EditCalendarButton::EditCalendarButton( QWidget *parent )
-    : QToolButton( parent ),
+EditCalendarButton::EditCalendarButton(QWidget *parent)
+    : QToolButton(parent),
       mCalendar(new QCalendarWidget()),
-      mDialog( new QDialog )
+      mDialog(new QDialog)
 {
-    setText( tr( "&Edit" ) );
-    mDialog->setWindowTitle( tr( "Calendar" ) );
+    setText(tr("&Edit"));
+    mDialog->setWindowTitle(tr("Calendar"));
     QVBoxLayout *dlgLayout = new QVBoxLayout;
-    dlgLayout->addWidget( mCalendar );
-    mDialog->setLayout( dlgLayout );
+    dlgLayout->addWidget(mCalendar);
+    mDialog->setLayout(dlgLayout);
 }
 
 EditCalendarButton::~EditCalendarButton()
@@ -21,13 +21,12 @@ EditCalendarButton::~EditCalendarButton()
 
 }
 
-
-void EditCalendarButton::mousePressEvent( QMouseEvent* e )
+void EditCalendarButton::mousePressEvent(QMouseEvent *e)
 {
-    if ( mDialog->isVisible() )
+    if (mDialog->isVisible()) {
         mDialog->close();
-    else {
-        mDialog->move( e->globalPos() );
+    } else {
+        mDialog->move(e->globalPos());
         mDialog->show();
     }
 }

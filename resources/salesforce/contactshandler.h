@@ -16,16 +16,16 @@ public:
 
     QStringList supportedFields() const;
 
-    virtual void setDescriptionResult( const TNS__DescribeSObjectResult &description );
+    virtual void setDescriptionResult(const TNS__DescribeSObjectResult &description);
 
     Akonadi::Collection collection() const;
 
-    virtual void listEntries( const TNS__QueryLocator &locator, SforceService* soap );
+    virtual void listEntries(const TNS__QueryLocator &locator, SforceService *soap);
 
-    virtual bool setEntry( const Akonadi::Item &item, SforceService *soap );
+    virtual bool setEntry(const Akonadi::Item &item, SforceService *soap);
 
-    virtual Akonadi::Item::List itemsFromListEntriesResponse( const TNS__QueryResult &queryResult,
-                                                              const Akonadi::Collection &parentCollection );
+    virtual Akonadi::Item::List itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
+            const Akonadi::Collection &parentCollection);
 private:
     typedef QHash<QString, AccessorPair> AccessorHash;
     AccessorHash *mAccessors;

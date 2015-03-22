@@ -16,7 +16,7 @@
 class KDCRMDATA_EXPORT SugarCampaign
 {
 
-  public:
+public:
 
     /**
       Construct an empty SugarCampaign entry.
@@ -31,14 +31,14 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Copy constructor.
      */
-    SugarCampaign( const SugarCampaign & );
+    SugarCampaign(const SugarCampaign &);
 
     /**
       Assignment operator.
 
       return a reference to this
     */
-    SugarCampaign &operator=( const SugarCampaign & );
+    SugarCampaign &operator=(const SugarCampaign &);
 
     /**
       Equality operator.
@@ -46,7 +46,7 @@ class KDCRMDATA_EXPORT SugarCampaign
       return true if this and the given SugarCampaign are equal,
               otherwise false
     */
-    bool operator==( const SugarCampaign & ) const;
+    bool operator==(const SugarCampaign &) const;
 
     /**
       Not-equal operator.
@@ -54,7 +54,7 @@ class KDCRMDATA_EXPORT SugarCampaign
       return true if  this and the given SugarCampaign are not equal,
               otherwise false
     */
-    bool operator!=( const SugarCampaign & ) const;
+    bool operator!=(const SugarCampaign &) const;
 
     /**
       Return, if the SugarCampaign entry is empty.
@@ -69,7 +69,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set unique identifier.
      */
-    void setId( const QString &id );
+    void setId(const QString &id);
     /**
       Return unique identifier.
      */
@@ -78,7 +78,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign Name.
      */
-    void setName( const QString &id );
+    void setName(const QString &id);
     /**
       Return the Campaign Name.
      */
@@ -87,7 +87,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Creation date.
      */
-    void setDateEntered( const QString &name );
+    void setDateEntered(const QString &name);
     /**
       Return Creation date.
      */
@@ -96,7 +96,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Modification date.
      */
-    void setDateModified( const QString &name );
+    void setDateModified(const QString &name);
     /**
       Return Modification date.
      */
@@ -105,7 +105,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Modified User id.
      */
-    void setModifiedUserId( const QString &name );
+    void setModifiedUserId(const QString &name);
     /**
       Return Modified User id.
      */
@@ -114,7 +114,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Modified By name.
      */
-    void setModifiedByName( const QString &name );
+    void setModifiedByName(const QString &name);
     /**
       Return Modified By name.
      */
@@ -123,7 +123,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Created By id.
      */
-    void setCreatedBy( const QString &name );
+    void setCreatedBy(const QString &name);
     /**
       Return created by id.
      */
@@ -132,7 +132,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Created By Name.
      */
-    void setCreatedByName( const QString &name );
+    void setCreatedByName(const QString &name);
     /**
       Return created by Name.
      */
@@ -141,7 +141,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Deleted.
     */
-    void setDeleted( const QString &value );
+    void setDeleted(const QString &value);
     /**
       Return Deleted.
      */
@@ -150,7 +150,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Assigned User Id.
     */
-    void setAssignedUserId( const QString &value );
+    void setAssignedUserId(const QString &value);
     /**
       Return Assigned User Id.
      */
@@ -159,7 +159,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set Assigned User Name.
      */
-    void setAssignedUserName( const QString &value );
+    void setAssignedUserName(const QString &value);
     /**
       Return assigned User Name.
      */
@@ -168,7 +168,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the tracker key.
      */
-    void setTrackerKey( const QString &value );
+    void setTrackerKey(const QString &value);
     /**
       Return tracker key.
      */
@@ -177,7 +177,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set tracker count.
      */
-    void setTrackerCount( const QString &value );
+    void setTrackerCount(const QString &value);
     /**
       Return tracker count.
      */
@@ -186,7 +186,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the reference Url.
      */
-    void setReferUrl( const QString &value );
+    void setReferUrl(const QString &value);
     /**
       Return the reference Url.
      */
@@ -195,7 +195,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the tracker text.
      */
-    void setTrackerText( const QString &value );
+    void setTrackerText(const QString &value);
     /**
       Return the tracker text.
      */
@@ -204,7 +204,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign start date.
      */
-    void setStartDate( const QString &value );
+    void setStartDate(const QString &value);
     /**
       Return the Campaign start date.
      */
@@ -213,7 +213,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
        Set the Campaign end date.
      */
-    void setEndDate( const QString &value );
+    void setEndDate(const QString &value);
     /**
       Return the Campaign end date.
      */
@@ -222,7 +222,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign status.
      */
-    void setStatus( const QString &value );
+    void setStatus(const QString &value);
     /**
       Return the Campaing Status.
      */
@@ -231,7 +231,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
        Set the Campaign impressions.
      */
-    void setImpressions( const QString &value );
+    void setImpressions(const QString &value);
     /**
        Return the Campaign impressions.
      */
@@ -240,7 +240,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign currency id.
      */
-    void setCurrencyId( const QString &value );
+    void setCurrencyId(const QString &value);
     /**
       Return the Campaign currency id.
      */
@@ -249,7 +249,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign budget.
      */
-    void setBudget( const QString &value );
+    void setBudget(const QString &value);
     /**
       Return the Campaign budget.
      */
@@ -258,7 +258,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign expected cost.
      */
-    void setExpectedCost( const QString &value );
+    void setExpectedCost(const QString &value);
     /**
       Return the Campaign expected cost.
      */
@@ -267,7 +267,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign actual cost .
      */
-    void setActualCost( const QString &value );
+    void setActualCost(const QString &value);
     /**
       Return the Campaign actual cost.
      */
@@ -276,7 +276,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign expected revenue.
      */
-    void setExpectedRevenue( const QString &value );
+    void setExpectedRevenue(const QString &value);
     /**
       Return the Campaign expected revenue.
      */
@@ -285,7 +285,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign type.
      */
-    void setCampaignType( const QString &value );
+    void setCampaignType(const QString &value);
     /**
       Return the Campaign type.
      */
@@ -294,7 +294,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign objective.
      */
-    void setObjective( const QString &value );
+    void setObjective(const QString &value);
     /**
       Return the Campaign objective.
      */
@@ -303,7 +303,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign content.
      */
-    void setContent( const QString &value );
+    void setContent(const QString &value);
     /**
       Return the Campaign content.
      */
@@ -312,7 +312,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Set the Campaign frequency.
      */
-    void setFrequency( const QString &value );
+    void setFrequency(const QString &value);
     /**
       Return Primary Address Postal code.
      */
@@ -321,7 +321,7 @@ class KDCRMDATA_EXPORT SugarCampaign
     /**
       Convenience: set the data for this campaign
      */
-    void setData( QMap<QString, QString> data );
+    void setData(QMap<QString, QString> data);
 
     /**
       Convenience: retrieve the data for this campaign
@@ -333,12 +333,12 @@ class KDCRMDATA_EXPORT SugarCampaign
      */
     static QString mimeType();
 
-  private:
+private:
     class Private;
     QSharedDataPointer<Private> d;
 };
 
-Q_DECLARE_METATYPE( SugarCampaign )
+Q_DECLARE_METATYPE(SugarCampaign)
 
 #endif /* SUGARCAMPAIGN_H */
 

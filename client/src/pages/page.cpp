@@ -32,16 +32,16 @@
 
 using namespace Akonadi;
 
-Page::Page( QWidget *parent, const QString &mimeType, DetailsType type )
-    : QWidget( parent ),
-      mMimeType( mimeType ),
-      mType( type ),
-      mDetailsWidget( 0 ),
-      mChangeRecorder( new ChangeRecorder( this ) ),
-      mShowDetailsAction( 0 )
+Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
+    : QWidget(parent),
+      mMimeType(mimeType),
+      mType(type),
+      mDetailsWidget(0),
+      mChangeRecorder(new ChangeRecorder(this)),
+      mShowDetailsAction(0)
 {
-    mUi.setupUi( this );
-    mUi.splitter->setCollapsible( 0, false );
+    mUi.setupUi(this);
+    mUi.splitter->setCollapsible(0, false);
     initialize();
 }
 
@@ -49,18 +49,18 @@ Page::~Page()
 {
 }
 
-void Page::setDetailsWidget( DetailsWidget *widget )
+void Page::setDetailsWidget(DetailsWidget *widget)
 {
-    QVBoxLayout* detailLayout = new QVBoxLayout( mUi.detailsWidget );
-    detailLayout->setMargin( 0 );
-    detailLayout->addWidget( widget );
+    QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
+    detailLayout->setMargin(0);
+    detailLayout->addWidget(widget);
     mDetailsWidget = widget;
-    mShowDetailsAction->setChecked( true );
+    mShowDetailsAction->setChecked(true);
 }
 
-QAction *Page::showDetailsAction( const QString &title ) const
+QAction *Page::showDetailsAction(const QString &title) const
 {
-    mShowDetailsAction->setText( title );
+    mShowDetailsAction->setText(title);
     return mShowDetailsAction;
 }
 
@@ -69,19 +69,19 @@ bool Page::showsDetails() const
     return mShowDetailsAction->isChecked();
 }
 
-void Page::showDetails( bool on )
+void Page::showDetails(bool on)
 {
-    mUi.detailsWidget->setVisible( on );
-    if ( on ) {
-        QMetaObject::invokeMethod( this, "slotEnsureDetailsVisible", Qt::QueuedConnection );
+    mUi.detailsWidget->setVisible(on);
+    if (on) {
+        QMetaObject::invokeMethod(this, "slotEnsureDetailsVisible", Qt::QueuedConnection);
     }
-    mShowDetailsAction->setChecked( on );
+    mShowDetailsAction->setChecked(on);
 }
 
-void Page::slotResourceSelectionChanged( const QByteArray &identifier )
+void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
-    if ( mCollection.isValid() ) {
-        mChangeRecorder->setCollectionMonitored( mCollection, false );
+    if (mCollection.isValid()) {
+        mChangeRecorder->setCollectionMonitored(mCollection, false);
     }
 
     mCollection = Collection();
@@ -91,68 +91,68 @@ void Page::slotResourceSelectionChanged( const QByteArray &identifier )
      * of the currently selected resource, filtering by MIME type.
      * include statistics to get the number of items in each collection
      */
-    CollectionFetchJob *job = new CollectionFetchJob( Collection::root(), CollectionFetchJob::Recursive );
-    job->fetchScope().setResource( identifier );
-    job->fetchScope().setContentMimeTypes( QStringList() << mMimeType.toLatin1() );
-    job->fetchScope().setIncludeStatistics( true );
-    connect( job, SIGNAL( result( KJob* ) ),
-             this, SLOT( slotCollectionFetchResult( KJob* ) ) );
+    CollectionFetchJob *job = new CollectionFetchJob(Collection::root(), CollectionFetchJob::Recursive);
+    job->fetchScope().setResource(identifier);
+    job->fetchScope().setContentMimeTypes(QStringList() << mMimeType.toLatin1());
+    job->fetchScope().setIncludeStatistics(true);
+    connect(job, SIGNAL(result(KJob*)),
+            this, SLOT(slotCollectionFetchResult(KJob*)));
 
-    mUi.reloadPB->setEnabled( false );
-    mUi.reloadSB->setEnabled( false );
+    mUi.reloadPB->setEnabled(false);
+    mUi.reloadSB->setEnabled(false);
 }
 
-void Page::slotCollectionFetchResult( KJob *job )
+void Page::slotCollectionFetchResult(KJob *job)
 {
-    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob*>( job );
+    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob *>(job);
 
     // look for the collection
-    Q_FOREACH( const Collection &collection, fetchJob->collections() ) {
-        if ( collection.remoteId() == typeToString( mType ).toLatin1() ) {
+    Q_FOREACH (const Collection &collection, fetchJob->collections()) {
+        if (collection.remoteId() == typeToString(mType).toLatin1()) {
             mCollection = collection;
             break;
         }
     }
 
-    if ( mCollection.isValid() ) {
-        mUi.newPB->setEnabled( true );
-        mUi.reloadPB->setEnabled( true );
-        mUi.reloadSB->setEnabled( true );
-        mChangeRecorder->setCollectionMonitored( mCollection, true );
+    if (mCollection.isValid()) {
+        mUi.newPB->setEnabled(true);
+        mUi.reloadPB->setEnabled(true);
+        mUi.reloadSB->setEnabled(true);
+        mChangeRecorder->setCollectionMonitored(mCollection, true);
 
         // if empty, the collection might not have been loaded yet, try synchronizing
-        if ( mCollection.statistics().count() == 0 ) {
-            AgentManager::self()->synchronizeCollection( mCollection );
+        if (mCollection.statistics().count() == 0) {
+            AgentManager::self()->synchronizeCollection(mCollection);
         }
 
         setupCachePolicy();
     } else {
-        mUi.newPB->setEnabled( false );
-        mUi.reloadPB->setEnabled( false );
-        mUi.reloadSB->setEnabled( false );
+        mUi.newPB->setEnabled(false);
+        mUi.reloadPB->setEnabled(false);
+        mUi.reloadSB->setEnabled(false);
     }
 }
 
-void Page::slotItemClicked( const QModelIndex &index )
+void Page::slotItemClicked(const QModelIndex &index)
 {
-    if ( mDetailsWidget != 0 ){
-        if ( mDetailsWidget->isEditing() ) {
-            if ( !proceedIsOk() ) {
-                mUi.treeView->setCurrentIndex( mCurrentIndex );
+    if (mDetailsWidget != 0) {
+        if (mDetailsWidget->isEditing()) {
+            if (!proceedIsOk()) {
+                mUi.treeView->setCurrentIndex(mCurrentIndex);
                 return;
             }
         }
-        Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        itemChanged(item );
+        Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        itemChanged(item);
     }
 }
 
-void Page::itemChanged( const Item &item )
+void Page::itemChanged(const Item &item)
 {
-    if ( item.isValid() ) {
-        if ( mDetailsWidget != 0 ) {
-            mDetailsWidget->setItem( item );
-            connect( mDetailsWidget, SIGNAL( modifyItem() ), this, SLOT( slotModifyItem( ) ) );
+    if (item.isValid()) {
+        if (mDetailsWidget != 0) {
+            mDetailsWidget->setItem(item);
+            connect(mDetailsWidget, SIGNAL(modifyItem()), this, SLOT(slotModifyItem()));
         }
 
         mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
@@ -161,165 +161,172 @@ void Page::itemChanged( const Item &item )
 
 void Page::slotNewClicked()
 {
-    if ( mDetailsWidget != 0 && mShowDetailsAction->isChecked() ) {
+    if (mDetailsWidget != 0 && mShowDetailsAction->isChecked()) {
         kDebug() << "inline";
-        if ( mDetailsWidget->isEditing() ) {
-            if ( !proceedIsOk() )
+        if (mDetailsWidget->isEditing()) {
+            if (!proceedIsOk()) {
                 return;
+            }
         }
 
         mDetailsWidget->clearFields();
-        connect( mDetailsWidget, SIGNAL( saveItem() ), this, SLOT( slotAddItem() ) );
+        connect(mDetailsWidget, SIGNAL(saveItem()), this, SLOT(slotAddItem()));
     } else {
-        DetailsDialog *dialog = new DetailsDialog( DetailsWidget::createDetailsForType( mType ), this );
+        DetailsDialog *dialog = new DetailsDialog(DetailsWidget::createDetailsForType(mType), this);
 
         Item item;
-        item.setParentCollection( mCollection );
-        dialog->setItem( item );
+        item.setParentCollection(mCollection);
+        dialog->setItem(item);
         dialog->show();
     }
 }
 
 void Page::slotAddItem()
 {
-    if ( mDetailsWidget != 0 ) {
-        disconnect( mDetailsWidget, SIGNAL( saveItem() ), this, SLOT( slotAddItem() ) );
-        addItem( mDetailsWidget->data() );
+    if (mDetailsWidget != 0) {
+        disconnect(mDetailsWidget, SIGNAL(saveItem()), this, SLOT(slotAddItem()));
+        addItem(mDetailsWidget->data());
     }
 }
 
 void Page::slotModifyItem()
 {
     const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
-    if ( !index.isValid() )
+    if (!index.isValid()) {
         return;
-    Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-    if ( item.isValid() && mDetailsWidget != 0 ) {
-        disconnect( mDetailsWidget, SIGNAL( modifyItem() ), this,  SLOT( slotModifyItem() ) );
+    }
+    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    if (item.isValid() && mDetailsWidget != 0) {
+        disconnect(mDetailsWidget, SIGNAL(modifyItem()), this,  SLOT(slotModifyItem()));
         mDetailsWidget->reset();
-        modifyItem( item, mDetailsWidget->data()  );
+        modifyItem(item, mDetailsWidget->data());
     }
 }
 
 void Page::slotRemoveItem()
 {
     const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
-    if ( !index.isValid() )
+    if (!index.isValid()) {
         return;
+    }
 
-    Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
+    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
 
     QMessageBox msgBox;
-    msgBox.setWindowTitle( tr( "SugarClient - Delete record" ) );
-    msgBox.setText( QString( "The selected item will be removed permanentely!" ) );
-    msgBox.setInformativeText( tr( "Are you sure you want to delete it?" ) );
-    msgBox.setStandardButtons( QMessageBox::Yes |
-                               QMessageBox::Cancel );
-    msgBox.setDefaultButton( QMessageBox::Cancel );
+    msgBox.setWindowTitle(tr("SugarClient - Delete record"));
+    msgBox.setText(QString("The selected item will be removed permanentely!"));
+    msgBox.setInformativeText(tr("Are you sure you want to delete it?"));
+    msgBox.setStandardButtons(QMessageBox::Yes |
+                              QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
     int ret = msgBox.exec();
-    if ( ret == QMessageBox::Cancel )
+    if (ret == QMessageBox::Cancel) {
         return;
+    }
 
-    if ( item.isValid() ) {
+    if (item.isValid()) {
         // job starts automatically
         // TODO connect to result() signal for error handling
-        ItemDeleteJob *job = new ItemDeleteJob( item );
-        Q_UNUSED( job );
+        ItemDeleteJob *job = new ItemDeleteJob(item);
+        Q_UNUSED(job);
     }
     const QModelIndex newIndex = mUi.treeView->selectionModel()->currentIndex();
-    if ( !newIndex.isValid() )
-        mUi.removePB->setEnabled( false );
-
-    if ( mDetailsWidget != 0 ) {
-        mDetailsWidget->setItem( Item() );
+    if (!newIndex.isValid()) {
+        mUi.removePB->setEnabled(false);
     }
 
-    if ( mType == Account )
-        removeAccountsData( item );
-    else if ( mType == Campaign )
-        removeCampaignsData( item );
+    if (mDetailsWidget != 0) {
+        mDetailsWidget->setItem(Item());
+    }
+
+    if (mType == Account) {
+        removeAccountsData(item);
+    } else if (mType == Campaign) {
+        removeCampaignsData(item);
+    }
 }
 
-void Page::slotSetCurrent( const QModelIndex& index, int start, int end )
+void Page::slotSetCurrent(const QModelIndex &index, int start, int end)
 {
-    if ( start == end ) {
+    if (start == end) {
         QModelIndex newIdx = mUi.treeView->model()->index(start, 0, index);
-        mUi.treeView->setCurrentIndex( newIdx );
+        mUi.treeView->setCurrentIndex(newIdx);
     }
 
-    if ( mUi.treeView->model()->rowCount() == mCollection.statistics().count() ) {
-        if ( mType == Account )
+    if (mUi.treeView->model()->rowCount() == mCollection.statistics().count()) {
+        if (mType == Account) {
             addAccountsData();
-        else if ( mType == Campaign )
+        } else if (mType == Campaign) {
             addCampaignsData();
-        else if ( mType == Contact )
+        } else if (mType == Contact) {
             addContactsData();
-        else if ( mType == Lead )
+        } else if (mType == Lead) {
             addLeadsData();
-        else if ( mType == Opportunity )
+        } else if (mType == Opportunity) {
             addOpportunitiesData();
+        }
     }
 }
 
 void Page::initialize()
 {
-    mClientWindow = dynamic_cast<SugarClient*>( window() );
-    mUi.treeView->header()->setResizeMode( QHeaderView::ResizeToContents );
+    mClientWindow = dynamic_cast<SugarClient *>(window());
+    mUi.treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
 
-    const QIcon icon = ( style() != 0 ? style()->standardIcon( QStyle::SP_BrowserReload, 0, mUi.reloadPB ) : QIcon() );
-    if ( !icon.isNull() ) {
-        mUi.reloadPB->setIcon( icon );
+    const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
+    if (!icon.isNull()) {
+        mUi.reloadPB->setIcon(icon);
     }
-    mUi.reloadPB->setEnabled( false );
-    mUi.reloadSB->setEnabled( false );
+    mUi.reloadPB->setEnabled(false);
+    mUi.reloadSB->setEnabled(false);
 
-    connect( mUi.clearSearchPB, SIGNAL( clicked() ),
-             this, SLOT( slotResetSearch() ) );
-    connect( mUi.newPB, SIGNAL( clicked() ),
-             this, SLOT( slotNewClicked() ) );
-    connect( mUi.removePB, SIGNAL( clicked() ),
-             this, SLOT( slotRemoveItem() ) );
-    connect( mUi.reloadPB, SIGNAL( clicked() ),
-             this, SLOT( slotReloadCollection() ) );
-    connect( mUi.reloadSB, SIGNAL( editingFinished() ),
-             this, SLOT( slotReloadIntervalChanged() ) );
+    connect(mUi.clearSearchPB, SIGNAL(clicked()),
+            this, SLOT(slotResetSearch()));
+    connect(mUi.newPB, SIGNAL(clicked()),
+            this, SLOT(slotNewClicked()));
+    connect(mUi.removePB, SIGNAL(clicked()),
+            this, SLOT(slotRemoveItem()));
+    connect(mUi.reloadPB, SIGNAL(clicked()),
+            this, SLOT(slotReloadCollection()));
+    connect(mUi.reloadSB, SIGNAL(editingFinished()),
+            this, SLOT(slotReloadIntervalChanged()));
 
     // automatically get the full data when items change
-    mChangeRecorder->itemFetchScope().fetchFullPayload( true );
-    mChangeRecorder->setMimeTypeMonitored( mMimeType );
+    mChangeRecorder->itemFetchScope().fetchFullPayload(true);
+    mChangeRecorder->setMimeTypeMonitored(mMimeType);
 
-    connect( mChangeRecorder, SIGNAL( collectionChanged( Akonadi::Collection ) ),
-             this, SLOT( slotCollectionChanged( Akonadi::Collection ) ) );
+    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection)),
+            this, SLOT(slotCollectionChanged(Akonadi::Collection)));
 
-    connect( mUi.treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( slotItemClicked( const QModelIndex& ) ) );
-    connect( mUi.treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( slotItemDoubleClicked( const QModelIndex& ) ) );
+    connect(mUi.treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(slotItemClicked(QModelIndex)));
+    connect(mUi.treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotItemDoubleClicked(QModelIndex)));
 
-    mShowDetailsAction = new QAction( this );
-    mShowDetailsAction->setCheckable( true );
-    connect( mShowDetailsAction, SIGNAL( toggled( bool ) ), this, SLOT( showDetails( bool ) ) );
-    connect( mShowDetailsAction, SIGNAL( toggled( bool ) ), this, SIGNAL( showDetailsChanged( bool ) ) );
+    mShowDetailsAction = new QAction(this);
+    mShowDetailsAction->setCheckable(true);
+    connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
+    connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SIGNAL(showDetailsChanged(bool)));
 }
 
 void Page::setupModel()
 {
-    ItemsTreeModel *model = new ItemsTreeModel( mType, recorder(), this );
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel( this );
-    filterModel->setSourceModel( model );
-    filterModel->addMimeTypeInclusionFilter( mimeType() );
-    filterModel->setHeaderGroup( EntityTreeModel::ItemListHeaders );
-    FilterProxyModel *filter = new FilterProxyModel( this );
-    filter->setSourceModel( filterModel );
-    setFilter( filter );
-    mUi.treeView->setModel( filter );
+    ItemsTreeModel *model = new ItemsTreeModel(mType, recorder(), this);
+    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
+    filterModel->setSourceModel(model);
+    filterModel->addMimeTypeInclusionFilter(mimeType());
+    filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
+    FilterProxyModel *filter = new FilterProxyModel(this);
+    filter->setSourceModel(filterModel);
+    setFilter(filter);
+    mUi.treeView->setModel(filter);
 
-    connect( mUi.searchLE, SIGNAL( textChanged( const QString& ) ),
-             mFilter, SLOT( setFilterString( const QString& ) ) );
+    connect(mUi.searchLE, SIGNAL(textChanged(QString)),
+            mFilter, SLOT(setFilterString(QString)));
 
-    connect( mUi.treeView->model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( slotSetCurrent( const QModelIndex&,int,int ) ) );
+    connect(mUi.treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotSetCurrent(QModelIndex,int,int)));
 
-    connect( mUi.treeView->model(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( slotUpdateDetails( const QModelIndex&, const QModelIndex& ) ) );
-    connect( mUi.treeView->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ),
-             this,  SLOT( slotUpdateDetails( const QModelIndex& ) ) );
+    connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotUpdateDetails(QModelIndex,QModelIndex)));
+    connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this,  SLOT(slotUpdateDetails(QModelIndex)));
 }
 
 Details *Page::details() const
@@ -327,66 +334,67 @@ Details *Page::details() const
     return mDetailsWidget->mDetails;
 }
 
-void Page::cachePolicyJobCompleted( KJob* job)
+void Page::cachePolicyJobCompleted(KJob *job)
 {
-    if ( job->error() )
-        emit statusMessage( tr("Error when setting cachepolicy: %1").arg( job->errorString() ) );
-    else
-        emit statusMessage( tr("Cache policy set") );
+    if (job->error()) {
+        emit statusMessage(tr("Error when setting cachepolicy: %1").arg(job->errorString()));
+    } else {
+        emit statusMessage(tr("Cache policy set"));
+    }
 
 }
 
 void Page::setupCachePolicy()
 {
     CachePolicy policy = mCollection.cachePolicy();
-    if ( !policy.inheritFromParent() ) {
+    if (!policy.inheritFromParent()) {
         kDebug() << "Collection" << mCollection.name()
                  << "already has a cache policy. Will not overwrite it.";
     } else {
-        policy.setInheritFromParent( false );
-        policy.setIntervalCheckTime( 1 ); // Check for new data every minute
-        mCollection.setCachePolicy( policy );
-        CollectionModifyJob *job = new CollectionModifyJob( mCollection );
-        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+        policy.setInheritFromParent(false);
+        policy.setIntervalCheckTime(1);   // Check for new data every minute
+        mCollection.setCachePolicy(policy);
+        CollectionModifyJob *job = new CollectionModifyJob(mCollection);
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
     }
 
-    mUi.reloadSB->setValue( policy.intervalCheckTime() );
-    mUi.reloadSB->setEnabled( true );
+    mUi.reloadSB->setValue(policy.intervalCheckTime());
+    mUi.reloadSB->setEnabled(true);
 }
 
-void Page::slotUpdateDetails( const QModelIndex& topLeft, const QModelIndex& bottomRight )
+void Page::slotUpdateDetails(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    for ( int row = topLeft.row(); row <= bottomRight.row(); ++row ) {
-        const QModelIndex index = mUi.treeView->model()->index( row, 0, QModelIndex() );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        emit modelItemChanged( item );
+    for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
+        const QModelIndex index = mUi.treeView->model()->index(row, 0, QModelIndex());
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        emit modelItemChanged(item);
     }
 
-    if ( !mClientWindow->isEnabled() ) {
+    if (!mClientWindow->isEnabled()) {
         do {
             QApplication::restoreOverrideCursor();
-        } while ( QApplication::overrideCursor() != 0 );
-          mClientWindow->setEnabled( true );
+        } while (QApplication::overrideCursor() != 0);
+        mClientWindow->setEnabled(true);
     }
-    Q_UNUSED( bottomRight );
+    Q_UNUSED(bottomRight);
 
     Item item;
-    item = mUi.treeView->model()->data( topLeft, EntityTreeModel::ItemRole ).value<Item>();
-    itemChanged( item );
+    item = mUi.treeView->model()->data(topLeft, EntityTreeModel::ItemRole).value<Item>();
+    itemChanged(item);
 }
 
-void Page::slotUpdateDetails( const QModelIndex& index )
+void Page::slotUpdateDetails(const QModelIndex &index)
 {
-    if ( index.isValid() ) {
+    if (index.isValid()) {
         Item item;
-        item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        itemChanged( item );
+        item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        itemChanged(item);
     }
 }
 
-void Page::slotShowDetails( const QModelIndex& index )
+void Page::slotShowDetails(const QModelIndex &index)
 {
-    slotUpdateDetails( index );
+    slotUpdateDetails(index);
     slotEnsureDetailsVisible();
 }
 
@@ -394,24 +402,26 @@ bool Page::proceedIsOk()
 {
     bool proceed = true;
     QMessageBox msgBox;
-    msgBox.setText( tr( "The current item has been modified." ) );
-    msgBox.setInformativeText( tr( "Do you want to save your changes?" ) );
-    msgBox.setStandardButtons( QMessageBox::Save |
-                               QMessageBox::Discard );
-    msgBox.setDefaultButton( QMessageBox::Save );
+    msgBox.setText(tr("The current item has been modified."));
+    msgBox.setInformativeText(tr("Do you want to save your changes?"));
+    msgBox.setStandardButtons(QMessageBox::Save |
+                              QMessageBox::Discard);
+    msgBox.setDefaultButton(QMessageBox::Save);
     int ret = msgBox.exec();
-    if ( ret == QMessageBox::Save )
+    if (ret == QMessageBox::Save) {
         proceed = false;
+    }
     return proceed;
 }
 
 void Page::slotSetItem()
 {
     mCurrentIndex  = treeView()->selectionModel()->currentIndex();
-    if ( mCurrentIndex.isValid() )
-        slotItemClicked( mCurrentIndex );
-    else
+    if (mCurrentIndex.isValid()) {
+        slotItemClicked(mCurrentIndex);
+    } else {
         slotNewClicked();
+    }
 }
 
 void Page::slotResetSearch()
@@ -421,8 +431,8 @@ void Page::slotResetSearch()
 
 void Page::slotReloadCollection()
 {
-    if ( mCollection.isValid() ) {
-        AgentManager::self()->synchronizeCollection( mCollection );
+    if (mCollection.isValid()) {
+        AgentManager::self()->synchronizeCollection(mCollection);
     }
 }
 
@@ -431,81 +441,82 @@ void Page::slotReloadIntervalChanged()
     const int value = mUi.reloadSB->value();
     kDebug() << "value=" << value;
 
-    if ( mCollection.isValid() ) {
+    if (mCollection.isValid()) {
         CachePolicy policy = mCollection.cachePolicy();
-        policy.setInheritFromParent( false );
-        policy.setIntervalCheckTime( value == 0 ? -1 : value );
-        mCollection.setCachePolicy( policy );
-        CollectionModifyJob *job = new CollectionModifyJob( mCollection );
-        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( cachePolicyJobCompleted( KJob* ) ) );
+        policy.setInheritFromParent(false);
+        policy.setIntervalCheckTime(value == 0 ? -1 : value);
+        mCollection.setCachePolicy(policy);
+        CollectionModifyJob *job = new CollectionModifyJob(mCollection);
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
     }
 }
 
-void Page::slotCollectionChanged( const Akonadi::Collection &collection )
+void Page::slotCollectionChanged(const Akonadi::Collection &collection)
 {
-    if ( mCollection.isValid() && collection == mCollection ) {
+    if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
 
         const CachePolicy policy = mCollection.cachePolicy();
-        if ( policy.inheritFromParent() ) {
-            mUi.reloadSB->setValue( 0 );
+        if (policy.inheritFromParent()) {
+            mUi.reloadSB->setValue(0);
         } else {
-            mUi.reloadSB->setValue( policy.intervalCheckTime() );
+            mUi.reloadSB->setValue(policy.intervalCheckTime());
         }
     }
 }
 
 void Page::slotEnsureDetailsVisible()
 {
-    if ( mShowDetailsAction->isChecked() ) {
+    if (mShowDetailsAction->isChecked()) {
         QList<int> splitterSizes = mUi.splitter->sizes();
-        if ( splitterSizes[ 1 ] == 0 ) {
+        if (splitterSizes[ 1 ] == 0) {
             splitterSizes[ 1 ] = mUi.splitter->height() / 2;
-            mUi.splitter->setSizes( splitterSizes );
+            mUi.splitter->setSizes(splitterSizes);
         }
     } else {
-        mShowDetailsAction->setChecked( true );
+        mShowDetailsAction->setChecked(true);
     }
 }
 
-void Page::slotItemDoubleClicked( const QModelIndex &index )
+void Page::slotItemDoubleClicked(const QModelIndex &index)
 {
-    const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-    if ( item.isValid() ) {
-        DetailsDialog *dialog = new DetailsDialog( DetailsWidget::createDetailsForType( mType ), this );
-        dialog->setItem( item );
-        connect( this, SIGNAL( modelItemChanged( Akonadi::Item ) ),
-                 dialog, SLOT( updateItem( Akonadi::Item ) ) );
+    const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    if (item.isValid()) {
+        DetailsDialog *dialog = new DetailsDialog(DetailsWidget::createDetailsForType(mType), this);
+        dialog->setItem(item);
+        connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
+                dialog, SLOT(updateItem(Akonadi::Item)));
         dialog->show();
     }
 }
 
-QString Page::typeToString( const DetailsType &type ) const
+QString Page::typeToString(const DetailsType &type) const
 {
-    if ( type == Account )
-        return QString( "Accounts" );
-    else if ( type == Opportunity )
-        return QString( "Opportunities" );
-    else if ( type == Lead )
-        return QString( "Leads" );
-    else if ( type == Contact )
-        return QString( "Contacts" );
-    else if ( type == Campaign )
-        return QString( "Campaigns" );
-    else
+    if (type == Account) {
+        return QString("Accounts");
+    } else if (type == Opportunity) {
+        return QString("Opportunities");
+    } else if (type == Lead) {
+        return QString("Leads");
+    } else if (type == Contact) {
+        return QString("Contacts");
+    } else if (type == Campaign) {
+        return QString("Campaigns");
+    } else {
         return QString();
+    }
 }
 
 void Page::addAccountsData()
 {
     ReferencedData *data = ReferencedData::instance();
-    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        if ( item.hasPayload<SugarAccount>() ) {
+    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
+        const QModelIndex index = mUi.treeView->model()->index(i, 0);
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
-            data->setReferencedData( AccountRef, account.id(), account.name() );
-            data->setReferencedData( AssignedToRef, account.assignedUserId(), account.assignedUserName() );
+            data->setReferencedData(AccountRef, account.id(), account.name());
+            data->setReferencedData(AssignedToRef, account.assignedUserId(), account.assignedUserName());
         }
     }
 }
@@ -513,13 +524,13 @@ void Page::addAccountsData()
 void Page::addCampaignsData()
 {
     ReferencedData *data = ReferencedData::instance();
-    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        if ( item.hasPayload<SugarCampaign>() ) {
+    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
+        const QModelIndex index = mUi.treeView->model()->index(i, 0);
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
-            data->setReferencedData( CampaignRef, campaign.id(), campaign.name() );
-            data->setReferencedData( AssignedToRef, campaign.assignedUserId(), campaign.assignedUserName() );
+            data->setReferencedData(CampaignRef, campaign.id(), campaign.name());
+            data->setReferencedData(AssignedToRef, campaign.assignedUserId(), campaign.assignedUserName());
         }
     }
 }
@@ -527,14 +538,14 @@ void Page::addCampaignsData()
 void Page::addContactsData()
 {
     ReferencedData *data = ReferencedData::instance();
-    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        if ( item.hasPayload<KABC::Addressee>() ) {
+    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
+        const QModelIndex index = mUi.treeView->model()->index(i, 0);
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             const QString fullName = addressee.givenName() + " " + addressee.familyName();
-            data->setReferencedData( ReportsToRef, addressee.custom( "FATCRM", "X-ContactId" ), fullName );
-            data->setReferencedData( AssignedToRef, addressee.custom( "FATCRM", "X-AssignedUserId"), addressee.custom( "FATCRM", "X-AssignedUserName") );
+            data->setReferencedData(ReportsToRef, addressee.custom("FATCRM", "X-ContactId"), fullName);
+            data->setReferencedData(AssignedToRef, addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
 }
@@ -542,12 +553,12 @@ void Page::addContactsData()
 void Page::addLeadsData()
 {
     ReferencedData *data = ReferencedData::instance();
-    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        if ( item.hasPayload<SugarLead>() ) {
+    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
+        const QModelIndex index = mUi.treeView->model()->index(i, 0);
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarLead>()) {
             const SugarLead lead = item.payload<SugarLead>();
-            data->setReferencedData( AssignedToRef, lead.assignedUserId(), lead.assignedUserName() );
+            data->setReferencedData(AssignedToRef, lead.assignedUserId(), lead.assignedUserName());
         }
     }
 }
@@ -555,30 +566,30 @@ void Page::addLeadsData()
 void Page::addOpportunitiesData()
 {
     ReferencedData *data = ReferencedData::instance();
-    for ( int i = 0; i <  mUi.treeView->model()->rowCount(); ++i ) {
-        const QModelIndex index = mUi.treeView->model()->index( i, 0 );
-        const Item item = mUi.treeView->model()->data( index, EntityTreeModel::ItemRole ).value<Item>();
-        if ( item.hasPayload<SugarOpportunity>() ) {
+    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
+        const QModelIndex index = mUi.treeView->model()->index(i, 0);
+        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            data->setReferencedData( AssignedToRef, opportunity.assignedUserId(), opportunity.assignedUserName() );
+            data->setReferencedData(AssignedToRef, opportunity.assignedUserId(), opportunity.assignedUserName());
         }
     }
 }
 
-void Page::removeAccountsData( Akonadi::Item &item )
+void Page::removeAccountsData(Akonadi::Item &item)
 {
-    if ( item.hasPayload<SugarAccount>() ) {
+    if (item.hasPayload<SugarAccount>()) {
         const SugarAccount account = item.payload<SugarAccount>();
         ReferencedData *data = ReferencedData::instance();
-        data->removeReferencedData( AccountRef, account.id() );
+        data->removeReferencedData(AccountRef, account.id());
     }
 }
 
-void Page::removeCampaignsData( Akonadi::Item &item )
+void Page::removeCampaignsData(Akonadi::Item &item)
 {
-    if ( item.hasPayload<SugarCampaign>() ) {
+    if (item.hasPayload<SugarCampaign>()) {
         const SugarCampaign campaign = item.payload<SugarCampaign>();
         ReferencedData *data = ReferencedData::instance();
-        data->removeReferencedData( CampaignRef, campaign.id() );
+        data->removeReferencedData(CampaignRef, campaign.id());
     }
 }

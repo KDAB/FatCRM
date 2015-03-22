@@ -19,8 +19,9 @@ class QTimer;
 class QToolBar;
 class ResourceConfigDialog;
 
-namespace Akonadi {
-    class AgentInstance;
+namespace Akonadi
+{
+class AgentInstance;
 }
 
 class SugarClient : public QMainWindow
@@ -31,14 +32,14 @@ public:
 
     ~SugarClient();
 
-    DetailsWidget *detailsWidget( DetailsType type );
+    DetailsWidget *detailsWidget(DetailsType type);
 
 Q_SIGNALS:
-    void resourceSelected( const QByteArray &identifier );
+    void resourceSelected(const QByteArray &identifier);
     void displayDetails();
 
 protected:
-    void closeEvent( QCloseEvent *event );
+    void closeEvent(QCloseEvent *event);
 
 private:
     void initialize();
@@ -52,10 +53,10 @@ private:
     DetailsWidget *mLeadDetailsWidget;
     DetailsWidget *mContactDetailsWidget;
     DetailsWidget *mCampaignDetailsWidget;
-    QList<Page*> mPages;
+    QList<Page *> mPages;
     QCheckBox *mShowDetails;
 
-    QComboBox * mResourceSelector; // Login;
+    QComboBox *mResourceSelector;  // Login;
 
     Ui_MainWindow mUi;
     QMenu *mViewMenu;
@@ -67,21 +68,21 @@ private:
 
 private Q_SLOTS:
     void slotDelayedInit();
-    void slotToggleOffline( bool offline );
+    void slotToggleOffline(bool offline);
     void slotSynchronize();
-    void slotResourceSelectionChanged( int index );
-    void slotResourceSelected( const Akonadi::AgentInstance &resource );
-    void slotShowMessage( const QString& );
+    void slotResourceSelectionChanged(int index);
+    void slotResourceSelected(const Akonadi::AgentInstance &resource);
+    void slotShowMessage(const QString &);
     void slotConfigureResources();
-    void slotResourceError( const Akonadi::AgentInstance &resource, const QString &message );
-    void slotResourceOnline( const Akonadi::AgentInstance &resource, bool online );
-    void slotResourceProgress( const Akonadi::AgentInstance &resource );
-    void slotShowDetails( bool on );
+    void slotResourceError(const Akonadi::AgentInstance &resource, const QString &message);
+    void slotResourceOnline(const Akonadi::AgentInstance &resource, bool online);
+    void slotResourceProgress(const Akonadi::AgentInstance &resource);
+    void slotShowDetails(bool on);
     void slotPageShowDetailsChanged();
-    void slotCurrentTabChanged( int index );
+    void slotCurrentTabChanged(int index);
 
 private:
-    QComboBox* createResourcesCombo();
+    QComboBox *createResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();
 };

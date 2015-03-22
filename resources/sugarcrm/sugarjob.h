@@ -5,9 +5,10 @@
 
 class KDSoapMessage;
 class SugarSession;
-namespace KDSoapGenerated {
-    class Sugarsoap;
-    class TNS__Set_entry_result;
+namespace KDSoapGenerated
+{
+class Sugarsoap;
+class TNS__Set_entry_result;
 }
 
 class SugarJob : public KJob
@@ -22,7 +23,7 @@ public:
         TaskError
     };
 
-    explicit SugarJob( SugarSession* session, QObject* parent = 0);
+    explicit SugarJob(SugarSession *session, QObject *parent = 0);
 
     ~SugarJob();
 
@@ -34,7 +35,7 @@ public Q_SLOTS:
 protected:
     virtual void startSugarTask() = 0;
 
-    bool handleLoginError( const KDSoapMessage &fault );
+    bool handleLoginError(const KDSoapMessage &fault);
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap();
@@ -43,10 +44,10 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void startLogin() )
-    Q_PRIVATE_SLOT( d, void startTask() )
-    Q_PRIVATE_SLOT( d, void loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void loginError( const KDSoapMessage &fault ) )
+    Q_PRIVATE_SLOT(d, void startLogin())
+    Q_PRIVATE_SLOT(d, void startTask())
+    Q_PRIVATE_SLOT(d, void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult))
+    Q_PRIVATE_SLOT(d, void loginError(const KDSoapMessage &fault))
 };
 
 #endif

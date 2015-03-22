@@ -6,25 +6,26 @@
 
 namespace Akonadi
 {
-    class Collection;
+class Collection;
 }
 
 class SugarSession;
-namespace KDSoapGenerated {
-    class Sugarsoap;
-    class TNS__Entry_list;
-    class TNS__Entry_value;
+namespace KDSoapGenerated
+{
+class Sugarsoap;
+class TNS__Entry_list;
+class TNS__Entry_value;
 }
 
 class ListEntriesScope
 {
 public:
     ListEntriesScope();
-    ListEntriesScope( const QString &timestamp );
+    ListEntriesScope(const QString &timestamp);
 
     bool isUpdateScope() const;
 
-    void setOffset( int offset );
+    void setOffset(int offset);
 
     int offset() const;
 
@@ -32,7 +33,7 @@ public:
 
     int deleted() const;
 
-    QString query( const QString &module ) const;
+    QString query(const QString &module) const;
 
 private:
     int mOffset;
@@ -43,7 +44,7 @@ private:
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {
 public:
-    explicit ModuleHandler( const QString &moduleName, SugarSession *session );
+    explicit ModuleHandler(const QString &moduleName, SugarSession *session);
 
     virtual ~ModuleHandler();
 
@@ -56,19 +57,19 @@ public:
 
     virtual Akonadi::Collection collection() const = 0;
 
-    virtual void listEntries( const ListEntriesScope &scope ) = 0;
+    virtual void listEntries(const ListEntriesScope &scope) = 0;
 
-    virtual bool setEntry( const Akonadi::Item &item ) = 0;
+    virtual bool setEntry(const Akonadi::Item &item) = 0;
 
-    virtual bool getEntry( const Akonadi::Item &item );
+    virtual bool getEntry(const Akonadi::Item &item);
 
-    virtual Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry,
-                                         const Akonadi::Collection &parentCollection ) = 0;
+    virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
+                                        const Akonadi::Collection &parentCollection) = 0;
 
-    Akonadi::Item::List itemsFromListEntriesResponse( const KDSoapGenerated::TNS__Entry_list &entryList,
-                                                      const Akonadi::Collection &parentCollection );
+    Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
+            const Akonadi::Collection &parentCollection);
 
-    virtual bool needBackendChange( const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts ) const;
+    virtual bool needBackendChange(const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts) const;
 
 protected:
     SugarSession *mSession;
@@ -76,8 +77,8 @@ protected:
     QString mLatestTimestamp;
 
 protected:
-    static QString formatDate( const QString &dateString );
-    static QByteArray partIdFromPayloadPart( const char *part );
+    static QString formatDate(const QString &dateString);
+    static QByteArray partIdFromPayloadPart(const char *part);
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;

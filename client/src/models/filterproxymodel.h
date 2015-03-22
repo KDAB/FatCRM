@@ -3,7 +3,8 @@
 
 #include <QtGui/QSortFilterProxyModel>
 
-namespace Akonadi {
+namespace Akonadi
+{
 
 /**
  * A proxy model for sugar tree models.
@@ -16,37 +17,36 @@ namespace Akonadi {
  */
 class FilterProxyModel : public QSortFilterProxyModel
 {
-  Q_OBJECT
+    Q_OBJECT
 
-  public:
+public:
     /**
      * Creates a new filter proxy model.
      *
      * @param parent The parent object.
      */
-    explicit FilterProxyModel( QObject *parent = 0 );
+    explicit FilterProxyModel(QObject *parent = 0);
 
     /**
      * Destroys the filter proxy model.
      */
     ~FilterProxyModel();
 
-  public Q_SLOTS:
+public Q_SLOTS:
     /**
      * Sets the filter that is used to filter for matching items
      */
-    void setFilterString( const QString &filter );
+    void setFilterString(const QString &filter);
 
-  protected:
-    virtual bool filterAcceptsRow( int row, const QModelIndex &parent ) const;
+protected:
+    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const;
 
-  private:
+private:
     class Private;
-    Private* const d;
+    Private *const d;
 };
 
 }
-
 
 #endif /* FILTERPROXYMODEL_H */
 

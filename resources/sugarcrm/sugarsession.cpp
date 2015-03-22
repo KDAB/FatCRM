@@ -5,11 +5,11 @@
 using namespace KDSoapGenerated;
 #include <KUrl>
 
-static QString endPointFromHostString( const QString &host )
+static QString endPointFromHostString(const QString &host)
 {
-    KUrl url( host );
-    url.setFileName( QLatin1String( "soap.php" ) );
-    url.setQuery( QString() );
+    KUrl url(host);
+    url.setFileName(QLatin1String("soap.php"));
+    url.setQuery(QString());
 
     return url.url();
 }
@@ -18,8 +18,8 @@ class SugarSession::Private
 {
     SugarSession *const q;
 public:
-    explicit Private( SugarSession *parent )
-        : q( parent ), mSoap( 0 )
+    explicit Private(SugarSession *parent)
+        : q(parent), mSoap(0)
     {
     }
 
@@ -31,8 +31,8 @@ public:
     Sugarsoap *mSoap;
 };
 
-SugarSession::SugarSession( QObject* parent )
-    : QObject( parent ), d( new Private( this ) )
+SugarSession::SugarSession(QObject *parent)
+    : QObject(parent), d(new Private(this))
 {
 }
 
@@ -41,13 +41,13 @@ SugarSession::~SugarSession()
     delete d;
 }
 
-SugarSession::RequiredAction SugarSession::setSessionParameters( const QString &username, const QString &password, const QString &host )
+SugarSession::RequiredAction SugarSession::setSessionParameters(const QString &username, const QString &password, const QString &host)
 {
     RequiredAction result = None;
-    if ( d->mSoap != 0 ) {
-        if ( host != d->mHost || username != d->mUserName ) {
+    if (d->mSoap != 0) {
+        if (host != d->mHost || username != d->mUserName) {
             result = NewLogin;
-        } else if ( password != d->mPassword ) {
+        } else if (password != d->mPassword) {
             result = ReLogin;
         }
     } else {
@@ -69,7 +69,7 @@ void SugarSession::createSoapInterface()
     }
 
     d->mSoap = new Sugarsoap;
-    d->mSoap->setEndPoint( endPointFromHostString( d->mHost ) );
+    d->mSoap->setEndPoint(endPointFromHostString(d->mHost));
 }
 
 QString SugarSession::sessionId() const
@@ -94,13 +94,13 @@ QString SugarSession::host() const
 
 void SugarSession::logout()
 {
-    if ( !d->mSessionId.isEmpty() && d->mSoap != 0 ) {
-        d->mSoap->logout( d->mSessionId );
+    if (!d->mSessionId.isEmpty() && d->mSoap != 0) {
+        d->mSoap->logout(d->mSessionId);
     }
     d->mSessionId = QString();
 }
 
-void SugarSession::setSessionId( const QString &sessionId )
+void SugarSession::setSessionId(const QString &sessionId)
 {
     d->mSessionId = sessionId;
 }

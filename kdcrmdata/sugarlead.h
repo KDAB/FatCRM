@@ -16,7 +16,7 @@
 class KDCRMDATA_EXPORT SugarLead
 {
 
-  public:
+public:
 
     /**
       Construct an empty SugarLead entry.
@@ -31,14 +31,14 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Copy constructor.
      */
-    SugarLead( const SugarLead & );
+    SugarLead(const SugarLead &);
 
     /**
       Assignment operator.
 
       return a reference to this
     */
-    SugarLead &operator=( const SugarLead & );
+    SugarLead &operator=(const SugarLead &);
 
     /**
       Equality operator.
@@ -46,7 +46,7 @@ class KDCRMDATA_EXPORT SugarLead
       return true if this and the given SugarLead are equal,
               otherwise false
     */
-    bool operator==( const SugarLead & ) const;
+    bool operator==(const SugarLead &) const;
 
     /**
       Not-equal operator.
@@ -54,7 +54,7 @@ class KDCRMDATA_EXPORT SugarLead
       return true if  this and the given SugarLead are not equal,
               otherwise false
     */
-    bool operator!=( const SugarLead & ) const;
+    bool operator!=(const SugarLead &) const;
 
     /**
       Return, if the SugarLead entry is empty.
@@ -69,7 +69,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set unique identifier.
      */
-    void setId( const QString &id );
+    void setId(const QString &id);
     /**
       Return unique identifier.
      */
@@ -78,7 +78,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Creation date.
      */
-    void setDateEntered( const QString &name );
+    void setDateEntered(const QString &name);
     /**
       Return Creation date.
      */
@@ -87,7 +87,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Modification date.
      */
-    void setDateModified( const QString &name );
+    void setDateModified(const QString &name);
     /**
       Return Modification date.
      */
@@ -96,7 +96,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Modified User id.
      */
-    void setModifiedUserId( const QString &name );
+    void setModifiedUserId(const QString &name);
     /**
       Return Modified User id.
      */
@@ -105,7 +105,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Modified By name.
      */
-    void setModifiedByName( const QString &name );
+    void setModifiedByName(const QString &name);
     /**
       Return Modified By name.
      */
@@ -114,7 +114,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Created By id.
      */
-    void setCreatedBy( const QString &name );
+    void setCreatedBy(const QString &name);
     /**
       Return created by id.
      */
@@ -123,7 +123,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Created By Name.
      */
-    void setCreatedByName( const QString &name );
+    void setCreatedByName(const QString &name);
     /**
       Return created by Name.
      */
@@ -132,7 +132,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Description.
     */
-    void setDescription( const QString &value );
+    void setDescription(const QString &value);
     /**
       Return Description.
      */
@@ -141,7 +141,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Deleted.
     */
-    void setDeleted( const QString &value );
+    void setDeleted(const QString &value);
     /**
       Return Deleted.
      */
@@ -150,7 +150,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Assigned User Id.
     */
-    void setAssignedUserId( const QString &value );
+    void setAssignedUserId(const QString &value);
     /**
       Return Assigned User Id.
      */
@@ -159,7 +159,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Assigned User Name.
      */
-    void setAssignedUserName( const QString &value );
+    void setAssignedUserName(const QString &value);
     /**
       Return assigned User Name.
      */
@@ -168,7 +168,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set the Salutation type (Mr Ms etc...).
      */
-    void setSalutation( const QString &value );
+    void setSalutation(const QString &value);
     /**
       Return salutation.
      */
@@ -177,7 +177,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set the first name.
      */
-    void setFirstName( const QString &value );
+    void setFirstName(const QString &value);
     /**
       Return the first name.
      */
@@ -186,7 +186,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set the last name.
      */
-    void setLastName( const QString &value );
+    void setLastName(const QString &value);
     /**
       Return the last name.
      */
@@ -195,7 +195,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Job title.
      */
-    void setTitle( const QString &value );
+    void setTitle(const QString &value);
     /**
       Return job title.
      */
@@ -204,7 +204,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Job Department.
      */
-    void setDepartment( const QString &value );
+    void setDepartment(const QString &value);
     /**
       Return Job department.
      */
@@ -213,7 +213,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
        Set Do not call.
      */
-    void setDoNotCall( const QString &value );
+    void setDoNotCall(const QString &value);
     /**
       Return Do not call.
      */
@@ -222,7 +222,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Phone Home.
      */
-    void setPhoneHome( const QString &value );
+    void setPhoneHome(const QString &value);
     /**
       Return Phone Home.
      */
@@ -231,7 +231,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
        Set Phone Mobile.
      */
-    void setPhoneMobile( const QString &value );
+    void setPhoneMobile(const QString &value);
     /**
        Return Phone Mobile.
      */
@@ -240,7 +240,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Phone Work.
      */
-    void setPhoneWork( const QString &value );
+    void setPhoneWork(const QString &value);
     /**
       Return Phone Work.
      */
@@ -249,7 +249,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Phone Other.
      */
-    void setPhoneOther( const QString &value );
+    void setPhoneOther(const QString &value);
     /**
       Return Phone Other.
      */
@@ -258,7 +258,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Phone Fax.
      */
-    void setPhoneFax( const QString &value );
+    void setPhoneFax(const QString &value);
     /**
       Return Phone Fax.
      */
@@ -267,7 +267,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Email1.
      */
-    void setEmail1( const QString &value );
+    void setEmail1(const QString &value);
     /**
       Return Email1.
      */
@@ -276,7 +276,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Email2.
      */
-    void setEmail2( const QString &value );
+    void setEmail2(const QString &value);
     /**
       Return Email2.
      */
@@ -285,7 +285,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Primary Address Street.
      */
-    void setPrimaryAddressStreet( const QString &value );
+    void setPrimaryAddressStreet(const QString &value);
     /**
       Return Primary Address Street.
      */
@@ -294,7 +294,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Primary Address City.
      */
-    void setPrimaryAddressCity( const QString &value );
+    void setPrimaryAddressCity(const QString &value);
     /**
       Return Primary Address City.
      */
@@ -303,7 +303,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Primary Address State.
      */
-    void setPrimaryAddressState( const QString &value );
+    void setPrimaryAddressState(const QString &value);
     /**
       Return Primary Address State.
      */
@@ -312,7 +312,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Primary Address Postalcode.
      */
-    void setPrimaryAddressPostalcode( const QString &value );
+    void setPrimaryAddressPostalcode(const QString &value);
     /**
       Return Primary Address Postal code.
      */
@@ -321,7 +321,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Primary Address Country.
      */
-    void setPrimaryAddressCountry( const QString &value );
+    void setPrimaryAddressCountry(const QString &value);
     /**
       Return Primary Address Country.
      */
@@ -330,7 +330,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Alt Address Street.
      */
-    void setAltAddressStreet( const QString &value );
+    void setAltAddressStreet(const QString &value);
     /**
       Return Alt Address Street.
      */
@@ -339,7 +339,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Alt Address City.
      */
-    void setAltAddressCity( const QString &value );
+    void setAltAddressCity(const QString &value);
     /**
       Return Alt Address City.
      */
@@ -348,7 +348,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Alt Address State.
      */
-    void setAltAddressState( const QString &value );
+    void setAltAddressState(const QString &value);
     /**
       Return Alt Address State.
      */
@@ -357,7 +357,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Alt Address Postalcode.
      */
-    void setAltAddressPostalcode( const QString &value );
+    void setAltAddressPostalcode(const QString &value);
     /**
       Return Alt Address Postal code.
      */
@@ -366,7 +366,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Alt Address Country.
      */
-    void setAltAddressCountry( const QString &value );
+    void setAltAddressCountry(const QString &value);
     /**
       Return Alt Address Country.
      */
@@ -375,7 +375,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Assistant name.
      */
-    void setAssistant( const QString &value );
+    void setAssistant(const QString &value);
     /**
       Return Assistant name.
      */
@@ -384,7 +384,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Assistant Phone.
      */
-    void setAssistantPhone( const QString &value );
+    void setAssistantPhone(const QString &value);
     /**
       Return Assistant Phone.
      */
@@ -393,7 +393,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Converted.
      */
-    void setConverted( const QString &value );
+    void setConverted(const QString &value);
     /**
       Return Converted.
      */
@@ -402,7 +402,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Referred by.
      */
-    void setReferedBy( const QString &value );
+    void setReferedBy(const QString &value);
     /**
       Return referred by.
      */
@@ -411,7 +411,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Lead Source.
      */
-    void setLeadSource( const QString &value );
+    void setLeadSource(const QString &value);
     /**
       Return Lead Source.
      */
@@ -420,7 +420,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Lead Source Description.
      */
-    void setLeadSourceDescription( const QString &value );
+    void setLeadSourceDescription(const QString &value);
     /**
       Return Lead Source Description.
      */
@@ -429,7 +429,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Status.
      */
-    void setStatus( const QString &value );
+    void setStatus(const QString &value);
     /**
       Return Status.
      */
@@ -438,7 +438,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Status Description.
      */
-    void setStatusDescription( const QString &value );
+    void setStatusDescription(const QString &value);
     /**
       Return Status Description.
      */
@@ -447,7 +447,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set reports to Id.
      */
-    void setReportsToId( const QString &value );
+    void setReportsToId(const QString &value);
     /**
       Return reports to Id.
      */
@@ -456,7 +456,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set report to name.
      */
-    void setReportToName( const QString &value );
+    void setReportToName(const QString &value);
     /**
       Return report to name.
      */
@@ -465,7 +465,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set account name.
      */
-    void setAccountName( const QString &value );
+    void setAccountName(const QString &value);
     /**
       Return account name.
      */
@@ -474,7 +474,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Account Description.
      */
-    void setAccountDescription( const QString &value );
+    void setAccountDescription(const QString &value);
     /**
       Return Account Description.
      */
@@ -483,7 +483,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Contact Id.
      */
-    void setContactId( const QString &value );
+    void setContactId(const QString &value);
     /**
       Return Contact Id.
      */
@@ -492,7 +492,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Account Id.
      */
-    void setAccountId( const QString &value );
+    void setAccountId(const QString &value);
     /**
       Return Account Id.
      */
@@ -501,7 +501,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Opportunity Id.
      */
-    void setOpportunityId( const QString &value );
+    void setOpportunityId(const QString &value);
     /**
       Return Opportunity Id.
      */
@@ -510,7 +510,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Opportunity Name.
      */
-    void setOpportunityName( const QString &value );
+    void setOpportunityName(const QString &value);
     /**
       Return Opportunity Name.
      */
@@ -519,7 +519,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Opportunity Amount.
      */
-    void setOpportunityAmount( const QString &value );
+    void setOpportunityAmount(const QString &value);
     /**
       Return Opportunity Amount.
      */
@@ -528,7 +528,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Campaign Id.
      */
-    void setCampaignId( const QString &value );
+    void setCampaignId(const QString &value);
     /**
       Return Campaing Id.
      */
@@ -537,7 +537,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Campaign Name.
      */
-    void setCampaignName( const QString &value );
+    void setCampaignName(const QString &value);
     /**
       Return Campaing Name.
      */
@@ -546,25 +546,25 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set C Accept Status Fields.
      */
-    void setCAcceptStatusFields( const QString &value );
+    void setCAcceptStatusFields(const QString &value);
     /**
       Return C Accept Status Fields.
      */
     QString cAcceptStatusFields() const;
 
-     /**
-      Set M Accept Status Fields.
-     */
-    void setMAcceptStatusFields( const QString &value );
+    /**
+     Set M Accept Status Fields.
+    */
+    void setMAcceptStatusFields(const QString &value);
     /**
       Return M Accept Status Fields.
      */
     QString mAcceptStatusFields() const;
 
-     /**
-      Set Birth Date.
-     */
-    void setBirthdate( const QString &value );
+    /**
+     Set Birth Date.
+    */
+    void setBirthdate(const QString &value);
     /**
       Return Birth Date.
      */
@@ -573,7 +573,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Portal Name.
      */
-    void setPortalName( const QString &value );
+    void setPortalName(const QString &value);
     /**
       Return Portal Name.
      */
@@ -582,7 +582,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Set Portal App.
      */
-    void setPortalApp( const QString &value );
+    void setPortalApp(const QString &value);
     /**
       Return Portal App.
      */
@@ -591,7 +591,7 @@ class KDCRMDATA_EXPORT SugarLead
     /**
       Convenience method set the data for this lead
      */
-    void setData( QMap<QString, QString> data );
+    void setData(QMap<QString, QString> data);
 
     /**
       Convenience method get the data for this lead
@@ -603,13 +603,12 @@ class KDCRMDATA_EXPORT SugarLead
      */
     static QString mimeType();
 
-  private:
+private:
     class Private;
     QSharedDataPointer<Private> d;
 };
 
-Q_DECLARE_METATYPE( SugarLead )
-
+Q_DECLARE_METATYPE(SugarLead)
 
 #endif /* SUGARLEAD_H */
 

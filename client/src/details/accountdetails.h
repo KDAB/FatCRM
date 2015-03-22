@@ -3,15 +3,16 @@
 
 #include "details.h"
 
-namespace Ui {
-    class AccountDetails;
+namespace Ui
+{
+class AccountDetails;
 }
 
 class AccountDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit AccountDetails( QWidget *parent = 0 );
+    explicit AccountDetails(QWidget *parent = 0);
 
     ~AccountDetails();
 
@@ -20,8 +21,8 @@ private:
 
 private:
     /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data( const Akonadi::Item &item ) const;
-    /*reimp*/ void updateItem( Akonadi::Item &item, const QMap<QString, QString> &data ) const;
+    /*reimp*/ QMap<QString, QString> data(const Akonadi::Item &item) const;
+    /*reimp*/ void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const;
 
     QStringList typeItems() const;
 };

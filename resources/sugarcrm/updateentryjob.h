@@ -3,14 +3,16 @@
 
 #include "sugarjob.h"
 
-namespace Akonadi {
-    class Item;
+namespace Akonadi
+{
+class Item;
 }
 
 class ModuleHandler;
-namespace KDSoapGenerated {
-    class TNS__Get_entry_result;
-    class TNS__Set_entry_result;
+namespace KDSoapGenerated
+{
+class TNS__Get_entry_result;
+class TNS__Set_entry_result;
 }
 
 class UpdateEntryJob : public SugarJob
@@ -22,11 +24,11 @@ public:
         ConflictError = SugarJob::TaskError + 1
     };
 
-    UpdateEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent = 0 );
+    UpdateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
 
     ~UpdateEntryJob();
 
-    void setModule( ModuleHandler *handler );
+    void setModule(ModuleHandler *handler);
     ModuleHandler *module() const;
 
     Akonadi::Item item() const;
@@ -40,12 +42,12 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void getEntryError( const KDSoapMessage &fault ) )
-    Q_PRIVATE_SLOT( d, void setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void setEntryError( const KDSoapMessage &fault ) )
-    Q_PRIVATE_SLOT( d, void getRevisionDone( const KDSoapGenerated::TNS__Get_entry_result &callResult ) )
-    Q_PRIVATE_SLOT( d, void getRevisionError( const KDSoapMessage &fault ) )
+    Q_PRIVATE_SLOT(d, void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult))
+    Q_PRIVATE_SLOT(d, void getEntryError(const KDSoapMessage &fault))
+    Q_PRIVATE_SLOT(d, void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult))
+    Q_PRIVATE_SLOT(d, void setEntryError(const KDSoapMessage &fault))
+    Q_PRIVATE_SLOT(d, void getRevisionDone(const KDSoapGenerated::TNS__Get_entry_result &callResult))
+    Q_PRIVATE_SLOT(d, void getRevisionError(const KDSoapMessage &fault))
 };
 
 #endif

@@ -3,14 +3,14 @@
 #include "settings.h"
 
 SugarConfigDialog::SugarConfigDialog(Settings *settings, const QString &accountName, QWidget *parent)
-    : QDialog( parent )
+    : QDialog(parent)
 {
-    mUi.setupUi( this );
+    mUi.setupUi(this);
 
-    mUi.accountName->setText( accountName );
-    mUi.host->setText( settings->host() );
-    mUi.user->setText( settings->user() );
-    mUi.password->setText( settings->password() );
+    mUi.accountName->setText(accountName);
+    mUi.host->setText(settings->host());
+    mUi.user->setText(settings->user());
+    mUi.password->setText(settings->password());
 }
 
 SugarConfigDialog::~SugarConfigDialog()

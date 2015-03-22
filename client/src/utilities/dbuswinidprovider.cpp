@@ -11,8 +11,8 @@ class DBusWinIdProvider::Private
 {
     DBusWinIdProvider *const q;
 public:
-    Private( DBusWinIdProvider *parent, QWidget *window )
-        : q( parent ), mWindow( window ), mObjectRegistered( false )
+    Private(DBusWinIdProvider *parent, QWidget *window)
+        : q(parent), mWindow(window), mObjectRegistered(false)
     {
     }
 
@@ -30,36 +30,36 @@ void DBusWinIdProvider::Private::tryRegister()
     // this is for fallback in case the tray app is not running
     QDBusConnection bus = QDBusConnection::sessionBus();
     QDBusConnectionInterface *busInterface = bus.interface();
-    busInterface->registerService( QLatin1String( "org.freedesktop.akonaditray" ),
-                                   QDBusConnectionInterface::DontQueueService,
-                                   QDBusConnectionInterface::AllowReplacement );
+    busInterface->registerService(QLatin1String("org.freedesktop.akonaditray"),
+                                  QDBusConnectionInterface::DontQueueService,
+                                  QDBusConnectionInterface::AllowReplacement);
 
-    if ( !mObjectRegistered ) {
-        mObjectRegistered = bus.registerObject( QLatin1String( "/Actions" ), q,
-                                                QDBusConnection::ExportScriptableSlots );
-        if ( !mObjectRegistered ) {
+    if (!mObjectRegistered) {
+        mObjectRegistered = bus.registerObject(QLatin1String("/Actions"), q,
+                                               QDBusConnection::ExportScriptableSlots);
+        if (!mObjectRegistered) {
             kWarning() << "Failed to register provider object /Actions";
         }
     }
 
     kDebug() << "currentOwner="
-             << busInterface->serviceOwner( QLatin1String( "org.freedesktop.akonaditray" ) );
+             << busInterface->serviceOwner(QLatin1String("org.freedesktop.akonaditray"));
 }
 
-DBusWinIdProvider::DBusWinIdProvider( QWidget *referenceWindow )
-    : QObject( referenceWindow ), d( new Private( this, referenceWindow ) )
+DBusWinIdProvider::DBusWinIdProvider(QWidget *referenceWindow)
+    : QObject(referenceWindow), d(new Private(this, referenceWindow))
 {
-    Q_ASSERT( referenceWindow != 0 );
+    Q_ASSERT(referenceWindow != 0);
 
     QDBusServiceWatcher *watcher =
-        new QDBusServiceWatcher( QLatin1String( "org.freedesktop.akonaditray" ),
-                                 QDBusConnection::sessionBus(),
-                                 QDBusServiceWatcher::WatchForUnregistration,
-                                 this );
-    connect( watcher, SIGNAL( serviceUnregistered( QString ) ),
-             this, SLOT( tryRegister() ) );
+        new QDBusServiceWatcher(QLatin1String("org.freedesktop.akonaditray"),
+                                QDBusConnection::sessionBus(),
+                                QDBusServiceWatcher::WatchForUnregistration,
+                                this);
+    connect(watcher, SIGNAL(serviceUnregistered(QString)),
+            this, SLOT(tryRegister()));
 
-    QMetaObject::invokeMethod( this, "tryRegister", Qt::QueuedConnection );
+    QMetaObject::invokeMethod(this, "tryRegister", Qt::QueuedConnection);
 }
 
 DBusWinIdProvider::~DBusWinIdProvider()

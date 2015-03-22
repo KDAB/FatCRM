@@ -16,21 +16,21 @@ public:
 
     ~ReferencedData();
 
-    void clear( ReferencedDataType type );
+    void clear(ReferencedDataType type);
 
     void clearAll();
 
-    void setReferencedData( ReferencedDataType type, const QString &id, const QString &data );
+    void setReferencedData(ReferencedDataType type, const QString &id, const QString &data);
 
-    void removeReferencedData( ReferencedDataType type, const QString &id );
+    void removeReferencedData(ReferencedDataType type, const QString &id);
 
-    QMap<QString, QString> data( ReferencedDataType type ) const;
+    QMap<QString, QString> data(ReferencedDataType type) const;
 
 Q_SIGNALS:
-    void dataChanged( ReferencedDataType type );
+    void dataChanged(ReferencedDataType type);
 
 private:
-    explicit ReferencedData( QObject *parent = 0 );
+    explicit ReferencedData(QObject *parent = 0);
 
 private:
     class Private;
