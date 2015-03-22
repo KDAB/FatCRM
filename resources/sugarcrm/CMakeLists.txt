@@ -1,13 +1,6 @@
-project(sugarcrm)
-
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 
 # search packages used by KDE
-find_package (KDE4 REQUIRED)
-include(KDE4Defaults)
-include(MacroLibrary)
-include(MacroOptionalAddSubdirectory)
-include(CheckIncludeFiles)
 find_package (KdepimLibs REQUIRED)
 find_package (Boost REQUIRED)
 
