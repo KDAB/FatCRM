@@ -2,17 +2,14 @@
 #define ITEMSTREEMODEL_H
 
 #include <akonadi/entitytreemodel.h>
-#include "enums.h"
-
-namespace Akonadi
-{
+#include <enums.h>
 
 /**
  * A model for sugar items.
  * This class provides a model for displaying the sugar items.
  *
  */
-class ItemsTreeModel : public EntityTreeModel
+class ItemsTreeModel : public Akonadi::EntityTreeModel
 {
     Q_OBJECT
 
@@ -64,24 +61,24 @@ public:
      * represented in the model.
      * param: parent The parent object.
      */
-    explicit ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObject *parent = 0);
+    explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
 
     virtual ~ItemsTreeModel();
 
     void setColumns();
     Columns columns() const;
 
-    /*reimp*/ QVariant entityData(const Item &item, int column, int role = Qt::DisplayRole) const;
-    /*reimp*/ QVariant entityData(const Collection &collection, int column, int role = Qt::DisplayRole) const;
+    /*reimp*/ QVariant entityData(const Akonadi::Item &item, int column, int role = Qt::DisplayRole) const;
+    /*reimp*/ QVariant entityData(const Akonadi::Collection &collection, int column, int role = Qt::DisplayRole) const;
     /*reimp*/ QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
     /*reimp*/ int entityColumnCount(HeaderGroup headerGroup) const;
 
 private:
-    QVariant accountData(const Item &item, int column, int role) const;
-    QVariant campaignData(const Item &item, int column, int role) const;
-    QVariant contactData(const Item &item, int column, int role) const;
-    QVariant leadData(const Item &item, int column, int role) const;
-    QVariant opportunityData(const Item &item, int column, int role) const;
+    QVariant accountData(const Akonadi::Item &item, int column, int role) const;
+    QVariant campaignData(const Akonadi::Item &item, int column, int role) const;
+    QVariant contactData(const Akonadi::Item &item, int column, int role) const;
+    QVariant leadData(const Akonadi::Item &item, int column, int role) const;
+    QVariant opportunityData(const Akonadi::Item &item, int column, int role) const;
     Columns  columnsGroup(DetailsType type) const;
 
 private:
@@ -89,7 +86,6 @@ private:
     Private *const d;
     DetailsType mType;
 };
-}
 
 #endif /* ITEMSTREEMODEL_H */
 
