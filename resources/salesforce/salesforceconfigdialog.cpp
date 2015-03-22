@@ -2,11 +2,12 @@
 
 #include "settings.h"
 
-SalesforceConfigDialog::SalesforceConfigDialog( Settings *settings )
+SalesforceConfigDialog::SalesforceConfigDialog(Settings *settings, const QString &accountName)
     : QDialog()
 {
     mUi.setupUi( this );
 
+    mUi.accountName->setText( accountName );
 #if 0
     mUi.host->setText( settings->host() );
 #else
@@ -21,6 +22,11 @@ SalesforceConfigDialog::SalesforceConfigDialog( Settings *settings )
 
 SalesforceConfigDialog::~SalesforceConfigDialog()
 {
+}
+
+QString SalesforceConfigDialog::accountName() const
+{
+    return mUi.accountName->text();
 }
 
 QString SalesforceConfigDialog::host() const

@@ -4,6 +4,7 @@
 #include "sugarconfigdialog.h"
 #include "sugarsession.h"
 
+#include <Akonadi/ResourceBase>
 #include <KJob>
 #include <KLocale>
 #include <KPushButton>
@@ -14,14 +15,15 @@ class LoginErrorDialog::Private
 {
     LoginErrorDialog *const q;
 public:
-    Private( LoginErrorDialog *parent, KJob *job, SugarSession *session )
-        : q( parent ), mJob( job ), mSession( session )
+    Private( LoginErrorDialog *parent, KJob *job, SugarSession *session, Akonadi::ResourceBase *resource )
+        : q( parent ), mJob( job ), mSession( session ), mResource(resource)
     {
     }
 
 public:
     KJob *mJob;
     SugarSession *mSession;
+    Akonadi::ResourceBase *mResource;
 
 public: // slots
     void changeConfig();
@@ -30,11 +32,12 @@ public: // slots
 
 void LoginErrorDialog::Private::changeConfig()
 {
-    SugarConfigDialog dialog( Settings::self(), q );
+    SugarConfigDialog dialog( Settings::self(), mResource->name(), q );
     if ( dialog.exec() == QDialog::Rejected ) {
         return;
     }
 
+    const QString accountName = dialog.accountName();
     const QString host = dialog.host();
     const QString user = dialog.user();
     const QString password = dialog.password();
@@ -48,9 +51,10 @@ void LoginErrorDialog::Private::changeConfig()
             mSession->createSoapInterface();
             // fall through
         case SugarSession::ReLogin:
-            emit q->userOrHostChanged( user, host );
             break;
     }
+
+    mResource->setName(accountName);
 
     Settings::self()->setHost( host );
     Settings::self()->setUser( user );
@@ -66,8 +70,8 @@ void LoginErrorDialog::Private::cancel()
     q->reject();
 }
 
-LoginErrorDialog::LoginErrorDialog( KJob *job, SugarSession *session, QWidget *parent )
-    : KDialog( parent ), d( new Private( this, job, session ) )
+LoginErrorDialog::LoginErrorDialog(KJob *job, SugarSession *session, Akonadi::ResourceBase *resource, QWidget *parent )
+    : KDialog( parent ), d( new Private( this, job, session, resource ) )
 {
     job->setAutoDelete( false );
 

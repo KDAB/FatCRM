@@ -21,6 +21,7 @@
 
 using namespace Akonadi;
 
+#if 0
 static QString endPointFromHostString( const QString &host )
 {
     KUrl url( host );
@@ -29,13 +30,7 @@ static QString endPointFromHostString( const QString &host )
 
     return url.url();
 }
-
-static QString nameFromHostString( const QString &host )
-{
-    KUrl url( host );
-
-    return i18nc("@title user visible resource identifier, including host name", "Salesforce on %1", url.host() );
-}
+#endif
 
 SalesforceResource::SalesforceResource( const QString &id )
     : ResourceBase( id ),
@@ -64,7 +59,6 @@ SalesforceResource::SalesforceResource( const QString &id )
 #if 0
     mSoap->setEndPoint( endPointFromHostString( Settings::self()->host() ) );
 #endif
-    setName( Settings::self()->user() + QLatin1Char( '@' ) + nameFromHostString( Settings::self()->host() ) );
 }
 
 SalesforceResource::~SalesforceResource()
@@ -76,7 +70,7 @@ SalesforceResource::~SalesforceResource()
 
 void SalesforceResource::configure( WId windowId )
 {
-    SalesforceConfigDialog dialog( Settings::self() );
+    SalesforceConfigDialog dialog( Settings::self(), name() );
 
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
@@ -88,6 +82,9 @@ void SalesforceResource::configure( WId windowId )
         emit configurationDialogRejected();
         return;
     }
+
+    const QString accountName = dialog.accountName();
+    setName( accountName );
 
     const QString host = dialog.host();
     const QString user = dialog.user();
@@ -106,8 +103,6 @@ void SalesforceResource::configure( WId windowId )
         mSoap->disconnect();
         mSoap->deleteLater();
 
-        setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
-
         mSoap = new SforceService;
 #if 0
         mSoap->setEndPoint( endPointFromHostString( host ) );
@@ -122,8 +117,6 @@ void SalesforceResource::configure( WId windowId )
             mSoap->logout();
             mSessionId = QString();
         }
-
-        setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
 
         newLogin = true;
     }

@@ -35,13 +35,6 @@
 
 using namespace Akonadi;
 
-static QString nameFromHostString( const QString &host )
-{
-    KUrl url( host );
-
-    return i18nc("@title user visible resource identifier, including host name", "SugarCRM on %1", url.host() );
-}
-
 SugarCRMResource::SugarCRMResource( const QString &id )
     : ResourceBase( id ),
       mSession( new SugarSession( this ) ),
@@ -86,7 +79,7 @@ SugarCRMResource::~SugarCRMResource()
 
 void SugarCRMResource::configure( WId windowId )
 {
-    SugarConfigDialog dialog( Settings::self() );
+    SugarConfigDialog dialog( Settings::self(), name() );
 
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
@@ -102,6 +95,7 @@ void SugarCRMResource::configure( WId windowId )
     const QString host = dialog.host();
     const QString user = dialog.user();
     const QString password = dialog.password();
+    const QString accountName = dialog.accountName();
 
     SugarSession::RequiredAction action = mSession->setSessionParameters( user, password, host );
     switch ( action ) {
@@ -112,7 +106,6 @@ void SugarCRMResource::configure( WId windowId )
             mSession->createSoapInterface();
             // fall through
         case SugarSession::ReLogin:
-            setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
             if ( isOnline() ) {
                 // schedule login as a prepended custom task to hold all other until finished
                 scheduleCustomTask( this, "startExplicitLogin", QVariant(), ResourceBase::Prepend );
@@ -124,6 +117,8 @@ void SugarCRMResource::configure( WId windowId )
     Settings::self()->setUser( user );
     Settings::self()->setPassword( password );
     Settings::self()->writeConfig();
+
+    setName(accountName);
 
     emit configurationDialogAccepted();
 }
@@ -583,11 +578,6 @@ void SugarCRMResource::updateOnBackend( const Akonadi::Item &item )
     }
 }
 
-void SugarCRMResource::userOrHostChanged( const QString &user, const QString &host )
-{
-    setName( user + QLatin1Char( '@' ) + nameFromHostString( host ) );
-}
-
 void SugarCRMResource::updateItem( const Akonadi::Item &item, ModuleHandler *handler )
 {
     UpdateEntryJob *job = new UpdateEntryJob( item, mSession, this );
@@ -605,7 +595,7 @@ bool SugarCRMResource::handleLoginError( KJob *job )
     const QString message = job->errorText();
     kWarning() << "error=" << job->error() << ":" << message;
 
-    LoginErrorDialog dialog( job, mSession );
+    LoginErrorDialog dialog( job, mSession, this );
 
     WId windowId = winIdForDialogs();
     if ( windowId != 0 ) {

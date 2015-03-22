@@ -40,12 +40,7 @@ public: // slots
     void removeResource();
     void resourceCreateResult( KJob *job );
     void applyResourceSelection();
-    void accountNameChanged();
-    void accountModeChanged( int index );
     void agentInstanceChanged( const AgentInstance &agent );
-
-private:
-    void updateDetails();
 };
 
 void ResourceConfigDialog::Private::updateButtonStates()
@@ -75,8 +70,6 @@ void ResourceConfigDialog::Private::updateButtonStates()
     mUi.removeResource->setEnabled( canDelete );
     mUi.syncResource->setEnabled( selectedResources.count() > 0 );
     mApplyButton->setEnabled( mCurrentResource.isValid() );
-
-    updateDetails();
 }
 
 void ResourceConfigDialog::Private::addResource()
@@ -142,52 +135,11 @@ void ResourceConfigDialog::Private::applyResourceSelection()
     emit q->resourceSelected( mCurrentResource );
 }
 
-void ResourceConfigDialog::Private::accountNameChanged()
-{
-    if ( mCurrentResource.isValid() ) {
-        const QString name = mUi.accountName->text().trimmed();
-        if ( name.isEmpty() ) {
-            mUi.accountName->setText( mCurrentResource.name() );
-        } else {
-            mCurrentResource.setName( name );
-        }
-    }
-}
-
-void ResourceConfigDialog::Private::accountModeChanged( int index )
-{
-    Q_ASSERT( index == 0 || index == 1 );
-
-    if ( mCurrentResource.isValid() ) {
-        mCurrentResource.setIsOnline( index == 0 );
-    }
-}
-
 void ResourceConfigDialog::Private::agentInstanceChanged( const AgentInstance &agent )
 {
     if ( agent == mCurrentResource ) {
         mCurrentResource = agent;
-        updateDetails();
     }
-}
-
-void ResourceConfigDialog::Private::updateDetails()
-{
-    mUi.accountName->blockSignals( true );
-    mUi.accountMode->blockSignals( true );
-
-    if ( mCurrentResource.isValid() ) {
-        mUi.accountDetails->setEnabled( true );
-        mUi.accountName->setText( mCurrentResource.name() );
-        mUi.accountMode->setCurrentIndex( mCurrentResource.isOnline() ? 0 : 1 );
-    } else {
-        mUi.accountDetails->setEnabled( false );
-        mUi.accountName->clear();
-        mUi.accountMode->setCurrentIndex( 0 );
-    }
-
-    mUi.accountName->blockSignals( false );
-    mUi.accountMode->blockSignals( false );
 }
 
 ResourceConfigDialog::ResourceConfigDialog( QWidget *parent )
@@ -206,9 +158,6 @@ ResourceConfigDialog::ResourceConfigDialog( QWidget *parent )
     connect( d->mUi.configureResource, SIGNAL( clicked() ), SLOT( configureResource() ) );
     connect( d->mUi.syncResource, SIGNAL( clicked() ), SLOT( syncResources() ) );
     connect( d->mUi.removeResource, SIGNAL( clicked() ), SLOT( removeResource() ) );
-
-    connect( d->mUi.accountName, SIGNAL( editingFinished() ), SLOT( accountNameChanged() ) );
-    connect( d->mUi.accountMode, SIGNAL( activated( int ) ), SLOT( accountModeChanged( int ) ) );
 
     d->mApplyButton = d->mUi.buttonBox->button( QDialogButtonBox::Apply );
     d->mApplyButton->setText( i18nc( "@action:button", "Select for work" ) );

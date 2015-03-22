@@ -5,18 +5,18 @@
 
 class KJob;
 class SugarSession;
+namespace Akonadi {
+    class ResourceBase;
+}
 
 class LoginErrorDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    LoginErrorDialog( KJob *job, SugarSession *session, QWidget *parent = 0 );
+    LoginErrorDialog( KJob *job, SugarSession *session, Akonadi::ResourceBase *resource, QWidget *parent = 0 );
 
     ~LoginErrorDialog();
-
-Q_SIGNALS:
-    void userOrHostChanged( const QString &user, const QString &host );
 
 private:
     class Private;

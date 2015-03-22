@@ -72,8 +72,6 @@ protected Q_SLOTS:
 
     void updateOnBackend( const Akonadi::Item &item );
 
-    void userOrHostChanged( const QString &user, const QString &host );
-
 private:
     void updateItem( const Akonadi::Item &item, ModuleHandler *handler );
 

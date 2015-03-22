@@ -35,8 +35,6 @@ private:
     Q_PRIVATE_SLOT( d, void removeResource() )
     Q_PRIVATE_SLOT( d, void resourceCreateResult( KJob* ) )
     Q_PRIVATE_SLOT( d, void applyResourceSelection() )
-    Q_PRIVATE_SLOT( d, void accountNameChanged() )
-    Q_PRIVATE_SLOT( d, void accountModeChanged( int ) )
     Q_PRIVATE_SLOT( d, void agentInstanceChanged( const Akonadi::AgentInstance& ) )
 };
 
