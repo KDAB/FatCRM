@@ -6,3 +6,4 @@ Comment=An Akonadi serializer plugin for CRM Opportunities objects
 Type=application/x-vnd.kdab.crm.opportunity
 X-KDE-Library=akonadi_serializer_sugaropportunity
 X-Akonadi-Class=legacy;default;SugarOpportunity;
+X-KDE-ClassName=Akonadi::SerializerPluginSugarOpportunity

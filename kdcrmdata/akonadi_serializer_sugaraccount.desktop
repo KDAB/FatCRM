@@ -6,3 +6,4 @@ Comment=An Akonadi serializer plugin for CRM Account objects
 Type=application/x-vnd.kdab.crm.account
 X-KDE-Library=akonadi_serializer_sugaraccount
 X-Akonadi-Class=legacy;default;SugarAccount;
+X-KDE-ClassName=Akonadi::SerializerPluginSugarAccount
