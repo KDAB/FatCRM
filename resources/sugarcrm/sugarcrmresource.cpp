@@ -295,6 +295,7 @@ bool SugarCRMResource::retrieveItem( const Akonadi::Item &item, const QSet<QByte
 
 void SugarCRMResource::startExplicitLogin()
 {
+    kDebug();
     SugarJob *job = new LoginJob( mSession, this );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( explicitLoginResult( KJob* ) ) );
     job->start();

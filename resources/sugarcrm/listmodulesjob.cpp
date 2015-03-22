@@ -22,13 +22,13 @@ public:
     QStringList mModules;
 
 public: // slots
-    void listModulesDone( const TNS__Module_list &callResult );
+    void listModulesDone( const KDSoapGenerated::TNS__Module_list &callResult );
     void listModulesError( const KDSoapMessage &fault );
 };
 
-void ListModulesJob::Private::listModulesDone( const TNS__Module_list &callResult )
+void ListModulesJob::Private::listModulesDone( const KDSoapGenerated::TNS__Module_list &callResult )
 {
-    const TNS__Select_fields moduleNames = callResult.modules();
+    const KDSoapGenerated::TNS__Select_fields moduleNames = callResult.modules();
     mModules = moduleNames.items();
 
     kDebug() << "Got" << mModules.count() << "available modules";
@@ -50,8 +50,8 @@ void ListModulesJob::Private::listModulesError( const KDSoapMessage &fault )
 ListModulesJob::ListModulesJob( SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this ) )
 {
-    connect( soap(), SIGNAL( get_available_modulesDone( TNS__Module_list ) ),
-             this,  SLOT( listModulesDone( TNS__Module_list ) ) );
+    connect( soap(), SIGNAL( get_available_modulesDone( KDSoapGenerated::TNS__Module_list ) ),
+             this,  SLOT( listModulesDone( KDSoapGenerated::TNS__Module_list ) ) );
     connect( soap(), SIGNAL( get_available_modulesError( KDSoapMessage ) ),
              this,  SLOT( listModulesError( KDSoapMessage ) ) );
 }

@@ -27,7 +27,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void listModulesDone( const TNS__Module_list &callResult ) )
+    Q_PRIVATE_SLOT( d, void listModulesDone( const KDSoapGenerated::TNS__Module_list &callResult ) )
     Q_PRIVATE_SLOT( d, void listModulesError( const KDSoapMessage &fault ) )
 };
 

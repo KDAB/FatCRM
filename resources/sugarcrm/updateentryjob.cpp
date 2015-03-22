@@ -41,22 +41,22 @@ public:
     Stage mStage;
 
 public: // slots
-    void getEntryDone( const TNS__Get_entry_result &callResult );
+    void getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult );
     void getEntryError( const KDSoapMessage &fault );
-    void setEntryDone( const TNS__Set_entry_result &callResult );
+    void setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult );
     void setEntryError( const KDSoapMessage &fault );
-    void getRevisionDone( const TNS__Get_entry_result &callResult );
+    void getRevisionDone( const KDSoapGenerated::TNS__Get_entry_result &callResult );
     void getRevisionError( const KDSoapMessage &fault );
 };
 
-void UpdateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callResult )
+void UpdateEntryJob::Private::getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult )
 {
     // check if this is our signal
     if ( mStage != GetEntry ) {
         return;
     }
 
-    const QList<TNS__Entry_value> entries = callResult.entry_list().items();
+    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT( entries.count() == 1 );
     const Akonadi::Item remoteItem = mHandler->itemFromEntry( entries.first(), mItem.parentCollection() );
 
@@ -109,14 +109,14 @@ void UpdateEntryJob::Private::getEntryError( const KDSoapMessage &fault )
     }
 }
 
-void UpdateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
+void UpdateEntryJob::Private::setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult )
 {
     kDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId( callResult.id() );
 
     mStage = Private::GetRevision;
 
-    TNS__Select_fields selectedFields;
+    KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems( QStringList() << QLatin1String( "date_modified" ) );
 
     q->soap()->asyncGet_entry( q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields );
@@ -133,14 +133,14 @@ void UpdateEntryJob::Private::setEntryError( const KDSoapMessage &fault )
     }
 }
 
-void UpdateEntryJob::Private::getRevisionDone( const TNS__Get_entry_result &callResult )
+void UpdateEntryJob::Private::getRevisionDone( const KDSoapGenerated::TNS__Get_entry_result &callResult )
 {
     // check if this is our signal
     if ( mStage != GetRevision ) {
         return;
     }
 
-    const QList<TNS__Entry_value> entries = callResult.entry_list().items();
+    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT( entries.count() == 1 );
     const Akonadi::Item remoteItem = mHandler->itemFromEntry( entries.first(), mItem.parentCollection() );
 
@@ -166,18 +166,18 @@ void UpdateEntryJob::Private::getRevisionError( const KDSoapMessage &fault )
 UpdateEntryJob::UpdateEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, item ) )
 {
-    connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
+    connect( soap(), SIGNAL( get_entryDone( KDSoapGenerated::TNS__Get_entry_result ) ),
+             this,  SLOT( getEntryDone( KDSoapGenerated::TNS__Get_entry_result ) ) );
     connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
              this,  SLOT( getEntryError( KDSoapMessage ) ) );
 
-    connect( soap(), SIGNAL( set_entryDone( TNS__Set_entry_result ) ),
-             this,  SLOT( setEntryDone( TNS__Set_entry_result ) ) );
+    connect( soap(), SIGNAL( set_entryDone( KDSoapGenerated::TNS__Set_entry_result ) ),
+             this,  SLOT( setEntryDone( KDSoapGenerated::TNS__Set_entry_result ) ) );
     connect( soap(), SIGNAL( set_entryError( KDSoapMessage ) ),
              this,  SLOT( setEntryError( KDSoapMessage ) ) );
 
-    connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getRevisionDone( TNS__Get_entry_result ) ) );
+    connect( soap(), SIGNAL( get_entryDone( KDSoapGenerated::TNS__Get_entry_result ) ),
+             this,  SLOT( getRevisionDone( KDSoapGenerated::TNS__Get_entry_result ) ) );
     connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
              this,  SLOT( getRevisionError( KDSoapMessage ) ) );
 }

@@ -30,7 +30,7 @@ public: // slots
         q->startSugarTask();
     }
 
-    void loginDone( const TNS__Set_entry_result &callResult );
+    void loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult );
     void loginError( const KDSoapMessage &fault );
 };
 
@@ -51,7 +51,7 @@ void SugarJob::Private::startLogin()
     //const QByteArray passwordHash = QCryptographicHash::hash( password.toUtf8(), QCryptographicHash::Md5 );
     const QByteArray passwordHash = password.toUtf8();
 
-    TNS__User_auth userAuth;
+    KDSoapGenerated::TNS__User_auth userAuth;
     userAuth.setUser_name( username );
     userAuth.setPassword( QString::fromAscii( passwordHash ) );
     userAuth.setVersion( QLatin1String( ".01"  ) );
@@ -62,7 +62,7 @@ void SugarJob::Private::startLogin()
     soap->asyncLogin( userAuth, QLatin1String( "SugarClient" ) );
 }
 
-void SugarJob::Private::loginDone( const TNS__Set_entry_result &callResult )
+void SugarJob::Private::loginDone( const KDSoapGenerated::TNS__Set_entry_result &callResult )
 {
     const QString sessionId = callResult.id();
 
@@ -99,8 +99,8 @@ void SugarJob::Private::loginError( const KDSoapMessage &fault )
 SugarJob::SugarJob( SugarSession* session, QObject* parent )
     : KJob( parent ), d( new Private( this, session ) )
 {
-    connect( session->soap(), SIGNAL( loginDone( TNS__Set_entry_result ) ),
-             this, SLOT( loginDone( TNS__Set_entry_result ) ) );
+    connect( session->soap(), SIGNAL( loginDone( KDSoapGenerated::TNS__Set_entry_result ) ),
+             this, SLOT( loginDone( KDSoapGenerated::TNS__Set_entry_result ) ) );
     connect( session->soap(), SIGNAL( loginError( KDSoapMessage ) ),
              this, SLOT( loginError( KDSoapMessage ) ) );
 }

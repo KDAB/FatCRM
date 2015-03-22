@@ -683,7 +683,7 @@ void ContactsHandler::listEntries( const ListEntriesScope &scope )
     const int maxResults = 100;
     const int fetchDeleted = scope.deleted();
 
-    TNS__Select_fields selectedFields;
+    KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems( mAccessors->keys() );
 
     soap()->asyncGet_entry_list( sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
@@ -697,12 +697,12 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item )
         return false;
     }
 
-    QList<TNS__Name_value> itemList;
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
 
     // if there is an id add it, otherwise skip this field
     // no id will result in the contact being added
     if ( !item.remoteId().isEmpty() ) {
-        TNS__Name_value field;
+        KDSoapGenerated::TNS__Name_value field;
         field.setName( QLatin1String( "id" ) );
         field.setValue( item.remoteId() );
 
@@ -717,25 +717,25 @@ bool ContactsHandler::setEntry( const Akonadi::Item &item )
         if ( (*it)->getter == 0 ) {
             continue;
         }
-        TNS__Name_value field;
+        KDSoapGenerated::TNS__Name_value field;
         field.setName( it.key() );
         field.setValue( (*it)->getter( addressee ) );
 
         itemList << field;
     }
 
-    TNS__Name_value_list valueList;
+    KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems( itemList );
     soap()->asyncSet_entry( sessionId(), moduleName(), valueList );
 
     return true;
 }
 
-Akonadi::Item ContactsHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
+Akonadi::Item ContactsHandler::itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
 {
     Akonadi::Item item;
 
-    const QList<TNS__Name_value> valueList = entry.name_value_list().items();
+    const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if ( valueList.isEmpty() ) {
         kWarning() << "Contacts entry for id=" << entry.id() << "has no values";
         return item;
@@ -751,7 +751,7 @@ Akonadi::Item ContactsHandler::itemFromEntry( const TNS__Entry_value &entry, con
     workAddress.setType( KABC::Address::Work | KABC::Address::Pref );
     homeAddress.setType( KABC::Address::Home );
 
-    Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
+    Q_FOREACH( const KDSoapGenerated::TNS__Name_value &namedValue, valueList ) {
         const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
         if ( accessIt == mAccessors->constEnd() ) {
             // no accessor for field

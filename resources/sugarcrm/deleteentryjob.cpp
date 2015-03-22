@@ -29,11 +29,11 @@ public:
     const Item mItem;
 
 public: // slots
-    void setEntryDone( const TNS__Set_entry_result &callResult );
+    void setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult );
     void setEntryError( const KDSoapMessage &fault );
 };
 
-void DeleteEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
+void DeleteEntryJob::Private::setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult )
 {
     Q_UNUSED( callResult );
     kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
@@ -78,16 +78,16 @@ void DeleteEntryJob::startSugarTask()
 
     // delete just required identifier and "deleted" field
     // no need for type specific code
-    TNS__Name_value idField;
+    KDSoapGenerated::TNS__Name_value idField;
     idField.setName( QLatin1String( "id" ) );
     idField.setValue( d->mItem.remoteId() );
 
-    TNS__Name_value deletedField;
+    KDSoapGenerated::TNS__Name_value deletedField;
     deletedField.setName( QLatin1String( "deleted" ) );
     deletedField.setValue( QLatin1String( "1" ) );
 
-    TNS__Name_value_list valueList;
-    valueList.setItems( QList<TNS__Name_value>() << idField << deletedField );
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems( QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField );
 
     soap()->asyncSet_entry( sessionId(), d->mItem.parentCollection().remoteId(), valueList );
 }

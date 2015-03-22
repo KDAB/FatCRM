@@ -30,13 +30,13 @@ public:
     ModuleHandler *mHandler;
 
 public: // slots
-    void getEntryDone( const TNS__Get_entry_result &callResult );
+    void getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult );
     void getEntryError( const KDSoapMessage &fault );
 };
 
-void FetchEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callResult )
+void FetchEntryJob::Private::getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult )
 {
-    const QList<TNS__Entry_value> entries = callResult.entry_list().items();
+    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT( entries.count() == 1 );
     const Akonadi::Item remoteItem = mHandler->itemFromEntry( entries.first(), mItem.parentCollection() );
 
@@ -65,8 +65,8 @@ void FetchEntryJob::Private::getEntryError( const KDSoapMessage &fault )
 FetchEntryJob::FetchEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, item ) )
 {
-    connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
+    connect( soap(), SIGNAL( get_entryDone( KDSoapGenerated::TNS__Get_entry_result ) ),
+             this,  SLOT( getEntryDone( KDSoapGenerated::TNS__Get_entry_result ) ) );
     connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
              this,  SLOT( getEntryError( KDSoapMessage ) ) );
 }

@@ -32,7 +32,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void getEntryDone( const TNS__Get_entry_result &callResult ) )
+    Q_PRIVATE_SLOT( d, void getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult ) )
     Q_PRIVATE_SLOT( d, void getEntryError( const KDSoapMessage &fault ) )
 };
 

@@ -37,13 +37,13 @@ public:
     Stage mStage;
 
 public: // slots
-    void setEntryDone( const TNS__Set_entry_result &callResult );
+    void setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult );
     void setEntryError( const KDSoapMessage &fault );
-    void getEntryDone( const TNS__Get_entry_result &callResult );
+    void getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult );
     void getEntryError( const KDSoapMessage &fault );
 };
 
-void CreateEntryJob::Private::setEntryDone( const TNS__Set_entry_result &callResult )
+void CreateEntryJob::Private::setEntryDone( const KDSoapGenerated::TNS__Set_entry_result &callResult )
 {
     Q_ASSERT( mStage == CreateEntry );
 
@@ -71,11 +71,11 @@ void CreateEntryJob::Private::setEntryError( const KDSoapMessage &fault )
     }
 }
 
-void CreateEntryJob::Private::getEntryDone( const TNS__Get_entry_result &callResult )
+void CreateEntryJob::Private::getEntryDone( const KDSoapGenerated::TNS__Get_entry_result &callResult )
 {
     Q_ASSERT( mStage == GetEntry );
 
-    const QList<TNS__Entry_value> entries = callResult.entry_list().items();
+    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT( entries.count() == 1 );
     const Akonadi::Item remoteItem = mHandler->itemFromEntry( entries.first(), mItem.parentCollection() );
 
@@ -101,12 +101,12 @@ void CreateEntryJob::Private::getEntryError( const KDSoapMessage &fault )
 CreateEntryJob::CreateEntryJob( const Akonadi::Item &item, SugarSession *session, QObject *parent )
     : SugarJob( session, parent ), d( new Private( this, item ) )
 {
-    connect( soap(), SIGNAL( set_entryDone( TNS__Set_entry_result ) ),
-             this,  SLOT( setEntryDone( TNS__Set_entry_result ) ) );
+    connect( soap(), SIGNAL( set_entryDone( KDSoapGenerated::TNS__Set_entry_result ) ),
+             this,  SLOT( setEntryDone( KDSoapGenerated::TNS__Set_entry_result ) ) );
     connect( soap(), SIGNAL( set_entryError( KDSoapMessage ) ),
              this,  SLOT( setEntryError( KDSoapMessage ) ) );
-    connect( soap(), SIGNAL( get_entryDone( TNS__Get_entry_result ) ),
-             this,  SLOT( getEntryDone( TNS__Get_entry_result ) ) );
+    connect( soap(), SIGNAL( get_entryDone( KDSoapGenerated::TNS__Get_entry_result ) ),
+             this,  SLOT( getEntryDone( KDSoapGenerated::TNS__Get_entry_result ) ) );
     connect( soap(), SIGNAL( get_entryError( KDSoapMessage ) ),
              this,  SLOT( getEntryError( KDSoapMessage ) ) );
 }

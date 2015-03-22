@@ -27,12 +27,12 @@ QStringList ModuleDebugInterface::availableFields() const
         Sugarsoap *soap = session->soap();
         const QString sessionId = session->sessionId();
 
-        const TNS__Module_fields response = soap->get_module_fields( sessionId, mModuleName );
+        const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields( sessionId, mModuleName );
 
-        const TNS__Error_value error = response.error();
+        const KDSoapGenerated::TNS__Error_value error = response.error();
         if ( error.number().isEmpty() || error.number() == QLatin1String( "0" ) ) {
-            const TNS__Field_list fieldList = response.module_fields();
-            Q_FOREACH( const TNS__Field &field, fieldList.items() ) {
+            const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
+            Q_FOREACH( const KDSoapGenerated::TNS__Field &field, fieldList.items() ) {
                 mAvailableFields << field.name();
             }
             kDebug() << "Got" << mAvailableFields << "fields";
