@@ -62,16 +62,20 @@ ItemsTreeModel::Columns ItemsTreeModel::columns() const
  */
 QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) const
 {
-    if (item.mimeType() == SugarAccount::mimeType()) {
-        return accountData(item, column, role);
-    } else if (item.mimeType() == SugarCampaign::mimeType()) {
-        return campaignData(item, column, role);
-    } else if (item.mimeType() == KABC::Addressee::mimeType()) {
-        return contactData(item, column, role);
-    } else if (item.mimeType() == SugarLead::mimeType()) {
-        return leadData(item, column, role);
-    } else if (item.mimeType() == SugarOpportunity::mimeType()) {
-        return opportunityData(item, column, role);
+    // avoid string comparisons for all other roles
+    if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::DecorationRole) {
+
+        if (item.mimeType() == SugarAccount::mimeType()) {
+            return accountData(item, column, role);
+        } else if (item.mimeType() == SugarCampaign::mimeType()) {
+            return campaignData(item, column, role);
+        } else if (item.mimeType() == KABC::Addressee::mimeType()) {
+            return contactData(item, column, role);
+        } else if (item.mimeType() == SugarLead::mimeType()) {
+            return leadData(item, column, role);
+        } else if (item.mimeType() == SugarOpportunity::mimeType()) {
+            return opportunityData(item, column, role);
+        }
     }
 
     return EntityTreeModel::entityData(item, column, role);
