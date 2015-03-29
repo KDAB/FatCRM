@@ -27,11 +27,15 @@ using namespace Akonadi;
 class FilterProxyModel::Private
 {
 public:
+    Private(DetailsType type)
+        : mType(type)
+    {}
+    DetailsType mType;
     QString mFilter;
 };
 
-FilterProxyModel::FilterProxyModel(QObject *parent)
-    : QSortFilterProxyModel(parent), d(new Private)
+FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
+    : QSortFilterProxyModel(parent), d(new Private(type))
 {
     // account names should be sorted correctly
     setSortLocaleAware(true);
@@ -57,25 +61,32 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
     const Akonadi::Item item =
         index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (item.hasPayload<SugarAccount>()) {
+    switch (d->mType) {
+    case Account: {
+        Q_ASSERT(item.hasPayload<SugarAccount>());
         const SugarAccount account = item.payload<SugarAccount>();
         return accountMatchesFilter(account, d->mFilter);
     }
-    if (item.hasPayload<SugarCampaign>()) {
+    case Campaign: {
+        Q_ASSERT(item.hasPayload<SugarCampaign>());
         const SugarCampaign campaign = item.payload<SugarCampaign>();
         return campaignMatchesFilter(campaign, d->mFilter);
     }
-    if (item.hasPayload<KABC::Addressee>()) {
+    case Contact: {
+        Q_ASSERT(item.hasPayload<KABC::Addressee>());
         const KABC::Addressee contact = item.payload<KABC::Addressee>();
         return contactMatchesFilter(contact, d->mFilter);
     }
-    if (item.hasPayload<SugarLead>()) {
+    case Lead: {
+        Q_ASSERT(item.hasPayload<SugarLead>());
         const SugarLead lead = item.payload<SugarLead>();
         return leadMatchesFilter(lead, d->mFilter);
     }
-    if (item.hasPayload<SugarOpportunity>()) {
+    case Opportunity: {
+        Q_ASSERT(item.hasPayload<SugarOpportunity>());
         const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
         return opportunityMatchesFilter(opportunity, d->mFilter);
+    }
     }
     return true;
 }

@@ -317,7 +317,7 @@ void Page::setupModel()
     filterModel->addMimeTypeInclusionFilter(mimeType());
     filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
 
-    FilterProxyModel *filter = new FilterProxyModel(this);
+    FilterProxyModel *filter = new FilterProxyModel(mType, this);
     filter->setSourceModel(filterModel);
     mFilter = filter;
     mUi.treeView->setModel(filter);
