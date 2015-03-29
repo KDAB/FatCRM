@@ -24,6 +24,7 @@
 #include <akonadi/itemmodifyjob.h>
 #include <akonadi/cachepolicy.h>
 #include <akonadi/collectionmodifyjob.h>
+#include <akonadi/entityannotationsattribute.h>
 
 #include <kabc/addressee.h>
 #include <kabc/address.h>
@@ -124,6 +125,16 @@ void Page::slotCollectionFetchResult(KJob *job)
         if (mCollection.statistics().count() == 0) {
             AgentManager::self()->synchronizeCollection(mCollection);
         }
+
+        /*
+         * This would be a way to get the userid (in hex form) for filtering "my opps"....
+         * For now we'll just use the user-readable user name, and make it configurable...
+        Akonadi::EntityAnnotationsAttribute* annotationsAttribute = mCollection.attribute<EntityAnnotationsAttribute>();
+        if (annotationsAttribute) {
+            qDebug() << annotationsAttribute->annotations();
+            qDebug() << QString(annotationsAttribute->annotations().value("userid"));
+        }
+        */
 
         setupCachePolicy();
         setupModel();

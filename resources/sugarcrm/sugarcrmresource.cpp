@@ -25,6 +25,7 @@
 #include <akonadi/collection.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
+#include <akonadi/entityannotationsattribute.h>
 
 #include <kabc/addressee.h>
 
@@ -402,6 +403,15 @@ void SugarCRMResource::listModulesResult(KJob *job)
             mModuleHandlers->insert(module, handler);
 
             collection = handler->collection();
+
+            /* This would be a (hackish?) way to send the user id of the current user
+             * (to be retrieved by a User_listJob with query user_name = 'dfaure')
+             * to the Sugar client, for filtering "my opps"...
+             * Tried it on the parent collection, but it's not fetched right now...
+            EntityAnnotationsAttribute* annotationsAttribute = new EntityAnnotationsAttribute;
+            annotationsAttribute->insert("userid", "12345");
+            collection.addAttribute(annotationsAttribute);
+            */
         }
         availableHandlers << module;
 
