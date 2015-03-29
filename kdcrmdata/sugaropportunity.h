@@ -310,6 +310,15 @@ public:
     QString probability() const;
 
     /**
+      Set next call date.
+     */
+    void setNextCallDate(const QString &value);
+    /**
+      Return next call date.
+     */
+    QString nextCallDate() const;
+
+    /**
       Convenience: Set the data for this opportunity
      */
     void setData(QMap<QString, QString> data);

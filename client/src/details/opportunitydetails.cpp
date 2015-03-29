@@ -30,7 +30,15 @@ void OpportunityDetails::initialize()
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetDateClosed()));
+    connect(mUi->clearNextCallDateButton, SIGNAL(clicked()), this, SLOT(slotClearNextCallDate()));
+    connect(mUi->nextCallDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
+            this, SLOT(slotSetNextCallDate()));
     mUi->currency->addItems(currencyItems());
+}
+
+void OpportunityDetails::slotClearDate()
+{
+    mUi->dateClosed->clear();
 }
 
 void OpportunityDetails::slotSetDateClosed()
@@ -41,9 +49,17 @@ void OpportunityDetails::slotSetDateClosed()
     mUi->calendarButton->calendarDialog()->close();
 }
 
-void OpportunityDetails::slotClearDate()
+void OpportunityDetails::slotClearNextCallDate()
 {
-    mUi->dateClosed->clear();
+    mUi->nextCallDate->clear();
+}
+
+void OpportunityDetails::slotSetNextCallDate()
+{
+    // TODO FIXME: use locale formatting
+    mUi->nextCallDate->setText(mUi->nextCallDateCalendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
+    mUi->nextCallDateCalendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
+    mUi->nextCallDateCalendarButton->calendarDialog()->close();
 }
 
 QStringList OpportunityDetails::typeItems() const

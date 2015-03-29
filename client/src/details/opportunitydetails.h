@@ -20,6 +20,9 @@ private Q_SLOTS:
     void slotClearDate();
     void slotSetDateClosed();
 
+    void slotClearNextCallDate();
+    void slotSetNextCallDate();
+
 private:
     Ui::OpportunityDetails *mUi;
 

@@ -10,41 +10,6 @@ public:
     Private()
         : mEmpty(true)
     {
-
-    }
-
-    Private(const Private &other)
-        : QSharedData(other)
-    {
-        mEmpty = other.mEmpty;
-
-        mId = other.mId;
-        mName = other.mName;
-        mDateEntered = other.mDateEntered;
-        mDateModified = other.mDateModified;
-        mModifiedUserId = other.mModifiedUserId;
-        mModifiedByName = other.mModifiedByName;
-        mCreatedBy = other.mCreatedBy;
-        mCreatedByName = other.mCreatedByName;
-        mDescription = other.mDescription;
-        mDeleted = other.mDeleted;
-        mAssignedUserId = other.mAssignedUserId;
-        mAssignedUserName = other.mAssignedUserName;
-        mOpportunityType = other.mOpportunityType;
-        mAccountName = other.mAccountName;
-        mAccountId = other.mAccountId;
-        mCampaignId = other.mCampaignId;
-        mCampaignName = other.mCampaignName;
-        mLeadSource = other.mLeadSource;
-        mAmount = other.mAmount;
-        mAmountUsDollar = other.mAmountUsDollar;
-        mCurrencyId = other.mCurrencyId;
-        mCurrencyName = other.mCurrencyName;
-        mCurrencySymbol = other.mCurrencySymbol;
-        mDateClosed = other.mDateClosed;
-        mNextStep = other.mNextStep;
-        mSalesStage = other.mSalesStage;
-        mProbability = other.mProbability;
     }
 
     bool mEmpty;
@@ -76,6 +41,7 @@ public:
     QString mNextStep;
     QString mSalesStage;
     QString mProbability;
+    QString mNextCallDate;
 };
 
 SugarOpportunity::SugarOpportunity()
@@ -182,6 +148,9 @@ bool SugarOpportunity::operator==(const SugarOpportunity &other) const
         return false;
     }
     if (d->mProbability != other.d->mProbability) {
+        return false;
+    }
+    if (d->mNextCallDate != other.d->mNextCallDate) {
         return false;
     }
 
@@ -500,6 +469,17 @@ QString SugarOpportunity::probability() const
     return d->mProbability;
 }
 
+void SugarOpportunity::setNextCallDate(const QString &value)
+{
+    d->mEmpty = false;
+    d->mNextCallDate = value;
+}
+
+QString SugarOpportunity::nextCallDate() const
+{
+    return d->mNextCallDate;
+}
+
 void SugarOpportunity::setData(QMap<QString, QString> data)
 {
     d->mEmpty = false;
@@ -531,7 +511,7 @@ void SugarOpportunity::setData(QMap<QString, QString> data)
     d->mNextStep = data.value("nextStep");
     d->mSalesStage = data.value("salesStage");
     d->mProbability = data.value("probability");
-
+    d->mNextCallDate = data.value("nextCallDate");
 }
 
 QMap<QString, QString> SugarOpportunity::data()
@@ -564,6 +544,7 @@ QMap<QString, QString> SugarOpportunity::data()
     data["nextStep"] = d->mNextStep;
     data["salesStage"] = d->mSalesStage;
     data["probability"] = d->mProbability;
+    data["nextCallDate"] = d->mNextCallDate;
     return data;
 }
 

@@ -51,6 +51,16 @@ static void setDateModified(const QString &value, SugarOpportunity &opportunity)
     opportunity.setDateModified(value);
 }
 
+static QString getNextCallDate(const SugarOpportunity &opportunity)
+{
+    return opportunity.nextCallDate();
+}
+
+static void setNextCallDate(const QString &value, SugarOpportunity &opportunity)
+{
+    opportunity.setNextCallDate(value);
+}
+
 static QString getModifiedUserId(const SugarOpportunity &opportunity)
 {
     return opportunity.modifiedUserId();
@@ -347,7 +357,7 @@ OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
                                         i18nc("@item:intable", "Amount")));
     mAccessors->insert(QLatin1String("amount_usdollar"),
                        new AccessorPair(getAmountUsDollar, setAmountUsDollar,
-                                        i18nc("@item:intable", "Account in USD")));
+                                        i18nc("@item:intable", "Amount in USD")));
     mAccessors->insert(QLatin1String("currency_id"),
                        new AccessorPair(getCurrencyId, setCurrencyId, QString()));
     mAccessors->insert(QLatin1String("currency_name"),
@@ -366,6 +376,9 @@ OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     mAccessors->insert(QLatin1String("probability"),
                        new AccessorPair(getProbability, setProbability,
                                         i18nc("@item:intable", "Probability (percent)")));
+    mAccessors->insert(QLatin1String("next_call_date_c"),
+                       new AccessorPair(getNextCallDate, setNextCallDate,
+                                        i18nc("@item:intable", "Next Call Date")));
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
@@ -462,19 +475,21 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarOpportunity::mimeType());
 
-    SugarOpportunity account;
-    account.setId(entry.id());
+    SugarOpportunity opportunity;
+    opportunity.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
+        //qDebug() << namedValue.name() << "=" << namedValue.value();
         const AccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
         if (accessIt == mAccessors->constEnd()) {
+            qDebug() << "skipping field" << namedValue.name();
             // no accessor for field
             continue;
         }
 
-        (*accessIt)->setter(namedValue.value(), account);
+        (*accessIt)->setter(namedValue.value(), opportunity);
     }
-    item.setPayload<SugarOpportunity>(account);
-    item.setRemoteRevision(getDateModified(account));
+    item.setPayload<SugarOpportunity>(opportunity);
+    item.setRemoteRevision(getDateModified(opportunity));
 
     return item;
 }

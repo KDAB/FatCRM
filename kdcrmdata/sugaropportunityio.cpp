@@ -96,7 +96,10 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
             opportunity.setSalesStage(xml.readElementText());
         } else if (xml.name() == "probability") {
             opportunity.setProbability(xml.readElementText());
+        } else if (xml.name() == "nextCallDate") {
+            opportunity.setNextCallDate(xml.readElementText());
         } else {
+            qDebug() << "Unexpected XML field" << xml.name();
             xml.skipCurrentElement();
         }
     }
@@ -141,6 +144,7 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     writer.writeTextElement(QString("next_step"), opportunity.nextStep());
     writer.writeTextElement(QString("sales_stage"), opportunity.salesStage());
     writer.writeTextElement(QString("probability"), opportunity.probability());
+    writer.writeTextElement(QString("nextCallDate"), opportunity.nextCallDate());
     writer.writeEndDocument();
 
     return true;
