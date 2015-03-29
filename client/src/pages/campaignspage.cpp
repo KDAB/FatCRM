@@ -15,7 +15,6 @@ using namespace Akonadi;
 CampaignsPage::CampaignsPage(QWidget *parent)
     : Page(parent, QString(SugarCampaign::mimeType()), Campaign)
 {
-    setupModel();
 }
 
 CampaignsPage::~CampaignsPage()

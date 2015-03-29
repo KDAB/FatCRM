@@ -15,7 +15,6 @@ using namespace Akonadi;
 ContactsPage::ContactsPage(QWidget *parent)
     : Page(parent, QString(KABC::Addressee::mimeType()), Contact)
 {
-    setupModel();
 }
 
 ContactsPage::~ContactsPage()

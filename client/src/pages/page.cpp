@@ -93,7 +93,7 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
      */
     CollectionFetchJob *job = new CollectionFetchJob(Collection::root(), CollectionFetchJob::Recursive);
     job->fetchScope().setResource(identifier);
-    job->fetchScope().setContentMimeTypes(QStringList() << mMimeType.toLatin1());
+    job->fetchScope().setContentMimeTypes(QStringList() << mMimeType);
     job->fetchScope().setIncludeStatistics(true);
     connect(job, SIGNAL(result(KJob*)),
             this, SLOT(slotCollectionFetchResult(KJob*)));
@@ -126,6 +126,7 @@ void Page::slotCollectionFetchResult(KJob *job)
         }
 
         setupCachePolicy();
+        setupModel();
     } else {
         mUi.newPB->setEnabled(false);
         mUi.reloadPB->setEnabled(false);
@@ -310,13 +311,15 @@ void Page::initialize()
 void Page::setupModel()
 {
     ItemsTreeModel *model = new ItemsTreeModel(mType, recorder(), this);
+
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
     filterModel->setSourceModel(model);
     filterModel->addMimeTypeInclusionFilter(mimeType());
     filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
+
     FilterProxyModel *filter = new FilterProxyModel(this);
     filter->setSourceModel(filterModel);
-    setFilter(filter);
+    mFilter = filter;
     mUi.treeView->setModel(filter);
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),

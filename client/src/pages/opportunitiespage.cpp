@@ -16,7 +16,6 @@ using namespace Akonadi;
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
     : Page(parent, QString(SugarOpportunity::mimeType()), Opportunity)
 {
-    setupModel();
 }
 
 OpportunitiesPage::~OpportunitiesPage()

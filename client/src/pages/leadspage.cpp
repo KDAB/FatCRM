@@ -16,7 +16,6 @@ using namespace Akonadi;
 LeadsPage::LeadsPage(QWidget *parent)
     : Page(parent, QString(SugarLead::mimeType()), Lead)
 {
-    setupModel();
 }
 
 LeadsPage::~LeadsPage()

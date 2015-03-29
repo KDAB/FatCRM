@@ -51,10 +51,10 @@ protected:
     {
         return mClientWindow;
     }
-    inline QString mimeType()
+    inline QString mimeType() const
     {
         return mMimeType;
-    } const
+    }
     inline Akonadi::EntityTreeView *treeView()
     {
         return mUi.treeView;
@@ -70,10 +70,6 @@ protected:
     inline QLineEdit *search()
     {
         return mUi.searchLE;
-    }
-    inline void setFilter(Akonadi::FilterProxyModel *filter)
-    {
-        mFilter = filter;
     }
 
     virtual void addItem(const QMap<QString, QString> &data) = 0;

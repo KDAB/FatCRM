@@ -16,7 +16,6 @@ using namespace Akonadi;
 AccountsPage::AccountsPage(QWidget *parent)
     : Page(parent, QString(SugarAccount::mimeType()), Account)
 {
-    setupModel();
 }
 
 AccountsPage::~AccountsPage()
