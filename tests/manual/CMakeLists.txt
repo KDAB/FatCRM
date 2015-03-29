@@ -11,6 +11,6 @@ include_directories(
 add_executable(resourceconfigdialogtest resourceconfigdialogtest.cpp)
 target_link_libraries(resourceconfigdialogtest sugarclientprivate ${QT_QTGUI_LIBS})
 
-add_executable(itemstreemodeltest itemstreemodeltest.cpp)
+kde4_add_executable(itemstreemodeltest itemstreemodeltest.cpp)
 target_link_libraries(itemstreemodeltest sugarclientprivate ${QT_QTGUI_LIBS})
 
