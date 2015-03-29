@@ -181,11 +181,9 @@ void DetailsWidget::setData(const QMap<QString, QString> &data)
     const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));
     mUi.dateModified->setText(localTime);
 
-    QString key;
-
     QList<QLabel *> labels = mUi.informationGB->findChildren<QLabel *>();
     Q_FOREACH (QLabel *lb, labels) {
-        key = lb->objectName();
+        const QString key = lb->objectName();
         if (key == "modifiedBy") {
             if (!data.value("modifiedByName").isEmpty()) {
                 lb->setText(data.value("modifiedByName"));
@@ -241,14 +239,12 @@ QMap<QString, QString> DetailsWidget::data()
 {
     QMap<QString, QString> currentData = mDetails->getData();
 
-    QString key;
-
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     currentData["dateModified"] = KDCRMUtils::currentTimestamp();
 
     QList<QLabel *> labels = mUi.informationGB->findChildren<QLabel *>();
     Q_FOREACH (QLabel *lb, labels) {
-        key = lb->objectName();
+        const QString key = lb->objectName();
         currentData[key] = lb->text();
         if (key == "modifiedBy") {
             currentData["modifiedUserId"] = lb->property("modifiedUserId").toString();
