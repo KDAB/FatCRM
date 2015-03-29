@@ -5,6 +5,7 @@
 
 #include <QAbstractListModel>
 
+// List model for filling comboboxes referencing an account/campaign/user/etc.
 class ReferencedDataModel : public QAbstractListModel
 {
     Q_OBJECT
