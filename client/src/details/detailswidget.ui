@@ -82,30 +82,9 @@
              </widget>
             </item>
             <item>
-             <widget class="QLineEdit" name="dateModified">
-              <property name="minimumSize">
-               <size>
-                <width>0</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="maximumSize">
-               <size>
-                <width>106</width>
-                <height>16</height>
-               </size>
-              </property>
-              <property name="autoFillBackground">
-               <bool>false</bool>
-              </property>
+			 <widget class="QLabel" name="dateModified">
               <property name="text">
                <string/>
-              </property>
-              <property name="frame">
-               <bool>false</bool>
-              </property>
-              <property name="readOnly">
-               <bool>true</bool>
               </property>
              </widget>
             </item>
@@ -212,7 +191,6 @@
    </item>
   </layout>
   <zorder>scrollArea</zorder>
-  <zorder>horizontalSpacer_2</zorder>
  </widget>
  <resources/>
  <connections/>
