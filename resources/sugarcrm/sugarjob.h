@@ -18,6 +18,7 @@ class SugarJob : public KJob
 public:
     enum Errors {
         LoginError = KJob::UserDefinedError + 1,
+        CouldNotConnectError,
         SoapError,
         InvalidContextError,
         TaskError

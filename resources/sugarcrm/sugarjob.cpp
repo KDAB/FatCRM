@@ -9,6 +9,8 @@ using namespace KDSoapGenerated;
 #include <KDebug>
 #include <KLocale>
 
+#include <QNetworkReply>
+
 class SugarJob::Private
 {
     SugarJob *const q;
@@ -90,7 +92,13 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
 {
     mSession->setSessionId(QString());
 
-    q->setError(SugarJob::LoginError);
+    const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
+    if (faultcode == QNetworkReply::UnknownNetworkError ||
+            faultcode == QNetworkReply::HostNotFoundError) {
+        q->setError(SugarJob::CouldNotConnectError);
+    } else {
+        q->setError(SugarJob::LoginError);
+    }
     q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
                           mSession->userName(), mSession->host(), fault.faultAsString()));
     q->emitResult();

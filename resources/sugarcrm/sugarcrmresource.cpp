@@ -259,6 +259,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         job->start();
     } else {
         kDebug() << "No module handler for collection" << collection;
+        kDebug() << mModuleHandlers->keys();
         itemsRetrieved(Item::List());
     }
 }
@@ -598,10 +599,26 @@ void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *hand
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
-    if (job->error() != SugarJob::LoginError) {
+    if (job->error() == SugarJob::LoginError) {
+        setOnline( false );
+        emit status( Broken, job->errorText() );
+        // if this is any other job than an explicit login, defer to next attempt
+        if (qobject_cast<LoginJob *>(job) == 0) {
+            deferTask();
+        } else {
+            taskDone();
+        }
+    } else if (job->error() == SugarJob::CouldNotConnectError) {
+        emit status( Idle, i18n( "Server is not available." ) );
+        deferTask();
+        setTemporaryOffline(300);
+    } else {
         return false;
     }
 
+    // The popup is really annoying when simply not having internet access
+    // Let's try to do like the imap resource, with the code above.
+#if 0
     const QString message = job->errorText();
     kWarning() << "error=" << job->error() << ":" << message;
 
@@ -630,6 +647,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         // auto delete will delete the job prematurely
         QMetaObject::invokeMethod(job, "restart", Qt::QueuedConnection);
     }
+#endif
 
     return true;
 }
