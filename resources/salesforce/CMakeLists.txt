@@ -87,9 +87,9 @@ kde4_add_ui_files( salesforceresource_SRCS
 install( FILES salesforceresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents" )
 
 kde4_add_kcfg_files(salesforceresource_SRCS settings.kcfgc)
-kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/salesforceresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
+kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/salesforceresource.kcfg org.kde.Akonadi.SalesForce.Settings)
 qt4_add_dbus_adaptor(salesforceresource_SRCS
-    ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml settings.h Settings
+   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SalesForce.Settings.xml settings.h Settings
 )
 
 kdsoap_generate_soap_bindings( salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap )
