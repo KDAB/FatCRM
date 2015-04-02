@@ -23,7 +23,8 @@ public: // slots
 void ReferencedDataModel::Private::dataChanged(ReferencedDataType type)
 {
     if (type == mType) {
-        q->reset();
+        q->beginResetModel();
+        q->endResetModel();
     }
 }
 

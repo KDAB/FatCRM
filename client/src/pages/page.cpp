@@ -321,6 +321,8 @@ void Page::initialize()
 
 void Page::setupModel()
 {
+    Q_ASSERT(mFilter); // must be set by derived class ctor
+
     ItemsTreeModel *model = new ItemsTreeModel(mType, recorder(), this);
 
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
@@ -328,10 +330,8 @@ void Page::setupModel()
     filterModel->addMimeTypeInclusionFilter(mimeType());
     filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
 
-    FilterProxyModel *filter = new FilterProxyModel(mType, this);
-    filter->setSourceModel(filterModel);
-    mFilter = filter;
-    mUi.treeView->setModel(filter);
+    mFilter->setSourceModel(filterModel);
+    mUi.treeView->setModel(mFilter);
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),
             mFilter, SLOT(setFilterString(QString)));
@@ -346,6 +346,11 @@ void Page::setupModel()
 Details *Page::details() const
 {
     return mDetailsWidget->mDetails;
+}
+
+void Page::insertFilterWidget(QWidget *widget)
+{
+    mUi.verticalLayout->insertWidget(1, widget);
 }
 
 void Page::cachePolicyJobCompleted(KJob *job)

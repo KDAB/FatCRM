@@ -46,6 +46,11 @@ FilterProxyModel::~FilterProxyModel()
     delete d;
 }
 
+QString FilterProxyModel::filterString() const
+{
+    return d->mFilter;
+}
+
 void FilterProxyModel::setFilterString(const QString &filter)
 {
     d->mFilter = filter;
@@ -193,9 +198,6 @@ static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const 
         return true;
     }
     if (opportunity.amount().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (opportunity.dateClosed().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
     if (opportunity.assignedUserName().contains(filter, Qt::CaseInsensitive)) {

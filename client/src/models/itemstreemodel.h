@@ -45,7 +45,7 @@ public:
         OpportunityAccountName,
         SalesStage,
         Amount,
-        Close,
+        NextStepDate,
         AssignedTo
     };
 

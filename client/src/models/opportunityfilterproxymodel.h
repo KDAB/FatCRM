@@ -1,11 +1,7 @@
-#ifndef FILTERPROXYMODEL_H
-#define FILTERPROXYMODEL_H
+#ifndef OPPORTUNITYFILTERPROXYMODEL_H
+#define OPPORTUNITYFILTERPROXYMODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
-#include "enums.h"
-
-namespace Akonadi
-{
+#include "filterproxymodel.h"
 
 /**
  * A proxy model for sugar tree models.
@@ -16,7 +12,7 @@ namespace Akonadi
  * listed.
  *
  */
-class FilterProxyModel : public QSortFilterProxyModel
+class OpportunityFilterProxyModel : public Akonadi::FilterProxyModel
 {
     Q_OBJECT
 
@@ -24,23 +20,18 @@ public:
     /**
      * Creates a new filter proxy model.
      *
-     * @param DetailsType the type of CRM object
      * @param parent The parent object.
      */
-    explicit FilterProxyModel(DetailsType type, QObject *parent = 0);
+    explicit OpportunityFilterProxyModel(QObject *parent = 0);
 
     /**
      * Destroys the filter proxy model.
      */
-    ~FilterProxyModel();
+    ~OpportunityFilterProxyModel();
 
-    QString filterString() const;
-
+    void setFilter(const QStringList &assignees, const QDate &maxDate);
 public Q_SLOTS:
-    /**
-     * Sets the filter that is used to filter for matching items
-     */
-    void setFilterString(const QString &filter);
+    void showAll();
 
 protected:
     virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const;
@@ -50,7 +41,5 @@ private:
     Private *const d;
 };
 
-}
-
-#endif /* FILTERPROXYMODEL_H */
+#endif
 

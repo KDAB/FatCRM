@@ -16,6 +16,7 @@ using namespace Akonadi;
 AccountsPage::AccountsPage(QWidget *parent)
     : Page(parent, QString(SugarAccount::mimeType()), Account)
 {
+    setFilter(new FilterProxyModel(Account, this));
 }
 
 AccountsPage::~AccountsPage()

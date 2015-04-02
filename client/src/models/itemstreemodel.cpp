@@ -188,8 +188,8 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                     return i18nc("@title:column sales stage", "Sales Stage");
                 case Amount:
                     return i18nc("@title:column amount", "Amount");
-                case Close:
-                    return i18nc("@title:column date closed", "Close");
+                case NextStepDate:
+                    return i18nc("@title:column next step date", "Next Step Date");
                 case AssignedTo:
                     return i18nc("@title:column assigned to name", "Assigned To");
                 }
@@ -373,8 +373,8 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return opportunity.salesStage();
         case Amount:
             return opportunity.amount();
-        case Close:
-            return opportunity.dateClosed();
+        case NextStepDate:
+            return opportunity.nextCallDate();
         case AssignedTo:
             return opportunity.assignedUserName();
         default:
@@ -417,7 +417,7 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
                 << ItemsTreeModel::OpportunityAccountName
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
-                << ItemsTreeModel::Close
+                << ItemsTreeModel::NextStepDate
                 << ItemsTreeModel::AssignedTo;
         break;
     case Campaign:

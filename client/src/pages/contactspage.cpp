@@ -15,6 +15,7 @@ using namespace Akonadi;
 ContactsPage::ContactsPage(QWidget *parent)
     : Page(parent, QString(KABC::Addressee::mimeType()), Contact)
 {
+    setFilter(new FilterProxyModel(Contact, this));
 }
 
 ContactsPage::~ContactsPage()

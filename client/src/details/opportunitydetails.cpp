@@ -8,7 +8,6 @@
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
-
 {
     mUi->setupUi(this);
     initialize();
@@ -25,6 +24,7 @@ void OpportunityDetails::initialize()
     mUi->opportunityType->addItems(typeItems());
     mUi->leadSource->addItems(sourceItems());
     mUi->salesStage->addItems(stageItems());
+    mUi->assignedUserName->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));

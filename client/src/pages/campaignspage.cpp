@@ -15,6 +15,7 @@ using namespace Akonadi;
 CampaignsPage::CampaignsPage(QWidget *parent)
     : Page(parent, QString(SugarCampaign::mimeType()), Campaign)
 {
+    setFilter(new FilterProxyModel(Campaign, this));
 }
 
 CampaignsPage::~CampaignsPage()

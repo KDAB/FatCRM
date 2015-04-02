@@ -2,6 +2,8 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"
+#include "opportunityfilterwidget.h"
+#include "opportunityfilterproxymodel.h"
 
 #include "kdcrmdata/sugaropportunity.h"
 
@@ -16,6 +18,11 @@ using namespace Akonadi;
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
     : Page(parent, QString(SugarOpportunity::mimeType()), Opportunity)
 {
+    OpportunityFilterProxyModel *oppFilterProxyModel = new OpportunityFilterProxyModel(this);
+    setFilter(oppFilterProxyModel);
+
+    OpportunityFilterWidget* filterUiWidget = new OpportunityFilterWidget(oppFilterProxyModel, this);
+    insertFilterWidget(filterUiWidget);
 }
 
 OpportunitiesPage::~OpportunitiesPage()
@@ -49,5 +56,5 @@ void OpportunitiesPage::modifyItem(Item &item, const QMap<QString, QString> &dat
 
     clientWindow()->setEnabled(false);
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
+    emit statusMessage(tr("Saving opportunity..."));
 }

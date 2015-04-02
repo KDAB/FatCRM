@@ -71,6 +71,10 @@ protected:
     {
         return mUi.searchLE;
     }
+    void setFilter(Akonadi::FilterProxyModel *filter)
+    {
+        mFilter = filter;
+    }
 
     virtual void addItem(const QMap<QString, QString> &data) = 0;
     virtual void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data) = 0;
@@ -78,6 +82,8 @@ protected:
     void setupModel();
 
     Details *details() const;
+
+    void insertFilterWidget(QWidget *widget);
 
 private Q_SLOTS:
     void slotResourceSelectionChanged(const QByteArray &identifier);
