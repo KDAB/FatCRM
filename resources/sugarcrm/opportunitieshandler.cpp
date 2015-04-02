@@ -53,12 +53,12 @@ static void setDateModified(const QString &value, SugarOpportunity &opportunity)
 
 static QString getNextCallDate(const SugarOpportunity &opportunity)
 {
-    return opportunity.nextCallDate();
+    return opportunity.nextCallDate().toString("yyyy-MM-dd");
 }
 
 static void setNextCallDate(const QString &value, SugarOpportunity &opportunity)
 {
-    opportunity.setNextCallDate(value);
+    opportunity.setNextCallDate(QDate::fromString(value, "yyyy-MM-dd"));
 }
 
 static QString getModifiedUserId(const SugarOpportunity &opportunity)

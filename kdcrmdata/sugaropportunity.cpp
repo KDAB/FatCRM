@@ -2,6 +2,7 @@
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
+#include <QDate>
 #include <QDebug>
 
 class SugarOpportunity::Private : public QSharedData
@@ -41,7 +42,7 @@ public:
     QString mNextStep;
     QString mSalesStage;
     QString mProbability;
-    QString mNextCallDate;
+    QDate mNextCallDate;
 };
 
 SugarOpportunity::SugarOpportunity()
@@ -469,13 +470,13 @@ QString SugarOpportunity::probability() const
     return d->mProbability;
 }
 
-void SugarOpportunity::setNextCallDate(const QString &value)
+void SugarOpportunity::setNextCallDate(const QDate &value)
 {
     d->mEmpty = false;
     d->mNextCallDate = value;
 }
 
-QString SugarOpportunity::nextCallDate() const
+QDate SugarOpportunity::nextCallDate() const
 {
     return d->mNextCallDate;
 }
@@ -511,7 +512,7 @@ void SugarOpportunity::setData(QMap<QString, QString> data)
     d->mNextStep = data.value("nextStep");
     d->mSalesStage = data.value("salesStage");
     d->mProbability = data.value("probability");
-    d->mNextCallDate = data.value("nextCallDate");
+    d->mNextCallDate = QDate::fromString(data.value("nextCallDate"), "yyyy-MM-dd");
 }
 
 QMap<QString, QString> SugarOpportunity::data()
@@ -544,7 +545,7 @@ QMap<QString, QString> SugarOpportunity::data()
     data["nextStep"] = d->mNextStep;
     data["salesStage"] = d->mSalesStage;
     data["probability"] = d->mProbability;
-    data["nextCallDate"] = d->mNextCallDate;
+    data["nextCallDate"] = d->mNextCallDate.toString("yyyy-MM-dd");
     return data;
 }
 

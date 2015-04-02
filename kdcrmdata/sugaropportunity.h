@@ -312,11 +312,11 @@ public:
     /**
       Set next call date.
      */
-    void setNextCallDate(const QString &value);
+    void setNextCallDate(const QDate &value);
     /**
       Return next call date.
      */
-    QString nextCallDate() const;
+    QDate nextCallDate() const;
 
     /**
       Convenience: Set the data for this opportunity

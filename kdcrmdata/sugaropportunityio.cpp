@@ -3,6 +3,7 @@
 
 #include <QtCore/QIODevice>
 #include <QtCore/QXmlStreamWriter>
+#include <QtCore/QDate>
 #include <QtCore/QDebug>
 
 SugarOpportunityIO::SugarOpportunityIO()
@@ -97,7 +98,7 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
         } else if (xml.name() == "probability") {
             opportunity.setProbability(xml.readElementText());
         } else if (xml.name() == "nextCallDate") {
-            opportunity.setNextCallDate(xml.readElementText());
+            opportunity.setNextCallDate(QDate::fromString(xml.readElementText(), "yyyy-MM-dd"));
         } else {
             qDebug() << "Unexpected XML field" << xml.name();
             xml.skipCurrentElement();
@@ -144,7 +145,7 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     writer.writeTextElement(QString("next_step"), opportunity.nextStep());
     writer.writeTextElement(QString("sales_stage"), opportunity.salesStage());
     writer.writeTextElement(QString("probability"), opportunity.probability());
-    writer.writeTextElement(QString("nextCallDate"), opportunity.nextCallDate());
+    writer.writeTextElement(QString("nextCallDate"), opportunity.nextCallDate().toString("yyyy-MM-dd"));
     writer.writeEndDocument();
 
     return true;
