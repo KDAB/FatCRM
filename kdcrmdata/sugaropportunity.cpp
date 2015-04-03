@@ -1,4 +1,5 @@
 #include "sugaropportunity.h"
+#include "kdcrmutils.h"
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -512,7 +513,7 @@ void SugarOpportunity::setData(QMap<QString, QString> data)
     d->mNextStep = data.value("nextStep");
     d->mSalesStage = data.value("salesStage");
     d->mProbability = data.value("probability");
-    d->mNextCallDate = QDate::fromString(data.value("nextCallDate"), "yyyy-MM-dd");
+    d->mNextCallDate = KDCRMUtils::dateFromString(data.value("nextCallDate"));
 }
 
 QMap<QString, QString> SugarOpportunity::data()
@@ -545,7 +546,7 @@ QMap<QString, QString> SugarOpportunity::data()
     data["nextStep"] = d->mNextStep;
     data["salesStage"] = d->mSalesStage;
     data["probability"] = d->mProbability;
-    data["nextCallDate"] = d->mNextCallDate.toString("yyyy-MM-dd");
+    data["nextCallDate"] = KDCRMUtils::dateToString(d->mNextCallDate);
     return data;
 }
 
