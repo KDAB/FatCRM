@@ -13,6 +13,7 @@ public:
 
     ~OpportunitiesPage();
 
+    /*reimp*/ void setupModel();
 protected:
     /*reimp*/ void addItem(const QMap<QString, QString> &data);
     /*reimp*/ void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data);

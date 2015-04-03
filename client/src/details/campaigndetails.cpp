@@ -3,6 +3,7 @@
 #include "editcalendarbutton.h"
 #include "ui_campaigndetails.h"
 #include "referenceddatamodel.h"
+#include "kdcrmutils.h"
 
 #include <kdcrmdata/sugarcampaign.h>
 
@@ -36,16 +37,15 @@ void CampaignDetails::initialize()
 
 void CampaignDetails::slotSetStartDate()
 {
-    // TODO FIXME: use locale formatting or dateeditS
-    mUi->startDate->setText(mUi->startDateCalendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
+    // TODO FIXME: use KDateTimeEdit
+    mUi->startDate->setText(KDCRMUtils::dateToString(mUi->startDateCalendarButton->calendarWidget()->selectedDate()));
     mUi->startDateCalendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->startDateCalendarButton->calendarDialog()->close();
 }
 
 void CampaignDetails::slotSetEndDate()
 {
-    // TODO FIXME: use locale formatting or dateeditS
-    mUi->endDate->setText(mUi->endDateCalendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
+    mUi->endDate->setText(KDCRMUtils::dateToString(mUi->endDateCalendarButton->calendarWidget()->selectedDate()));
     mUi->endDateCalendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->endDateCalendarButton->calendarDialog()->close();
 }

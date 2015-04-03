@@ -29,6 +29,12 @@ OpportunitiesPage::~OpportunitiesPage()
 {
 }
 
+void OpportunitiesPage::setupModel()
+{
+    Page::setupModel();
+    treeView()->sortByColumn(4 /*NextStepDate*/, Qt::DescendingOrder);
+}
+
 void OpportunitiesPage::addItem(const QMap<QString, QString> &data)
 {
     Item item;

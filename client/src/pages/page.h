@@ -79,7 +79,7 @@ protected:
     virtual void addItem(const QMap<QString, QString> &data) = 0;
     virtual void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data) = 0;
 
-    void setupModel();
+    virtual void setupModel();
 
     Details *details() const;
 
@@ -88,13 +88,13 @@ protected:
 private Q_SLOTS:
     void slotResourceSelectionChanged(const QByteArray &identifier);
     void slotCollectionFetchResult(KJob *job);
-    void slotItemClicked(const QModelIndex &index);
+    void slotCurrentItemChanged(const QModelIndex &index);
     void slotShowDetails(const QModelIndex &index);
     void slotNewClicked();
     void slotAddItem();
     void slotModifyItem();
     void slotRemoveItem();
-    void slotSetCurrent(const QModelIndex &, int, int);
+    void slotRowsInserted(const QModelIndex &, int, int);
     void cachePolicyJobCompleted(KJob *);
     void slotUpdateDetails(const QModelIndex &, const QModelIndex &);
     void slotUpdateDetails(const QModelIndex &);

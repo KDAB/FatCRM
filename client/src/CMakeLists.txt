@@ -2,6 +2,7 @@ include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utili
 
 set(sugarclient_SRCS
     app/sugarclient.cpp
+    app/clientsettings.cpp
     pages/page.cpp
     pages/accountspage.cpp
     pages/campaignspage.cpp
@@ -22,6 +23,7 @@ set(sugarclient_SRCS
     details/opportunitydetails.cpp
     dialogs/detailsdialog.cpp
     dialogs/resourceconfigdialog.cpp
+    dialogs/configurationdialog.cpp
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
     utilities/referenceddata.cpp
@@ -39,6 +41,7 @@ kde4_add_ui_files(sugarclient_SRCS
     details/opportunitydetails.ui
     dialogs/detailsdialog.ui
     dialogs/resourceconfigdialog.ui
+    dialogs/configurationdialog.ui
 )
 
 kde4_add_library(sugarclientprivate ${sugarclient_SRCS})
@@ -54,7 +57,7 @@ target_link_libraries(sugarclientprivate
 kde4_add_executable(sugarclient app/main.cpp)
 
 target_link_libraries(sugarclient
-	sugarclientprivate
+    sugarclientprivate
 )
 
 set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}" )

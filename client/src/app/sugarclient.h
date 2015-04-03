@@ -60,6 +60,7 @@ private:
 
     Ui_MainWindow mUi;
     QMenu *mViewMenu;
+    QMenu *mSettingsMenu;
 
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
@@ -80,6 +81,7 @@ private Q_SLOTS:
     void slotShowDetails(bool on);
     void slotPageShowDetailsChanged();
     void slotCurrentTabChanged(int index);
+    void slotConfigure();
 
 private:
     QComboBox *createResourcesCombo();

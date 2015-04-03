@@ -1,4 +1,7 @@
 #include "details.h"
+#include "kdcrmutils.h"
+
+#include <KDateTimeEdit>
 
 using namespace Akonadi;
 
@@ -23,21 +26,20 @@ void Details::initialize()
  */
 void Details::clear()
 {
-    QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits) {
+    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
         le->setText(QString());
     }
-    QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
+    Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>()) {
         cb->setCurrentIndex(0);
     }
-    QList<QCheckBox *> checkBoxes =  findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes) {
+    Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>()) {
         cb->setChecked(false);
     }
-    QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits) {
+    Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>()) {
         te->setPlainText(QString());
+    }
+    Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
+        w->setDate(QDate());
     }
 }
 
@@ -67,11 +69,13 @@ void Details::setData(const QMap<QString, QString> &data) const
     QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
+        if (key.isEmpty()) continue;
         le->setText(data.value(key));
     }
     QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
+        if (key.isEmpty()) continue;
         cb->setCurrentIndex(cb->findText(data.value(key)));
         // currency is unique an cannot be changed from the client atm
         if (key == "currency") {
@@ -88,13 +92,21 @@ void Details::setData(const QMap<QString, QString> &data) const
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
     Q_FOREACH (QCheckBox *cb, checkBoxes) {
         key = cb->objectName();
+        if (key.isEmpty()) continue;
         cb->setChecked(data.value(key) == "1" ? true : false);
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *te, textEdits) {
         key = te->objectName();
+        if (key.isEmpty()) continue;
         te->setPlainText(data.value(key));
+    }
+
+    Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
+        key = w->objectName();
+        if (key.isEmpty()) continue;
+        w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 }
 
@@ -110,12 +122,14 @@ const QMap<QString, QString> Details::getData() const
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
+        if (key.isEmpty()) continue;
         currentData[key] = le->text();
     }
 
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
+        if (key.isEmpty()) continue;
         currentData[key] = cb->currentText();
         if (key == "currency") {
             currentData["currencyId"] = cb->property("currencyId").toString();
@@ -127,14 +141,23 @@ const QMap<QString, QString> Details::getData() const
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
     Q_FOREACH (QCheckBox *cb, checkBoxes) {
         key = cb->objectName();
+        if (key.isEmpty()) continue;
         currentData[key] = cb->isChecked() ? "1" : "0";
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *te, textEdits) {
         key = te->objectName();
+        if (key.isEmpty()) continue;
         currentData[key] = te->toPlainText();
     }
+
+    Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
+        key = w->objectName();
+        if (key.isEmpty()) continue;
+        currentData.insert(key, KDCRMUtils::dateToString(w->date()));
+    }
+
     return currentData;
 }
 

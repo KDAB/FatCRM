@@ -15,6 +15,7 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
+#include <QDebug>
 
 using namespace Akonadi;
 

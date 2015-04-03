@@ -39,6 +39,7 @@ FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
 {
     // account names should be sorted correctly
     setSortLocaleAware(true);
+    setDynamicSortFilter(true); // for sorting during insertion, too
 }
 
 FilterProxyModel::~FilterProxyModel()

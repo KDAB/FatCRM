@@ -1,6 +1,7 @@
 #include "opportunityfilterwidget.h"
 #include "ui_opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
+#include "clientsettings.h"
 #include <QDate>
 #include <QDebug>
 
@@ -32,7 +33,7 @@ void OpportunityFilterWidget::filterChanged()
     QStringList assignees;
     if (ui->cbAssignee->currentIndex() == 0) {
         // "me"
-        assignees << "Sabine Faure"; // TODO config for groups
+        assignees << ClientSettings::self()->fullUserName();
     }
     QDate maxDate = QDate::currentDate();
     switch (ui->cbMaxNextStepDate->currentIndex()) {
@@ -46,7 +47,6 @@ void OpportunityFilterWidget::filterChanged()
         maxDate = QDate(maxDate.year(), maxDate.month(), maxDate.daysInMonth());
         break;
     }
-    qDebug() << "maxDate=" << maxDate;
 
     m_oppFilterProxyModel->setFilter(assignees, maxDate);
 }

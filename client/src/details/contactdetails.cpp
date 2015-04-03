@@ -3,6 +3,7 @@
 #include "editcalendarbutton.h"
 #include "ui_contactdetails.h"
 #include "referenceddatamodel.h"
+#include "kdcrmutils.h"
 
 #include <kabc/address.h>
 #include <kabc/addressee.h>
@@ -36,8 +37,8 @@ void ContactDetails::initialize()
 
 void ContactDetails::slotSetBirthday()
 {
-    // TODO FIXME: use locale formatting
-    mUi->birthdate->setText(mUi->calendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
+    // TODO FIXME: use KDateTimeEdit [or remove - who cares about birthdays...]
+    mUi->birthdate->setText(KDCRMUtils::dateToString(mUi->calendarButton->calendarWidget()->selectedDate()));
     mUi->calendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->calendarButton->calendarDialog()->close();
 }
@@ -87,7 +88,7 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data["altAddressState"] = other.region();
     data["altAddressPostalcode"] = other.postalCode();
     data["altAddressCountry"] = other.country();
-    data["birthdate"] = QDateTime(addressee.birthday()).date().toString(QString("yyyy-MM-dd"));
+    data["birthdate"] = KDCRMUtils::dateToString(addressee.birthday().date());
     data["assistant"] = addressee.custom("KADDRESSBOOK", "X-AssistantsName");
     data["phoneAssistant"] = addressee.custom("FATCRM", "X-AssistantsPhone");
     data["leadSource"] = addressee.custom("FATCRM", "X-LeadSourceName");
@@ -150,8 +151,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     otherAddress.setCountry(data.value("altAddressCountry"));
     addressee.insertAddress(otherAddress);
 
-    // TODO FIXME: use locale formatting or better use dateedit
-    addressee.setBirthday(QDateTime::fromString(data.value("birthdate"), QString("yyyy-MM-dd")));
+    addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value("birthdate"))));
 
     addressee.setNote(data.value("description"));
     addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", data.value("assistant"));

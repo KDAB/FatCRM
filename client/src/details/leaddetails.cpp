@@ -3,6 +3,7 @@
 #include "editcalendarbutton.h"
 #include "ui_leaddetails.h"
 #include "referenceddatamodel.h"
+#include "kdcrmutils.h"
 
 #include <kdcrmdata/sugarlead.h>
 
@@ -37,8 +38,7 @@ void LeadDetails::initialize()
 
 void LeadDetails::slotSetBirthDate()
 {
-    // TODO FIXME: use locale formatting
-    mUi->birthdate->setText(mUi->calendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
+    mUi->birthdate->setText(KDCRMUtils::dateToString(mUi->calendarButton->calendarWidget()->selectedDate()));
     mUi->calendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->calendarButton->calendarDialog()->close();
 }

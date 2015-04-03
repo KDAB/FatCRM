@@ -29,6 +29,7 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
+#include <QDebug>
 #include <QMessageBox>
 
 using namespace Akonadi;
@@ -145,7 +146,7 @@ void Page::slotCollectionFetchResult(KJob *job)
     }
 }
 
-void Page::slotItemClicked(const QModelIndex &index)
+void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
     if (mDetailsWidget != 0) {
         if (mDetailsWidget->isEditing()) {
@@ -258,13 +259,10 @@ void Page::slotRemoveItem()
     }
 }
 
-void Page::slotSetCurrent(const QModelIndex &index, int start, int end)
+void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    if (start == end) {
-        QModelIndex newIdx = mUi.treeView->model()->index(start, 0, index);
-        mUi.treeView->setCurrentIndex(newIdx);
-    }
-
+    Q_UNUSED(start);
+    Q_UNUSED(end);
     if (mUi.treeView->model()->rowCount() == mCollection.statistics().count()) {
         if (mType == Account) {
             addAccountsData();
@@ -310,7 +308,6 @@ void Page::initialize()
     connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection)),
             this, SLOT(slotCollectionChanged(Akonadi::Collection)));
 
-    connect(mUi.treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(slotItemClicked(QModelIndex)));
     connect(mUi.treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotItemDoubleClicked(QModelIndex)));
 
     mShowDetailsAction = new QAction(this);
@@ -331,16 +328,18 @@ void Page::setupModel()
     filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
 
     mFilter->setSourceModel(filterModel);
+    mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
     mUi.treeView->setModel(mFilter);
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),
             mFilter, SLOT(setFilterString(QString)));
 
-    connect(mUi.treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotSetCurrent(QModelIndex,int,int)));
+    connect(mUi.treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
 
     connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotUpdateDetails(QModelIndex,QModelIndex)));
+
     connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this,  SLOT(slotUpdateDetails(QModelIndex)));
+            this,  SLOT(slotCurrentItemChanged(QModelIndex)));
 }
 
 Details *Page::details() const
@@ -437,7 +436,7 @@ void Page::slotSetItem()
 {
     mCurrentIndex  = treeView()->selectionModel()->currentIndex();
     if (mCurrentIndex.isValid()) {
-        slotItemClicked(mCurrentIndex);
+        slotCurrentItemChanged(mCurrentIndex);
     } else {
         slotNewClicked();
     }

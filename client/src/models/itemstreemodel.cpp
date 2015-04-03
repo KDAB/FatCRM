@@ -4,6 +4,7 @@
 #include <kdcrmdata/sugarcampaign.h>
 #include <kdcrmdata/sugarlead.h>
 #include <kdcrmdata/sugaropportunity.h>
+#include <kdcrmdata/kdcrmutils.h>
 
 #include <kabc/addressee.h>
 #include <kabc/phonenumber.h>
@@ -190,6 +191,8 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                     return i18nc("@title:column amount", "Amount");
                 case NextStepDate:
                     return i18nc("@title:column next step date", "Next Step Date");
+                case LastModifiedDate:
+                    return i18nc("@title:column next step date", "Last Modified Date");
                 case AssignedTo:
                     return i18nc("@title:column assigned to name", "Assigned To");
                 }
@@ -374,7 +377,15 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case Amount:
             return opportunity.amount();
         case NextStepDate:
-            return opportunity.nextCallDate();
+            if (role == Qt::DisplayRole)
+                    return KDCRMUtils::formatDate(opportunity.nextCallDate());
+            return opportunity.nextCallDate(); // for sorting
+        case LastModifiedDate: {
+            QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateModified());
+            if (role == Qt::DisplayRole)
+                return KDCRMUtils::formatDate(dt.date());
+            return dt; // for sorting
+        }
         case AssignedTo:
             return opportunity.assignedUserName();
         default:
@@ -418,6 +429,7 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
                 << ItemsTreeModel::NextStepDate
+                << ItemsTreeModel::LastModifiedDate
                 << ItemsTreeModel::AssignedTo;
         break;
     case Campaign:

@@ -129,19 +129,9 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="dateClosed"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="clearDateButton">
-          <property name="text">
-           <string>Clear</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="EditCalendarButton" name="calendarButton">
-          <property name="text">
-           <string>&amp;Edit</string>
+         <widget class="KDateTimeEdit" name="dateClosed">
+          <property name="options">
+           <set>KDateTimeEdit::DateKeywords|KDateTimeEdit::DatePicker|KDateTimeEdit::EditDate|KDateTimeEdit::SelectDate|KDateTimeEdit::ShowDate</set>
           </property>
          </widget>
         </item>
@@ -167,19 +157,16 @@
       <item row="4" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QLineEdit" name="nextCallDate"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="clearNextCallDateButton">
-          <property name="text">
-           <string>Clear</string>
+         <widget class="KDateTimeEdit" name="nextCallDate">
+          <property name="options">
+           <set>KDateTimeEdit::DateKeywords|KDateTimeEdit::DatePicker|KDateTimeEdit::EditDate|KDateTimeEdit::SelectDate|KDateTimeEdit::ShowDate</set>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="EditCalendarButton" name="nextCallDateCalendarButton">
+         <widget class="QPushButton" name="nextStepDateAutoButton">
           <property name="text">
-           <string>&amp;Edit</string>
+           <string>In 2 weeks</string>
           </property>
          </widget>
         </item>
@@ -206,9 +193,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>EditCalendarButton</class>
-   <extends>QToolButton</extends>
-   <header>editcalendarbutton.h</header>
+   <class>KDateTimeEdit</class>
+   <extends>QWidget</extends>
+   <header>kdatetimeedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

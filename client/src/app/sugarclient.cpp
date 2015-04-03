@@ -3,6 +3,8 @@
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "resourceconfigdialog.h"
+#include "clientsettings.h"
+#include "configurationdialog.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -94,7 +96,14 @@ void SugarClient::initialize()
 
 void SugarClient::createMenus()
 {
+    // the File menu is handled in Qt Designer
+
     mViewMenu = menuBar()->addMenu(tr("&View"));
+
+    mSettingsMenu = menuBar()->addMenu(tr("&Settings"));
+    QAction *configureAction = new QAction(tr("Configure FatCRM..."), this);
+    connect(configureAction, SIGNAL(triggered()), this, SLOT(slotConfigure()));
+    mSettingsMenu->addAction(configureAction);
 }
 
 void SugarClient::createToolBar()
@@ -323,6 +332,15 @@ void SugarClient::slotPageShowDetailsChanged()
 void SugarClient::slotCurrentTabChanged(int index)
 {
     mShowDetails->setChecked(mPages[ index ]->showsDetails());
+}
+
+void SugarClient::slotConfigure()
+{
+    ConfigurationDialog dlg;
+    dlg.setFullUserName(ClientSettings::self()->fullUserName());
+    if (dlg.exec()) {
+        ClientSettings::self()->setFullUserName(dlg.fullUserName());
+    }
 }
 
 AgentInstance SugarClient::currentResource() const

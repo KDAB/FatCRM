@@ -46,6 +46,7 @@ public:
         SalesStage,
         Amount,
         NextStepDate,
+        LastModifiedDate,
         AssignedTo
     };
 

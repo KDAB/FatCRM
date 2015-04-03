@@ -17,11 +17,7 @@ public:
     ~OpportunityDetails();
 
 private Q_SLOTS:
-    void slotClearDate();
-    void slotSetDateClosed();
-
-    void slotClearNextCallDate();
-    void slotSetNextCallDate();
+    void slotAutoNextStepDate();
 
 private:
     Ui::OpportunityDetails *mUi;

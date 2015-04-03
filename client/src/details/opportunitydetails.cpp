@@ -1,8 +1,8 @@
 #include "opportunitydetails.h"
 
-#include "editcalendarbutton.h"
 #include "ui_opportunitydetails.h"
 #include "referenceddatamodel.h"
+#include "kdcrmutils.h"
 
 #include <kdcrmdata/sugaropportunity.h>
 
@@ -27,39 +27,13 @@ void OpportunityDetails::initialize()
     mUi->assignedUserName->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
 
-    connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
-    connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetDateClosed()));
-    connect(mUi->clearNextCallDateButton, SIGNAL(clicked()), this, SLOT(slotClearNextCallDate()));
-    connect(mUi->nextCallDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetNextCallDate()));
+    connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     mUi->currency->addItems(currencyItems());
 }
 
-void OpportunityDetails::slotClearDate()
+void OpportunityDetails::slotAutoNextStepDate()
 {
-    mUi->dateClosed->clear();
-}
-
-void OpportunityDetails::slotSetDateClosed()
-{
-    // TODO FIXME: use locale formatting
-    mUi->dateClosed->setText(mUi->calendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
-    mUi->calendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
-    mUi->calendarButton->calendarDialog()->close();
-}
-
-void OpportunityDetails::slotClearNextCallDate()
-{
-    mUi->nextCallDate->clear();
-}
-
-void OpportunityDetails::slotSetNextCallDate()
-{
-    // TODO FIXME: use locale formatting
-    mUi->nextCallDate->setText(mUi->nextCallDateCalendarButton->calendarWidget()->selectedDate().toString(QString("yyyy-MM-dd")));
-    mUi->nextCallDateCalendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
-    mUi->nextCallDateCalendarButton->calendarDialog()->close();
+    mUi->nextCallDate->setDate(QDate::currentDate().addDays(14));
 }
 
 QStringList OpportunityDetails::typeItems() const
