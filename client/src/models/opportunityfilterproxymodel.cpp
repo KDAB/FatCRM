@@ -84,7 +84,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     }
 
     const QString filterStr = filterString();
-    if (!filterStr.isEmpty()) {
+    if (filterStr.isEmpty()) {
         return true;
     }
 
