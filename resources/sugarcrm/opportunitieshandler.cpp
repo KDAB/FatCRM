@@ -2,6 +2,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "kdcrmutils.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/collection.h>
@@ -53,12 +54,12 @@ static void setDateModified(const QString &value, SugarOpportunity &opportunity)
 
 static QString getNextCallDate(const SugarOpportunity &opportunity)
 {
-    return opportunity.nextCallDate().toString("yyyy-MM-dd");
+    return KDCRMUtils::dateToString(opportunity.nextCallDate());
 }
 
 static void setNextCallDate(const QString &value, SugarOpportunity &opportunity)
 {
-    opportunity.setNextCallDate(QDate::fromString(value, "yyyy-MM-dd"));
+    opportunity.setNextCallDate(KDCRMUtils::dateFromString(value));
 }
 
 static QString getModifiedUserId(const SugarOpportunity &opportunity)

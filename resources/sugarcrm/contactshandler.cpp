@@ -2,6 +2,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "kdcrmutils.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/kabc/contactparts.h>
@@ -317,12 +318,12 @@ static void setNote(const QString &value, KABC::Addressee &addressee)
 
 static QString getBirthday(const KABC::Addressee &addressee)
 {
-    return addressee.birthday().toString(QString("yyyy-MM-dd"));
+    return KDCRMUtils::dateToString(addressee.birthday().date());
 }
 
 static void setBirthday(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.setBirthday(QDateTime::fromString(value, QString("yyyy-MM-dd")));
+    addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(value)));
 }
 
 static QString getEmail1(const KABC::Addressee &addressee)
