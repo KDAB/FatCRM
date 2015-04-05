@@ -16,6 +16,8 @@ public:
 protected:
     /*reimp*/ void addItem(const QMap<QString, QString> &data);
     /*reimp*/ void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data);
+private:
+    /*reimp*/ QString reportTitle() const;
 };
 
 #endif /* CAMPAIGNSPAGE_H */

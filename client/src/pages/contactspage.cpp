@@ -52,3 +52,8 @@ void ContactsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }
+
+QString ContactsPage::reportTitle() const
+{
+    return tr("List of Contacts");
+}

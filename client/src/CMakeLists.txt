@@ -27,6 +27,7 @@ set(sugarclient_SRCS
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
     utilities/referenceddata.cpp
+	utilities/reportgenerator.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
@@ -54,7 +55,7 @@ target_link_libraries(sugarclientprivate
     ${QT_QTGUI_LIBS}
 )
 
-if (KDReports_FOUND)
+if (KDREPORTS_FOUND)
    target_link_libraries(sugarclientprivate ${KDReports_LIBRARIES})
 endif()
 

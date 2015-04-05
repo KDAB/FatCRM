@@ -82,8 +82,10 @@ private Q_SLOTS:
     void slotPageShowDetailsChanged();
     void slotCurrentTabChanged(int index);
     void slotConfigure();
+    void slotPrintReport();
 
 private:
+    Page *currentPage() const;
     QComboBox *createResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();

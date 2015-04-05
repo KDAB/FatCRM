@@ -23,6 +23,11 @@ AccountsPage::~AccountsPage()
 {
 }
 
+QString AccountsPage::reportTitle() const
+{
+    return tr("List of accounts");
+}
+
 void AccountsPage::addItem(const QMap<QString, QString> &data)
 {
     Item item;

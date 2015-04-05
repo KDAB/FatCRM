@@ -22,3 +22,4 @@ find_path(KDReports_INCLUDE_DIR
 mark_as_advanced(KDReports_LIBRARIES KDReports_INCLUDE_DIR)
 
 find_package_handle_standard_args(KDReports DEFAULT_MSG KDReports_LIBRARIES KDReports_INCLUDE_DIR)
+

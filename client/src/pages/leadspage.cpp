@@ -54,3 +54,8 @@ void LeadsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }
 
+QString LeadsPage::reportTitle() const
+{
+    return tr("List of Leads");
+}
+

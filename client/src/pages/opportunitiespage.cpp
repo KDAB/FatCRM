@@ -64,3 +64,8 @@ void OpportunitiesPage::modifyItem(Item &item, const QMap<QString, QString> &dat
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     emit statusMessage(tr("Saving opportunity..."));
 }
+
+QString OpportunitiesPage::reportTitle() const
+{
+    return tr("List of Opportunities"); // TODO extend title with proxy filter settings
+}

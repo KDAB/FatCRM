@@ -99,6 +99,10 @@ void SugarClient::createMenus()
     // the File menu is handled in Qt Designer
 
     mViewMenu = menuBar()->addMenu(tr("&View"));
+    QAction *printAction = new QAction(tr("Print Report..."), this);
+    connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
+    mViewMenu->addAction(printAction);
+    mViewMenu->addSeparator();
 
     mSettingsMenu = menuBar()->addMenu(tr("&Settings"));
     QAction *configureAction = new QAction(tr("Configure FatCRM..."), this);
@@ -326,7 +330,7 @@ void SugarClient::slotShowDetails(bool on)
 
 void SugarClient::slotPageShowDetailsChanged()
 {
-    mShowDetails->setChecked(mPages[ mUi.tabWidget->currentIndex() ]->showsDetails());
+    mShowDetails->setChecked(currentPage()->showsDetails());
 }
 
 void SugarClient::slotCurrentTabChanged(int index)
@@ -344,6 +348,16 @@ void SugarClient::slotConfigure()
         ClientSettings::self()->setAssigneeFilters(dlg.assigneeFilters());
         ClientSettings::self()->sync();
     }
+}
+
+void SugarClient::slotPrintReport()
+{
+    currentPage()->printReport();
+}
+
+Page *SugarClient::currentPage() const
+{
+    return mPages[ mUi.tabWidget->currentIndex() ];
 }
 
 AgentInstance SugarClient::currentResource() const

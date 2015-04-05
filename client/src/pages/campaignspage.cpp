@@ -52,3 +52,8 @@ void CampaignsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }
+
+QString CampaignsPage::reportTitle() const
+{
+    return tr("List of Campaigns");
+}

@@ -37,6 +37,7 @@ public:
     QAction *showDetailsAction(const QString &title) const;
 
     bool showsDetails() const;
+    void printReport();
 
 Q_SIGNALS:
     void statusMessage(const QString &);
@@ -107,6 +108,7 @@ private Q_SLOTS:
     void slotItemDoubleClicked(const QModelIndex &);
 
 private:
+    virtual QString reportTitle() const = 0;
     void initialize();
     void setupCachePolicy();
     void itemChanged(const Akonadi::Item &item);

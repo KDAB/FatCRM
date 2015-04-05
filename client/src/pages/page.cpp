@@ -4,6 +4,7 @@
 #include "enums.h"
 #include "referenceddata.h"
 #include "sugarclient.h"
+#include "reportgenerator.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
@@ -508,6 +509,12 @@ void Page::slotItemDoubleClicked(const QModelIndex &index)
                 dialog, SLOT(updateItem(Akonadi::Item)));
         dialog->show();
     }
+}
+
+void Page::printReport()
+{
+    ReportGenerator generator;
+    generator.generateListReport(mUi.treeView->model(), reportTitle(), this);
 }
 
 QString Page::typeToString(const DetailsType &type) const
