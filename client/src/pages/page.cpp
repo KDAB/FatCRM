@@ -31,6 +31,7 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <clientsettings.h>
 
 using namespace Akonadi;
 
@@ -57,7 +58,7 @@ void Page::setDetailsWidget(DetailsWidget *widget)
     detailLayout->setMargin(0);
     detailLayout->addWidget(widget);
     mDetailsWidget = widget;
-    mShowDetailsAction->setChecked(true);
+    mShowDetailsAction->setChecked(ClientSettings::self()->showDetails(typeToString(mType)));
 }
 
 QAction *Page::showDetailsAction(const QString &title) const
@@ -77,6 +78,7 @@ void Page::showDetails(bool on)
     if (on) {
         QMetaObject::invokeMethod(this, "slotEnsureDetailsVisible", Qt::QueuedConnection);
     }
+    ClientSettings::self()->setShowDetails(typeToString(mType), on);
     mShowDetailsAction->setChecked(on);
 }
 

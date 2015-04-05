@@ -9,11 +9,6 @@ ClientSettings *ClientSettings::self()
     return s_self();
 }
 
-void ClientSettings::sync()
-{
-    m_settings->sync();
-}
-
 ClientSettings::ClientSettings()
     : m_settings(new QSettings("KDAB", "FatCRM"))
 {
@@ -22,6 +17,22 @@ ClientSettings::ClientSettings()
 ClientSettings::~ClientSettings()
 {
     delete m_settings;
+}
+
+void ClientSettings::sync()
+{
+    m_settings->sync();
+}
+
+void ClientSettings::setShowDetails(const QString &typeString, bool on)
+{
+    m_settings->setValue("showDetails/" + typeString, on);
+}
+
+bool ClientSettings::showDetails(const QString &typeString) const
+{
+    const QVariant value = m_settings->value("showDetails/" + typeString);
+    return value.isValid() ? value.toBool() : true;
 }
 
 void ClientSettings::setFullUserName(const QString &name)
