@@ -54,6 +54,10 @@ target_link_libraries(sugarclientprivate
     ${QT_QTGUI_LIBS}
 )
 
+if (KDReports_FOUND)
+   target_link_libraries(sugarclientprivate ${KDReports_LIBRARIES})
+endif()
+
 kde4_add_executable(sugarclient app/main.cpp)
 
 target_link_libraries(sugarclient
