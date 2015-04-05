@@ -19,6 +19,7 @@
 #include "settingsadaptor.h"
 #include "sugarconfigdialog.h"
 #include "sugarsession.h"
+#include "taskshandler.h"
 #include "updateentryjob.h"
 
 #include <akonadi/changerecorder.h>
@@ -216,9 +217,16 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
 
     status(Running);
 
+#if 1
+    const QString message = "disabled for safety reasons";
+    status(Broken, message);
+    error(message);
+    cancelTask(message);
+#else
     SugarJob *job = new DeleteEntryJob(item, mSession, this);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteEntryResult(KJob*)));
     job->start();
+#endif
 }
 
 void SugarCRMResource::retrieveCollections()
@@ -393,10 +401,14 @@ void SugarCRMResource::listModulesResult(KJob *job)
                 handler = new AccountsHandler(mSession);
             } else if (module == QLatin1String("Opportunities")) {
                 handler = new OpportunitiesHandler(mSession);
+#if 0 // we don't use this, so skip it
             } else if (module == QLatin1String("Leads")) {
                 handler = new LeadsHandler(mSession);
             } else if (module == QLatin1String("Campaigns")) {
                 handler = new CampaignsHandler(mSession);
+#endif
+            } else if (module == QLatin1String("Tasks")) {
+                handler = new TasksHandler(mSession);
             } else {
                 //kDebug() << "No module handler for" << module;
                 continue;
