@@ -31,13 +31,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="cbAssignee">
-       <item>
-        <property name="text">
-         <string>me</string>
-        </property>
-       </item>
-      </widget>
+      <widget class="QComboBox" name="cbAssignee"/>
      </item>
      <item>
       <widget class="QLabel" name="label">

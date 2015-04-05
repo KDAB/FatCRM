@@ -17,6 +17,7 @@ public:
     ~OpportunityFilterWidget();
 
 private Q_SLOTS:
+    void setupFromConfig();
     void filterChanged();
 
 private:

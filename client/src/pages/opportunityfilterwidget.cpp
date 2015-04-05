@@ -19,7 +19,9 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
 
-    filterChanged();
+    connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
+
+    setupFromConfig();
 }
 
 OpportunityFilterWidget::~OpportunityFilterWidget()
@@ -27,13 +29,24 @@ OpportunityFilterWidget::~OpportunityFilterWidget()
     delete ui;
 }
 
+void OpportunityFilterWidget::setupFromConfig()
+{
+    ui->cbAssignee->clear();
+    ui->cbAssignee->addItem(tr("me"));
+    ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groups());
+    filterChanged();
+}
+
 void OpportunityFilterWidget::filterChanged()
 {
     ui->rbAssignedTo->setChecked(true);
     QStringList assignees;
-    if (ui->cbAssignee->currentIndex() == 0) {
+    const int idx = ui->cbAssignee->currentIndex();
+    if (idx == 0) {
         // "me"
         assignees << ClientSettings::self()->fullUserName();
+    } else {
+        assignees << ClientSettings::self()->assigneeFilters().items().at(idx-1).users;
     }
     QDate maxDate = QDate::currentDate();
     switch (ui->cbMaxNextStepDate->currentIndex()) {

@@ -9,6 +9,11 @@ ClientSettings *ClientSettings::self()
     return s_self();
 }
 
+void ClientSettings::sync()
+{
+    m_settings->sync();
+}
+
 ClientSettings::ClientSettings()
     : m_settings(new QSettings("KDAB", "FatCRM"))
 {
@@ -27,4 +32,67 @@ void ClientSettings::setFullUserName(const QString &name)
 QString ClientSettings::fullUserName() const
 {
     return m_settings->value("fullUserName").toString();
+}
+
+void ClientSettings::setAssigneeFilters(const ClientSettings::AssigneeFilters &filters)
+{
+    m_settings->setValue("assigneeFilters", filters.toString());
+    emit assigneeFiltersChanged();
+}
+
+ClientSettings::AssigneeFilters ClientSettings::assigneeFilters() const
+{
+    ClientSettings::AssigneeFilters ret;
+    ret.loadFromString(m_settings->value("assigneeFilters").toString());
+    return ret;
+}
+
+QString ClientSettings::AssigneeFilters::toString() const
+{
+    QString ret;
+    for (int i = 0 ; i < m_items.count() ; ++i) {
+        const Item& item = m_items.at(i);
+        ret += item.group + ';';
+        ret += item.users.join(QString(QLatin1Char(';')));
+        if (i + 1 < m_items.count())
+            ret += '|';
+    }
+    return ret;
+}
+
+void ClientSettings::AssigneeFilters::loadFromString(const QString &str)
+{
+    Q_FOREACH(const QString &itemStr, str.split('|')) {
+        const QStringList lst = itemStr.split(';', QString::SkipEmptyParts);
+        Item item;
+        item.group = lst.first();
+        item.users = lst.mid(1);
+        m_items.append(item);
+    }
+}
+
+void ClientSettings::AssigneeFilters::removeGroup(int row)
+{
+    m_items.remove(row);
+}
+
+void ClientSettings::AssigneeFilters::prependGroup(const QString &group)
+{
+    Item item;
+    item.group = group;
+    m_items.prepend(item);
+}
+
+void ClientSettings::AssigneeFilters::updateGroup(int row, const QStringList &users)
+{
+    m_items[row].users = users;
+}
+
+QStringList ClientSettings::AssigneeFilters::groups() const
+{
+    QStringList ret;
+    Q_FOREACH(const Item &item, m_items) {
+        ret.append(item.group);
+    }
+    return ret;
 }

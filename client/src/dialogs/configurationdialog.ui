@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>263</height>
+    <width>720</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -52,6 +52,38 @@
     </spacer>
    </item>
    <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Assignee filters</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Users in selected filter</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="KEditListWidget" name="groupListWidget">
+       <property name="buttons">
+        <set>KEditListWidget::Add|KEditListWidget::Remove</set>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="KEditListWidget" name="usersListWidget">
+       <property name="buttons">
+        <set>KEditListWidget::Add|KEditListWidget::Remove</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -63,6 +95,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>KEditListWidget</class>
+   <extends>QWidget</extends>
+   <header>keditlistwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
