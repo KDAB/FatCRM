@@ -24,6 +24,7 @@ public:
         Country,
         Phone,
         Email,
+        CreationDate,
         CreatedBy,
         CampaignName,
         Status,

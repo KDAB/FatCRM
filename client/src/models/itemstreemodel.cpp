@@ -147,6 +147,8 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                     return i18nc("@title:column phone", "Phone");
                 case Email:
                     return i18nc("@title:column email", "Email");
+                case CreationDate:
+                    return i18nc("@title:column date created", "Creation Date");
                 case CreatedBy:
                     return i18nc("@title:column created by user", "Created By");
                 case CampaignName:
@@ -182,7 +184,7 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                 case LeadUser:
                     return i18nc("@title:column Lead's Assigny name", "User");
                 case OpportunityName:
-                    return i18nc("@title:column name for the Opportunity", "Name");
+                    return i18nc("@title:column name for the Opportunity", "Opportunity");
                 case OpportunityAccountName:
                     return i18nc("@title:column account name", "Account Name");
                 case SalesStage:
@@ -376,6 +378,12 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return opportunity.salesStage();
         case Amount:
             return opportunity.amount();
+        case CreationDate: {
+            QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
+            if (role == Qt::DisplayRole)
+                return KDCRMUtils::formatDate(dt.date());
+            return dt; // for sorting
+        }
         case NextStepDate:
             if (role == Qt::DisplayRole)
                     return KDCRMUtils::formatDate(opportunity.nextCallDate());
@@ -424,10 +432,11 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
                 << ItemsTreeModel::LeadUser;
         break;
     case Opportunity:
-        columns << ItemsTreeModel::OpportunityName
-                << ItemsTreeModel::OpportunityAccountName
+        columns << ItemsTreeModel::OpportunityAccountName
+                << ItemsTreeModel::OpportunityName
                 << ItemsTreeModel::SalesStage
-                << ItemsTreeModel::Amount
+                //<< ItemsTreeModel::Amount
+                << ItemsTreeModel::CreationDate
                 << ItemsTreeModel::NextStepDate
                 << ItemsTreeModel::LastModifiedDate
                 << ItemsTreeModel::AssignedTo;
