@@ -44,6 +44,11 @@
       <widget class="QComboBox" name="cbMaxNextStepDate">
        <item>
         <property name="text">
+         <string>-</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
          <string>Today</string>
         </property>
        </item>
@@ -55,6 +60,11 @@
        <item>
         <property name="text">
          <string>End of this month</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>End of this year</string>
         </property>
        </item>
       </widget>

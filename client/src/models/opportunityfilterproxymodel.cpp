@@ -79,7 +79,8 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
             return false;
         if (opportunity.salesStage().contains("Closed"))
             return false;
-        if (opportunity.nextCallDate() > d->maxDate)
+        if (d->maxDate.isValid() && (!opportunity.nextCallDate().isValid()
+                                     || opportunity.nextCallDate() > d->maxDate))
             return false;
     }
 

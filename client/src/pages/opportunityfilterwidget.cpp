@@ -18,6 +18,7 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->rbAssignedTo, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
+    ui->cbMaxNextStepDate->setCurrentIndex(0);
 
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
 
@@ -50,14 +51,20 @@ void OpportunityFilterWidget::filterChanged()
     }
     QDate maxDate = QDate::currentDate();
     switch (ui->cbMaxNextStepDate->currentIndex()) {
-    case 0: // Today
+    case 0: // Any
+        maxDate = QDate();
         break;
-    case 1: // End of this week, i.e. next Sunday
+    case 1: // Today
+        break;
+    case 2: // End of this week, i.e. next Sunday
         // Ex: dayOfWeek = 3 (Wednesday), must add 4 days.
         maxDate = maxDate.addDays(7 - maxDate.dayOfWeek());
         break;
-    case 2: // End of this month
+    case 3: // End of this month
         maxDate = QDate(maxDate.year(), maxDate.month(), maxDate.daysInMonth());
+        break;
+    case 4: // End of this year
+        maxDate = QDate(maxDate.year(), 12, 31);
         break;
     }
 
