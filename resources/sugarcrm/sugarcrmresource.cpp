@@ -251,8 +251,9 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
     // perform the respective "list entries" operation
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
-        const QString message = i18nc("@info:status", "Retrieving contents of folder %1",
-                                      collection.name());
+        const QString message = handler->latestTimestamp().isEmpty()
+                ? i18nc("@info:status", "Retrieving contents of folder %1", collection.name())
+                : i18nc("@info:status", "Updating contents of folder %1", collection.name());
         kDebug() << message;
         status(Running, message);
 
