@@ -43,6 +43,7 @@ Q_SIGNALS:
     void statusMessage(const QString &);
     void showDetailsChanged(bool on);
     void modelItemChanged(const Akonadi::Item &item);
+    void synchronizeCollection(const Akonadi::Collection &collection);
 
 public Q_SLOTS:
     void showDetails(bool on);

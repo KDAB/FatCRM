@@ -453,7 +453,7 @@ void Page::slotResetSearch()
 void Page::slotReloadCollection()
 {
     if (mCollection.isValid()) {
-        AgentManager::self()->synchronizeCollection(mCollection);
+        emit synchronizeCollection(mCollection);
     }
 }
 

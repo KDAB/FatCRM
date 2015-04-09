@@ -71,6 +71,7 @@ private Q_SLOTS:
     void slotDelayedInit();
     void slotToggleOffline(bool offline);
     void slotSynchronize();
+    void slotSynchronizeCollection(const Akonadi::Collection &collection);
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
     void slotShowMessage(const QString &);

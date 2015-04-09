@@ -162,7 +162,20 @@ void SugarClient::slotSynchronize()
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
         slotShowMessage(tr("Synchronizing with server"));
+        if (!currentAgent.isOnline())
+            currentAgent.setIsOnline(true);
         currentAgent.synchronize();
+    }
+}
+
+void SugarClient::slotSynchronizeCollection(const Collection &collection)
+{
+    AgentInstance currentAgent = currentResource();
+    if (currentAgent.isValid()) {
+        slotShowMessage(tr("Synchronizing with server"));
+        if (!currentAgent.isOnline())
+            currentAgent.setIsOnline(true);
+        AgentManager::self()->synchronizeCollection(collection);
     }
 }
 
@@ -184,6 +197,7 @@ void SugarClient::setupActions()
         connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
         connect(this, SIGNAL(displayDetails()), page, SLOT(slotSetItem()));
         connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
+        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
     }
 }
 
