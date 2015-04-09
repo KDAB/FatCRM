@@ -159,12 +159,12 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
 {
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
-    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
-    if (moduleIt != mModuleHandlers->constEnd()) {
+    ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
+    if (handler) {
         status(Running);
 
         CreateEntryJob *job = new CreateEntryJob(item, mSession, this);
-        job->setModule(*moduleIt);
+        job->setModule(handler);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(createEntryResult(KJob*)));
         job->start();
     } else {
@@ -183,10 +183,10 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
     const Collection collection = item.parentCollection();
-    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
-    if (moduleIt != mModuleHandlers->constEnd()) {
-        if (!(*moduleIt)->needBackendChange(item, parts)) {
-            kWarning() << "Handler for module" << (*moduleIt)->moduleName()
+    ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
+    if (handler) {
+        if (!handler->needBackendChange(item, parts)) {
+            kWarning() << "Handler for module" << handler->moduleName()
                        << "indicates that backend change for item id=" << item.id()
                        << ", remoteId=" << item.remoteId()
                        << "is not required for given modified parts: " << parts;
@@ -195,7 +195,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
         }
         status(Running);
 
-        updateItem(item, *moduleIt);
+        updateItem(item, handler);
     } else {
         const QString message = i18nc("@info:status", "Cannot modify items in folder %1",
                                       collection.name());
@@ -249,8 +249,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
 
     // find the handler for the module represented by the given collection and let it
     // perform the respective "list entries" operation
-    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
-    if (moduleIt != mModuleHandlers->constEnd()) {
+    ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
+    if (handler) {
         const QString message = i18nc("@info:status", "Retrieving contents of folder %1",
                                       collection.name());
         kDebug() << message;
@@ -260,7 +260,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         setItemStreamingEnabled(true);
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
-        job->setModule(*moduleIt);
+        job->setModule(handler);
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(itemsReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(deletedReceived(Akonadi::Item::List)),
@@ -282,15 +282,15 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
 
     // find the handler for the module represented by the given collection and let it
     // perform the respective "get entry" operation
-    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
-    if (moduleIt != mModuleHandlers->constEnd()) {
+    ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
+    if (handler) {
         const QString message = i18nc("@info:status", "Retrieving entry from folder %1",
                                       collection.name());
         kDebug() << message;
         status(Running, message);
 
         FetchEntryJob *job = new FetchEntryJob(item, mSession, this);
-        job->setModule(*moduleIt);
+        job->setModule(handler);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchEntryResult(KJob*)));
         job->start();
         return true;
@@ -378,10 +378,10 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     Q_FOREACH (const QString &module, availableModules) {
         Collection collection;
-        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(module);
-        if (moduleIt != mModuleHandlers->constEnd()) {
-            collection = moduleIt.value()->collection();
-            moduleIt.value()->resetLatestTimestamp();
+        ModuleHandler* handler = mModuleHandlers->value(module);
+        if (handler) {
+            collection = handler->collection();
+            handler->resetLatestTimestamp();
 
             collection.setParentCollection(topLevelCollection);
             collections << collection;
@@ -545,9 +545,9 @@ void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
 {
     const Collection collection = item.parentCollection();
 
-    ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
-    if (moduleIt != mModuleHandlers->constEnd()) {
-        updateItem(item, *moduleIt);
+    ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
+    if (handler) {
+        updateItem(item, handler);
     } else {
         kError() << "No module handler for collection" << collection.remoteId();
     }
@@ -566,9 +566,8 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
     Q_FOREACH(const QString &module, availableModules) {
         // check if we have a corresponding module handler already
         // if not see if we can create one
-        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(module);
-        if (moduleIt == mModuleHandlers->constEnd()) {
-            ModuleHandler *handler = 0;
+        ModuleHandler* handler = mModuleHandlers->value(module);
+        if (handler == 0) {
             if (module == QLatin1String("Contacts")) {
                 handler = new ContactsHandler(mSession);
             } else if (module == QLatin1String("Accounts")) {
@@ -590,9 +589,9 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             mModuleHandlers->insert(module, handler);
 
             // create a debug interface for the module, if we haven't done so already
-            ModuleDebugInterfaceHash::const_iterator debugIt = mModuleDebugInterfaces->constFind(module);
-            if (debugIt == mModuleDebugInterfaces->constEnd()) {
-                ModuleDebugInterface *debugInterface = new ModuleDebugInterface(module, this);
+            ModuleDebugInterface *debugInterface = mModuleDebugInterfaces->value(module);
+            if (!debugInterface) {
+                debugInterface = new ModuleDebugInterface(module, this);
                 QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + module,
                                                              debugInterface,
                                                              QDBusConnection::ExportScriptableSlots);
