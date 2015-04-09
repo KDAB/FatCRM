@@ -30,7 +30,6 @@ public Q_SLOTS:
 protected:
     SugarSession *mSession;
 
-    QStringList mAvailableModules;
     typedef QHash<QString, ModuleHandler *> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
     typedef QHash<QString, ModuleDebugInterface *> ModuleDebugInterfaceHash;
@@ -74,6 +73,7 @@ protected Q_SLOTS:
 
 private:
     void updateItem(const Akonadi::Item &item, ModuleHandler *handler);
+    void createModuleHandlers(const QStringList &availableModules);
 
     bool handleLoginError(KJob *job);
 };

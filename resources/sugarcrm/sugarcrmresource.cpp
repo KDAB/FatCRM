@@ -70,6 +70,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             this, SLOT(commitChange(Akonadi::Item)));
     connect(mConflictHandler, SIGNAL(updateOnBackend(Akonadi::Item)),
             this, SLOT(updateOnBackend(Akonadi::Item)));
+
+    createModuleHandlers(Settings::self()->availableModules());
 }
 
 SugarCRMResource::~SugarCRMResource()
@@ -370,74 +372,24 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     collections << topLevelCollection;
 
-    QSet<QString> availableHandlers;
-    mAvailableModules.clear();
-    Q_FOREACH (const QString &module, listJob->modules()) {
-        mAvailableModules << module;
+    const QStringList availableModules = listJob->modules();
 
-        // check if we already created one for the module
-        ModuleDebugInterfaceHash::const_iterator debugIt = mModuleDebugInterfaces->constFind(module);
-        if (debugIt == mModuleDebugInterfaces->constEnd()) {
-            ModuleDebugInterface *debugInterface = new ModuleDebugInterface(module, this);
-            QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + module,
-                    debugInterface,
-                    QDBusConnection::ExportScriptableSlots);
-            mModuleDebugInterfaces->insert(module, debugInterface);
-        }
+    createModuleHandlers(availableModules);
 
+    Q_FOREACH (const QString &module, availableModules) {
         Collection collection;
-
-        // check if we have a corresponding module handler already
-        // if not see if we can create one
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(module);
         if (moduleIt != mModuleHandlers->constEnd()) {
             collection = moduleIt.value()->collection();
             moduleIt.value()->resetLatestTimestamp();
-        } else {
-            ModuleHandler *handler = 0;
-            if (module == QLatin1String("Contacts")) {
-                handler = new ContactsHandler(mSession);
-            } else if (module == QLatin1String("Accounts")) {
-                handler = new AccountsHandler(mSession);
-            } else if (module == QLatin1String("Opportunities")) {
-                handler = new OpportunitiesHandler(mSession);
-#if 0 // we don't use this, so skip it
-            } else if (module == QLatin1String("Leads")) {
-                handler = new LeadsHandler(mSession);
-            } else if (module == QLatin1String("Campaigns")) {
-                handler = new CampaignsHandler(mSession);
-#endif
-            } else if (module == QLatin1String("Tasks")) {
-                handler = new TasksHandler(mSession);
-            } else {
-                //kDebug() << "No module handler for" << module;
-                continue;
-            }
-            mModuleHandlers->insert(module, handler);
 
-            collection = handler->collection();
-
-            /* This would be a (hackish?) way to send the user id of the current user
-             * (to be retrieved by a User_listJob with query user_name = 'dfaure')
-             * to the Sugar client, for filtering "my opps"...
-             * Tried it on the parent collection, but it's not fetched right now...
-            EntityAnnotationsAttribute* annotationsAttribute = new EntityAnnotationsAttribute;
-            annotationsAttribute->insert("userid", "12345");
-            collection.addAttribute(annotationsAttribute);
-            */
-        }
-        availableHandlers << module;
-
-        collection.setParentCollection(topLevelCollection);
-        collections << collection;
-    }
-
-    Q_FOREACH (const QString &module, mAvailableModules) {
-        if (!availableHandlers.contains(module)) {
-            ModuleHandler *handler = mModuleHandlers->take(module);
-            delete handler;
+            collection.setParentCollection(topLevelCollection);
+            collections << collection;
         }
     }
+
+    Settings::self()->setAvailableModules(availableModules);
+    Settings::self()->writeConfig();
 
     collectionsRetrieved(collections);
     status(Idle);
@@ -607,6 +559,47 @@ void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *hand
     job->setModule(handler);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(updateEntryResult(KJob*)));
     job->start();
+}
+
+void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
+{
+    Q_FOREACH(const QString &module, availableModules) {
+        // check if we have a corresponding module handler already
+        // if not see if we can create one
+        ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(module);
+        if (moduleIt == mModuleHandlers->constEnd()) {
+            ModuleHandler *handler = 0;
+            if (module == QLatin1String("Contacts")) {
+                handler = new ContactsHandler(mSession);
+            } else if (module == QLatin1String("Accounts")) {
+                handler = new AccountsHandler(mSession);
+            } else if (module == QLatin1String("Opportunities")) {
+                handler = new OpportunitiesHandler(mSession);
+#if 0 // we don't use this, so skip it
+            } else if (module == QLatin1String("Leads")) {
+                handler = new LeadsHandler(mSession);
+            } else if (module == QLatin1String("Campaigns")) {
+                handler = new CampaignsHandler(mSession);
+#endif
+            } else if (module == QLatin1String("Tasks")) {
+                handler = new TasksHandler(mSession);
+            } else {
+                //kDebug() << "No module handler for" << module;
+                continue;
+            }
+            mModuleHandlers->insert(module, handler);
+
+            // create a debug interface for the module, if we haven't done so already
+            ModuleDebugInterfaceHash::const_iterator debugIt = mModuleDebugInterfaces->constFind(module);
+            if (debugIt == mModuleDebugInterfaces->constEnd()) {
+                ModuleDebugInterface *debugInterface = new ModuleDebugInterface(module, this);
+                QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + module,
+                                                             debugInterface,
+                                                             QDBusConnection::ExportScriptableSlots);
+                mModuleDebugInterfaces->insert(module, debugInterface);
+            }
+        }
+    }
 }
 
 bool SugarCRMResource::handleLoginError(KJob *job)

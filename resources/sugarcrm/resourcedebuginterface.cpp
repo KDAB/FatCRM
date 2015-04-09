@@ -2,6 +2,7 @@
 
 #include "modulehandler.h"
 #include "sugarcrmresource.h"
+#include "settings.h"
 
 ResourceDebugInterface::ResourceDebugInterface(SugarCRMResource *resource)
     : QObject(resource), mResource(resource)
@@ -25,7 +26,7 @@ bool ResourceDebugInterface::kdSoapDebugEnabled() const
 
 QStringList ResourceDebugInterface::availableModules() const
 {
-    return mResource->mAvailableModules;
+    return Settings::self()->availableModules();
 }
 
 QStringList ResourceDebugInterface::supportedModules() const

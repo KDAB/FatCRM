@@ -16,4 +16,9 @@
       <label>Password</label>
     </entry>
   </group>
+  <group name="Cache">
+    <entry name="AvailableModules" type="StringList">
+      <label>Available Modules</label>
+    </entry>
+  </group>
 </kcfg>
