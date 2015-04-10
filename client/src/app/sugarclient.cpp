@@ -222,12 +222,14 @@ void SugarClient::createTabs()
     page->setDetailsWidget(mOpportunityDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Opportunity Details")));
 
+#if 0
     page = new LeadsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Leads"));
     mLeadDetailsWidget = new DetailsWidget(Lead);
     page->setDetailsWidget(mLeadDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Lead Details")));
+#endif
 
     page = new ContactsPage(this);
     mPages << page;
@@ -236,12 +238,14 @@ void SugarClient::createTabs()
     page->setDetailsWidget(mContactDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Contact Details")));
 
+#if 0
     page = new CampaignsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Campaigns"));
     mCampaignDetailsWidget = new DetailsWidget(Campaign);
     page->setDetailsWidget(mCampaignDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("C&ampaign Details")));
+#endif
 
     connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
 
