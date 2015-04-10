@@ -91,6 +91,8 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 
     mCollection = Collection();
 
+    mDetailsWidget->mDetails->setResourceIdentifier(identifier);
+
     /*
      * Look for the wanted collection explicitly by listing all collections
      * of the currently selected resource, filtering by MIME type.

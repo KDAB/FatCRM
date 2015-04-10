@@ -5,11 +5,14 @@
 #include "kdcrmutils.h"
 
 #include <kdcrmdata/sugaropportunity.h>
+#include "sugarresourcesettings.h"
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
 {
     mUi->setupUi(this);
+    mUi->urllabel->setOpenExternalLinks(true);
+    mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     initialize();
 }
 
@@ -77,4 +80,19 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
 
     item.setMimeType(SugarOpportunity::mimeType());
     item.setPayload<SugarOpportunity>(opportunity);
+}
+
+void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data) const
+{
+    if (!resourceIdentifier().isEmpty()) {
+        OrgKdeAkonadiSugarCRMSettingsInterface iface(
+                    QLatin1String("org.freedesktop.Akonadi.Resource.") + resourceIdentifier(), QLatin1String("/Settings"), QDBusConnection::sessionBus() );
+
+        const QString baseUrl = iface.host();
+        const QString id = data.value("id");
+        if (!id.isEmpty()) {
+            const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id;
+            mUi->urllabel->setText(QString("<a href=\"%1\">Open in Web Browser</a>").arg(url));
+        }
+    }
 }

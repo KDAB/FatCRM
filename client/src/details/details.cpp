@@ -43,6 +43,11 @@ void Details::clear()
     }
 }
 
+void Details::setResourceIdentifier(const QByteArray &ident)
+{
+    mResourceIdentifier = ident;
+}
+
 // TODO should probably be virtual and include item specific data, e.g. a contact's full name
 QString Details::windowTitle() const
 {
@@ -108,6 +113,7 @@ void Details::setData(const QMap<QString, QString> &data) const
         if (key.isEmpty()) continue;
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
+    setDataInternal(data);
 }
 
 /*

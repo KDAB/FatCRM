@@ -23,6 +23,8 @@ public:
     const QMap<QString, QString> getData() const;
     void clear();
 
+    void setResourceIdentifier(const QByteArray &ident);
+
     DetailsType type() const
     {
         return mType;
@@ -32,6 +34,7 @@ public:
 
 protected:
     virtual void initialize();
+    QByteArray resourceIdentifier() const { return mResourceIdentifier; }
 
     QStringList industryItems() const;
     QStringList sourceItems() const;
@@ -39,8 +42,11 @@ protected:
     QStringList stageItems() const;
     QStringList salutationItems() const;
 
+    virtual void setDataInternal(const QMap<QString, QString> &) const {}
+
 private:
     const DetailsType mType;
+    QByteArray mResourceIdentifier;
 };
 #endif /* DETAILS_H */
 

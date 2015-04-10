@@ -45,6 +45,12 @@ kde4_add_ui_files(sugarclient_SRCS
     dialogs/configurationdialog.ui
 )
 
+# To find out the config of the sugar resource (for the web link) - TODO generalize to salesforce somehow
+kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
+qt4_add_dbus_interface(sugarclient_SRCS
+	${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
+  )
+
 kde4_add_library(sugarclientprivate ${sugarclient_SRCS})
 
 target_link_libraries(sugarclientprivate

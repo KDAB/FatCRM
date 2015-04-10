@@ -26,6 +26,7 @@ private:
     /*reimp*/ void initialize();
     /*reimp*/ QMap<QString, QString> data(const Akonadi::Item &item) const;
     /*reimp*/ void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const;
+    /*reimp*/ void setDataInternal(const QMap<QString, QString> &data) const;
 
     QStringList typeItems() const;
     QStringList stageItems() const;
