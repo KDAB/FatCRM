@@ -31,18 +31,16 @@ Details::Details(DetailsType type, QWidget *parent)
     : QWidget(parent), mType(type)
 {
     // connect to changed signals
-    QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits)
+    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>())
         connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
-    QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes)
+    Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>())
         connect(cb, SIGNAL(currentIndexChanged(int)), this, SIGNAL(modified()));
-    QList<QCheckBox *> checkBoxes =  findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes)
+    Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>())
         connect(cb, SIGNAL(toggled(bool)), this, SIGNAL(modified()));
-    QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits)
+    Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>())
         connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
+    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>())
+        connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>())
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 
@@ -64,7 +62,7 @@ void Details::initialize()
 void Details::clear()
 {
     Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
-        le->setText(QString());
+        le->clear();
     }
     Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>()) {
         cb->setCurrentIndex(0);
@@ -73,7 +71,10 @@ void Details::clear()
         cb->setChecked(false);
     }
     Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>()) {
-        te->setPlainText(QString());
+        te->clear();
+    }
+    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+        w->clear();
     }
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
         w->setDate(QDate());
@@ -115,6 +116,7 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
         if (key.isEmpty()) continue;
+        if (qobject_cast<QSpinBox *>(le->parent())) continue;
         le->setText(data.value(key));
     }
     QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
@@ -142,15 +144,22 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits) {
-        key = te->objectName();
+    Q_FOREACH (QTextEdit *w, textEdits) {
+        key = w->objectName();
         if (key.isEmpty()) continue;
-        te->setPlainText(data.value(key));
+        w->setPlainText(data.value(key));
+    }
+
+    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+        key = w->objectName();
+        if (key.isEmpty()) continue;
+        w->setValue(data.value(key).toInt());
     }
 
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
         key = w->objectName();
         if (key.isEmpty()) continue;
+        //qDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 
@@ -195,6 +204,7 @@ const QMap<QString, QString> Details::getData() const
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
         if (key.isEmpty()) continue;
+        if (qobject_cast<QSpinBox *>(le->parent())) continue;
         currentData[key] = le->text();
     }
 
@@ -218,10 +228,16 @@ const QMap<QString, QString> Details::getData() const
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits) {
-        key = te->objectName();
+    Q_FOREACH (QTextEdit *w, textEdits) {
+        key = w->objectName();
         if (key.isEmpty()) continue;
-        currentData[key] = te->toPlainText();
+        currentData[key] = w->toPlainText();
+    }
+
+    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+        key = w->objectName();
+        if (key.isEmpty()) continue;
+        currentData[key] = QString::number(w->value());
     }
 
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
