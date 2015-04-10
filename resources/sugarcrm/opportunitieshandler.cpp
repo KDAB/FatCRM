@@ -393,21 +393,24 @@ QStringList OpportunitiesHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection OpportunitiesHandler::collection() const
+Akonadi::Collection OpportunitiesHandler::handlerCollection() const
 {
-    Akonadi::Collection accountCollection;
-    accountCollection.setRemoteId(moduleName());
-    accountCollection.setContentMimeTypes(QStringList() << SugarOpportunity::mimeType());
-    accountCollection.setName(i18nc("@item folder name", "Opportunities"));
-    accountCollection.setRights(Akonadi::Collection::CanChangeItem |
+    Akonadi::Collection myCollection;
+    myCollection.setContentMimeTypes(QStringList() << SugarOpportunity::mimeType());
+    myCollection.setName(i18nc("@item folder name", "Opportunities"));
+    myCollection.setRights(Akonadi::Collection::CanChangeItem |
                                 Akonadi::Collection::CanCreateItem |
                                 Akonadi::Collection::CanDeleteItem);
 
-    return accountCollection;
+    return myCollection;
 }
 
 void OpportunitiesHandler::listEntries(const ListEntriesScope &scope)
 {
+    // TODO (in all handlers) use this to find out max:
+    // KDSoapGenerated::TNS__Get_entries_count_result get_entries_count( const QString& session, const QString& module_name, const QString& query, int deleted );
+    // and call setTotalItems(count)
+
     const QString query = scope.query(QLatin1String("opportunities"));
     const QString orderBy = QLatin1String("opportunities.name");
     const int offset = scope.offset();

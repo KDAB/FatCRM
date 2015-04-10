@@ -396,7 +396,7 @@ QStringList CampaignsHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection CampaignsHandler::collection() const
+Akonadi::Collection CampaignsHandler::handlerCollection() const
 {
     Akonadi::Collection campaignCollection;
     campaignCollection.setRemoteId(moduleName());

@@ -55,7 +55,7 @@ public:
 
     virtual QStringList supportedFields() const = 0;
 
-    virtual Akonadi::Collection collection() const = 0;
+    Akonadi::Collection collection() const;
 
     virtual void listEntries(const ListEntriesScope &scope) = 0;
 
@@ -79,6 +79,8 @@ protected:
 protected:
     static QString formatDate(const QString &dateString);
     static QByteArray partIdFromPayloadPart(const char *part);
+
+    virtual Akonadi::Collection handlerCollection() const = 0;
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;

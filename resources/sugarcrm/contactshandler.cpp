@@ -663,7 +663,7 @@ QStringList ContactsHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection ContactsHandler::collection() const
+Akonadi::Collection ContactsHandler::handlerCollection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleName());

@@ -16,7 +16,7 @@ public:
 
     QStringList supportedFields() const;
 
-    Akonadi::Collection collection() const;
+    Akonadi::Collection handlerCollection() const;
 
     void listEntries(const ListEntriesScope &scope);
 

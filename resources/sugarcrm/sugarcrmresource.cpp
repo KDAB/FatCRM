@@ -250,12 +250,6 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
     // perform the respective "list entries" operation
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
-        const QString message = handler->latestTimestamp().isEmpty()
-                ? i18nc("@info:status", "Retrieving contents of folder %1", collection.name())
-                : i18nc("@info:status", "Updating contents of folder %1", collection.name());
-        kDebug() << message;
-        status(Running, message);
-
         // getting items in batches
         setItemStreamingEnabled(true);
 #if KDE_IS_VERSION(4, 14, 0)
@@ -264,6 +258,13 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
+
+        const QString message = job->latestTimestamp().isEmpty()
+                ? i18nc("@info:status", "Retrieving contents of folder %1", collection.name())
+                : i18nc("@info:status", "Updating contents of folder %1", collection.name());
+        kDebug() << message;
+        status(Running, message);
+
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(itemsReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(deletedReceived(Akonadi::Item::List)),
@@ -384,7 +385,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
         ModuleHandler* handler = mModuleHandlers->value(module);
         if (handler) {
             collection = handler->collection();
-            handler->resetLatestTimestamp();
+            //handler->resetLatestTimestamp(); // not sure why that was here
 
             collection.setParentCollection(topLevelCollection);
             collections << collection;

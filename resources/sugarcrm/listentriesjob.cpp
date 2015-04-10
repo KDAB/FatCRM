@@ -12,6 +12,8 @@ using namespace KDSoapGenerated;
 
 #include <QStringList>
 
+#include <akonadi/collectionmodifyjob.h>
+#include <akonadi/entityannotationsattribute.h>
 using namespace Akonadi;
 
 class ListEntriesJob::Private
@@ -30,7 +32,7 @@ public:
     }
 
 public:
-    const Collection mCollection;
+    Collection mCollection;
     ModuleHandler *mHandler;
     ListEntriesScope mListScope;
     Stage mStage;
@@ -39,6 +41,8 @@ public: // slots
     void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult);
     void listEntriesError(const KDSoapMessage &fault);
 };
+
+static const char s_timeStampKey[] = "timestamp";
 
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
@@ -60,6 +64,18 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
     } else {
         if (mStage == GetDeleted || !mListScope.isUpdateScope()) {
             kDebug() << "List Entries for" << mHandler->moduleName() << "done";
+
+            // Store timestamp into DB, to persist it across restarts
+            EntityAnnotationsAttribute *annotationsAttribute =
+                    mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
+            if (!annotationsAttribute || annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
+                annotationsAttribute->insert(s_timeStampKey, mHandler->latestTimestamp());
+                mCollection.addAttribute(annotationsAttribute);
+
+                // no parent, this job will outlive the ListEntriesJob
+                Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(mCollection);
+                Q_UNUSED(modJob);
+            }
             q->emitResult();
             return;
         }
@@ -102,9 +118,23 @@ ListEntriesJob::~ListEntriesJob()
     delete d;
 }
 
+Collection ListEntriesJob::collection() const
+{
+    return d->mCollection;
+}
+
 void ListEntriesJob::setModule(ModuleHandler *handler)
 {
     d->mHandler = handler;
+}
+
+QString ListEntriesJob::latestTimestamp() const
+{
+    EntityAnnotationsAttribute *annotationsAttribute =
+            d->mCollection.attribute<EntityAnnotationsAttribute>();
+    if (annotationsAttribute)
+        return annotationsAttribute->value(s_timeStampKey);
+    return QString();
 }
 
 void ListEntriesJob::startSugarTask()
@@ -113,7 +143,8 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT(d->mHandler != 0);
 
     d->mStage = Private::GetExisting;
-    d->mListScope = ListEntriesScope(d->mHandler->latestTimestamp());
+
+    d->mListScope = ListEntriesScope(latestTimestamp());
 
     d->mHandler->listEntries(d->mListScope);
 }

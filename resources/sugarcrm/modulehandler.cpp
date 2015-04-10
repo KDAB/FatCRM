@@ -11,6 +11,9 @@ using namespace KDSoapGenerated;
 #include <QInputDialog>
 #include <QStringList>
 
+#include <akonadi/entityannotationsattribute.h>
+using namespace Akonadi;
+
 ListEntriesScope::ListEntriesScope()
     : mOffset(0),
       mGetDeleted(false)
@@ -81,6 +84,13 @@ QString ModuleHandler::latestTimestamp() const
 void ModuleHandler::resetLatestTimestamp()
 {
     mLatestTimestamp = QString();
+}
+
+Akonadi::Collection ModuleHandler::collection() const
+{
+    Akonadi::Collection coll = handlerCollection();
+    coll.setRemoteId(moduleName());
+    return coll;
 }
 
 bool ModuleHandler::getEntry(const Akonadi::Item &item)

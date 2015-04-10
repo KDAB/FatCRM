@@ -769,10 +769,9 @@ QStringList LeadsHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection LeadsHandler::collection() const
+Akonadi::Collection LeadsHandler::handlerCollection() const
 {
     Akonadi::Collection leadCollection;
-    leadCollection.setRemoteId(moduleName());
     leadCollection.setContentMimeTypes(QStringList() << SugarLead::mimeType());
     leadCollection.setName(i18nc("@item folder name", "Leads"));
     leadCollection.setRights(Akonadi::Collection::CanChangeItem |

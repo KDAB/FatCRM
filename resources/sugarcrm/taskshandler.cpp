@@ -311,10 +311,9 @@ QStringList TasksHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection TasksHandler::collection() const
+Akonadi::Collection TasksHandler::handlerCollection() const
 {
     Akonadi::Collection taskCollection;
-    taskCollection.setRemoteId( moduleName() );
     taskCollection.setContentMimeTypes( QStringList() << KCalCore::Todo::todoMimeType() );
     taskCollection.setName( i18nc( "@item folder name", "Tasks" ) );
     taskCollection.setRights( Akonadi::Collection::CanChangeItem |

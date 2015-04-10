@@ -529,10 +529,9 @@ QStringList AccountsHandler::supportedFields() const
     return mAccessors->keys();
 }
 
-Akonadi::Collection AccountsHandler::collection() const
+Akonadi::Collection AccountsHandler::handlerCollection() const
 {
     Akonadi::Collection accountCollection;
-    accountCollection.setRemoteId(moduleName());
     accountCollection.setContentMimeTypes(QStringList() << SugarAccount::mimeType());
     accountCollection.setName(i18nc("@item folder name", "Accounts"));
     accountCollection.setRights(Akonadi::Collection::CanChangeItem |
