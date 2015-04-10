@@ -132,16 +132,6 @@ void Page::slotCollectionFetchResult(KJob *job)
             AgentManager::self()->synchronizeCollection(mCollection);
         }
 
-        /*
-         * This would be a way to get the userid (in hex form) for filtering "my opps"....
-         * For now we'll just use the user-readable user name, and make it configurable...
-        Akonadi::EntityAnnotationsAttribute* annotationsAttribute = mCollection.attribute<EntityAnnotationsAttribute>();
-        if (annotationsAttribute) {
-            qDebug() << annotationsAttribute->annotations();
-            qDebug() << QString(annotationsAttribute->annotations().value("userid"));
-        }
-        */
-
         setupCachePolicy();
         setupModel();
     } else {
