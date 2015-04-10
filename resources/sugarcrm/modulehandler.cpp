@@ -11,9 +11,6 @@ using namespace KDSoapGenerated;
 #include <QInputDialog>
 #include <QStringList>
 
-#include <akonadi/entityannotationsattribute.h>
-using namespace Akonadi;
-
 ListEntriesScope::ListEntriesScope()
     : mOffset(0),
       mGetDeleted(false)
