@@ -57,7 +57,10 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     }
 
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
-    Q_ASSERT(entries.count() == 1);
+    if (entries.count() != 1) {
+        qWarning() << "Got" << entries.count() << "entries";
+        Q_ASSERT(entries.count() == 1);
+    }
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
     kDebug() << "remote=" << remoteItem.remoteRevision()
