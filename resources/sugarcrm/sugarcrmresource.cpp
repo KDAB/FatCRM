@@ -26,7 +26,6 @@
 #include <akonadi/collection.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
-#include <akonadi/entityannotationsattribute.h>
 
 #include <kabc/addressee.h>
 
@@ -259,6 +258,9 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
 
         // getting items in batches
         setItemStreamingEnabled(true);
+#if KDE_IS_VERSION(4, 14, 0)
+        setDisableAutomaticItemDeliveryDone(true);
+#endif
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
