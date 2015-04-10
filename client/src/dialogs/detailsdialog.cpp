@@ -26,7 +26,7 @@ class DetailsDialog::Private
 public:
     explicit Private(Details *details, DetailsDialog *parent)
         : q(parent), mDetails(details),
-          mButtonBox(0), mSaveButton(0), mDiscardButton(0)
+          mButtonBox(0), mSaveButton(0)
     {
     }
 
@@ -40,11 +40,9 @@ public:
     Details *mDetails;
     QDialogButtonBox *mButtonBox;
     QPushButton *mSaveButton;
-    QPushButton *mDiscardButton;
 
 public: // slots
     void saveClicked();
-    void discardClicked();
     void dataModified();
     void saveResult(KJob *job);
 
@@ -111,15 +109,9 @@ void DetailsDialog::Private::saveClicked()
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
 
-void DetailsDialog::Private::discardClicked()
-{
-    q->setItem(mItem);
-}
-
 void DetailsDialog::Private::dataModified()
 {
     mSaveButton->setEnabled(true);
-    mDiscardButton->setEnabled(true);
 }
 
 void DetailsDialog::Private::saveResult(KJob *job)
@@ -226,12 +218,8 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     d->mSaveButton->setEnabled(false);
     connect(d->mSaveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
-    d->mDiscardButton = d->mUi.buttonBox->button(QDialogButtonBox::Discard);
-    d->mDiscardButton->setEnabled(false);
-    connect(d->mDiscardButton, SIGNAL(clicked()), this, SLOT(discardClicked()));
-
-    QPushButton *closeButton = d->mUi.buttonBox->button(QDialogButtonBox::Close);
-    connect(closeButton, SIGNAL(clicked()), this, SLOT(reject()));
+    QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
 }
 
 DetailsDialog::~DetailsDialog()
@@ -250,7 +238,6 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
     }
 
     d->mSaveButton->setEnabled(false);
-    d->mDiscardButton->setEnabled(false);
 }
 
 void DetailsDialog::updateItem(const Akonadi::Item &item)

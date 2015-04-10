@@ -28,7 +28,6 @@ private:
     Private *const d;
 
     Q_PRIVATE_SLOT(d, void saveClicked())
-    Q_PRIVATE_SLOT(d, void discardClicked())
     Q_PRIVATE_SLOT(d, void dataModified())
     Q_PRIVATE_SLOT(d, void saveResult(KJob *job))
 };

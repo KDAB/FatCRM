@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>626</width>
-    <height>601</height>
+    <height>607</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -27,7 +27,7 @@
          </widget>
         </item>
         <item>
-		 <widget class="QLabel" name="dateModified">
+         <widget class="QLabel" name="dateModified">
           <property name="text">
            <string/>
           </property>
@@ -91,25 +91,18 @@
        </layout>
       </item>
       <item row="1" column="0" colspan="2">
-       <widget class="QWidget" name="detailsContainer" native="true">
-        <property name="minimumSize">
-         <size>
-          <width>600</width>
-          <height>400</height>
-         </size>
-        </property>
-       </widget>
+       <widget class="QWidget" name="detailsContainer" native="true"/>
       </item>
      </layout>
     </widget>
    </item>
    <item>
     <widget class="QGroupBox" name="descriptionBox">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>151</height>
-      </size>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="title">
       <string>Description:</string>
@@ -136,7 +129,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Discard|QDialogButtonBox::Save</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>
