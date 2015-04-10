@@ -175,56 +175,11 @@ void DetailsWidget::setItem(const Item &item)
  */
 void DetailsWidget::setData(const QMap<QString, QString> &data)
 {
-    mDetails->setData(data);
+    mDetails->setData(data, mUi.informationGB);
     // Transform the time returned by the server to system time
     // before it is displayed.
     const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));
     mUi.dateModified->setText(localTime);
-
-    QList<QLabel *> labels = mUi.informationGB->findChildren<QLabel *>();
-    Q_FOREACH (QLabel *lb, labels) {
-        const QString key = lb->objectName();
-        if (key == "modifiedBy") {
-            if (!data.value("modifiedByName").isEmpty()) {
-                lb->setText(data.value("modifiedByName"));
-            } else if (!data.value("modifiedBy").isEmpty()) {
-                lb->setText(data.value("modifiedBy"));
-            } else {
-                lb->setText(data.value("modifiedUserName"));
-            }
-
-            lb->setProperty("modifiedUserId",
-                            qVariantFromValue<QString>(data.value("modifiedUserId")));
-            lb->setProperty("modifiedUserName",
-                            qVariantFromValue<QString>(data.value("modifiedUserName")));
-        }
-        if (key == "dateEntered") {
-            lb->setText(KDCRMUtils::formatTimestamp(data.value("dateEntered")));
-            lb->setProperty("deleted",
-                            qVariantFromValue<QString>(data.value("deleted")));
-            lb->setProperty("id",
-                            qVariantFromValue<QString>(data.value("id")));
-            lb->setProperty("contactId",
-                            qVariantFromValue<QString>(data.value("contactId")));
-            lb->setProperty("opportunityRoleFields",
-                            qVariantFromValue<QString>(data.value("opportunityRoleFields")));
-            lb->setProperty("cAcceptStatusFields",
-                            qVariantFromValue<QString>(data.value("cAcceptStatusFields")));
-            lb->setProperty("mAcceptStatusFields",
-                            qVariantFromValue<QString>(data.value("mAcceptStatusFields")));
-        }
-        if (key == "createdBy") {
-            if (!data.value("createdByName").isEmpty()) {
-                lb->setText(data.value("createdByName"));
-            } else {
-                lb->setText(data.value("createdBy"));
-            }
-            lb->setProperty("createdBy",
-                            qVariantFromValue<QString>(data.value("createdBy")));
-            lb->setProperty("createdById",
-                            qVariantFromValue<QString>(data.value("createdById")));
-        }
-    }
 
     mUi.description->setPlainText((mType != Campaign) ?
                                   data.value("description") :
@@ -238,34 +193,6 @@ void DetailsWidget::setData(const QMap<QString, QString> &data)
 QMap<QString, QString> DetailsWidget::data()
 {
     QMap<QString, QString> currentData = mDetails->getData();
-
-    // will be overwritten by the server, but good to have for comparison in case of change conflict
-    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
-
-    QList<QLabel *> labels = mUi.informationGB->findChildren<QLabel *>();
-    Q_FOREACH (QLabel *lb, labels) {
-        const QString key = lb->objectName();
-        currentData[key] = lb->text();
-        if (key == "modifiedBy") {
-            currentData["modifiedUserId"] = lb->property("modifiedUserId").toString();
-            currentData["modifiedUserName"] = lb->property("modifiedUserName").toString();
-        }
-        if (key == "dateEntered") {
-            currentData["deleted"] = lb->property("deleted").toString();
-            currentData["id"] = lb->property("id").toString();
-            currentData["contactId"] = lb->property("contactId").toString();
-            currentData["opportunityRoleFields"] =
-                lb->property("opportunityRoleFields").toString();
-            currentData["cAcceptStatusFields"] =
-                lb->property("opportunityRoleFields").toString();
-            currentData["mAcceptStatusFields"] =
-                lb->property("mAcceptStatusFields").toString();
-        }
-        if (key == "createdBy") {
-            currentData["createdBy"] = lb->property("createdBy").toString();
-            currentData["createdById"] = lb->property("createdById").toString();
-        }
-    }
 
     currentData["description"] = mUi.description->toPlainText();
     currentData["content"] = mUi.description->toPlainText();

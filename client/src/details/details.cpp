@@ -62,12 +62,22 @@ QString Details::windowTitle() const
     return QString();
 }
 
+void Details::storeProperty(const QMap<QString, QString> &data, const char *key)
+{
+    setProperty(key, data.value(key));
+}
+
+void Details::readProperty(QMap<QString, QString> &data, const char *key) const
+{
+    data.insert(key, property(key).toString());
+}
+
 /*
  * Fill in the widgets with the data and properties that belong to
  * them
  *
  */
-void Details::setData(const QMap<QString, QString> &data) const
+void Details::setData(const QMap<QString, QString> &data, QGroupBox *informationGB)
 {
     QString key;
 
@@ -113,13 +123,50 @@ void Details::setData(const QMap<QString, QString> &data) const
         if (key.isEmpty()) continue;
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
+
+    QList<QLabel *> labels = informationGB->findChildren<QLabel *>();
+    Q_FOREACH (QLabel *lb, labels) {
+        key = lb->objectName();
+        if (key == "modifiedBy") {
+            if (!data.value("modifiedByName").isEmpty()) {
+                lb->setText(data.value("modifiedByName"));
+            } else if (!data.value("modifiedBy").isEmpty()) {
+                lb->setText(data.value("modifiedBy"));
+            } else {
+                lb->setText(data.value("modifiedUserName"));
+            }
+        } else if (key == "dateEntered") {
+            lb->setText(KDCRMUtils::formatTimestamp(data.value("dateEntered")));
+        } else if (key == "createdBy") {
+            if (!data.value("createdByName").isEmpty()) {
+                lb->setText(data.value("createdByName"));
+            } else {
+                lb->setText(data.value("createdBy"));
+            }
+        }
+    }
+
+    storeProperty(data, "modifiedBy");
+    storeProperty(data, "modifiedByName");
+    storeProperty(data, "modifiedUserId");
+    storeProperty(data, "modifiedUserName");
+    storeProperty(data, "dateEntered");
+    storeProperty(data, "deleted");
+    storeProperty(data, "id");
+    storeProperty(data, "contactId");
+    storeProperty(data, "opportunityRoleFields");
+    storeProperty(data, "cAcceptStatusFields");
+    storeProperty(data, "mAcceptStatusFields");
+    storeProperty(data, "createdBy");
+    storeProperty(data, "createdByName");
+    storeProperty(data, "createdById");
+
     setDataInternal(data);
 }
 
 /*
  *
- * Return a Map with the widgets data.
- *
+ * Return a Map with the widgets data
  */
 const QMap<QString, QString> Details::getData() const
 {
@@ -163,6 +210,24 @@ const QMap<QString, QString> Details::getData() const
         if (key.isEmpty()) continue;
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));
     }
+
+    // will be overwritten by the server, but good to have for comparison in case of change conflict
+    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
+
+    readProperty(currentData, "modifiedBy");
+    readProperty(currentData, "modifiedByName");
+    readProperty(currentData, "modifiedUserId");
+    readProperty(currentData, "modifiedUserName");
+    readProperty(currentData, "dateEntered");
+    readProperty(currentData, "deleted");
+    readProperty(currentData, "id");
+    readProperty(currentData, "contactId");
+    readProperty(currentData, "opportunityRoleFields");
+    readProperty(currentData, "cAcceptStatusFields");
+    readProperty(currentData, "mAcceptStatusFields");
+    readProperty(currentData, "createdBy");
+    readProperty(currentData, "createdByName");
+    readProperty(currentData, "createdById");
 
     return currentData;
 }
