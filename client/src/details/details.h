@@ -50,6 +50,7 @@ protected:
 private:
     const DetailsType mType;
     QByteArray mResourceIdentifier;
+    QStringList mKeys;
 };
 #endif /* DETAILS_H */
 

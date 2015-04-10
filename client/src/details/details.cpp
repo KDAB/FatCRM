@@ -115,14 +115,14 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
     QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
-        if (key.isEmpty()) continue;
-        if (qobject_cast<QSpinBox *>(le->parent())) continue;
+        if (!data.contains(key)) continue; // skip internal lineedits (e.g. in spinbox)
         le->setText(data.value(key));
     }
     QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (key.isEmpty()) continue;
+        if (!data.contains(key)) continue; // skip internal combos (e.g. in KDateTimeEdit)
+        //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
         cb->setCurrentIndex(cb->findText(data.value(key)));
         // currency is unique an cannot be changed from the client atm
         if (key == "currency") {
@@ -139,26 +139,26 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
     Q_FOREACH (QCheckBox *cb, checkBoxes) {
         key = cb->objectName();
-        if (key.isEmpty()) continue;
+        if (!data.contains(key)) continue;
         cb->setChecked(data.value(key) == "1" ? true : false);
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *w, textEdits) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!data.contains(key)) continue;
         w->setPlainText(data.value(key));
     }
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!data.contains(key)) continue;
         w->setValue(data.value(key).toInt());
     }
 
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!data.contains(key)) continue;
         //qDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
@@ -190,6 +190,8 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
     }
 
     setDataInternal(data);
+
+    mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
 }
 
 /*
@@ -198,12 +200,14 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
  */
 const QMap<QString, QString> Details::getData() const
 {
+    Q_ASSERT(!mKeys.isEmpty());
+
     QMap<QString, QString> currentData;
     QString key;
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         if (qobject_cast<QSpinBox *>(le->parent())) continue;
         currentData[key] = le->text();
     }
@@ -211,7 +215,7 @@ const QMap<QString, QString> Details::getData() const
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         currentData[key] = cb->currentText();
         if (key == "currency") {
             currentData["currencyId"] = cb->property("currencyId").toString();
@@ -223,26 +227,26 @@ const QMap<QString, QString> Details::getData() const
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
     Q_FOREACH (QCheckBox *cb, checkBoxes) {
         key = cb->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         currentData[key] = cb->isChecked() ? "1" : "0";
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *w, textEdits) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         currentData[key] = w->toPlainText();
     }
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         currentData[key] = QString::number(w->value());
     }
 
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
         key = w->objectName();
-        if (key.isEmpty()) continue;
+        if (!mKeys.contains(key)) continue;
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));
     }
 
