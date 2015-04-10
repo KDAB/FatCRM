@@ -249,9 +249,9 @@ void SugarClient::createTabs()
 
     connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
 
-    //set Accounts page as current
-    mShowDetails->setChecked(mPages[ 0 ]->showsDetails());
-    mUi.tabWidget->setCurrentIndex(0);
+    //set Opportunities page as current
+    mShowDetails->setChecked(mPages[ 1 ]->showsDetails());
+    mUi.tabWidget->setCurrentIndex(1);
 }
 
 void SugarClient::slotConfigureResources()
