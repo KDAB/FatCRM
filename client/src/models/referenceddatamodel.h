@@ -19,7 +19,7 @@ public:
     ~ReferencedDataModel();
 
     /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    /* reimpl */ int rowCount(const QModelIndex &index) const;
+    /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const;
 
 private:
     class Private;

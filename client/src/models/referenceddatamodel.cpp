@@ -23,8 +23,9 @@ public: // slots
 void ReferencedDataModel::Private::dataChanged(ReferencedDataType type)
 {
     if (type == mType) {
-        q->beginResetModel();
-        q->endResetModel();
+        // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
+        q->beginRemoveRows(QModelIndex(), 0, q->rowCount()-1);
+        q->endRemoveRows();
     }
 }
 
