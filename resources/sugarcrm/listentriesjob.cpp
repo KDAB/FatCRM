@@ -68,7 +68,8 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             // Store timestamp into DB, to persist it across restarts
             EntityAnnotationsAttribute *annotationsAttribute =
                     mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
-            if (!annotationsAttribute || annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
+            Q_ASSERT(annotationsAttribute);
+            if (annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
                 annotationsAttribute->insert(s_timeStampKey, mHandler->latestTimestamp());
                 mCollection.addAttribute(annotationsAttribute);
 
