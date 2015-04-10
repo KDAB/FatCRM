@@ -5,10 +5,47 @@
 
 using namespace Akonadi;
 
+static QStringList storedProperties()
+{
+    static QStringList props;
+    if (props.isEmpty()) {
+        props << "modifiedBy";
+        props << "modifiedByName";
+        props << "modifiedUserId";
+        props << "modifiedUserName";
+        props << "dateEntered";
+        props << "deleted";
+        props << "id";
+        props << "contactId";
+        props << "opportunityRoleFields";
+        props << "cAcceptStatusFields";
+        props << "mAcceptStatusFields";
+        props << "createdBy";
+        props << "createdByName";
+        props << "createdById";
+    }
+    return props;
+}
+
 Details::Details(DetailsType type, QWidget *parent)
     : QWidget(parent), mType(type)
-
 {
+    // connect to changed signals
+    QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
+    Q_FOREACH (QLineEdit *le, lineEdits)
+        connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
+    QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+    Q_FOREACH (QComboBox *cb, comboBoxes)
+        connect(cb, SIGNAL(currentIndexChanged(int)), this, SIGNAL(modified()));
+    QList<QCheckBox *> checkBoxes =  findChildren<QCheckBox *>();
+    Q_FOREACH (QCheckBox *cb, checkBoxes)
+        connect(cb, SIGNAL(toggled(bool)), this, SIGNAL(modified()));
+    QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
+    Q_FOREACH (QTextEdit *te, textEdits)
+        connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
+    Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>())
+        connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
+
     initialize();
 }
 
@@ -41,6 +78,9 @@ void Details::clear()
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
         w->setDate(QDate());
     }
+    Q_FOREACH (const QString &prop, storedProperties()) {
+        setProperty(prop.toLatin1(), QVariant());
+    }
 }
 
 void Details::setResourceIdentifier(const QByteArray &ident)
@@ -60,16 +100,6 @@ QString Details::windowTitle() const
     }
 
     return QString();
-}
-
-void Details::storeProperty(const QMap<QString, QString> &data, const char *key)
-{
-    setProperty(key, data.value(key));
-}
-
-void Details::readProperty(QMap<QString, QString> &data, const char *key) const
-{
-    data.insert(key, property(key).toString());
 }
 
 /*
@@ -146,20 +176,9 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
         }
     }
 
-    storeProperty(data, "modifiedBy");
-    storeProperty(data, "modifiedByName");
-    storeProperty(data, "modifiedUserId");
-    storeProperty(data, "modifiedUserName");
-    storeProperty(data, "dateEntered");
-    storeProperty(data, "deleted");
-    storeProperty(data, "id");
-    storeProperty(data, "contactId");
-    storeProperty(data, "opportunityRoleFields");
-    storeProperty(data, "cAcceptStatusFields");
-    storeProperty(data, "mAcceptStatusFields");
-    storeProperty(data, "createdBy");
-    storeProperty(data, "createdByName");
-    storeProperty(data, "createdById");
+    Q_FOREACH (const QString &prop, storedProperties()) {
+        setProperty(prop.toLatin1(), data.value(prop));
+    }
 
     setDataInternal(data);
 }
@@ -214,20 +233,9 @@ const QMap<QString, QString> Details::getData() const
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     currentData["dateModified"] = KDCRMUtils::currentTimestamp();
 
-    readProperty(currentData, "modifiedBy");
-    readProperty(currentData, "modifiedByName");
-    readProperty(currentData, "modifiedUserId");
-    readProperty(currentData, "modifiedUserName");
-    readProperty(currentData, "dateEntered");
-    readProperty(currentData, "deleted");
-    readProperty(currentData, "id");
-    readProperty(currentData, "contactId");
-    readProperty(currentData, "opportunityRoleFields");
-    readProperty(currentData, "cAcceptStatusFields");
-    readProperty(currentData, "mAcceptStatusFields");
-    readProperty(currentData, "createdBy");
-    readProperty(currentData, "createdByName");
-    readProperty(currentData, "createdById");
+    Q_FOREACH (const QString &prop, storedProperties()) {
+        currentData.insert(prop, property(prop.toLatin1()).toString());
+    }
 
     return currentData;
 }

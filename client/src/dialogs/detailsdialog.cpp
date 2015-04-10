@@ -53,7 +53,7 @@ private:
     QString currentReportsToId() const;
 };
 
-// TODO copied from detailswidget, this needs to be refactored
+// similar with detailswidget
 void DetailsDialog::Private::setData(const QMap<QString, QString> data)
 {
     mDetails->setData(data, mUi.informationGB);
@@ -67,7 +67,7 @@ void DetailsDialog::Private::setData(const QMap<QString, QString> data)
                                   data.value("content"));
 }
 
-// TODO copied from detailswidget, this needs to be refactored
+// similar with detailswidget
 QMap<QString, QString> DetailsDialog::Private::data() const
 {
     QMap<QString, QString> currentData = mDetails->getData();
@@ -122,12 +122,14 @@ void DetailsDialog::Private::saveResult(KJob *job)
         // TODO
         return;
     }
-
+    q->accept();
+#if 0
     ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
     if (createJob != 0) {
         kDebug() << "item" << createJob->item().id() << "created";
         q->setItem(createJob->item());
     }
+#endif
 }
 
 QString DetailsDialog::Private::currentAccountId() const
@@ -192,25 +194,7 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     QVBoxLayout *detailsLayout = new QVBoxLayout(d->mUi.detailsContainer);
     detailsLayout->addWidget(details);
 
-    QList<QLineEdit *> lineEdits = d->mDetails->findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits) {
-        connect(le, SIGNAL(textChanged(QString)), this, SLOT(dataModified()));
-    }
-
-    QList<QComboBox *> comboBoxes = d->mDetails->findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
-        connect(cb, SIGNAL(currentIndexChanged(int)), this, SLOT(dataModified()));
-    }
-
-    QList<QCheckBox *> checkBoxes = d->mDetails->findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes) {
-        connect(cb, SIGNAL(toggled(bool)), this, SLOT(dataModified()));
-    }
-
-    QList<QTextEdit *> textEdits = d->mDetails->findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits) {
-        connect(te, SIGNAL(textChanged()), this, SLOT(dataModified()));
-    }
+    connect(d->mDetails, SIGNAL(modified()), this, SLOT(dataModified()));
 
     connect(d->mUi.description, SIGNAL(textChanged()), this,  SLOT(dataModified()));
 

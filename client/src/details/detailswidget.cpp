@@ -32,7 +32,7 @@ DetailsWidget::~DetailsWidget()
 
 /*
  * Create a detail widget of mType and layout it
- *
+ * (called by constructor)
  */
 void DetailsWidget::initialize()
 {
@@ -56,22 +56,8 @@ void DetailsWidget::initialize()
  */
 void DetailsWidget::setConnections()
 {
-    QList<QLineEdit *> lineEdits =  mDetails->findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits)
-        connect(le, SIGNAL(textChanged(QString)),
-                this, SLOT(slotEnableSaving()));
-    QList<QComboBox *> comboBoxes =  mDetails->findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes)
-        connect(cb, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(slotEnableSaving()));
-    QList<QCheckBox *> checkBoxes =  mDetails->findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes)
-        connect(cb, SIGNAL(toggled(bool)),
-                this, SLOT(slotEnableSaving()));
-    QList<QTextEdit *> textEdits = mDetails->findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits)
-        connect(te, SIGNAL(textChanged()),
-                this, SLOT(slotEnableSaving()));
+    connect(mDetails, SIGNAL(modified()),
+            this, SLOT(slotEnableSaving()));
     connect(mUi.description, SIGNAL(textChanged()),
             this,  SLOT(slotEnableSaving()));
     connect(mUi.saveButton, SIGNAL(clicked()),
@@ -89,22 +75,8 @@ void DetailsWidget::setConnections()
  */
 void DetailsWidget::reset()
 {
-    QList<QLineEdit *> lineEdits =  mDetails->findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits)
-        disconnect(le, SIGNAL(textChanged(QString)),
-                   this, SLOT(slotEnableSaving()));
-    QList<QComboBox *> comboBoxes =  mDetails->findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes)
-        disconnect(cb, SIGNAL(currentIndexChanged(int)),
-                   this, SLOT(slotEnableSaving()));
-    QList<QCheckBox *> checkBoxes =  mDetails->findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes)
-        disconnect(cb, SIGNAL(toggled(bool)),
-                   this, SLOT(slotEnableSaving()));
-    QList<QTextEdit *> textEdits = mDetails->findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *te, textEdits)
-        disconnect(te, SIGNAL(textChanged()),
-                   this, SLOT(slotEnableSaving()));
+    disconnect(mDetails, SIGNAL(modified()),
+               this, SLOT(slotEnableSaving()));
     disconnect(mUi.description, SIGNAL(textChanged()),
                this,  SLOT(slotEnableSaving()));
     mUi.saveButton->setEnabled(false);

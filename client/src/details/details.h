@@ -32,6 +32,9 @@ public:
 
     QString windowTitle() const;
 
+Q_SIGNALS:
+    void modified();
+
 protected:
     virtual void initialize();
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
@@ -45,9 +48,6 @@ protected:
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
 
 private:
-    void storeProperty(const QMap<QString, QString> &data, const char *key);
-    void readProperty(QMap<QString, QString> &data, const char *key) const;
-
     const DetailsType mType;
     QByteArray mResourceIdentifier;
 };
