@@ -162,6 +162,8 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     d->mApplyButton = d->mUi.buttonBox->button(QDialogButtonBox::Apply);
     d->mApplyButton->setText(i18nc("@action:button", "Select for work"));
     connect(d->mApplyButton, SIGNAL(clicked()), SLOT(applyResourceSelection()));
+    connect(d->mUi.resources->view(), SIGNAL(doubleClicked(QModelIndex)),
+            this, SLOT(applyResourceSelection()));
 
     connect(AgentManager::self(), SIGNAL(instanceNameChanged(Akonadi::AgentInstance)),
             SLOT(agentInstanceChanged(Akonadi::AgentInstance)));
