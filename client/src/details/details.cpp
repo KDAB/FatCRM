@@ -30,6 +30,16 @@ static QStringList storedProperties()
 Details::Details(DetailsType type, QWidget *parent)
     : QWidget(parent), mType(type)
 {
+    // delayed init, wait for subclasses to create GUI
+    QMetaObject::invokeMethod(this, "doConnects", Qt::QueuedConnection);
+}
+
+Details::~Details()
+{
+}
+
+void Details::doConnects()
+{
     // connect to changed signals
     Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>())
         connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
@@ -43,16 +53,6 @@ Details::Details(DetailsType type, QWidget *parent)
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>())
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
-
-    initialize();
-}
-
-Details::~Details()
-{
-}
-
-void Details::initialize()
-{
 }
 
 /*

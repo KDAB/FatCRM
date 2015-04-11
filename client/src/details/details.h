@@ -36,7 +36,6 @@ Q_SIGNALS:
     void modified();
 
 protected:
-    virtual void initialize();
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
 
     QStringList industryItems() const;
@@ -46,6 +45,9 @@ protected:
     QStringList salutationItems() const;
 
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
+
+private Q_SLOTS:
+    void doConnects();
 
 private:
     const DetailsType mType;
