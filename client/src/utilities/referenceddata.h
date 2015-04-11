@@ -7,6 +7,12 @@
 
 template <typename K, typename V> class QMap;
 
+/**
+ * @brief Singleton holding all reference data, for comboboxes
+ * (accounts list, assigned-to list, etc.)
+ *
+ * Used with a ReferencedDataModel on top.
+ */
 class ReferencedData : public QObject
 {
     Q_OBJECT
@@ -27,6 +33,7 @@ public:
     QMap<QString, QString> data(ReferencedDataType type) const;
 
 Q_SIGNALS:
+    void cleared(ReferencedDataType type);
     void dataChanged(ReferencedDataType type);
 
 private:

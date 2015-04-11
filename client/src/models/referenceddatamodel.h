@@ -25,7 +25,8 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT(d, void dataChanged(ReferencedDataType type))
+    Q_PRIVATE_SLOT(d, void slotDataChanged(ReferencedDataType type))
+    Q_PRIVATE_SLOT(d, void slotCleared(ReferencedDataType type))
 };
 
 #endif

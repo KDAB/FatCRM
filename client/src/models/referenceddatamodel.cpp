@@ -17,24 +17,36 @@ public:
     ReferencedData *mData;
 
 public: // slots
-    void dataChanged(ReferencedDataType type);
+    void slotDataChanged(ReferencedDataType type);
+    void slotCleared(ReferencedDataType type);
 };
 
-void ReferencedDataModel::Private::dataChanged(ReferencedDataType type)
+void ReferencedDataModel::Private::slotDataChanged(ReferencedDataType type)
 {
     if (type == mType) {
         // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
-        q->beginRemoveRows(QModelIndex(), 0, q->rowCount()-1);
+        emit q->dataChanged(q->index(0,0), q->index(0,0)); // hack to get into QComboBoxPrivate::_q_dataChanged
+    }
+}
+
+void ReferencedDataModel::Private::slotCleared(ReferencedDataType type)
+{
+    if (type == mType) {
+        // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
+        q->beginRemoveRows(QModelIndex(), 0, q->rowCount() - 1);
         q->endRemoveRows();
     }
 }
+
 
 ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
     : QAbstractListModel(parent), d(new Private(this, type))
 {
     d->mData = ReferencedData::instance();
     connect(d->mData, SIGNAL(dataChanged(ReferencedDataType)),
-            this, SLOT(dataChanged(ReferencedDataType)));
+            this, SLOT(slotDataChanged(ReferencedDataType)));
+    connect(d->mData, SIGNAL(cleared(ReferencedDataType)),
+            this, SLOT(slotCleared(ReferencedDataType)));
 }
 
 ReferencedDataModel::~ReferencedDataModel()

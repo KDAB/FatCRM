@@ -58,7 +58,7 @@ void ReferencedData::clear(ReferencedDataType type)
     QMap<QString, QString> &map = d->mapForType(type);
     if (!map.isEmpty()) {
         map.clear();
-        emit dataChanged(type);
+        emit cleared(type);
     }
 }
 
@@ -82,6 +82,7 @@ void ReferencedData::setReferencedData(ReferencedDataType type, const QString &i
     if (findIt != map.end()) {
         if (data != findIt.value()) {
             *findIt = data;
+            // TODO if we used a (sorted?) vector we could emit a proper row number here
             emit dataChanged(type);
         }
     } else {
