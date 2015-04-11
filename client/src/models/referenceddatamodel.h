@@ -26,6 +26,10 @@ private:
     Private *const d;
 
     Q_PRIVATE_SLOT(d, void slotDataChanged(int))
+    Q_PRIVATE_SLOT(d, void slotRowsAboutToBeInserted(int, int))
+    Q_PRIVATE_SLOT(d, void slotRowsInserted())
+    Q_PRIVATE_SLOT(d, void slotRowsAboutToBeRemoved(int, int))
+    Q_PRIVATE_SLOT(d, void slotRowsRemoved())
 };
 
 #endif

@@ -33,6 +33,10 @@ public:
 
 Q_SIGNALS:
     void dataChanged(int row);
+    void rowsAboutToBeInserted(int start, int end);
+    void rowsInserted();
+    void rowsAboutToBeRemoved(int start, int end);
+    void rowsRemoved();
 
 private:
     explicit ReferencedData(ReferencedDataType type, QObject *parent = 0);

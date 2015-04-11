@@ -17,6 +17,10 @@ public:
 
 public: // slots
     void slotDataChanged(int row);
+    void slotRowsAboutToBeInserted(int, int);
+    void slotRowsInserted();
+    void slotRowsAboutToBeRemoved(int, int);
+    void slotRowsRemoved();
 };
 
 void ReferencedDataModel::Private::slotDataChanged(int row)
@@ -26,14 +30,35 @@ void ReferencedDataModel::Private::slotDataChanged(int row)
     emit q->dataChanged(idx, idx);
 }
 
+void ReferencedDataModel::Private::slotRowsAboutToBeInserted(int start, int end)
+{
+    q->beginInsertRows(QModelIndex(), start, end);
+}
 
+void ReferencedDataModel::Private::slotRowsInserted()
+{
+    q->endInsertRows();
+}
+
+void ReferencedDataModel::Private::slotRowsAboutToBeRemoved(int start, int end)
+{
+    q->beginRemoveRows(QModelIndex(), start, end);
+}
+
+void ReferencedDataModel::Private::slotRowsRemoved()
+{
+    q->endRemoveRows();
+}
 
 ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
     d->mData = ReferencedData::instance(type);
-    connect(d->mData, SIGNAL(dataChanged()),
-            this, SLOT(slotDataChanged()));
+    connect(d->mData, SIGNAL(dataChanged(int)), this, SLOT(slotDataChanged(int)));
+    connect(d->mData, SIGNAL(rowsAboutToBeInserted(int, int)), this, SLOT(slotRowsAboutToBeInserted(int, int)));
+    connect(d->mData, SIGNAL(rowsInserted()), this, SLOT(slotRowsInserted()));
+    connect(d->mData, SIGNAL(rowsAboutToBeRemoved(int, int)), this, SLOT(slotRowsAboutToBeRemoved(int, int)));
+    connect(d->mData, SIGNAL(rowsRemoved()), this, SLOT(slotRowsRemoved()));
 }
 
 ReferencedDataModel::~ReferencedDataModel()

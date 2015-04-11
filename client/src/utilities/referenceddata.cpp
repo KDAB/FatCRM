@@ -77,8 +77,10 @@ void ReferencedData::setReferencedData(const QString &id, const QString &data)
         }
     } else {
         findIt = qLowerBound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
+        const int row = findIt - d->mVector.begin();
+        emit rowsAboutToBeInserted(row, row);
         d->mVector.insert(findIt, KeyValue(id, data));
-        emit dataChanged(findIt - d->mVector.begin()); // ## TODO rowsAboutToBeInserted, rowsInserted
+        emit rowsInserted();
     }
 }
 
@@ -87,8 +89,9 @@ void ReferencedData::removeReferencedData(const QString &id)
     KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
     if (findIt != d->mVector.end()) {
         const int row = findIt - d->mVector.begin();
+        emit rowsAboutToBeRemoved(row, row);
         d->mVector.remove(row);
-        emit dataChanged(row); // ### TODO proper signals
+        emit rowsRemoved();
     }
 }
 
