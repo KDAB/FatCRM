@@ -7,46 +7,33 @@ class ReferencedDataModel::Private
     ReferencedDataModel *const q;
 
 public:
-    Private(ReferencedDataModel *parent, ReferencedDataType type)
-        : q(parent), mType(type)
+    Private(ReferencedDataModel *parent)
+        : q(parent)
     {
     }
 
 public:
-    const ReferencedDataType mType;
     ReferencedData *mData;
 
 public: // slots
-    void slotDataChanged(ReferencedDataType type);
-    void slotCleared(ReferencedDataType type);
+    void slotDataChanged(int row);
 };
 
-void ReferencedDataModel::Private::slotDataChanged(ReferencedDataType type)
+void ReferencedDataModel::Private::slotDataChanged(int row)
 {
-    if (type == mType) {
-        // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
-        emit q->dataChanged(q->index(0,0), q->index(0,0)); // hack to get into QComboBoxPrivate::_q_dataChanged
-    }
+    // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
+    const QModelIndex idx = q->index(row, 0);
+    emit q->dataChanged(idx, idx);
 }
 
-void ReferencedDataModel::Private::slotCleared(ReferencedDataType type)
-{
-    if (type == mType) {
-        // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
-        q->beginRemoveRows(QModelIndex(), 0, q->rowCount() - 1);
-        q->endRemoveRows();
-    }
-}
 
 
 ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
-    : QAbstractListModel(parent), d(new Private(this, type))
+    : QAbstractListModel(parent), d(new Private(this))
 {
-    d->mData = ReferencedData::instance();
-    connect(d->mData, SIGNAL(dataChanged(ReferencedDataType)),
-            this, SLOT(slotDataChanged(ReferencedDataType)));
-    connect(d->mData, SIGNAL(cleared(ReferencedDataType)),
-            this, SLOT(slotCleared(ReferencedDataType)));
+    d->mData = ReferencedData::instance(type);
+    connect(d->mData, SIGNAL(dataChanged()),
+            this, SLOT(slotDataChanged()));
 }
 
 ReferencedDataModel::~ReferencedDataModel()
@@ -77,7 +64,7 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         }
         --row;
 
-        const QPair<QString, QString> pair = d->mData->data(d->mType, row);
+        const QPair<QString, QString> pair = d->mData->data(row);
 
         switch (role) {
         case IdRole: return pair.first;
@@ -94,7 +81,7 @@ int ReferencedDataModel::rowCount(const QModelIndex &index) const
 {
     if (!index.isValid()) {
         // if there is data, report one row more for the "N/A" entry (clear field)
-        const int count = d->mData->count(d->mType);
+        const int count = d->mData->count();
         if (count > 0) {
             return count + 1;
         }

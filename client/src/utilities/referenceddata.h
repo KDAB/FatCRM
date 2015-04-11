@@ -8,7 +8,7 @@
 template <typename K, typename V> class QPair;
 
 /**
- * @brief Singleton holding all reference data, for comboboxes
+ * @brief Per-type singleton holding all reference data, for comboboxes
  * (accounts list, assigned-to list, etc.)
  *
  * Used with a ReferencedDataModel on top.
@@ -18,27 +18,24 @@ class ReferencedData : public QObject
     Q_OBJECT
 
 public:
-    static ReferencedData *instance();
+    static ReferencedData *instance(ReferencedDataType type);
 
     ~ReferencedData();
 
-    void clear(ReferencedDataType type);
+//    void clear();
 
-    void clearAll();
+    void setReferencedData(const QString &id, const QString &data);
 
-    void setReferencedData(ReferencedDataType type, const QString &id, const QString &data);
+    void removeReferencedData(const QString &id);
 
-    void removeReferencedData(ReferencedDataType type, const QString &id);
-
-    QPair<QString, QString> data(ReferencedDataType type, int row) const;
-    int count(ReferencedDataType type) const;
+    QPair<QString, QString> data(int row) const;
+    int count() const;
 
 Q_SIGNALS:
-    void cleared(ReferencedDataType type);
-    void dataChanged(ReferencedDataType type);
+    void dataChanged(int row);
 
 private:
-    explicit ReferencedData(QObject *parent = 0);
+    explicit ReferencedData(ReferencedDataType type, QObject *parent = 0);
 
 private:
     class Private;

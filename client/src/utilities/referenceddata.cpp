@@ -1,6 +1,7 @@
 #include "referenceddata.h"
 
 #include <QVector>
+#include <QMap>
 #include <QPair>
 
 struct KeyValue
@@ -32,40 +33,19 @@ public:
     }
 
 public:
-    static ReferencedData *sInstance;
-
-    KeyValueVector mAccounts;
-    KeyValueVector mAssignedTo;
-    KeyValueVector mCampaigns;
-    KeyValueVector mReportsTo;
-
-public:
-    KeyValueVector &vectorForType(ReferencedDataType type);
+    KeyValueVector mVector;
+    ReferencedDataType mType;
 };
 
-KeyValueVector &ReferencedData::Private::vectorForType(ReferencedDataType type)
+ReferencedData *ReferencedData::instance(ReferencedDataType type)
 {
-    switch (type) {
-    case AccountRef: return mAccounts;
-    case AssignedToRef: return mAssignedTo;
-    case CampaignRef: return mCampaigns;
-    case ReportsToRef: return mReportsTo;
+    static QMap<ReferencedDataType, ReferencedData *> s_instances;
+    ReferencedData* instance = s_instances.value(type);
+    if (!instance) {
+        instance = new ReferencedData(type);
+        s_instances.insert(type, instance);
     }
-
-    Q_ASSERT(false);
-    static KeyValueVector dummy;
-    return dummy;
-}
-
-ReferencedData *ReferencedData::Private::sInstance = 0;
-
-ReferencedData *ReferencedData::instance()
-{
-    if (Private::sInstance == 0) {
-        Private::sInstance = new ReferencedData();
-    }
-
-    return Private::sInstance;
+    return instance;
 }
 
 ReferencedData::~ReferencedData()
@@ -73,74 +53,63 @@ ReferencedData::~ReferencedData()
     delete d;
 }
 
-void ReferencedData::clear(ReferencedDataType type)
+#if 0
+void ReferencedData::clear()
 {
-    KeyValueVector &map = d->vectorForType(type);
-    if (!map.isEmpty()) {
-        map.clear();
+    if (!mVector.isEmpty()) {
+        mVector.clear();
         emit cleared(type);
     }
 }
+#endif
 
-void ReferencedData::clearAll()
-{
-    clear(AccountRef);
-    clear(AssignedToRef);
-    clear(CampaignRef);
-    clear(ReportsToRef);
-}
-
-void ReferencedData::setReferencedData(ReferencedDataType type, const QString &id, const QString &data)
+void ReferencedData::setReferencedData(const QString &id, const QString &data)
 {
     if (id.isEmpty()) {
         return;
     }
 
-    KeyValueVector &vector = d->vectorForType(type);
-
-    KeyValueVector::iterator findIt = vector.binaryFind(id);
-    if (findIt != vector.end()) {
+    KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
+    if (findIt != d->mVector.end()) {
         if (data != findIt->value) {
             findIt->value = data;
-            // TODO emit a proper row number here
-            emit dataChanged(type);
+            emit dataChanged(findIt - d->mVector.begin());
         }
     } else {
-        findIt = qLowerBound(vector.begin(), vector.end(), KeyValue(id), KeyValue::lessThan);
-        vector.insert(findIt, KeyValue(id, data));
-        emit dataChanged(type);
+        findIt = qLowerBound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
+        d->mVector.insert(findIt, KeyValue(id, data));
+        emit dataChanged(findIt - d->mVector.begin()); // ## TODO rowsAboutToBeInserted, rowsInserted
     }
 }
 
-void ReferencedData::removeReferencedData(ReferencedDataType type, const QString &id)
+void ReferencedData::removeReferencedData(const QString &id)
 {
-    KeyValueVector &vector = d->vectorForType(type);
-    KeyValueVector::iterator findIt = vector.binaryFind(id);
-    if (findIt != vector.end()) {
-        const int row = findIt - vector.begin();
-        vector.remove(row);
-        emit dataChanged(type);
+    KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
+    if (findIt != d->mVector.end()) {
+        const int row = findIt - d->mVector.begin();
+        d->mVector.remove(row);
+        emit dataChanged(row); // ### TODO proper signals
     }
 }
 
-QPair<QString, QString> ReferencedData::data(ReferencedDataType type, int row) const
+QPair<QString, QString> ReferencedData::data(int row) const
 {
-    KeyValueVector &vector = d->vectorForType(type);
-    KeyValueVector::const_iterator it = vector.constBegin();
-    it += row;
-    if (it != vector.constEnd())
-        return qMakePair(it->key, it->value);
+    if (row >= 0 && row < d->mVector.count()) {
+        const KeyValue &it = d->mVector.at(row);
+        return qMakePair(it.key, it.value);
+    }
     return qMakePair(QString(), QString());
 }
 
-int ReferencedData::count(ReferencedDataType type) const
+int ReferencedData::count() const
 {
-    return d->vectorForType(type).count();
+    return d->mVector.count();
 }
 
-ReferencedData::ReferencedData(QObject *parent)
+ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
     : QObject(parent), d(new Private(this))
 {
+    d->mType = type;
 }
 
 #include "referenceddata.moc"

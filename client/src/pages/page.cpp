@@ -528,69 +528,72 @@ QString Page::typeToString(const DetailsType &type) const
 
 void Page::addAccountsData()
 {
-    ReferencedData *data = ReferencedData::instance();
+    ReferencedData *accountRefData = ReferencedData::instance(AccountRef);
+    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
-            data->setReferencedData(AccountRef, account.id(), account.name());
-            data->setReferencedData(AssignedToRef, account.assignedUserId(), account.assignedUserName());
+            accountRefData->setReferencedData(account.id(), account.name());
+            assignedToRefData->setReferencedData(account.assignedUserId(), account.assignedUserName());
         }
     }
 }
 
 void Page::addCampaignsData()
 {
-    ReferencedData *data = ReferencedData::instance();
+    ReferencedData *campaignRefData = ReferencedData::instance(CampaignRef);
+    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
-            data->setReferencedData(CampaignRef, campaign.id(), campaign.name());
-            data->setReferencedData(AssignedToRef, campaign.assignedUserId(), campaign.assignedUserName());
+            campaignRefData->setReferencedData(campaign.id(), campaign.name());
+            assignedToRefData->setReferencedData(campaign.assignedUserId(), campaign.assignedUserName());
         }
     }
 }
 
 void Page::addContactsData()
 {
-    ReferencedData *data = ReferencedData::instance();
+    ReferencedData *reportsToRefData = ReferencedData::instance(ReportsToRef);
+    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             const QString fullName = addressee.givenName() + " " + addressee.familyName();
-            data->setReferencedData(ReportsToRef, addressee.custom("FATCRM", "X-ContactId"), fullName);
-            data->setReferencedData(AssignedToRef, addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+            reportsToRefData->setReferencedData(addressee.custom("FATCRM", "X-ContactId"), fullName);
+            assignedToRefData->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
 }
 
 void Page::addLeadsData()
 {
-    ReferencedData *data = ReferencedData::instance();
+    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarLead>()) {
             const SugarLead lead = item.payload<SugarLead>();
-            data->setReferencedData(AssignedToRef, lead.assignedUserId(), lead.assignedUserName());
+            assignedToRefData->setReferencedData(lead.assignedUserId(), lead.assignedUserName());
         }
     }
 }
 
 void Page::addOpportunitiesData()
 {
-    ReferencedData *data = ReferencedData::instance();
+    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            data->setReferencedData(AssignedToRef, opportunity.assignedUserId(), opportunity.assignedUserName());
+            assignedToRefData->setReferencedData(opportunity.assignedUserId(), opportunity.assignedUserName());
         }
     }
 }
@@ -599,8 +602,8 @@ void Page::removeAccountsData(Akonadi::Item &item)
 {
     if (item.hasPayload<SugarAccount>()) {
         const SugarAccount account = item.payload<SugarAccount>();
-        ReferencedData *data = ReferencedData::instance();
-        data->removeReferencedData(AccountRef, account.id());
+        ReferencedData *data = ReferencedData::instance(AccountRef);
+        data->removeReferencedData(account.id());
     }
 }
 
@@ -608,7 +611,7 @@ void Page::removeCampaignsData(Akonadi::Item &item)
 {
     if (item.hasPayload<SugarCampaign>()) {
         const SugarCampaign campaign = item.payload<SugarCampaign>();
-        ReferencedData *data = ReferencedData::instance();
-        data->removeReferencedData(CampaignRef, campaign.id());
+        ReferencedData *data = ReferencedData::instance(CampaignRef);
+        data->removeReferencedData(campaign.id());
     }
 }
