@@ -15,10 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout_3">
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Details</string>
-     </property>
+    <widget class="QWidget" name="widget" native="true">
      <layout class="QFormLayout" name="formLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="label">
@@ -120,10 +117,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>Other Details</string>
-     </property>
+    <widget class="QWidget" name="widget_2" native="true">
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_8">
