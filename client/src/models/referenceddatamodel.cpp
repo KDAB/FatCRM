@@ -77,16 +77,11 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         }
         --row;
 
-        const QMap<QString, QString> map = d->mData->data(d->mType);
+        const QPair<QString, QString> pair = d->mData->data(d->mType, row);
 
-        QMap<QString, QString>::const_iterator it = map.constBegin();
-        it += row;
-        if (it != map.constEnd()) {
-            switch (role) {
-            case IdRole: return it.key();
-            case Qt::DisplayRole: return elideText(it.value());
-            default: return QVariant();
-            }
+        switch (role) {
+        case IdRole: return pair.first;
+        case Qt::DisplayRole: return elideText(pair.second);
         }
 
         return QVariant();
@@ -99,7 +94,7 @@ int ReferencedDataModel::rowCount(const QModelIndex &index) const
 {
     if (!index.isValid()) {
         // if there is data, report one row more for the "N/A" entry (clear field)
-        const int count = d->mData->data(d->mType).count();
+        const int count = d->mData->count(d->mType);
         if (count > 0) {
             return count + 1;
         }

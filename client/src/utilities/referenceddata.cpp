@@ -1,6 +1,7 @@
 #include "referenceddata.h"
 
 #include <QMap>
+#include <QPair>
 
 class ReferencedData::Private
 {
@@ -100,9 +101,19 @@ void ReferencedData::removeReferencedData(ReferencedDataType type, const QString
     }
 }
 
-QMap<QString, QString> ReferencedData::data(ReferencedDataType type) const
+QPair<QString, QString> ReferencedData::data(ReferencedDataType type, int row) const
 {
-    return d->mapForType(type);
+    QMap<QString, QString> &map = d->mapForType(type);
+    QMap<QString, QString>::const_iterator it = map.constBegin();
+    it += row;
+    if (it != map.constEnd())
+        return qMakePair(it.key(), it.value());
+    return qMakePair(QString(), QString());
+}
+
+int ReferencedData::count(ReferencedDataType type) const
+{
+    return d->mapForType(type).count();
 }
 
 ReferencedData::ReferencedData(QObject *parent)
