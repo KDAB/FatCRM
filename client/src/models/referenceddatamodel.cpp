@@ -42,6 +42,15 @@ ReferencedDataModel::~ReferencedDataModel()
     delete d;
 }
 
+static QString elideText(const QString& text)
+{
+    // huge text (e.g. account names) makes combos extremely wide
+    static const int maxWidth = 50;
+    if (text.length() < maxWidth)
+        return text;
+    return text.left(maxWidth - 3) + "...";
+}
+
 QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
 {
     if (index.isValid()) {
@@ -63,7 +72,7 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         if (it != map.constEnd()) {
             switch (role) {
             case IdRole: return it.key();
-            case Qt::DisplayRole: return it.value();
+            case Qt::DisplayRole: return elideText(it.value());
             default: return QVariant();
             }
         }
