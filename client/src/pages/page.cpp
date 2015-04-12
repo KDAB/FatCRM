@@ -296,6 +296,9 @@ void Page::initialize()
     connect(mUi.reloadSB, SIGNAL(editingFinished()),
             this, SLOT(slotReloadIntervalChanged()));
 
+    QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
+    connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
+
     // automatically get the full data when items change
     mChangeRecorder->itemFetchScope().fetchFullPayload(true);
     mChangeRecorder->setMimeTypeMonitored(mMimeType);
