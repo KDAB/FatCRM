@@ -71,7 +71,6 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             Q_ASSERT(annotationsAttribute);
             if (annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
                 annotationsAttribute->insert(s_timeStampKey, mHandler->latestTimestamp());
-                mCollection.addAttribute(annotationsAttribute);
 
                 // no parent, this job will outlive the ListEntriesJob
                 Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(mCollection);
