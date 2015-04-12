@@ -100,6 +100,7 @@ void SugarClient::createMenus()
 
     mViewMenu = menuBar()->addMenu(tr("&View"));
     QAction *printAction = new QAction(tr("Print Report..."), this);
+    printAction->setShortcut(QKeySequence::Print);
     connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
