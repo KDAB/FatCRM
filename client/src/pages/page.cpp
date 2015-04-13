@@ -90,6 +90,7 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     }
 
     mCollection = Collection();
+    mResourceIdentifier = identifier;
 
     mDetailsWidget->mDetails->setResourceIdentifier(identifier);
 
@@ -180,8 +181,7 @@ void Page::slotNewClicked()
         mDetailsWidget->clearFields();
         connect(mDetailsWidget, SIGNAL(saveItem()), this, SLOT(slotAddItem()));
     } else {
-        DetailsDialog *dialog = new DetailsDialog(DetailsWidget::createDetailsForType(mType), this);
-
+        DetailsDialog *dialog = createDetailsDialog();
         Item item;
         item.setParentCollection(mCollection);
         dialog->setItem(item);
@@ -498,7 +498,7 @@ void Page::slotItemDoubleClicked(const QModelIndex &index)
 {
     const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
-        DetailsDialog *dialog = new DetailsDialog(DetailsWidget::createDetailsForType(mType), this);
+        DetailsDialog *dialog = createDetailsDialog();
         dialog->setItem(item);
         connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
                 dialog, SLOT(updateItem(Akonadi::Item)));
@@ -527,6 +527,13 @@ QString Page::typeToString(const DetailsType &type) const
     } else {
         return QString();
     }
+}
+
+DetailsDialog *Page::createDetailsDialog()
+{
+    Details* details = DetailsWidget::createDetailsForType(mType);
+    details->setResourceIdentifier(mResourceIdentifier);
+    return new DetailsDialog(details, this);
 }
 
 void Page::addAccountsData()

@@ -18,6 +18,7 @@ class Item;
 }
 
 class Details;
+class DetailsDialog;
 class DetailsWidget;
 class KJob;
 class QAction;
@@ -124,6 +125,7 @@ private:
     void removeCampaignsData(Akonadi::Item &item);
 
     QString typeToString(const DetailsType &type) const;
+    DetailsDialog *createDetailsDialog();
 
 private:
     SugarClient *mClientWindow;
@@ -136,6 +138,7 @@ private:
     QModelIndex mCurrentIndex;
     Ui_page mUi;
     QAction *mShowDetailsAction;
+    QByteArray mResourceIdentifier;
 };
 
 #endif
