@@ -1,5 +1,6 @@
 #include "campaignspage.h"
 
+#include "details.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "sugarclient.h"

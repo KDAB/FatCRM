@@ -33,8 +33,6 @@ public:
 
     ~Page();
 
-    void setDetailsWidget(DetailsWidget *widget);
-
     QAction *showDetailsAction(const QString &title) const;
 
     bool showsDetails() const;

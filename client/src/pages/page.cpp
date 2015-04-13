@@ -1,6 +1,7 @@
 #include "page.h"
 
 #include "detailsdialog.h"
+#include "detailswidget.h"
 #include "enums.h"
 #include "referenceddata.h"
 #include "sugarclient.h"
@@ -40,7 +41,7 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mDetailsWidget(0),
+      mDetailsWidget(new DetailsWidget(type)),
       mChangeRecorder(new ChangeRecorder(this)),
       mShowDetailsAction(0)
 {
@@ -51,15 +52,6 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
 
 Page::~Page()
 {
-}
-
-void Page::setDetailsWidget(DetailsWidget *widget)
-{
-    QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
-    detailLayout->setMargin(0);
-    detailLayout->addWidget(widget);
-    mDetailsWidget = widget;
-    mShowDetailsAction->setChecked(ClientSettings::self()->showDetails(typeToString(mType)));
 }
 
 QAction *Page::showDetailsAction(const QString &title) const
@@ -312,6 +304,11 @@ void Page::initialize()
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SIGNAL(showDetailsChanged(bool)));
+
+    QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
+    detailLayout->setMargin(0);
+    detailLayout->addWidget(mDetailsWidget);
+    mShowDetailsAction->setChecked(ClientSettings::self()->showDetails(typeToString(mType)));
 }
 
 void Page::setupModel()

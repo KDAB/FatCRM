@@ -4,6 +4,7 @@
 #include "sugarclient.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
+#include "details.h"
 
 #include "kdcrmdata/sugaropportunity.h"
 

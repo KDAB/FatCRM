@@ -2,7 +2,6 @@
 #define SUGARCLIENT_H
 
 #include "ui_mainwindow.h"
-#include <detailswidget.h>
 #include <accountspage.h>
 #include <opportunitiespage.h>
 #include <leadspage.h>
@@ -13,6 +12,7 @@
 #include <QMainWindow>
 
 class QAction;
+class QCheckBox;
 class QComboBox;
 class QProgressBar;
 class QTimer;
@@ -32,8 +32,6 @@ public:
 
     ~SugarClient();
 
-    DetailsWidget *detailsWidget(DetailsType type);
-
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);
     void displayDetails();
@@ -48,11 +46,6 @@ private:
     void setupActions();
     void createTabs();
 
-    DetailsWidget *mAccountDetailsWidget;
-    DetailsWidget *mOpportunityDetailsWidget;
-    DetailsWidget *mLeadDetailsWidget;
-    DetailsWidget *mContactDetailsWidget;
-    DetailsWidget *mCampaignDetailsWidget;
     QList<Page *> mPages;
     QCheckBox *mShowDetails;
 

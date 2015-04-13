@@ -13,6 +13,7 @@
 #include <akonadi/control.h>
 
 #include <QCloseEvent>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QDockWidget>
 #include <QInputDialog>
@@ -215,39 +216,29 @@ void SugarClient::createTabs()
     Page *page = new AccountsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Accounts"));
-    mAccountDetailsWidget = new DetailsWidget(Account);
-    page->setDetailsWidget(mAccountDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Account Details")));
 
     page = new OpportunitiesPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Opportunities"));
-    mOpportunityDetailsWidget = new DetailsWidget(Opportunity);
-    page->setDetailsWidget(mOpportunityDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Opportunity Details")));
 
 #if 0
     page = new LeadsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Leads"));
-    mLeadDetailsWidget = new DetailsWidget(Lead);
-    page->setDetailsWidget(mLeadDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Lead Details")));
 #endif
 
     page = new ContactsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Contacts"));
-    mContactDetailsWidget = new DetailsWidget(Contact);
-    page->setDetailsWidget(mContactDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("&Contact Details")));
 
 #if 0
     page = new CampaignsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Campaigns"));
-    mCampaignDetailsWidget = new DetailsWidget(Campaign);
-    page->setDetailsWidget(mCampaignDetailsWidget);
     mViewMenu->addAction(page->showDetailsAction(tr("C&ampaign Details")));
 #endif
 
@@ -280,24 +271,6 @@ QComboBox *SugarClient::createResourcesCombo()
     resourceToolBar->addAction(mUi.actionSynchronize);
 
     return container;
-}
-
-DetailsWidget *SugarClient::detailsWidget(DetailsType type)
-{
-    switch (type) {
-    case Account:
-        return mAccountDetailsWidget;
-    case Opportunity:
-        return mOpportunityDetailsWidget;
-    case Lead:
-        return mLeadDetailsWidget;
-    case Contact:
-        return mContactDetailsWidget;
-    case Campaign:
-        return mCampaignDetailsWidget;
-    default:
-        return 0;
-    }
 }
 
 void SugarClient::closeEvent(QCloseEvent *event)
