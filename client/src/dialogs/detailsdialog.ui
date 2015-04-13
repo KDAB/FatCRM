@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>626</width>
-    <height>607</height>
+    <width>568</width>
+    <height>553</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -16,9 +16,42 @@
      <property name="title">
       <string>Information</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="createdDateLabel">
+          <property name="text">
+           <string>Date Created:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="dateEntered"/>
+        </item>
+        <item>
+         <widget class="QLabel" name="createdByLabel">
+          <property name="text">
+           <string>by</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="createdBy"/>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>300</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QLabel" name="modifiedDateLabel">
           <property name="text">
@@ -41,56 +74,11 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="modifiedBy">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>300</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QLabel" name="createdDateLabel">
-          <property name="text">
-           <string>Date Created:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="dateEntered">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="createdByLabel">
-          <property name="text">
-           <string>by</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="createdBy">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <widget class="QLabel" name="modifiedBy"/>
         </item>
        </layout>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item>
        <widget class="QWidget" name="detailsContainer" native="true"/>
       </item>
      </layout>

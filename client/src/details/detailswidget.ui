@@ -61,8 +61,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>644</width>
-        <height>575</height>
+        <width>647</width>
+        <height>578</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -75,32 +75,24 @@
           <item row="0" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout">
             <item>
-             <widget class="QLabel" name="modifiedDateLabel">
+             <widget class="QLabel" name="createdDateLabel">
               <property name="text">
-               <string>Date Modified:</string>
+               <string>Date Created:</string>
               </property>
              </widget>
             </item>
             <item>
-			 <widget class="QLabel" name="dateModified">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
+             <widget class="QLabel" name="dateEntered"/>
             </item>
             <item>
-             <widget class="QLabel" name="modifiedByLabel">
+             <widget class="QLabel" name="createdByLabel">
               <property name="text">
                <string>by</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="modifiedBy">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
+             <widget class="QLabel" name="createdBy"/>
             </item>
             <item>
              <spacer name="horizontalSpacer_3">
@@ -116,32 +108,28 @@
              </spacer>
             </item>
             <item>
-             <widget class="QLabel" name="createdDateLabel">
+             <widget class="QLabel" name="modifiedDateLabel">
               <property name="text">
-               <string>Date Created:</string>
+               <string>Date Modified:</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="dateEntered">
+             <widget class="QLabel" name="dateModified">
               <property name="text">
                <string/>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="createdByLabel">
+             <widget class="QLabel" name="modifiedByLabel">
               <property name="text">
                <string>by</string>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QLabel" name="createdBy">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
+             <widget class="QLabel" name="modifiedBy"/>
             </item>
            </layout>
           </item>
@@ -158,39 +146,38 @@
          </layout>
         </widget>
        </item>
-          <item>
-           <widget class="QGroupBox" name="descriptionBox">
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>151</height>
-             </size>
-            </property>
-            <property name="title">
-             <string>Description:</string>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_3">
-             <property name="margin">
-              <number>0</number>
-             </property>
-             <item row="0" column="0">
-              <widget class="QTextEdit" name="description"/>
-             </item>
-            </layout>
-           </widget>
+       <item>
+        <widget class="QGroupBox" name="descriptionBox">
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>151</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Description:</string>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item row="0" column="0">
+           <widget class="QTextEdit" name="description"/>
           </item>
+         </layout>
+        </widget>
+       </item>
       </layout>
      </widget>
     </widget>
    </item>
   </layout>
-  <zorder>scrollArea</zorder>
  </widget>
  <resources/>
  <connections/>
