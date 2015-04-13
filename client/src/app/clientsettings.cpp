@@ -1,5 +1,6 @@
 #include "clientsettings.h"
 
+#include <QWidget>
 #include <QSettings>
 
 Q_GLOBAL_STATIC(ClientSettings, s_self);
@@ -43,6 +44,19 @@ void ClientSettings::setFullUserName(const QString &name)
 QString ClientSettings::fullUserName() const
 {
     return m_settings->value("fullUserName").toString();
+}
+
+void ClientSettings::saveWindowSize(const QString &windowId, QWidget *window)
+{
+    m_settings->setValue("windowSize/" + windowId, window->size());
+}
+
+void ClientSettings::restoreWindowSize(const QString &windowId, QWidget *window) const
+{
+    const QSize sz = m_settings->value("windowSize/" + windowId).toSize();
+    if (sz.isValid()) {
+        window->resize(sz);
+    }
 }
 
 void ClientSettings::setAssigneeFilters(const ClientSettings::AssigneeFilters &filters)

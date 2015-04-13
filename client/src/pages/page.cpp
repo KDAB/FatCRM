@@ -533,7 +533,9 @@ DetailsDialog *Page::createDetailsDialog()
 {
     Details* details = DetailsWidget::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier);
-    return new DetailsDialog(details, this);
+    DetailsDialog *dialog = new DetailsDialog(details, this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    return dialog;
 }
 
 void Page::addAccountsData()

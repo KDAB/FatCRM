@@ -4,6 +4,7 @@
 #include "ui_detailsdialog.h"
 #include "referenceddatamodel.h"
 #include "sugarclient.h"
+#include "clientsettings.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 
@@ -204,10 +205,13 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+
+    ClientSettings::self()->restoreWindowSize("details", this);
 }
 
 DetailsDialog::~DetailsDialog()
 {
+    ClientSettings::self()->saveWindowSize("details", this);
     delete d;
 }
 

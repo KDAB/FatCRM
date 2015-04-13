@@ -38,10 +38,13 @@ SugarClient::SugarClient()
     QMetaObject::invokeMethod(this, "slotDelayedInit", Qt::AutoConnection);
 
     (void)new DBusWinIdProvider(this);
+
+     ClientSettings::self()->restoreWindowSize("main", this);
 }
 
 SugarClient::~SugarClient()
 {
+    ClientSettings::self()->saveWindowSize("main", this);
 }
 
 void SugarClient::slotDelayedInit()

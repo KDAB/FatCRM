@@ -18,6 +18,7 @@ int main(int argc, char **argv)
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
     SugarClient *sugarClt = new SugarClient;
+    sugarClt->setAttribute(Qt::WA_DeleteOnClose);
     sugarClt->show();
     return app.exec();
 }

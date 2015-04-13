@@ -2,6 +2,7 @@
 #define CLIENTSETTINGS_H
 
 class QSettings;
+#include <QSize>
 #include <QStringList>
 #include <QVector>
 
@@ -18,6 +19,9 @@ public:
 
     void setFullUserName(const QString &name);
     QString fullUserName() const;
+
+    void saveWindowSize(const QString &windowId, QWidget *window);
+    void restoreWindowSize(const QString &windowId, QWidget *window) const;
 
     class AssigneeFilters
     {
