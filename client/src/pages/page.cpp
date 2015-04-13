@@ -73,6 +73,7 @@ void Page::showDetails(bool on)
     }
     ClientSettings::self()->setShowDetails(typeToString(mType), on);
     mShowDetailsAction->setChecked(on);
+    emit showDetailsChanged(on);
 }
 
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
@@ -303,12 +304,11 @@ void Page::initialize()
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
-    connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SIGNAL(showDetailsChanged(bool)));
 
     QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
     detailLayout->setMargin(0);
     detailLayout->addWidget(mDetailsWidget);
-    mShowDetailsAction->setChecked(ClientSettings::self()->showDetails(typeToString(mType)));
+    showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
 }
 
 void Page::setupModel()
