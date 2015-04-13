@@ -21,6 +21,9 @@ public:
     inline iterator binaryFind(const QString& key) {
         return qBinaryFind(begin(), end(), KeyValue(key, QString()));
     }
+    inline const_iterator constBinaryFind(const QString& key) const {
+        return qBinaryFind(constBegin(), constEnd(), KeyValue(key, QString()));
+    }
 };
 
 class ReferencedData::Private
@@ -82,6 +85,15 @@ void ReferencedData::setReferencedData(const QString &id, const QString &data)
         d->mVector.insert(findIt, KeyValue(id, data));
         emit rowsInserted();
     }
+}
+
+QString ReferencedData::referencedData(const QString &id) const
+{
+    KeyValueVector::const_iterator findIt = d->mVector.constBinaryFind(id);
+    if (findIt != d->mVector.constEnd()) {
+        return findIt->value;
+    }
+    return QString();
 }
 
 void ReferencedData::removeReferencedData(const QString &id)

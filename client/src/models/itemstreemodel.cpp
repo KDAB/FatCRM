@@ -1,5 +1,7 @@
 #include "itemstreemodel.h"
 
+#include "referenceddata.h"
+
 #include <kdcrmdata/sugaraccount.h>
 #include <kdcrmdata/sugarcampaign.h>
 #include <kdcrmdata/sugarlead.h>
@@ -396,6 +398,9 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case AssignedTo:
             return opportunity.assignedUserName();
+        case Country:
+            // I wish I could use accountId() as key, but SuiteCRM doesn't give me account_id for opportunities...
+            return ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
         default:
             return QVariant();
         }
@@ -434,6 +439,7 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
     case Opportunity:
         columns << ItemsTreeModel::OpportunityAccountName
                 << ItemsTreeModel::OpportunityName
+                << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
                 //<< ItemsTreeModel::Amount
                 << ItemsTreeModel::CreationDate

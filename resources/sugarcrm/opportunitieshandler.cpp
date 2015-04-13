@@ -343,6 +343,8 @@ OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     mAccessors->insert(QLatin1String("account_name"),
                        new AccessorPair(getAccountName, setAccountName,
                                         i18nc("@item:intable", "Account")));
+    // ### I wish this one was available, but SuiteCRM doesn't return it!
+    // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)
     mAccessors->insert(QLatin1String("account_id"),
                        new AccessorPair(getAccountId, setAccountId, QString()));
     mAccessors->insert(QLatin1String("campaign_id"),

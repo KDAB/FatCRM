@@ -540,6 +540,7 @@ void Page::addAccountsData()
 {
     ReferencedData *accountRefData = ReferencedData::instance(AccountRef);
     ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
+    ReferencedData *accountCountryRefData = ReferencedData::instance(AccountCountryRef);
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
@@ -547,6 +548,10 @@ void Page::addAccountsData()
             const SugarAccount account = item.payload<SugarAccount>();
             accountRefData->setReferencedData(account.id(), account.name());
             assignedToRefData->setReferencedData(account.assignedUserId(), account.assignedUserName());
+            const QString billingCountry = account.billingAddressCountry();
+            const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
+            // See comment in itemstreemodel.cpp about why this isn't account.id()
+            accountCountryRefData->setReferencedData(account.name(), country);
         }
     }
 }

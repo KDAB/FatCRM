@@ -26,6 +26,8 @@ public:
 
     void setReferencedData(const QString &id, const QString &data);
 
+    QString referencedData(const QString &id) const;
+
     void removeReferencedData(const QString &id);
 
     QPair<QString, QString> data(int row) const;
