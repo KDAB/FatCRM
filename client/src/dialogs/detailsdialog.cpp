@@ -57,7 +57,7 @@ private:
 // similar with detailswidget
 void DetailsDialog::Private::setData(const QMap<QString, QString> data)
 {
-    mDetails->setData(data, mUi.informationGB);
+    mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
     // before it is displayed.
     const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));

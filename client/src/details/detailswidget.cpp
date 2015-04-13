@@ -84,8 +84,7 @@ void DetailsWidget::reset()
 }
 
 /*
- * Reset all the widgets and properties
- *
+ * Reset all the widgets and properties, to let the user create a new entry.
  */
 void DetailsWidget::clearFields()
 {
@@ -93,31 +92,11 @@ void DetailsWidget::clearFields()
 
     mUi.dateModified->clear();
 
-    // reset this - label and properties
-    QList<QLabel *> labels = mUi.informationGB->findChildren<QLabel *>();
-    Q_FOREACH (QLabel *lab, labels) {
-        QString value = lab->objectName();
-        if (value == "modifiedBy") {
-            lab->clear();
-            lab->setProperty("modifiedUserId", qVariantFromValue<QString>(QString()));
-            lab->setProperty("modifiedUserName", qVariantFromValue<QString>(QString()));
-        } else if (value == "dateEntered") {
-            lab->clear();
-            lab->setProperty("id", qVariantFromValue<QString>(QString()));
-            lab->setProperty("deleted", qVariantFromValue<QString>(QString()));
-
-            lab->setProperty("contactId", qVariantFromValue<QString>(QString()));
-            lab->setProperty("opportunityRoleFields", qVariantFromValue<QString>(QString()));
-            lab->setProperty("cAcceptStatusFields",  qVariantFromValue<QString>(QString()));
-            lab->setProperty("mAcceptStatusFields",  qVariantFromValue<QString>(QString()));
-        } else if (value == "createdBy") {
-            lab->clear();
-            lab->setProperty("createdBy", qVariantFromValue<QString>(QString()));
-        }
-    }
-
     // initialize other fields
     mUi.description->setPlainText(QString());
+
+    // hide creation/modification date/user
+    mUi.createdModifiedContainer->hide();
 
     // we are creating a new account
     slotSetModifyFlag(false);
@@ -138,6 +117,7 @@ void DetailsWidget::setItem(const Item &item)
     data = mDetails->data(item);
     setData(data);
     setConnections();
+    mUi.createdModifiedContainer->show();
 }
 
 /*
@@ -147,7 +127,7 @@ void DetailsWidget::setItem(const Item &item)
  */
 void DetailsWidget::setData(const QMap<QString, QString> &data)
 {
-    mDetails->setData(data, mUi.informationGB);
+    mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
     // before it is displayed.
     const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));

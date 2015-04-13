@@ -109,7 +109,8 @@ QString Details::windowTitle() const
  * them
  *
  */
-void Details::setData(const QMap<QString, QString> &data, QGroupBox *informationGB)
+void Details::setData(const QMap<QString, QString> &data,
+                      QWidget *createdModifiedContainer)
 {
     QString key;
 
@@ -164,7 +165,7 @@ void Details::setData(const QMap<QString, QString> &data, QGroupBox *information
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 
-    QList<QLabel *> labels = informationGB->findChildren<QLabel *>();
+    QList<QLabel *> labels = createdModifiedContainer->findChildren<QLabel *>();
     Q_FOREACH (QLabel *lb, labels) {
         key = lb->objectName();
         if (key == "modifiedBy") {

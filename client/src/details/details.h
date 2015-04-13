@@ -19,7 +19,7 @@ public:
     virtual QMap<QString, QString> data(const Akonadi::Item &item) const = 0;
     virtual void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const = 0;
 
-    void setData(const QMap<QString, QString> &data, QGroupBox *informationGB);
+    void setData(const QMap<QString, QString> &data, QWidget *createdModifiedContainer);
     const QMap<QString, QString> getData() const;
     void clear();
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>676</width>
-    <height>610</height>
+    <height>413</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,98 +61,96 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>647</width>
-        <height>578</height>
+        <width>662</width>
+        <height>370</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
-        <widget class="QGroupBox" name="informationGB">
-         <property name="title">
-          <string>Information</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="0" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QLabel" name="createdDateLabel">
-              <property name="text">
-               <string>Date Created:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="dateEntered"/>
-            </item>
-            <item>
-             <widget class="QLabel" name="createdByLabel">
-              <property name="text">
-               <string>by</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="createdBy"/>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_3">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>300</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item>
-             <widget class="QLabel" name="modifiedDateLabel">
-              <property name="text">
-               <string>Date Modified:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="dateModified">
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="modifiedByLabel">
-              <property name="text">
-               <string>by</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="modifiedBy"/>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QWidget" name="detailsContainer" native="true">
-            <property name="minimumSize">
-             <size>
-              <width>600</width>
-              <height>400</height>
-             </size>
-            </property>
+        <widget class="QWidget" name="informationGB" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout_3">
+          <property name="margin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QWidget" name="createdModifiedContainer" native="true">
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <property name="margin">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="createdDateLabel">
+               <property name="text">
+                <string>Date Created:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="dateEntered"/>
+             </item>
+             <item>
+              <widget class="QLabel" name="createdByLabel">
+               <property name="text">
+                <string>by</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="createdBy"/>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_3">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>300</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QLabel" name="modifiedDateLabel">
+               <property name="text">
+                <string>Date Modified:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="dateModified">
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="modifiedByLabel">
+               <property name="text">
+                <string>by</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="modifiedBy"/>
+             </item>
+            </layout>
            </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="detailsContainer" native="true"/>
           </item>
          </layout>
         </widget>
        </item>
        <item>
         <widget class="QGroupBox" name="descriptionBox">
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>151</height>
-          </size>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
          <property name="title">
           <string>Description:</string>
@@ -168,7 +166,14 @@
            <number>0</number>
           </property>
           <item row="0" column="0">
-           <widget class="QTextEdit" name="description"/>
+           <widget class="QTextEdit" name="description">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>200</height>
+             </size>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
