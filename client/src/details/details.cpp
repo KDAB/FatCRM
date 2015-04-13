@@ -1,5 +1,6 @@
 #include "details.h"
 #include "kdcrmutils.h"
+#include "clientsettings.h"
 
 #include <KDateTimeEdit>
 
@@ -250,12 +251,15 @@ const QMap<QString, QString> Details::getData() const
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));
     }
 
-    // will be overwritten by the server, but good to have for comparison in case of change conflict
-    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
-
     Q_FOREACH (const QString &prop, storedProperties()) {
         currentData.insert(prop, property(prop.toLatin1()).toString());
     }
+
+    // will be overwritten by the server, but good to have for comparison in case of change conflict
+    // (and for showing in the GUI until the next sync)
+    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
+    const QString fullUserName = ClientSettings::self()->fullUserName();
+    currentData["modifiedByName"] = fullUserName.isEmpty() ? QString("me") : fullUserName;
 
     return currentData;
 }
