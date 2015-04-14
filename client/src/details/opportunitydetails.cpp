@@ -31,7 +31,6 @@ void OpportunityDetails::initialize()
     mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
 
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
-    mUi->currency->addItems(currencyItems());
 }
 
 void OpportunityDetails::slotAutoNextStepDate()

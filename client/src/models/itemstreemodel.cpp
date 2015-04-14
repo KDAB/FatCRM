@@ -379,7 +379,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case SalesStage:
             return opportunity.salesStage();
         case Amount:
-            return opportunity.amount();
+            return QLocale().toCurrencyString(opportunity.amount().toDouble(), opportunity.currencySymbol());
         case CreationDate: {
             QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)

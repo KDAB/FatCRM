@@ -6,6 +6,8 @@
 
 using namespace Akonadi;
 
+// These are basically the "readonly" fields, that the user cannot see or modify
+// but we need to preserve when saving.
 static QStringList storedProperties()
 {
     static QStringList props;
@@ -24,6 +26,9 @@ static QStringList storedProperties()
         props << "createdBy";
         props << "createdByName";
         props << "createdById";
+        props << "currencyId";
+        props << "currencyName";
+        props << "currencySymbol";
     }
     return props;
 }
@@ -52,6 +57,8 @@ void Details::doConnects()
         connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>())
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
+    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
+        connect(w, SIGNAL(valueChanged(double)), this, SIGNAL(modified()));
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>())
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 }
@@ -75,6 +82,9 @@ void Details::clear()
         te->clear();
     }
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+        w->clear();
+    }
+    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         w->clear();
     }
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
@@ -126,16 +136,6 @@ void Details::setData(const QMap<QString, QString> &data,
         if (!data.contains(key)) continue; // skip internal combos (e.g. in KDateTimeEdit)
         //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
         cb->setCurrentIndex(cb->findText(data.value(key)));
-        // currency is unique an cannot be changed from the client atm
-        if (key == "currency") {
-            cb->setCurrentIndex(0);   // default
-            cb->setProperty("currencyId",
-                            qVariantFromValue<QString>(data.value("currencyId")));
-            cb->setProperty("currencyName",
-                            qVariantFromValue<QString>(data.value("currencyName")));
-            cb->setProperty("currencySymbol",
-                            qVariantFromValue<QString>(data.value("currencySymbol")));
-        }
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
@@ -156,6 +156,15 @@ void Details::setData(const QMap<QString, QString> &data,
         key = w->objectName();
         if (!data.contains(key)) continue;
         w->setValue(data.value(key).toInt());
+    }
+
+    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
+        key = w->objectName();
+        if (!data.contains(key)) continue;
+        qDebug() << data.value(key);
+        w->setValue(QLocale::c().toDouble(data.value(key)));
+        if (key == "amount")
+            w->setSuffix(data.value("currencySymbol"));
     }
 
     Q_FOREACH (KDateTimeEdit *w, findChildren<KDateTimeEdit *>()) {
@@ -210,7 +219,7 @@ const QMap<QString, QString> Details::getData() const
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
         if (!mKeys.contains(key)) continue;
-        if (qobject_cast<QSpinBox *>(le->parent())) continue;
+        if (qobject_cast<QAbstractSpinBox *>(le->parent())) continue;
         currentData[key] = le->text();
     }
 
@@ -219,11 +228,6 @@ const QMap<QString, QString> Details::getData() const
         key = cb->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = cb->currentText();
-        if (key == "currency") {
-            currentData["currencyId"] = cb->property("currencyId").toString();
-            currentData["currencyName"] = cb->property("currencyName").toString();
-            currentData["currencySymbol"] = cb->property("currencySymbol").toString();
-        }
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
@@ -241,6 +245,12 @@ const QMap<QString, QString> Details::getData() const
     }
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+        key = w->objectName();
+        if (!mKeys.contains(key)) continue;
+        currentData[key] = QString::number(w->value());
+    }
+
+    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = QString::number(w->value());
@@ -306,19 +316,6 @@ QStringList Details::sourceItems() const
             << QString("Email") << QString("Campaign")
             << QString("Other");
     return sources;
-}
-
-/*
- * Return the list of items for the currency combo boxes
- *
- */
-QStringList Details::currencyItems() const
-{
-    // we do not have the choice here
-    // Should be set remotely by admin
-    QStringList currencies;
-    currencies << QString("US Dollars : $");
-    return currencies;
 }
 
 /*

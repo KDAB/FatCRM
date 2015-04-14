@@ -24,7 +24,6 @@ void CampaignDetails::initialize()
 {
     mUi->status->addItems(statusItems());
     mUi->campaignType->addItems(typeItems());
-    mUi->currency->addItems(currencyItems());
     connect(mUi->clearStartDateButton, SIGNAL(clicked()), this, SLOT(slotClearStartDate()));
     connect(mUi->startDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetStartDate()));

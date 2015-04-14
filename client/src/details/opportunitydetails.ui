@@ -17,9 +17,6 @@
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -107,24 +104,11 @@
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
-       <widget class="QLabel" name="label_8">
-        <property name="text">
-         <string>Currency:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="currency"/>
-      </item>
-      <item row="1" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
          <string>Amount:</string>
         </property>
        </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QLineEdit" name="amount"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_10">
@@ -190,6 +174,13 @@
        <widget class="QSpinBox" name="probability">
         <property name="suffix">
          <string> %</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="amount">
+        <property name="maximum">
+         <double>1000000000.000000000000000</double>
         </property>
        </widget>
       </item>

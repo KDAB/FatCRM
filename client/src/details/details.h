@@ -40,7 +40,6 @@ protected:
 
     QStringList industryItems() const;
     QStringList sourceItems() const;
-    QStringList currencyItems() const;
     QStringList stageItems() const;
     QStringList salutationItems() const;
 
