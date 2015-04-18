@@ -210,6 +210,7 @@ void SugarClient::setupActions()
 
 void SugarClient::slotShowMessage(const QString &message)
 {
+    kDebug() << message;
     statusBar()->showMessage(message, 10000);
 }
 

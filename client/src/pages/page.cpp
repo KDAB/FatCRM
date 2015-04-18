@@ -361,11 +361,13 @@ void Page::setupCachePolicy()
 {
     CachePolicy policy = mCollection.cachePolicy();
     if (!policy.inheritFromParent()) {
-        kDebug() << "Collection" << mCollection.name()
-                 << "already has a cache policy. Will not overwrite it.";
+        //kDebug() << "Collection" << mCollection.name()
+        //         << "already has a cache policy. Will not overwrite it.";
     } else {
+        // First time: set initial value to "sync every 5 minutes"
+        // (note that akonadiserver doesn't allow a smaller value than that)
         policy.setInheritFromParent(false);
-        policy.setIntervalCheckTime(1);   // Check for new data every minute
+        policy.setIntervalCheckTime(5);
         mCollection.setCachePolicy(policy);
         CollectionModifyJob *job = new CollectionModifyJob(mCollection);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
@@ -452,12 +454,12 @@ void Page::slotReloadCollection()
 void Page::slotReloadIntervalChanged()
 {
     const int value = mUi.reloadSB->value();
-    kDebug() << "value=" << value;
 
     if (mCollection.isValid()) {
         CachePolicy policy = mCollection.cachePolicy();
         policy.setInheritFromParent(false);
-        policy.setIntervalCheckTime(value == 0 ? -1 : value);
+        //qDebug() << value << "min=" << mUi.reloadSB->minimum() << "=>" << (value == mUi.reloadSB->minimum() ? -1 : value);
+        policy.setIntervalCheckTime(value == mUi.reloadSB->minimum() ? -1 : value);
         mCollection.setCachePolicy(policy);
         CollectionModifyJob *job = new CollectionModifyJob(mCollection);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
