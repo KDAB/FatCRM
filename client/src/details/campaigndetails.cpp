@@ -36,7 +36,7 @@ void CampaignDetails::initialize()
 
 void CampaignDetails::slotSetStartDate()
 {
-    // TODO FIXME: use KDateTimeEdit
+    // TODO FIXME: use QDateEdit
     mUi->startDate->setText(KDCRMUtils::dateToString(mUi->startDateCalendarButton->calendarWidget()->selectedDate()));
     mUi->startDateCalendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->startDateCalendarButton->calendarDialog()->close();

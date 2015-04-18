@@ -12,8 +12,6 @@
 
 #include <akonadi/item.h>
 
-#include <KDateTime>
-
 using namespace Akonadi;
 
 DetailsWidget::DetailsWidget(DetailsType type, QWidget *parent)

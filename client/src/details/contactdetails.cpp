@@ -37,7 +37,7 @@ void ContactDetails::initialize()
 
 void ContactDetails::slotSetBirthday()
 {
-    // TODO FIXME: use KDateTimeEdit [or remove - who cares about birthdays...]
+    // TODO FIXME: use QDateEdit [or remove - who cares about birthdays...]
     mUi->birthdate->setText(KDCRMUtils::dateToString(mUi->calendarButton->calendarWidget()->selectedDate()));
     mUi->calendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->calendarButton->calendarDialog()->close();
