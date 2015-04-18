@@ -73,6 +73,8 @@ void SugarClient::slotDelayedInit()
             this, SLOT(slotResourceOnline(Akonadi::AgentInstance,bool)));
     connect(AgentManager::self(), SIGNAL(instanceProgressChanged(Akonadi::AgentInstance)),
             this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
+    connect(AgentManager::self(), SIGNAL(instanceStatusChanged(Akonadi::AgentInstance)),
+            this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
 }
 
 void SugarClient::initialize()
