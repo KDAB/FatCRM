@@ -161,7 +161,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
-        qDebug() << data.value(key);
+        //qDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
         if (key == "amount")
             w->setSuffix(data.value("currencySymbol"));
