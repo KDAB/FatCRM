@@ -96,13 +96,11 @@ private Q_SLOTS:
     void slotModifyItem();
     void slotRemoveItem();
     void slotRowsInserted(const QModelIndex &, int, int);
-    void cachePolicyJobCompleted(KJob *);
     void slotUpdateDetails(const QModelIndex &, const QModelIndex &);
     void slotUpdateDetails(const QModelIndex &);
     void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
-    void slotReloadIntervalChanged();
     void slotCollectionChanged(const Akonadi::Collection &collection);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const QModelIndex &);
@@ -110,7 +108,6 @@ private Q_SLOTS:
 private:
     virtual QString reportTitle() const = 0;
     void initialize();
-    void setupCachePolicy();
     void itemChanged(const Akonadi::Item &item);
     bool proceedIsOk();
     // manages accounts combo box

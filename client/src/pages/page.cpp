@@ -24,7 +24,6 @@
 #include <akonadi/itemdeletejob.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
-#include <akonadi/cachepolicy.h>
 #include <akonadi/collectionmodifyjob.h>
 #include <akonadi/entityannotationsattribute.h>
 
@@ -100,7 +99,6 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
             this, SLOT(slotCollectionFetchResult(KJob*)));
 
     mUi.reloadPB->setEnabled(false);
-    mUi.reloadSB->setEnabled(false);
 }
 
 void Page::slotCollectionFetchResult(KJob *job)
@@ -118,7 +116,6 @@ void Page::slotCollectionFetchResult(KJob *job)
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
         mUi.reloadPB->setEnabled(true);
-        mUi.reloadSB->setEnabled(true);
         mChangeRecorder->setCollectionMonitored(mCollection, true);
 
         // if empty, the collection might not have been loaded yet, try synchronizing
@@ -126,12 +123,10 @@ void Page::slotCollectionFetchResult(KJob *job)
             AgentManager::self()->synchronizeCollection(mCollection);
         }
 
-        setupCachePolicy();
         setupModel();
     } else {
         mUi.newPB->setEnabled(false);
         mUi.reloadPB->setEnabled(false);
-        mUi.reloadSB->setEnabled(false);
     }
 }
 
@@ -276,7 +271,6 @@ void Page::initialize()
         mUi.reloadPB->setIcon(icon);
     }
     mUi.reloadPB->setEnabled(false);
-    mUi.reloadSB->setEnabled(false);
 
     connect(mUi.clearSearchPB, SIGNAL(clicked()),
             this, SLOT(slotResetSearch()));
@@ -286,8 +280,6 @@ void Page::initialize()
             this, SLOT(slotRemoveItem()));
     connect(mUi.reloadPB, SIGNAL(clicked()),
             this, SLOT(slotReloadCollection()));
-    connect(mUi.reloadSB, SIGNAL(editingFinished()),
-            this, SLOT(slotReloadIntervalChanged()));
 
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
     connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
@@ -345,36 +337,6 @@ Details *Page::details() const
 void Page::insertFilterWidget(QWidget *widget)
 {
     mUi.verticalLayout->insertWidget(1, widget);
-}
-
-void Page::cachePolicyJobCompleted(KJob *job)
-{
-    if (job->error()) {
-        emit statusMessage(tr("Error when setting cachepolicy: %1").arg(job->errorString()));
-    } else {
-        emit statusMessage(tr("Cache policy set"));
-    }
-
-}
-
-void Page::setupCachePolicy()
-{
-    CachePolicy policy = mCollection.cachePolicy();
-    if (!policy.inheritFromParent()) {
-        //kDebug() << "Collection" << mCollection.name()
-        //         << "already has a cache policy. Will not overwrite it.";
-    } else {
-        // First time: set initial value to "sync every 5 minutes"
-        // (note that akonadiserver doesn't allow a smaller value than that)
-        policy.setInheritFromParent(false);
-        policy.setIntervalCheckTime(5);
-        mCollection.setCachePolicy(policy);
-        CollectionModifyJob *job = new CollectionModifyJob(mCollection);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
-    }
-
-    mUi.reloadSB->setValue(policy.intervalCheckTime());
-    mUi.reloadSB->setEnabled(true);
 }
 
 void Page::slotUpdateDetails(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -451,32 +413,10 @@ void Page::slotReloadCollection()
     }
 }
 
-void Page::slotReloadIntervalChanged()
-{
-    const int value = mUi.reloadSB->value();
-
-    if (mCollection.isValid()) {
-        CachePolicy policy = mCollection.cachePolicy();
-        policy.setInheritFromParent(false);
-        //qDebug() << value << "min=" << mUi.reloadSB->minimum() << "=>" << (value == mUi.reloadSB->minimum() ? -1 : value);
-        policy.setIntervalCheckTime(value == mUi.reloadSB->minimum() ? -1 : value);
-        mCollection.setCachePolicy(policy);
-        CollectionModifyJob *job = new CollectionModifyJob(mCollection);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(cachePolicyJobCompleted(KJob*)));
-    }
-}
-
 void Page::slotCollectionChanged(const Akonadi::Collection &collection)
 {
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
-
-        const CachePolicy policy = mCollection.cachePolicy();
-        if (policy.inheritFromParent()) {
-            mUi.reloadSB->setValue(0);
-        } else {
-            mUi.reloadSB->setValue(policy.intervalCheckTime());
-        }
     }
 }
 

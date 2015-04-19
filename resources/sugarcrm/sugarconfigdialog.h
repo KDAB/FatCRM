@@ -17,6 +17,7 @@ public:
     QString host() const;
     QString user() const;
     QString password() const;
+    int intervalCheckTime() const;
 
 private:
     Ui_SugarConfigDialog mUi;

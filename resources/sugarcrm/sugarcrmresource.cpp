@@ -26,6 +26,7 @@
 #include <akonadi/collection.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
+#include <akonadi/cachepolicy.h>
 
 #include <kabc/addressee.h>
 
@@ -99,6 +100,7 @@ void SugarCRMResource::configure(WId windowId)
     const QString user = dialog.user();
     const QString password = dialog.password();
     const QString accountName = dialog.accountName();
+    const int intervalCheckTime = dialog.intervalCheckTime();
 
     SugarSession::RequiredAction action = mSession->setSessionParameters(user, password, host);
     switch (action) {
@@ -119,6 +121,7 @@ void SugarCRMResource::configure(WId windowId)
     Settings::self()->setHost(host);
     Settings::self()->setUser(user);
     Settings::self()->setPassword(password);
+    Settings::self()->setIntervalCheckTime(intervalCheckTime);
     Settings::self()->writeConfig();
 
     setName(accountName);
@@ -373,6 +376,11 @@ void SugarCRMResource::listModulesResult(KJob *job)
     // modified by clients
     topLevelCollection.setContentMimeTypes(QStringList() << Collection::mimeType());
     topLevelCollection.setRights(Collection::ReadOnly);
+
+    Akonadi::CachePolicy policy;
+    policy.setInheritFromParent( false );
+    policy.setIntervalCheckTime( Settings::self()->intervalCheckTime() );
+    topLevelCollection.setCachePolicy( policy );
 
     collections << topLevelCollection;
 
