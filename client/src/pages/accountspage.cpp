@@ -42,20 +42,3 @@ void AccountsPage::addItem(const QMap<QString, QString> &data)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     emit statusMessage(tr("Be patient the data is being saved remotely!..."));
 }
-
-void AccountsPage::modifyItem(Item &item, const QMap<QString, QString> &data)
-{
-    details()->updateItem(item, data);
-
-    // job starts automatically
-    // TODO connect to result() signal for error handling
-    ItemModifyJob *job = new ItemModifyJob(item);
-
-    if (!job->exec()) {
-        return;    //qDebug() << "Error:" << job->errorString();
-    }
-
-    clientWindow()->setEnabled(false);
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
-}

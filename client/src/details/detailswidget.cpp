@@ -64,9 +64,7 @@ void DetailsWidget::setConnections()
             this, SLOT(slotModified()));
     connect(mUi.description, SIGNAL(textChanged()),
             this,  SLOT(slotModified()));
-    mUi.saveButton->setEnabled(false);
-    mUi.discardButton->setEnabled(false);
-    mModified = false;
+    setModified(false);
 }
 
 /*
@@ -159,9 +157,7 @@ QMap<QString, QString> DetailsWidget::data() const
 
 void DetailsWidget::slotModified()
 {
-    mModified = true;
-    mUi.saveButton->setEnabled(true);
-    mUi.discardButton->setEnabled(true);
+    setModified(true);
 }
 
 /*
@@ -186,11 +182,19 @@ void DetailsWidget::saveData()
     } else {
         emit modifyItem();
     }
+    setModified(false);
 }
 
 void DetailsWidget::slotDiscardData()
 {
     setItem(mItem);
+}
+
+void DetailsWidget::setModified(bool modified)
+{
+    mModified = modified;
+    mUi.saveButton->setEnabled(modified);
+    mUi.discardButton->setEnabled(modified);
 }
 
 /*

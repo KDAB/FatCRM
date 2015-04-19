@@ -15,7 +15,6 @@ public:
 
 protected:
     /*reimp*/ void addItem(const QMap<QString, QString> &data);
-    /*reimp*/ void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data);
     /*reimp*/ QString reportTitle() const;
 };
 

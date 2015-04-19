@@ -46,6 +46,7 @@ private Q_SLOTS:
     void slotDiscardData();
 
 private:
+    void setModified(bool modified);
     void initialize();
     void reset();
     void setConnections();

@@ -187,7 +187,21 @@ void Page::slotModifyItem() // save modified item
     //kDebug() << "saving" << mCurrentIndex;
     Item item = mUi.treeView->model()->data(mCurrentIndex, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid() && mDetailsWidget != 0) {
-        modifyItem(item, mDetailsWidget->data());
+
+        details()->updateItem(item, mDetailsWidget->data());
+
+        // job starts automatically
+        ItemModifyJob *job = new ItemModifyJob(item);
+        connect(job, SIGNAL(result(KJob *)), this, SLOT(slotModifyJobResult(KJob *)));
+    }
+}
+
+void Page::slotModifyJobResult(KJob *job)
+{
+    if (job->error()) {
+        emit statusMessage(job->errorString());
+    } else {
+        emit statusMessage("Item successfully saved");
     }
 }
 

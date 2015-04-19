@@ -311,7 +311,7 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
         const int progress = resource.progress();
         const QString message = resource.statusMessage();
 
-        qDebug() << progress << message;
+        kDebug() << progress << message;
 
         mProgressBar->show();
         mProgressBar->setValue(progress);
@@ -320,7 +320,8 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
         } else {
             mProgressBarHideTimer->stop();
         }
-        statusBar()->showMessage(message);
+        if (!message.isEmpty())
+            statusBar()->showMessage(message);
     }
 }
 

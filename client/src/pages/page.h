@@ -78,7 +78,6 @@ protected:
     }
 
     virtual void addItem(const QMap<QString, QString> &data) = 0;
-    virtual void modifyItem(Akonadi::Item &item, const QMap<QString, QString> &data) = 0;
 
     virtual void setupModel();
 
@@ -102,6 +101,7 @@ private Q_SLOTS:
     void slotCollectionChanged(const Akonadi::Collection &collection);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const QModelIndex &);
+    void slotModifyJobResult(KJob *job);
 
 private:
     virtual QString reportTitle() const = 0;
