@@ -90,14 +90,12 @@ private Q_SLOTS:
     void slotResourceSelectionChanged(const QByteArray &identifier);
     void slotCollectionFetchResult(KJob *job);
     void slotCurrentItemChanged(const QModelIndex &index);
-    void slotShowDetails(const QModelIndex &index);
     void slotNewClicked();
     void slotAddItem();
     void slotModifyItem();
     void slotRemoveItem();
     void slotRowsInserted(const QModelIndex &, int, int);
-    void slotUpdateDetails(const QModelIndex &, const QModelIndex &);
-    void slotUpdateDetails(const QModelIndex &);
+    void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
@@ -108,8 +106,7 @@ private Q_SLOTS:
 private:
     virtual QString reportTitle() const = 0;
     void initialize();
-    void itemChanged(const Akonadi::Item &item);
-    bool proceedIsOk();
+    bool askSave();
     // manages accounts combo box
     void addAccountsData();
     void addCampaignsData();

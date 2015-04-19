@@ -30,7 +30,7 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
-#include <QDebug>
+#include <kdebug.h>
 #include <QMessageBox>
 #include <clientsettings.h>
 
@@ -84,7 +84,7 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mCollection = Collection();
     mResourceIdentifier = identifier;
 
-    mDetailsWidget->mDetails->setResourceIdentifier(identifier);
+    mDetailsWidget->details()->setResourceIdentifier(identifier);
 
     /*
      * Look for the wanted collection explicitly by listing all collections
@@ -132,42 +132,40 @@ void Page::slotCollectionFetchResult(KJob *job)
 
 void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
-    if (mDetailsWidget != 0) {
-        if (mDetailsWidget->isEditing()) {
-            if (!proceedIsOk()) {
-                mUi.treeView->setCurrentIndex(mCurrentIndex);
-                return;
-            }
+    // save previous item if modified
+    if (mDetailsWidget && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
+        if (mCurrentIndex == index) // called by the setCurrentIndex below
+            return;
+        //kDebug() << "going from" << mCurrentIndex << "to" << index;
+        if (askSave()) {
+            //kDebug() << "Saving" << mCurrentIndex;
+            mDetailsWidget->saveData();
         }
-        Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-        itemChanged(item);
     }
-}
 
-void Page::itemChanged(const Item &item)
-{
+    // show the new item
+    //kDebug() << "showing new item" << index;
+    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
         if (mDetailsWidget != 0) {
             mDetailsWidget->setItem(item);
-            connect(mDetailsWidget, SIGNAL(modifyItem()), this, SLOT(slotModifyItem()));
         }
 
-        mCurrentIndex  = mUi.treeView->selectionModel()->currentIndex();
+        mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
+        //kDebug() << "mCurrentIndex=" << mCurrentIndex;
     }
 }
 
 void Page::slotNewClicked()
 {
     if (mDetailsWidget != 0 && mShowDetailsAction->isChecked()) {
-        kDebug() << "inline";
-        if (mDetailsWidget->isEditing()) {
-            if (!proceedIsOk()) {
-                return;
+        if (mDetailsWidget->isModified()) {
+            if (askSave()) {
+                mDetailsWidget->saveData();
             }
         }
 
         mDetailsWidget->clearFields();
-        connect(mDetailsWidget, SIGNAL(saveItem()), this, SLOT(slotAddItem()));
     } else {
         DetailsDialog *dialog = createDetailsDialog();
         Item item;
@@ -177,24 +175,18 @@ void Page::slotNewClicked()
     }
 }
 
-void Page::slotAddItem()
+void Page::slotAddItem() // save new item
 {
     if (mDetailsWidget != 0) {
-        disconnect(mDetailsWidget, SIGNAL(saveItem()), this, SLOT(slotAddItem()));
         addItem(mDetailsWidget->data());
     }
 }
 
-void Page::slotModifyItem()
+void Page::slotModifyItem() // save modified item
 {
-    const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
-    if (!index.isValid()) {
-        return;
-    }
-    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    //kDebug() << "saving" << mCurrentIndex;
+    Item item = mUi.treeView->model()->data(mCurrentIndex, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid() && mDetailsWidget != 0) {
-        disconnect(mDetailsWidget, SIGNAL(modifyItem()), this,  SLOT(slotModifyItem()));
-        mDetailsWidget->reset();
         modifyItem(item, mDetailsWidget->data());
     }
 }
@@ -297,6 +289,9 @@ void Page::initialize()
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
 
+    connect(mDetailsWidget, SIGNAL(modifyItem()), this, SLOT(slotModifyItem()));
+    connect(mDetailsWidget, SIGNAL(createItem()), this, SLOT(slotAddItem()));
+
     QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
     detailLayout->setMargin(0);
     detailLayout->addWidget(mDetailsWidget);
@@ -323,7 +318,7 @@ void Page::setupModel()
 
     connect(mUi.treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
 
-    connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotUpdateDetails(QModelIndex,QModelIndex)));
+    connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this,  SLOT(slotCurrentItemChanged(QModelIndex)));
@@ -331,7 +326,7 @@ void Page::setupModel()
 
 Details *Page::details() const
 {
-    return mDetailsWidget->mDetails;
+    return mDetailsWidget->details();
 }
 
 void Page::insertFilterWidget(QWidget *widget)
@@ -339,12 +334,15 @@ void Page::insertFilterWidget(QWidget *widget)
     mUi.verticalLayout->insertWidget(1, widget);
 }
 
-void Page::slotUpdateDetails(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
         const QModelIndex index = mUi.treeView->model()->index(row, 0, QModelIndex());
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         emit modelItemChanged(item);
+        if (index == mCurrentIndex && mDetailsWidget) {
+            mDetailsWidget->setItem(item);
+        }
     }
 
     if (!mClientWindow->isEnabled()) {
@@ -353,42 +351,18 @@ void Page::slotUpdateDetails(const QModelIndex &topLeft, const QModelIndex &bott
         } while (QApplication::overrideCursor() != 0);
         mClientWindow->setEnabled(true);
     }
-    Q_UNUSED(bottomRight);
-
-    Item item;
-    item = mUi.treeView->model()->data(topLeft, EntityTreeModel::ItemRole).value<Item>();
-    itemChanged(item);
 }
 
-void Page::slotUpdateDetails(const QModelIndex &index)
+bool Page::askSave()
 {
-    if (index.isValid()) {
-        Item item;
-        item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-        itemChanged(item);
-    }
-}
-
-void Page::slotShowDetails(const QModelIndex &index)
-{
-    slotUpdateDetails(index);
-    slotEnsureDetailsVisible();
-}
-
-bool Page::proceedIsOk()
-{
-    bool proceed = true;
-    QMessageBox msgBox;
+    QMessageBox msgBox(this);
     msgBox.setText(tr("The current item has been modified."));
     msgBox.setInformativeText(tr("Do you want to save your changes?"));
     msgBox.setStandardButtons(QMessageBox::Save |
                               QMessageBox::Discard);
     msgBox.setDefaultButton(QMessageBox::Save);
-    int ret = msgBox.exec();
-    if (ret == QMessageBox::Save) {
-        proceed = false;
-    }
-    return proceed;
+    const int ret = msgBox.exec();
+    return ret == QMessageBox::Save;
 }
 
 void Page::slotSetItem()

@@ -17,7 +17,8 @@ using namespace Akonadi;
 DetailsWidget::DetailsWidget(DetailsType type, QWidget *parent)
     : QWidget(parent),
       mType(type),
-      mEditing(false)
+      mModified(false),
+      mCreateNew(false)
 {
     mUi.setupUi(this);
     initialize();
@@ -42,6 +43,11 @@ void DetailsWidget::initialize()
 
     setConnections();
 
+    connect(mUi.saveButton, SIGNAL(clicked()),
+            this, SLOT(saveData()));
+    connect(mUi.discardButton, SIGNAL(clicked()),
+            this, SLOT(slotDiscardData()));
+
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addWidget(mDetails);
     mUi.detailsContainer->setLayout(hlayout);
@@ -55,30 +61,25 @@ void DetailsWidget::initialize()
 void DetailsWidget::setConnections()
 {
     connect(mDetails, SIGNAL(modified()),
-            this, SLOT(slotEnableSaving()));
+            this, SLOT(slotModified()));
     connect(mUi.description, SIGNAL(textChanged()),
-            this,  SLOT(slotEnableSaving()));
-    connect(mUi.saveButton, SIGNAL(clicked()),
-            this, SLOT(slotSaveData()));
-    connect(mUi.discardButton, SIGNAL(clicked()),
-            this, SLOT(slotDiscardData()));
+            this,  SLOT(slotModified()));
     mUi.saveButton->setEnabled(false);
     mUi.discardButton->setEnabled(false);
+    mModified = false;
 }
 
 /*
- * Disconnect changes signal. e.g When filling the details
+ * Disconnect changes signal. e.g. when filling the details
  * widgets with existing data, selection change etc ....
  *
  */
 void DetailsWidget::reset()
 {
     disconnect(mDetails, SIGNAL(modified()),
-               this, SLOT(slotEnableSaving()));
+               this, SLOT(slotModified()));
     disconnect(mUi.description, SIGNAL(textChanged()),
-               this,  SLOT(slotEnableSaving()));
-    mUi.saveButton->setEnabled(false);
-    mUi.discardButton->setEnabled(false);
+               this,  SLOT(slotModified()));
 }
 
 /*
@@ -96,24 +97,23 @@ void DetailsWidget::clearFields()
     // hide creation/modification date/user
     mUi.createdModifiedContainer->hide();
 
-    // we are creating a new account
-    slotSetModifyFlag(false);
+    // we are creating a new entry
+    mCreateNew = true;
+
+    setConnections();
 }
 
 /*
- * Retrieve the item data, before calling setData.
- *
+ * Retrieves the @p item data, before calling setData.
  */
 void DetailsWidget::setItem(const Item &item)
 {
     mItem = item;
 
     // new item selected reset flag and saving
-    mModifyFlag = true;
+    mCreateNew = false;
     reset();
-    QMap<QString, QString> data;
-    data = mDetails->data(item);
-    setData(data);
+    setData(mDetails->data(item));
     setConnections();
     mUi.createdModifiedContainer->show();
 }
@@ -121,7 +121,6 @@ void DetailsWidget::setItem(const Item &item)
 /*
  * Fill in the widgets with their data and properties.
  * It covers all the item types.
- *
  */
 void DetailsWidget::setData(const QMap<QString, QString> &data)
 {
@@ -140,7 +139,7 @@ void DetailsWidget::setData(const QMap<QString, QString> &data)
  * Return a map containing the data (and properties) from all the widgets
  *
  */
-QMap<QString, QString> DetailsWidget::data()
+QMap<QString, QString> DetailsWidget::data() const
 {
     QMap<QString, QString> currentData = mDetails->getData();
 
@@ -158,18 +157,9 @@ QMap<QString, QString> DetailsWidget::data()
     return currentData;
 }
 
-/*
- * The modify flag indicate if we are modifying an existing item or creating
- * a new item
- *
- */
-void DetailsWidget::slotSetModifyFlag(bool value)
+void DetailsWidget::slotModified()
 {
-    mModifyFlag = value;
-}
-
-void DetailsWidget::slotEnableSaving()
-{
+    mModified = true;
     mUi.saveButton->setEnabled(true);
     mUi.discardButton->setEnabled(true);
 }
@@ -178,7 +168,7 @@ void DetailsWidget::slotEnableSaving()
  * Fill in the data map with the current data and emit a signal
  *
  */
-void DetailsWidget::slotSaveData()
+void DetailsWidget::saveData()
 {
     if (!mData.empty()) {
         mData.clear();
@@ -191,8 +181,8 @@ void DetailsWidget::slotSaveData()
         ++i;
     }
 
-    if (!mModifyFlag) {
-        emit saveItem();
+    if (mCreateNew) {
+        emit createItem();
     } else {
         emit modifyItem();
     }
