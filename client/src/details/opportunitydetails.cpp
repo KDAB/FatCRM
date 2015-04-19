@@ -13,6 +13,8 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->setupUi(this);
     mUi->urllabel->setOpenExternalLinks(true);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+    mUi->nextCallDate->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
+    mUi->dateClosed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     initialize();
 }
 
