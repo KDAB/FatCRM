@@ -220,9 +220,14 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
     d->mItem = item;
 
     if (item.isValid()) {
+        // modify
         d->setData(d->mDetails->data(item));
     } else {
+        // create
         d->setData(QMap<QString, QString>());
+
+        // hide creation/modification date/user
+        d->mUi.createdModifiedContainer->hide();
     }
 
     d->mSaveButton->setEnabled(false);
