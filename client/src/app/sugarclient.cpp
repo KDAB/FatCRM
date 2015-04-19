@@ -139,6 +139,7 @@ void SugarClient::slotResourceSelectionChanged(int index)
         mUi.actionOfflineMode->setEnabled(true);
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
+        slotResourceProgress(agent);
     } else {
         mUi.actionSynchronize->setEnabled(false);
         mUi.actionSynchronize->setEnabled(false);
@@ -211,7 +212,7 @@ void SugarClient::setupActions()
 void SugarClient::slotShowMessage(const QString &message)
 {
     kDebug() << message;
-    statusBar()->showMessage(message, 10000);
+    statusBar()->showMessage(message);
 }
 
 void SugarClient::createTabs()
@@ -310,6 +311,8 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
         const int progress = resource.progress();
         const QString message = resource.statusMessage();
 
+        qDebug() << progress << message;
+
         mProgressBar->show();
         mProgressBar->setValue(progress);
         if (progress == 100) {
@@ -317,7 +320,7 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
         } else {
             mProgressBarHideTimer->stop();
         }
-        statusBar()->showMessage(message, mProgressBarHideTimer->interval());
+        statusBar()->showMessage(message);
     }
 }
 
