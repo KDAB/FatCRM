@@ -77,8 +77,6 @@ protected:
         mFilter = filter;
     }
 
-    virtual void addItem(const QMap<QString, QString> &data) = 0;
-
     virtual void setupModel();
 
     Details *details() const;
@@ -101,6 +99,7 @@ private Q_SLOTS:
     void slotCollectionChanged(const Akonadi::Collection &collection);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const QModelIndex &);
+    void slotCreateJobResult(KJob *job);
     void slotModifyJobResult(KJob *job);
 
 private:

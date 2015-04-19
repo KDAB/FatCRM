@@ -36,20 +36,6 @@ void OpportunitiesPage::setupModel()
     treeView()->sortByColumn(4 /*NextStepDate*/, Qt::DescendingOrder);
 }
 
-void OpportunitiesPage::addItem(const QMap<QString, QString> &data)
-{
-    Item item;
-    details()->updateItem(item, data);
-
-    // job starts automatically
-    // TODO connect to result() signal for error handling
-    ItemCreateJob *job = new ItemCreateJob(item, collection());
-    Q_UNUSED(job);
-    clientWindow()->setEnabled(false);
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
-}
-
 QString OpportunitiesPage::reportTitle() const
 {
     return tr("List of Opportunities"); // TODO extend title with proxy filter settings

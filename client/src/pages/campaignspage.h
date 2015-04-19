@@ -14,8 +14,6 @@ public:
     ~CampaignsPage();
 
 protected:
-    /*reimp*/ void addItem(const QMap<QString, QString> &data);
-private:
     /*reimp*/ QString reportTitle() const;
 };
 

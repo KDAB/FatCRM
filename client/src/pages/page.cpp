@@ -178,7 +178,21 @@ void Page::slotNewClicked()
 void Page::slotAddItem() // save new item
 {
     if (mDetailsWidget != 0) {
-        addItem(mDetailsWidget->data());
+        Item item;
+        details()->updateItem(item, mDetailsWidget->data());
+
+        // job starts automatically
+        ItemCreateJob *job = new ItemCreateJob(item, collection());
+        connect(job, SIGNAL(result(KJob *)), this, SLOT(slotCreateJobResult(KJob *)));
+    }
+}
+
+void Page::slotCreateJobResult(KJob *job)
+{
+    if (job->error()) {
+        emit statusMessage(job->errorString());
+    } else {
+        emit statusMessage("Item successfully created");
     }
 }
 
@@ -357,13 +371,6 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         if (index == mCurrentIndex && mDetailsWidget) {
             mDetailsWidget->setItem(item);
         }
-    }
-
-    if (!mClientWindow->isEnabled()) {
-        do {
-            QApplication::restoreOverrideCursor();
-        } while (QApplication::overrideCursor() != 0);
-        mClientWindow->setEnabled(true);
     }
 }
 

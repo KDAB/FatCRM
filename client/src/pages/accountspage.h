@@ -15,7 +15,6 @@ public:
 
 protected:
     /*reimp*/ QString reportTitle() const;
-    /*reimp*/ void addItem(const QMap<QString, QString> &data);
 
 };
 #endif /* ACCOUNTSPAGE_H */

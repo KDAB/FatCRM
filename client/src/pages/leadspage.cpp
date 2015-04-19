@@ -24,21 +24,6 @@ LeadsPage::~LeadsPage()
 {
 }
 
-void LeadsPage::addItem(const QMap<QString, QString> &data)
-{
-    Item item;
-    details()->updateItem(item, data);
-
-    // job starts automatically
-    // TODO connect to result() signal for error handling
-    ItemCreateJob *job = new ItemCreateJob(item, collection());
-    Q_UNUSED(job);
-
-    clientWindow()->setEnabled(false);
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    emit statusMessage(tr("Be patient the data is being saved remotely!..."));
-}
-
 QString LeadsPage::reportTitle() const
 {
     return tr("List of Leads");

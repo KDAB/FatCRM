@@ -14,7 +14,6 @@ public:
     ~ContactsPage();
 
 protected:
-    /*reimp*/ void addItem(const QMap<QString, QString> &data);
     /*reimp*/ QString reportTitle() const;
 };
 
