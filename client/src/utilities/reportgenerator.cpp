@@ -49,6 +49,7 @@ void ReportGenerator::generateListReport(QAbstractItemModel *model, const QStrin
 
     report.setParagraphMargins(1, 1, 1, 1);
     KDReports::AutoTableElement table(model);
+    table.setVerticalHeaderVisible(false);
     report.addElement(table);
 
     finalizeReport(report, parent);
