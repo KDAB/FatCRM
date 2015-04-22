@@ -27,6 +27,7 @@
 #include <QStyleOptionSpinBox>
 #include <QKeyEvent>
 #include <QCalendarWidget>
+#include <QDebug>
 
 /*!
   \class DateEditEx dateeditex.h
@@ -173,6 +174,7 @@ void QDateEditEx::setNullable(bool enable)
         Q_ASSERT(QFile::exists(":/widgets/edit-clear-locationbar-rtl.png"));
         d->clearButton->setIcon(QIcon(":/widgets/edit-clear-locationbar-rtl.png"));
         d->clearButton->setFocusPolicy(Qt::NoFocus);
+        d->clearButton->setFixedSize(17, d->clearButton->sizeHint().height()-6);
         connect(d->clearButton,SIGNAL(clicked()),this,SLOT(clearButtonClicked()));
     } else if (d->clearButton) {
         disconnect(d->clearButton,SIGNAL(clicked()),this,SLOT(clearButtonClicked()));
@@ -186,16 +188,37 @@ void QDateEditEx::setNullable(bool enable)
 /*!
   \reimp
 */
+QSize QDateEditEx::sizeHint() const
+{
+    const QSize sz = QDateEdit::sizeHint();
+    if (!d->clearButton)
+        return sz;
+    return QSize(sz.width() + d->clearButton->width() + 3, sz.height());
+}
+
+/*!
+  \reimp
+*/
+QSize QDateEditEx::minimumSizeHint() const
+{
+    const QSize sz = QDateEdit::minimumSizeHint();
+    if (!d->clearButton)
+        return sz;
+    return QSize(sz.width() + d->clearButton->width() + 3, sz.height());
+}
+
+/*!
+  \reimp
+*/
 void QDateEditEx::resizeEvent(QResizeEvent *event)
 {
     if (d->clearButton) {
-        d->clearButton->resize(17,d->clearButton->sizeHint().height()-6);
         QStyleOptionSpinBox opt;
         initStyleOption(&opt);
         opt.subControls = QStyle::SC_SpinBoxUp;
 
-        int left = style()->subControlRect(QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxUp, this).width() + d->clearButton->width() + 3;
-        d->clearButton->move(size().width() - left,(size().height() - d->clearButton->height() )/2 );
+        int left = style()->subControlRect(QStyle::CC_SpinBox, &opt, QStyle::SC_SpinBoxUp, this).left() - d->clearButton->width() - 3;
+        d->clearButton->move(left, (height() - d->clearButton->height()) / 2);
     }
 
     QDateEdit::resizeEvent(event);

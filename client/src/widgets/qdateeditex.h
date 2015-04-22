@@ -40,6 +40,9 @@ public:
     bool isNullable() const;
     void setNullable(bool enable);
 
+    QSize sizeHint() const;
+    QSize minimumSizeHint() const;
+
 protected:
     /*! \reimp */ void resizeEvent(QResizeEvent *event);
     /*! \reimp */ void paintEvent(QPaintEvent *event);
