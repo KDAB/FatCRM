@@ -1,4 +1,4 @@
-include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utilities )
+include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utilities widgets )
 
 set(sugarclient_SRCS
     app/sugarclient.cpp
@@ -27,7 +27,8 @@ set(sugarclient_SRCS
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
     utilities/referenceddata.cpp
-	utilities/reportgenerator.cpp
+    utilities/reportgenerator.cpp
+    widgets/qdateeditex.cpp
 )
 
 kde4_add_ui_files(sugarclient_SRCS
@@ -43,6 +44,10 @@ kde4_add_ui_files(sugarclient_SRCS
     dialogs/detailsdialog.ui
     dialogs/resourceconfigdialog.ui
     dialogs/configurationdialog.ui
+)
+
+qt4_add_resources(sugarclient_SRCS
+	widgets/widgets.qrc
 )
 
 # To find out the config of the sugar resource (for the web link) - TODO generalize to salesforce somehow

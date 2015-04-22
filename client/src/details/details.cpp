@@ -2,7 +2,7 @@
 #include "kdcrmutils.h"
 #include "clientsettings.h"
 
-#include <QDateEdit>
+#include <qdateeditex.h>
 
 using namespace Akonadi;
 
@@ -59,7 +59,7 @@ void Details::doConnects()
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
         connect(w, SIGNAL(valueChanged(double)), this, SIGNAL(modified()));
-    Q_FOREACH (QDateEdit *w, findChildren<QDateEdit *>())
+    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>())
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 }
 
@@ -87,7 +87,7 @@ void Details::clear()
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         w->clear();
     }
-    Q_FOREACH (QDateEdit *w, findChildren<QDateEdit *>()) {
+    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         w->setDate(QDate());
     }
     Q_FOREACH (const QString &prop, storedProperties()) {
@@ -133,7 +133,7 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEdit)
+        if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
         //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
         cb->setCurrentIndex(cb->findText(data.value(key)));
     }
@@ -167,7 +167,7 @@ void Details::setData(const QMap<QString, QString> &data,
             w->setSuffix(data.value("currencySymbol"));
     }
 
-    Q_FOREACH (QDateEdit *w, findChildren<QDateEdit *>()) {
+    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
         //qDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
@@ -256,7 +256,7 @@ const QMap<QString, QString> Details::getData() const
         currentData[key] = QString::number(w->value());
     }
 
-    Q_FOREACH (QDateEdit *w, findChildren<QDateEdit *>()) {
+    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));
