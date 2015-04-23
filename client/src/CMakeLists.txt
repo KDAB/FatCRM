@@ -83,4 +83,4 @@ install(TARGETS sugarclient ${INSTALL_TARGETS_DEFAULT_ARGS} )
 
 ########### install files ###############
 
-install( FILES sugarclient.desktop  DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install( FILES fatcrm.desktop  DESTINATION ${XDG_APPS_INSTALL_DIR} )
