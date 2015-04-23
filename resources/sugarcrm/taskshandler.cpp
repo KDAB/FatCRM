@@ -268,7 +268,7 @@ TasksHandler::TasksHandler( SugarSession *session )
                         new TaskAccessorPair( getSummary, setSummary, i18nc( "@item:intable TODO title", "Title" ) ) );
     mAccessors->insert( QLatin1String( "date_entered" ),
                         new TaskAccessorPair( getDateEntered, setDateEntered, i18nc( "@item:intable", "Creation Date" ) ) );
-    mAccessors->insert( QLatin1String( "date_modififed" ),
+    mAccessors->insert( QLatin1String( "date_modified" ),
                         new TaskAccessorPair( getDateModified, setDateModified, i18nc( "@item:intable", "Modification Date" ) ) );
     mAccessors->insert( QLatin1String( "modified_user_id" ),
                         new TaskAccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
