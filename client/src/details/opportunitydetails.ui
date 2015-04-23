@@ -175,6 +175,9 @@
         <property name="suffix">
          <string> %</string>
         </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
        </widget>
       </item>
       <item row="0" column="1">
