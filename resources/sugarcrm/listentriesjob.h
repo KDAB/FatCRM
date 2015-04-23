@@ -13,6 +13,7 @@ class Collection;
 class ModuleHandler;
 namespace KDSoapGenerated
 {
+class TNS__Get_entries_count_result;
 class TNS__Get_entry_list_result;
 }
 
@@ -31,6 +32,7 @@ public:
     QString latestTimestamp() const;
 
 Q_SIGNALS:
+    void totalItems(int count);
     void itemsReceived(const Akonadi::Item::List &items);
     void deletedReceived(const Akonadi::Item::List &items);
 
@@ -41,6 +43,8 @@ private:
     class Private;
     Private *const d;
 
+    Q_PRIVATE_SLOT(d, void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult))
+    Q_PRIVATE_SLOT(d, void getEntriesCountError(const KDSoapMessage &fault))
     Q_PRIVATE_SLOT(d, void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult))
     Q_PRIVATE_SLOT(d, void listEntriesError(const KDSoapMessage &fault))
 };

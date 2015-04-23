@@ -781,18 +781,19 @@ Akonadi::Collection LeadsHandler::handlerCollection() const
     return leadCollection;
 }
 
-void LeadsHandler::listEntries(const ListEntriesScope &scope)
+QString LeadsHandler::queryStringForListing() const
 {
-    const QString query = scope.query(QLatin1String("leads"));
-    const QString orderBy = QLatin1String("leads.last_name");
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    return QLatin1String("leads");
+}
 
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(mAccessors->keys());
+QString LeadsHandler::orderByForListing() const
+{
+    return QLatin1String("leads.last_name");
+}
 
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+QStringList LeadsHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 bool LeadsHandler::setEntry(const Akonadi::Item &item)

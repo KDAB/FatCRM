@@ -676,20 +676,6 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
     return contactCollection;
 }
 
-void ContactsHandler::listEntries(const ListEntriesScope &scope)
-{
-    const QString query = scope.query(QLatin1String("contacts"));
-    const QString orderBy = QLatin1String("contacts.last_name");
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
-
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(mAccessors->keys());
-
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
-}
-
 bool ContactsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<KABC::Addressee>()) {
@@ -730,6 +716,21 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
     soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
     return true;
+}
+
+QString ContactsHandler::queryStringForListing() const
+{
+    return QLatin1String("contacts");
+}
+
+QString ContactsHandler::orderByForListing() const
+{
+    return QLatin1String("contacts.last_name");
+}
+
+QStringList ContactsHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

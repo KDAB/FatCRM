@@ -90,6 +90,26 @@ Akonadi::Collection ModuleHandler::collection() const
     return coll;
 }
 
+void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)
+{
+    const QString query = scope.query(queryStringForListing());
+    soap()->asyncGet_entries_count(sessionId(), moduleName(), query, scope.deleted());
+}
+
+void ModuleHandler::listEntries(const ListEntriesScope &scope)
+{
+    const QString query = scope.query(queryStringForListing());
+    const QString orderBy = orderByForListing();
+    const int offset = scope.offset();
+    const int maxResults = 100;
+    const int fetchDeleted = scope.deleted();
+
+    KDSoapGenerated::TNS__Select_fields selectedFields;
+    selectedFields.setItems(selectedFieldsForListing());
+
+    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+}
+
 bool ModuleHandler::getEntry(const Akonadi::Item &item)
 {
     if (item.remoteId().isEmpty()) {

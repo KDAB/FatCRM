@@ -55,6 +55,7 @@ protected Q_SLOTS:
 
     void listModulesResult(KJob *job);
 
+    void slotTotalItems(int count);
     void itemsReceived(const Akonadi::Item::List &items);
     void deletedReceived(const Akonadi::Item::List &items);
     void listEntriesResult(KJob *job);

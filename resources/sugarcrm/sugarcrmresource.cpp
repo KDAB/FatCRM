@@ -55,6 +55,9 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             QDBusConnection::ExportScriptableSlots);
 
     setNeedsNetwork(true);
+#if KDE_IS_VERSION(4, 14, 0)
+    setDisableAutomaticItemDeliveryDone(true);
+#endif
 
     // make sure itemAdded() and itemChanged() get the full item from Akonadi before being called
     changeRecorder()->itemFetchScope().fetchFullPayload();
@@ -255,9 +258,6 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
     if (handler) {
         // getting items in batches
         setItemStreamingEnabled(true);
-#if KDE_IS_VERSION(4, 14, 0)
-        setDisableAutomaticItemDeliveryDone(true);
-#endif
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
@@ -268,6 +268,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         kDebug() << message;
         status(Running, message);
 
+        connect(job, SIGNAL(totalItems(int)),
+                this, SLOT(slotTotalItems(int)));
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(itemsReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(deletedReceived(Akonadi::Item::List)),
@@ -405,6 +407,12 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     collectionsRetrieved(collections);
     status(Idle);
+}
+
+void SugarCRMResource::slotTotalItems(int count)
+{
+    // we're not done when we have listed <count> items, we have another phase, hence the +1
+    setTotalItems(count /*+1*/);
 }
 
 void SugarCRMResource::itemsReceived(const Item::List &items)

@@ -541,18 +541,19 @@ Akonadi::Collection AccountsHandler::handlerCollection() const
     return accountCollection;
 }
 
-void AccountsHandler::listEntries(const ListEntriesScope &scope)
+QString AccountsHandler::queryStringForListing() const
 {
-    const QString query = scope.query(QLatin1String("accounts"));
-    const QString orderBy = QLatin1String("accounts.name");
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    return QLatin1String("accounts");
+}
 
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(mAccessors->keys());
+QString AccountsHandler::orderByForListing() const
+{
+    return QLatin1String("accounts.name");
+}
 
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+QStringList AccountsHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 bool AccountsHandler::setEntry(const Akonadi::Item &item)

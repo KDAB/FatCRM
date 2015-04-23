@@ -409,18 +409,19 @@ Akonadi::Collection CampaignsHandler::handlerCollection() const
     return campaignCollection;
 }
 
-void CampaignsHandler::listEntries(const ListEntriesScope &scope)
+QString CampaignsHandler::queryStringForListing() const
 {
-    const QString query = scope.query(QLatin1String("campaigns"));
-    const QString orderBy = QLatin1String("campaigns.name");
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    return QLatin1String("campaigns");
+}
 
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(mAccessors->keys());
+QString CampaignsHandler::orderByForListing() const
+{
+    return QLatin1String("campaigns.name");
+}
 
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+QStringList CampaignsHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)

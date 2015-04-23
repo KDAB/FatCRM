@@ -34,7 +34,9 @@ public:
 
     Akonadi::Collection handlerCollection() const;
 
-    void listEntries( const ListEntriesScope &scope );
+    QString queryStringForListing() const;
+    QString orderByForListing() const;
+    QStringList selectedFieldsForListing() const;
 
     bool setEntry( const Akonadi::Item &item );
 

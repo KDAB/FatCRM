@@ -323,18 +323,19 @@ Akonadi::Collection TasksHandler::handlerCollection() const
     return taskCollection;
 }
 
-void TasksHandler::listEntries( const ListEntriesScope &scope )
+QString TasksHandler::queryStringForListing() const
 {
-    const QString query = scope.query( QLatin1String( "tasks" ) );
-    const QString orderBy = QLatin1String( "tasks.id" );
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    return QLatin1String("tasks");
+}
 
-    TNS__Select_fields selectedFields;
-    selectedFields.setItems( mAccessors->keys() );
+QString TasksHandler::orderByForListing() const
+{
+    return QLatin1String("tasks.id");
+}
 
-    soap()->asyncGet_entry_list( sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted );
+QStringList TasksHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 bool TasksHandler::setEntry( const Akonadi::Item &item )

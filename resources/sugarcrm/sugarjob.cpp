@@ -140,6 +140,7 @@ void SugarJob::restart()
 bool SugarJob::handleLoginError(const KDSoapMessage &fault)
 {
     // TODO check for error indicating that new login is required
+    kDebug() << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
     if (d->mTryRelogin) {
         Q_UNUSED(fault);
         QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);

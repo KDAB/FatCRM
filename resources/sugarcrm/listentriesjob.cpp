@@ -22,12 +22,13 @@ class ListEntriesJob::Private
 
 public:
     enum Stage {
+        GetCount,
         GetExisting,
         GetDeleted
     };
 
     explicit Private(ListEntriesJob *parent, const Akonadi::Collection &collection)
-        : q(parent), mCollection(collection), mHandler(0), mStage(GetExisting)
+        : q(parent), mCollection(collection), mHandler(0), mStage(GetCount)
     {
     }
 
@@ -38,18 +39,42 @@ public:
     Stage mStage;
 
 public: // slots
+    void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult);
+    void getEntriesCountError(const KDSoapMessage &fault);
     void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult);
     void listEntriesError(const KDSoapMessage &fault);
 };
 
 static const char s_timeStampKey[] = "timestamp";
 
+void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_result &callResult)
+{
+    kDebug() << "About to list" << callResult.result_count() << "entries";
+    emit q->totalItems( callResult.result_count() );
+    mStage = GetExisting;
+    mHandler->listEntries(mListScope);
+}
+
+void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
+{
+    if (!q->handleLoginError(fault)) {
+        kWarning() << fault.faultAsString();
+
+        q->setError(SugarJob::SoapError);
+        q->setErrorText(fault.faultAsString());
+        q->emitResult();
+    }
+}
+
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    if (callResult.result_count() > 0) {
+    if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         const Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection);
         switch (mStage) {
+        case GetCount:
+            Q_ASSERT(0);
+            break;
         case GetExisting:
             kDebug() << "List Entries for" << mHandler->moduleName()
                      << "received" << items.count() << "items";
@@ -107,6 +132,11 @@ void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
 ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, collection))
 {
+    connect(soap(), SIGNAL(get_entries_countDone(KDSoapGenerated::TNS__Get_entries_count_result)),
+            this, SLOT(getEntriesCountDone(KDSoapGenerated::TNS__Get_entries_count_result)));
+    connect(soap(), SIGNAL(get_entries_countError(KDSoapMessage)),
+            this, SLOT(getEntriesCountError(KDSoapMessage)));
+
     connect(soap(), SIGNAL(get_entry_listDone(KDSoapGenerated::TNS__Get_entry_list_result)),
             this,  SLOT(listEntriesDone(KDSoapGenerated::TNS__Get_entry_list_result)));
     connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
@@ -142,11 +172,9 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT(d->mCollection.isValid());
     Q_ASSERT(d->mHandler != 0);
 
-    d->mStage = Private::GetExisting;
-
     d->mListScope = ListEntriesScope(latestTimestamp());
-
-    d->mHandler->listEntries(d->mListScope);
+    d->mStage = Private::GetCount;
+    d->mHandler->getEntriesCount(d->mListScope);
 }
 
 #include "listentriesjob.moc"

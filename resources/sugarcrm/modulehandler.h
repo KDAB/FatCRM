@@ -57,11 +57,16 @@ public:
 
     Akonadi::Collection collection() const;
 
-    virtual void listEntries(const ListEntriesScope &scope) = 0;
+    void getEntriesCount(const ListEntriesScope &scope);
+    void listEntries(const ListEntriesScope &scope);
 
     virtual bool setEntry(const Akonadi::Item &item) = 0;
 
-    virtual bool getEntry(const Akonadi::Item &item);
+    bool getEntry(const Akonadi::Item &item);
+
+    virtual QString queryStringForListing() const = 0;
+    virtual QString orderByForListing() const = 0;
+    virtual QStringList selectedFieldsForListing() const = 0;
 
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;

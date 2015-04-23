@@ -407,24 +407,6 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
-void OpportunitiesHandler::listEntries(const ListEntriesScope &scope)
-{
-    // TODO (in all handlers) use this to find out max:
-    // KDSoapGenerated::TNS__Get_entries_count_result get_entries_count( const QString& session, const QString& module_name, const QString& query, int deleted );
-    // and call setTotalItems(count)
-
-    const QString query = scope.query(QLatin1String("opportunities"));
-    const QString orderBy = QLatin1String("opportunities.name");
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
-
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(mAccessors->keys());
-
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
-}
-
 bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
@@ -465,6 +447,21 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
     return true;
+}
+
+QString OpportunitiesHandler::queryStringForListing() const
+{
+    return QLatin1String("opportunities");
+}
+
+QString OpportunitiesHandler::orderByForListing() const
+{
+    return QLatin1String("opportunities.name");
+}
+
+QStringList OpportunitiesHandler::selectedFieldsForListing() const
+{
+    return mAccessors->keys();
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
