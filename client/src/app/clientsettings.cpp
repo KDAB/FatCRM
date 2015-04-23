@@ -87,8 +87,11 @@ QString ClientSettings::AssigneeFilters::toString() const
 
 void ClientSettings::AssigneeFilters::loadFromString(const QString &str)
 {
-    Q_FOREACH(const QString &itemStr, str.split('|')) {
+    Q_FOREACH(const QString &itemStr, str.split('|', QString::SkipEmptyParts)) {
         const QStringList lst = itemStr.split(';', QString::SkipEmptyParts);
+        if (lst.isEmpty()) {
+            continue;
+        }
         Item item;
         item.group = lst.first();
         item.users = lst.mid(1);
