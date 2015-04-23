@@ -25,7 +25,7 @@ set(kdcrmdata_LIB_SRCS
 
 kde4_add_library(kdcrmdata SHARED ${kdcrmdata_LIB_SRCS} )
 
-target_link_libraries(kdcrmdata
+target_link_libraries(kdcrmdata PUBLIC
     ${QT_QTCORE_LIBRARY}
     ${KDEPIMLIBS_AKONADI_LIBS}
 )
