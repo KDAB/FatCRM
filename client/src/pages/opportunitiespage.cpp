@@ -33,7 +33,7 @@ OpportunitiesPage::~OpportunitiesPage()
 void OpportunitiesPage::setupModel()
 {
     Page::setupModel();
-    treeView()->sortByColumn(4 /*NextStepDate*/, Qt::DescendingOrder);
+    treeView()->sortByColumn(5 /*NextStepDate*/, Qt::DescendingOrder);
 }
 
 QString OpportunitiesPage::reportTitle() const
