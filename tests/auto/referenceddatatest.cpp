@@ -13,13 +13,13 @@ private Q_SLOTS:
     void testSortedCombo()
     {
         ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
-        assignedToRefData->setReferencedData("dfaure", "David Faure");
-        assignedToRefData->setReferencedData("sfaure", "Sabine Faure");
-        assignedToRefData->setReferencedData("afaure", "Adam Faure");
-        assignedToRefData->setReferencedData("efaure", "Ernest Faure");
+        assignedToRefData->setReferencedData("e88a49f9", "David Faure");
+        assignedToRefData->setReferencedData("14fc9aa7", "Sabine Faure");
+        assignedToRefData->setReferencedData("3ab7e3b5", "Adam Faure");
+        assignedToRefData->setReferencedData("6cdd11df", "Ernest Faure");
         // Add some duplicates
-        assignedToRefData->setReferencedData("efaure", "Ernest Faure");
-        assignedToRefData->setReferencedData("dfaure", "David Faure");
+        assignedToRefData->setReferencedData("6cdd11df", "Ernest Faure");
+        assignedToRefData->setReferencedData("e88a49f9", "David Faure");
 
         QComboBox *combo = new QComboBox;
         ReferencedDataModel::setModelForCombo(combo, AssignedToRef);
