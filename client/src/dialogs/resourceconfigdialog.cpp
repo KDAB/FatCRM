@@ -9,6 +9,7 @@
 #include <akonadi/agentmanager.h>
 #include <akonadi/agenttype.h>
 #include <akonadi/agenttypedialog.h>
+#include <akonadi/agenttypemodel.h>
 
 #include <KDebug>
 
@@ -142,6 +143,21 @@ void ResourceConfigDialog::Private::agentInstanceChanged(const AgentInstance &ag
     }
 }
 
+// Workaround for AgentFilterProxyModel not being able to filter on capabilities
+// when mimetypes is empty, which was fixed in 5968a044321b (kdepimlibs v4.14.7)
+class WorkaroundFilterProxyModel : public QSortFilterProxyModel
+{
+public:
+    WorkaroundFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
+        setDynamicSortFilter(true);
+    }
+    bool filterAcceptsRow(int source_row, const QModelIndex &) const {
+        const QModelIndex index = sourceModel()->index(source_row, 0);
+        const QStringList capabilities = index.data(Akonadi::AgentTypeModel::CapabilitiesRole).toStringList();
+        return capabilities.contains("KDCRM");
+    }
+};
+
 ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     : QDialog(parent), d(new Private(this))
 {
@@ -149,6 +165,13 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
     filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
+
+    // Remove this when everyone has kdepimlibs >= 4.14.7
+#if 1
+    WorkaroundFilterProxyModel *workaround = new WorkaroundFilterProxyModel(this);
+    workaround->setSourceModel(filterModel);
+    d->mUi.resources->view()->setModel(workaround);
+#endif
 
     connect(d->mUi.resources->view()->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
