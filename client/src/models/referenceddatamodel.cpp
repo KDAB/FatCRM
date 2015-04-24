@@ -4,6 +4,7 @@
 
 #include <QSortFilterProxyModel>
 #include <QComboBox>
+#include <kdebug.h>
 
 class ReferencedDataModel::Private
 {
@@ -28,14 +29,13 @@ public: // slots
 
 void ReferencedDataModel::Private::slotDataChanged(int row)
 {
-    // Using beginResetModel/endResetModel only works since 5aa40e5b00e in Qt 5.5.
-    const QModelIndex idx = q->index(row, 0);
+    const QModelIndex idx = q->index(row + 1, 0); // +1 for the empty item at the top
     emit q->dataChanged(idx, idx);
 }
 
 void ReferencedDataModel::Private::slotRowsAboutToBeInserted(int start, int end)
 {
-    q->beginInsertRows(QModelIndex(), start, end);
+    q->beginInsertRows(QModelIndex(), start + 1, end + 1); // +1 for the empty item at the top
 }
 
 void ReferencedDataModel::Private::slotRowsInserted()
@@ -45,7 +45,7 @@ void ReferencedDataModel::Private::slotRowsInserted()
 
 void ReferencedDataModel::Private::slotRowsAboutToBeRemoved(int start, int end)
 {
-    q->beginRemoveRows(QModelIndex(), start, end);
+    q->beginRemoveRows(QModelIndex(), start + 1, end + 1); // +1 for the empty item at the top
 }
 
 void ReferencedDataModel::Private::slotRowsRemoved()
@@ -73,9 +73,9 @@ void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedDataType 
 {
     QSortFilterProxyModel *proxy = new QSortFilterProxyModel(combo);
     proxy->setDynamicSortFilter(true);
-    proxy->sort(0);
     ReferencedDataModel *model = new ReferencedDataModel(type, combo);
     proxy->setSourceModel(model);
+    proxy->sort(0);
     combo->setModel(proxy);
     combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 }
@@ -97,7 +97,7 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         // used for clearing a field
         if (row == 0) {
             if (role == Qt::DisplayRole) {
-                return QLatin1String("");
+                return QString();
             }
             return QVariant();
         }
@@ -119,11 +119,9 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
 int ReferencedDataModel::rowCount(const QModelIndex &index) const
 {
     if (!index.isValid()) {
-        // if there is data, report one row more for the "N/A" entry (clear field)
+        // report one row more for the "N/A" entry (clear field)
         const int count = d->mData->count();
-        if (count > 0) {
-            return count + 1;
-        }
+        return count + 1;
     }
 
     return 0;

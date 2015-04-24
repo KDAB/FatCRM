@@ -3,6 +3,7 @@
 #include <QVector>
 #include <QMap>
 #include <QPair>
+#include <kdebug.h>
 
 struct KeyValue
 {
