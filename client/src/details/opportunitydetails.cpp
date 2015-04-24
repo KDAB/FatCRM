@@ -27,13 +27,11 @@ OpportunityDetails::~OpportunityDetails()
 
 void OpportunityDetails::initialize()
 {
-    mUi->accountName->setModel(new ReferencedDataModel(AccountRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->accountName, AccountRef);
     mUi->opportunityType->addItems(typeItems());
     mUi->leadSource->addItems(sourceItems());
     mUi->salesStage->addItems(stageItems());
-    mUi->assignedUserName->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-    mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
-
+    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
 }
 

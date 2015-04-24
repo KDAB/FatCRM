@@ -2,6 +2,9 @@
 
 #include "referenceddata.h"
 
+#include <QSortFilterProxyModel>
+#include <QComboBox>
+
 class ReferencedDataModel::Private
 {
     ReferencedDataModel *const q;
@@ -64,6 +67,17 @@ ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *paren
 ReferencedDataModel::~ReferencedDataModel()
 {
     delete d;
+}
+
+void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedDataType type)
+{
+    QSortFilterProxyModel *proxy = new QSortFilterProxyModel(combo);
+    proxy->setDynamicSortFilter(true);
+    proxy->sort(0);
+    ReferencedDataModel *model = new ReferencedDataModel(type, combo);
+    proxy->setSourceModel(model);
+    combo->setModel(proxy);
+    combo->setSizeAdjustPolicy(QComboBox::AdjustToContents);
 }
 
 static QString elideText(const QString& text)

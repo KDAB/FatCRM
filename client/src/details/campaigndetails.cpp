@@ -31,7 +31,7 @@ void CampaignDetails::initialize()
     connect(mUi->endDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetEndDate()));
 
-    mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
 }
 
 void CampaignDetails::slotSetStartDate()

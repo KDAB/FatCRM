@@ -4,6 +4,7 @@
 #include "enums.h"
 
 #include <QAbstractListModel>
+class QComboBox;
 
 // List model for filling comboboxes referencing an account/campaign/user/etc.
 class ReferencedDataModel : public QAbstractListModel
@@ -17,6 +18,8 @@ public:
     explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = 0);
 
     ~ReferencedDataModel();
+
+    static void setModelForCombo(QComboBox *combo, ReferencedDataType type);
 
     /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
     /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const;

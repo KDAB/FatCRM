@@ -24,11 +24,11 @@ ContactDetails::~ContactDetails()
 void ContactDetails::initialize()
 {
     mUi->salutation->addItems(salutationItems());
-    mUi->accountName->setModel(new ReferencedDataModel(AccountRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->accountName, AccountRef);
     mUi->leadSource->addItems(sourceItems());
-    mUi->campaign->setModel(new ReferencedDataModel(CampaignRef, this));
-    mUi->reportsTo->setModel(new ReferencedDataModel(ReportsToRef, this));
-    mUi->assignedTo->setModel(new ReferencedDataModel(AssignedToRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->campaign, CampaignRef);
+    ReferencedDataModel::setModelForCombo(mUi->reportsTo, ReportsToRef);
+    ReferencedDataModel::setModelForCombo(mUi->assignedTo, AssignedToRef);
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),

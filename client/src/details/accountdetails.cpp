@@ -22,11 +22,11 @@ void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
 
-    mUi->parentName->setModel(new ReferencedDataModel(AccountRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->parentName, AccountRef);
     mUi->industry->addItems(industryItems());
     mUi->accountType->addItems(typeItems());
-    mUi->campaignName->setModel(new ReferencedDataModel(CampaignRef, this));
-    mUi->assignedUserName->setModel(new ReferencedDataModel(AssignedToRef, this));
+    ReferencedDataModel::setModelForCombo(mUi->campaignName, CampaignRef);
+    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
 }
 
 QStringList AccountDetails::typeItems() const
