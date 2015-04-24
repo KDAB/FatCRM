@@ -85,15 +85,24 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
 
 void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data) const
 {
-    if (!resourceIdentifier().isEmpty()) {
-        OrgKdeAkonadiSugarCRMSettingsInterface iface(
-                    QLatin1String("org.freedesktop.Akonadi.Resource.") + resourceIdentifier(), QLatin1String("/Settings"), QDBusConnection::sessionBus() );
+    const QString resourceId = resourceIdentifier();
+    if (!resourceId.isEmpty()) {
 
-        const QString baseUrl = iface.host();
+        // Cache, to avoid making DBus calls every time
+        static QString lastResourceId;
+        static QString lastBaseUrl;
+        if (lastResourceId != resourceId) {
+            OrgKdeAkonadiSugarCRMSettingsInterface iface(
+                        QLatin1String("org.freedesktop.Akonadi.Resource.") + resourceId, QLatin1String("/Settings"), QDBusConnection::sessionBus() );
+            lastBaseUrl = iface.host();
+            if (!lastBaseUrl.isEmpty()) // i.e. success
+                lastResourceId = resourceId;
+        }
+
         const QString id = data.value("id");
         if (!id.isEmpty()) {
-            const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id;
-            mUi->urllabel->setText(QString("<a href=\"%1\">Open in Web Browser</a>").arg(url));
+            const QString url = lastBaseUrl + "?action=DetailView&module=Opportunities&record=" + id;
+            mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
         }
     }
 }
