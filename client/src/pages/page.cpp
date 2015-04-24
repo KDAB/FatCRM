@@ -292,6 +292,9 @@ void Page::initialize()
     }
     mUi.reloadPB->setEnabled(false);
 
+    // Removing doesn't work right now, and is a rather dangerous operation anyway :-)
+    mUi.removePB->hide();
+
     connect(mUi.clearSearchPB, SIGNAL(clicked()),
             this, SLOT(slotResetSearch()));
     connect(mUi.newPB, SIGNAL(clicked()),
