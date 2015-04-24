@@ -295,6 +295,10 @@ void Page::initialize()
     // Removing doesn't work right now, and is a rather dangerous operation anyway :-)
     mUi.removePB->hide();
 
+    // Reloading is already available in the toolbar (and using F5 for just one collection)
+    // so unclutter the GUI a bit
+    mUi.reloadPB->hide();
+
     connect(mUi.clearSearchPB, SIGNAL(clicked()),
             this, SLOT(slotResetSearch()));
     connect(mUi.newPB, SIGNAL(clicked()),
