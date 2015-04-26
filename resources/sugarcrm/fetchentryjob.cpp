@@ -36,6 +36,10 @@ public: // slots
 
 void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
 {
+    if (q->handleError(callResult.error())) {
+        return;
+    }
+
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT(entries.count() == 1);
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());

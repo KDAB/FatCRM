@@ -56,6 +56,10 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
         return;
     }
 
+    if (q->handleError(callResult.error())) {
+        return;
+    }
+
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     if (entries.count() != 1) {
         qWarning() << "Got" << entries.count() << "entries";
@@ -114,6 +118,10 @@ void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
 
 void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
+    if (q->handleError(callResult.error())) {
+        return;
+    }
+
     kDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 

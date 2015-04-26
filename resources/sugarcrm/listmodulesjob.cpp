@@ -28,10 +28,14 @@ public: // slots
 
 void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module_list &callResult)
 {
+    if (q->handleError(callResult.error())) {
+        return;
+    }
     const KDSoapGenerated::TNS__Select_fields moduleNames = callResult.modules();
     mModules = moduleNames.items();
 
     kDebug() << "Got" << mModules.count() << "available modules";
+    Q_ASSERT(!mModules.isEmpty()); // abort before deleting everything locally...
 
     q->emitResult();
 }

@@ -39,6 +39,7 @@ public:
     QString host() const;
 
     void logout();
+    void forgetSession();
 
 private:
     void setSessionId(const QString &sessionId);

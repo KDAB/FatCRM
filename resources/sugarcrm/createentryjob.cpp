@@ -46,6 +46,9 @@ public: // slots
 void CreateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
     Q_ASSERT(mStage == CreateEntry);
+    if (q->handleError(callResult.error())) {
+        return;
+    }
 
     kDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
@@ -74,6 +77,10 @@ void CreateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
 {
     Q_ASSERT(mStage == GetEntry);
+
+    if (q->handleError(callResult.error())) {
+        return;
+    }
 
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     Q_ASSERT(entries.count() == 1);

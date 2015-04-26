@@ -81,11 +81,13 @@ set( sugarcrmresource_SRCS
     fetchentryjob.cpp
     leadshandler.cpp
     listentriesjob.cpp
+    listentriesscope.cpp
     listmodulesjob.cpp
     loginerrordialog.cpp
     loginjob.cpp
     moduledebuginterface.cpp
     modulehandler.cpp
+    noteshandler.cpp
     opportunitieshandler.cpp
     resourcedebuginterface.cpp
     sugarconfigdialog.cpp

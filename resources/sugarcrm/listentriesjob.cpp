@@ -2,6 +2,7 @@
 
 #include "modulehandler.h"
 #include "sugarsoap.h"
+#include "listentriesscope.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
@@ -49,7 +50,11 @@ static const char s_timeStampKey[] = "timestamp";
 
 void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_result &callResult)
 {
-    kDebug() << "About to list" << callResult.result_count() << "entries";
+    if (q->handleError(callResult.error())) {
+        return;
+    }
+
+    kDebug() << q << "About to list" << callResult.result_count() << "entries";
     emit q->totalItems( callResult.result_count() );
     mStage = GetExisting;
     mHandler->listEntries(mListScope);
@@ -58,7 +63,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
 void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << fault.faultAsString();
+        kWarning() << q << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -68,6 +73,10 @@ void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
 
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
+    kDebug() << q << "stage" << mStage << "error" << callResult.error().number();
+    if (q->handleError(callResult.error())) {
+        return;
+    }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         const Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection);
@@ -88,7 +97,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         }
     } else {
         if (mStage == GetDeleted || !mListScope.isUpdateScope()) {
-            kDebug() << "List Entries for" << mHandler->moduleName() << "done";
+            kDebug() << q << "List Entries for" << mHandler->moduleName() << "done, will emitResult";
 
             // Store timestamp into DB, to persist it across restarts
             EntityAnnotationsAttribute *annotationsAttribute =
@@ -110,7 +119,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         // if GetExisting is finished, continue getting the deleted
         mStage = GetDeleted;
         mListScope.fetchDeleted();
-        kDebug() << "Listing updates for" << mHandler->moduleName()
+        kDebug() << q << "Listing updates for" << mHandler->moduleName()
                  << "done, getting deletes";
     }
 
@@ -119,9 +128,9 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 }
 
 void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
-{
+{    
     if (!q->handleLoginError(fault)) {
-        kWarning() << "List Entries Error:" << fault.faultAsString();
+        kWarning() << q << "List Entries Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -141,11 +150,17 @@ ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSessi
             this,  SLOT(listEntriesDone(KDSoapGenerated::TNS__Get_entry_list_result)));
     connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
             this,  SLOT(listEntriesError(KDSoapMessage)));
+
+    d->mStage = Private::GetCount;
+    d->mListScope = ListEntriesScope(latestTimestamp());
+
+    kDebug() << this;
 }
 
 ListEntriesJob::~ListEntriesJob()
 {
     delete d;
+    kDebug() << this;
 }
 
 Collection ListEntriesJob::collection() const
@@ -167,14 +182,22 @@ QString ListEntriesJob::latestTimestamp() const
     return QString();
 }
 
+// This can be called multiple times, in case we lose connection at some point during the job
+// So don't reset d->mStage here, we don't want to rewind to GetCount (which confuses itemsync)
 void ListEntriesJob::startSugarTask()
 {
     Q_ASSERT(d->mCollection.isValid());
     Q_ASSERT(d->mHandler != 0);
 
-    d->mListScope = ListEntriesScope(latestTimestamp());
-    d->mStage = Private::GetCount;
-    d->mHandler->getEntriesCount(d->mListScope);
+    switch (d->mStage) {
+    case Private::GetCount:
+        d->mHandler->getEntriesCount(d->mListScope);
+        break;
+    case Private::GetExisting:
+    case Private::GetDeleted:
+        d->mHandler->listEntries(d->mListScope);
+        break;
+    }
 }
 
 #include "listentriesjob.moc"

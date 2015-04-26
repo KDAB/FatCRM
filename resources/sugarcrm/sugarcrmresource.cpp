@@ -13,6 +13,7 @@
 #include "loginerrordialog.h"
 #include "loginjob.h"
 #include "moduledebuginterface.h"
+#include "noteshandler.h"
 #include "opportunitieshandler.h"
 #include "resourcedebuginterface.h"
 #include "settings.h"
@@ -40,9 +41,12 @@ using namespace Akonadi;
 SugarCRMResource::SugarCRMResource(const QString &id)
     : ResourceBase(id),
       mSession(new SugarSession(this)),
+      mCurrentJob(0),
+      mLoginJob(0),
       mModuleHandlers(new ModuleHandlerHash),
       mModuleDebugInterfaces(new ModuleDebugInterfaceHash),
-      mConflictHandler(new ConflictHandler(ConflictHandler::BackendConflict, this))
+      mConflictHandler(new ConflictHandler(ConflictHandler::BackendConflict, this)),
+      mOnline(false)
 {
     new SettingsAdaptor(Settings::self());
     QDBusConnection::sessionBus().registerObject(QLatin1String("/Settings"),
@@ -140,21 +144,38 @@ void SugarCRMResource::aboutToQuit()
 
 void SugarCRMResource::doSetOnline(bool online)
 {
-    if (online) {
-        if (Settings::self()->host().isEmpty()) {
-            const QString message = i18nc("@info:status", "No server configured");
-            status(Broken, message);
-            error(message);
-        } else if (Settings::self()->user().isEmpty()) {
-            const QString message = i18nc("@info:status", "No user name configured");
-            status(Broken, message);
-            error(message);
+    // akonadiserver calls setOnline() multiple times with the same value...
+    // let's only react to real changes here
+    if (online != mOnline) {
+        kDebug() << online;
+        mOnline = online;
+        if (online) {
+            if (Settings::self()->host().isEmpty()) {
+                const QString message = i18nc("@info:status", "No server configured");
+                status(Broken, message);
+                error(message);
+            } else if (Settings::self()->user().isEmpty()) {
+                const QString message = i18nc("@info:status", "No user name configured");
+                status(Broken, message);
+                error(message);
+            } else {
+                // schedule login as a prepended custom task to hold all other until finished
+                scheduleCustomTask(this, "startExplicitLogin", QVariant(), ResourceBase::Prepend);
+            }
         } else {
-            // schedule login as a prepended custom task to hold all other until finished
-            scheduleCustomTask(this, "startExplicitLogin", QVariant(), ResourceBase::Prepend);
+            // Abort current job, given that the resource scheduler aborted the current task
+            if (mCurrentJob) {
+                mCurrentJob->kill(KJob::Quietly);
+                mCurrentJob = 0;
+            }
+            if (mLoginJob) {
+                mLoginJob->kill(KJob::Quietly);
+                mLoginJob = 0;
+            }
+
+            // "Log out", but no point in trying to tell the server, we're offline.
+            mSession->forgetSession();
         }
-    } else {
-        mSession->logout();
     }
 
     ResourceBase::doSetOnline(online);
@@ -169,6 +190,8 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
         status(Running);
 
         CreateEntryJob *job = new CreateEntryJob(item, mSession, this);
+        Q_ASSERT(!mCurrentJob);
+        mCurrentJob = job;
         job->setModule(handler);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(createEntryResult(KJob*)));
         job->start();
@@ -231,6 +254,8 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
     cancelTask(message);
 #else
     SugarJob *job = new DeleteEntryJob(item, mSession, this);
+    Q_ASSERT(!mCurrentJob);
+    mCurrentJob = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteEntryResult(KJob*)));
     job->start();
 #endif
@@ -241,6 +266,8 @@ void SugarCRMResource::retrieveCollections()
     status(Running, i18nc("@info:status", "Retrieving folders"));
 
     SugarJob *job = new ListModulesJob(mSession, this);
+    Q_ASSERT(!mCurrentJob);
+    mCurrentJob = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(listModulesResult(KJob*)));
     job->start();
 }
@@ -261,6 +288,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
+        Q_ASSERT(!mCurrentJob);
+        mCurrentJob = job;
 
         const QString message = job->latestTimestamp().isEmpty()
                 ? i18nc("@info:status", "Retrieving contents of folder %1", collection.name())
@@ -299,6 +328,8 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         status(Running, message);
 
         FetchEntryJob *job = new FetchEntryJob(item, mSession, this);
+        Q_ASSERT(!mCurrentJob);
+        mCurrentJob = job;
         job->setModule(handler);
         connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchEntryResult(KJob*)));
         job->start();
@@ -312,13 +343,20 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
 void SugarCRMResource::startExplicitLogin()
 {
     kDebug();
-    SugarJob *job = new LoginJob(mSession, this);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
-    job->start();
+    Q_ASSERT(!mLoginJob); // didn't we kill it in doSetOnline(false) already?
+    if (mLoginJob) {
+        mLoginJob->kill(KJob::Quietly);
+        taskDone();
+    }
+    mLoginJob = new LoginJob(mSession, this);
+    connect(mLoginJob, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
+    mLoginJob->start();
 }
 
 void SugarCRMResource::explicitLoginResult(KJob *job)
 {
+    Q_ASSERT(mLoginJob == job);
+    mLoginJob = 0;
     if (handleLoginError(job)) {
         return;
     }
@@ -350,6 +388,9 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 
 void SugarCRMResource::listModulesResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
+
     if (handleLoginError(job)) {
         return;
     }
@@ -427,10 +468,13 @@ void SugarCRMResource::deletedReceived(const Item::List &items)
 
 void SugarCRMResource::listEntriesResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
     if (handleLoginError(job)) {
         return;
     }
 
+    kDebug() << job;
     if (job->error() != 0) {
         const QString message = job->errorText();
         kWarning() << "error=" << job->error() << ":" << message;
@@ -450,6 +494,8 @@ void SugarCRMResource::listEntriesResult(KJob *job)
 
 void SugarCRMResource::createEntryResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
     if (handleLoginError(job)) {
         return;
     }
@@ -477,6 +523,8 @@ void SugarCRMResource::createEntryResult(KJob *job)
 
 void SugarCRMResource::deleteEntryResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
     if (handleLoginError(job)) {
         return;
     }
@@ -500,6 +548,8 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 
 void SugarCRMResource::fetchEntryResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
     if (handleLoginError(job)) {
         return;
     }
@@ -523,6 +573,8 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
 
 void SugarCRMResource::updateEntryResult(KJob *job)
 {
+    Q_ASSERT(mCurrentJob == job);
+    mCurrentJob = 0;
     if (handleLoginError(job)) {
         return;
     }
@@ -576,6 +628,8 @@ void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
 void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *handler)
 {
     UpdateEntryJob *job = new UpdateEntryJob(item, mSession, this);
+    Q_ASSERT(!mCurrentJob);
+    mCurrentJob = job;
     job->setModule(handler);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(updateEntryResult(KJob*)));
     job->start();
@@ -602,6 +656,8 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 #endif
             } else if (module == QLatin1String("Tasks")) {
                 handler = new TasksHandler(mSession);
+            } else if (module == QLatin1String("Notes")) {
+                handler = new NotesHandler(mSession);
             } else {
                 //kDebug() << "No module handler for" << module;
                 continue;
@@ -619,11 +675,13 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             }
         }
     }
+
 }
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
     if (job->error() == SugarJob::LoginError) {
+        kDebug() << "LoginError! Going to Broken state";
         setOnline( false );
         emit status( Broken, job->errorText() );
         // if this is any other job than an explicit login, defer to next attempt
@@ -635,7 +693,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
     } else if (job->error() == SugarJob::CouldNotConnectError) {
         emit status( Idle, i18n( "Server is not available." ) );
         deferTask();
-        setTemporaryOffline(300);
+        setTemporaryOffline(300); // this calls doSetOnline(false)
     } else {
         return false;
     }

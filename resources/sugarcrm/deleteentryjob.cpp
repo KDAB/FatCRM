@@ -36,6 +36,10 @@ public: // slots
 void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
     Q_UNUSED(callResult);
+    if (q->handleError(callResult.error())) {
+        return;
+    }
+
     kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();

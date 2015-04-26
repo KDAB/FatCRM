@@ -10,6 +10,8 @@ class KJob;
 class ModuleDebugInterface;
 class ModuleHandler;
 class SugarSession;
+class LoginJob;
+class SugarJob;
 
 template <typename U, typename V> class QHash;
 
@@ -27,8 +29,10 @@ public:
 public Q_SLOTS:
     virtual void configure(WId windowId);
 
-protected:
+private:
     SugarSession *mSession;
+    SugarJob *mCurrentJob; // do we ever run two jobs in parallel? in that case make it a list
+    LoginJob *mLoginJob; // this one can happen in parallel, e.g. start listjob, setonline(false), setonline(true) -> LoginJob is created, and only afterwards the listjob finishes.
 
     typedef QHash<QString, ModuleHandler *> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
@@ -36,8 +40,9 @@ protected:
     ModuleDebugInterfaceHash *mModuleDebugInterfaces;
 
     ConflictHandler *mConflictHandler;
+    bool mOnline;
 
-protected:
+private:
     void aboutToQuit();
     void doSetOnline(bool online);
 
@@ -45,7 +50,7 @@ protected:
     void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts);
     void itemRemoved(const Akonadi::Item &item);
 
-protected Q_SLOTS:
+private Q_SLOTS:
     void retrieveCollections();
     void retrieveItems(const Akonadi::Collection &col);
     bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts);

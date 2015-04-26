@@ -2,6 +2,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "listentriesscope.h"
 
 using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
@@ -10,53 +11,6 @@ using namespace KDSoapGenerated;
 
 #include <QInputDialog>
 #include <QStringList>
-
-ListEntriesScope::ListEntriesScope()
-    : mOffset(0),
-      mGetDeleted(false)
-{
-}
-
-ListEntriesScope::ListEntriesScope(const QString &timestamp)
-    : mOffset(0),
-      mUpdateTimestamp(timestamp),
-      mGetDeleted(false)
-{
-}
-
-bool ListEntriesScope::isUpdateScope() const
-{
-    return !mUpdateTimestamp.isEmpty();
-}
-
-void ListEntriesScope::setOffset(int offset)
-{
-    mOffset = offset;
-}
-
-int ListEntriesScope::offset() const
-{
-    return mOffset;
-}
-
-void ListEntriesScope::fetchDeleted()
-{
-    mGetDeleted = true;
-}
-
-int ListEntriesScope::deleted() const
-{
-    return mGetDeleted ? 1 : 0;
-}
-
-QString ListEntriesScope::query(const QString &module) const
-{
-    if (mUpdateTimestamp.isEmpty()) {
-        return QLatin1String("");
-    }
-
-    return module + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
-}
 
 ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
     : mSession(session), mModuleName(moduleName)

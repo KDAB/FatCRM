@@ -10,36 +10,14 @@ class Collection;
 }
 
 class SugarSession;
+class ListEntriesScope;
+
 namespace KDSoapGenerated
 {
 class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
 }
-
-class ListEntriesScope
-{
-public:
-    ListEntriesScope();
-    ListEntriesScope(const QString &timestamp);
-
-    bool isUpdateScope() const;
-
-    void setOffset(int offset);
-
-    int offset() const;
-
-    void fetchDeleted();
-
-    int deleted() const;
-
-    QString query(const QString &module) const;
-
-private:
-    int mOffset;
-    QString mUpdateTimestamp;
-    bool mGetDeleted;
-};
 
 class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
 {

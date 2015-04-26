@@ -4,6 +4,7 @@
 
 using namespace KDSoapGenerated;
 #include <KUrl>
+#include <KDebug>
 
 static QString endPointFromHostString(const QString &host)
 {
@@ -95,8 +96,17 @@ QString SugarSession::host() const
 void SugarSession::logout()
 {
     if (!d->mSessionId.isEmpty() && d->mSoap != 0) {
-        d->mSoap->logout(d->mSessionId);
+        KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
+        if (errorValue.number() != "0")
+            kDebug() << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
+        if (!d->mSoap->lastError().isEmpty())
+            kDebug() << "logout had fault" << d->mSoap->lastError();
     }
+    forgetSession();
+}
+
+void SugarSession::forgetSession()
+{
     d->mSessionId = QString();
 }
 

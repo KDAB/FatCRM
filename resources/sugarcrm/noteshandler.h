@@ -1,18 +1,19 @@
-#ifndef OPPORTUNITIESHANDLER_H
-#define OPPORTUNITIESHANDLER_H
+#ifndef NOTESHANDLER_H
+#define NOTESHANDLER_H
 
 #include "modulehandler.h"
+#include <kdcrmdata/sugarnote.h>
 
-class AccessorPair;
+class NoteAccessorPair;
 
 template <typename U, typename V> class QHash;
 
-class OpportunitiesHandler : public ModuleHandler
+class NotesHandler : public ModuleHandler
 {
 public:
-    OpportunitiesHandler(SugarSession *session);
+    NotesHandler(SugarSession *session);
 
-    ~OpportunitiesHandler();
+    ~NotesHandler();
 
     QStringList supportedFields() const;
 
@@ -30,9 +31,8 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    typedef QHash<QString, AccessorPair *> AccessorHash;
-    AccessorHash *mAccessors;
+    SugarNote::AccessorHash mAccessors;
 };
 
-#endif /* OPPORTUNITIESHANDLER_H */
+#endif
 

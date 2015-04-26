@@ -9,6 +9,7 @@ namespace KDSoapGenerated
 {
 class Sugarsoap;
 class TNS__Set_entry_result;
+class TNS__Error_value;
 }
 
 class SugarJob : public KJob
@@ -34,8 +35,10 @@ public Q_SLOTS:
     void restart();
 
 protected:
+    virtual bool doKill();
     virtual void startSugarTask() = 0;
 
+    bool handleError(const KDSoapGenerated::TNS__Error_value &errorValue);
     bool handleLoginError(const KDSoapMessage &fault);
 
     QString sessionId() const;
