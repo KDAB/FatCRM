@@ -420,7 +420,7 @@ public:
     /**
       Convenience: Set the data for this account
      */
-    void setData(QMap<QString, QString> data);
+    void setData(const QMap<QString, QString> &data);
 
     /**
       Convenience: Retrieve the data for this account

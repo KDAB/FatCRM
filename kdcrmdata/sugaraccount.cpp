@@ -692,7 +692,7 @@ QString SugarAccount::campaignName() const
     return d->mCampaignName;
 }
 
-void SugarAccount::setData(QMap<QString, QString> data)
+void SugarAccount::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
     d->mId = data.value("id");

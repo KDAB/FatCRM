@@ -516,7 +516,7 @@ QString SugarCampaign::frequency() const
     return d->mFrequency;
 }
 
-void SugarCampaign::setData(QMap<QString, QString> data)
+void SugarCampaign::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
     d->mId = data.value("id");

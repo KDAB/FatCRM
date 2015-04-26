@@ -530,7 +530,7 @@ public:
      */
     void setCampaignId(const QString &value);
     /**
-      Return Campaing Id.
+      Return Campaign Id.
      */
     QString campaignId() const;
 
@@ -539,7 +539,7 @@ public:
      */
     void setCampaignName(const QString &value);
     /**
-      Return Campaing Name.
+      Return Campaign Name.
      */
     QString campaignName() const;
 
@@ -591,7 +591,7 @@ public:
     /**
       Convenience method set the data for this lead
      */
-    void setData(QMap<QString, QString> data);
+    void setData(const QMap<QString, QString> &data);
 
     /**
       Convenience method get the data for this lead

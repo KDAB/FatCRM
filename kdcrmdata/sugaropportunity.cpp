@@ -482,7 +482,7 @@ QDate SugarOpportunity::nextCallDate() const
     return d->mNextCallDate;
 }
 
-void SugarOpportunity::setData(QMap<QString, QString> data)
+void SugarOpportunity::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
 

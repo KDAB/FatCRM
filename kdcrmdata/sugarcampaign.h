@@ -224,7 +224,7 @@ public:
      */
     void setStatus(const QString &value);
     /**
-      Return the Campaing Status.
+      Return the Campaign Status.
      */
     QString status() const;
 
@@ -321,7 +321,7 @@ public:
     /**
       Convenience: set the data for this campaign
      */
-    void setData(QMap<QString, QString> data);
+    void setData(const QMap<QString, QString> &data);
 
     /**
       Convenience: retrieve the data for this campaign

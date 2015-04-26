@@ -993,7 +993,7 @@ QString SugarLead::portalApp() const
     return d->mPortalApp;
 }
 
-void SugarLead::setData(QMap<QString, QString> data)
+void SugarLead::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
     d->mId = data.value("id");
