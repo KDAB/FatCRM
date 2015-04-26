@@ -160,8 +160,10 @@ void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
 void SugarClient::slotToggleOffline(bool offline)
 {
     AgentInstance currentAgent = currentResource();
-    if (currentAgent.isValid()) {
-        currentAgent.setIsOnline(!offline);
+    const bool online = !offline;
+    if (currentAgent.isValid() && currentAgent.isOnline() != online) {
+        kDebug() << "setting agent" << currentAgent.identifier() << "to online=" << online;
+        currentAgent.setIsOnline(online);
     }
 }
 
