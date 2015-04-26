@@ -30,7 +30,6 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    QString adjustedTime(const QString datetime) const;
     inline bool isAddressValue(const QString &value) const
     {
         return (isAltAddressValue(value) || isPrimaryAddressValue(value));

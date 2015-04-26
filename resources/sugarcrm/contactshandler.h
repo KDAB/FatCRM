@@ -45,8 +45,6 @@ private:
         return value.startsWith(QString("primary_address_"));
     }
 
-    QString adjustedTime(const QString datetime) const;
-
     typedef QHash<QString, AccessorPair *> AccessorHash;
     AccessorHash *mAccessors;
 };
