@@ -1,0 +1,9 @@
+[Misc]
+Name=CRM Note Serializer
+Comment=An Akonadi serializer plugin for CRM Note objects
+
+[Plugin]
+Type=application/x-vnd.kdab.crm.note
+X-KDE-Library=akonadi_serializer_sugarnote
+X-Akonadi-Class=legacy;default;SugarNote;
+X-KDE-ClassName=Akonadi::SerializerPluginSugarNote

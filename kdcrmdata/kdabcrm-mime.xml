@@ -19,6 +19,10 @@ Notes:
     <sub-class-of type="text/xml"/>
     <comment>CRM Lead</comment>
   </mime-type>
+  <mime-type type="application/x-vnd.kdab.crm.note">
+    <sub-class-of type="text/xml"/>
+    <comment>CRM Note</comment>
+  </mime-type>
   <mime-type type="application/x-vnd.kdab.crm.opportunity">
     <sub-class-of type="text/xml"/>
     <comment>CRM Opportunity</comment>

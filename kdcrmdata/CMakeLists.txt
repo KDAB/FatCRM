@@ -21,6 +21,8 @@ set(kdcrmdata_LIB_SRCS
     sugarleadio.cpp
     sugarcampaign.cpp
     sugarcampaignio.cpp
+    sugarnote.cpp
+    sugarnoteio.cpp
 )
 
 kde4_add_library(kdcrmdata SHARED ${kdcrmdata_LIB_SRCS} )
@@ -63,6 +65,12 @@ target_link_libraries(akonadi_serializer_sugarcampaign kdcrmdata ${KDE4_KDECORE_
 install(TARGETS akonadi_serializer_sugarcampaign DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
+set(akonadi_serializer_sugarnote_PART_SRCS serializerpluginsugarnote.cpp )
+kde4_add_plugin(akonadi_serializer_sugarnote ${akonadi_serializer_sugarnote_PART_SRCS})
+target_link_libraries(akonadi_serializer_sugarnote kdcrmdata ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_AKONADI_LIBS})
+install(TARGETS akonadi_serializer_sugarnote DESTINATION ${PLUGIN_INSTALL_DIR})
+
+### next target
 
 #if (KDE4_BUILD_TESTS)
 #  add_subdirectory(tests)
@@ -75,6 +83,7 @@ install( FILES
   akonadi_serializer_sugaropportunity.desktop
   akonadi_serializer_sugarlead.desktop
   akonadi_serializer_sugarcampaign.desktop
+  akonadi_serializer_sugarnote.desktop
 DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
 
 install(FILES kdabcrm-mime.xml DESTINATION ${XDG_MIME_INSTALL_DIR})
