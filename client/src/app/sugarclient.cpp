@@ -180,7 +180,7 @@ void SugarClient::slotSynchronizeCollection(const Collection &collection)
 {
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
-        slotShowMessage(tr("Synchronizing with server"));
+        slotShowMessage(tr("Synchronizing '%1' with server").arg(collection.name()));
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
         AgentManager::self()->synchronizeCollection(collection);
