@@ -31,7 +31,7 @@ public:
     {
     }
 
-    void setData(const QMap<QString, QString> data);
+    void setData(const QMap<QString, QString> &data);
     QMap<QString, QString> data() const;
 
 public:
@@ -55,7 +55,7 @@ private:
 };
 
 // similar with detailswidget
-void DetailsDialog::Private::setData(const QMap<QString, QString> data)
+void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
 {
     mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
