@@ -408,7 +408,7 @@ Q_GLOBAL_STATIC(SugarNote::AccessorHash, s_accessors)
 
 SugarNote::AccessorHash SugarNote::accessorHash()
 {
-    AccessorHash accessors = *s_accessors();
+    AccessorHash &accessors = *s_accessors();
     if (accessors.isEmpty()) {
 
         /*
@@ -435,7 +435,7 @@ description
 contact_name
 */
         accessors.insert(QLatin1String("id"),
-                         NoteAccessorPair(0, &SugarNote::setId, QString()));
+                         NoteAccessorPair(&SugarNote::id, &SugarNote::setId, QString()));
         accessors.insert(QLatin1String("name"),
                          NoteAccessorPair(&SugarNote::name, &SugarNote::setName,
                                           i18nc("@item:intable note name", "Name")));

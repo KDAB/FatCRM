@@ -1,7 +1,5 @@
 #include "noteshandler.h"
 
-#include "noteshandler.h"
-
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -14,7 +12,8 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 NotesHandler::NotesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Notes"), session)
+    : ModuleHandler(QLatin1String("Notes"), session),
+      mAccessors(SugarNote::accessorHash())
 {
 }
 
@@ -80,10 +79,10 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
     SugarNote::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        const SugarNote::valueGetter getter = (*it).getter;
-        if (getter == 0) {
+        if (it.key() == "id") {
             continue;
         }
+        const SugarNote::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
         field.setValue((note.*getter)());
@@ -149,11 +148,6 @@ void NotesHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     SugarNote::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarNote::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if ((*it).getter == 0) {
-            continue;
-        }
-
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // TODO some fields like currency_id should be handled as special fields instead
