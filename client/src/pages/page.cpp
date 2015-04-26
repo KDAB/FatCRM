@@ -42,6 +42,7 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mType(type),
       mDetailsWidget(new DetailsWidget(type)),
       mChangeRecorder(new ChangeRecorder(this)),
+      mItemsTreeModel(0),
       mShowDetailsAction(0)
 {
     mUi.setupUi(this);
@@ -75,6 +76,7 @@ void Page::showDetails(bool on)
     emit showDetailsChanged(on);
 }
 
+// Connected to signal resourceSelected() from the mainwindow
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
     if (mCollection.isValid()) {
@@ -83,6 +85,9 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 
     mCollection = Collection();
     mResourceIdentifier = identifier;
+    mUi.treeView->setModel(0);
+    delete mItemsTreeModel;
+    mItemsTreeModel = 0;
 
     mDetailsWidget->details()->setResourceIdentifier(identifier);
 
@@ -182,7 +187,7 @@ void Page::slotAddItem() // save new item
         details()->updateItem(item, mDetailsWidget->data());
 
         // job starts automatically
-        ItemCreateJob *job = new ItemCreateJob(item, collection());
+        ItemCreateJob *job = new ItemCreateJob(item, mCollection);
         connect(job, SIGNAL(result(KJob *)), this, SLOT(slotCreateJobResult(KJob *)));
     }
 }
@@ -262,28 +267,33 @@ void Page::slotRemoveItem()
     }
 }
 
-void Page::slotRowsInserted(const QModelIndex &, int start, int end)
+void Page::slotRowsInserted(const QModelIndex &, int, int)
 {
-    Q_UNUSED(start);
-    Q_UNUSED(end);
     if (mUi.treeView->model()->rowCount() == mCollection.statistics().count()) {
-        if (mType == Account) {
+        switch (mType) {
+        case Account:
             addAccountsData();
-        } else if (mType == Campaign) {
+            break;
+        case Campaign:
             addCampaignsData();
-        } else if (mType == Contact) {
+            break;
+        case Contact:
             addContactsData();
-        } else if (mType == Lead) {
+            break;
+        case Lead:
             addLeadsData();
-        } else if (mType == Opportunity) {
+            break;
+        case Opportunity:
             addOpportunitiesData();
+            break;
+        default: // other objects (like Note) not shown in a Page
+            break;
         }
     }
 }
 
 void Page::initialize()
 {
-    mClientWindow = dynamic_cast<SugarClient *>(window());
     mUi.treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
 
     const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
@@ -337,11 +347,11 @@ void Page::setupModel()
 {
     Q_ASSERT(mFilter); // must be set by derived class ctor
 
-    ItemsTreeModel *model = new ItemsTreeModel(mType, recorder(), this);
+    mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
-    filterModel->setSourceModel(model);
-    filterModel->addMimeTypeInclusionFilter(mimeType());
+    filterModel->setSourceModel(mItemsTreeModel);
+    filterModel->addMimeTypeInclusionFilter(mMimeType);
     filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
 
     mFilter->setSourceModel(filterModel);

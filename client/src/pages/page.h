@@ -48,29 +48,9 @@ public Q_SLOTS:
     void showDetails(bool on);
 
 protected:
-    inline SugarClient *clientWindow()
-    {
-        return mClientWindow;
-    }
-    inline QString mimeType() const
-    {
-        return mMimeType;
-    }
     inline Akonadi::EntityTreeView *treeView()
     {
         return mUi.treeView;
-    }
-    inline Akonadi::Collection collection()
-    {
-        return mCollection;
-    }
-    inline Akonadi::ChangeRecorder *recorder()
-    {
-        return mChangeRecorder;
-    }
-    inline QLineEdit *search()
-    {
-        return mUi.searchLE;
     }
     void setFilter(Akonadi::FilterProxyModel *filter)
     {
@@ -78,8 +58,6 @@ protected:
     }
 
     virtual void setupModel();
-
-    Details *details() const;
 
     void insertFilterWidget(QWidget *widget);
 
@@ -104,6 +82,7 @@ private Q_SLOTS:
 
 private:
     virtual QString reportTitle() const = 0;
+    Details *details() const;
     void initialize();
     bool askSave();
     // manages accounts combo box
@@ -119,12 +98,12 @@ private:
     DetailsDialog *createDetailsDialog();
 
 private:
-    SugarClient *mClientWindow;
     QString mMimeType;
     DetailsType mType;
     DetailsWidget *mDetailsWidget;
     Akonadi::FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
+    ItemsTreeModel *mItemsTreeModel;
     Akonadi::Collection mCollection;
     QModelIndex mCurrentIndex;
     Ui_page mUi;
