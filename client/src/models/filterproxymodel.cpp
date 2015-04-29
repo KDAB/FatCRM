@@ -5,6 +5,7 @@
 #include <kdcrmdata/sugarcampaign.h>
 #include <kdcrmdata/sugarlead.h>
 #include <kdcrmdata/sugaropportunity.h>
+#include <kdcrmdata/sugarnote.h>
 
 #include <kabc/addressee.h>
 #include <kabc/phonenumber.h>
@@ -20,6 +21,8 @@ static bool contactMatchesFilter(const KABC::Addressee addressee,
 static bool leadMatchesFilter(const SugarLead &lead,
                               const QString &filterString);
 static bool opportunityMatchesFilter(const SugarOpportunity &opportunity,
+                                     const QString &filterString);
+static bool noteMatchesFilter(const SugarNote &note,
                                      const QString &filterString);
 
 using namespace Akonadi;
@@ -92,6 +95,11 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
         return opportunityMatchesFilter(opportunity, d->mFilter);
+    }
+    case Note: {
+        Q_ASSERT(item.hasPayload<SugarNote>());
+        const SugarNote note = item.payload<SugarNote>();
+        return noteMatchesFilter(note, d->mFilter);
     }
     }
     return true;
@@ -202,6 +210,18 @@ static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const 
         return true;
     }
     if (opportunity.assignedUserName().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
+
+    return false;
+}
+
+static bool noteMatchesFilter(const SugarNote &note, const QString &filter)
+{
+    if (note.name().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
+    if (note.description().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
 

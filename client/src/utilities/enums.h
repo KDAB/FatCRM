@@ -1,7 +1,14 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
-enum DetailsType {Account, Opportunity, Lead, Contact, Campaign };
+enum DetailsType {
+    Account,
+    Opportunity,
+    Lead,
+    Contact,
+    Campaign,
+    Note
+};
 
 enum ReferencedDataType {
     AccountRef,
