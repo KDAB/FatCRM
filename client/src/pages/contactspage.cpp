@@ -7,10 +7,6 @@
 #include <kabc/addressee.h>
 #include <kabc/address.h>
 
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodifyjob.h>
-
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)

@@ -7,10 +7,6 @@
 
 #include "kdcrmdata/sugarcampaign.h"
 
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodifyjob.h>
-
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)

@@ -9,8 +9,6 @@
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodifyjob.h>
 
 #include <QDebug>
 
