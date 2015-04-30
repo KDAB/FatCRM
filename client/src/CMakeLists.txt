@@ -24,6 +24,7 @@ set(sugarclient_SRCS
     dialogs/detailsdialog.cpp
     dialogs/resourceconfigdialog.cpp
     dialogs/configurationdialog.cpp
+    utilities/collectionmanager.cpp
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
     utilities/referenceddata.cpp

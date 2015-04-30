@@ -6,6 +6,7 @@
 #include <QObject>
 
 template <typename K, typename V> class QPair;
+template <typename K, typename V> class QMap;
 
 /**
  * @brief Per-type singleton holding all reference data, for comboboxes
@@ -25,6 +26,7 @@ public:
 //    void clear();
 
     void setReferencedData(const QString &id, const QString &data);
+    void addMap(const QMap<QString, QString> &idDataMap);
 
     QString referencedData(const QString &id) const;
 

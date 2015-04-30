@@ -88,6 +88,28 @@ void ReferencedData::setReferencedData(const QString &id, const QString &data)
     }
 }
 
+void ReferencedData::addMap(const QMap<QString, QString> &idDataMap)
+{
+    QMap<QString, QString>::const_iterator it = idDataMap.constBegin();
+    const QMap<QString, QString>::const_iterator end = idDataMap.constEnd();
+    if (d->mVector.isEmpty()) {
+        d->mVector.reserve(idDataMap.count());
+        // The vector is currently empty -> fast path
+        // The map is already sorted, we can just copy right away
+        // and emit the signals only once, which is the whole point of this method.
+        emit rowsAboutToBeInserted(0, idDataMap.count() - 1);
+        for ( ; it != end ; ++it) {
+            d->mVector.append(KeyValue(it.key(), it.value()));
+        }
+        emit rowsInserted();
+    } else {
+        // Append to existing data -> slower code path
+        for ( ; it != end ; ++it) {
+            setReferencedData(it.key(), it.value());
+        }
+    }
+}
+
 QString ReferencedData::referencedData(const QString &id) const
 {
     KeyValueVector::const_iterator findIt = d->mVector.constBinaryFind(id);

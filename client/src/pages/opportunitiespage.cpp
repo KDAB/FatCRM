@@ -10,6 +10,9 @@
 
 #include <akonadi/entitymimetypefiltermodel.h>
 
+#include <akonadi/itemfetchjob.h>
+#include <akonadi/itemfetchscope.h>
+
 #include <QDebug>
 
 using namespace Akonadi;
@@ -32,6 +35,9 @@ void OpportunitiesPage::setupModel()
 {
     Page::setupModel();
     treeView()->sortByColumn(5 /*NextStepDate*/, Qt::DescendingOrder);
+
+    // TODO load notes
+    //Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(notesCollection, ...);
 }
 
 QString OpportunitiesPage::reportTitle() const

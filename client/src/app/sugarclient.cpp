@@ -5,6 +5,7 @@
 #include "resourceconfigdialog.h"
 #include "clientsettings.h"
 #include "configurationdialog.h"
+#include "collectionmanager.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -26,7 +27,8 @@ using namespace Akonadi;
 SugarClient::SugarClient()
     : QMainWindow(),
       mProgressBar(0),
-      mProgressBarHideTimer(0)
+      mProgressBarHideTimer(0),
+      mCollectionManager(new CollectionManager(this))
 {
     mUi.setupUi(this);
     initialize();
@@ -64,6 +66,9 @@ void SugarClient::slotDelayedInit()
     mResourceDialog = new ResourceConfigDialog(this);
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
             this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
+
+    connect(mCollectionManager, SIGNAL(collectionResult(QString,Akonadi::Collection)),
+            this, SLOT(slotCollectionResult(QString,Akonadi::Collection)));
 
     initialResourceSelection();
 
@@ -130,7 +135,8 @@ void SugarClient::slotResourceSelectionChanged(int index)
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
         const QString context = mResourceSelector->itemText(index);
-        emit resourceSelected(agent.identifier().toLatin1());
+        const QByteArray identifier = agent.identifier().toLatin1();
+        emit resourceSelected(identifier);
         const QString contextTitle =
             agent.isOnline() ? QString("SugarCRM Client: %1").arg(context)
             : QString("SugarCRM Client: %1 (offline)").arg(context);
@@ -140,6 +146,7 @@ void SugarClient::slotResourceSelectionChanged(int index)
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
+        mCollectionManager->setResource(identifier);
     } else {
         mUi.actionSynchronize->setEnabled(false);
         mUi.actionSynchronize->setEnabled(false);
@@ -363,6 +370,19 @@ void SugarClient::slotConfigure()
 void SugarClient::slotPrintReport()
 {
     currentPage()->printReport();
+}
+
+void SugarClient::slotCollectionResult(const QString &mimeType, const Collection &collection)
+{
+    foreach(Page *page, mPages) {
+        if (page->mimeType() == mimeType) {
+            page->setCollection(collection);
+            return;
+        }
+    }
+    if (mimeType == "application/x-vnd.kdab.crm.note") {
+        // TODO tell the opp page?
+    }
 }
 
 Page *SugarClient::currentPage() const

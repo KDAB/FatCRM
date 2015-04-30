@@ -15,8 +15,6 @@
 #include <akonadi/contact/contactstreemodel.h>
 #include <akonadi/contact/contactsfilterproxymodel.h>
 #include <akonadi/agentmanager.h>
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionfetchscope.h>
 #include <akonadi/collectionstatistics.h>
 #include <akonadi/entitymimetypefiltermodel.h>
 #include <akonadi/item.h>
@@ -91,32 +89,14 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 
     mDetailsWidget->details()->setResourceIdentifier(identifier);
 
-    /*
-     * Look for the wanted collection explicitly by listing all collections
-     * of the currently selected resource, filtering by MIME type.
-     * include statistics to get the number of items in each collection
-     */
-    CollectionFetchJob *job = new CollectionFetchJob(Collection::root(), CollectionFetchJob::Recursive);
-    job->fetchScope().setResource(identifier);
-    job->fetchScope().setContentMimeTypes(QStringList() << mMimeType);
-    job->fetchScope().setIncludeStatistics(true);
-    connect(job, SIGNAL(result(KJob*)),
-            this, SLOT(slotCollectionFetchResult(KJob*)));
-
     mUi.reloadPB->setEnabled(false);
+
+    // now we wait for the collection manager to find our collection and tell us
 }
 
-void Page::slotCollectionFetchResult(KJob *job)
+void Page::setCollection(const Collection &collection)
 {
-    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob *>(job);
-
-    // look for the collection
-    Q_FOREACH (const Collection &collection, fetchJob->collections()) {
-        if (collection.remoteId() == typeToString(mType).toLatin1()) {
-            mCollection = collection;
-            break;
-        }
-    }
+    mCollection = collection;
 
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
@@ -269,7 +249,10 @@ void Page::slotRemoveItem()
 
 void Page::slotRowsInserted(const QModelIndex &, int, int)
 {
-    if (mUi.treeView->model()->rowCount() == mCollection.statistics().count()) {
+    //kDebug() << typeToString(mType) << ": model has" << mItemsTreeModel->rowCount()
+    //         << "rows, we expect" << mCollection.statistics().count();
+    if (mItemsTreeModel->rowCount() == mCollection.statistics().count()) {
+        //kDebug() << "Finished loading" << typeToString(mType);
         switch (mType) {
         case Account:
             addAccountsData();
@@ -349,6 +332,8 @@ void Page::setupModel()
 
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
+    connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
+
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
     filterModel->setSourceModel(mItemsTreeModel);
     filterModel->addMimeTypeInclusionFilter(mMimeType);
@@ -360,8 +345,6 @@ void Page::setupModel()
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),
             mFilter, SLOT(setFilterString(QString)));
-
-    connect(mUi.treeView->model(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
 
     connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
@@ -491,79 +474,94 @@ DetailsDialog *Page::createDetailsDialog()
 
 void Page::addAccountsData()
 {
-    ReferencedData *accountRefData = ReferencedData::instance(AccountRef);
-    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
-    ReferencedData *accountCountryRefData = ReferencedData::instance(AccountCountryRef);
+    //kDebug(); QElapsedTimer dt; dt.start();
+    QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
-            accountRefData->setReferencedData(account.id(), account.name());
-            assignedToRefData->setReferencedData(account.assignedUserId(), account.assignedUserName());
+            accountRefMap.insert(account.id(), account.name());
+            assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
             const QString billingCountry = account.billingAddressCountry();
             const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
             // See comment in itemstreemodel.cpp about why this isn't account.id()
-            accountCountryRefData->setReferencedData(account.name(), country);
+            accountCountryRefMap.insert(account.name(), country);
         }
     }
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap);
+    //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::addCampaignsData()
 {
-    ReferencedData *campaignRefData = ReferencedData::instance(CampaignRef);
-    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
+    //kDebug(); QElapsedTimer dt; dt.start();
+    QMap<QString, QString> campaignRefMap, assignedToRefMap;
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
-            campaignRefData->setReferencedData(campaign.id(), campaign.name());
-            assignedToRefData->setReferencedData(campaign.assignedUserId(), campaign.assignedUserName());
+            campaignRefMap.insert(campaign.id(), campaign.name());
+            assignedToRefMap.insert(campaign.assignedUserId(), campaign.assignedUserName());
         }
     }
+    ReferencedData::instance(CampaignRef)->addMap(campaignRefMap);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::addContactsData()
 {
-    ReferencedData *reportsToRefData = ReferencedData::instance(ReportsToRef);
-    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
+    //kDebug(); QElapsedTimer dt; dt.start();
+    QMap<QString, QString> reportsToRefMap, assignedToRefMap;
+
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             const QString fullName = addressee.givenName() + " " + addressee.familyName();
-            reportsToRefData->setReferencedData(addressee.custom("FATCRM", "X-ContactId"), fullName);
-            assignedToRefData->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+            reportsToRefMap.insert(addressee.custom("FATCRM", "X-ContactId"), fullName);
+            assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
+    ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::addLeadsData()
 {
-    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
+    //kDebug();
+    QMap<QString, QString> assignedToRefMap;
+
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarLead>()) {
             const SugarLead lead = item.payload<SugarLead>();
-            assignedToRefData->setReferencedData(lead.assignedUserId(), lead.assignedUserName());
+            assignedToRefMap.insert(lead.assignedUserId(), lead.assignedUserName());
         }
     }
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
 }
 
 void Page::addOpportunitiesData()
 {
-    ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
+    //kDebug();
+    QMap<QString, QString> assignedToRefMap;
     for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
         const QModelIndex index = mUi.treeView->model()->index(i, 0);
         const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            assignedToRefData->setReferencedData(opportunity.assignedUserId(), opportunity.assignedUserName());
+            assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
         }
     }
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
 }
 
 void Page::removeAccountsData(Akonadi::Item &item)

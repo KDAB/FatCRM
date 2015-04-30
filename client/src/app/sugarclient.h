@@ -18,6 +18,7 @@ class QProgressBar;
 class QTimer;
 class QToolBar;
 class ResourceConfigDialog;
+class CollectionManager;
 
 namespace Akonadi
 {
@@ -59,6 +60,7 @@ private:
     QTimer *mProgressBarHideTimer;
 
     ResourceConfigDialog *mResourceDialog;
+    CollectionManager *mCollectionManager;
 
 private Q_SLOTS:
     void slotDelayedInit();
@@ -77,6 +79,7 @@ private Q_SLOTS:
     void slotCurrentTabChanged(int index);
     void slotConfigure();
     void slotPrintReport();
+    void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
 
 private:
     Page *currentPage() const;

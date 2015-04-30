@@ -9,12 +9,13 @@
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 namespace Akonadi
 {
 class ChangeRecorder;
 class Item;
+class Collection;
 }
 
 class Details;
@@ -32,6 +33,9 @@ public:
     explicit Page(QWidget *parent, const QString &mimeType, DetailsType type);
 
     ~Page();
+
+    QString mimeType() const { return mMimeType; }
+    void setCollection(const Akonadi::Collection& collection);
 
     QAction *showDetailsAction(const QString &title) const;
 
@@ -63,7 +67,6 @@ protected:
 
 private Q_SLOTS:
     void slotResourceSelectionChanged(const QByteArray &identifier);
-    void slotCollectionFetchResult(KJob *job);
     void slotCurrentItemChanged(const QModelIndex &index);
     void slotNewClicked();
     void slotAddItem();
