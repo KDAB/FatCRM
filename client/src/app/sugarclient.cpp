@@ -6,6 +6,7 @@
 #include "clientsettings.h"
 #include "configurationdialog.h"
 #include "collectionmanager.h"
+#include "notesrepository.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -28,7 +29,8 @@ SugarClient::SugarClient()
     : QMainWindow(),
       mProgressBar(0),
       mProgressBarHideTimer(0),
-      mCollectionManager(new CollectionManager(this))
+      mCollectionManager(new CollectionManager(this)),
+      mNotesRepository(new NotesRepository(this))
 {
     mUi.setupUi(this);
     initialize();
@@ -232,6 +234,7 @@ void SugarClient::createTabs()
     mViewMenu->addAction(page->showDetailsAction(tr("&Account Details")));
 
     page = new OpportunitiesPage(this);
+    page->setNotesRepository(mNotesRepository);
     mPages << page;
     mUi.tabWidget->addTab(page, tr("&Opportunities"));
     mViewMenu->addAction(page->showDetailsAction(tr("&Opportunity Details")));
@@ -381,7 +384,7 @@ void SugarClient::slotCollectionResult(const QString &mimeType, const Collection
         }
     }
     if (mimeType == "application/x-vnd.kdab.crm.note") {
-        // TODO tell the opp page?
+        mNotesRepository->setNotesCollection(collection);
     }
 }
 

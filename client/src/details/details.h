@@ -7,6 +7,8 @@
 
 #include <QtGui>
 
+class NotesRepository;
+
 class Details : public QWidget
 {
     Q_OBJECT
@@ -24,6 +26,7 @@ public:
     void clear();
 
     void setResourceIdentifier(const QByteArray &ident);
+    virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
 
     DetailsType type() const
     {
@@ -44,6 +47,7 @@ protected:
     QStringList salutationItems() const;
 
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
+    QString id() const;
 
 private Q_SLOTS:
     void doConnects();

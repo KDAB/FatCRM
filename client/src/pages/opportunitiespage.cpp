@@ -4,14 +4,10 @@
 #include "sugarclient.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
-#include "details.h"
 
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
-
-#include <akonadi/itemfetchjob.h>
-#include <akonadi/itemfetchscope.h>
 
 #include <QDebug>
 
@@ -35,9 +31,6 @@ void OpportunitiesPage::setupModel()
 {
     Page::setupModel();
     treeView()->sortByColumn(5 /*NextStepDate*/, Qt::DescendingOrder);
-
-    // TODO load notes
-    //Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(notesCollection, ...);
 }
 
 QString OpportunitiesPage::reportTitle() const

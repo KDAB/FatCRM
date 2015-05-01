@@ -3,8 +3,6 @@
 
 #include "page.h"
 
-#include <akonadi/item.h>
-
 class OpportunitiesPage : public Page
 {
     Q_OBJECT
@@ -14,6 +12,7 @@ public:
     ~OpportunitiesPage();
 
     /*reimp*/ void setupModel();
+
 protected:
     /*reimp*/ QString reportTitle() const;
 };

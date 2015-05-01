@@ -331,3 +331,8 @@ QStringList Details::salutationItems() const
                 << QString("Dr.") << QString("Prof.");
     return salutations;
 }
+
+QString Details::id() const
+{
+    return property("id").toString();
+}

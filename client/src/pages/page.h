@@ -24,7 +24,7 @@ class DetailsWidget;
 class KJob;
 class QAction;
 class QModelIndex;
-class SugarClient;
+class NotesRepository;
 
 class Page : public QWidget
 {
@@ -36,6 +36,7 @@ public:
 
     QString mimeType() const { return mMimeType; }
     void setCollection(const Akonadi::Collection& collection);
+    void setNotesRepository(NotesRepository *repo);
 
     QAction *showDetailsAction(const QString &title) const;
 
@@ -112,6 +113,7 @@ private:
     Ui_page mUi;
     QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
+    NotesRepository *mNotesRepository;
 };
 
 #endif

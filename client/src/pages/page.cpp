@@ -115,6 +115,12 @@ void Page::setCollection(const Collection &collection)
     }
 }
 
+void Page::setNotesRepository(NotesRepository *repo)
+{
+    mNotesRepository = repo;
+    mDetailsWidget->details()->setNotesRepository(repo);
+}
+
 void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
     // save previous item if modified
@@ -467,6 +473,7 @@ DetailsDialog *Page::createDetailsDialog()
 {
     Details* details = DetailsWidget::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier);
+    details->setNotesRepository(mNotesRepository);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     return dialog;
@@ -476,9 +483,9 @@ void Page::addAccountsData()
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
-    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
-        const QModelIndex index = mUi.treeView->model()->index(i, 0);
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
             accountRefMap.insert(account.id(), account.name());
@@ -499,9 +506,9 @@ void Page::addCampaignsData()
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> campaignRefMap, assignedToRefMap;
-    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
-        const QModelIndex index = mUi.treeView->model()->index(i, 0);
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
             campaignRefMap.insert(campaign.id(), campaign.name());
@@ -518,9 +525,9 @@ void Page::addContactsData()
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
 
-    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
-        const QModelIndex index = mUi.treeView->model()->index(i, 0);
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             const QString fullName = addressee.givenName() + " " + addressee.familyName();
@@ -538,9 +545,9 @@ void Page::addLeadsData()
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
 
-    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
-        const QModelIndex index = mUi.treeView->model()->index(i, 0);
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarLead>()) {
             const SugarLead lead = item.payload<SugarLead>();
             assignedToRefMap.insert(lead.assignedUserId(), lead.assignedUserName());
@@ -553,9 +560,9 @@ void Page::addOpportunitiesData()
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
-    for (int i = 0; i <  mUi.treeView->model()->rowCount(); ++i) {
-        const QModelIndex index = mUi.treeView->model()->index(i, 0);
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
             assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());

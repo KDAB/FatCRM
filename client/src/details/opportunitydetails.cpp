@@ -3,9 +3,12 @@
 #include "ui_opportunitydetails.h"
 #include "referenceddatamodel.h"
 #include "kdcrmutils.h"
+#include "notesrepository.h"
 
 #include <kdcrmdata/sugaropportunity.h>
 #include "sugarresourcesettings.h"
+#include <notesdialog.h>
+#include <KLocale>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
@@ -105,4 +108,20 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data) con
             mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
         }
     }
+    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(id());
+    mUi->viewNotesButton->setEnabled(!notes.isEmpty());
+    const QString buttonText = notes.isEmpty() ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes.count());
+    mUi->viewNotesButton->setText(buttonText);
+}
+
+void OpportunityDetails::on_viewNotesButton_clicked()
+{
+    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(id());
+    kDebug() << notes.count() << "notes found for opp" << id();
+    NotesDialog *dlg = new NotesDialog(this);
+    foreach(const SugarNote &note, notes) {
+        dlg->addNote(note.createdByName(), KDCRMUtils::formatTimestamp(note.dateModified()), note.description());
+    }
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }

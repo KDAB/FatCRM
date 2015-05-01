@@ -7,6 +7,7 @@ namespace Ui
 {
 class OpportunityDetails;
 }
+class NotesRepository;
 
 class OpportunityDetails : public Details
 {
@@ -16,11 +17,12 @@ public:
 
     ~OpportunityDetails();
 
+    void setNotesRepository(NotesRepository *notesRepo) Q_DECL_OVERRIDE { mNotesRepository = notesRepo; }
+
 private Q_SLOTS:
     void slotAutoNextStepDate();
 
-private:
-    Ui::OpportunityDetails *mUi;
+    void on_viewNotesButton_clicked();
 
 private:
     /*reimp*/ void initialize();
@@ -30,6 +32,10 @@ private:
 
     QStringList typeItems() const;
     QStringList stageItems() const;
+
+private:
+    Ui::OpportunityDetails *mUi;
+    NotesRepository *mNotesRepository;
 };
 
 #endif /* OPPORTUNITYDETAILS_H */

@@ -19,6 +19,7 @@ class QTimer;
 class QToolBar;
 class ResourceConfigDialog;
 class CollectionManager;
+class NotesRepository;
 
 namespace Akonadi
 {
@@ -61,6 +62,7 @@ private:
 
     ResourceConfigDialog *mResourceDialog;
     CollectionManager *mCollectionManager;
+    NotesRepository *mNotesRepository;
 
 private Q_SLOTS:
     void slotDelayedInit();

@@ -21,12 +21,14 @@ set(sugarclient_SRCS
     details/contactdetails.cpp
     details/leaddetails.cpp
     details/opportunitydetails.cpp
-    dialogs/detailsdialog.cpp
-    dialogs/resourceconfigdialog.cpp
     dialogs/configurationdialog.cpp
+    dialogs/detailsdialog.cpp
+    dialogs/notesdialog.cpp
+    dialogs/resourceconfigdialog.cpp
     utilities/collectionmanager.cpp
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
+    utilities/notesrepository.cpp
     utilities/referenceddata.cpp
     utilities/reportgenerator.cpp
     widgets/qdateeditex.cpp
@@ -42,9 +44,10 @@ kde4_add_ui_files(sugarclient_SRCS
     details/detailswidget.ui
     details/leaddetails.ui
     details/opportunitydetails.ui
-    dialogs/detailsdialog.ui
-    dialogs/resourceconfigdialog.ui
     dialogs/configurationdialog.ui
+    dialogs/detailsdialog.ui
+    dialogs/notesdialog.ui
+    dialogs/resourceconfigdialog.ui
 )
 
 qt4_add_resources(sugarclient_SRCS
