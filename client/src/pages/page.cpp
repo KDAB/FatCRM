@@ -21,7 +21,6 @@
 #include <akonadi/itemdeletejob.h>
 #include <akonadi/itemfetchscope.h>
 #include <akonadi/itemmodifyjob.h>
-#include <akonadi/collectionmodifyjob.h>
 #include <akonadi/entityannotationsattribute.h>
 
 #include <kabc/addressee.h>
