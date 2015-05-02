@@ -86,6 +86,7 @@ void DetailsDialog::Private::saveClicked()
         Q_ASSERT(item.parentCollection().isValid());
         job = new ItemCreateJob(item, item.parentCollection(), q);
     }
+    job->setProperty("item", QVariant::fromValue(item));
 
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
@@ -103,8 +104,8 @@ void DetailsDialog::Private::saveResult(KJob *job)
         // TODO
         return;
     }
+    emit q->itemSaved(job->property("item").value<Akonadi::Item>());
     q->accept();
-    // TODO emit signal, so detailswidget updates
 #if 0
     ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
     if (createJob != 0) {

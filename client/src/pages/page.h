@@ -83,6 +83,7 @@ private Q_SLOTS:
     void slotItemDoubleClicked(const QModelIndex &);
     void slotCreateJobResult(KJob *job);
     void slotModifyJobResult(KJob *job);
+    void slotItemSaved(const Akonadi::Item &item);
 
 private:
     virtual QString reportTitle() const = 0;

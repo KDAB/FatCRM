@@ -23,6 +23,9 @@ public Q_SLOTS:
     void setItem(const Akonadi::Item &item);
     void updateItem(const Akonadi::Item &item);
 
+Q_SIGNALS:
+    void itemSaved(const Akonadi::Item &item);
+
 private:
     class Private;
     Private *const d;

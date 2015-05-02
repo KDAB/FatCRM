@@ -208,6 +208,13 @@ void Page::slotModifyJobResult(KJob *job)
     }
 }
 
+// Item saved in details dialog
+void Page::slotItemSaved(const Item &item)
+{
+    // This relies on the fact that the dialog is modal: the current index can't change meanwhile
+    mDetailsWidget->setItem(item);
+}
+
 void Page::slotRemoveItem()
 {
     const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
@@ -438,8 +445,12 @@ void Page::slotItemDoubleClicked(const QModelIndex &index)
     if (item.isValid()) {
         DetailsDialog *dialog = createDetailsDialog();
         dialog->setItem(item);
+        // in case of changes while the dialog is up
         connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
                 dialog, SLOT(updateItem(Akonadi::Item)));
+        // show changes made in the dialog
+        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
+                this, SLOT(slotItemSaved(Akonadi::Item)));
         dialog->show();
     }
 }
