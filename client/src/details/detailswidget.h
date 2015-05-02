@@ -50,10 +50,6 @@ private:
     void initialize();
     void reset();
     void setConnections();
-    QString currentAccountId() const;
-    QString currentAssignedToId() const;
-    QString currentCampaignId() const;
-    QString currentReportsToId() const;
 
     void setData(const QMap<QString, QString> &data);
 

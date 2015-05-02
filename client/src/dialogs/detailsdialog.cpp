@@ -3,7 +3,6 @@
 #include "details.h"
 #include "ui_detailsdialog.h"
 #include "referenceddatamodel.h"
-#include "sugarclient.h"
 #include "clientsettings.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -46,12 +45,6 @@ public: // slots
     void saveClicked();
     void dataModified();
     void saveResult(KJob *job);
-
-private:
-    QString currentAccountId() const;
-    QString currentAssignedToId() const;
-    QString currentCampaignId() const;
-    QString currentReportsToId() const;
 };
 
 // similar with detailswidget
@@ -75,19 +68,6 @@ QMap<QString, QString> DetailsDialog::Private::data() const
 
     currentData["description"] = mUi.description->toPlainText();
     currentData["content"] = mUi.description->toPlainText();
-
-    // TODO FIXME
-    SugarClient *client = dynamic_cast<SugarClient *>(q->parentWidget()->window());
-    if (client != 0) {
-        const QString accountId = currentAccountId();
-        currentData["parentId"] = accountId;
-        currentData["accountId"] = accountId;
-        currentData["campaignId"] = currentCampaignId();
-        const QString assignedToId = currentAssignedToId();
-        currentData["assignedUserId"] = assignedToId;
-        currentData["assignedToId"] = assignedToId;
-        currentData["reportsToId"] = currentReportsToId();
-    }
 
     return currentData;
 }
@@ -124,6 +104,7 @@ void DetailsDialog::Private::saveResult(KJob *job)
         return;
     }
     q->accept();
+    // TODO emit signal, so detailswidget updates
 #if 0
     ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
     if (createJob != 0) {
@@ -131,60 +112,6 @@ void DetailsDialog::Private::saveResult(KJob *job)
         q->setItem(createJob->item());
     }
 #endif
-}
-
-QString DetailsDialog::Private::currentAccountId() const
-{
-    if (mDetails->type() != Campaign) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("parentName") || key == QLatin1String("accountName")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-QString DetailsDialog::Private::currentAssignedToId() const
-{
-    const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
-        const QString key = cb->objectName();
-        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
-            return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-        }
-    }
-    return QString();
-}
-
-QString DetailsDialog::Private::currentCampaignId() const
-{
-    if (mDetails->type() != Campaign) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("campaignName") || key == QLatin1String("campaign")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-QString DetailsDialog::Private::currentReportsToId() const
-{
-    if (mDetails->type() == Contact) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("reportsTo")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
 }
 
 DetailsDialog::DetailsDialog(Details *details, QWidget *parent)

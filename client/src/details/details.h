@@ -53,6 +53,11 @@ private Q_SLOTS:
     void doConnects();
 
 private:
+    QString currentAccountId() const;
+    QString currentAssignedToId() const;
+    QString currentCampaignId() const;
+    QString currentReportsToId() const;
+
     const DetailsType mType;
     QByteArray mResourceIdentifier;
     QStringList mKeys;

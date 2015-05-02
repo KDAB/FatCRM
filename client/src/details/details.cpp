@@ -3,6 +3,7 @@
 #include "clientsettings.h"
 
 #include <qdateeditex.h>
+#include <referenceddatamodel.h>
 
 using namespace Akonadi;
 
@@ -273,7 +274,84 @@ const QMap<QString, QString> Details::getData() const
     const QString fullUserName = ClientSettings::self()->fullUserName();
     currentData["modifiedByName"] = fullUserName.isEmpty() ? QString("me") : fullUserName;
 
+    const QString accountId = currentAccountId();
+    currentData["parentId"] = accountId;
+    currentData["accountId"] = accountId;
+    currentData["campaignId"] = currentCampaignId();
+    const QString assignedToId = currentAssignedToId();
+    currentData["assignedUserId"] = assignedToId;
+    currentData["assignedToId"] = assignedToId;
+    currentData["reportsToId"] = currentReportsToId();
+
     return currentData;
+}
+
+/*
+ * Return the selected Id of "Account Name" or "Parent Name"
+ */
+QString Details::currentAccountId() const
+{
+    // Account has "parentName"
+    // Contact, Leads, Opportunity have "accountName"
+    if (mType != Campaign) {
+        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        Q_FOREACH (QComboBox *cb, comboBoxes) {
+            const QString key = cb->objectName();
+            if (key == QLatin1String("parentName") || key == QLatin1String("accountName")) {
+                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
+            }
+        }
+    }
+    return QString();
+}
+
+/*
+ * Return the selected Campaign Id.
+ */
+QString Details::currentCampaignId() const
+{
+    if (mType != Campaign) {
+        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        Q_FOREACH (QComboBox *cb, comboBoxes) {
+            const QString key = cb->objectName();
+            if (key == QLatin1String("campaignName") || key == QLatin1String("campaign")) {
+                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
+            }
+        }
+    }
+    return QString();
+}
+
+/*
+ * Return the selected "Assigned To" Id
+ */
+QString Details::currentAssignedToId() const
+{
+    const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+    Q_FOREACH (QComboBox *cb, comboBoxes) {
+        const QString key = cb->objectName();
+        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
+            return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
+        }
+    }
+    return QString();
+}
+
+/*
+ * Return the selected "Reports To" Id
+ */
+QString Details::currentReportsToId() const
+{
+    if (mType == Contact) {
+        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        Q_FOREACH (QComboBox *cb, comboBoxes) {
+            const QString key = cb->objectName();
+            if (key == QLatin1String("reportsTo")) {
+                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
+            }
+        }
+    }
+    return QString();
 }
 
 /*

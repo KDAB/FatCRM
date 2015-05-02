@@ -5,8 +5,6 @@
 #include "contactdetails.h"
 #include "leaddetails.h"
 #include "opportunitydetails.h"
-#include "referenceddatamodel.h"
-#include "sugarclient.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 
@@ -144,14 +142,6 @@ QMap<QString, QString> DetailsWidget::data() const
     currentData["description"] = mUi.description->toPlainText();
     currentData["content"] = mUi.description->toPlainText();
 
-    const QString accountId = currentAccountId();
-    currentData["parentId"] = accountId;
-    currentData["accountId"] = accountId;
-    currentData["campaignId"] = currentCampaignId();
-    const QString assignedToId = currentAssignedToId();
-    currentData["assignedUserId"] = assignedToId;
-    currentData["assignedToId"] = assignedToId;
-    currentData["reportsToId"] = currentReportsToId();
     return currentData;
 }
 
@@ -195,72 +185,6 @@ void DetailsWidget::setModified(bool modified)
     mModified = modified;
     mUi.saveButton->setEnabled(modified);
     mUi.discardButton->setEnabled(modified);
-}
-
-/*
- * Return the selected Id of "Account Name" or "Parent Name"
- */
-QString DetailsWidget::currentAccountId() const
-{
-    if (mType != Campaign) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("parentName") || key == QLatin1String("accountName")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the selected Campaign Id.
- */
-QString DetailsWidget::currentCampaignId() const
-{
-    if (mType != Campaign) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("campaignName") || key == QLatin1String("campaign")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the selected "Assigned To" Id
- */
-QString DetailsWidget::currentAssignedToId() const
-{
-    const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
-        const QString key = cb->objectName();
-        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
-            return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the selected "Reports To" Id
- */
-QString DetailsWidget::currentReportsToId() const
-{
-    if (mType == Contact) {
-        const QList<QComboBox *> comboBoxes =  mUi.informationGB->findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == QLatin1String("reportsTo")) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
 }
 
 Details *DetailsWidget::createDetailsForType(DetailsType type)
