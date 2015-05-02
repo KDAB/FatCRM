@@ -4,7 +4,6 @@
 #include "detailswidget.h"
 #include "enums.h"
 #include "referenceddata.h"
-#include "sugarclient.h"
 #include "reportgenerator.h"
 
 #include "kdcrmdata/sugaraccount.h"

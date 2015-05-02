@@ -2,7 +2,6 @@
 
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
-#include "sugarclient.h"
 
 #include "kdcrmdata/sugarcampaign.h"
 

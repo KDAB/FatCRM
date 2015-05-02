@@ -1,7 +1,6 @@
 #include "opportunitiespage.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
-#include "sugarclient.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
 
