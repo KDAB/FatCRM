@@ -21,6 +21,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "kdcrmdata/kdcrmutils.h"
 
 #include <kcalcore/todo.h>
 
@@ -368,7 +369,7 @@ bool TasksHandler::setEntry( const Akonadi::Item &item )
         }
         TNS__Name_value field;
         field.setName( it.key() );
-        field.setValue( (*it)->getter( *todo ) );
+        field.setValue(KDCRMUtils::encodeXML((*it)->getter(*todo)));
 
         itemList << field;
     }
@@ -404,7 +405,7 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
             continue;
         }
 
-        (*accessIt)->setter( namedValue.value(), *todo );
+        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), *todo );
     }    
     
     item.setPayload<KCalCore::Todo::Ptr>( todo );

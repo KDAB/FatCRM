@@ -45,3 +45,30 @@ QString KDCRMUtils::formatDate(const QDate &date)
 {
     return KGlobal::locale()->formatDate(date, KLocale::ShortDate);
 }
+
+// Sugar SOAP apparently uses double-escaping
+// <value xsi:type="xsd:string">foo &lt;bar&gt;</value> loses the <bar>
+// and we get &amp;gt; for '>', etc.
+
+QString KDCRMUtils::encodeXML(const QString &str)
+{
+    QString encoded = str;
+    encoded.replace('&', "&amp;");
+    encoded.replace('<', "&lt;");
+    encoded.replace('>', "&gt;");
+    encoded.replace('\'', "&apos;");
+    encoded.replace('"', "&quot;");
+    return encoded;
+}
+
+QString KDCRMUtils::decodeXML(const QString &str)
+{
+    QString decoded = str;
+    decoded.replace("&quot;", QChar('"'));
+    decoded.replace("&apos;", QChar('\''));
+    decoded.replace("&#039;", QChar('\''));
+    decoded.replace("&gt;", QChar('>'));
+    decoded.replace("&lt;", QChar('<'));
+    decoded.replace("&amp;", QChar('&'));
+    return decoded;
+}

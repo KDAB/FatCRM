@@ -1,5 +1,6 @@
 #include "noteshandler.h"
 
+#include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -85,7 +86,7 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
         const SugarNote::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((note.*getter)());
+        field.setValue(KDCRMUtils::encodeXML((note.*getter)()));
 
         itemList << field;
     }
@@ -120,7 +121,7 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
             continue;
         }
 
-        (note.*(accessIt.value().setter))(namedValue.value());
+        (note.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarNote>(note);
     item.setRemoteRevision(note.dateModified());

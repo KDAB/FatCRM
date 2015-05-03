@@ -1,5 +1,6 @@
 #include "accountshandler.h"
 
+#include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -586,7 +587,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
         }
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((*it)->getter(account));
+        field.setValue(KDCRMUtils::encodeXML((*it)->getter(account)));
 
         itemList << field;
     }
@@ -621,7 +622,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
             continue;
         }
 
-        (*accessIt)->setter(namedValue.value(), account);
+        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), account);
     }
     item.setPayload<SugarAccount>(account);
     item.setRemoteRevision(getDateModified(account));

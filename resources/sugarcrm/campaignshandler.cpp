@@ -1,7 +1,6 @@
 #include "campaignshandler.h"
 
-#include "campaignshandler.h"
-
+#include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -454,7 +453,7 @@ bool CampaignsHandler::setEntry(const Akonadi::Item &item)
         }
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((*it)->getter(campaign));
+        field.setValue(KDCRMUtils::encodeXML((*it)->getter(campaign)));
 
         itemList << field;
     }
@@ -489,7 +488,7 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
             continue;
         }
 
-        (*accessIt)->setter(namedValue.value(), campaign);
+        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), campaign);
     }
     item.setPayload<SugarCampaign>(campaign);
     item.setRemoteRevision(getDateModified(campaign));

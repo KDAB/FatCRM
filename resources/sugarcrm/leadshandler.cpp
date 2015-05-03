@@ -1,5 +1,6 @@
 #include "leadshandler.h"
 
+#include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -825,7 +826,7 @@ bool LeadsHandler::setEntry(const Akonadi::Item &item)
         }
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((*it)->getter(lead));
+        field.setValue(KDCRMUtils::encodeXML((*it)->getter(lead)));
 
         itemList << field;
     }
@@ -860,7 +861,7 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
             continue;
         }
 
-        (*accessIt)->setter(namedValue.value(), lead);
+        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), lead);
     }
     item.setPayload<SugarLead>(lead);
     item.setRemoteRevision(getDateModified(lead));

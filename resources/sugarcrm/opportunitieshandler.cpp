@@ -437,7 +437,7 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
         }
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((*it)->getter(account));
+        field.setValue(KDCRMUtils::encodeXML((*it)->getter(account)));
 
         itemList << field;
     }
@@ -489,7 +489,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
             continue;
         }
 
-        (*accessIt)->setter(namedValue.value(), opportunity);
+        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), opportunity);
     }
     item.setPayload<SugarOpportunity>(opportunity);
     item.setRemoteRevision(getDateModified(opportunity));
