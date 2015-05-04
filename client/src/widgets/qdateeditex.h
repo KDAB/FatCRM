@@ -49,6 +49,7 @@ protected:
     /*! \reimp */ void keyPressEvent(QKeyEvent *event);
     /*! \reimp */ void mousePressEvent(QMouseEvent *event);
     /*! \reimp */ bool focusNextPrevChild(bool next);
+    /*! \reimp */ QValidator::State validate(QString &input, int &pos) const;
 
 public Q_SLOTS:
     /*! \reimp */ void setDateTime(const QDateTime &dateTime);
