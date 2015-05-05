@@ -290,6 +290,12 @@ void Page::slotRowsInserted(const QModelIndex &, int, int)
         default: // other objects (like Note) not shown in a Page
             break;
         }
+        // Select the first row
+        // Looks nicer than empty widgets,
+        // and allows to fill mKeys in details.cpp, critical for saving new objects.
+        if (!mUi.treeView->currentIndex().isValid()) {
+            mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
+        }
         emit ignoreModifications(false);
     }
 }
