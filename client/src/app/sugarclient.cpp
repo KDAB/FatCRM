@@ -88,9 +88,10 @@ void SugarClient::slotDelayedInit()
 
 void SugarClient::initialize()
 {
+    Q_INIT_RESOURCE(icons);
+
     resize(900, 900);
-    createMenus();
-    createToolBar();
+    createActions();
     createTabs();
     setupActions();
     mResourceSelector = 0;
@@ -109,13 +110,14 @@ void SugarClient::initialize()
     connect(mProgressBarHideTimer, SIGNAL(timeout()), mProgressBar, SLOT(hide()));
 }
 
-void SugarClient::createMenus()
+void SugarClient::createActions()
 {
     // the File menu is handled in Qt Designer
 
     mViewMenu = menuBar()->addMenu(tr("&View"));
     QAction *printAction = new QAction(tr("Print Report..."), this);
     printAction->setShortcut(QKeySequence::Print);
+    printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
     connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
@@ -124,14 +126,12 @@ void SugarClient::createMenus()
     QAction *configureAction = new QAction(tr("Configure FatCRM..."), this);
     connect(configureAction, SIGNAL(triggered()), this, SLOT(slotConfigure()));
     mSettingsMenu->addAction(configureAction);
-}
 
-void SugarClient::createToolBar()
-{
     QToolBar *detailsToolBar = addToolBar(tr("Details Toolbar"));
     mShowDetails = new QCheckBox(tr("Show Details"));
     detailsToolBar->addWidget(mShowDetails);
     connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
+    detailsToolBar->addAction(printAction);
 }
 
 void SugarClient::slotResourceSelectionChanged(int index)

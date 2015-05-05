@@ -43,8 +43,7 @@ protected:
 
 private:
     void initialize();
-    void createMenus();
-    void createToolBar();
+    void createActions();
     void setupActions();
     void createTabs();
 

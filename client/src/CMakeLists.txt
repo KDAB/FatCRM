@@ -51,7 +51,10 @@ kde4_add_ui_files(sugarclient_SRCS
 )
 
 qt4_add_resources(sugarclient_SRCS
-	widgets/widgets.qrc
+    widgets/widgets.qrc
+)
+qt4_add_resources(sugarclient_SRCS
+	icons/icons.qrc
 )
 
 # To find out the config of the sugar resource (for the web link) - TODO generalize to salesforce somehow
