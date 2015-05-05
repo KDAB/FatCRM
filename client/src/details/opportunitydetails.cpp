@@ -108,9 +108,9 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data) con
             mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
         }
     }
-    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(id());
-    mUi->viewNotesButton->setEnabled(!notes.isEmpty());
-    const QString buttonText = notes.isEmpty() ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes.count());
+    const int notes = mNotesRepository->notesForOpportunity(id()).count() + mNotesRepository->emailsForOpportunity(id()).count();
+    mUi->viewNotesButton->setEnabled(notes > 0);
+    const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
 }
 
@@ -118,9 +118,14 @@ void OpportunityDetails::on_viewNotesButton_clicked()
 {
     const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(id());
     kDebug() << notes.count() << "notes found for opp" << id();
+    const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(id());
+    kDebug() << emails.count() << "emails found for opp" << id();
     NotesDialog *dlg = new NotesDialog(this);
     foreach(const SugarNote &note, notes) {
-        dlg->addNote(note.createdByName(), KDCRMUtils::formatTimestamp(note.dateModified()), note.description());
+        dlg->addNote(note);
+    }
+    foreach(const SugarEmail &email, emails) {
+        dlg->addEmail(email);
     }
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();

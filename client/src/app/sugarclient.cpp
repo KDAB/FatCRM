@@ -387,7 +387,10 @@ void SugarClient::slotCollectionResult(const QString &mimeType, const Collection
     }
     if (mimeType == "application/x-vnd.kdab.crm.note") {
         mNotesRepository->setNotesCollection(collection);
+    } else if (mimeType == "application/x-vnd.kdab.crm.email") {
+        mNotesRepository->setEmailsCollection(collection);
     }
+
 }
 
 void SugarClient::slotIgnoreModifications(bool ignore)

@@ -6,6 +6,8 @@
 namespace Ui {
 class NotesDialog;
 }
+class SugarEmail;
+class SugarNote;
 
 class NotesDialog : public QDialog
 {
@@ -15,7 +17,8 @@ public:
     explicit NotesDialog(QWidget *parent = 0);
     ~NotesDialog();
 
-    void addNote(const QString &user, const QString &modified, const QString &text);
+    void addNote(const SugarNote &note);
+    void addEmail(const SugarEmail &email);
 
 private:
     Ui::NotesDialog *ui;
