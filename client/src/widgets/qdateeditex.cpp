@@ -222,6 +222,12 @@ QSize QDateEditEx::minimumSizeHint() const
     return QSize(sz.width() + d->clearButton->width() + 3, sz.height());
 }
 
+void QDateEditEx::showEvent(QShowEvent *event)
+{
+    QDateEdit::showEvent(event);
+    d->setNull(d->null); // force empty string back in
+}
+
 /*!
   \reimp
 */

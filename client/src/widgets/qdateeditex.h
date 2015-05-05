@@ -44,6 +44,7 @@ public:
     QSize minimumSizeHint() const;
 
 protected:
+    /*! \reimp */ void showEvent(QShowEvent *event);
     /*! \reimp */ void resizeEvent(QResizeEvent *event);
     /*! \reimp */ void paintEvent(QPaintEvent *event);
     /*! \reimp */ void keyPressEvent(QKeyEvent *event);

@@ -14,9 +14,13 @@ private Q_SLOTS:
         QDateEdit w;
         w.setSpecialValueText(" ");
         w.setDate(w.minimumDate());
+        QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
+        QVERIFY(spy.isValid());
         QCOMPARE(w.text(), QString(" "));
+        QCOMPARE(spy.count(), 0);
         w.show();
         QCOMPARE(w.text(), QString(" "));
+        QCOMPARE(spy.count(), 0);
     }
 
     void testSpecialValueInvalid()
@@ -34,10 +38,15 @@ private Q_SLOTS:
         QDateEditEx w;
         w.setNullable(true);
         w.setDate(QDate());
+        QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
+        QVERIFY(spy.isValid());
         QCOMPARE(w.text(), QString(""));
+        QCOMPARE(spy.count(), 0);
         w.show();
-        QEXPECT_FAIL("", "Show puts the default date back in", Continue);
         QCOMPARE(w.text(), QString(""));
+        QCOMPARE(spy.count(), 0);
+        QTest::qWait(50);
+        QCOMPARE(spy.count(), 0);
     }
 
 private:
