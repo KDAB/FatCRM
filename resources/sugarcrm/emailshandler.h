@@ -1,27 +1,29 @@
-#ifndef CAMPAIGNSHANDLER_H
-#define CAMPAIGNSHANDLER_H
+#ifndef EMAILSHANDLER_H
+#define EMAILSHANDLER_H
 
 #include "modulehandler.h"
+#include <kdcrmdata/sugaremail.h>
 
-class AccessorPair;
+class EmailAccessorPair;
 
 template <typename U, typename V> class QHash;
 
-class CampaignsHandler : public ModuleHandler
+class EmailsHandler : public ModuleHandler
 {
 public:
-    CampaignsHandler(SugarSession *session);
+    EmailsHandler(SugarSession *session);
 
-    ~CampaignsHandler();
+    ~EmailsHandler();
 
     QStringList supportedFields() const;
 
     Akonadi::Collection handlerCollection() const;
 
+    bool setEntry(const Akonadi::Item &item);
+
+    QString queryStringForListing() const;
     QString orderByForListing() const;
     QStringList selectedFieldsForListing() const;
-
-    bool setEntry(const Akonadi::Item &item);
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection);
 
@@ -29,9 +31,8 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    typedef QHash<QString, AccessorPair *> AccessorHash;
-    AccessorHash *mAccessors;
+    SugarEmail::AccessorHash mAccessors;
 };
 
-#endif /* CAMPAIGNSHANDLER_H */
+#endif
 

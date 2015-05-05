@@ -19,7 +19,7 @@ public:
 
     int deleted() const;
 
-    QString query(const QString &module) const;
+    QString query(const QString &filter, const QString &moduleName) const;
 
 private:
     int mOffset;

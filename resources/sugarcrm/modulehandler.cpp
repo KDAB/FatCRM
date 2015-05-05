@@ -46,13 +46,13 @@ Akonadi::Collection ModuleHandler::collection() const
 
 void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)
 {
-    const QString query = scope.query(queryStringForListing());
+    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
     soap()->asyncGet_entries_count(sessionId(), moduleName(), query, scope.deleted());
 }
 
 void ModuleHandler::listEntries(const ListEntriesScope &scope)
 {
-    const QString query = scope.query(queryStringForListing());
+    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
     const QString orderBy = orderByForListing();
     const int offset = scope.offset();
     const int maxResults = 100;

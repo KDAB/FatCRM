@@ -408,11 +408,6 @@ Akonadi::Collection CampaignsHandler::handlerCollection() const
     return campaignCollection;
 }
 
-QString CampaignsHandler::queryStringForListing() const
-{
-    return QLatin1String("campaigns");
-}
-
 QString CampaignsHandler::orderByForListing() const
 {
     return QLatin1String("campaigns.name");

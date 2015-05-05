@@ -782,11 +782,6 @@ Akonadi::Collection LeadsHandler::handlerCollection() const
     return leadCollection;
 }
 
-QString LeadsHandler::queryStringForListing() const
-{
-    return QLatin1String("leads");
-}
-
 QString LeadsHandler::orderByForListing() const
 {
     return QLatin1String("leads.last_name");

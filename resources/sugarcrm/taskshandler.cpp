@@ -324,11 +324,6 @@ Akonadi::Collection TasksHandler::handlerCollection() const
     return taskCollection;
 }
 
-QString TasksHandler::queryStringForListing() const
-{
-    return QLatin1String("tasks");
-}
-
 QString TasksHandler::orderByForListing() const
 {
     return QLatin1String("tasks.id");

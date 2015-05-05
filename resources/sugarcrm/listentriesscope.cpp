@@ -38,11 +38,20 @@ int ListEntriesScope::deleted() const
     return mGetDeleted ? 1 : 0;
 }
 
-QString ListEntriesScope::query(const QString &module) const
+QString ListEntriesScope::query(const QString &filter, const QString &moduleName) const
 {
-    if (mUpdateTimestamp.isEmpty()) {
-        return QLatin1String("");
+    QString queryStr = filter;
+
+    if (!filter.isEmpty()) {
+        queryStr = filter;
     }
 
-    return module + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
+    if (mUpdateTimestamp.isEmpty()) {
+        return queryStr;
+    }
+
+    if (!queryStr.isEmpty())
+        queryStr += QLatin1String(" AND ");
+
+    return queryStr + moduleName + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
 }

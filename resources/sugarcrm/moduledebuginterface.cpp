@@ -17,6 +17,29 @@ ModuleDebugInterface::~ModuleDebugInterface()
 {
 }
 
+int ModuleDebugInterface::getCount() const
+{
+    SugarSession *session = mResource->mSession;
+    Sugarsoap *soap = session->soap();
+    const QString sessionId = session->sessionId();
+
+
+    const QString query = QString("parent_type=\"Opportunities\"");
+    KDSoapGenerated::TNS__Get_entries_count_result response = soap->get_entries_count(sessionId, mModuleName, query, 0);
+    kDebug() << response.result_count() << "entries";
+
+    // Let's also take a peek at the first entry
+    KDSoapGenerated::TNS__Select_fields fields;
+    fields.setItems(availableFields());
+    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, mModuleName,  query, QString() /*orderBy*/, 0, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
+    QList<KDSoapGenerated::TNS__Name_value> values = listResponse.entry_list().items().at(0).name_value_list().items();
+    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
+        qDebug() << value.name() << "=" << value.value();
+    }
+
+    return response.result_count();
+}
+
 QStringList ModuleDebugInterface::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {

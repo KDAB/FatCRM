@@ -20,7 +20,6 @@ public:
 
     bool setEntry(const Akonadi::Item &item);
 
-    QString queryStringForListing() const;
     QString orderByForListing() const;
     QStringList selectedFieldsForListing() const;
 

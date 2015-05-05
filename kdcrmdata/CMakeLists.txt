@@ -21,6 +21,8 @@ set(kdcrmdata_LIB_SRCS
     sugarleadio.cpp
     sugarcampaign.cpp
     sugarcampaignio.cpp
+    sugaremail.cpp
+    sugaremailio.cpp
     sugarnote.cpp
     sugarnoteio.cpp
 )
@@ -71,6 +73,12 @@ target_link_libraries(akonadi_serializer_sugarnote kdcrmdata ${KDE4_KDECORE_LIBS
 install(TARGETS akonadi_serializer_sugarnote DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
+set(akonadi_serializer_sugaremail_PART_SRCS serializerpluginsugaremail.cpp )
+kde4_add_plugin(akonadi_serializer_sugaremail ${akonadi_serializer_sugaremail_PART_SRCS})
+target_link_libraries(akonadi_serializer_sugaremail kdcrmdata ${KDE4_KDECORE_LIBS} ${KDEPIMLIBS_AKONADI_LIBS})
+install(TARGETS akonadi_serializer_sugaremail DESTINATION ${PLUGIN_INSTALL_DIR})
+
+### next target
 
 #if (KDE4_BUILD_TESTS)
 #  add_subdirectory(tests)
@@ -84,6 +92,7 @@ install( FILES
   akonadi_serializer_sugarlead.desktop
   akonadi_serializer_sugarcampaign.desktop
   akonadi_serializer_sugarnote.desktop
+  akonadi_serializer_sugaremail.desktop
 DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer)
 
 install(FILES kdabcrm-mime.xml DESTINATION ${XDG_MIME_INSTALL_DIR})

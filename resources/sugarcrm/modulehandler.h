@@ -42,7 +42,7 @@ public:
 
     bool getEntry(const Akonadi::Item &item);
 
-    virtual QString queryStringForListing() const = 0;
+    virtual QString queryStringForListing() const { return QString(); }
     virtual QString orderByForListing() const = 0;
     virtual QStringList selectedFieldsForListing() const = 0;
 

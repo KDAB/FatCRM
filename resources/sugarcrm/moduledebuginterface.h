@@ -16,6 +16,7 @@ public:
     ~ModuleDebugInterface();
 
 public Q_SLOTS:
+    Q_SCRIPTABLE int getCount() const;
     Q_SCRIPTABLE QStringList availableFields() const;
     Q_SCRIPTABLE QStringList supportedFields() const;
     Q_SCRIPTABLE QString lastestTimestamp() const;

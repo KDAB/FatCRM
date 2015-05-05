@@ -718,11 +718,6 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
     return true;
 }
 
-QString ContactsHandler::queryStringForListing() const
-{
-    return QLatin1String("contacts");
-}
-
 QString ContactsHandler::orderByForListing() const
 {
     return QLatin1String("contacts.last_name");

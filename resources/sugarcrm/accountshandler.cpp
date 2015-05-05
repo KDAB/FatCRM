@@ -542,11 +542,6 @@ Akonadi::Collection AccountsHandler::handlerCollection() const
     return accountCollection;
 }
 
-QString AccountsHandler::queryStringForListing() const
-{
-    return QLatin1String("accounts");
-}
-
 QString AccountsHandler::orderByForListing() const
 {
     return QLatin1String("accounts.name");

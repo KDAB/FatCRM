@@ -1,0 +1,9 @@
+[Misc]
+Name=CRM Email Serializer
+Comment=An Akonadi serializer plugin for CRM Email objects
+
+[Plugin]
+Type=application/x-vnd.kdab.crm.email
+X-KDE-Library=akonadi_serializer_sugaremail
+X-Akonadi-Class=legacy;default;SugarEmail;
+X-KDE-ClassName=Akonadi::SerializerPluginSugarEmail

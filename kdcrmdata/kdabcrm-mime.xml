@@ -15,6 +15,10 @@ Notes:
     <sub-class-of type="text/xml"/>
     <comment>CRM Campaign</comment>
   </mime-type>
+  <mime-type type="application/x-vnd.kdab.crm.email">
+    <sub-class-of type="text/xml"/>
+    <comment>CRM Email</comment>
+  </mime-type>
   <mime-type type="application/x-vnd.kdab.crm.lead">
     <sub-class-of type="text/xml"/>
     <comment>CRM Lead</comment>

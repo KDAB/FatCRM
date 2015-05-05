@@ -449,11 +449,6 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     return true;
 }
 
-QString OpportunitiesHandler::queryStringForListing() const
-{
-    return QLatin1String("opportunities");
-}
-
 QString OpportunitiesHandler::orderByForListing() const
 {
     return QLatin1String("opportunities.name");

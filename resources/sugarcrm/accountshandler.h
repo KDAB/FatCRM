@@ -18,7 +18,6 @@ public:
 
     Akonadi::Collection handlerCollection() const;
 
-    QString queryStringForListing() const;
     QString orderByForListing() const;
     QStringList selectedFieldsForListing() const;
 
