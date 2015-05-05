@@ -193,6 +193,14 @@ void DetailsWidget::setModified(bool modified)
 void DetailsWidget::setModificationsIgnored(bool b)
 {
     mIgnoreModifications = b;
+
+    // A combo was just loaded; if the user didn't make any changes yet,
+    // retry selecting the right account/etc. from the combo
+    if (!b) {
+        if (!mModified && mItem.isValid()) {
+            setItem(mItem);
+        }
+    }
 }
 
 Details *DetailsWidget::createDetailsForType(DetailsType type)
