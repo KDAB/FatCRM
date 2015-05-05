@@ -5,6 +5,7 @@
 #include "enums.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
+#include "filterproxymodel.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
@@ -263,6 +264,11 @@ void Page::slotRemoveItem()
     }
 }
 
+void Page::slotVisibleRowCountChanged()
+{
+    mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToString(mType)));
+}
+
 void Page::slotRowsInserted(const QModelIndex &, int, int)
 {
     //kDebug() << typeToString(mType) << ": model has" << mItemsTreeModel->rowCount()
@@ -367,6 +373,10 @@ void Page::setupModel()
     mFilter->setSourceModel(filterModel);
     mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
     mUi.treeView->setModel(mFilter);
+
+    connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
+    connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
+    connect(mFilter, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),
             mFilter, SLOT(setFilterString(QString)));

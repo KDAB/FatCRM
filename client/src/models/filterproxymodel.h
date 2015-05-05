@@ -4,9 +4,6 @@
 #include <QtGui/QSortFilterProxyModel>
 #include "enums.h"
 
-namespace Akonadi
-{
-
 /**
  * A proxy model for sugar tree models.
  *
@@ -49,8 +46,6 @@ private:
     class Private;
     Private *const d;
 };
-
-}
 
 #endif /* FILTERPROXYMODEL_H */
 

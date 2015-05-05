@@ -59,7 +59,7 @@ protected:
     {
         return mUi.treeView;
     }
-    void setFilter(Akonadi::FilterProxyModel *filter)
+    void setFilter(FilterProxyModel *filter)
     {
         mFilter = filter;
     }
@@ -75,6 +75,7 @@ private Q_SLOTS:
     void slotAddItem();
     void slotModifyItem();
     void slotRemoveItem();
+    void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int, int);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotSetItem();
@@ -108,7 +109,7 @@ private:
     QString mMimeType;
     DetailsType mType;
     DetailsWidget *mDetailsWidget;
-    Akonadi::FilterProxyModel *mFilter;
+    FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     ItemsTreeModel *mItemsTreeModel;
     Akonadi::Collection mCollection;

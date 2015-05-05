@@ -12,7 +12,7 @@
  * listed.
  *
  */
-class OpportunityFilterProxyModel : public Akonadi::FilterProxyModel
+class OpportunityFilterProxyModel : public FilterProxyModel
 {
     Q_OBJECT
 
