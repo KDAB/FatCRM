@@ -26,6 +26,7 @@ public:
     {
         return mModified;
     }
+    void setModificationsIgnored(bool b);
 
     void setItem(const Akonadi::Item &item);
     void clearFields();
@@ -61,6 +62,7 @@ private:
     DetailsType mType;
     bool mModified;
     bool mCreateNew;
+    bool mIgnoreModifications;
     Ui_detailswidget mUi;
     Akonadi::Item mItem;
 };

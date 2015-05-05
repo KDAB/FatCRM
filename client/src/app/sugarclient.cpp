@@ -57,6 +57,8 @@ void SugarClient::slotDelayedInit()
     Q_FOREACH (const Page *page, mPages) {
         connect(this, SIGNAL(resourceSelected(QByteArray)),
                 page, SLOT(slotResourceSelectionChanged(QByteArray)));
+        connect(page, SIGNAL(ignoreModifications(bool)),
+                this, SLOT(slotIgnoreModifications(bool)));
     }
 
     // initialize additional UI
@@ -385,6 +387,13 @@ void SugarClient::slotCollectionResult(const QString &mimeType, const Collection
     }
     if (mimeType == "application/x-vnd.kdab.crm.note") {
         mNotesRepository->setNotesCollection(collection);
+    }
+}
+
+void SugarClient::slotIgnoreModifications(bool ignore)
+{
+    foreach(Page *page, mPages) {
+        page->setModificationsIgnored(ignore);
     }
 }
 

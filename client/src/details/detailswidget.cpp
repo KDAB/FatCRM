@@ -16,7 +16,8 @@ DetailsWidget::DetailsWidget(DetailsType type, QWidget *parent)
     : QWidget(parent),
       mType(type),
       mModified(false),
-      mCreateNew(false)
+      mCreateNew(false),
+      mIgnoreModifications(false)
 {
     mUi.setupUi(this);
     initialize();
@@ -182,9 +183,16 @@ void DetailsWidget::slotDiscardData()
 
 void DetailsWidget::setModified(bool modified)
 {
+    if (modified && mIgnoreModifications)
+        return;
     mModified = modified;
     mUi.saveButton->setEnabled(modified);
     mUi.discardButton->setEnabled(modified);
+}
+
+void DetailsWidget::setModificationsIgnored(bool b)
+{
+    mIgnoreModifications = b;
 }
 
 Details *DetailsWidget::createDetailsForType(DetailsType type)

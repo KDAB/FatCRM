@@ -37,6 +37,7 @@ public:
     QString mimeType() const { return mMimeType; }
     void setCollection(const Akonadi::Collection& collection);
     void setNotesRepository(NotesRepository *repo);
+    void setModificationsIgnored(bool b);
 
     QAction *showDetailsAction(const QString &title) const;
 
@@ -48,6 +49,7 @@ Q_SIGNALS:
     void showDetailsChanged(bool on);
     void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
+    void ignoreModifications(bool ignore); // emitted while loading reference data
 
 public Q_SLOTS:
     void showDetails(bool on);

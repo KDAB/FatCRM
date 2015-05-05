@@ -119,6 +119,11 @@ void Page::setNotesRepository(NotesRepository *repo)
     mDetailsWidget->details()->setNotesRepository(repo);
 }
 
+void Page::setModificationsIgnored(bool b)
+{
+    mDetailsWidget->setModificationsIgnored(b);
+}
+
 void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
     // save previous item if modified
@@ -263,6 +268,8 @@ void Page::slotRowsInserted(const QModelIndex &, int, int)
     //kDebug() << typeToString(mType) << ": model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     if (mItemsTreeModel->rowCount() == mCollection.statistics().count()) {
+        // inserting rows into comboboxes can change the current index, thus marking the data as modified
+        emit ignoreModifications(true);
         //kDebug() << "Finished loading" << typeToString(mType);
         switch (mType) {
         case Account:
@@ -283,6 +290,7 @@ void Page::slotRowsInserted(const QModelIndex &, int, int)
         default: // other objects (like Note) not shown in a Page
             break;
         }
+        emit ignoreModifications(false);
     }
 }
 

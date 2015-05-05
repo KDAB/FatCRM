@@ -82,6 +82,7 @@ private Q_SLOTS:
     void slotConfigure();
     void slotPrintReport();
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
+    void slotIgnoreModifications(bool ignore);
 
 private:
     Page *currentPage() const;
