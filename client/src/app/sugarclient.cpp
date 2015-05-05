@@ -275,14 +275,21 @@ void SugarClient::slotConfigureResources()
 
 QComboBox *SugarClient::createResourcesCombo()
 {
+    QComboBox *container = new QComboBox();
+
     // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel(this);
     AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel(this);
-    agentFilterModel->setSourceModel(agentModel);
-    //initialize member
-    QComboBox *container = new QComboBox();
     agentFilterModel->addCapabilityFilter(QString("KDCRM").toLatin1());
-    container->setModel(agentFilterModel);
+    agentFilterModel->setSourceModel(agentModel);
+
+    // Remove this and use agentFilterModel on the last line when everyone has kdepimlibs >= 4.14.7
+#if 1
+    WorkaroundFilterProxyModel *workaround = new WorkaroundFilterProxyModel(this);
+    workaround->setSourceModel(agentFilterModel);
+    container->setModel(workaround);
+#endif
+
 
     QToolBar *resourceToolBar = addToolBar(tr("CRM Account Selection"));
     resourceToolBar->addWidget(container);
