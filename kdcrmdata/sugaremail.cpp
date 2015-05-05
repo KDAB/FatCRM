@@ -505,9 +505,9 @@ mailbox_id
                          EmailAccessorPair(&SugarEmail::parentId, &SugarEmail::setParentId, QString()));
         accessors.insert(QLatin1String("from_addr_name"),
                          EmailAccessorPair(&SugarEmail::fromAddrName, &SugarEmail::setFromAddrName, QString()));
-        accessors.insert(QLatin1String("to_addr_names"),
+        accessors.insert(QLatin1String("to_addrs_names"),
                          EmailAccessorPair(&SugarEmail::toAddrNames, &SugarEmail::setToAddrNames, QString()));
-        accessors.insert(QLatin1String("cc_addr_names"),
+        accessors.insert(QLatin1String("cc_addrs_names"),
                          EmailAccessorPair(&SugarEmail::ccAddrNames, &SugarEmail::setCcAddrNames, QString()));
     }
     return accessors;
