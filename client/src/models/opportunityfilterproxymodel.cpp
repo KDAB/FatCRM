@@ -5,6 +5,7 @@
 #include <akonadi/entitytreemodel.h>
 
 #include <QDate>
+#include <opportunitiespage.h>
 
 using namespace Akonadi;
 
@@ -90,6 +91,25 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     }
 
     return opportunityMatchesFilter(opportunity, filterStr);
+}
+
+bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    if (sortColumn() == OpportunitiesPage::NextStepDateColumn) {
+        QVariant l = (left.model() ? left.model()->data(left, sortRole()) : QVariant());
+        QVariant r = (right.model() ? right.model()->data(right, sortRole()) : QVariant());
+        if (l.userType() == QVariant::Date) {
+            QDate leftDt = l.toDate();
+            QDate rightDt = r.toDate();
+            if (leftDt == rightDt) {
+                // compare last modified dates
+                leftDt = left.sibling(left.row(), OpportunitiesPage::LastModifiedColumn).data(sortRole()).toDate();
+                rightDt = right.sibling(right.row(), OpportunitiesPage::LastModifiedColumn).data(sortRole()).toDate();
+            }
+            return leftDt < rightDt;
+        }
+    }
+    return FilterProxyModel::lessThan(left, right);
 }
 
 #include "opportunityfilterproxymodel.moc"

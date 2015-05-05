@@ -34,7 +34,8 @@ public Q_SLOTS:
     void showAll();
 
 protected:
-    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const;
+    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
+    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 
 private:
     class Private;
