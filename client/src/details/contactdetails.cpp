@@ -10,9 +10,9 @@
 
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails)
-
 {
     mUi->setupUi(this);
+    mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     initialize();
 }
 
@@ -103,7 +103,7 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data["createdBy"] = addressee.custom("FATCRM", "X-CreatedByName");
     data["modifiedUserId"] = addressee.custom("FATCRM", "X-ModifiedUserId");
     data["modifiedUserName"] = addressee.custom("FATCRM", "X-ModifiedUserName");
-    data["contactId"] = addressee.custom("FATCRM", "X-ContactId");
+    data["id"] = addressee.custom("FATCRM", "X-ContactId");
     data["opportunityRoleFields"] = addressee.custom("FATCRM", "X-OpportunityRoleFields");
     data["cAcceptStatusFields"] = addressee.custom("FATCRM", "X-CacceptStatusFields");
     data["mAcceptStatusFields"] = addressee.custom("FATCRM", "X-MacceptStatusFields");
@@ -173,11 +173,20 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.insertCustom("FATCRM", "X-DateCreated", data.value("createdDate"));
     addressee.insertCustom("FATCRM", "X-CreatedByName", data.value("createdBy"));
     addressee.insertCustom("FATCRM", "X-CreatedById", data.value("createdById"));
-    addressee.insertCustom("FATCRM", "X-ContactId", data.value("contactId"));
+    addressee.insertCustom("FATCRM", "X-ContactId", data.value("id"));
     addressee.insertCustom("FATCRM", "X-Salutation", data.value("salutation"));
     addressee.insertCustom("FATCRM", "X-Deleted", data.value("deleted"));
     addressee.insertCustom("FATCRM", "X-DoNotCall", data.value("doNotCall"));
 
     item.setMimeType(KABC::Addressee::mimeType());
     item.setPayload<KABC::Addressee>(addressee);
+}
+
+void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
+{
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url));
+    }
 }

@@ -20,9 +20,10 @@ private:
     Ui::AccountDetails *mUi;
 
 private:
-    /*reimp*/ void initialize();
-    /*reimp*/ QMap<QString, QString> data(const Akonadi::Item &item) const;
-    /*reimp*/ void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const;
+    void initialize();
+    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
+    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
 
     QStringList typeItems() const;
 };

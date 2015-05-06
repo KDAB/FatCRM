@@ -10,6 +10,7 @@ AccountDetails::AccountDetails(QWidget *parent)
 
 {
     mUi->setupUi(this);
+    mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     initialize();
 }
 
@@ -56,4 +57,13 @@ void AccountDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
 
     item.setMimeType(SugarAccount::mimeType());
     item.setPayload<SugarAccount>(account);
+}
+
+void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
+{
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Accounts&record=" + id();
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url));
+    }
 }
