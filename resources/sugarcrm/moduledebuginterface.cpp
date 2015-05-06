@@ -23,8 +23,9 @@ int ModuleDebugInterface::getCount() const
     Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
 
-
-    const QString query = QString("parent_type=\"Opportunities\"");
+    // for notes and emails, use this:
+    //const QString query = QString("parent_type=\"Opportunities\"");
+    const QString query = QString();
     KDSoapGenerated::TNS__Get_entries_count_result response = soap->get_entries_count(sessionId, mModuleName, query, 0);
     kDebug() << response.result_count() << "entries";
 
