@@ -6,6 +6,7 @@
 #include "referenceddata.h"
 #include "reportgenerator.h"
 #include "filterproxymodel.h"
+#include "sugarresourcesettings.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
@@ -82,12 +83,15 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 
     mCollection = Collection();
     mResourceIdentifier = identifier;
+    OrgKdeAkonadiSugarCRMSettingsInterface iface(
+                QLatin1String("org.freedesktop.Akonadi.Resource.") + identifier, QLatin1String("/Settings"), QDBusConnection::sessionBus() );
+    mResourceBaseUrl = iface.host();
+
     mUi.treeView->setModel(0);
     delete mItemsTreeModel;
     mItemsTreeModel = 0;
 
-    mDetailsWidget->details()->setResourceIdentifier(identifier);
-
+    mDetailsWidget->details()->setResourceIdentifier(identifier, mResourceBaseUrl);
     mUi.reloadPB->setEnabled(false);
 
     // now we wait for the collection manager to find our collection and tell us
@@ -500,7 +504,7 @@ QString Page::typeToString(const DetailsType &type) const
 DetailsDialog *Page::createDetailsDialog()
 {
     Details* details = DetailsWidget::createDetailsForType(mType);
-    details->setResourceIdentifier(mResourceIdentifier);
+    details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);

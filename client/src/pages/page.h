@@ -117,6 +117,7 @@ private:
     Ui_page mUi;
     QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
+    QString mResourceBaseUrl;
     NotesRepository *mNotesRepository;
 };
 

@@ -6,7 +6,6 @@
 #include "notesrepository.h"
 
 #include <kdcrmdata/sugaropportunity.h>
-#include "sugarresourcesettings.h"
 #include <notesdialog.h>
 #include <KLocale>
 
@@ -86,28 +85,14 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
     item.setPayload<SugarOpportunity>(opportunity);
 }
 
-void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data) const
+void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 {
-    const QString resourceId = resourceIdentifier();
-    if (!resourceId.isEmpty()) {
-
-        // Cache, to avoid making DBus calls every time
-        static QString lastResourceId;
-        static QString lastBaseUrl;
-        if (lastResourceId != resourceId) {
-            OrgKdeAkonadiSugarCRMSettingsInterface iface(
-                        QLatin1String("org.freedesktop.Akonadi.Resource.") + resourceId, QLatin1String("/Settings"), QDBusConnection::sessionBus() );
-            lastBaseUrl = iface.host();
-            if (!lastBaseUrl.isEmpty()) // i.e. success
-                lastResourceId = resourceId;
-        }
-
-        const QString id = data.value("id");
-        if (!id.isEmpty()) {
-            const QString url = lastBaseUrl + "?action=DetailView&module=Opportunities&record=" + id;
-            mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
-        }
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id();
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
     }
+
     const int notes = mNotesRepository->notesForOpportunity(id()).count() + mNotesRepository->emailsForOpportunity(id()).count();
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);

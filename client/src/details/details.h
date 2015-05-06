@@ -25,7 +25,7 @@ public:
     const QMap<QString, QString> getData() const;
     void clear();
 
-    void setResourceIdentifier(const QByteArray &ident);
+    void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
 
     DetailsType type() const
@@ -40,6 +40,7 @@ Q_SIGNALS:
 
 protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
+    QString resourceBaseUrl() const { return mResourceBaseUrl; }
 
     QStringList industryItems() const;
     QStringList sourceItems() const;
@@ -60,6 +61,7 @@ private:
 
     const DetailsType mType;
     QByteArray mResourceIdentifier;
+    QString mResourceBaseUrl;
     QStringList mKeys;
 };
 #endif /* DETAILS_H */

@@ -96,9 +96,10 @@ void Details::clear()
     }
 }
 
-void Details::setResourceIdentifier(const QByteArray &ident)
+void Details::setResourceIdentifier(const QByteArray &ident, const QString &baseUrl)
 {
     mResourceIdentifier = ident;
+    mResourceBaseUrl = baseUrl;
 }
 
 // TODO should probably be virtual and include item specific data, e.g. a contact's full name
