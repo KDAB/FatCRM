@@ -41,10 +41,10 @@ QStringList ResourceDebugInterface::availableFields(const QString &module) const
     SugarSession *session = mResource->mSession;
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
-    QStringList availableFields;
 
     const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
 
+    QStringList availableFields;
     const KDSoapGenerated::TNS__Error_value error = response.error();
     if (error.number().isEmpty() || error.number() == QLatin1String("0")) {
         const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
@@ -75,7 +75,7 @@ int ResourceDebugInterface::getCount(const QString &module) const
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(availableFields(module));
-    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, module,  query, QString() /*orderBy*/, 0, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
+    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
     QList<KDSoapGenerated::TNS__Name_value> values = listResponse.entry_list().items().at(0).name_value_list().items();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
         qDebug() << value.name() << "=" << value.value();
