@@ -48,8 +48,10 @@ Details::~Details()
 void Details::doConnects()
 {
     // connect to changed signals
-    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>())
-        connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
+    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
+        if (!qobject_cast<QAbstractSpinBox *>(le->parentWidget()))
+            connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
+    }
     Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>())
         connect(cb, SIGNAL(currentIndexChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>())
