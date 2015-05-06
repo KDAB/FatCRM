@@ -98,7 +98,7 @@
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <widget class="Akonadi::EntityTreeView" name="treeView">
+     <widget class="ItemsTreeView" name="treeView">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
         <horstretch>1</horstretch>
@@ -122,9 +122,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Akonadi::EntityTreeView</class>
+   <class>ItemsTreeView</class>
    <extends>QTreeView</extends>
-   <header>akonadi/entitytreeview.h</header>
+   <header>itemstreeview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

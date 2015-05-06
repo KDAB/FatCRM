@@ -1,4 +1,4 @@
-include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utilities widgets )
+include_directories ( ${CMAKE_SOURCE_DIR} app details dialogs models pages utilities widgets views )
 
 set(sugarclient_SRCS
     app/sugarclient.cpp
@@ -31,6 +31,7 @@ set(sugarclient_SRCS
     utilities/notesrepository.cpp
     utilities/referenceddata.cpp
     utilities/reportgenerator.cpp
+    views/itemstreeview.cpp
     widgets/qdateeditex.cpp
 )
 
@@ -54,7 +55,7 @@ qt4_add_resources(sugarclient_SRCS
     widgets/widgets.qrc
 )
 qt4_add_resources(sugarclient_SRCS
-	icons/icons.qrc
+    icons/icons.qrc
 )
 
 # To find out the config of the sugar resource (for the web link) - TODO generalize to salesforce somehow

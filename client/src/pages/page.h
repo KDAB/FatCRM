@@ -83,7 +83,7 @@ private Q_SLOTS:
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection);
     void slotEnsureDetailsVisible();
-    void slotItemDoubleClicked(const QModelIndex &);
+    void slotItemDoubleClicked(const Akonadi::Item &item);
     void slotCreateJobResult(KJob *job);
     void slotModifyJobResult(KJob *job);
     void slotItemSaved(const Akonadi::Item &item);

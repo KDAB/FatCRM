@@ -308,7 +308,7 @@ void Page::slotRowsInserted(const QModelIndex &, int, int)
 
 void Page::initialize()
 {
-    mUi.treeView->header()->setResizeMode(QHeaderView::ResizeToContents);
+    connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
 
     const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
@@ -342,8 +342,6 @@ void Page::initialize()
     connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection)),
             this, SLOT(slotCollectionChanged(Akonadi::Collection)));
 
-    connect(mUi.treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotItemDoubleClicked(QModelIndex)));
-
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
@@ -372,7 +370,7 @@ void Page::setupModel()
 
     mFilter->setSourceModel(filterModel);
     mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
-    mUi.treeView->setModel(mFilter);
+    mUi.treeView->setModels(mFilter, mItemsTreeModel);
 
     connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
     connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
@@ -463,20 +461,17 @@ void Page::slotEnsureDetailsVisible()
     }
 }
 
-void Page::slotItemDoubleClicked(const QModelIndex &index)
+void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
-    const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-    if (item.isValid()) {
-        DetailsDialog *dialog = createDetailsDialog();
-        dialog->setItem(item);
-        // in case of changes while the dialog is up
-        connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
-                dialog, SLOT(updateItem(Akonadi::Item)));
-        // show changes made in the dialog
-        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
-                this, SLOT(slotItemSaved(Akonadi::Item)));
-        dialog->show();
-    }
+    DetailsDialog *dialog = createDetailsDialog();
+    dialog->setItem(item);
+    // in case of changes while the dialog is up
+    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
+            dialog, SLOT(updateItem(Akonadi::Item)));
+    // show changes made in the dialog
+    connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
+            this, SLOT(slotItemSaved(Akonadi::Item)));
+    dialog->show();
 }
 
 void Page::printReport()
