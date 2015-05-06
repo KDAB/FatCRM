@@ -7,6 +7,7 @@
 
 class ConflictHandler;
 class KJob;
+class ResourceDebugInterface;
 class ModuleDebugInterface;
 class ModuleHandler;
 class SugarSession;
@@ -33,6 +34,8 @@ private:
     SugarSession *mSession;
     SugarJob *mCurrentJob; // do we ever run two jobs in parallel? in that case make it a list
     LoginJob *mLoginJob; // this one can happen in parallel, e.g. start listjob, setonline(false), setonline(true) -> LoginJob is created, and only afterwards the listjob finishes.
+
+    ResourceDebugInterface *mDebugInterface;
 
     typedef QHash<QString, ModuleHandler *> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;

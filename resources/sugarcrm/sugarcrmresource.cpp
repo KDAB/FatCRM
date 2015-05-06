@@ -44,6 +44,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
       mSession(new SugarSession(this)),
       mCurrentJob(0),
       mLoginJob(0),
+      mDebugInterface(new ResourceDebugInterface(this)),
       mModuleHandlers(new ModuleHandlerHash),
       mModuleDebugInterfaces(new ModuleDebugInterfaceHash),
       mConflictHandler(new ConflictHandler(ConflictHandler::BackendConflict, this)),
@@ -54,9 +55,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             Settings::self(),
             QDBusConnection::ExportAdaptors);
 
-    ResourceDebugInterface *debugInterface = new ResourceDebugInterface(this);
     QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug"),
-            debugInterface,
+            mDebugInterface,
             QDBusConnection::ExportScriptableSlots);
 
     setNeedsNetwork(true);
