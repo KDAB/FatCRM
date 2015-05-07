@@ -319,6 +319,8 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             if (role == Qt::DisplayRole)
                     return KDCRMUtils::formatDate(opportunity.nextCallDate());
             return opportunity.nextCallDate(); // for sorting
+        case NextStep:
+            return opportunity.nextStep();
         case LastModifiedDate: {
             QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateModified());
             if (role == Qt::DisplayRole)
@@ -372,6 +374,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
                 << ItemsTreeModel::CreationDate
+                << ItemsTreeModel::NextStep
                 << ItemsTreeModel::NextStepDate
                 << ItemsTreeModel::LastModifiedDate
                 << ItemsTreeModel::AssignedTo;
@@ -446,6 +449,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column sales stage", "Sales Stage");
     case Amount:
         return i18nc("@title:column amount", "Amount");
+    case NextStep:
+        return i18nc("@title:column next step", "Next Step");
     case NextStepDate:
         return i18nc("@title:column next step date", "Next Step Date");
     case LastModifiedDate:
@@ -486,6 +491,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         break;
     case Opportunity:
         columns.removeAll(ItemsTreeModel::Amount);
+        columns.removeAll(ItemsTreeModel::NextStep);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         break;
     case Campaign:
