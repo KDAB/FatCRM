@@ -23,6 +23,7 @@ set(sugarclient_SRCS
     details/opportunitydetails.cpp
     dialogs/configurationdialog.cpp
     dialogs/detailsdialog.cpp
+    dialogs/editlistdialog.cpp
     dialogs/notesdialog.cpp
     dialogs/resourceconfigdialog.cpp
     utilities/collectionmanager.cpp

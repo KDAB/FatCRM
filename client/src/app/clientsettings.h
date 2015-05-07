@@ -26,32 +26,35 @@ public:
     void setVisibleColumns(const QString &viewId, const QStringList &names);
     QStringList visibleColumns(const QString &viewId, const QStringList &defaultColumns) const;
 
-    class AssigneeFilters
+    class GroupFilters
     {
     public:
-        struct Item {
+        struct Group {
             QString group;
-            QStringList users;
+            QStringList entries;
         };
 
         QString toString() const;
         void loadFromString(const QString &str);
-        const QVector<Item>& items() const { return m_items; }
+        const QVector<Group>& groups() const { return m_filters; }
         void removeGroup(int row);
         void prependGroup(const QString &group);
         void updateGroup(int row, const QStringList &users);
-        QStringList groups() const;
+        QStringList groupNames() const;
     private:
-        QVector<Item> m_items;
+        QVector<Group> m_filters;
     };
-    void setAssigneeFilters(const AssigneeFilters &filters);
-    AssigneeFilters assigneeFilters() const;
+    void setAssigneeFilters(const GroupFilters &filters);
+    GroupFilters assigneeFilters() const;
+    void setCountryFilters(const GroupFilters &filters);
+    GroupFilters countryFilters() const;
 
     ClientSettings();
     ~ClientSettings();
 
 Q_SIGNALS:
     void assigneeFiltersChanged();
+    void countryFiltersChanged();
 
 private:
     QSettings *m_settings;

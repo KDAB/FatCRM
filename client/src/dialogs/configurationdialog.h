@@ -21,19 +21,28 @@ public:
     void setFullUserName(const QString &fullUserName);
     QString fullUserName() const;
 
-    void setAssigneeFilters(const ClientSettings::AssigneeFilters &assigneeFilters);
-    ClientSettings::AssigneeFilters assigneeFilters() const;
+    void setAssigneeFilters(const ClientSettings::GroupFilters &assigneeFilters);
+    ClientSettings::GroupFilters assigneeFilters() const;
+
+    void setCountryFilters(const ClientSettings::GroupFilters &countryFilters);
+    ClientSettings::GroupFilters countryFilters() const;
 
 private Q_SLOTS:
     void slotGroupListClicked(const QModelIndex &idx);
     void slotGroupRemoved(const QString &group);
     void slotGroupAdded(const QString &group);
+    void slotCountryListClicked(const QModelIndex &idx);
+    void slotCountryRemoved(const QString &country);
+    void slotCountryAdded(const QString &country);
     void slotUsersChanged();
+    void slotEditCountryGroup();
 
 private:
     Ui::ConfigurationDialog *ui;
-    ClientSettings::AssigneeFilters m_assigneeFilters;
+    ClientSettings::GroupFilters m_assigneeFilters;
+    ClientSettings::GroupFilters m_countryFilters;
     int m_currentFilterRow;
+    int m_currentCountryGroupRow;
 };
 
 #endif // CONFIGURATIONDIALOG_H

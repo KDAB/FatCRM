@@ -14,14 +14,20 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     ui->setupUi(this);
     ui->rbAssignedTo->setChecked(true);
 
-    connect(ui->rbAll, SIGNAL(clicked(bool)), m_oppFilterProxyModel, SLOT(showAll()));
+    connect(ui->rbAll, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->rbAssignedTo, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->rbCountry, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
+    connect(ui->cbOpen, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbClosed, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     ui->cbMaxNextStepDate->setCurrentIndex(0);
 
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
+    connect(ClientSettings::self(), SIGNAL(countryFiltersChanged()), this, SLOT(setupFromConfig()));
 
+    ui->rbAssignedTo->setChecked(true);
     setupFromConfig();
 }
 
@@ -34,20 +40,27 @@ void OpportunityFilterWidget::setupFromConfig()
 {
     ui->cbAssignee->clear();
     ui->cbAssignee->addItem(tr("me"));
-    ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groups());
+    ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groupNames());
+    ui->cbCountry->clear();
+    ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());
     filterChanged();
 }
 
 void OpportunityFilterWidget::filterChanged()
 {
-    ui->rbAssignedTo->setChecked(true);
     QStringList assignees;
-    const int idx = ui->cbAssignee->currentIndex();
-    if (idx == 0) {
-        // "me"
-        assignees << ClientSettings::self()->fullUserName();
-    } else {
-        assignees << ClientSettings::self()->assigneeFilters().items().at(idx-1).users;
+    QStringList countries;
+    if (ui->rbAssignedTo->isChecked()) {
+        const int idx = ui->cbAssignee->currentIndex();
+        if (idx == 0) {
+            // "me"
+            assignees << ClientSettings::self()->fullUserName();
+        } else {
+            assignees = ClientSettings::self()->assigneeFilters().groups().at(idx-1).entries;
+        }
+    } else if (ui->rbCountry->isChecked()) {
+        const int idx = ui->cbCountry->currentIndex();
+        countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
     }
     QDate maxDate = QDate::currentDate();
     switch (ui->cbMaxNextStepDate->currentIndex()) {
@@ -68,5 +81,7 @@ void OpportunityFilterWidget::filterChanged()
         break;
     }
 
-    m_oppFilterProxyModel->setFilter(assignees, maxDate);
+    const bool showOpen = ui->cbOpen->isChecked();
+    const bool showClosed = ui->cbClosed->isChecked();
+    m_oppFilterProxyModel->setFilter(assignees, countries, maxDate, showOpen, showClosed);
 }

@@ -372,9 +372,11 @@ void SugarClient::slotConfigure()
     ConfigurationDialog dlg;
     dlg.setFullUserName(ClientSettings::self()->fullUserName());
     dlg.setAssigneeFilters(ClientSettings::self()->assigneeFilters());
+    dlg.setCountryFilters(ClientSettings::self()->countryFilters());
     if (dlg.exec()) {
         ClientSettings::self()->setFullUserName(dlg.fullUserName());
         ClientSettings::self()->setAssigneeFilters(dlg.assigneeFilters());
+        ClientSettings::self()->setCountryFilters(dlg.countryFilters());
         ClientSettings::self()->sync();
     }
 }

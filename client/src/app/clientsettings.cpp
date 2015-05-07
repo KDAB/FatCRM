@@ -59,67 +59,80 @@ void ClientSettings::restoreWindowSize(const QString &windowId, QWidget *window)
     }
 }
 
-void ClientSettings::setAssigneeFilters(const ClientSettings::AssigneeFilters &filters)
+void ClientSettings::setAssigneeFilters(const ClientSettings::GroupFilters &filters)
 {
     m_settings->setValue("assigneeFilters", filters.toString());
     emit assigneeFiltersChanged();
 }
 
-ClientSettings::AssigneeFilters ClientSettings::assigneeFilters() const
+ClientSettings::GroupFilters ClientSettings::assigneeFilters() const
 {
-    ClientSettings::AssigneeFilters ret;
+    ClientSettings::GroupFilters ret;
     ret.loadFromString(m_settings->value("assigneeFilters").toString());
     return ret;
 }
 
-QString ClientSettings::AssigneeFilters::toString() const
+void ClientSettings::setCountryFilters(const ClientSettings::GroupFilters &filters)
+{
+    m_settings->setValue("countryFilters", filters.toString());
+    emit countryFiltersChanged();
+}
+
+ClientSettings::GroupFilters ClientSettings::countryFilters() const
+{
+    ClientSettings::GroupFilters ret;
+    ret.loadFromString(m_settings->value("countryFilters").toString());
+    return ret;
+}
+
+QString ClientSettings::GroupFilters::toString() const
 {
     QString ret;
-    for (int i = 0 ; i < m_items.count() ; ++i) {
-        const Item& item = m_items.at(i);
+    for (int i = 0 ; i < m_filters.count() ; ++i) {
+        const Group& item = m_filters.at(i);
         ret += item.group + ';';
-        ret += item.users.join(QString(QLatin1Char(';')));
-        if (i + 1 < m_items.count())
+        ret += item.entries.join(QString(QLatin1Char(';')));
+        if (i + 1 < m_filters.count())
             ret += '|';
     }
     return ret;
 }
 
-void ClientSettings::AssigneeFilters::loadFromString(const QString &str)
+void ClientSettings::GroupFilters::loadFromString(const QString &str)
 {
     Q_FOREACH(const QString &itemStr, str.split('|', QString::SkipEmptyParts)) {
         const QStringList lst = itemStr.split(';', QString::SkipEmptyParts);
         if (lst.isEmpty()) {
             continue;
         }
-        Item item;
+        Group item;
         item.group = lst.first();
-        item.users = lst.mid(1);
-        m_items.append(item);
+        item.entries = lst.mid(1);
+        m_filters.append(item);
     }
 }
 
-void ClientSettings::AssigneeFilters::removeGroup(int row)
+void ClientSettings::GroupFilters::removeGroup(int row)
 {
-    m_items.remove(row);
+    m_filters.remove(row);
 }
 
-void ClientSettings::AssigneeFilters::prependGroup(const QString &group)
+void ClientSettings::GroupFilters::prependGroup(const QString &group)
 {
-    Item item;
+    Group item;
     item.group = group;
-    m_items.prepend(item);
+    m_filters.prepend(item);
 }
 
-void ClientSettings::AssigneeFilters::updateGroup(int row, const QStringList &users)
+void ClientSettings::GroupFilters::updateGroup(int row, const QStringList &users)
 {
-    m_items[row].users = users;
+    m_filters[row].entries = users;
 }
 
-QStringList ClientSettings::AssigneeFilters::groups() const
+QStringList ClientSettings::GroupFilters::groupNames() const
 {
     QStringList ret;
-    Q_FOREACH(const Item &item, m_items) {
+    Q_FOREACH(const Group &item, m_filters) {
         ret.append(item.group);
     }
     return ret;

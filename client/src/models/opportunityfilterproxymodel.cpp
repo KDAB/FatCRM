@@ -7,6 +7,7 @@
 
 #include <QDate>
 #include <opportunitiespage.h>
+#include <referenceddata.h>
 
 using namespace Akonadi;
 
@@ -14,10 +15,15 @@ class OpportunityFilterProxyModel::Private
 {
 public:
     Private()
+        : showOpen(true),
+          showClosed(false)
     {}
 
     QStringList assignees; // no filtering if empty
+    QStringList countries; // no filtering if empty
     QDate maxDate;
+    bool showOpen;
+    bool showClosed;
 };
 
 OpportunityFilterProxyModel::OpportunityFilterProxyModel(QObject *parent)
@@ -30,16 +36,14 @@ OpportunityFilterProxyModel::~OpportunityFilterProxyModel()
     delete d;
 }
 
-void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const QDate &maxDate)
+void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
+                                            bool showOpen, bool showClosed)
 {
     d->assignees = assignees;
+    d->countries = countries;
     d->maxDate = maxDate;
-    invalidate();
-}
-
-void OpportunityFilterProxyModel::showAll()
-{
-    d->assignees.clear();
+    d->showOpen = showOpen;
+    d->showClosed = showClosed;
     invalidate();
 }
 
@@ -76,15 +80,23 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     Q_ASSERT(item.hasPayload<SugarOpportunity>());
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
-    if (!d->assignees.isEmpty()) {
-        if (!d->assignees.contains(opportunity.assignedUserName()))
-            return false;
-        if (opportunity.salesStage().contains("Closed"))
-            return false;
-        if (d->maxDate.isValid() && (!opportunity.nextCallDate().isValid()
-                                     || opportunity.nextCallDate() > d->maxDate))
+    if (!d->assignees.isEmpty() && !d->assignees.contains(opportunity.assignedUserName()))
+        return false;
+
+    if (!d->countries.isEmpty()) {
+        const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
+        if (!d->countries.contains(country))
             return false;
     }
+
+    const bool isClosed = opportunity.salesStage().contains("Closed");
+    if (!d->showClosed && isClosed)
+        return false;
+    if (!d->showOpen && !isClosed)
+        return false;
+    if (d->maxDate.isValid() && (!opportunity.nextCallDate().isValid()
+                                 || opportunity.nextCallDate() > d->maxDate))
+        return false;
 
     const QString filterStr = filterString();
     if (filterStr.isEmpty()) {

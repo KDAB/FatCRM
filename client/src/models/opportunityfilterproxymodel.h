@@ -29,9 +29,13 @@ public:
      */
     ~OpportunityFilterProxyModel();
 
-    void setFilter(const QStringList &assignees, const QDate &maxDate);
-public Q_SLOTS:
-    void showAll();
+    /**
+     * Filter by assignees OR by country.
+     * And with a possible max date.
+     * And either open, or closed, or both.
+     */
+    void setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
+                   bool showOpen, bool showClosed);
 
 protected:
     virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
