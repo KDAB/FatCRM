@@ -12,12 +12,11 @@ ReportGenerator::ReportGenerator()
 
 void ReportGenerator::setupReport(KDReports::Report &report)
 {
-    report.setDefaultFont(QFont("Times New Roman", 12));
     report.setMargins(5, 10, 5, 10);
     report.setOrientation(QPrinter::Landscape);
 
     QFont font;
-    font.setPointSize(12);
+    font.setPointSize(10);
     report.setDefaultFont(font);
 
     addHeader(report);
