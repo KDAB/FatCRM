@@ -75,10 +75,15 @@ int ResourceDebugInterface::getCount(const QString &module) const
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(availableFields(module));
-    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
-    QList<KDSoapGenerated::TNS__Name_value> values = listResponse.entry_list().items().at(0).name_value_list().items();
-    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
-        qDebug() << value.name() << "=" << value.value();
+    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
+    const QList<KDSoapGenerated::TNS__Entry_value> items = listResponse.entry_list().items();
+    if (!items.isEmpty()) {
+        QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
+        Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
+            qDebug() << value.name() << "=" << value.value();
+        }
+    } else {
+        kDebug() << "No items found. lastError=" << soap->lastError();
     }
 
     return response.result_count();
