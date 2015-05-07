@@ -15,20 +15,23 @@ public:
 
     ~EmailsHandler();
 
-    QStringList supportedFields() const;
+    QStringList supportedFields() const Q_DECL_OVERRIDE;
 
-    Akonadi::Collection handlerCollection() const;
+    Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
     bool setEntry(const Akonadi::Item &item);
 
-    QString queryStringForListing() const;
-    QString orderByForListing() const;
-    QStringList selectedFieldsForListing() const;
+    QString queryStringForListing() const Q_DECL_OVERRIDE;
+    QString orderByForListing() const Q_DECL_OVERRIDE;
+    QStringList selectedFieldsForListing() const Q_DECL_OVERRIDE;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection);
+    virtual bool needsExtraInformation() const Q_DECL_OVERRIDE { return true; }
+    virtual void getExtraInformation(Akonadi::Item::List &items) Q_DECL_OVERRIDE;
+
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
-                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
 
 private:
     SugarEmail::AccessorHash mAccessors;

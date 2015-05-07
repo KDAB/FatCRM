@@ -180,6 +180,10 @@ public:
     void setCcAddrNames(const QString &value);
     QString ccAddrNames() const;
 
+    // The mail body
+    void setDescription(const QString &value);
+    QString description() const;
+
     /**
       Convenience: set the data for this email
      */

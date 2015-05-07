@@ -57,7 +57,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
     kDebug() << q << "About to list" << callResult.result_count() << "entries";
     emit q->totalItems( callResult.result_count() );
     mStage = GetExisting;
-    mHandler->listEntries(mListScope);
+    q->startSugarTask(); // proceed to next stage
 }
 
 void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
@@ -78,13 +78,15 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         return;
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
-        const Item::List items =
+        Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection);
         switch (mStage) {
         case GetCount:
             Q_ASSERT(0);
             break;
         case GetExisting:
+            if (mHandler->needsExtraInformation())
+                mHandler->getExtraInformation(items);
             kDebug() << "List Entries for" << mHandler->moduleName()
                      << "received" << items.count() << "items";
             emit q->itemsReceived(items);

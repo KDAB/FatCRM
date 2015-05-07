@@ -55,6 +55,61 @@ QStringList EmailsHandler::selectedFieldsForListing() const
     return mAccessors.keys();
 }
 
+void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
+{
+    /* EmailText contains e.g.
+"email_id" = "286898c4-d48f-cd01-e620-4a1d3ad0428e"
+"from_addr" = "Mirko Boehm &lt;mirko@kdab.net&gt;"
+"reply_to_addr" = ""
+"to_addrs" = "mirko@kdab.net"
+"cc_addrs" = ""
+"bcc_addrs" = ""
+"description" = "Test. So."
+"description_html" = "&lt;em&gt;Test.&lt;u&gt; So.&lt;/u&gt;&lt;br /&gt;&lt;/em&gt;"
+"raw_source" = ""
+"deleted" = "0"
+*/
+
+    QHash<QString, int> itemIndexById; // remoteId --> position in item list
+    QString query;
+    for (int i = 0; i < items.count(); ++i) {
+        const Akonadi::Item &item = items.at(i);
+        if (!query.isEmpty())
+            query += " or ";
+        query += "email_id='" + item.remoteId() + "'";
+        itemIndexById.insert(item.remoteId(), i);
+    }
+    KDSoapGenerated::TNS__Select_fields selectedFields;
+    selectedFields.setItems(QStringList() << "email_id" << "description");
+    // Blocking call
+    KDSoapGenerated::TNS__Get_entry_list_result result =
+            soap()->get_entry_list(sessionId(), "EmailText", query, QString() /*orderBy*/,
+                                   0 /*offset*/, selectedFields, items.count() /*maxResults*/, 0 /*fetchDeleted*/);
+
+    foreach(KDSoapGenerated::TNS__Entry_value entry, result.entry_list().items()) {
+        QString email_id, description;
+        foreach(KDSoapGenerated::TNS__Name_value val, entry.name_value_list().items()) {
+            if (val.name() == "email_id") {
+                email_id = val.value();
+            } else if (val.name() == "description") {
+                description = KDCRMUtils::decodeXML(val.value());
+            }
+        }
+        if (email_id.isEmpty()) {
+            kWarning() << "No email_id found in entry";
+        } else {
+            const int pos = itemIndexById.value(email_id, -1);
+            if (pos == -1) {
+                kWarning() << "Email not found:" << email_id;
+            } else {
+                SugarEmail email = items[pos].payload<SugarEmail>();
+                email.setDescription(description);
+                items[pos].setPayload<SugarEmail>(email);
+            }
+        }
+    }
+}
+
 bool EmailsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarEmail>()) {

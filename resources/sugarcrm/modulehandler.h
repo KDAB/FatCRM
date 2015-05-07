@@ -42,6 +42,11 @@ public:
 
     bool getEntry(const Akonadi::Item &item);
 
+    // Return true if the handler wants to fetch extra information on listed items
+    // (e.g. email text)
+    virtual bool needsExtraInformation() const { return false; }
+    virtual void getExtraInformation(Akonadi::Item::List &) {}
+
     virtual QString queryStringForListing() const { return QString(); }
     virtual QString orderByForListing() const = 0;
     virtual QStringList selectedFieldsForListing() const = 0;

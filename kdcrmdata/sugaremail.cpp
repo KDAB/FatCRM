@@ -39,6 +39,7 @@ public:
         mFromAddrName = other.mFromAddrName;
         mToAddrNAmes = other.mToAddrNAmes;
         mCcAddrNames = other.mCcAddrNames;
+        mDescription = other.mDescription;
     }
 
     bool mEmpty;
@@ -64,6 +65,7 @@ public:
     QString mToAddrNAmes;
     QString mCcAddrNames;
 
+    QString mDescription;
 };
 
 SugarEmail::SugarEmail()
@@ -143,6 +145,9 @@ bool SugarEmail::operator==(const SugarEmail &other) const
         return false;
     }
     if (d->mCcAddrNames != other.d->mCcAddrNames) {
+        return false;
+    }
+    if (d->mDescription != other.d->mDescription) {
         return false;
     }
     return true;
@@ -361,6 +366,17 @@ QString SugarEmail::ccAddrNames() const
     return d->mCcAddrNames;
 }
 
+void SugarEmail::setDescription(const QString &value)
+{
+    d->mEmpty = false;
+    d->mDescription = value;
+}
+
+QString SugarEmail::description() const
+{
+    return d->mDescription;
+}
+
 void SugarEmail::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
@@ -509,6 +525,12 @@ mailbox_id
                          EmailAccessorPair(&SugarEmail::toAddrNames, &SugarEmail::setToAddrNames, QString()));
         accessors.insert(QLatin1String("cc_addrs_names"),
                          EmailAccessorPair(&SugarEmail::ccAddrNames, &SugarEmail::setCcAddrNames, QString()));
+
+        // This field doesn't come from Emails but from EmailText, so it's set externally.
+        // We add an accessor for SugarEmailIO though.
+        accessors.insert(QLatin1String("description"),
+                         EmailAccessorPair(&SugarEmail::description, &SugarEmail::setDescription, QString()));
+
     }
     return accessors;
 }

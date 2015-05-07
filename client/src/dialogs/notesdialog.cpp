@@ -43,7 +43,7 @@ void NotesDialog::addEmail(const SugarEmail &email)
     const QString dateSent = KDCRMUtils::formatTimestamp(email.dateSent());
     ui->textEdit->append(QString("Mail from %1, to %2. Date: %3").arg(email.fromAddrName(), toList, dateSent));
     ui->textEdit->append(QString("Subject: %1").arg(email.name()));
-    ui->textEdit->append(QString("\n<message body not imported yet>\n"));
-    // TODO description, from EmailTexts module
-    // https://community.sugarcrm.com/sugarcrm/topics/i_want_email_body_in_database_but_getting_message_id_any_help_on_it
+    ui->textEdit->append(QString("\n"));
+    ui->textEdit->append(email.description());
+    ui->textEdit->append(QString("\n"));
 }
