@@ -31,6 +31,7 @@ int ListEntriesScope::offset() const
 void ListEntriesScope::fetchDeleted()
 {
     mGetDeleted = true;
+    mOffset = 0;
 }
 
 int ListEntriesScope::deleted() const

@@ -97,6 +97,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             emit q->deletedReceived(items);
             break;
         }
+        mListScope.setOffset(callResult.next_offset());
     } else {
         if (mStage == GetDeleted || !mListScope.isUpdateScope()) {
             kDebug() << q << "List Entries for" << mHandler->moduleName() << "done, will emitResult";
@@ -125,7 +126,6 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
                  << "done, getting deletes";
     }
 
-    mListScope.setOffset(callResult.next_offset());
     mHandler->listEntries(mListScope);
 }
 
