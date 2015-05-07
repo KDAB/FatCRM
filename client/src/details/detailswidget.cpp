@@ -211,7 +211,6 @@ Details *DetailsWidget::createDetailsForType(DetailsType type)
     case Contact: return new ContactDetails;
     case Lead: return new LeadDetails;
     case Campaign: return new CampaignDetails;
-    case Note: Q_ASSERT(0); return 0; // not implemented
     }
 
     return 0;

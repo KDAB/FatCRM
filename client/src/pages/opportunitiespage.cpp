@@ -13,7 +13,7 @@
 using namespace Akonadi;
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
-    : Page(parent, QString(SugarOpportunity::mimeType()), Opportunity)
+    : Page(parent, SugarOpportunity::mimeType(), Opportunity)
 {
     OpportunityFilterProxyModel *oppFilterProxyModel = new OpportunityFilterProxyModel(this);
     setFilter(oppFilterProxyModel);
@@ -29,7 +29,10 @@ OpportunitiesPage::~OpportunitiesPage()
 void OpportunitiesPage::setupModel()
 {
     Page::setupModel();
-    treeView()->sortByColumn(NextStepDateColumn, Qt::DescendingOrder);
+
+    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
+    const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
+    treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }
 
 QString OpportunitiesPage::reportTitle() const

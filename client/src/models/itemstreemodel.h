@@ -17,8 +17,7 @@ public:
     /**
      * Describes the columns that can be shown by the model.
      */
-    enum Column {
-
+    enum ColumnType {
         Name,
         City,
         Country,
@@ -51,10 +50,12 @@ public:
         AssignedTo
     };
 
+    Q_ENUMS(ColumnType)
+
     /**
      * Describes a list of columns of the items tree model.
      */
-    typedef QList<Column> Columns;
+    typedef QList<ColumnType> ColumnTypes;
 
     /**
      * Creates a new items tree model.
@@ -67,13 +68,18 @@ public:
 
     virtual ~ItemsTreeModel();
 
-    void setColumns();
-    Columns columns() const;
+    ColumnTypes columnTypes() const; // all available column types
+    ColumnTypes defaultVisibleColumns() const; // the column types that should be initially visible
+    QString columnName(int column) const;
 
-    /*reimp*/ QVariant entityData(const Akonadi::Item &item, int column, int role = Qt::DisplayRole) const;
-    /*reimp*/ QVariant entityData(const Akonadi::Collection &collection, int column, int role = Qt::DisplayRole) const;
-    /*reimp*/ QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const;
-    /*reimp*/ int entityColumnCount(HeaderGroup headerGroup) const;
+    static QString columnNameFromType(ColumnType col);
+    static ColumnType columnTypeFromName(const QString &name);
+    static ColumnTypes columnTypes(DetailsType type);
+
+    QVariant entityData(const Akonadi::Item &item, int column, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    QVariant entityData(const Akonadi::Collection &collection, int column, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
+    int entityColumnCount(HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;
@@ -81,7 +87,7 @@ private:
     QVariant contactData(const Akonadi::Item &item, int column, int role) const;
     QVariant leadData(const Akonadi::Item &item, int column, int role) const;
     QVariant opportunityData(const Akonadi::Item &item, int column, int role) const;
-    Columns  columnsGroup(DetailsType type) const;
+    QString columnTitle(ColumnType col) const;
 
 private:
     class Private;

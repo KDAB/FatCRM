@@ -113,7 +113,6 @@ QString Details::windowTitle() const
     case Contact: return tr("Contact Details");
     case Lead: return tr("Lead Details");
     case Opportunity: return tr("Opportunity Details");
-    case Note: return tr("Note Details");
     }
 
     return QString();

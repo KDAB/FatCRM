@@ -23,6 +23,9 @@ public:
     void saveWindowSize(const QString &windowId, QWidget *window);
     void restoreWindowSize(const QString &windowId, QWidget *window) const;
 
+    void setVisibleColumns(const QString &viewId, const QStringList &names);
+    QStringList visibleColumns(const QString &viewId, const QStringList &defaultColumns) const;
+
     class AssigneeFilters
     {
     public:

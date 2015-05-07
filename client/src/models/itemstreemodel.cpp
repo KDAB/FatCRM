@@ -11,6 +11,7 @@
 #include <kabc/addressee.h>
 #include <kabc/phonenumber.h>
 
+#include <QtGui>
 #include <kglobal.h>
 #include <kicon.h>
 #include <kiconloader.h>
@@ -22,19 +23,19 @@ class ItemsTreeModel::Private
 {
 public:
     Private()
-        : mColumns(ItemsTreeModel::Columns() << ItemsTreeModel::Name),
+        : mColumns(),
           mIconSize(KIconLoader::global()->currentSize(KIconLoader::Small))
     {
     }
 
-    Columns mColumns;
+    ItemsTreeModel::ColumnTypes mColumns;
     const int mIconSize;
 };
 
 ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObject *parent)
     : EntityTreeModel(monitor, parent), d(new Private), mType(type)
 {
-    setColumns();
+    d->mColumns = columnTypes(mType);
 }
 
 ItemsTreeModel::~ItemsTreeModel()
@@ -43,19 +44,9 @@ ItemsTreeModel::~ItemsTreeModel()
 }
 
 /**
- * Sets the columns that the model should show.
- */
-void ItemsTreeModel::setColumns()
-{
-    emit layoutAboutToBeChanged();
-    d->mColumns = columnsGroup(mType);
-    emit layoutChanged();
-}
-
-/**
  * Returns the columns that the model currently shows.
  */
-ItemsTreeModel::Columns ItemsTreeModel::columns() const
+ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes() const
 {
     return d->mColumns;
 }
@@ -137,69 +128,7 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                 if (section < 0 || section >= d->mColumns.count()) {
                     return QVariant();
                 }
-
-                switch (d->mColumns.at(section)) {
-                case Name:
-                    return i18nc("@title:column name", "Name");
-                case City:
-                    return i18nc("@title:column city", "City");
-                case Country:
-                    return i18nc("@title:column country ", "Country");
-                case Phone:
-                    return i18nc("@title:column phone", "Phone");
-                case Email:
-                    return i18nc("@title:column email", "Email");
-                case CreationDate:
-                    return i18nc("@title:column date created", "Creation Date");
-                case CreatedBy:
-                    return i18nc("@title:column created by user", "Created By");
-                case CampaignName:
-                    return i18nc("@title:column name of a campaign ", "Campaign");
-                case Status:
-                    return i18nc("@title:column status - status", "Status");
-                case Type:
-                    return i18nc("@title:column type - Campaign type", "Type");
-                case EndDate:
-                    return i18nc("@title:column end date - End Date", "End Date");
-                case User:
-                    return i18nc("@title:column Assigned User Name", "User");
-                case FullName:
-                    return i18nc("@title:column full name of a contact ", "Name");
-                case Role:
-                    return i18nc("@title:column role - role", "Role");
-                case Organization:
-                    return i18nc("@title:column company", "Organization");
-                case PreferredEmail:
-                    return i18nc("@title:column email", "Preferred Email");
-                case PhoneNumber:
-                    return i18nc("@title:column phone work", "Phone Work");
-                case GivenName:
-                    return i18nc("@title:column given name", "Given Name");
-                case LeadName:
-                    return i18nc("@title:column Lead's Full Name", "Name");
-                case LeadStatus:
-                    return i18nc("@title:column Lead's Status", "Status");
-                case LeadAccountName:
-                    return i18nc("@title:column Account Name", "Account Name");
-                case LeadEmail:
-                    return i18nc("@title:column Lead's Primary email", "Email");
-                case LeadUser:
-                    return i18nc("@title:column Lead's Assigny name", "User");
-                case OpportunityName:
-                    return i18nc("@title:column name for the Opportunity", "Opportunity");
-                case OpportunityAccountName:
-                    return i18nc("@title:column account name", "Account Name");
-                case SalesStage:
-                    return i18nc("@title:column sales stage", "Sales Stage");
-                case Amount:
-                    return i18nc("@title:column amount", "Amount");
-                case NextStepDate:
-                    return i18nc("@title:column next step date", "Next Step Date");
-                case LastModifiedDate:
-                    return i18nc("@title:column next step date", "Last Modified Date");
-                case AssignedTo:
-                    return i18nc("@title:column assigned to name", "Assigned To");
-                }
+                return columnTitle(d->mColumns.at(section));
             }
         }
     }
@@ -223,7 +152,7 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
     const SugarAccount account = item.payload<SugarAccount>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
-        switch (columns().at(column)) {
+        switch (columnTypes().at(column)) {
         case Name:
             return account.name();
         case City:
@@ -261,7 +190,7 @@ QVariant ItemsTreeModel::campaignData(const Item &item, int column, int role) co
     const SugarCampaign campaign = item.payload<SugarCampaign>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
-        switch (columns().at(column)) {
+        switch (columnTypes().at(column)) {
         case CampaignName:
             return campaign.name();
         case Status:
@@ -297,7 +226,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
-        switch (columns().at(column)) {
+        switch (columnTypes().at(column)) {
         case FullName:
             return addressee.assembledName();
         case Role:
@@ -335,7 +264,7 @@ QVariant ItemsTreeModel::leadData(const Item &item, int column, int role) const
     const SugarLead lead = item.payload<SugarLead>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
-        switch (columns().at(column)) {
+        switch (columnTypes().at(column)) {
         case LeadName:
             return lead.lastName();
         case LeadStatus:
@@ -371,7 +300,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
-        switch (columns().at(column)) {
+        switch (columnTypes().at(column)) {
         case OpportunityName:
             return opportunity.name();
         case OpportunityAccountName:
@@ -379,7 +308,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case SalesStage:
             return opportunity.salesStage();
         case Amount:
-            return QLocale().toCurrencyString(opportunity.amount().toDouble(), opportunity.currencySymbol());
+            return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
         case CreationDate: {
             QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
@@ -408,9 +337,9 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
     return QVariant();
 }
 
-ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
+ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
 {
-    ItemsTreeModel::Columns columns;
+    ItemsTreeModel::ColumnTypes columns;
 
     switch (type) {
     case Account:
@@ -441,7 +370,7 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
                 << ItemsTreeModel::OpportunityName
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
-                //<< ItemsTreeModel::Amount
+                << ItemsTreeModel::Amount
                 << ItemsTreeModel::CreationDate
                 << ItemsTreeModel::NextStepDate
                 << ItemsTreeModel::LastModifiedDate
@@ -454,11 +383,122 @@ ItemsTreeModel::Columns ItemsTreeModel::columnsGroup(DetailsType type) const
                 << ItemsTreeModel::EndDate
                 << ItemsTreeModel::User;
     default:
-        return columns;
+        break;
     }
 
     return columns;
 }
 
-#include "itemstreemodel.moc"
+QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
+{
+    switch (col) {
+    case Name:
+        return i18nc("@title:column name", "Name");
+    case City:
+        return i18nc("@title:column city", "City");
+    case Country:
+        return i18nc("@title:column country ", "Country");
+    case Phone:
+        return i18nc("@title:column phone", "Phone");
+    case Email:
+        return i18nc("@title:column email", "Email");
+    case CreationDate:
+        return i18nc("@title:column date created", "Creation Date");
+    case CreatedBy:
+        return i18nc("@title:column created by user", "Created By");
+    case CampaignName:
+        return i18nc("@title:column name of a campaign ", "Campaign");
+    case Status:
+        return i18nc("@title:column status - status", "Status");
+    case Type:
+        return i18nc("@title:column type - Campaign type", "Type");
+    case EndDate:
+        return i18nc("@title:column end date - End Date", "End Date");
+    case User:
+        return i18nc("@title:column Assigned User Name", "User");
+    case FullName:
+        return i18nc("@title:column full name of a contact ", "Name");
+    case Role:
+        return i18nc("@title:column role - role", "Role");
+    case Organization:
+        return i18nc("@title:column company", "Organization");
+    case PreferredEmail:
+        return i18nc("@title:column email", "Preferred Email");
+    case PhoneNumber:
+        return i18nc("@title:column phone work", "Phone Work");
+    case GivenName:
+        return i18nc("@title:column given name", "Given Name");
+    case LeadName:
+        return i18nc("@title:column Lead's Full Name", "Name");
+    case LeadStatus:
+        return i18nc("@title:column Lead's Status", "Status");
+    case LeadAccountName:
+        return i18nc("@title:column Account Name", "Account Name");
+    case LeadEmail:
+        return i18nc("@title:column Lead's Primary email", "Email");
+    case LeadUser:
+        return i18nc("@title:column Lead's Assigny name", "User");
+    case OpportunityName:
+        return i18nc("@title:column name for the Opportunity", "Opportunity");
+    case OpportunityAccountName:
+        return i18nc("@title:column account name", "Account Name");
+    case SalesStage:
+        return i18nc("@title:column sales stage", "Sales Stage");
+    case Amount:
+        return i18nc("@title:column amount", "Amount");
+    case NextStepDate:
+        return i18nc("@title:column next step date", "Next Step Date");
+    case LastModifiedDate:
+        return i18nc("@title:column next step date", "Last Modified Date");
+    case AssignedTo:
+        return i18nc("@title:column assigned to name", "Assigned To");
+    }
+    return QString();
+}
 
+QString ItemsTreeModel::columnNameFromType(ItemsTreeModel::ColumnType col)
+{
+    const QMetaObject &mo = staticMetaObject;
+    int index = mo.indexOfEnumerator("ColumnType");
+    Q_ASSERT(index >= 0);
+    QMetaEnum metaEnum = mo.enumerator(index);
+    return metaEnum.valueToKey(col);
+}
+
+ItemsTreeModel::ColumnType ItemsTreeModel::columnTypeFromName(const QString &name)
+{
+    const QMetaObject &mo = staticMetaObject;
+    int index = mo.indexOfEnumerator("ColumnType");
+    Q_ASSERT(index >= 0);
+    QMetaEnum metaEnum = mo.enumerator(index);
+    return static_cast<ColumnType>(metaEnum.keyToValue(name.toLatin1().constData()));
+}
+
+ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
+{
+    ItemsTreeModel::ColumnTypes columns = columnTypes();
+    switch (mType) {
+    case Account:
+        break;
+    case Contact:
+        break;
+    case Lead:
+        break;
+    case Opportunity:
+        columns.removeAll(ItemsTreeModel::Amount);
+        columns.removeAll(ItemsTreeModel::LastModifiedDate);
+        break;
+    case Campaign:
+        break;
+    default:
+        break;
+    }
+    return columns;
+}
+
+QString ItemsTreeModel::columnName(int column) const
+{
+    return columnNameFromType(d->mColumns.at(column));
+}
+
+#include "itemstreemodel.moc"

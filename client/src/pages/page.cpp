@@ -45,6 +45,7 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
+    mUi.treeView->setViewName(typeToString(type));
     initialize();
 }
 
@@ -374,7 +375,7 @@ void Page::setupModel()
 
     mFilter->setSourceModel(filterModel);
     mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
-    mUi.treeView->setModels(mFilter, mItemsTreeModel);
+    mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
     connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
     connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));

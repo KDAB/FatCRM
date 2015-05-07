@@ -3,6 +3,7 @@
 #include <kdcrmdata/sugaropportunity.h>
 
 #include <akonadi/entitytreemodel.h>
+#include "itemstreemodel.h"
 
 #include <QDate>
 #include <opportunitiespage.h>
@@ -95,7 +96,9 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
 bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    if (sortColumn() == OpportunitiesPage::NextStepDateColumn) {
+    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
+    const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
+    if (sortColumn() == nextStepDateColumn) {
         QVariant l = (left.model() ? left.model()->data(left, sortRole()) : QVariant());
         QVariant r = (right.model() ? right.model()->data(right, sortRole()) : QVariant());
         if (l.userType() == QVariant::Date) {
@@ -103,8 +106,9 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
             QDate rightDt = r.toDate();
             if (leftDt == rightDt) {
                 // compare last modified dates
-                leftDt = left.sibling(left.row(), OpportunitiesPage::LastModifiedColumn).data(sortRole()).toDate();
-                rightDt = right.sibling(right.row(), OpportunitiesPage::LastModifiedColumn).data(sortRole()).toDate();
+                const int lastModifiedDateColumn = columns.indexOf(ItemsTreeModel::LastModifiedDate);
+                leftDt = left.sibling(left.row(), lastModifiedDateColumn).data(sortRole()).toDate();
+                rightDt = right.sibling(right.row(), lastModifiedDateColumn).data(sortRole()).toDate();
             }
             return leftDt < rightDt;
         }

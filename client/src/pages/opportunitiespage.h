@@ -11,11 +11,6 @@ public:
 
     ~OpportunitiesPage();
 
-    enum {
-        NextStepDateColumn = 5,
-        LastModifiedColumn = 6
-    };
-
     /*reimp*/ void setupModel();
 
 protected:

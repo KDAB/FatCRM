@@ -6,8 +6,7 @@ enum DetailsType {
     Opportunity,
     Lead,
     Contact,
-    Campaign,
-    Note
+    Campaign
 };
 
 enum ReferencedDataType {

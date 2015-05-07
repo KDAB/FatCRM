@@ -124,3 +124,14 @@ QStringList ClientSettings::AssigneeFilters::groups() const
     }
     return ret;
 }
+
+
+void ClientSettings::setVisibleColumns(const QString &viewId, const QStringList &names)
+{
+    m_settings->setValue("columns/" + viewId, names);
+}
+
+QStringList ClientSettings::visibleColumns(const QString &viewId, const QStringList &defaultColumns) const
+{
+    return m_settings->value("columns/" + viewId, defaultColumns).toStringList();
+}
