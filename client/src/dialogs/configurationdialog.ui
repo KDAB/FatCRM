@@ -132,14 +132,6 @@
     </widget>
    </item>
   </layout>
-  <zorder>label_2</zorder>
-  <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>usersListWidget_2</zorder>
-  <zorder>editSelectedCountryFilter</zorder>
-  <zorder></zorder>
-  <zorder>editSelectedCountryFilter</zorder>
-  <zorder>horizontalSpacer</zorder>
  </widget>
  <customwidgets>
   <customwidget>
