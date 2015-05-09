@@ -19,31 +19,40 @@ NotesDialog::~NotesDialog()
     delete ui;
 }
 
-// ascii art FTW
-static const char s_separator[] = "==============================================================================\n";
-
 void NotesDialog::addNote(const SugarNote &note)
 {
-    ui->textEdit->append(s_separator);
-    const QString modified = KDCRMUtils::formatTimestamp(note.dateModified());
-    ui->textEdit->append(QString("Note by %1, last modified %2:").arg(note.createdByName()).arg(modified));
-    ui->textEdit->append(note.name()); // called "Subject" in the web gui
+    const QDateTime modified = KDCRMUtils::dateTimeFromString(note.dateModified());
+    QString text;
+    text += (QString("Note by %1, last modified %2:\n").arg(note.createdByName()).arg(KDCRMUtils::formatDateTime(modified)));
+    text += note.name() + '\n'; // called "Subject" in the web gui
     if (!note.description().isEmpty()) {
-        ui->textEdit->append(note.description());
-        ui->textEdit->append("\n");
+        text += note.description() + '\n';
     }
-    ui->textEdit->append("\n");
+    text += '\n';
+    m_notes.append(NoteText(modified, text));
 }
-
 
 void NotesDialog::addEmail(const SugarEmail &email)
 {
-    ui->textEdit->append(s_separator);
     const QString toList = email.toAddrNames();
-    const QString dateSent = KDCRMUtils::formatTimestamp(email.dateSent());
-    ui->textEdit->append(QString("Mail from %1, to %2. Date: %3").arg(email.fromAddrName(), toList, dateSent));
-    ui->textEdit->append(QString("Subject: %1").arg(email.name()));
-    ui->textEdit->append(QString("\n"));
-    ui->textEdit->append(email.description());
-    ui->textEdit->append(QString("\n"));
+    const QDateTime dateSent = KDCRMUtils::dateTimeFromString(email.dateSent());
+    QString text;
+    text += QString("Mail from %1, to %2. Date: %3\n").arg(email.fromAddrName(), toList, KDCRMUtils::formatDateTime(dateSent));
+    text += QString("Subject: %1\n\n").arg(email.name());
+    text += email.description() + "\n\n";
+    m_notes.append(NoteText(dateSent, text));
+}
+
+void NotesDialog::setVisible(bool visible)
+{
+    if (ui->textEdit->document()->isEmpty()) {
+        qSort(m_notes);
+        // ascii art FTW
+        static const char s_separator[] = "==============================================================================\n";
+        foreach (const NoteText &note, m_notes) {
+            ui->textEdit->append(s_separator);
+            ui->textEdit->append(note.text());
+        }
+    }
+    QDialog::setVisible(visible);
 }

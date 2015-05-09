@@ -17,13 +17,7 @@ QDateTime KDCRMUtils::dateTimeFromString(const QString &serverTimestamp)
 QString KDCRMUtils::formatTimestamp(const QString &serverTimestamp)
 {
     const QDateTime dt = dateTimeFromString(serverTimestamp).toLocalTime();
-    return KGlobal::locale()->formatDateTime(dt, KLocale::ShortDate, true);
-}
-
-QString KDCRMUtils::formatTimestampLong(const QString &serverTimestamp)
-{
-    const QDateTime dt = dateTimeFromString(serverTimestamp).toLocalTime();
-    return KGlobal::locale()->formatDateTime(dt, KLocale::LongDate, true);
+    return formatDateTime(dt);
 }
 
 QString KDCRMUtils::currentTimestamp()
@@ -44,6 +38,11 @@ QString KDCRMUtils::dateToString(const QDate &date)
 QString KDCRMUtils::formatDate(const QDate &date)
 {
     return KGlobal::locale()->formatDate(date, KLocale::ShortDate);
+}
+
+QString KDCRMUtils::formatDateTime(const QDateTime &dt)
+{
+    return KGlobal::locale()->formatDateTime(dt, KLocale::ShortDate, true);
 }
 
 // Sugar SOAP apparently uses double-escaping
