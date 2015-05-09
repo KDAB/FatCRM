@@ -56,6 +56,6 @@ void NotesDialog::setVisible(bool visible)
             ui->textEdit->append(note.text());
         }
     }
-    ui->textEdit->verticalScrollBar()->setValue(0);
     QDialog::setVisible(visible);
+    ui->textEdit->verticalScrollBar()->setValue(0);
 }
