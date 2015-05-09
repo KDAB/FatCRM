@@ -4,12 +4,14 @@
 #include "clientsettings.h"
 #include <kdcrmdata/sugarnote.h>
 #include <kdcrmdata/sugaremail.h>
+#include <QScrollBar>
 
 NotesDialog::NotesDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::NotesDialog)
 {
     ui->setupUi(this);
+    ui->textEdit->enableFindReplace(true);
     ClientSettings::self()->restoreWindowSize("notesDialog", this);
 }
 
@@ -54,5 +56,6 @@ void NotesDialog::setVisible(bool visible)
             ui->textEdit->append(note.text());
         }
     }
+    ui->textEdit->verticalScrollBar()->setValue(0);
     QDialog::setVisible(visible);
 }

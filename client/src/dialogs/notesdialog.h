@@ -18,7 +18,8 @@ struct NoteText
         : m_date(dt), m_text(text) {}
 
     bool operator<(const NoteText &other) const {
-        return m_date < other.m_date;
+        // Most recent at the top
+        return m_date > other.m_date;
     }
 
     QString text() const { return m_text; }
