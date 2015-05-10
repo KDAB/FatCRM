@@ -46,6 +46,7 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
     mUi.treeView->setViewName(typeToString(type));
+    mUi.treeView->setAlternatingRowColors(true);
     initialize();
 }
 
