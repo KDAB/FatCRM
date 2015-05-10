@@ -30,6 +30,7 @@ static QStringList storedProperties()
         props << "currencyId";
         props << "currencyName";
         props << "currencySymbol";
+        props << "name"; // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
     }
     return props;
 }

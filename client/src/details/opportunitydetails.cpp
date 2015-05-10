@@ -105,6 +105,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(id());
     kDebug() << emails.count() << "emails found for opp" << id();
     NotesDialog *dlg = new NotesDialog(this);
+    dlg->setWindowTitle(i18n("Notes for opportunity %1", property("name").toString()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
     }
