@@ -67,7 +67,7 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     QStringList emails = addressee.emails();
     emails.removeAll(addressee.preferredEmail());
     if (emails.count() > 0) {
-        data["email2"] = emails.first();
+        data["email2"] = emails.at(0);
     }
     data["phoneHome"] = addressee.phoneNumber(KABC::PhoneNumber::Home).number();
     data["phoneMobile"] = addressee.phoneNumber(KABC::PhoneNumber::Cell).number();

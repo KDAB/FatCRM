@@ -28,8 +28,8 @@ void CollectionManager::setResource(const QByteArray &identifier)
 static bool collectionLessThan(const Collection &c1, const Collection &c2)
 {
     // In my tests contentMimeTypes always had exactly one entry.
-    const QString contentMimeType1 = c1.contentMimeTypes().first();
-    const QString contentMimeType2 = c2.contentMimeTypes().first();
+    const QString contentMimeType1 = c1.contentMimeTypes().at(0);
+    const QString contentMimeType2 = c2.contentMimeTypes().at(0);
 
     // Now emit them in the right order for fast startup.
     // We want to see Opportunities first, and load Notes last.
@@ -62,6 +62,6 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
 
     Q_FOREACH (const Collection &collection, collections) {
         //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
-        emit collectionResult(collection.contentMimeTypes().first(), collection);
+        emit collectionResult(collection.contentMimeTypes().at(0), collection);
     }
 }

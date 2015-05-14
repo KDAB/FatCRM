@@ -57,7 +57,7 @@ void ResourceConfigDialog::Private::updateButtonStates()
         break;
 
     case 1:
-        mCurrentResource = selectedResources.first();
+        mCurrentResource = selectedResources.at(0);
         canConfigure = !mCurrentResource.type().capabilities().contains(QLatin1String("NoConfig"));
         canDelete = true;
         break;
