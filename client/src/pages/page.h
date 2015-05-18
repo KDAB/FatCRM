@@ -45,6 +45,7 @@ public:
     void printReport();
 
 Q_SIGNALS:
+    void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
     void showDetailsChanged(bool on);
     void modelItemChanged(const Akonadi::Item &item);

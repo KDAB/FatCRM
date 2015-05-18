@@ -389,6 +389,8 @@ void Page::setupModel()
 
     connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this,  SLOT(slotCurrentItemChanged(QModelIndex)));
+
+    emit modelCreated(mItemsTreeModel);
 }
 
 Details *Page::details() const

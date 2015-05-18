@@ -10,6 +10,7 @@ set(sugarclient_SRCS
     pages/leadspage.cpp
     pages/opportunitiespage.cpp
     pages/opportunityfilterwidget.cpp
+	pages/reportpage.cpp
     models/filterproxymodel.cpp
     models/itemstreemodel.cpp
     models/opportunityfilterproxymodel.cpp
@@ -39,6 +40,7 @@ set(sugarclient_SRCS
 kde4_add_ui_files(sugarclient_SRCS
     app/mainwindow.ui
     pages/page.ui
+	pages/reportpage.ui
     pages/opportunityfilterwidget.ui
     details/accountdetails.ui
     details/campaigndetails.ui

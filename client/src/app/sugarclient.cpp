@@ -7,6 +7,7 @@
 #include "configurationdialog.h"
 #include "collectionmanager.h"
 #include "notesrepository.h"
+#include "reportpage.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -241,6 +242,8 @@ void SugarClient::createTabs()
     mUi.tabWidget->addTab(page, tr("&Opportunities"));
     mViewMenu->addAction(page->showDetailsAction(tr("&Opportunity Details")));
 
+    connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
+
 #if 0
     page = new LeadsPage(this);
     mPages << page;
@@ -261,6 +264,9 @@ void SugarClient::createTabs()
 #endif
 
     connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
+
+    mReportPage = new ReportPage(this);
+    mUi.tabWidget->addTab(mReportPage, tr("&Reports"));
 
     //set Opportunities page as current
     mShowDetails->setChecked(mPages[ 1 ]->showsDetails());
@@ -359,12 +365,16 @@ void SugarClient::slotShowDetails(bool on)
 
 void SugarClient::slotPageShowDetailsChanged()
 {
-    mShowDetails->setChecked(currentPage()->showsDetails());
+    Page *page = currentPage();
+    if (page)
+        mShowDetails->setChecked(page->showsDetails());
 }
 
 void SugarClient::slotCurrentTabChanged(int index)
 {
-    mShowDetails->setChecked(mPages[ index ]->showsDetails());
+    if (index < mPages.count()) {
+        mShowDetails->setChecked(mPages[ index ]->showsDetails());
+    }
 }
 
 void SugarClient::slotConfigure()
@@ -383,7 +393,9 @@ void SugarClient::slotConfigure()
 
 void SugarClient::slotPrintReport()
 {
-    currentPage()->printReport();
+    Page *page = currentPage();
+    if (page)
+        page->printReport();
 }
 
 void SugarClient::slotCollectionResult(const QString &mimeType, const Collection &collection)
@@ -409,9 +421,17 @@ void SugarClient::slotIgnoreModifications(bool ignore)
     }
 }
 
+void SugarClient::slotOppModelCreated(ItemsTreeModel *model)
+{
+    mReportPage->setOppModel(model);
+}
+
 Page *SugarClient::currentPage() const
 {
-    return mPages[ mUi.tabWidget->currentIndex() ];
+    const int index = mUi.tabWidget->currentIndex();
+    if (index <= mPages.count())
+        return mPages[ index ];
+    return 0;
 }
 
 AgentInstance SugarClient::currentResource() const

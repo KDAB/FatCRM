@@ -20,6 +20,7 @@ class QToolBar;
 class ResourceConfigDialog;
 class CollectionManager;
 class NotesRepository;
+class ReportPage;
 
 namespace Akonadi
 {
@@ -58,6 +59,7 @@ private:
 
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
+    ReportPage *mReportPage;
 
     ResourceConfigDialog *mResourceDialog;
     CollectionManager *mCollectionManager;
@@ -82,6 +84,7 @@ private Q_SLOTS:
     void slotPrintReport();
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
     void slotIgnoreModifications(bool ignore);
+    void slotOppModelCreated(ItemsTreeModel *model);
 
 private:
     Page *currentPage() const;
