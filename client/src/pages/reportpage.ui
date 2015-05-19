@@ -24,7 +24,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="from"/>
+      <widget class="QDateEdit" name="from">
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
@@ -34,7 +38,11 @@
       </widget>
      </item>
      <item>
-      <widget class="QDateEdit" name="to"/>
+      <widget class="QDateEdit" name="to">
+       <property name="calendarPopup">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QPushButton" name="calculateOppCount">
