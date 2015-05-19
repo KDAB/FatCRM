@@ -87,12 +87,15 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
 void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 {
     const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id();
+    const QString oppId = id();
+    if (!baseUrl.isEmpty() && !oppId.isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + oppId;
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
+    } else {
+        mUi->urllabel->clear();
     }
 
-    const int notes = mNotesRepository->notesForOpportunity(id()).count() + mNotesRepository->emailsForOpportunity(id()).count();
+    const int notes = oppId.isEmpty() ? 0 : mNotesRepository->notesForOpportunity(oppId).count() + mNotesRepository->emailsForOpportunity(oppId).count();
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
@@ -100,10 +103,11 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 
 void OpportunityDetails::on_viewNotesButton_clicked()
 {
-    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(id());
-    kDebug() << notes.count() << "notes found for opp" << id();
-    const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(id());
-    kDebug() << emails.count() << "emails found for opp" << id();
+    const QString oppId = id();
+    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(oppId);
+    kDebug() << notes.count() << "notes found for opp" << oppId;
+    const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
+    kDebug() << emails.count() << "emails found for opp" << oppId;
     NotesDialog *dlg = new NotesDialog(this);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", property("name").toString()));
     foreach(const SugarNote &note, notes) {

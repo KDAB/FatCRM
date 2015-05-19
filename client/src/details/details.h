@@ -34,6 +34,7 @@ public:
     }
 
     QString windowTitle() const;
+    void assignToMe();
 
 Q_SIGNALS:
     void modified();

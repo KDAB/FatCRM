@@ -32,6 +32,7 @@ public:
     void clearFields();
     QMap<QString, QString> data() const;
     Details *details() const { return mDetails; }
+    void setData(const QMap<QString, QString> &data);
 
     static Details *createDetailsForType(DetailsType type);
 
@@ -42,6 +43,8 @@ Q_SIGNALS:
     void createItem();
     void modifyItem();
 
+protected:
+
 private Q_SLOTS:
     void slotModified();
     void slotDiscardData();
@@ -51,8 +54,6 @@ private:
     void initialize();
     void reset();
     void setConnections();
-
-    void setData(const QMap<QString, QString> &data);
 
 private:
     Details *mDetails;

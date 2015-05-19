@@ -159,6 +159,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
 
 void Page::slotNewClicked()
 {
+    const QMap<QString, QString> data = dataForNewObject();
     if (mDetailsWidget != 0 && mShowDetailsAction->isChecked()) {
         if (mDetailsWidget->isModified()) {
             if (askSave()) {
@@ -167,11 +168,12 @@ void Page::slotNewClicked()
         }
 
         mDetailsWidget->clearFields();
+        mDetailsWidget->setData(data);
     } else {
         DetailsDialog *dialog = createDetailsDialog();
         Item item;
         item.setParentCollection(mCollection);
-        dialog->setItem(item);
+        dialog->showNewItem(data);
         dialog->show();
     }
 }

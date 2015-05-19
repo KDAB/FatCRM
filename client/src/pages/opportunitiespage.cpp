@@ -3,6 +3,7 @@
 #include "filterproxymodel.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
+#include "detailswidget.h"
 
 #include "kdcrmdata/sugaropportunity.h"
 
@@ -38,4 +39,12 @@ void OpportunitiesPage::setupModel()
 QString OpportunitiesPage::reportTitle() const
 {
     return tr("List of Opportunities"); // TODO extend title with proxy filter settings
+}
+
+QMap<QString, QString> OpportunitiesPage::dataForNewObject()
+{
+    QMap<QString, QString> initialData;
+    initialData.insert("salesStage", "Prospecting");
+    initialData.insert("probability", "10");
+    return initialData;
 }

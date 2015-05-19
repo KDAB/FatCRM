@@ -94,8 +94,11 @@ void DetailsWidget::clearFields()
     // hide creation/modification date/user
     mUi.createdModifiedContainer->hide();
 
+    // assign to me by default
+    mDetails->assignToMe();
+
     // we are creating a new entry
-    mCreateNew = true;
+    mCreateNew = true;    
 
     setConnections();
 }

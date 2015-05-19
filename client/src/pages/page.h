@@ -92,6 +92,7 @@ private Q_SLOTS:
 private:
     virtual QString reportTitle() const = 0;
     Details *details() const;
+    virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
     bool askSave();
     // manages accounts combo box

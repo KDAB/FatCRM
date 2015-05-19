@@ -11,10 +11,11 @@ public:
 
     ~OpportunitiesPage();
 
-    /*reimp*/ void setupModel();
+    void setupModel() Q_DECL_OVERRIDE;
 
 protected:
-    /*reimp*/ QString reportTitle() const;
+    QString reportTitle() const Q_DECL_OVERRIDE;
+    QMap<QString, QString> dataForNewObject() Q_DECL_OVERRIDE;
 };
 
 #endif /* OPPORTUNITIESPAGE_H */

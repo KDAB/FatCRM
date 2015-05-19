@@ -30,7 +30,6 @@ static QStringList storedProperties()
         props << "currencyId";
         props << "currencyName";
         props << "currencySymbol";
-        props << "name"; // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
     }
     return props;
 }
@@ -129,13 +128,13 @@ void Details::setData(const QMap<QString, QString> &data,
 {
     QString key;
 
-    QList<QLineEdit *> lineEdits =  findChildren<QLineEdit *>();
+    QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *le, lineEdits) {
         key = le->objectName();
         if (!data.contains(key)) continue; // skip internal lineedits (e.g. in spinbox)
         le->setText(data.value(key));
     }
-    QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+    QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
         if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
@@ -204,10 +203,13 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (const QString &prop, storedProperties()) {
         setProperty(prop.toLatin1(), data.value(prop));
     }
+    setProperty("name", data.value("name")); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
 
     setDataInternal(data);
 
-    mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
+    if (mKeys.isEmpty()) {
+        mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
+    }
 }
 
 /*
@@ -297,7 +299,7 @@ QString Details::currentAccountId() const
     // Account has "parentName"
     // Contact, Leads, Opportunity have "accountName"
     if (mType != Campaign) {
-        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
             if (key == QLatin1String("parentName") || key == QLatin1String("accountName")) {
@@ -314,7 +316,7 @@ QString Details::currentAccountId() const
 QString Details::currentCampaignId() const
 {
     if (mType != Campaign) {
-        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
             if (key == QLatin1String("campaignName") || key == QLatin1String("campaign")) {
@@ -330,7 +332,7 @@ QString Details::currentCampaignId() const
  */
 QString Details::currentAssignedToId() const
 {
-    const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+    const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         const QString key = cb->objectName();
         if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
@@ -340,13 +342,31 @@ QString Details::currentAssignedToId() const
     return QString();
 }
 
+void Details::assignToMe()
+{
+    const QString fullUserName = ClientSettings::self()->fullUserName();
+    if (fullUserName.isEmpty())
+        return;
+    const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
+    Q_FOREACH (QComboBox *cb, comboBoxes) {
+        const QString key = cb->objectName();
+        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
+            const int idx = cb->findText(fullUserName);
+            if (idx >= 0) {
+                cb->setCurrentIndex(idx);
+            }
+        }
+    }
+}
+
+
 /*
  * Return the selected "Reports To" Id
  */
 QString Details::currentReportsToId() const
 {
     if (mType == Contact) {
-        const QList<QComboBox *> comboBoxes =  findChildren<QComboBox *>();
+        const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
             if (key == QLatin1String("reportsTo")) {

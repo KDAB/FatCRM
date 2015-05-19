@@ -143,20 +143,26 @@ DetailsDialog::~DetailsDialog()
     delete d;
 }
 
+// open for creation
+void DetailsDialog::showNewItem(const QMap<QString, QString> &data)
+{
+    d->setData(data);
+
+    // hide creation/modification date/user
+    d->mUi.createdModifiedContainer->hide();
+
+    d->mDetails->assignToMe();
+
+    d->mSaveButton->setEnabled(false);
+}
+
+// open for modification
 void DetailsDialog::setItem(const Akonadi::Item &item)
 {
     d->mItem = item;
 
-    if (item.isValid()) {
-        // modify
-        d->setData(d->mDetails->data(item));
-    } else {
-        // create
-        d->setData(QMap<QString, QString>());
-
-        // hide creation/modification date/user
-        d->mUi.createdModifiedContainer->hide();
-    }
+    Q_ASSERT(item.isValid());
+    d->setData(d->mDetails->data(item));
 
     d->mSaveButton->setEnabled(false);
 }
