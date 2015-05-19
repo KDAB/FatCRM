@@ -270,7 +270,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="billingAddressCounty"/>
+       <widget class="QLineEdit" name="billingAddressCountry"/>
       </item>
      </layout>
     </widget>
@@ -333,7 +333,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="shippingAddressCounty"/>
+       <widget class="QLineEdit" name="shippingAddressCountry"/>
       </item>
      </layout>
     </widget>
