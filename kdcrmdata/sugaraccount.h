@@ -41,6 +41,22 @@ public:
     SugarAccount &operator=(const SugarAccount &);
 
     /**
+      Decide whether two SugarAccount instance refer to the same account
+      (for duplicate handling). Not all fields might have the same value
+      (so this is not an operator==).
+
+      @return @c true if @c this and the given SugarAccount should be a single account,
+              otherwise @c false
+    */
+    bool isSameAccount(const SugarAccount &other) const;
+
+    /**
+      Returns a key representing this account uniquely
+    */
+    QString key() const;
+
+private:
+    /**
       Equality operator.
 
       @return @c true if @c this and the given SugarAccount are equal,
@@ -55,6 +71,7 @@ public:
               otherwise @c false
     */
     bool operator!=(const SugarAccount &) const;
+public:
 
     /**
       Return, if the SugarAccount entry is empty.

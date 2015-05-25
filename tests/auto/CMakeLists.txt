@@ -7,6 +7,7 @@ include_directories(
 	${_clientdir}/src/utilities
 	${_clientdir}/src/widgets
 	${CMAKE_CURRENT_SOURCE_DIR}/../../kdcrmdata
+	${CMAKE_CURRENT_SOURCE_DIR}/../..
 )
 
 macro(add_sugarclient_tests)
@@ -19,5 +20,6 @@ endmacro()
 add_sugarclient_tests(
    referenceddatatest
    qdateeditextest
+   test_contactsimporter
 )
 

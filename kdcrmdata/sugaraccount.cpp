@@ -125,6 +125,61 @@ SugarAccount &SugarAccount::operator=(const SugarAccount &other)
     return *this;
 }
 
+// The code below will try adding a dot, and prepending a comma
+static const char* s_extensions[] = {
+    "Inc", "LLC", "Ltd", "Limited", // USA, UK
+    "GmbH", "GmbH & Co. KG", // Germany
+    "S.A.S", "SAS", "S.A", "SA", // France
+    "S.p.A", // Italy
+    "AB", // Sweden
+    "AG", // Switzerland
+    "BV", "B.V", // Netherlands
+    "AS" // Norway
+};
+static const int s_extensionCount = sizeof(s_extensions) / sizeof(*s_extensions);
+
+static QString cleanAccountName(const QString &name)
+{
+    QString result = name;
+    for (int i = 0; i < s_extensionCount; ++i) {
+        const QString extension = s_extensions[i];
+        result.remove(", " + extension + '.');
+        result.remove(", " + extension);
+        result.remove(QChar(' ') + extension + '.');
+        result.remove(QChar(' ') + extension);
+    }
+    return result;
+}
+
+// The rule is: one account of a given name, in a given city.
+// E.g. HP (city: Barcelona) != HP (city: Chicago) != HP (city: London)
+bool SugarAccount::isSameAccount(const SugarAccount &other) const
+{
+    if (d->mId != other.d->mId) {
+        return false;
+    }
+
+    if (cleanAccountName(d->mName) != cleanAccountName(other.d->mName)) {
+        return false;
+    }
+
+    if (d->mBillingAddressCountry != other.d->mBillingAddressCountry) {
+        return false;
+    }
+
+    if (d->mBillingAddressCity != other.d->mBillingAddressCity) {
+        return false;
+    }
+
+    return true;
+}
+
+QString SugarAccount::key() const
+{
+    return cleanAccountName(d->mName) + '_' + d->mBillingAddressCountry + '_' + d->mBillingAddressCity;
+}
+
+#if 0
 bool SugarAccount::operator==(const SugarAccount &other) const
 {
     if (d->mId != other.d->mId) {
@@ -252,6 +307,7 @@ bool SugarAccount::operator!=(const SugarAccount &a) const
 {
     return !(a == *this);
 }
+#endif
 
 bool SugarAccount::isEmpty() const
 {

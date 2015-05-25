@@ -23,6 +23,9 @@
 #include <QProgressBar>
 #include <QToolBar>
 #include <QTimer>
+#include <QFileDialog>
+#include <contactsimporter.h>
+#include <QMessageBox>
 
 using namespace Akonadi;
 
@@ -115,7 +118,8 @@ void SugarClient::createActions()
 {
     // the File menu is handled in Qt Designer
 
-    mViewMenu = menuBar()->addMenu(tr("&View"));
+    mViewMenu = new QMenu(tr("&View"), this);
+    menuBar()->insertMenu(mUi.menuSettings->menuAction(), mViewMenu);
     QAction *printAction = new QAction(tr("Print Report..."), this);
     printAction->setShortcut(QKeySequence::Print);
     printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
@@ -123,16 +127,39 @@ void SugarClient::createActions()
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
 
-    mSettingsMenu = menuBar()->addMenu(tr("&Settings"));
-    QAction *configureAction = new QAction(tr("Configure FatCRM..."), this);
-    connect(configureAction, SIGNAL(triggered()), this, SLOT(slotConfigure()));
-    mSettingsMenu->addAction(configureAction);
-
     QToolBar *detailsToolBar = addToolBar(tr("Details Toolbar"));
     mShowDetails = new QCheckBox(tr("Show Details"));
     detailsToolBar->addWidget(mShowDetails);
     connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
     detailsToolBar->addAction(printAction);
+}
+
+void SugarClient::setupActions()
+{
+    const QIcon reloadIcon =
+        (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, 0)
+         : QIcon());
+    if (!reloadIcon.isNull()) {
+        mUi.actionSynchronize->setIcon(reloadIcon);
+    }
+
+    connect(mUi.actionCRMAccounts, SIGNAL(triggered()), SLOT(slotConfigureResources()));
+    connect(mUi.actionImportContacts, SIGNAL(triggered()), this, SLOT(slotImportContacts()));
+    connect(mUi.actionOfflineMode, SIGNAL(toggled(bool)), this, SLOT(slotToggleOffline(bool)));
+    connect(mUi.actionSynchronize, SIGNAL(triggered()), this, SLOT(slotSynchronize()));
+    connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+
+    // NOT FINISHED YET
+    mUi.actionImportContacts->setVisible(false);
+
+    connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
+
+    Q_FOREACH (const Page *page, mPages) {
+        connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
+        connect(this, SIGNAL(displayDetails()), page, SLOT(slotSetItem()));
+        connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
+        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
+    }
 }
 
 void SugarClient::slotResourceSelectionChanged(int index)
@@ -198,28 +225,6 @@ void SugarClient::slotSynchronizeCollection(const Collection &collection)
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
         AgentManager::self()->synchronizeCollection(collection);
-    }
-}
-
-void SugarClient::setupActions()
-{
-    const QIcon reloadIcon =
-        (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, 0)
-         : QIcon());
-    if (!reloadIcon.isNull()) {
-        mUi.actionSynchronize->setIcon(reloadIcon);
-    }
-
-    connect(mUi.actionCRMAccounts, SIGNAL(triggered()), SLOT(slotConfigureResources()));
-    connect(mUi.actionOfflineMode, SIGNAL(toggled(bool)), this, SLOT(slotToggleOffline(bool)));
-    connect(mUi.actionSynchronize, SIGNAL(triggered()), this, SLOT(slotSynchronize()));
-    connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
-
-    Q_FOREACH (const Page *page, mPages) {
-        connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
-        connect(this, SIGNAL(displayDetails()), page, SLOT(slotSetItem()));
-        connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
-        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
     }
 }
 
@@ -374,6 +379,22 @@ void SugarClient::slotCurrentTabChanged(int index)
 {
     if (index < mPages.count()) {
         mShowDetails->setChecked(mPages[ index ]->showsDetails());
+    }
+}
+
+void SugarClient::slotImportContacts()
+{
+    const QString csvFile = QFileDialog::getOpenFileName(this, tr("Select contacts file"), QString(), "*.csv");
+    if (!csvFile.isEmpty()) {
+        ContactsImporter importer;
+        if (importer.importFile(csvFile)) {
+            const QVector<SugarAccount> accounts = importer.accounts();
+            // TODO: dialog with a gridlayout like
+            //  <lineedit: new account>  <label: joined list of accounts with a similar name> <button to view these in subdialog> <checkbox: create>
+        } else {
+            QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
+                                 i18n("Error importing %1", csvFile));
+        }
     }
 }
 
