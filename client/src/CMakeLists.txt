@@ -22,11 +22,13 @@ set(sugarclient_SRCS
     details/contactdetails.cpp
     details/leaddetails.cpp
     details/opportunitydetails.cpp
+    dialogs/accountimportdialog.cpp
     dialogs/configurationdialog.cpp
     dialogs/detailsdialog.cpp
     dialogs/editlistdialog.cpp
     dialogs/notesdialog.cpp
     dialogs/resourceconfigdialog.cpp
+    utilities/accountrepository.cpp
     utilities/collectionmanager.cpp
     utilities/contactsimporter.cpp
     utilities/dbuswinidprovider.cpp
@@ -50,6 +52,7 @@ kde4_add_ui_files(sugarclient_SRCS
     details/detailswidget.ui
     details/leaddetails.ui
     details/opportunitydetails.ui
+    dialogs/accountimportdialog.ui
     dialogs/configurationdialog.ui
     dialogs/detailsdialog.ui
     dialogs/notesdialog.ui

@@ -26,6 +26,7 @@
 #include <QFileDialog>
 #include <contactsimporter.h>
 #include <QMessageBox>
+#include <accountimportdialog.h>
 
 using namespace Akonadi;
 
@@ -389,8 +390,9 @@ void SugarClient::slotImportContacts()
         ContactsImporter importer;
         if (importer.importFile(csvFile)) {
             const QVector<SugarAccount> accounts = importer.accounts();
-            // TODO: dialog with a gridlayout like
-            //  <lineedit: new account>  <label: joined list of accounts with a similar name> <button to view these in subdialog> <checkbox: create>
+            AccountImportDialog importDialog(this);
+            importDialog.setImportedAccounts(accounts);
+            importDialog.exec();
         } else {
             QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
                                  i18n("Error importing %1", csvFile));

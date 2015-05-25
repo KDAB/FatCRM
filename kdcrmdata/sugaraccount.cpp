@@ -138,28 +138,15 @@ static const char* s_extensions[] = {
 };
 static const int s_extensionCount = sizeof(s_extensions) / sizeof(*s_extensions);
 
-static QString cleanAccountName(const QString &name)
-{
-    QString result = name;
-    for (int i = 0; i < s_extensionCount; ++i) {
-        const QString extension = s_extensions[i];
-        result.remove(", " + extension + '.');
-        result.remove(", " + extension);
-        result.remove(QChar(' ') + extension + '.');
-        result.remove(QChar(' ') + extension);
-    }
-    return result;
-}
-
 // The rule is: one account of a given name, in a given city.
 // E.g. HP (city: Barcelona) != HP (city: Chicago) != HP (city: London)
 bool SugarAccount::isSameAccount(const SugarAccount &other) const
 {
-    if (d->mId != other.d->mId) {
+    if (!d->mId.isEmpty() && !other.d->mId.isEmpty() && d->mId != other.d->mId) {
         return false;
     }
 
-    if (cleanAccountName(d->mName) != cleanAccountName(other.d->mName)) {
+    if (cleanAccountName() != other.cleanAccountName()) {
         return false;
     }
 
@@ -176,7 +163,20 @@ bool SugarAccount::isSameAccount(const SugarAccount &other) const
 
 QString SugarAccount::key() const
 {
-    return cleanAccountName(d->mName) + '_' + d->mBillingAddressCountry + '_' + d->mBillingAddressCity;
+    return cleanAccountName() + '_' + d->mBillingAddressCountry + '_' + d->mBillingAddressCity;
+}
+
+QString SugarAccount::cleanAccountName() const
+{
+    QString result = d->mName;
+    for (int i = 0; i < s_extensionCount; ++i) {
+        const QString extension = s_extensions[i];
+        result.remove(", " + extension + '.');
+        result.remove(", " + extension);
+        result.remove(QChar(' ') + extension + '.');
+        result.remove(QChar(' ') + extension);
+    }
+    return result;
 }
 
 #if 0

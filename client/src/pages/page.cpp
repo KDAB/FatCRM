@@ -31,6 +31,7 @@
 #include <kdebug.h>
 #include <QMessageBox>
 #include <clientsettings.h>
+#include <accountrepository.h>
 
 using namespace Akonadi;
 
@@ -532,6 +533,8 @@ void Page::addAccountsData()
             const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
             // See comment in itemstreemodel.cpp about why this isn't account.id()
             accountCountryRefMap.insert(account.name(), country);
+
+            AccountRepository::instance()->addAccount(account);
         }
     }
     ReferencedData::instance(AccountRef)->addMap(accountRefMap);

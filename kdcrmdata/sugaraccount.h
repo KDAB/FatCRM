@@ -55,6 +55,13 @@ public:
     */
     QString key() const;
 
+
+    /**
+      Returns the canonical name of the account.
+      E.g. "KDAB, Inc." has a canonical name of "KDAB".
+    */
+    QString cleanAccountName() const;
+
 private:
     /**
       Equality operator.
