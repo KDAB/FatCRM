@@ -504,6 +504,16 @@ QDate SugarOpportunity::nextCallDate() const
     return d->mNextCallDate;
 }
 
+void SugarOpportunity::setNextCallDateRaw(const QString &str)
+{
+    setNextCallDate(KDCRMUtils::dateFromString(str));
+}
+
+QString SugarOpportunity::nextCallDateRaw() const
+{
+    return KDCRMUtils::dateToString(d->mNextCallDate);
+}
+
 void SugarOpportunity::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;

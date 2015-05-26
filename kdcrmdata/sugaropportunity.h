@@ -340,6 +340,9 @@ public:
      */
     QDate nextCallDate() const;
 
+    void setNextCallDateRaw(const QString &str);
+    QString nextCallDateRaw() const;
+
     /**
       Convenience: Set the data for this opportunity
      */
