@@ -41,7 +41,7 @@ cd ..
 
 * Compile FatCRM
 
-svn co svn+ssh://svn.kdab.com/home/SVN-klaralv/projects/FatCRM/trunk FatCRM
+git clone https://github.com/KDAB/FatCRM
 cd FatCRM ; mkdir build ; cd build
 export CMAKE_PREFIX_PATH=/usr/local/KDAB/KDSoap-Qt4:/usr/local/KDAB/KDReports-Qt4:$CMAKE_PREFIX_PATH
 cmake .. -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`
