@@ -108,7 +108,7 @@ static QString getAssistantName(const KABC::Addressee &addressee)
     return addressee.custom("KADDRESSBOOK", "X-AssistantsName");
 }
 
-static void setAssitantName(const QString &value, KABC::Addressee &addressee)
+static void setAssistantName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", value);
 }
@@ -528,16 +528,16 @@ static void setOtherCountry(const QString &value, KABC::Address &address)
     address.setCountry(value);
 }
 
-class AccessorPair
+class ContactAccessorPair
 {
 public:
-    AccessorPair(valueGetter get, valueSetter set, const QString &name)
+    ContactAccessorPair(valueGetter get, valueSetter set, const QString &name)
         : getter(get), diffName(name)
     {
         setter.vSetter = set;
     }
 
-    AccessorPair(valueGetter get, addressSetter set, const QString &name)
+    ContactAccessorPair(valueGetter get, addressSetter set, const QString &name)
         : getter(get), diffName(name)
     {
         setter.aSetter = set;
@@ -554,124 +554,124 @@ public:
 
 ContactsHandler::ContactsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Contacts"), session),
-      mAccessors(new AccessorHash)
+      mAccessors(new ContactAccessorHash)
 {
     mAccessors->insert(QLatin1String("first_name"),
-                       new AccessorPair(getFirstName, setFirstName,
+                       new ContactAccessorPair(getFirstName, setFirstName,
                                         i18nc("@item:intable", "First Name")));
     mAccessors->insert(QLatin1String("last_name"),
-                       new AccessorPair(getLastName, setLastName,
+                       new ContactAccessorPair(getLastName, setLastName,
                                         i18nc("@item:intable", "Last Name")));
     mAccessors->insert(QLatin1String("email1"),
-                       new AccessorPair(getEmail1, setEmail1,
+                       new ContactAccessorPair(getEmail1, setEmail1,
                                         i18nc("@item:intable", "Primary Email")));
     mAccessors->insert(QLatin1String("email2"),
-                       new AccessorPair(getEmail2, setEmail2,
+                       new ContactAccessorPair(getEmail2, setEmail2,
                                         i18nc("@item:intable", "Other Email")));
     mAccessors->insert(QLatin1String("title"),
-                       new AccessorPair(getTitle, setTitle,
+                       new ContactAccessorPair(getTitle, setTitle,
                                         i18nc("@item:intable job title", "Title")));
     mAccessors->insert(QLatin1String("department"),
-                       new AccessorPair(getDepartment, setDepartment,
+                       new ContactAccessorPair(getDepartment, setDepartment,
                                         i18nc("@item:intable", "Department")));
     mAccessors->insert(QLatin1String("account_name"),
-                       new AccessorPair(getAccountName, setAccountName,
+                       new ContactAccessorPair(getAccountName, setAccountName,
                                         i18nc("@item:intable", "Account Name")));
     mAccessors->insert(QLatin1String("account_id"),
-                       new AccessorPair(getAccountId, setAccountId, QString()));
+                       new ContactAccessorPair(getAccountId, setAccountId, QString()));
     mAccessors->insert(QLatin1String("phone_home"),
-                       new AccessorPair(getHomePhone, setHomePhone,
+                       new ContactAccessorPair(getHomePhone, setHomePhone,
                                         i18nc("@item:intable", "Phone (Home)")));
     mAccessors->insert(QLatin1String("phone_work"),
-                       new AccessorPair(getWorkPhone, setWorkPhone,
+                       new ContactAccessorPair(getWorkPhone, setWorkPhone,
                                         i18nc("@item:intable", "Phone (Office)")));
     mAccessors->insert(QLatin1String("phone_mobile"),
-                       new AccessorPair(getMobilePhone, setMobilePhone,
+                       new ContactAccessorPair(getMobilePhone, setMobilePhone,
                                         i18nc("@item:intable", "Phone (Mobile)")));
     mAccessors->insert(QLatin1String("phone_other"),
-                       new AccessorPair(getOtherPhone, setOtherPhone,
+                       new ContactAccessorPair(getOtherPhone, setOtherPhone,
                                         i18nc("@item:intable", "Phone (Other)")));
     mAccessors->insert(QLatin1String("phone_fax"),
-                       new AccessorPair(getFaxPhone, setFaxPhone,
+                       new ContactAccessorPair(getFaxPhone, setFaxPhone,
                                         i18nc("@item:intable", "Fax")));
     mAccessors->insert(QLatin1String("primary_address_street"),
-                       new AccessorPair(getPrimaryStreet, setPrimaryStreet, QString()));
+                       new ContactAccessorPair(getPrimaryStreet, setPrimaryStreet, QString()));
     mAccessors->insert(QLatin1String("primary_address_city"),
-                       new AccessorPair(getPrimaryCity, setPrimaryCity, QString()));
+                       new ContactAccessorPair(getPrimaryCity, setPrimaryCity, QString()));
     mAccessors->insert(QLatin1String("primary_address_state"),
-                       new AccessorPair(getPrimaryState, setPrimaryState, QString()));
+                       new ContactAccessorPair(getPrimaryState, setPrimaryState, QString()));
     mAccessors->insert(QLatin1String("primary_address_postalcode"),
-                       new AccessorPair(getPrimaryPostalcode, setPrimaryPostalcode, QString()));
+                       new ContactAccessorPair(getPrimaryPostalcode, setPrimaryPostalcode, QString()));
     mAccessors->insert(QLatin1String("primary_address_country"),
-                       new AccessorPair(getPrimaryCountry, setPrimaryCountry, QString()));
+                       new ContactAccessorPair(getPrimaryCountry, setPrimaryCountry, QString()));
     mAccessors->insert(QLatin1String("alt_address_street"),
-                       new AccessorPair(getOtherStreet, setOtherStreet, QString()));
+                       new ContactAccessorPair(getOtherStreet, setOtherStreet, QString()));
     mAccessors->insert(QLatin1String("alt_address_city"),
-                       new AccessorPair(getOtherCity, setOtherCity, QString()));
+                       new ContactAccessorPair(getOtherCity, setOtherCity, QString()));
     mAccessors->insert(QLatin1String("alt_address_state"),
-                       new AccessorPair(getOtherState, setOtherState, QString()));
+                       new ContactAccessorPair(getOtherState, setOtherState, QString()));
     mAccessors->insert(QLatin1String("alt_address_postalcode"),
-                       new AccessorPair(getOtherPostalcode, setOtherPostalcode, QString()));
+                       new ContactAccessorPair(getOtherPostalcode, setOtherPostalcode, QString()));
     mAccessors->insert(QLatin1String("alt_address_country"),
-                       new AccessorPair(getOtherCountry, setOtherCountry, QString()));
+                       new ContactAccessorPair(getOtherCountry, setOtherCountry, QString()));
     mAccessors->insert(QLatin1String("birthdate"),
-                       new AccessorPair(getBirthday, setBirthday,
+                       new ContactAccessorPair(getBirthday, setBirthday,
                                         i18nc("@item:intable", "Birthdate")));
     mAccessors->insert(QLatin1String("description"),
-                       new AccessorPair(getNote, setNote,
+                       new ContactAccessorPair(getNote, setNote,
                                         i18nc("@item:intable", "Description")));
     mAccessors->insert(QLatin1String("assistant"),
-                       new AccessorPair(getAssistantName, setAssitantName,
+                       new ContactAccessorPair(getAssistantName, setAssistantName,
                                         i18nc("@item:intable", "Assistant")));
     mAccessors->insert(QLatin1String("assistant_phone"),
-                       new AccessorPair(getAssistantPhone, setAssistantPhone,
+                       new ContactAccessorPair(getAssistantPhone, setAssistantPhone,
                                         i18nc("@item:intable", "Assistant Phone")));
     mAccessors->insert(QLatin1String("lead_source"),
-                       new AccessorPair(getLeadSourceName, setLeadSourceName,
+                       new ContactAccessorPair(getLeadSourceName, setLeadSourceName,
                                         i18nc("@item:intable", "Lead Source")));
     mAccessors->insert(QLatin1String("campaign_name"),
-                       new AccessorPair(getCampaignName, setCampaignName,
+                       new ContactAccessorPair(getCampaignName, setCampaignName,
                                         i18nc("@item:intable", "Campaign")));
     mAccessors->insert(QLatin1String("campaign_id"),
-                       new AccessorPair(getCampaignId, setCampaignId, QString()));
+                       new ContactAccessorPair(getCampaignId, setCampaignId, QString()));
     mAccessors->insert(QLatin1String("assigned_user_name"),
-                       new AccessorPair(getAssignedUserName, setAssignedUserName, QString()));
+                       new ContactAccessorPair(getAssignedUserName, setAssignedUserName, QString()));
     mAccessors->insert(QLatin1String("assigned_user_id"),
-                       new AccessorPair(getAssignedUserId, setAssignedUserId, QString()));
+                       new ContactAccessorPair(getAssignedUserId, setAssignedUserId, QString()));
     mAccessors->insert(QLatin1String("report_to_name"),
-                       new AccessorPair(getReportsToUserName, setReportsToUserName,
+                       new ContactAccessorPair(getReportsToUserName, setReportsToUserName,
                                         i18nc("@item:intable", "Reports To")));
     mAccessors->insert(QLatin1String("reports_to_id"),
-                       new AccessorPair(getReportsToUserId, setReportsToUserId, QString()));
+                       new ContactAccessorPair(getReportsToUserId, setReportsToUserId, QString()));
     mAccessors->insert(QLatin1String("modified_by_name"),
-                       new AccessorPair(getModifiedByName, setModifiedByName, QString()));
+                       new ContactAccessorPair(getModifiedByName, setModifiedByName, QString()));
     mAccessors->insert(QLatin1String("date_modified"),
-                       new AccessorPair(getDateModified, setDateModified, QString()));
+                       new ContactAccessorPair(getDateModified, setDateModified, QString()));
     mAccessors->insert(QLatin1String("modified_user_id"),
-                       new AccessorPair(getModifiedUserId, setModifiedUserId, QString()));
+                       new ContactAccessorPair(getModifiedUserId, setModifiedUserId, QString()));
     mAccessors->insert(QLatin1String("modified_user_name"),
-                       new AccessorPair(getModifiedUserName, setModifiedUserName, QString()));
+                       new ContactAccessorPair(getModifiedUserName, setModifiedUserName, QString()));
     mAccessors->insert(QLatin1String("date_entered"),
-                       new AccessorPair(getDateCreated, setDateCreated, QString()));
+                       new ContactAccessorPair(getDateCreated, setDateCreated, QString()));
     mAccessors->insert(QLatin1String("id"),
-                       new AccessorPair(0, setContactId, QString()));
+                       new ContactAccessorPair(0, setContactId, QString()));
     mAccessors->insert(QLatin1String("created_by_name"),
-                       new AccessorPair(getCreatedByName, setCreatedByName, QString()));
+                       new ContactAccessorPair(getCreatedByName, setCreatedByName, QString()));
     mAccessors->insert(QLatin1String("created_by"),
-                       new AccessorPair(getCreatedById, setCreatedById, QString()));
+                       new ContactAccessorPair(getCreatedById, setCreatedById, QString()));
     mAccessors->insert(QLatin1String("salutation"),
-                       new AccessorPair(getSalutation, setSalutation,
+                       new ContactAccessorPair(getSalutation, setSalutation,
                                         i18nc("@item:intable", "Salutation")));
     mAccessors->insert(QLatin1String("opportunity_role_fields"),
-                       new AccessorPair(getOpportunityRoleFields, setOpportunityRoleFields, QString()));
+                       new ContactAccessorPair(getOpportunityRoleFields, setOpportunityRoleFields, QString()));
     mAccessors->insert(QLatin1String("c_accept_status_fields"),
-                       new AccessorPair(getCAcceptStatusFields, setCAcceptStatusFields, QString()));
+                       new ContactAccessorPair(getCAcceptStatusFields, setCAcceptStatusFields, QString()));
     mAccessors->insert(QLatin1String("m_accept_status_fields"),
-                       new AccessorPair(getMAcceptStatusFields, setMAcceptStatusFields, QString()));
+                       new ContactAccessorPair(getMAcceptStatusFields, setMAcceptStatusFields, QString()));
     mAccessors->insert(QLatin1String("deleted"),
-                       new AccessorPair(getDeleted, setDeleted, QString()));
+                       new ContactAccessorPair(getDeleted, setDeleted, QString()));
     mAccessors->insert(QLatin1String("do_not_call"),
-                       new AccessorPair(getDoNotCall, setDoNotCall, QString()));
+                       new ContactAccessorPair(getDoNotCall, setDoNotCall, QString()));
 }
 
 ContactsHandler::~ContactsHandler()
@@ -719,8 +719,8 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
     }
 
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
+    ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if ((*it)->getter == 0) {
@@ -771,7 +771,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     homeAddress.setType(KABC::Address::Home);
 
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const AccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
+        const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
         if (accessIt == mAccessors->constEnd()) {
             // no accessor for field
             continue;
@@ -822,8 +822,8 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
 
     bool seenPrimaryAddress = false;
     bool seenOtherAddress = false;
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
+    ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if ((*it)->getter == 0) {

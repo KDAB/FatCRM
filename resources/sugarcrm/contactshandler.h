@@ -25,7 +25,7 @@
 
 #include "modulehandler.h"
 
-class AccessorPair;
+class ContactAccessorPair;
 
 template <typename U, typename V> class QHash;
 
@@ -66,8 +66,8 @@ private:
         return value.startsWith(QString("primary_address_"));
     }
 
-    typedef QHash<QString, AccessorPair *> AccessorHash;
-    AccessorHash *mAccessors;
+    typedef QHash<QString, ContactAccessorPair *> ContactAccessorHash;
+    ContactAccessorHash *mAccessors;
 };
 
 #endif
