@@ -23,30 +23,30 @@ Install the package libkdepimlibs4-devel (OpenSuSE).
 
 * Install KDSoap
 
-git clone https://github.com/KDAB/KDSoap.git
-cd KDSoap
-cmake . -DKDSoap_ENFORCE_QT4_BUILD=true -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDSoap-Qt4
-make
-sudo make install
-cd ..
+    git clone https://github.com/KDAB/KDSoap.git
+    cd KDSoap
+    cmake . -DKDSoap_ENFORCE_QT4_BUILD=true -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDSoap-Qt4
+    make
+    sudo make install
+    cd ..
 
 * Install KDReports
 
-git clone https://github.com/KDAB/KDReports.git
-cd KDReports
-./configure.sh -prefix /usr/local/KDAB/KDReports-Qt4
-make
-sudo make install
-cd ..
+    git clone https://github.com/KDAB/KDReports.git
+    cd KDReports
+    ./configure.sh -prefix /usr/local/KDAB/KDReports-Qt4
+    make
+    sudo make install
+    cd ..
 
 * Compile FatCRM
 
-git clone https://github.com/KDAB/FatCRM
-cd FatCRM ; mkdir build ; cd build
-export CMAKE_PREFIX_PATH=/usr/local/KDAB/KDSoap-Qt4:/usr/local/KDAB/KDReports-Qt4:$CMAKE_PREFIX_PATH
-cmake .. -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`
-make
-sudo make install
+    git clone https://github.com/KDAB/FatCRM
+    cd FatCRM ; mkdir build ; cd build
+    export CMAKE_PREFIX_PATH=/usr/local/KDAB/KDSoap-Qt4:/usr/local/KDAB/KDReports-Qt4:$CMAKE_PREFIX_PATH
+    cmake .. -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`
+    make
+    sudo make install
 
 * Web settings
 
