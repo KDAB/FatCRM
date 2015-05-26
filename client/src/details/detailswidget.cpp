@@ -196,7 +196,9 @@ void DetailsWidget::saveData()
     if (mCreateNew) {
         emit createItem();
     } else {
-        emit modifyItem();
+        Item item = mItem;
+        mDetails->updateItem(item, data());
+        emit modifyItem(item);
     }
     setModified(false);
 }

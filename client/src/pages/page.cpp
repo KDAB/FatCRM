@@ -222,18 +222,11 @@ void Page::slotCreateJobResult(KJob *job)
     }
 }
 
-void Page::slotModifyItem() // save modified item
+void Page::slotModifyItem(const Akonadi::Item &item) // save modified item
 {
-    //kDebug() << "saving" << mCurrentIndex;
-    Item item = mUi.treeView->model()->data(mCurrentIndex, EntityTreeModel::ItemRole).value<Item>();
-    if (item.isValid() && mDetailsWidget != 0) {
-
-        details()->updateItem(item, mDetailsWidget->data());
-
-        // job starts automatically
-        ItemModifyJob *job = new ItemModifyJob(item);
-        connect(job, SIGNAL(result(KJob *)), this, SLOT(slotModifyJobResult(KJob *)));
-    }
+    // job starts automatically
+    ItemModifyJob *job = new ItemModifyJob(item);
+    connect(job, SIGNAL(result(KJob *)), this, SLOT(slotModifyJobResult(KJob *)));
 }
 
 void Page::slotModifyJobResult(KJob *job)
@@ -377,7 +370,7 @@ void Page::initialize()
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
 
-    connect(mDetailsWidget, SIGNAL(modifyItem()), this, SLOT(slotModifyItem()));
+    connect(mDetailsWidget, SIGNAL(modifyItem(Akonadi::Item)), this, SLOT(slotModifyItem(Akonadi::Item)));
     connect(mDetailsWidget, SIGNAL(createItem()), this, SLOT(slotAddItem()));
 
     QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);

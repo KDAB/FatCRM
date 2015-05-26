@@ -63,7 +63,7 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void createItem();
-    void modifyItem();
+    void modifyItem(const Akonadi::Item &item);
 
 protected:
 
