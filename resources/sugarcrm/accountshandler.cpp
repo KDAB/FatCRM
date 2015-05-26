@@ -38,398 +38,13 @@ using namespace KDSoapGenerated;
 
 #include <QHash>
 
-typedef QString(*valueGetter)(const SugarAccount &);
-typedef void (*valueSetter)(const QString &, SugarAccount &);
+typedef QString(SugarAccount::*valueGetter)() const;
+typedef void (SugarAccount::*valueSetter)(const QString &);
 
-static void setId(const QString &value, SugarAccount &account)
-{
-    account.setId(value);
-}
-
-static QString getName(const SugarAccount &account)
-{
-    return account.name();
-}
-
-static void setName(const QString &value, SugarAccount &account)
-{
-    account.setName(value);
-}
-
-static QString getDateEntered(const SugarAccount &account)
-{
-    return account.dateEntered();
-}
-
-static void setDateEntered(const QString &value, SugarAccount &account)
-{
-    account.setDateEntered(value);
-}
-
-static QString getDateModified(const SugarAccount &account)
-{
-    return account.dateModified();
-}
-
-static void setDateModified(const QString &value, SugarAccount &account)
-{
-    account.setDateModified(value);
-}
-
-static QString getModifiedUserId(const SugarAccount &account)
-{
-    return account.modifiedUserId();
-}
-
-static void setModifiedUserId(const QString &value, SugarAccount &account)
-{
-    account.setModifiedUserId(value);
-}
-
-static QString getModifiedByName(const SugarAccount &account)
-{
-    return account.modifiedByName();
-}
-
-static void setModifiedByName(const QString &value, SugarAccount &account)
-{
-    account.setModifiedByName(value);
-}
-
-static QString getCreatedBy(const SugarAccount &account)
-{
-    return account.createdBy();
-}
-
-static void setCreatedBy(const QString &value, SugarAccount &account)
-{
-    account.setCreatedBy(value);
-}
-
-static QString getCreatedByName(const SugarAccount &account)
-{
-    return account.createdByName();
-}
-
-static void setCreatedByName(const QString &value, SugarAccount &account)
-{
-    account.setCreatedByName(value);
-}
-
-static QString getDescription(const SugarAccount &account)
-{
-    return account.description();
-}
-
-static void setDescription(const QString &value, SugarAccount &account)
-{
-    account.setDescription(value);
-}
-
-static QString getDeleted(const SugarAccount &account)
-{
-    return account.deleted();
-}
-
-static void setDeleted(const QString &value, SugarAccount &account)
-{
-    account.setDeleted(value);
-}
-
-static QString getAssignedUserId(const SugarAccount &account)
-{
-    return account.assignedUserId();
-}
-
-static void setAssignedUserId(const QString &value, SugarAccount &account)
-{
-    account.setAssignedUserId(value);
-}
-
-static QString getAssignedUserName(const SugarAccount &account)
-{
-    return account.assignedUserName();
-}
-
-static void setAssignedUserName(const QString &value, SugarAccount &account)
-{
-    account.setAssignedUserName(value);
-}
-
-static QString getAccountType(const SugarAccount &account)
-{
-    return account.accountType();
-}
-
-static void setAccountType(const QString &value, SugarAccount &account)
-{
-    account.setAccountType(value);
-}
-
-static QString getIndustry(const SugarAccount &account)
-{
-    return account.industry();
-}
-
-static void setIndustry(const QString &value, SugarAccount &account)
-{
-    account.setIndustry(value);
-}
-
-static QString getAnnualRevenue(const SugarAccount &account)
-{
-    return account.annualRevenue();
-}
-
-static void setAnnualRevenue(const QString &value, SugarAccount &account)
-{
-    account.setAnnualRevenue(value);
-}
-
-static QString getPhoneFax(const SugarAccount &account)
-{
-    return account.phoneFax();
-}
-
-static void setPhoneFax(const QString &value, SugarAccount &account)
-{
-    account.setPhoneFax(value);
-}
-
-static QString getBillingAddressStreet(const SugarAccount &account)
-{
-    return account.billingAddressStreet();
-}
-
-static void setBillingAddressStreet(const QString &value, SugarAccount &account)
-{
-    account.setBillingAddressStreet(value);
-}
-
-static QString getBillingAddressCity(const SugarAccount &account)
-{
-    return account.billingAddressCity();
-}
-
-static void setBillingAddressCity(const QString &value, SugarAccount &account)
-{
-    account.setBillingAddressCity(value);
-}
-
-static QString getBillingAddressState(const SugarAccount &account)
-{
-    return account.billingAddressState();
-}
-
-static void setBillingAddressState(const QString &value, SugarAccount &account)
-{
-    account.setBillingAddressState(value);
-}
-
-static QString getBillingAddressPostalcode(const SugarAccount &account)
-{
-    return account.billingAddressPostalcode();
-}
-
-static void setBillingAddressPostalcode(const QString &value, SugarAccount &account)
-{
-    account.setBillingAddressPostalcode(value);
-}
-
-static QString getBillingAddressCountry(const SugarAccount &account)
-{
-    return account.billingAddressCountry();
-}
-
-static void setBillingAddressCountry(const QString &value, SugarAccount &account)
-{
-    account.setBillingAddressCountry(value);
-}
-
-static QString getRating(const SugarAccount &account)
-{
-    return account.rating();
-}
-
-static void setRating(const QString &value, SugarAccount &account)
-{
-    account.setRating(value);
-}
-
-static QString getPhoneOffice(const SugarAccount &account)
-{
-    return account.phoneOffice();
-}
-
-static void setPhoneOffice(const QString &value, SugarAccount &account)
-{
-    account.setPhoneOffice(value);
-}
-
-static QString getPhoneAlternate(const SugarAccount &account)
-{
-    return account.phoneAlternate();
-}
-
-static void setPhoneAlternate(const QString &value, SugarAccount &account)
-{
-    account.setPhoneAlternate(value);
-}
-
-static QString getWebsite(const SugarAccount &account)
-{
-    return account.website();
-}
-
-static void setWebsite(const QString &value, SugarAccount &account)
-{
-    account.setWebsite(value);
-}
-
-static QString getOwnership(const SugarAccount &account)
-{
-    return account.ownership();
-}
-
-static void setOwnership(const QString &value, SugarAccount &account)
-{
-    account.setOwnership(value);
-}
-
-static QString getEmployees(const SugarAccount &account)
-{
-    return account.employees();
-}
-
-static void setEmployees(const QString &value, SugarAccount &account)
-{
-    account.setEmployees(value);
-}
-
-static QString getTickerSymbol(const SugarAccount &account)
-{
-    return account.tickerSymbol();
-}
-
-static void setTickerSymbol(const QString &value, SugarAccount &account)
-{
-    account.setTickerSymbol(value);
-}
-
-static QString getShippingAddressStreet(const SugarAccount &account)
-{
-    return account.shippingAddressStreet();
-}
-
-static void setShippingAddressStreet(const QString &value, SugarAccount &account)
-{
-    account.setShippingAddressStreet(value);
-}
-
-static QString getShippingAddressCity(const SugarAccount &account)
-{
-    return account.shippingAddressCity();
-}
-
-static void setShippingAddressCity(const QString &value, SugarAccount &account)
-{
-    account.setShippingAddressCity(value);
-}
-
-static QString getShippingAddressState(const SugarAccount &account)
-{
-    return account.shippingAddressState();
-}
-
-static void setShippingAddressState(const QString &value, SugarAccount &account)
-{
-    account.setShippingAddressState(value);
-}
-
-static QString getShippingAddressPostalcode(const SugarAccount &account)
-{
-    return account.shippingAddressPostalcode();
-}
-
-static void setShippingAddressPostalcode(const QString &value, SugarAccount &account)
-{
-    account.setShippingAddressPostalcode(value);
-}
-
-static QString getShippingAddressCountry(const SugarAccount &account)
-{
-    return account.shippingAddressCountry();
-}
-
-static void setShippingAddressCountry(const QString &value, SugarAccount &account)
-{
-    account.setShippingAddressCountry(value);
-}
-
-static QString getEmail1(const SugarAccount &account)
-{
-    return account.email1();
-}
-
-static void setEmail1(const QString &value, SugarAccount &account)
-{
-    account.setEmail1(value);
-}
-
-static QString getParentId(const SugarAccount &account)
-{
-    return account.parentId();
-}
-
-static void setParentId(const QString &value, SugarAccount &account)
-{
-    account.setParentId(value);
-}
-
-static QString getParentName(const SugarAccount &account)
-{
-    return account.parentName();
-}
-
-static void setParentName(const QString &value, SugarAccount &account)
-{
-    account.setParentName(value);
-}
-
-static QString getSicCode(const SugarAccount &account)
-{
-    return account.sicCode();
-}
-
-static void setSicCode(const QString &value, SugarAccount &account)
-{
-    account.setSicCode(value);
-}
-
-static QString getCampaignId(const SugarAccount &account)
-{
-    return account.campaignId();
-}
-
-static void setCampaignId(const QString &value, SugarAccount &account)
-{
-    account.setCampaignId(value);
-}
-
-static QString getCampaignName(const SugarAccount &account)
-{
-    return account.campaignName();
-}
-
-static void setCampaignName(const QString &value, SugarAccount &account)
-{
-    account.setCampaignName(value);
-}
-
-class AccessorPair
+class AccountAccessorPair
 {
 public:
-    AccessorPair(valueGetter get, valueSetter set, const QString &name)
+    AccountAccessorPair(valueGetter get, valueSetter set, const QString &name)
         : getter(get), setter(set), diffName(name)
     {}
 
@@ -441,103 +56,103 @@ public:
 
 AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),
-      mAccessors(new AccessorHash)
+      mAccessors(new AccountAccessorHash)
 {
     mAccessors->insert(QLatin1String("id"),
-                       new AccessorPair(0, setId, QString()));
+                       new AccountAccessorPair(&SugarAccount::id, &SugarAccount::setId, QString()));
     mAccessors->insert(QLatin1String("name"),
-                       new AccessorPair(getName, setName,
+                       new AccountAccessorPair(&SugarAccount::name, &SugarAccount::setName,
                                         i18nc("@item:intable account name", "Name")));
     mAccessors->insert(QLatin1String("date_entered"),
-                       new AccessorPair(getDateEntered, setDateEntered, QString()));
+                       new AccountAccessorPair(&SugarAccount::dateEntered, &SugarAccount::setDateEntered, QString()));
     mAccessors->insert(QLatin1String("date_modified"),
-                       new AccessorPair(getDateModified, setDateModified, QString()));
+                       new AccountAccessorPair(&SugarAccount::dateModified, &SugarAccount::setDateModified, QString()));
     mAccessors->insert(QLatin1String("modified_user_id"),
-                       new AccessorPair(getModifiedUserId, setModifiedUserId, QString()));
+                       new AccountAccessorPair(&SugarAccount::modifiedUserId, &SugarAccount::setModifiedUserId, QString()));
     mAccessors->insert(QLatin1String("modified_by_name"),
-                       new AccessorPair(getModifiedByName, setModifiedByName, QString()));
+                       new AccountAccessorPair(&SugarAccount::modifiedByName, &SugarAccount::setModifiedByName, QString()));
     mAccessors->insert(QLatin1String("created_by"),
-                       new AccessorPair(getCreatedBy, setCreatedBy, QString()));
+                       new AccountAccessorPair(&SugarAccount::createdBy, &SugarAccount::setCreatedBy, QString()));
     mAccessors->insert(QLatin1String("created_by_name"),
-                       new AccessorPair(getCreatedByName, setCreatedByName, QString()));
+                       new AccountAccessorPair(&SugarAccount::createdByName, &SugarAccount::setCreatedByName, QString()));
     mAccessors->insert(QLatin1String("description"),
-                       new AccessorPair(getDescription, setDescription,
+                       new AccountAccessorPair(&SugarAccount::description, &SugarAccount::setDescription,
                                         i18nc("@item:intable", "Description")));
     mAccessors->insert(QLatin1String("deleted"),
-                       new AccessorPair(getDeleted, setDeleted, QString()));
+                       new AccountAccessorPair(&SugarAccount::deleted, &SugarAccount::setDeleted, QString()));
     mAccessors->insert(QLatin1String("assigned_user_id"),
-                       new AccessorPair(getAssignedUserId, setAssignedUserId, QString()));
+                       new AccountAccessorPair(&SugarAccount::assignedUserId, &SugarAccount::setAssignedUserId, QString()));
     mAccessors->insert(QLatin1String("assigned_user_name"),
-                       new AccessorPair(getAssignedUserName, setAssignedUserName,
+                       new AccountAccessorPair(&SugarAccount::assignedUserName, &SugarAccount::setAssignedUserName,
                                         i18nc("@item:intable", "Assigned To")));
     mAccessors->insert(QLatin1String("account_type"),
-                       new AccessorPair(getAccountType, setAccountType,
+                       new AccountAccessorPair(&SugarAccount::accountType, &SugarAccount::setAccountType,
                                         i18nc("@item:intable", "Type")));
     mAccessors->insert(QLatin1String("industry"),
-                       new AccessorPair(getIndustry, setIndustry,
+                       new AccountAccessorPair(&SugarAccount::industry, &SugarAccount::setIndustry,
                                         i18nc("@item:intable", "Industry")));
     mAccessors->insert(QLatin1String("annual_revenue"),
-                       new AccessorPair(getAnnualRevenue, setAnnualRevenue,
+                       new AccountAccessorPair(&SugarAccount::annualRevenue, &SugarAccount::setAnnualRevenue,
                                         i18nc("@item:intable", "Annual Revenue")));
     mAccessors->insert(QLatin1String("phone_fax"),
-                       new AccessorPair(getPhoneFax, setPhoneFax,
+                       new AccountAccessorPair(&SugarAccount::phoneFax, &SugarAccount::setPhoneFax,
                                         i18nc("@item:intable", "Fax")));
     mAccessors->insert(QLatin1String("billing_address_street"),
-                       new AccessorPair(getBillingAddressStreet, setBillingAddressStreet, QString()));
+                       new AccountAccessorPair(&SugarAccount::billingAddressStreet, &SugarAccount::setBillingAddressStreet, QString()));
     mAccessors->insert(QLatin1String("billing_address_city"),
-                       new AccessorPair(getBillingAddressCity, setBillingAddressCity, QString()));
+                       new AccountAccessorPair(&SugarAccount::billingAddressCity, &SugarAccount::setBillingAddressCity, QString()));
     mAccessors->insert(QLatin1String("billing_address_state"),
-                       new AccessorPair(getBillingAddressState, setBillingAddressState, QString()));
+                       new AccountAccessorPair(&SugarAccount::billingAddressState, &SugarAccount::setBillingAddressState, QString()));
     mAccessors->insert(QLatin1String("billing_address_postalcode"),
-                       new AccessorPair(getBillingAddressPostalcode, setBillingAddressPostalcode, QString()));
+                       new AccountAccessorPair(&SugarAccount::billingAddressPostalcode, &SugarAccount::setBillingAddressPostalcode, QString()));
     mAccessors->insert(QLatin1String("billing_address_country"),
-                       new AccessorPair(getBillingAddressCountry, setBillingAddressCountry, QString()));
+                       new AccountAccessorPair(&SugarAccount::billingAddressCountry, &SugarAccount::setBillingAddressCountry, QString()));
     mAccessors->insert(QLatin1String("rating"),
-                       new AccessorPair(getRating, setRating,
+                       new AccountAccessorPair(&SugarAccount::rating, &SugarAccount::setRating,
                                         i18nc("@item:intable", "Rating")));
     mAccessors->insert(QLatin1String("phone_office"),
-                       new AccessorPair(getPhoneOffice, setPhoneOffice,
+                       new AccountAccessorPair(&SugarAccount::phoneOffice, &SugarAccount::setPhoneOffice,
                                         i18nc("@item:intable", "Phone (Office)")));
     mAccessors->insert(QLatin1String("phone_alternate"),
-                       new AccessorPair(getPhoneAlternate, setPhoneAlternate,
+                       new AccountAccessorPair(&SugarAccount::phoneAlternate, &SugarAccount::setPhoneAlternate,
                                         i18nc("@item:intable", "Phone (Other)")));
     mAccessors->insert(QLatin1String("website"),
-                       new AccessorPair(getWebsite, setWebsite,
+                       new AccountAccessorPair(&SugarAccount::website, &SugarAccount::setWebsite,
                                         i18nc("@item:intable", "Website")));
     mAccessors->insert(QLatin1String("ownership"),
-                       new AccessorPair(getOwnership, setOwnership,
+                       new AccountAccessorPair(&SugarAccount::ownership, &SugarAccount::setOwnership,
                                         i18nc("@item:intable", "Ownership")));
     mAccessors->insert(QLatin1String("employees"),
-                       new AccessorPair(getEmployees, setEmployees,
+                       new AccountAccessorPair(&SugarAccount::employees, &SugarAccount::setEmployees,
                                         i18nc("@item:intable", "Employees")));
     mAccessors->insert(QLatin1String("ticker_symbol"),
-                       new AccessorPair(getTickerSymbol, setTickerSymbol,
+                       new AccountAccessorPair(&SugarAccount::tickerSymbol, &SugarAccount::setTickerSymbol,
                                         i18nc("@item:intable", "Ticker Symbol")));
     mAccessors->insert(QLatin1String("shipping_address_street"),
-                       new AccessorPair(getShippingAddressStreet, setShippingAddressStreet, QString()));
+                       new AccountAccessorPair(&SugarAccount::shippingAddressStreet, &SugarAccount::setShippingAddressStreet, QString()));
     mAccessors->insert(QLatin1String("shipping_address_city"),
-                       new AccessorPair(getShippingAddressCity, setShippingAddressCity, QString()));
+                       new AccountAccessorPair(&SugarAccount::shippingAddressCity, &SugarAccount::setShippingAddressCity, QString()));
     mAccessors->insert(QLatin1String("shipping_address_state"),
-                       new AccessorPair(getShippingAddressState, setShippingAddressState, QString()));
+                       new AccountAccessorPair(&SugarAccount::shippingAddressState, &SugarAccount::setShippingAddressState, QString()));
     mAccessors->insert(QLatin1String("shipping_address_postalcode"),
-                       new AccessorPair(getShippingAddressPostalcode, setShippingAddressPostalcode, QString()));
+                       new AccountAccessorPair(&SugarAccount::shippingAddressPostalcode, &SugarAccount::setShippingAddressPostalcode, QString()));
     mAccessors->insert(QLatin1String("shipping_address_country"),
-                       new AccessorPair(getShippingAddressCountry, setShippingAddressCountry, QString()));
+                       new AccountAccessorPair(&SugarAccount::shippingAddressCountry, &SugarAccount::setShippingAddressCountry, QString()));
     mAccessors->insert(QLatin1String("email1"),
-                       new AccessorPair(getEmail1, setEmail1,
+                       new AccountAccessorPair(&SugarAccount::email1, &SugarAccount::setEmail1,
                                         i18nc("@item:intable", "Primary Email")));
     mAccessors->insert(QLatin1String("parent_id"),
-                       new AccessorPair(getParentId, setParentId, QString()));
+                       new AccountAccessorPair(&SugarAccount::parentId, &SugarAccount::setParentId, QString()));
     mAccessors->insert(QLatin1String("parent_name"),
-                       new AccessorPair(getParentName, setParentName,
+                       new AccountAccessorPair(&SugarAccount::parentName, &SugarAccount::setParentName,
                                         i18nc("@item:intable", "Member Of")));
     mAccessors->insert(QLatin1String("sic_code"),
-                       new AccessorPair(getSicCode, setSicCode,
+                       new AccountAccessorPair(&SugarAccount::sicCode, &SugarAccount::setSicCode,
                                         i18nc("@item:intable", "SIC Code")));
     mAccessors->insert(QLatin1String("campaign_id"),
-                       new AccessorPair(getCampaignId, setCampaignId, QString()));
+                       new AccountAccessorPair(&SugarAccount::campaignId, &SugarAccount::setCampaignId, QString()));
     mAccessors->insert(QLatin1String("campaign_name"),
-                       new AccessorPair(getCampaignName, setCampaignName,
+                       new AccountAccessorPair(&SugarAccount::campaignName, &SugarAccount::setCampaignName,
                                         i18nc("@item:intable", "Campaign")));
 }
 
@@ -595,16 +210,17 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarAccount account = item.payload<SugarAccount>();
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    AccountAccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccountAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if ((*it)->getter == 0) {
+        if (it.key() == "id") {
             continue;
         }
+        const valueGetter getter = (*it)->getter;
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue(KDCRMUtils::encodeXML((*it)->getter(account)));
+        field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
         itemList << field;
     }
@@ -633,16 +249,16 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     SugarAccount account;
     account.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const AccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
+        const AccountAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
         if (accessIt == mAccessors->constEnd()) {
             // no accessor for field
             continue;
         }
 
-        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), account);
+        (account.*(accessIt.value()->setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarAccount>(account);
-    item.setRemoteRevision(getDateModified(account));
+    item.setRemoteRevision(account.dateModified());
 
     return item;
 }
@@ -657,7 +273,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(getDateModified(rightAccount));
+    const QString modifiedOn = formatDate(rightAccount.dateModified());
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Account"));
     reporter->setRightPropertyValueTitle(
@@ -667,16 +283,17 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenBillingAddress = false;
     bool seenShippingAddress = false;
 
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    AccountAccessorHash::const_iterator it    = mAccessors->constBegin();
+    AccountAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if ((*it)->getter == 0) {
+        if (it.key() == "id") {
             continue;
         }
 
-        QString leftValue = (*it)->getter(leftAccount);
-        QString rightValue = (*it)->getter(rightAccount);
+        const valueGetter getter = (*it)->getter;
+        QString leftValue = (leftAccount.*getter)();
+        QString rightValue = (rightAccount.*getter)();
 
         QString diffName = (*it)->diffName;
         if (diffName.isEmpty()) {
@@ -687,18 +304,18 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     diffName = i18nc("@item:intable", "Billing Address");
 
                     KABC::Address leftAddress;
-                    leftAddress.setStreet(getBillingAddressStreet(leftAccount));
-                    leftAddress.setLocality(getBillingAddressCity(leftAccount));
-                    leftAddress.setRegion(getBillingAddressState(leftAccount));
-                    leftAddress.setCountry(getBillingAddressCountry(leftAccount));
-                    leftAddress.setPostalCode(getBillingAddressPostalcode(leftAccount));
+                    leftAddress.setStreet(leftAccount.billingAddressStreet());
+                    leftAddress.setLocality(leftAccount.billingAddressCity());
+                    leftAddress.setRegion(leftAccount.billingAddressState());
+                    leftAddress.setCountry(leftAccount.billingAddressCountry());
+                    leftAddress.setPostalCode(leftAccount.billingAddressPostalcode());
 
                     KABC::Address rightAddress;
-                    rightAddress.setStreet(getBillingAddressStreet(rightAccount));
-                    rightAddress.setLocality(getBillingAddressCity(rightAccount));
-                    rightAddress.setRegion(getBillingAddressState(rightAccount));
-                    rightAddress.setCountry(getBillingAddressCountry(rightAccount));
-                    rightAddress.setPostalCode(getBillingAddressPostalcode(rightAccount));
+                    rightAddress.setStreet(rightAccount.billingAddressStreet());
+                    rightAddress.setLocality(rightAccount.billingAddressCity());
+                    rightAddress.setRegion(rightAccount.billingAddressState());
+                    rightAddress.setCountry(rightAccount.billingAddressCountry());
+                    rightAddress.setPostalCode(rightAccount.billingAddressPostalcode());
 
                     leftValue = leftAddress.formattedAddress();
                     rightValue = rightAddress.formattedAddress();
@@ -712,18 +329,18 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     diffName = i18nc("@item:intable", "Shipping Address");
 
                     KABC::Address leftAddress(KABC::Address::Parcel);
-                    leftAddress.setStreet(getShippingAddressStreet(leftAccount));
-                    leftAddress.setLocality(getShippingAddressCity(leftAccount));
-                    leftAddress.setRegion(getShippingAddressState(leftAccount));
-                    leftAddress.setCountry(getShippingAddressCountry(leftAccount));
-                    leftAddress.setPostalCode(getShippingAddressPostalcode(leftAccount));
+                    leftAddress.setStreet(leftAccount.shippingAddressStreet());
+                    leftAddress.setLocality(leftAccount.shippingAddressCity());
+                    leftAddress.setRegion(leftAccount.shippingAddressState());
+                    leftAddress.setCountry(leftAccount.shippingAddressCountry());
+                    leftAddress.setPostalCode(leftAccount.shippingAddressPostalcode());
 
                     KABC::Address rightAddress(KABC::Address::Parcel);
-                    rightAddress.setStreet(getShippingAddressStreet(rightAccount));
-                    rightAddress.setLocality(getShippingAddressCity(rightAccount));
-                    rightAddress.setRegion(getShippingAddressState(rightAccount));
-                    rightAddress.setCountry(getShippingAddressCountry(rightAccount));
-                    rightAddress.setPostalCode(getShippingAddressPostalcode(rightAccount));
+                    rightAddress.setStreet(rightAccount.shippingAddressStreet());
+                    rightAddress.setLocality(rightAccount.shippingAddressCity());
+                    rightAddress.setRegion(rightAccount.shippingAddressState());
+                    rightAddress.setCountry(rightAccount.shippingAddressCountry());
+                    rightAddress.setPostalCode(rightAccount.shippingAddressPostalcode());
 
                     leftValue = leftAddress.formattedAddress();
                     rightValue = rightAddress.formattedAddress();

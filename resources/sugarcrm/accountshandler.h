@@ -25,7 +25,7 @@
 
 #include "modulehandler.h"
 
-class AccessorPair;
+class AccountAccessorPair;
 
 template <typename U, typename V> class QHash;
 
@@ -51,8 +51,8 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    typedef QHash<QString, AccessorPair *> AccessorHash;
-    AccessorHash *mAccessors;
+    typedef QHash<QString, AccountAccessorPair *> AccountAccessorHash;
+    AccountAccessorHash *mAccessors;
 };
 
 #endif /* ACCOUNTSHANDLER_H */
