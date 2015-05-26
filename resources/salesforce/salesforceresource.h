@@ -27,7 +27,7 @@
 
 #include <QStringList>
 
-class ModuleHandler;
+class SalesforceModuleHandler;
 class KDSoapMessage;
 class SforceService;
 
@@ -65,7 +65,7 @@ protected:
     Akonadi::Item mPendingItem;
 
     QStringList mAvailableModules;
-    typedef QHash<QString, ModuleHandler *> ModuleHandlerHash;
+    typedef QHash<QString, SalesforceModuleHandler *> ModuleHandlerHash;
     ModuleHandlerHash *mModuleHandlers;
 
 protected:

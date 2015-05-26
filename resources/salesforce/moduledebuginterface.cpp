@@ -22,7 +22,7 @@
 
 #include "moduledebuginterface.h"
 
-#include "modulehandler.h"
+#include "salesforcemodulehandler.h"
 #include "salesforceresource.h"
 #include "salesforcesoap.h"
 
@@ -39,7 +39,7 @@ ModuleDebugInterface::~ModuleDebugInterface()
 
 QStringList ModuleDebugInterface::availableFields() const
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
+    SalesforceModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
     if (handler != 0) {
         return handler->availableFields();
     }
@@ -49,7 +49,7 @@ QStringList ModuleDebugInterface::availableFields() const
 
 QStringList ModuleDebugInterface::supportedFields() const
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
+    SalesforceModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
     if (handler != 0) {
         return handler->supportedFields();
     }

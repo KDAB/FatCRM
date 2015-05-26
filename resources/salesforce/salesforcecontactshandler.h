@@ -23,14 +23,14 @@
 #ifndef SALESFORCE_CONTACTSHANDLER_H
 #define SALESFORCE_CONTACTSHANDLER_H
 
-#include "modulehandler.h"
+#include "salesforcemodulehandler.h"
 
 class ContactAccessorPair;
 
 template <typename U, typename V> class QHash;
 
 // Salesforce Contact Handler
-class SalesforceContactsHandler : public ModuleHandler
+class SalesforceContactsHandler : public SalesforceModuleHandler
 {
 public:
     SalesforceContactsHandler();

@@ -20,30 +20,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "modulehandler.h"
+#include "salesforcemodulehandler.h"
 
 #include "salesforcesoap.h"
 
-ModuleHandler::ModuleHandler(const QString &moduleName)
+SalesforceModuleHandler::SalesforceModuleHandler(const QString &moduleName)
     : mModuleName(moduleName)
 {
 }
 
-ModuleHandler::~ModuleHandler()
+SalesforceModuleHandler::~SalesforceModuleHandler()
 {
 }
 
-QString ModuleHandler::moduleName() const
+QString SalesforceModuleHandler::moduleName() const
 {
     return mModuleName;
 }
 
-QStringList ModuleHandler::availableFields() const
+QStringList SalesforceModuleHandler::availableFields() const
 {
     return mAvailableFields;
 }
 
-void ModuleHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
+void SalesforceModuleHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
 {
     mAvailableFields.clear();
 

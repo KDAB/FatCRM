@@ -22,7 +22,7 @@
 
 #include "resourcedebuginterface.h"
 
-#include "modulehandler.h"
+#include "salesforcemodulehandler.h"
 #include "salesforceresource.h"
 
 ResourceDebugInterface::ResourceDebugInterface(SalesforceResource *resource)

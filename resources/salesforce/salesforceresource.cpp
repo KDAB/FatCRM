@@ -729,7 +729,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
             collection.setParentCollection(mTopLevelCollection);
             collections << collection;
         } else {
-            ModuleHandler *handler = 0;
+            SalesforceModuleHandler *handler = 0;
             if (module == QLatin1String("Contact")) {
                 handler = new SalesforceContactsHandler;
                 unknownModules << module;

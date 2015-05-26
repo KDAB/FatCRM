@@ -138,7 +138,7 @@ public:
 };
 
 SalesforceContactsHandler::SalesforceContactsHandler()
-    : ModuleHandler(QLatin1String("Contact")),
+    : SalesforceModuleHandler(QLatin1String("Contact")),
       mAccessors(new ContactAccessorHash)
 {
     // interestingly, if we don't specifically request Id in queries, the resulting
@@ -169,7 +169,7 @@ QStringList SalesforceContactsHandler::supportedFields() const
 
 void SalesforceContactsHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
 {
-    ModuleHandler::setDescriptionResult(description);
+    SalesforceModuleHandler::setDescriptionResult(description);
 
     const QSet<QString> fields = availableFields().toSet();
 

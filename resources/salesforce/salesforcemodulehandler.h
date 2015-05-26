@@ -37,12 +37,12 @@ class TNS__DescribeSObjectResult;
 class TNS__QueryLocator;
 class TNS__QueryResult;
 
-class ModuleHandler
+class SalesforceModuleHandler
 {
 public:
-    explicit ModuleHandler(const QString &moduleName);
+    explicit SalesforceModuleHandler(const QString &moduleName);
 
-    virtual ~ModuleHandler();
+    virtual ~SalesforceModuleHandler();
 
     QString moduleName() const;
 
