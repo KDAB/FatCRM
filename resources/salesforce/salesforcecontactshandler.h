@@ -20,21 +20,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONTACTSHANDLER_H
-#define CONTACTSHANDLER_H
+#ifndef SALESFORCE_CONTACTSHANDLER_H
+#define SALESFORCE_CONTACTSHANDLER_H
 
 #include "modulehandler.h"
 
-class AccessorPair;
+class ContactAccessorPair;
 
 template <typename U, typename V> class QHash;
 
-class ContactsHandler : public ModuleHandler
+// Salesforce Contact Handler
+class SalesforceContactsHandler : public ModuleHandler
 {
 public:
-    ContactsHandler();
+    SalesforceContactsHandler();
 
-    ~ContactsHandler();
+    ~SalesforceContactsHandler();
 
     QStringList supportedFields() const;
 
@@ -49,8 +50,8 @@ public:
     virtual Akonadi::Item::List itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
             const Akonadi::Collection &parentCollection);
 private:
-    typedef QHash<QString, AccessorPair> AccessorHash;
-    AccessorHash *mAccessors;
+    typedef QHash<QString, ContactAccessorPair> ContactAccessorHash;
+    ContactAccessorHash *mAccessors;
 };
 
 #endif

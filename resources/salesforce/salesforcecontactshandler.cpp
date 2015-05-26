@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "contactshandler.h"
+#include "salesforcecontactshandler.h"
 
 #include "salesforcesoap.h"
 
@@ -125,10 +125,10 @@ static void setMobilePhone(const QString &value, KABC::Addressee &addressee)
     addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Cell));
 }
 
-class AccessorPair
+class ContactAccessorPair
 {
 public:
-    AccessorPair(valueGetter get, valueSetter set)
+    ContactAccessorPair(valueGetter get, valueSetter set)
         : isAvailable(false), getter(get), setter(set) {}
 
 public:
@@ -137,44 +137,44 @@ public:
     valueSetter setter;
 };
 
-ContactsHandler::ContactsHandler()
+SalesforceContactsHandler::SalesforceContactsHandler()
     : ModuleHandler(QLatin1String("Contact")),
-      mAccessors(new AccessorHash)
+      mAccessors(new ContactAccessorHash)
 {
     // interestingly, if we don't specifically request Id in queries, the resulting
     // XML does contain empty Id elements. If we request Id, we get it twice, but that's better
     // than never
-    mAccessors->insert(QLatin1String("Id"), AccessorPair(getId, setId));
+    mAccessors->insert(QLatin1String("Id"), ContactAccessorPair(getId, setId));
 
-    mAccessors->insert(QLatin1String("FirstName"), AccessorPair(getFirstName, setFirstName));
-    mAccessors->insert(QLatin1String("LastName"), AccessorPair(getLastName, setLastName));
+    mAccessors->insert(QLatin1String("FirstName"), ContactAccessorPair(getFirstName, setFirstName));
+    mAccessors->insert(QLatin1String("LastName"), ContactAccessorPair(getLastName, setLastName));
 
-    mAccessors->insert(QLatin1String("Email"), AccessorPair(getEmail1, setEmail1));
-    mAccessors->insert(QLatin1String("Title"), AccessorPair(getTitle, setTitle));
-    mAccessors->insert(QLatin1String("Department"), AccessorPair(getDepartment, setDepartment));
-    mAccessors->insert(QLatin1String("HomePhone"), AccessorPair(getHomePhone, setHomePhone));
-    mAccessors->insert(QLatin1String("Phone"), AccessorPair(getWorkPhone, setWorkPhone));
-    mAccessors->insert(QLatin1String("MobilePhone"), AccessorPair(getMobilePhone, setMobilePhone));
+    mAccessors->insert(QLatin1String("Email"), ContactAccessorPair(getEmail1, setEmail1));
+    mAccessors->insert(QLatin1String("Title"), ContactAccessorPair(getTitle, setTitle));
+    mAccessors->insert(QLatin1String("Department"), ContactAccessorPair(getDepartment, setDepartment));
+    mAccessors->insert(QLatin1String("HomePhone"), ContactAccessorPair(getHomePhone, setHomePhone));
+    mAccessors->insert(QLatin1String("Phone"), ContactAccessorPair(getWorkPhone, setWorkPhone));
+    mAccessors->insert(QLatin1String("MobilePhone"), ContactAccessorPair(getMobilePhone, setMobilePhone));
 }
 
-ContactsHandler::~ContactsHandler()
+SalesforceContactsHandler::~SalesforceContactsHandler()
 {
     delete mAccessors;
 }
 
-QStringList ContactsHandler::supportedFields() const
+QStringList SalesforceContactsHandler::supportedFields() const
 {
     return mAccessors->keys();
 }
 
-void ContactsHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
+void SalesforceContactsHandler::setDescriptionResult(const TNS__DescribeSObjectResult &description)
 {
     ModuleHandler::setDescriptionResult(description);
 
     const QSet<QString> fields = availableFields().toSet();
 
-    AccessorHash::iterator it    = mAccessors->begin();
-    AccessorHash::iterator endIt = mAccessors->end();
+    ContactAccessorHash::iterator it    = mAccessors->begin();
+    ContactAccessorHash::iterator endIt = mAccessors->end();
     for (; it != endIt; ++it) {
         it->isAvailable = fields.contains(it.key());
 
@@ -185,7 +185,7 @@ void ContactsHandler::setDescriptionResult(const TNS__DescribeSObjectResult &des
     }
 }
 
-Akonadi::Collection ContactsHandler::collection() const
+Akonadi::Collection SalesforceContactsHandler::collection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleName());
@@ -198,7 +198,7 @@ Akonadi::Collection ContactsHandler::collection() const
     return contactCollection;
 }
 
-void ContactsHandler::listEntries(const TNS__QueryLocator &locator, SforceService *soap)
+void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, SforceService *soap)
 {
     static QString queryString = QLatin1String("Select ") +
                                  QStringList(mAccessors->keys()).join(QLatin1String(", ")) +
@@ -215,7 +215,7 @@ void ContactsHandler::listEntries(const TNS__QueryLocator &locator, SforceServic
     }
 }
 
-bool ContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
+bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
 {
     if (!item.hasPayload<KABC::Addressee>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
@@ -235,8 +235,8 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
 
     QList<KDSoapValue> valueList;
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
+    ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // Id is already part of the object, we have the accessor for the query
         if (it.key() == QLatin1String("Id")) {
@@ -260,7 +260,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
     return true;
 }
 
-Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
+Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
         const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item::List items;
@@ -284,7 +284,7 @@ Akonadi::Item::List ContactsHandler::itemsFromListEntriesResponse(const TNS__Que
         QList<KDSoapValue>::const_iterator it    = valueList.constBegin();
         QList<KDSoapValue>::const_iterator endIt = valueList.constEnd();
         for (; it != endIt; ++it) {
-            AccessorHash::const_iterator accessorIt = mAccessors->constFind(it->name());
+            ContactAccessorHash::const_iterator accessorIt = mAccessors->constFind(it->name());
             if (accessorIt != mAccessors->constEnd()) {
                 if (accessorIt->isAvailable) {
                     accessorIt->setter(it->value().value<QString>(), addressee);

@@ -22,7 +22,7 @@
 
 #include "salesforceresource.h"
 
-#include "contactshandler.h"
+#include "salesforcecontactshandler.h"
 #include "moduledebuginterface.h"
 #include "resourcedebuginterface.h"
 #include "settings.h"
@@ -382,8 +382,8 @@ void SalesforceResource::retrieveCollections()
         Collection::List collections;
         collections << topLevelCollection;
 
-        // create just ContactsHandler
-        ModuleHandler *handler = new ContactsHandler;
+        // create just SalesforceContactsHandler
+        ModuleHandler *handler = new SalesforceContactsHandler;
         mModuleHandlers->insert(handler->moduleName(), handler);
 
         Collection collection = handler->collection();
@@ -731,7 +731,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
         } else {
             ModuleHandler *handler = 0;
             if (module == QLatin1String("Contact")) {
-                handler = new ContactsHandler;
+                handler = new SalesforceContactsHandler;
                 unknownModules << module;
             } else {
                 //kDebug() << "No module handler for" << module;
