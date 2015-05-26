@@ -23,6 +23,7 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 	add_definitions(-DQ_DECL_OVERRIDE=override)
 	add_definitions(-DQ_DECL_FINAL=final)
 	add_definitions(-DQ_NULLPTR=nullptr)
+	add_definitions(-Wno-deprecated-declarations) # akonadi/item.h uses auto_ptr
 elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 	# using GCC >= 4.8
 	assert_min_ver("4.8")

@@ -17,10 +17,9 @@ static QString endPointFromHostString(const QString &host)
 
 class SugarSession::Private
 {
-    SugarSession *const q;
 public:
-    explicit Private(SugarSession *parent)
-        : q(parent), mSoap(0)
+    explicit Private()
+        : mSoap(0)
     {
     }
 
@@ -33,7 +32,7 @@ public:
 };
 
 SugarSession::SugarSession(QObject *parent)
-    : QObject(parent), d(new Private(this))
+    : QObject(parent), d(new Private())
 {
 }
 

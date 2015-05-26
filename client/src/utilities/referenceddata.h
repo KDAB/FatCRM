@@ -5,7 +5,7 @@
 
 #include <QObject>
 
-template <typename K, typename V> class QPair;
+template <typename K, typename V> struct QPair;
 template <typename K, typename V> class QMap;
 
 /**

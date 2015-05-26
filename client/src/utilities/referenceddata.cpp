@@ -29,10 +29,8 @@ public:
 
 class ReferencedData::Private
 {
-    ReferencedData *const q;
-
 public:
-    explicit Private(ReferencedData *parent) : q(parent)
+    explicit Private()
     {
     }
 
@@ -145,7 +143,7 @@ int ReferencedData::count() const
 }
 
 ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
-    : QObject(parent), d(new Private(this))
+    : QObject(parent), d(new Private())
 {
     d->mType = type;
 }
