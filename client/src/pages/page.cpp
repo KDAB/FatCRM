@@ -452,16 +452,6 @@ bool Page::askSave()
     return ret == QMessageBox::Save;
 }
 
-void Page::slotSetItem()
-{
-    mCurrentIndex  = treeView()->selectionModel()->currentIndex();
-    if (mCurrentIndex.isValid()) {
-        slotCurrentItemChanged(mCurrentIndex);
-    } else {
-        slotNewClicked();
-    }
-}
-
 void Page::slotResetSearch()
 {
     mUi.searchLE->clear();

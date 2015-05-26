@@ -179,7 +179,6 @@ void SugarClient::setupActions()
 
     Q_FOREACH (const Page *page, mPages) {
         connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
-        connect(this, SIGNAL(displayDetails()), page, SLOT(slotSetItem()));
         connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
     }

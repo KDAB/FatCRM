@@ -59,7 +59,6 @@ public:
 
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);
-    void displayDetails();
 
 protected:
     void closeEvent(QCloseEvent *event);

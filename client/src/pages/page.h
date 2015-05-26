@@ -101,7 +101,6 @@ private Q_SLOTS:
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int, int);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
-    void slotSetItem();
     void slotResetSearch();
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection);
