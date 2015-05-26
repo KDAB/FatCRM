@@ -44,7 +44,7 @@ QStringList ModuleDebugInterface::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {
         kDebug() << "Available Fields for " << mModuleName
-                 << "not fetch yet, getting them now";
+                 << "not fetched yet, getting them now";
 
         mAvailableFields = mResource->mDebugInterface->availableFields(mModuleName);
     }
