@@ -80,6 +80,8 @@ void Details::doConnects()
         connect(cb, SIGNAL(toggled(bool)), this, SIGNAL(modified()));
     Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>())
         connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
+    Q_FOREACH (QPlainTextEdit *te, findChildren<QPlainTextEdit *>())
+        connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>())
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
@@ -104,6 +106,9 @@ void Details::clear()
         cb->setChecked(false);
     }
     Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>()) {
+        te->clear();
+    }
+    Q_FOREACH (QPlainTextEdit *te, findChildren<QPlainTextEdit *>()) {
         te->clear();
     }
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
@@ -173,6 +178,13 @@ void Details::setData(const QMap<QString, QString> &data,
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *w, textEdits) {
+        key = w->objectName();
+        if (!data.contains(key)) continue;
+        w->setPlainText(data.value(key));
+    }
+
+    QList<QPlainTextEdit *> plainTextEdits = findChildren<QPlainTextEdit *>();
+    Q_FOREACH (QPlainTextEdit *w, plainTextEdits) {
         key = w->objectName();
         if (!data.contains(key)) continue;
         w->setPlainText(data.value(key));
@@ -271,6 +283,13 @@ const QMap<QString, QString> Details::getData() const
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = w->toPlainText();
+    }
+
+    QList<QPlainTextEdit *> plainTextEdits = findChildren<QPlainTextEdit *>();
+    Q_FOREACH (QPlainTextEdit *w, plainTextEdits) {
+        key = w->objectName();
+        if (!mKeys.contains(key)) continue;
+        currentData.insert(key, w->toPlainText());
     }
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
