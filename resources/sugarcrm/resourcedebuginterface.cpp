@@ -60,29 +60,7 @@ QStringList ResourceDebugInterface::supportedModules() const
 
 QStringList ResourceDebugInterface::availableFields(const QString &module) const
 {
-    SugarSession *session = mResource->mSession;
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
-    const QString sessionId = session->sessionId();
-    if (sessionId.isEmpty()) {
-        qWarning() << "No session! Need to login first.";
-    }
-
-    const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
-
-    QStringList availableFields;
-    const KDSoapGenerated::TNS__Error_value error = response.error();
-    if (error.number().isEmpty() || error.number() == QLatin1String("0")) {
-        const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
-        Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
-            availableFields << field.name();
-        }
-        kDebug() << "Got" << availableFields << "fields";
-    } else {
-        kDebug() << "Got error: number=" << error.number()
-                 << "name=" << error.name()
-                 << "description=" << error.description();
-    }
-    return availableFields;
+    return ModuleHandler::listAvailableFields(mResource->mSession, module);
 }
 
 int ResourceDebugInterface::getCount(const QString &module) const

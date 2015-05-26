@@ -25,6 +25,7 @@
 
 #include <akonadi/differencesalgorithminterface.h>
 #include <akonadi/item.h>
+#include <QStringList>
 
 namespace Akonadi
 {
@@ -60,6 +61,9 @@ public:
     void getEntriesCount(const ListEntriesScope &scope);
     void listEntries(const ListEntriesScope &scope);
 
+    QStringList availableFields() const;
+    static QStringList listAvailableFields(SugarSession *session, const QString &module);
+
     virtual bool setEntry(const Akonadi::Item &item) = 0;
 
     bool getEntry(const Akonadi::Item &item);
@@ -94,6 +98,10 @@ protected:
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;
+
+private:
+    mutable QStringList mAvailableFields;
+
 };
 
 #endif

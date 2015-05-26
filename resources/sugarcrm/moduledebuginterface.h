@@ -46,8 +46,6 @@ public Q_SLOTS:
 private:
     const QString mModuleName;
     SugarCRMResource *const mResource;
-
-    mutable QStringList mAvailableFields;
 };
 
 #endif

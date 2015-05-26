@@ -86,6 +86,45 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }
 
+QStringList ModuleHandler::availableFields() const
+{
+    if (mAvailableFields.isEmpty()) {
+        kDebug() << "Available Fields for " << mModuleName
+                 << "not fetched yet, getting them now";
+
+        mAvailableFields = listAvailableFields(mSession, mModuleName);
+    }
+
+    return mAvailableFields;
+}
+
+// static (also used by debug handler for modules without a handler)
+QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QString &module)
+{
+    KDSoapGenerated::Sugarsoap *soap = session->soap();
+    const QString sessionId = session->sessionId();
+    if (sessionId.isEmpty()) {
+        qWarning() << "No session! Need to login first.";
+    }
+
+    const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
+
+    QStringList availableFields;
+    const KDSoapGenerated::TNS__Error_value error = response.error();
+    if (error.number().isEmpty() || error.number() == QLatin1String("0")) {
+        const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
+        Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
+            availableFields << field.name();
+        }
+        kDebug() << "Got" << availableFields << "fields";
+    } else {
+        kDebug() << "Got error: number=" << error.number()
+                 << "name=" << error.name()
+                 << "description=" << error.description();
+    }
+    return availableFields;
+}
+
 bool ModuleHandler::getEntry(const Akonadi::Item &item)
 {
     if (item.remoteId().isEmpty()) {

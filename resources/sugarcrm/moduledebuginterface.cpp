@@ -22,7 +22,6 @@
 
 #include "moduledebuginterface.h"
 
-#include "resourcedebuginterface.h"
 #include "modulehandler.h"
 #include "sugarcrmresource.h"
 #include "sugarsession.h"
@@ -42,19 +41,12 @@ ModuleDebugInterface::~ModuleDebugInterface()
 
 QStringList ModuleDebugInterface::availableFields() const
 {
-    if (mAvailableFields.isEmpty()) {
-        kDebug() << "Available Fields for " << mModuleName
-                 << "not fetched yet, getting them now";
-
-        mAvailableFields = mResource->mDebugInterface->availableFields(mModuleName);
-    }
-
-    return mAvailableFields;
+    return ModuleHandler::listAvailableFields(mResource->mSession, mModuleName);
 }
 
 QStringList ModuleDebugInterface::supportedFields() const
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
+    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
     if (handler != 0) {
         return handler->supportedFields();
     }
@@ -64,7 +56,7 @@ QStringList ModuleDebugInterface::supportedFields() const
 
 QString ModuleDebugInterface::lastestTimestamp() const
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
+    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
     if (handler != 0) {
         return handler->latestTimestamp();
     }
@@ -74,7 +66,7 @@ QString ModuleDebugInterface::lastestTimestamp() const
 
 void ModuleDebugInterface::resetLatestTimestamp()
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
+    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
     if (handler != 0) {
         handler->resetLatestTimestamp();
     }
