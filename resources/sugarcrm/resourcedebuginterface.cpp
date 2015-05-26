@@ -63,6 +63,9 @@ QStringList ResourceDebugInterface::availableFields(const QString &module) const
     SugarSession *session = mResource->mSession;
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
+    if (sessionId.isEmpty()) {
+        qWarning() << "No session! Need to login first.";
+    }
 
     const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
 
@@ -87,6 +90,9 @@ int ResourceDebugInterface::getCount(const QString &module) const
     SugarSession *session = mResource->mSession;
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
+    if (sessionId.isEmpty()) {
+        qWarning() << "No session! Need to login first.";
+    }
 
     // for notes and emails, use this:
     //const QString query = QString("parent_type=\"Opportunities\"");
