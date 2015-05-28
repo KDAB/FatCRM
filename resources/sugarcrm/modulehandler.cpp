@@ -81,7 +81,7 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     const int fetchDeleted = scope.deleted();
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(selectedFieldsForListing());
+    selectedFields.setItems(supportedFields());
 
     soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }

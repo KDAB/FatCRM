@@ -680,11 +680,6 @@ ContactsHandler::~ContactsHandler()
     delete mAccessors;
 }
 
-QStringList ContactsHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection ContactsHandler::handlerCollection() const
 {
     Akonadi::Collection contactCollection;
@@ -745,7 +740,7 @@ QString ContactsHandler::orderByForListing() const
     return QLatin1String("contacts.last_name");
 }
 
-QStringList ContactsHandler::selectedFieldsForListing() const
+QStringList ContactsHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

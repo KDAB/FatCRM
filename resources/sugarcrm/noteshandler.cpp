@@ -44,11 +44,6 @@ NotesHandler::~NotesHandler()
 {
 }
 
-QStringList NotesHandler::supportedFields() const
-{
-    return mAccessors.keys();
-}
-
 Akonadi::Collection NotesHandler::handlerCollection() const
 {
     Akonadi::Collection noteCollection;
@@ -72,7 +67,7 @@ QString NotesHandler::orderByForListing() const
     return QLatin1String("notes.name");
 }
 
-QStringList NotesHandler::selectedFieldsForListing() const
+QStringList NotesHandler::supportedFields() const
 {
     return mAccessors.keys();
 }

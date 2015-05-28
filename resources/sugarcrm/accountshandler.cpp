@@ -162,11 +162,6 @@ AccountsHandler::~AccountsHandler()
     delete mAccessors;
 }
 
-QStringList AccountsHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection AccountsHandler::handlerCollection() const
 {
     Akonadi::Collection accountCollection;
@@ -184,7 +179,7 @@ QString AccountsHandler::orderByForListing() const
     return QLatin1String("accounts.name");
 }
 
-QStringList AccountsHandler::selectedFieldsForListing() const
+QStringList AccountsHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

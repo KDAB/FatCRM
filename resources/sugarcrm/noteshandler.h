@@ -37,15 +37,13 @@ public:
 
     ~NotesHandler();
 
-    QStringList supportedFields() const;
-
     Akonadi::Collection handlerCollection() const;
 
     bool setEntry(const Akonadi::Item &item);
 
     QString queryStringForListing() const;
     QString orderByForListing() const;
-    QStringList selectedFieldsForListing() const;
+    QStringList supportedFields() const;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection);
 

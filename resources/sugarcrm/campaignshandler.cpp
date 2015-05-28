@@ -137,11 +137,6 @@ CampaignsHandler::~CampaignsHandler()
     delete mAccessors;
 }
 
-QStringList CampaignsHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection CampaignsHandler::handlerCollection() const
 {
     Akonadi::Collection campaignCollection;
@@ -160,7 +155,7 @@ QString CampaignsHandler::orderByForListing() const
     return QLatin1String("campaigns.name");
 }
 
-QStringList CampaignsHandler::selectedFieldsForListing() const
+QStringList CampaignsHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

@@ -212,11 +212,6 @@ LeadsHandler::~LeadsHandler()
     delete mAccessors;
 }
 
-QStringList LeadsHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection LeadsHandler::handlerCollection() const
 {
     Akonadi::Collection leadCollection;
@@ -234,7 +229,7 @@ QString LeadsHandler::orderByForListing() const
     return QLatin1String("leads.last_name");
 }
 
-QStringList LeadsHandler::selectedFieldsForListing() const
+QStringList LeadsHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

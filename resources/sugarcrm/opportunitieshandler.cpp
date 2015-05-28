@@ -137,11 +137,6 @@ OpportunitiesHandler::~OpportunitiesHandler()
     delete mAccessors;
 }
 
-QStringList OpportunitiesHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection OpportunitiesHandler::handlerCollection() const
 {
     Akonadi::Collection myCollection;
@@ -202,7 +197,7 @@ QString OpportunitiesHandler::orderByForListing() const
     return QLatin1String("opportunities.name");
 }
 
-QStringList OpportunitiesHandler::selectedFieldsForListing() const
+QStringList OpportunitiesHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

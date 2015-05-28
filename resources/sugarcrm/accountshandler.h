@@ -36,12 +36,10 @@ public:
 
     ~AccountsHandler();
 
-    QStringList supportedFields() const;
-
     Akonadi::Collection handlerCollection() const;
 
     QString orderByForListing() const;
-    QStringList selectedFieldsForListing() const;
+    QStringList supportedFields() const;
 
     bool setEntry(const Akonadi::Item &item);
 

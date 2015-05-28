@@ -54,8 +54,6 @@ public:
     QString latestTimestamp() const;
     void resetLatestTimestamp();
 
-    virtual QStringList supportedFields() const = 0;
-
     Akonadi::Collection collection() const;
 
     void getEntriesCount(const ListEntriesScope &scope);
@@ -75,7 +73,7 @@ public:
 
     virtual QString queryStringForListing() const { return QString(); }
     virtual QString orderByForListing() const = 0;
-    virtual QStringList selectedFieldsForListing() const = 0;
+    virtual QStringList supportedFields() const = 0;
 
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;

@@ -37,15 +37,13 @@ public:
 
     ~EmailsHandler();
 
-    QStringList supportedFields() const Q_DECL_OVERRIDE;
-
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
     bool setEntry(const Akonadi::Item &item);
 
     QString queryStringForListing() const Q_DECL_OVERRIDE;
     QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList selectedFieldsForListing() const Q_DECL_OVERRIDE;
+    QStringList supportedFields() const Q_DECL_OVERRIDE;
 
     virtual bool needsExtraInformation() const Q_DECL_OVERRIDE { return true; }
     virtual void getExtraInformation(Akonadi::Item::List &items) Q_DECL_OVERRIDE;

@@ -307,11 +307,6 @@ TasksHandler::~TasksHandler()
     delete mAccessors;
 }
 
-QStringList TasksHandler::supportedFields() const
-{
-    return mAccessors->keys();
-}
-
 Akonadi::Collection TasksHandler::handlerCollection() const
 {
     Akonadi::Collection taskCollection;
@@ -329,7 +324,7 @@ QString TasksHandler::orderByForListing() const
     return QLatin1String("tasks.id");
 }
 
-QStringList TasksHandler::selectedFieldsForListing() const
+QStringList TasksHandler::supportedFields() const
 {
     return mAccessors->keys();
 }

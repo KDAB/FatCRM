@@ -44,11 +44,6 @@ EmailsHandler::~EmailsHandler()
 {
 }
 
-QStringList EmailsHandler::supportedFields() const
-{
-    return mAccessors.keys();
-}
-
 Akonadi::Collection EmailsHandler::handlerCollection() const
 {
     Akonadi::Collection emailCollection;
@@ -72,7 +67,7 @@ QString EmailsHandler::orderByForListing() const
     return QLatin1String("emails.name");
 }
 
-QStringList EmailsHandler::selectedFieldsForListing() const
+QStringList EmailsHandler::supportedFields() const
 {
     return mAccessors.keys();
 }
