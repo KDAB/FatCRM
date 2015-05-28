@@ -65,6 +65,7 @@ public:
 
     bool showsDetails() const;
     void printReport();
+    void retrieveResourceUrl();
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);

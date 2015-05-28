@@ -355,6 +355,11 @@ void SugarClient::slotResourceOnline(const AgentInstance &resource, bool online)
             : QString("SugarCRM Client: %1 (offline)").arg(context);
         setWindowTitle(contextTitle);
         mUi.actionOfflineMode->setChecked(!online);
+        if (online) {
+            Q_FOREACH (Page *page, mPages) {
+                page->retrieveResourceUrl();
+            }
+        }
     }
 }
 
