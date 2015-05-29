@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>362</height>
+    <height>380</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -209,6 +209,36 @@
       <item row="7" column="1">
        <widget class="QLineEdit" name="email1"/>
       </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_28">
+        <property name="text">
+         <string>Visma ID:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string>Accounting:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLineEdit" name="visma_id_c"/>
+      </item>
+      <item row="10" column="1">
+       <widget class="QPlainTextEdit" name="accounting_c"/>
+      </item>
+      <item row="8" column="0">
+       <widget class="QLabel" name="label_30">
+        <property name="text">
+         <string>VAT ID:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="1">
+       <widget class="QLineEdit" name="vat_no_c"/>
+      </item>
      </layout>
     </widget>
    </item>
@@ -358,7 +388,7 @@
   <tabstop>sic_code</tabstop>
   <tabstop>annual_revenue</tabstop>
   <tabstop>email1</tabstop>
-  <tabstop>vat_id_c</tabstop>
+  <tabstop>vat_no_c</tabstop>
   <tabstop>visma_id_c</tabstop>
   <tabstop>accounting_c</tabstop>
   <tabstop>billing_address_street</tabstop>
