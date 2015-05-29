@@ -21,6 +21,7 @@
 */
 
 #include "sugarcampaign.h"
+#include "kdcrmfields.h"
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -543,15 +544,15 @@ void SugarCampaign::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
     d->mId = data.value("id");
     d->mName = data.value("name");
-    d->mDateEntered = data.value("dateEntered");
-    d->mDateModified = data.value("dateModified");
-    d->mModifiedUserId = data.value("modifiedUserId");
-    d->mModifiedByName = data.value("modifiedUserId");
-    d->mCreatedBy = data.value("createdBy");
-    d->mCreatedByName = data.value("createdByName");
-    d->mDeleted = data.value("deleted");
-    d->mAssignedUserId = data.value("assignedUserId");
-    d->mAssignedUserName = data.value("assignedUserName");
+    d->mDateEntered = data.value(KDCRMFields::dateEntered());
+    d->mDateModified = data.value(KDCRMFields::dateModified());
+    d->mModifiedUserId = data.value(KDCRMFields::modifiedUserId());
+    d->mModifiedByName = data.value(KDCRMFields::modifiedUserId());
+    d->mCreatedBy = data.value(KDCRMFields::createdBy());
+    d->mCreatedByName = data.value(KDCRMFields::createdByName());
+    d->mDeleted = data.value(KDCRMFields::deleted());
+    d->mAssignedUserId = data.value(KDCRMFields::assignedUserId());
+    d->mAssignedUserName = data.value(KDCRMFields::assignedUserName());
     d->mTrackerKey = data.value("trackerKey");
     d->mTrackerCount = data.value("trackerCount");
     d->mReferUrl = data.value("referUrl");
@@ -560,14 +561,14 @@ void SugarCampaign::setData(const QMap<QString, QString>& data)
     d->mEndDate = data.value("endDate");
     d->mStatus = data.value("status");
     d->mImpressions = data.value("impressions");
-    d->mCurrencyId = data.value("currencyId");
+    d->mCurrencyId = data.value(KDCRMFields::currencyId());
     d->mBudget = data.value("budget");
     d->mExpectedCost = data.value("expectedCost");
     d->mActualCost = data.value("actualCost");
     d->mExpectedRevenue = data.value("expectedRevenue");
-    d->mCampaignType = data.value("campaignType");
+    d->mCampaignType = data.value(KDCRMFields::campaignType());
     d->mObjective = data.value("objective");
-    d->mContent = data.value("content");
+    d->mContent = data.value(KDCRMFields::content());
     d->mFrequency = data.value("frequency");
 
 }
@@ -577,15 +578,15 @@ QMap<QString, QString> SugarCampaign::data()
     QMap<QString, QString> data;
     data["id"] = d->mId;
     data["name"] = d->mName;
-    data["dateEntered"] = d->mDateEntered;
-    data["dateModified"] = d->mDateModified;
-    data["modifiedUserId"] = d->mModifiedUserId;
+    data[KDCRMFields::dateEntered()] = d->mDateEntered;
+    data[KDCRMFields::dateModified()] = d->mDateModified;
+    data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
     data["modifiedUserName"] = d->mModifiedByName;
-    data["createdBy"] = d->mCreatedBy;
-    data["createdByName"] = d->mCreatedByName;
-    data["deleted"] = d->mDeleted;
-    data["assignedUserId"] = d->mAssignedUserId;
-    data["assignedUserName"] = d->mAssignedUserName;
+    data[KDCRMFields::createdBy()] = d->mCreatedBy;
+    data[KDCRMFields::createdByName()] = d->mCreatedByName;
+    data[KDCRMFields::deleted()] = d->mDeleted;
+    data[KDCRMFields::assignedUserId()] = d->mAssignedUserId;
+    data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
     data["trackerKey"] = d->mTrackerKey;
     data["trackerCount"] = d->mTrackerCount;
     data["referUrl"] = d->mReferUrl;
@@ -594,14 +595,14 @@ QMap<QString, QString> SugarCampaign::data()
     data["endDate"] = d->mEndDate;
     data["status"] = d->mStatus;
     data["impressions"] = d->mImpressions;
-    data["currencyId"] = d->mCurrencyId;
+    data[KDCRMFields::currencyId()] = d->mCurrencyId;
     data["budget"] = d->mBudget;
     data["expectedCost"] = d->mExpectedCost;
     data["actualCost"] = d->mActualCost;
     data["expectedRevenue"] = d->mExpectedRevenue;
-    data["campaignType"] = d->mCampaignType;
+    data[KDCRMFields::campaignType()] = d->mCampaignType;
     data["objective"] = d->mObjective;
-    data["content"] = d->mContent;
+    data[KDCRMFields::content()] = d->mContent;
     data["frequency"] = d->mFrequency;
     return data;
 }

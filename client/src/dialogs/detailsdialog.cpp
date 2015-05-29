@@ -28,6 +28,7 @@
 #include "clientsettings.h"
 
 #include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 #include <akonadi/collection.h>
 #include <akonadi/item.h>
@@ -75,12 +76,12 @@ void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
     mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
     // before it is displayed.
-    const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));
-    mUi.dateModified->setText(localTime);
+    const QString localTime = KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateModified()));
+    mUi.date_modified->setText(localTime);
 
     mUi.description->setPlainText((mDetails->type() != Campaign) ?
-                                  data.value("description") :
-                                  data.value("content"));
+                                  data.value(KDCRMFields::description()) :
+                                  data.value(KDCRMFields::content()));
 }
 
 // similar with detailswidget
@@ -88,8 +89,10 @@ QMap<QString, QString> DetailsDialog::Private::data() const
 {
     QMap<QString, QString> currentData = mDetails->getData();
 
-    currentData["description"] = mUi.description->toPlainText();
-    currentData["content"] = mUi.description->toPlainText();
+    currentData[KDCRMFields::description()] = mUi.description->toPlainText();
+    if (mDetails->type() == Campaign) {
+        currentData[KDCRMFields::content()] = mUi.description->toPlainText();
+    }
 
     return currentData;
 }

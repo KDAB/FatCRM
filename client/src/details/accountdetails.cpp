@@ -45,11 +45,11 @@ void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
 
-    ReferencedDataModel::setModelForCombo(mUi->parentName, AccountRef);
+    ReferencedDataModel::setModelForCombo(mUi->parent_name, AccountRef);
     mUi->industry->addItems(industryItems());
-    mUi->accountType->addItems(typeItems());
-    ReferencedDataModel::setModelForCombo(mUi->campaignName, CampaignRef);
-    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
+    mUi->account_type->addItems(typeItems());
+    ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
 }
 
 QStringList AccountDetails::typeItems() const

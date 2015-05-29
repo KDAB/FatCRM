@@ -13,6 +13,7 @@ include_directories(
 
 set(kdcrmdata_LIB_SRCS
     kdcrmutils.cpp
+    kdcrmfields.cpp
     sugaraccount.cpp
     sugaraccountio.cpp
     sugaropportunity.cpp

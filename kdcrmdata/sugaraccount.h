@@ -463,6 +463,10 @@ public:
      */
     QString campaignName() const;
 
+    // Unknown fields (missing in this code) and custom fields (added by Sugar configuration)
+    void setCustomField(const QString &name, const QString &value);
+    QMap<QString, QString> customFields() const;
+
     /**
       Convenience: Set the data for this account
      */
@@ -477,6 +481,26 @@ public:
        Return the Mime type
      */
     static QString mimeType();
+
+    typedef QString(SugarAccount::*valueGetter)() const;
+    typedef void (SugarAccount::*valueSetter)(const QString &);
+
+    class AccountAccessorPair
+    {
+    public:
+        AccountAccessorPair(valueGetter get, valueSetter set, const QString &name)
+            : getter(get), setter(set), diffName(name)
+        {}
+
+    public:
+        valueGetter getter;
+        valueSetter setter;
+        QString diffName;
+    };
+
+    typedef QHash<QString, AccountAccessorPair> AccessorHash;
+
+    static AccessorHash accessorHash();
 
 private:
     class Private;

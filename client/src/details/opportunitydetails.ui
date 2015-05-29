@@ -35,7 +35,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QComboBox" name="accountName"/>
+       <widget class="QComboBox" name="account_name"/>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -45,7 +45,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QComboBox" name="opportunityType"/>
+       <widget class="QComboBox" name="opportunity_type"/>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_4">
@@ -55,7 +55,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QComboBox" name="leadSource"/>
+       <widget class="QComboBox" name="lead_source"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_5">
@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="campaignName"/>
+       <widget class="QComboBox" name="campaign_name"/>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
@@ -75,7 +75,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QComboBox" name="salesStage"/>
+       <widget class="QComboBox" name="sales_stage"/>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="label_7">
@@ -85,7 +85,7 @@
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QComboBox" name="assignedUserName"/>
+       <widget class="QComboBox" name="assigned_user_name"/>
       </item>
      </layout>
     </widget>
@@ -110,7 +110,7 @@
       <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QDateEditEx" name="dateClosed">
+         <widget class="QDateEditEx" name="date_closed">
           <property name="calendarPopup">
            <bool>true</bool>
           </property>
@@ -126,7 +126,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="nextStep"/>
+       <widget class="QLineEdit" name="next_step"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_13">
@@ -138,7 +138,7 @@
       <item row="4" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <widget class="QDateEditEx" name="nextCallDate">
+         <widget class="QDateEditEx" name="next_call_date">
           <property name="calendarPopup">
            <bool>true</bool>
           </property>

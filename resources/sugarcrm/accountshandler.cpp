@@ -38,128 +38,14 @@ using namespace KDSoapGenerated;
 
 #include <QHash>
 
-typedef QString(SugarAccount::*valueGetter)() const;
-typedef void (SugarAccount::*valueSetter)(const QString &);
-
-class AccountAccessorPair
-{
-public:
-    AccountAccessorPair(valueGetter get, valueSetter set, const QString &name)
-        : getter(get), setter(set), diffName(name)
-    {}
-
-public:
-    valueGetter getter;
-    valueSetter setter;
-    const QString diffName;
-};
-
 AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),
-      mAccessors(new AccountAccessorHash)
+      mAccessors(SugarAccount::accessorHash())
 {
-    mAccessors->insert(QLatin1String("id"),
-                       new AccountAccessorPair(&SugarAccount::id, &SugarAccount::setId, QString()));
-    mAccessors->insert(QLatin1String("name"),
-                       new AccountAccessorPair(&SugarAccount::name, &SugarAccount::setName,
-                                        i18nc("@item:intable account name", "Name")));
-    mAccessors->insert(QLatin1String("date_entered"),
-                       new AccountAccessorPair(&SugarAccount::dateEntered, &SugarAccount::setDateEntered, QString()));
-    mAccessors->insert(QLatin1String("date_modified"),
-                       new AccountAccessorPair(&SugarAccount::dateModified, &SugarAccount::setDateModified, QString()));
-    mAccessors->insert(QLatin1String("modified_user_id"),
-                       new AccountAccessorPair(&SugarAccount::modifiedUserId, &SugarAccount::setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_by_name"),
-                       new AccountAccessorPair(&SugarAccount::modifiedByName, &SugarAccount::setModifiedByName, QString()));
-    mAccessors->insert(QLatin1String("created_by"),
-                       new AccountAccessorPair(&SugarAccount::createdBy, &SugarAccount::setCreatedBy, QString()));
-    mAccessors->insert(QLatin1String("created_by_name"),
-                       new AccountAccessorPair(&SugarAccount::createdByName, &SugarAccount::setCreatedByName, QString()));
-    mAccessors->insert(QLatin1String("description"),
-                       new AccountAccessorPair(&SugarAccount::description, &SugarAccount::setDescription,
-                                        i18nc("@item:intable", "Description")));
-    mAccessors->insert(QLatin1String("deleted"),
-                       new AccountAccessorPair(&SugarAccount::deleted, &SugarAccount::setDeleted, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_id"),
-                       new AccountAccessorPair(&SugarAccount::assignedUserId, &SugarAccount::setAssignedUserId, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_name"),
-                       new AccountAccessorPair(&SugarAccount::assignedUserName, &SugarAccount::setAssignedUserName,
-                                        i18nc("@item:intable", "Assigned To")));
-    mAccessors->insert(QLatin1String("account_type"),
-                       new AccountAccessorPair(&SugarAccount::accountType, &SugarAccount::setAccountType,
-                                        i18nc("@item:intable", "Type")));
-    mAccessors->insert(QLatin1String("industry"),
-                       new AccountAccessorPair(&SugarAccount::industry, &SugarAccount::setIndustry,
-                                        i18nc("@item:intable", "Industry")));
-    mAccessors->insert(QLatin1String("annual_revenue"),
-                       new AccountAccessorPair(&SugarAccount::annualRevenue, &SugarAccount::setAnnualRevenue,
-                                        i18nc("@item:intable", "Annual Revenue")));
-    mAccessors->insert(QLatin1String("phone_fax"),
-                       new AccountAccessorPair(&SugarAccount::phoneFax, &SugarAccount::setPhoneFax,
-                                        i18nc("@item:intable", "Fax")));
-    mAccessors->insert(QLatin1String("billing_address_street"),
-                       new AccountAccessorPair(&SugarAccount::billingAddressStreet, &SugarAccount::setBillingAddressStreet, QString()));
-    mAccessors->insert(QLatin1String("billing_address_city"),
-                       new AccountAccessorPair(&SugarAccount::billingAddressCity, &SugarAccount::setBillingAddressCity, QString()));
-    mAccessors->insert(QLatin1String("billing_address_state"),
-                       new AccountAccessorPair(&SugarAccount::billingAddressState, &SugarAccount::setBillingAddressState, QString()));
-    mAccessors->insert(QLatin1String("billing_address_postalcode"),
-                       new AccountAccessorPair(&SugarAccount::billingAddressPostalcode, &SugarAccount::setBillingAddressPostalcode, QString()));
-    mAccessors->insert(QLatin1String("billing_address_country"),
-                       new AccountAccessorPair(&SugarAccount::billingAddressCountry, &SugarAccount::setBillingAddressCountry, QString()));
-    mAccessors->insert(QLatin1String("rating"),
-                       new AccountAccessorPair(&SugarAccount::rating, &SugarAccount::setRating,
-                                        i18nc("@item:intable", "Rating")));
-    mAccessors->insert(QLatin1String("phone_office"),
-                       new AccountAccessorPair(&SugarAccount::phoneOffice, &SugarAccount::setPhoneOffice,
-                                        i18nc("@item:intable", "Phone (Office)")));
-    mAccessors->insert(QLatin1String("phone_alternate"),
-                       new AccountAccessorPair(&SugarAccount::phoneAlternate, &SugarAccount::setPhoneAlternate,
-                                        i18nc("@item:intable", "Phone (Other)")));
-    mAccessors->insert(QLatin1String("website"),
-                       new AccountAccessorPair(&SugarAccount::website, &SugarAccount::setWebsite,
-                                        i18nc("@item:intable", "Website")));
-    mAccessors->insert(QLatin1String("ownership"),
-                       new AccountAccessorPair(&SugarAccount::ownership, &SugarAccount::setOwnership,
-                                        i18nc("@item:intable", "Ownership")));
-    mAccessors->insert(QLatin1String("employees"),
-                       new AccountAccessorPair(&SugarAccount::employees, &SugarAccount::setEmployees,
-                                        i18nc("@item:intable", "Employees")));
-    mAccessors->insert(QLatin1String("ticker_symbol"),
-                       new AccountAccessorPair(&SugarAccount::tickerSymbol, &SugarAccount::setTickerSymbol,
-                                        i18nc("@item:intable", "Ticker Symbol")));
-    mAccessors->insert(QLatin1String("shipping_address_street"),
-                       new AccountAccessorPair(&SugarAccount::shippingAddressStreet, &SugarAccount::setShippingAddressStreet, QString()));
-    mAccessors->insert(QLatin1String("shipping_address_city"),
-                       new AccountAccessorPair(&SugarAccount::shippingAddressCity, &SugarAccount::setShippingAddressCity, QString()));
-    mAccessors->insert(QLatin1String("shipping_address_state"),
-                       new AccountAccessorPair(&SugarAccount::shippingAddressState, &SugarAccount::setShippingAddressState, QString()));
-    mAccessors->insert(QLatin1String("shipping_address_postalcode"),
-                       new AccountAccessorPair(&SugarAccount::shippingAddressPostalcode, &SugarAccount::setShippingAddressPostalcode, QString()));
-    mAccessors->insert(QLatin1String("shipping_address_country"),
-                       new AccountAccessorPair(&SugarAccount::shippingAddressCountry, &SugarAccount::setShippingAddressCountry, QString()));
-    mAccessors->insert(QLatin1String("email1"),
-                       new AccountAccessorPair(&SugarAccount::email1, &SugarAccount::setEmail1,
-                                        i18nc("@item:intable", "Primary Email")));
-    mAccessors->insert(QLatin1String("parent_id"),
-                       new AccountAccessorPair(&SugarAccount::parentId, &SugarAccount::setParentId, QString()));
-    mAccessors->insert(QLatin1String("parent_name"),
-                       new AccountAccessorPair(&SugarAccount::parentName, &SugarAccount::setParentName,
-                                        i18nc("@item:intable", "Member Of")));
-    mAccessors->insert(QLatin1String("sic_code"),
-                       new AccountAccessorPair(&SugarAccount::sicCode, &SugarAccount::setSicCode,
-                                        i18nc("@item:intable", "SIC Code")));
-    mAccessors->insert(QLatin1String("campaign_id"),
-                       new AccountAccessorPair(&SugarAccount::campaignId, &SugarAccount::setCampaignId, QString()));
-    mAccessors->insert(QLatin1String("campaign_name"),
-                       new AccountAccessorPair(&SugarAccount::campaignName, &SugarAccount::setCampaignName,
-                                        i18nc("@item:intable", "Campaign")));
 }
 
 AccountsHandler::~AccountsHandler()
 {
-    qDeleteAll(*mAccessors);
-    delete mAccessors;
 }
 
 Akonadi::Collection AccountsHandler::handlerCollection() const
@@ -181,7 +67,8 @@ QString AccountsHandler::orderByForListing() const
 
 QStringList AccountsHandler::supportedFields() const
 {
-    return mAccessors->keys();
+    // get everything
+    return availableFields();
 }
 
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
@@ -205,20 +92,32 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarAccount account = item.payload<SugarAccount>();
-    AccountAccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccountAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
-        const valueGetter getter = (*it)->getter;
+        const SugarAccount::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
         field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
         itemList << field;
     }
+
+    // plus custom fields
+    QMap<QString, QString> customFields = account.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(cit.key());
+        field.setValue(KDCRMUtils::encodeXML(cit.value()));
+        itemList << field;
+    }
+
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
@@ -244,13 +143,14 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     SugarAccount account;
     account.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const AccountAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
-        if (accessIt == mAccessors->constEnd()) {
-            // no accessor for field
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        if (accessIt == mAccessors.constEnd()) {
+            account.setCustomField(namedValue.name(), value);
             continue;
         }
 
-        (account.*(accessIt.value()->setter))(KDCRMUtils::decodeXML(namedValue.value()));
+        (account.*(accessIt.value().setter))(value);
     }
     item.setPayload<SugarAccount>(account);
     item.setRemoteRevision(account.dateModified());
@@ -278,19 +178,19 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenBillingAddress = false;
     bool seenShippingAddress = false;
 
-    AccountAccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccountAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
 
-        const valueGetter getter = (*it)->getter;
+        const SugarAccount::valueGetter getter = (*it).getter;
         QString leftValue = (leftAccount.*getter)();
         QString rightValue = (rightAccount.*getter)();
 
-        QString diffName = (*it)->diffName;
+        QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // check for special fields
             if (it.key().startsWith(QLatin1String("billing"))) {

@@ -22,6 +22,8 @@
 
 #include "sugaropportunity.h"
 #include "kdcrmutils.h"
+#include "kdcrmfields.h"
+#include <klocalizedstring.h>
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -518,67 +520,67 @@ void SugarOpportunity::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
 
-    d->mId = data.value("id");
+    d->mId = data.value(KDCRMFields::id());
     d->mName = data.value("name");
-    d->mDateEntered = data.value("dateEntered");
-    d->mDateModified = data.value("dateModified");
-    d->mModifiedUserId =  data.value("modifiedUserId");
-    d->mModifiedByName = data.value("modifiedByName");
-    d->mCreatedBy = data.value("createdBy");
-    d->mCreatedByName = data.value("createdByName");
-    d->mDescription = data.value("description");
-    d->mDeleted = data.value("deleted");
-    d->mAssignedUserId = data.value("assignedUserId");
-    d->mAssignedUserName = data.value("assignedUserName");
-    d->mOpportunityType = data.value("opportunityType");
-    d->mAccountName = data.value("accountName");
-    d->mAccountId = data.value("accountId");
-    d->mCampaignId = data.value("campaignId");
-    d->mCampaignName = data.value("campaignName");
-    d->mLeadSource = data.value("leadSource");
-    d->mAmount = data.value("amount");
-    d->mAmountUsDollar = data.value("amountUsDollar");
-    d->mCurrencyId = data.value("currencyId");
-    d->mCurrencyName = data.value("currencyName");
-    d->mCurrencySymbol = data.value("currencySymbol");
-    d->mDateClosed = data.value("dateClosed");
-    d->mNextStep = data.value("nextStep");
-    d->mSalesStage = data.value("salesStage");
-    d->mProbability = data.value("probability");
-    d->mNextCallDate = KDCRMUtils::dateFromString(data.value("nextCallDate"));
+    d->mDateEntered = data.value(KDCRMFields::dateEntered());
+    d->mDateModified = data.value(KDCRMFields::dateModified());
+    d->mModifiedUserId =  data.value(KDCRMFields::modifiedUserId());
+    d->mModifiedByName = data.value(KDCRMFields::modifiedByName());
+    d->mCreatedBy = data.value(KDCRMFields::createdBy());
+    d->mCreatedByName = data.value(KDCRMFields::createdByName());
+    d->mDescription = data.value(KDCRMFields::description());
+    d->mDeleted = data.value(KDCRMFields::deleted());
+    d->mAssignedUserId = data.value(KDCRMFields::assignedUserId());
+    d->mAssignedUserName = data.value(KDCRMFields::assignedUserName());
+    d->mOpportunityType = data.value(KDCRMFields::opportunityType());
+    d->mAccountName = data.value(KDCRMFields::accountName());
+    d->mAccountId = data.value(KDCRMFields::accountId());
+    d->mCampaignId = data.value(KDCRMFields::campaignId());
+    d->mCampaignName = data.value(KDCRMFields::campaignName());
+    d->mLeadSource = data.value(KDCRMFields::leadSource());
+    d->mAmount = data.value(KDCRMFields::amount());
+    d->mAmountUsDollar = data.value(KDCRMFields::amountUsDollar());
+    d->mCurrencyId = data.value(KDCRMFields::currencyId());
+    d->mCurrencyName = data.value(KDCRMFields::currencyName());
+    d->mCurrencySymbol = data.value(KDCRMFields::currencySymbol());
+    d->mDateClosed = data.value(KDCRMFields::dateClosed());
+    d->mNextStep = data.value(KDCRMFields::nextStep());
+    d->mSalesStage = data.value(KDCRMFields::salesStage());
+    d->mProbability = data.value(KDCRMFields::probability());
+    d->mNextCallDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::nextCallDate()));
 }
 
 QMap<QString, QString> SugarOpportunity::data()
 {
     QMap<QString, QString> data;
-    data["id"] = d->mId;
+    data[KDCRMFields::id()] = d->mId;
     data["name"] = d->mName;
-    data["dateEntered"] = d->mDateEntered;
-    data["dateModified"] = d->mDateModified;
-    data["modifiedUserId"] = d->mModifiedUserId;
-    data["modifiedByName"] = d->mModifiedByName;
-    data["createdBy"] = d->mCreatedBy;
-    data["createdByName"] = d->mCreatedByName;
-    data["description"] = d->mDescription;
-    data["deleted"] = d->mDeleted;
-    data["assignedUserId"] = d->mAssignedUserId;
-    data["assignedUserName"] = d->mAssignedUserName;
-    data["opportunityType"] = d->mOpportunityType;
-    data["accountName"] = d->mAccountName;
-    data["accountId"] = d->mAccountName;
-    data["campaignId"] = d->mCampaignId;
-    data["campaignName"] = d->mCampaignName;
-    data["leadSource"] = d->mLeadSource;
-    data["amount"] = d->mAmount;
-    data["amountUsDollar"] = d->mAmountUsDollar;
-    data["currencyId"] = d->mCurrencyId;
-    data["currencyName"] = d->mCurrencyName;
-    data["currencySymbol"] = d->mCurrencySymbol;
-    data["dateClosed"] = d->mDateClosed;
-    data["nextStep"] = d->mNextStep;
-    data["salesStage"] = d->mSalesStage;
-    data["probability"] = d->mProbability;
-    data["nextCallDate"] = KDCRMUtils::dateToString(d->mNextCallDate);
+    data[KDCRMFields::dateEntered()] = d->mDateEntered;
+    data[KDCRMFields::dateModified()] = d->mDateModified;
+    data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
+    data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
+    data[KDCRMFields::createdBy()] = d->mCreatedBy;
+    data[KDCRMFields::createdByName()] = d->mCreatedByName;
+    data[KDCRMFields::description()] = d->mDescription;
+    data[KDCRMFields::deleted()] = d->mDeleted;
+    data[KDCRMFields::assignedUserId()] = d->mAssignedUserId;
+    data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
+    data[KDCRMFields::opportunityType()] = d->mOpportunityType;
+    data[KDCRMFields::accountName()] = d->mAccountName;
+    data[KDCRMFields::accountId()] = d->mAccountName;
+    data[KDCRMFields::campaignId()] = d->mCampaignId;
+    data[KDCRMFields::campaignName()] = d->mCampaignName;
+    data[KDCRMFields::leadSource()] = d->mLeadSource;
+    data[KDCRMFields::amount()] = d->mAmount;
+    data[KDCRMFields::amountUsDollar()] = d->mAmountUsDollar;
+    data[KDCRMFields::currencyId()] = d->mCurrencyId;
+    data[KDCRMFields::currencyName()] = d->mCurrencyName;
+    data[KDCRMFields::currencySymbol()] = d->mCurrencySymbol;
+    data[KDCRMFields::dateClosed()] = d->mDateClosed;
+    data[KDCRMFields::nextStep()] = d->mNextStep;
+    data[KDCRMFields::salesStage()] = d->mSalesStage;
+    data[KDCRMFields::probability()] = d->mProbability;
+    data[KDCRMFields::nextCallDate()] = KDCRMUtils::dateToString(d->mNextCallDate);
     return data;
 }
 
@@ -587,3 +589,87 @@ QString SugarOpportunity::mimeType()
     return QLatin1String("application/x-vnd.kdab.crm.opportunity");
 }
 
+
+Q_GLOBAL_STATIC(SugarOpportunity::AccessorHash, s_accessors)
+
+SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
+{
+    AccessorHash &accessors = *s_accessors();
+    if (accessors.isEmpty()) {
+        accessors.insert(QLatin1String("id"),
+                           OpportunityAccessorPair(&SugarOpportunity::id, &SugarOpportunity::setId, QString()));
+        accessors.insert(QLatin1String("name"),
+                           OpportunityAccessorPair(&SugarOpportunity::name, &SugarOpportunity::setName,
+                                            i18nc("@item:intable", "Name")));
+        accessors.insert(QLatin1String("date_entered"),
+                           OpportunityAccessorPair(&SugarOpportunity::dateEntered, &SugarOpportunity::setDateEntered, QString()));
+        accessors.insert(QLatin1String("date_modified"),
+                           OpportunityAccessorPair(&SugarOpportunity::dateModified, &SugarOpportunity::setDateModified, QString()));
+        accessors.insert(QLatin1String("modified_user_id"),
+                           OpportunityAccessorPair(&SugarOpportunity::modifiedUserId, &SugarOpportunity::setModifiedUserId, QString()));
+        accessors.insert(QLatin1String("modified_by_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::modifiedByName, &SugarOpportunity::setModifiedByName, QString()));
+        accessors.insert(QLatin1String("created_by"),
+                           OpportunityAccessorPair(&SugarOpportunity::createdBy, &SugarOpportunity::setCreatedBy, QString()));
+        accessors.insert(QLatin1String("created_by_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::createdByName, &SugarOpportunity::setCreatedByName,
+                                            i18nc("@item:intable", "Created By")));
+        accessors.insert(QLatin1String("description"),
+                           OpportunityAccessorPair(&SugarOpportunity::description, &SugarOpportunity::setDescription,
+                                            i18nc("@item:intable", "Description")));
+        accessors.insert(QLatin1String("deleted"),
+                           OpportunityAccessorPair(&SugarOpportunity::deleted, &SugarOpportunity::setDeleted, QString()));
+        accessors.insert(QLatin1String("assigned_user_id"),
+                           OpportunityAccessorPair(&SugarOpportunity::assignedUserId, &SugarOpportunity::setAssignedUserId, QString()));
+        accessors.insert(QLatin1String("assigned_user_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::assignedUserName, &SugarOpportunity::setAssignedUserName,
+                                            i18nc("@item:intable", "Assigned To")));
+        accessors.insert(QLatin1String("opportunity_type"),
+                           OpportunityAccessorPair(&SugarOpportunity::opportunityType, &SugarOpportunity::setOpportunityType,
+                                            i18nc("@item:intable", "Type")));
+        accessors.insert(QLatin1String("account_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::accountName, &SugarOpportunity::setAccountName,
+                                            i18nc("@item:intable", "Account")));
+        // ### I wish this one was available, but SuiteCRM doesn't return it!
+        // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)
+        accessors.insert(QLatin1String("account_id"),
+                           OpportunityAccessorPair(&SugarOpportunity::accountId, &SugarOpportunity::setAccountId, QString()));
+        accessors.insert(QLatin1String("campaign_id"),
+                           OpportunityAccessorPair(&SugarOpportunity::campaignId, &SugarOpportunity::setCampaignId, QString()));
+        accessors.insert(QLatin1String("campaign_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::campaignName, &SugarOpportunity::setCampaignName,
+                                            i18nc("@item:intable", "Campaign")));
+        accessors.insert(QLatin1String("lead_source"),
+                           OpportunityAccessorPair(&SugarOpportunity::leadSource, &SugarOpportunity::setLeadSource,
+                                            i18nc("@item:intable", "Lead Source")));
+        accessors.insert(QLatin1String("amount"),
+                           OpportunityAccessorPair(&SugarOpportunity::amount, &SugarOpportunity::setAmount,
+                                            i18nc("@item:intable", "Amount")));
+        accessors.insert(QLatin1String("amount_usdollar"),
+                           OpportunityAccessorPair(&SugarOpportunity::amountUsDollar, &SugarOpportunity::setAmountUsDollar,
+                                            i18nc("@item:intable", "Amount in USD")));
+        accessors.insert(QLatin1String("currency_id"),
+                           OpportunityAccessorPair(&SugarOpportunity::currencyId, &SugarOpportunity::setCurrencyId, QString()));
+        accessors.insert(QLatin1String("currency_name"),
+                           OpportunityAccessorPair(&SugarOpportunity::currencyName, &SugarOpportunity::setCurrencyName,
+                                            i18nc("@item:intable", "Currency")));
+        accessors.insert(QLatin1String("currency_symbol"),
+                           OpportunityAccessorPair(&SugarOpportunity::currencySymbol, &SugarOpportunity::setCurrencySymbol, QString()));
+        accessors.insert(QLatin1String("date_closed"),
+                           OpportunityAccessorPair(&SugarOpportunity::dateClosed, &SugarOpportunity::setDateClosed, QString()));
+        accessors.insert(QLatin1String("next_step"),
+                           OpportunityAccessorPair(&SugarOpportunity::nextStep, &SugarOpportunity::setNextStep,
+                                            i18nc("@item:intable", "Next Step")));
+        accessors.insert(QLatin1String("sales_stage"),
+                           OpportunityAccessorPair(&SugarOpportunity::salesStage, &SugarOpportunity::setSalesStage,
+                                            i18nc("@item:intable", "Sales Stage")));
+        accessors.insert(QLatin1String("probability"),
+                           OpportunityAccessorPair(&SugarOpportunity::probability, &SugarOpportunity::setProbability,
+                                            i18nc("@item:intable", "Probability (percent)")));
+        accessors.insert(QLatin1String("next_call_date_c"),
+                           OpportunityAccessorPair(&SugarOpportunity::nextCallDateRaw, &SugarOpportunity::setNextCallDateRaw,
+                                            i18nc("@item:intable", "Next Call Date")));
+
+    }
+    return accessors;
+}

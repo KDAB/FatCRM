@@ -22,6 +22,7 @@
 
 #include "details.h"
 #include "kdcrmutils.h"
+#include "kdcrmfields.h"
 #include "clientsettings.h"
 
 #include <qdateeditex.h>
@@ -35,23 +36,22 @@ static QStringList storedProperties()
 {
     static QStringList props;
     if (props.isEmpty()) {
-        props << "modifiedBy";
-        props << "modifiedByName";
-        props << "modifiedUserId";
-        props << "modifiedUserName";
-        props << "dateEntered";
-        props << "deleted";
-        props << "id";
-        props << "contactId";
-        props << "opportunityRoleFields";
-        props << "cAcceptStatusFields";
-        props << "mAcceptStatusFields";
-        props << "createdBy";
-        props << "createdByName";
-        props << "createdById";
-        props << "currencyId";
-        props << "currencyName";
-        props << "currencySymbol";
+        props << KDCRMFields::modifiedBy();
+        props << KDCRMFields::modifiedByName();
+        props << KDCRMFields::modifiedUserId();
+        props << KDCRMFields::dateEntered();
+        props << KDCRMFields::deleted();
+        props << KDCRMFields::id();
+        props << KDCRMFields::createdBy();
+        props << KDCRMFields::createdByName();
+        props << KDCRMFields::currencyId(); // campaign, opportunity
+        props << KDCRMFields::currencyName(); // opportunity
+        props << KDCRMFields::currencySymbol(); // opportunity
+        props << KDCRMFields::contactId(); // leads, notes
+
+        props << "opportunityRoleFields"; // contacts
+        props << "cAcceptStatusFields"; // contacts
+        props << "mAcceptStatusFields"; // contacts
     }
     return props;
 }
@@ -201,8 +201,8 @@ void Details::setData(const QMap<QString, QString> &data,
         if (!data.contains(key)) continue;
         //qDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
-        if (key == "amount")
-            w->setSuffix(data.value("currencySymbol"));
+        if (key == KDCRMFields::amount())
+            w->setSuffix(data.value(KDCRMFields::currencySymbol()));
     }
 
     Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
@@ -215,27 +215,29 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QLabel *> labels = createdModifiedContainer->findChildren<QLabel *>();
     Q_FOREACH (QLabel *lb, labels) {
         key = lb->objectName();
-        if (key == "modifiedBy") {
-            if (!data.value("modifiedByName").isEmpty()) {
-                lb->setText(data.value("modifiedByName"));
-            } else if (!data.value("modifiedBy").isEmpty()) {
-                lb->setText(data.value("modifiedBy"));
+        if (key == KDCRMFields::modifiedBy()) {
+            if (!data.value(KDCRMFields::modifiedByName()).isEmpty()) {
+                lb->setText(data.value(KDCRMFields::modifiedByName()));
+            } else if (!data.value(KDCRMFields::modifiedBy()).isEmpty()) {
+                lb->setText(data.value(KDCRMFields::modifiedBy()));
             } else {
                 lb->setText(data.value("modifiedUserName"));
             }
-        } else if (key == "dateEntered") {
-            lb->setText(KDCRMUtils::formatTimestamp(data.value("dateEntered")));
-        } else if (key == "createdBy") {
-            if (!data.value("createdByName").isEmpty()) {
-                lb->setText(data.value("createdByName"));
+        } else if (key == KDCRMFields::dateEntered()) {
+            lb->setText(KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateEntered())));
+        } else if (key == KDCRMFields::createdBy()) {
+            if (!data.value(KDCRMFields::createdByName()).isEmpty()) {
+                lb->setText(data.value(KDCRMFields::createdByName()));
             } else {
-                lb->setText(data.value("createdBy"));
+                lb->setText(data.value(KDCRMFields::createdBy()));
             }
         }
     }
 
     Q_FOREACH (const QString &prop, storedProperties()) {
-        setProperty(prop.toLatin1(), data.value(prop));
+        if (data.contains(prop)) {
+            setProperty(prop.toLatin1(), data.value(prop));
+        }
     }
     setProperty("name", data.value("name")); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
 
@@ -316,18 +318,18 @@ const QMap<QString, QString> Details::getData() const
 
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     // (and for showing in the GUI until the next sync)
-    currentData["dateModified"] = KDCRMUtils::currentTimestamp();
+    currentData[KDCRMFields::dateModified()] = KDCRMUtils::currentTimestamp();
     const QString fullUserName = ClientSettings::self()->fullUserName();
-    currentData["modifiedByName"] = fullUserName.isEmpty() ? QString("me") : fullUserName;
+    currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
 
     const QString accountId = currentAccountId();
-    currentData["parentId"] = accountId;
-    currentData["accountId"] = accountId;
-    currentData["campaignId"] = currentCampaignId();
+    currentData[KDCRMFields::parentId()] = accountId;
+    currentData[KDCRMFields::accountId()] = accountId;
+    currentData[KDCRMFields::campaignId()] = currentCampaignId();
     const QString assignedToId = currentAssignedToId();
-    currentData["assignedUserId"] = assignedToId;
-    currentData["assignedToId"] = assignedToId;
-    currentData["reportsToId"] = currentReportsToId();
+    currentData[KDCRMFields::assignedUserId()] = assignedToId;
+    currentData[KDCRMFields::assignedToId()] = assignedToId;
+    currentData[KDCRMFields::reportsToId()] = currentReportsToId();
 
     return currentData;
 }
@@ -337,13 +339,13 @@ const QMap<QString, QString> Details::getData() const
  */
 QString Details::currentAccountId() const
 {
-    // Account has "parentName"
-    // Contact, Leads, Opportunity have "accountName"
+    // Account has KDCRMFields::parentName()
+    // Contact, Leads, Opportunity have KDCRMFields::accountName()
     if (mType != Campaign) {
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
-            if (key == QLatin1String("parentName") || key == QLatin1String("accountName")) {
+            if (key == KDCRMFields::parentName() || key == KDCRMFields::accountName()) {
                 return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
             }
         }
@@ -360,7 +362,7 @@ QString Details::currentCampaignId() const
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
-            if (key == QLatin1String("campaignName") || key == QLatin1String("campaign")) {
+            if (key == KDCRMFields::campaignName() || key == KDCRMFields::campaign()) {
                 return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
             }
         }
@@ -376,7 +378,7 @@ QString Details::currentAssignedToId() const
     const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         const QString key = cb->objectName();
-        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
+        if (key == KDCRMFields::assignedUserName() || key == KDCRMFields::assignedTo()) {
             return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
         }
     }
@@ -391,7 +393,7 @@ void Details::assignToMe()
     const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         const QString key = cb->objectName();
-        if (key == QLatin1String("assignedUserName") || key == QLatin1String("assignedTo")) {
+        if (key == KDCRMFields::assignedUserName() || key == KDCRMFields::assignedTo()) {
             const int idx = cb->findText(fullUserName);
             if (idx >= 0) {
                 cb->setCurrentIndex(idx);
@@ -410,7 +412,7 @@ QString Details::currentReportsToId() const
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
-            if (key == QLatin1String("reportsTo")) {
+            if (key == KDCRMFields::reportsTo()) {
                 return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
             }
         }

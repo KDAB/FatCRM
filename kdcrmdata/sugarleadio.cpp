@@ -22,6 +22,7 @@
 
 #include "sugarleadio.h"
 #include "sugarlead.h"
+#include "kdcrmfields.h"
 
 #include <QtCore/QIODevice>
 #include <QtCore/QXmlStreamWriter>
@@ -78,13 +79,13 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setCreatedBy(xml.readElementText());
         } else if (xml.name() == "created_by_name") {
             lead.setCreatedByName(xml.readElementText());
-        } else if (xml.name() == "description") {
+        } else if (xml.name() == KDCRMFields::description()) {
             lead.setDescription(xml.readElementText());
-        } else if (xml.name() == "deleted") {
+        } else if (xml.name() == KDCRMFields::deleted()) {
             lead.setDeleted(xml.readElementText());
         } else if (xml.name() == "assigned_user_id") {
             lead.setAssignedUserId(xml.readElementText());
-        } else if (xml.name() == "assigned_user_name") {
+        } else if (xml.name() == KDCRMFields::assignedUserName()) {
             lead.setAssignedUserName(xml.readElementText());
         } else if (xml.name() == "salutation") {
             lead.setSalutation(xml.readElementText());
@@ -205,10 +206,10 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     writer.writeTextElement(QString("modified_by_name"), lead.modifiedByName());
     writer.writeTextElement(QString("created_by"), lead.createdBy());
     writer.writeTextElement(QString("created_by_name"), lead.createdByName());
-    writer.writeTextElement(QString("description"), lead.description());
-    writer.writeTextElement(QString("deleted"), lead.deleted());
+    writer.writeTextElement(QString(KDCRMFields::description()), lead.description());
+    writer.writeTextElement(QString(KDCRMFields::deleted()), lead.deleted());
     writer.writeTextElement(QString("assigned_user_id"), lead.assignedUserId());
-    writer.writeTextElement(QString("assigned_user_name"), lead.assignedUserName());
+    writer.writeTextElement(KDCRMFields::assignedUserName(), lead.assignedUserName());
     writer.writeTextElement(QString("salutation"), lead.salutation());
     writer.writeTextElement(QString("first_name"), lead.firstName());
     writer.writeTextElement(QString("last_name"), lead.lastName());

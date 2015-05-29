@@ -24,8 +24,7 @@
 #define ACCOUNTSHANDLER_H
 
 #include "modulehandler.h"
-
-class AccountAccessorPair;
+#include <kdcrmdata/sugaraccount.h>
 
 template <typename U, typename V> class QHash;
 
@@ -49,8 +48,7 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    typedef QHash<QString, AccountAccessorPair *> AccountAccessorHash;
-    AccountAccessorHash *mAccessors;
+    SugarAccount::AccessorHash mAccessors;
 };
 
 #endif /* ACCOUNTSHANDLER_H */

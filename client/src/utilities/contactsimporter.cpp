@@ -23,6 +23,7 @@
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
 #include "contactsimporter.h"
+#include <kdcrmdata/kdcrmfields.h>
 #include <QFile>
 #include <QDebug>
 #include <qcsvreader.h>
@@ -45,14 +46,13 @@ bool ContactsImporter::importFile(const QString &fileName)
     if (!reader.read(&file))
         return false;
 
-    // the column names below must match SugarAccount::setData
     QMap<int, QString> accountColumns;
-    accountColumns.insert(5, QLatin1String("name"));
-    accountColumns.insert(6, QLatin1String("billingAddressStreet"));
-    accountColumns.insert(7, QLatin1String("billingAddressCity"));
-    accountColumns.insert(8, QLatin1String("billingAddressPostalcode"));
-    accountColumns.insert(9, QLatin1String("billingAddressState"));
-    accountColumns.insert(10, QLatin1String("billingAddressCountry"));
+    accountColumns.insert(5, KDCRMFields::name());
+    accountColumns.insert(6, KDCRMFields::billingAddressStreet());
+    accountColumns.insert(7, KDCRMFields::billingAddressCity());
+    accountColumns.insert(8, KDCRMFields::billingAddressPostalcode());
+    accountColumns.insert(9, KDCRMFields::billingAddressState());
+    accountColumns.insert(10, KDCRMFields::billingAddressCountry());
 
     const int rows = builder.rowCount();
     mAccounts.reserve(rows);

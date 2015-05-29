@@ -24,6 +24,7 @@
 #define OPPORTUNITIESHANDLER_H
 
 #include "modulehandler.h"
+#include <kdcrmdata/sugaropportunity.h>
 
 class OpportunityAccessorPair;
 
@@ -49,8 +50,7 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem);
 
 private:
-    typedef QHash<QString, OpportunityAccessorPair *> OpportunityAccessorHash;
-    OpportunityAccessorHash *mAccessors;
+    SugarOpportunity::AccessorHash mAccessors;
 };
 
 #endif /* OPPORTUNITIESHANDLER_H */

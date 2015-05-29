@@ -44,12 +44,12 @@ LeadDetails::~LeadDetails()
 
 void LeadDetails::initialize()
 {
-    mUi->leadSource->addItems(sourceItems());
-    ReferencedDataModel::setModelForCombo(mUi->campaignName, CampaignRef);
+    mUi->lead_source->addItems(sourceItems());
+    ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
     mUi->salutation->addItems(salutationItems());
     // TODO FIXME: leads can refer to account names which are do not match sugar accounts
-    ReferencedDataModel::setModelForCombo(mUi->accountName, AccountRef);
-    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),

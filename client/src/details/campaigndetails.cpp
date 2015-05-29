@@ -45,7 +45,7 @@ CampaignDetails::~CampaignDetails()
 void CampaignDetails::initialize()
 {
     mUi->status->addItems(statusItems());
-    mUi->campaignType->addItems(typeItems());
+    mUi->campaign_type->addItems(typeItems());
     connect(mUi->clearStartDateButton, SIGNAL(clicked()), this, SLOT(slotClearStartDate()));
     connect(mUi->startDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetStartDate()));
@@ -53,7 +53,7 @@ void CampaignDetails::initialize()
     connect(mUi->endDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetEndDate()));
 
-    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
 }
 
 void CampaignDetails::slotSetStartDate()

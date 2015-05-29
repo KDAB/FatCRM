@@ -21,6 +21,7 @@
 */
 
 #include "sugaremail.h"
+#include "kdcrmfields.h"
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -491,7 +492,7 @@ mailbox_id
 "assigned_user_id" = "e88a49f9-4ddd-2c3a-77ad-49dc7b5e72f9"
 "modified_user_id" = "c34a548f-08cc-b8be-c43b-4f5f06f81621"
 "created_by" = "c34a548f-08cc-b8be-c43b-4f5f06f81621"
-"deleted" = "0"
+KDCRMFields::deleted() = "0"
 "from_addr_name" = "mariececile.roue@orange.com"
 "reply_to_addr" = "mariececile.roue@orange.com"
 "to_addrs_names" = "David Faure <info-fr@kdab.com>"

@@ -22,6 +22,7 @@
 
 #include "sugarcampaignio.h"
 #include "sugarcampaign.h"
+#include "kdcrmfields.h"
 
 #include <QtCore/QIODevice>
 #include <QtCore/QXmlStreamWriter>
@@ -80,7 +81,7 @@ void SugarCampaignIO::readCampaign(SugarCampaign &campaign)
             campaign.setCreatedBy(xml.readElementText());
         } else if (xml.name() == "created_by_name") {
             campaign.setCreatedByName(xml.readElementText());
-        } else if (xml.name() == "deleted") {
+        } else if (xml.name() == KDCRMFields::deleted()) {
             campaign.setDeleted(xml.readElementText());
         } else if (xml.name() == "assigned_user_id") {
             campaign.setAssignedUserId(xml.readElementText());
@@ -116,7 +117,7 @@ void SugarCampaignIO::readCampaign(SugarCampaign &campaign)
             campaign.setCampaignType(xml.readElementText());
         } else if (xml.name() == "objective") {
             campaign.setObjective(xml.readElementText());
-        } else if (xml.name() == "content") {
+        } else if (xml.name() == KDCRMFields::content()) {
             campaign.setContent(xml.readElementText());
         } else if (xml.name() == "frequency") {
             campaign.setFrequency(xml.readElementText());
@@ -146,7 +147,7 @@ bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevic
     writer.writeTextElement(QString("modified_by_name"), campaign.modifiedByName());
     writer.writeTextElement(QString("created_by"), campaign.createdBy());
     writer.writeTextElement(QString("created_by_name"), campaign.createdByName());
-    writer.writeTextElement(QString("deleted"), campaign.deleted());
+    writer.writeTextElement(QString(KDCRMFields::deleted()), campaign.deleted());
     writer.writeTextElement(QString("assigned_user_id"), campaign.assignedUserId());
     writer.writeTextElement(QString("assigned_user_name"), campaign.assignedUserName());
     writer.writeTextElement(QString("tracker_key"), campaign.trackerKey());
@@ -164,7 +165,7 @@ bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevic
     writer.writeTextElement(QString("expected_revenue"), campaign.expectedRevenue());
     writer.writeTextElement(QString("campaign_type"), campaign.campaignType());
     writer.writeTextElement(QString("objective"), campaign.objective());
-    writer.writeTextElement(QString("content"), campaign.content());
+    writer.writeTextElement(KDCRMFields::content(), campaign.content());
     writer.writeTextElement(QString("frequency"), campaign.frequency());
     writer.writeEndDocument();
 

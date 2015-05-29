@@ -29,6 +29,7 @@
 #include "opportunitydetails.h"
 
 #include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 #include <akonadi/item.h>
 
@@ -108,7 +109,7 @@ void DetailsWidget::clearFields()
 {
     mDetails->clear();
 
-    mUi.dateModified->clear();
+    mUi.date_modified->clear();
 
     // initialize other fields
     mUi.description->setPlainText(QString());
@@ -149,12 +150,12 @@ void DetailsWidget::setData(const QMap<QString, QString> &data)
     mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
     // before it is displayed.
-    const QString localTime = KDCRMUtils::formatTimestamp(data.value("dateModified"));
-    mUi.dateModified->setText(localTime);
+    const QString localTime = KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateModified()));
+    mUi.date_modified->setText(localTime);
 
     mUi.description->setPlainText((mType != Campaign) ?
-                                  data.value("description") :
-                                  data.value("content"));
+                                  data.value(KDCRMFields::description()) :
+                                  data.value(KDCRMFields::content()));
 }
 
 /*
@@ -165,8 +166,10 @@ QMap<QString, QString> DetailsWidget::data() const
 {
     QMap<QString, QString> currentData = mDetails->getData();
 
-    currentData["description"] = mUi.description->toPlainText();
-    currentData["content"] = mUi.description->toPlainText();
+    currentData[KDCRMFields::description()] = mUi.description->toPlainText();
+    if (mDetails->type() == Campaign) {
+        currentData[KDCRMFields::content()] = mUi.description->toPlainText();
+    }
 
     return currentData;
 }

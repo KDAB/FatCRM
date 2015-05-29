@@ -70,6 +70,7 @@ void SugarEmailIO::readEmail(SugarEmail &email)
         if (accessIt != accessors.constEnd()) {
             (email.*(accessIt.value().setter))(xml.readElementText());
         } else {
+            qDebug() << "Unexpected XML field in email" << xml.name();
             xml.skipCurrentElement();
         }
     }

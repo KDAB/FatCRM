@@ -21,6 +21,7 @@
 */
 
 #include "sugarlead.h"
+#include "kdcrmfields.h"
 
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
@@ -1019,16 +1020,16 @@ void SugarLead::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
     d->mId = data.value("id");
-    d->mDateEntered = data.value("dateEntered");
-    d->mDateModified = data.value("dateModified");
-    d->mModifiedUserId = data.value("modifiedUserId");
-    d->mModifiedByName = data.value("modifiedByName");
-    d->mCreatedBy = data.value("createdBy");
-    d->mCreatedByName = data.value("createdByName");
-    d->mDescription = data.value("description");
-    d->mDeleted = data.value("deleted");
-    d->mAssignedUserId = data.value("assignedUserId");
-    d->mAssignedUserName = data.value("assignedUserName");
+    d->mDateEntered = data.value(KDCRMFields::dateEntered());
+    d->mDateModified = data.value(KDCRMFields::dateModified());
+    d->mModifiedUserId = data.value(KDCRMFields::modifiedUserId());
+    d->mModifiedByName = data.value(KDCRMFields::modifiedByName());
+    d->mCreatedBy = data.value(KDCRMFields::createdBy());
+    d->mCreatedByName = data.value(KDCRMFields::createdByName());
+    d->mDescription = data.value(KDCRMFields::description());
+    d->mDeleted = data.value(KDCRMFields::deleted());
+    d->mAssignedUserId = data.value(KDCRMFields::assignedUserId());
+    d->mAssignedUserName = data.value(KDCRMFields::assignedUserName());
     d->mSalutation = data.value("salutation");
     d->mFirstName = data.value("firstName");
     d->mLastName = data.value("lastName");
@@ -1056,21 +1057,21 @@ void SugarLead::setData(const QMap<QString, QString>& data)
     d->mAssistantPhone = data.value("assistantPhone");
     d->mConverted = data.value("converted");
     d->mReferedBy = data.value("referedBy");
-    d->mLeadSource = data.value("leadSource");
+    d->mLeadSource = data.value(KDCRMFields::leadSource());
     d->mLeadSourceDescription = data.value("leadSourceDescription");
     d->mStatus = data.value("status");
     d->mStatusDescription = data.value("statusDescription");
-    d->mReportsToId = data.value("reportsToId");
+    d->mReportsToId = data.value(KDCRMFields::reportsToId());
     d->mReportToName = data.value("reportToName");
-    d->mAccountName = data.value("accountName");
+    d->mAccountName = data.value(KDCRMFields::accountName());
     d->mAccountDescription = data.value("accountDescription");
-    d->mContactId = data.value("contactId");
-    d->mAccountId = data.value("accountId");
+    d->mContactId = data.value(KDCRMFields::contactId());
+    d->mAccountId = data.value(KDCRMFields::accountId());
     d->mOpportunityId = data.value("opportunityId");
     d->mOpportunityName = data.value("opportunityName");
     d->mOpportunityAmount = data.value("opportunityAmount");
-    d->mCampaignId = data.value("campaignId");
-    d->mCampaignName = data.value("campaignName");
+    d->mCampaignId = data.value(KDCRMFields::campaignId());
+    d->mCampaignName = data.value(KDCRMFields::campaignName());
     d->mCAcceptStatusFields = data.value("cAcceptStatusFields");
     d->mMAcceptStatusFields = data.value("mAcceptStatusFields");
     d->mBirthdate = data.value("birthdate");
@@ -1082,16 +1083,16 @@ QMap<QString, QString> SugarLead::data()
 {
     QMap<QString, QString> data;
     data["id"] = d->mId;
-    data["dateEntered"] = d->mDateEntered;
-    data["dateModified"] = d->mDateModified;
-    data["modifiedUserId"] = d->mModifiedUserId;
-    data["modifiedByName"] = d->mModifiedByName;
-    data["createdBy"] = d->mCreatedBy;
-    data["createdByName"] = d->mCreatedByName;
-    data["description"] = d->mDescription;
-    data["deleted"] = d->mDeleted;
-    data["assignedUserId"] = d->mAssignedUserId;
-    data["assignedUserName"] = d->mAssignedUserName;
+    data[KDCRMFields::dateEntered()] = d->mDateEntered;
+    data[KDCRMFields::dateModified()] = d->mDateModified;
+    data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
+    data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
+    data[KDCRMFields::createdBy()] = d->mCreatedBy;
+    data[KDCRMFields::createdByName()] = d->mCreatedByName;
+    data[KDCRMFields::description()] = d->mDescription;
+    data[KDCRMFields::deleted()] = d->mDeleted;
+    data[KDCRMFields::assignedUserId()] = d->mAssignedUserId;
+    data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
     data["salutation"] = d->mSalutation;
     data["firstName"] = d->mFirstName;
     data["lastName"] = d->mLastName;
@@ -1119,21 +1120,21 @@ QMap<QString, QString> SugarLead::data()
     data["assistantPhone"] = d->mAssistantPhone;
     data["converted"] = d->mConverted;
     data["referedBy"] = d->mReferedBy;
-    data["leadSource"] = d->mLeadSource;
+    data[KDCRMFields::leadSource()] = d->mLeadSource;
     data["leadSourceDescription"] = d->mLeadSourceDescription;
     data["status"] = d->mStatus;
     data["statusDescription"] = d->mStatusDescription;
-    data["reportsToId"] = d->mReportsToId;
+    data[KDCRMFields::reportsToId()] = d->mReportsToId;
     data["reportToName"] = d->mReportToName;
-    data["accountName"] = d->mAccountName;
+    data[KDCRMFields::accountName()] = d->mAccountName;
     data["accountDescription"] = d->mAccountDescription;
-    data["contactId"] = d->mContactId;
-    data["accountId"] = d->mAccountId;
+    data[KDCRMFields::contactId()] = d->mContactId;
+    data[KDCRMFields::accountId()] = d->mAccountId;
     data["opportunityId"] = d->mOpportunityId;
     data["opportunityName"] = d->mOpportunityName;
     data["opportunityAmount"] = d->mOpportunityAmount;
-    data["campaignId"] = d->mCampaignId;
-    data["campaignName"] = d->mCampaignName;
+    data[KDCRMFields::campaignId()] = d->mCampaignId;
+    data[KDCRMFields::campaignName()] = d->mCampaignName;
     data["cAcceptStatusFields"] = d->mCAcceptStatusFields;
     data["mAcceptStatusFields"] = d->mMAcceptStatusFields;
     data["birthdate"] = d->mBirthdate;

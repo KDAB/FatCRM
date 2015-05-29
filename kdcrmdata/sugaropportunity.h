@@ -358,6 +358,26 @@ public:
      */
     static QString mimeType();
 
+    typedef QString(SugarOpportunity::*valueGetter)() const;
+    typedef void (SugarOpportunity::*valueSetter)(const QString &);
+
+    class OpportunityAccessorPair
+    {
+    public:
+        OpportunityAccessorPair(valueGetter get, valueSetter set, const QString &name)
+            : getter(get), setter(set), diffName(name)
+        {}
+
+    public:
+        valueGetter getter;
+        valueSetter setter;
+        QString diffName;
+    };
+
+    typedef QHash<QString, OpportunityAccessorPair> AccessorHash;
+
+    static AccessorHash accessorHash();
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

@@ -86,7 +86,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="dateEntered"/>
+              <widget class="QLabel" name="date_entered"/>
              </item>
              <item>
               <widget class="QLabel" name="createdByLabel">
@@ -96,7 +96,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="createdBy"/>
+              <widget class="QLabel" name="created_by"/>
              </item>
              <item>
               <spacer name="horizontalSpacer_3">
@@ -119,7 +119,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="dateModified">
+              <widget class="QLabel" name="date_modified">
                <property name="text">
                 <string/>
                </property>
@@ -133,7 +133,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="modifiedBy"/>
+              <widget class="QLabel" name="modified_by"/>
              </item>
             </layout>
            </widget>

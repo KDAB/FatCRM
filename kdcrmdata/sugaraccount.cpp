@@ -21,7 +21,9 @@
 */
 
 #include "sugaraccount.h"
+#include "kdcrmfields.h"
 
+#include <klocalizedstring.h>
 #include <QtCore/QSharedData>
 #include <QtCore/QString>
 #include <QDebug>
@@ -79,6 +81,7 @@ public:
         mSicCode = other.mSicCode;
         mCampaignId = other.mCampaignId;
         mCampaignName = other.mCampaignName;
+        mCustomFields = other.mCustomFields;
     }
 
     bool mEmpty;
@@ -122,6 +125,7 @@ public:
     QString mSicCode;
     QString mCampaignId;
     QString mCampaignName;
+    QMap<QString, QString> mCustomFields;
 };
 
 SugarAccount::SugarAccount()
@@ -770,96 +774,172 @@ QString SugarAccount::campaignName() const
     return d->mCampaignName;
 }
 
+void SugarAccount::setCustomField(const QString &name, const QString &value)
+{
+    d->mEmpty = false;
+    d->mCustomFields.insert(name, value);
+}
+
+QMap<QString, QString> SugarAccount::customFields() const
+{
+    return d->mCustomFields;
+}
+
 void SugarAccount::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
-    d->mId = data.value("id");
-    d->mName = data.value("name");
-    d->mDateEntered = data.value("dateEntered");
-    d->mDateModified = data.value("dateModified");
-    d->mModifiedUserId =  data.value("modifiedUserId");
-    d->mModifiedByName = data.value("modifiedByName");
-    d->mCreatedBy = data.value("createdBy");
-    d->mCreatedByName = data.value("createdByName");
-    d->mDescription = data.value("description");
-    d->mDeleted = data.value("deleted");
-    d->mAssignedUserId = data.value("assignedUserId");
-    d->mAssignedUserName = data.value("assignedUserName");
-    d->mAccountType = data.value("accountType");
-    d->mIndustry = data.value("industry");
-    d->mAnnualRevenue = data.value("annualRevenue");
-    d->mPhoneFax = data.value("phoneFax");
-    d->mBillingAddressStreet = data.value("billingAddressStreet");
-    d->mBillingAddressCity = data.value("billingAddressCity");
-    d->mBillingAddressState = data.value("billingAddressState");
-    d->mBillingAddressPostalcode = data.value("billingAddressPostalcode");
-    d->mBillingAddressCountry = data.value("billingAddressCountry");
-    d->mRating = data.value("rating");
-    d->mPhoneOffice = data.value("phoneOffice");
-    d->mPhoneAlternate = data.value("phoneAlternate");
-    d->mWebsite = data.value("website");
-    d->mOwnership = data.value("ownership");
-    d->mEmployees = data.value("employees");
-    d->mTickerSymbol = data.value("tickerSymbol");
-    d->mShippingAddressStreet = data.value("shippingAddressStreet");
-    d->mShippingAddressCity = data.value("shippingAddressCity");
-    d->mShippingAddressState = data.value("shippingAddressState");
-    d->mShippingAddressPostalcode = data.value("shippingAddressPostalcode");
-    d->mShippingAddressCountry = data.value("shippingAddressCountry");
-    d->mEmail1 = data.value("email1");
-    d->mParentId = data.value("parentId");
-    d->mParentName = data.value("parentName");
-    d->mSicCode = data.value("sicCode");
-    d->mCampaignId = data.value("campaignId");
-    d->mCampaignName = data.value("campaignName");
+
+    const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
+    QMap<QString, QString>::const_iterator it = data.constBegin();
+    for ( ; it != data.constEnd() ; ++it) {
+        const SugarAccount::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+        if (accessIt != accessors.constEnd()) {
+            (this->*(accessIt.value().setter))(it.value());
+        } else {
+            d->mCustomFields.insert(it.key(), it.value());
+        }
+    }
+
+    // equivalent to this, but fully automated:
+    //d->mId = data.value("id");
+    //d->mName = data.value("name");
+    // ...
 }
 
 QMap<QString, QString> SugarAccount::data()
 {
     QMap<QString, QString> data;
-    data["id"] = d->mId;
-    data["name"] = d->mName;
-    data["dateEntered"] = d->mDateEntered;
-    data["dateModified"] = d->mDateModified;
-    data["modifiedUserId"] = d->mModifiedUserId;
-    data["modifiedByName"] = d->mModifiedByName;
-    data["createdBy"] = d->mCreatedBy;
-    data["createdByName"] = d->mCreatedByName;
-    data["description"] = d->mDescription;
-    data["deleted"] = d->mDeleted;
-    data["assignedUserId"] = d->mAssignedUserId;
-    data["assignedUserName"] = d->mAssignedUserName;
-    data["accountType"] = d->mAccountType;
-    data["industry"] = d->mIndustry;
-    data["annualRevenue"] = d->mAnnualRevenue;
-    data["phoneFax"] = d->mPhoneFax;
-    data["billingAddressStreet"] = d->mBillingAddressStreet;
-    data["billingAddressCity"] = d->mBillingAddressCity;
-    data["billingAddressState"] = d->mBillingAddressState;
-    data["billingAddressPostalcode"] = d->mBillingAddressPostalcode;
-    data["billingAddressCountry"] = d->mBillingAddressCountry;
-    data["rating"] = d->mRating;
-    data["phoneOffice"] = d->mPhoneOffice;
-    data["phoneAlternate"] = d->mPhoneAlternate;
-    data["website"] = d->mWebsite;
-    data["ownership"] = d->mOwnership;
-    data["employees"] = d->mEmployees;
-    data["tickerSymbol"] = d->mTickerSymbol;
-    data["shippingAddressStreet"] = d->mShippingAddressStreet;
-    data["shippingAddressCity"] = d->mShippingAddressCity;
-    data["shippingAddressState"] = d->mShippingAddressState;
-    data["shippingAddressPostalcode"] = d->mShippingAddressPostalcode;
-    data["shippingAddressCountry"] = d->mShippingAddressCountry;
-    data["email1"] = d->mEmail1;
-    data["parentId"] = d->mParentId;
-    data["parentName"] = d->mParentName;
-    data["sicCode"] = d->mSicCode;
-    data["campaignId"] = d->mCampaignId;
-    data["campaignName"] = d->mCampaignName;
+
+    const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
+    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
+    for (; it != endIt; ++it) {
+        const SugarAccount::valueGetter getter = (*it).getter;
+        data.insert(it.key(), (this->*getter)());
+    }
+
+    // equivalent to this, but fully automated:
+    //data.insert("id", d->mId);
+    //data.insert("name", d->mName);
+    // ...
+
+    // plus custom fields
+    QMap<QString, QString>::const_iterator cit = d->mCustomFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = d->mCustomFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        data.insert(cit.key(), cit.value());
+    }
+
     return data;
 }
 
 QString SugarAccount::mimeType()
 {
     return QLatin1String("application/x-vnd.kdab.crm.account");
+}
+
+Q_GLOBAL_STATIC(SugarAccount::AccessorHash, s_accessors)
+
+SugarAccount::AccessorHash SugarAccount::accessorHash()
+{
+    AccessorHash &accessors = *s_accessors();
+    if (accessors.isEmpty()) {
+        accessors.insert(QLatin1String("id"),
+                          AccountAccessorPair(&SugarAccount::id, &SugarAccount::setId, QString()));
+        accessors.insert(QLatin1String("name"),
+                          AccountAccessorPair(&SugarAccount::name, &SugarAccount::setName,
+                                            i18nc("@item:intable account name", "Name")));
+        accessors.insert(QLatin1String("date_entered"),
+                          AccountAccessorPair(&SugarAccount::dateEntered, &SugarAccount::setDateEntered, QString()));
+        accessors.insert(QLatin1String("date_modified"),
+                          AccountAccessorPair(&SugarAccount::dateModified, &SugarAccount::setDateModified, QString()));
+        accessors.insert(QLatin1String("modified_user_id"),
+                          AccountAccessorPair(&SugarAccount::modifiedUserId, &SugarAccount::setModifiedUserId, QString()));
+        accessors.insert(QLatin1String("modified_by_name"),
+                          AccountAccessorPair(&SugarAccount::modifiedByName, &SugarAccount::setModifiedByName, QString()));
+        accessors.insert(QLatin1String("created_by"),
+                          AccountAccessorPair(&SugarAccount::createdBy, &SugarAccount::setCreatedBy, QString()));
+        accessors.insert(QLatin1String("created_by_name"),
+                          AccountAccessorPair(&SugarAccount::createdByName, &SugarAccount::setCreatedByName, QString()));
+        accessors.insert(QLatin1String("description"),
+                          AccountAccessorPair(&SugarAccount::description, &SugarAccount::setDescription,
+                                            i18nc("@item:intable", "Description")));
+        accessors.insert(QLatin1String("deleted"),
+                          AccountAccessorPair(&SugarAccount::deleted, &SugarAccount::setDeleted, QString()));
+        accessors.insert(QLatin1String("assigned_user_id"),
+                          AccountAccessorPair(&SugarAccount::assignedUserId, &SugarAccount::setAssignedUserId, QString()));
+        accessors.insert(QLatin1String("assigned_user_name"),
+                          AccountAccessorPair(&SugarAccount::assignedUserName, &SugarAccount::setAssignedUserName,
+                                            i18nc("@item:intable", "Assigned To")));
+        accessors.insert(QLatin1String("account_type"),
+                          AccountAccessorPair(&SugarAccount::accountType, &SugarAccount::setAccountType,
+                                            i18nc("@item:intable", "Type")));
+        accessors.insert(QLatin1String("industry"),
+                          AccountAccessorPair(&SugarAccount::industry, &SugarAccount::setIndustry,
+                                            i18nc("@item:intable", "Industry")));
+        accessors.insert(QLatin1String("annual_revenue"),
+                          AccountAccessorPair(&SugarAccount::annualRevenue, &SugarAccount::setAnnualRevenue,
+                                            i18nc("@item:intable", "Annual Revenue")));
+        accessors.insert(QLatin1String("phone_fax"),
+                          AccountAccessorPair(&SugarAccount::phoneFax, &SugarAccount::setPhoneFax,
+                                            i18nc("@item:intable", "Fax")));
+        accessors.insert(QLatin1String("billing_address_street"),
+                          AccountAccessorPair(&SugarAccount::billingAddressStreet, &SugarAccount::setBillingAddressStreet, QString()));
+        accessors.insert(QLatin1String("billing_address_city"),
+                          AccountAccessorPair(&SugarAccount::billingAddressCity, &SugarAccount::setBillingAddressCity, QString()));
+        accessors.insert(QLatin1String("billing_address_state"),
+                          AccountAccessorPair(&SugarAccount::billingAddressState, &SugarAccount::setBillingAddressState, QString()));
+        accessors.insert(QLatin1String("billing_address_postalcode"),
+                          AccountAccessorPair(&SugarAccount::billingAddressPostalcode, &SugarAccount::setBillingAddressPostalcode, QString()));
+        accessors.insert(QLatin1String("billing_address_country"),
+                          AccountAccessorPair(&SugarAccount::billingAddressCountry, &SugarAccount::setBillingAddressCountry, QString()));
+        accessors.insert(QLatin1String("rating"),
+                          AccountAccessorPair(&SugarAccount::rating, &SugarAccount::setRating,
+                                            i18nc("@item:intable", "Rating")));
+        accessors.insert(QLatin1String("phone_office"),
+                          AccountAccessorPair(&SugarAccount::phoneOffice, &SugarAccount::setPhoneOffice,
+                                            i18nc("@item:intable", "Phone (Office)")));
+        accessors.insert(QLatin1String("phone_alternate"),
+                          AccountAccessorPair(&SugarAccount::phoneAlternate, &SugarAccount::setPhoneAlternate,
+                                            i18nc("@item:intable", "Phone (Other)")));
+        accessors.insert(QLatin1String("website"),
+                          AccountAccessorPair(&SugarAccount::website, &SugarAccount::setWebsite,
+                                            i18nc("@item:intable", "Website")));
+        accessors.insert(QLatin1String("ownership"),
+                          AccountAccessorPair(&SugarAccount::ownership, &SugarAccount::setOwnership,
+                                            i18nc("@item:intable", "Ownership")));
+        accessors.insert(QLatin1String("employees"),
+                          AccountAccessorPair(&SugarAccount::employees, &SugarAccount::setEmployees,
+                                            i18nc("@item:intable", "Employees")));
+        accessors.insert(QLatin1String("ticker_symbol"),
+                          AccountAccessorPair(&SugarAccount::tickerSymbol, &SugarAccount::setTickerSymbol,
+                                            i18nc("@item:intable", "Ticker Symbol")));
+        accessors.insert(QLatin1String("shipping_address_street"),
+                          AccountAccessorPair(&SugarAccount::shippingAddressStreet, &SugarAccount::setShippingAddressStreet, QString()));
+        accessors.insert(QLatin1String("shipping_address_city"),
+                          AccountAccessorPair(&SugarAccount::shippingAddressCity, &SugarAccount::setShippingAddressCity, QString()));
+        accessors.insert(QLatin1String("shipping_address_state"),
+                          AccountAccessorPair(&SugarAccount::shippingAddressState, &SugarAccount::setShippingAddressState, QString()));
+        accessors.insert(QLatin1String("shipping_address_postalcode"),
+                          AccountAccessorPair(&SugarAccount::shippingAddressPostalcode, &SugarAccount::setShippingAddressPostalcode, QString()));
+        accessors.insert(QLatin1String("shipping_address_country"),
+                          AccountAccessorPair(&SugarAccount::shippingAddressCountry, &SugarAccount::setShippingAddressCountry, QString()));
+        accessors.insert(QLatin1String("email1"),
+                          AccountAccessorPair(&SugarAccount::email1, &SugarAccount::setEmail1,
+                                            i18nc("@item:intable", "Primary Email")));
+        accessors.insert(QLatin1String("parent_id"),
+                          AccountAccessorPair(&SugarAccount::parentId, &SugarAccount::setParentId, QString()));
+        accessors.insert(QLatin1String("parent_name"),
+                          AccountAccessorPair(&SugarAccount::parentName, &SugarAccount::setParentName,
+                                            i18nc("@item:intable", "Member Of")));
+        accessors.insert(QLatin1String("sic_code"),
+                          AccountAccessorPair(&SugarAccount::sicCode, &SugarAccount::setSicCode,
+                                            i18nc("@item:intable", "SIC Code")));
+        accessors.insert(QLatin1String("campaign_id"),
+                          AccountAccessorPair(&SugarAccount::campaignId, &SugarAccount::setCampaignId, QString()));
+        accessors.insert(QLatin1String("campaign_name"),
+                          AccountAccessorPair(&SugarAccount::campaignName, &SugarAccount::setCampaignName,
+                                            i18nc("@item:intable", "Campaign")));
+    }
+    return accessors;
 }

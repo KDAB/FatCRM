@@ -26,7 +26,7 @@
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
 #include "detailswidget.h"
-
+#include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
@@ -66,7 +66,7 @@ QString OpportunitiesPage::reportTitle() const
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 {
     QMap<QString, QString> initialData;
-    initialData.insert("salesStage", "Prospecting");
-    initialData.insert("probability", "10");
+    initialData.insert(KDCRMFields::salesStage(), "Prospecting");
+    initialData.insert(KDCRMFields::probability(), "10");
     return initialData;
 }

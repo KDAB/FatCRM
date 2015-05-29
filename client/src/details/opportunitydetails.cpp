@@ -36,10 +36,10 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
-    mUi->nextCallDate->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    mUi->nextCallDate->setNullable(true);
-    mUi->dateClosed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    mUi->dateClosed->setNullable(true);
+    mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
+    mUi->next_call_date->setNullable(true);
+    mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
+    mUi->date_closed->setNullable(true);
     initialize();
 }
 
@@ -50,17 +50,17 @@ OpportunityDetails::~OpportunityDetails()
 
 void OpportunityDetails::initialize()
 {
-    ReferencedDataModel::setModelForCombo(mUi->accountName, AccountRef);
-    mUi->opportunityType->addItems(typeItems());
-    mUi->leadSource->addItems(sourceItems());
-    mUi->salesStage->addItems(stageItems());
-    ReferencedDataModel::setModelForCombo(mUi->assignedUserName, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
+    mUi->opportunity_type->addItems(typeItems());
+    mUi->lead_source->addItems(sourceItems());
+    mUi->sales_stage->addItems(stageItems());
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
 }
 
 void OpportunityDetails::slotAutoNextStepDate()
 {
-    mUi->nextCallDate->setDate(QDate::currentDate().addDays(14));
+    mUi->next_call_date->setDate(QDate::currentDate().addDays(14));
 }
 
 QStringList OpportunityDetails::typeItems() const

@@ -25,116 +25,23 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 #include "kdcrmutils.h"
+#include "kdcrmfields.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/collection.h>
 
 #include <akonadi/abstractdifferencesreporter.h>
-#include <kdcrmdata/sugaropportunity.h>
 
 #include <KLocale>
 
-#include <QHash>
-
-typedef QString(SugarOpportunity::*valueGetter)() const;
-typedef void (SugarOpportunity::*valueSetter)(const QString &);
-
-class OpportunityAccessorPair
-{
-public:
-    OpportunityAccessorPair(valueGetter get, valueSetter set, const QString &name)
-        : getter(get), setter(set), diffName(name)
-    {}
-
-public:
-    valueGetter getter;
-    valueSetter setter;
-    const QString diffName;
-};
-
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Opportunities"), session),
-      mAccessors(new OpportunityAccessorHash)
+      mAccessors(SugarOpportunity::accessorHash())
 {
-    mAccessors->insert(QLatin1String("id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::id, &SugarOpportunity::setId, QString()));
-    mAccessors->insert(QLatin1String("name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::name, &SugarOpportunity::setName,
-                                        i18nc("@item:intable", "Name")));
-    mAccessors->insert(QLatin1String("date_entered"),
-                       new OpportunityAccessorPair(&SugarOpportunity::dateEntered, &SugarOpportunity::setDateEntered, QString()));
-    mAccessors->insert(QLatin1String("date_modified"),
-                       new OpportunityAccessorPair(&SugarOpportunity::dateModified, &SugarOpportunity::setDateModified, QString()));
-    mAccessors->insert(QLatin1String("modified_user_id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::modifiedUserId, &SugarOpportunity::setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_by_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::modifiedByName, &SugarOpportunity::setModifiedByName, QString()));
-    mAccessors->insert(QLatin1String("created_by"),
-                       new OpportunityAccessorPair(&SugarOpportunity::createdBy, &SugarOpportunity::setCreatedBy, QString()));
-    mAccessors->insert(QLatin1String("created_by_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::createdByName, &SugarOpportunity::setCreatedByName,
-                                        i18nc("@item:intable", "Created By")));
-    mAccessors->insert(QLatin1String("description"),
-                       new OpportunityAccessorPair(&SugarOpportunity::description, &SugarOpportunity::setDescription,
-                                        i18nc("@item:intable", "Description")));
-    mAccessors->insert(QLatin1String("deleted"),
-                       new OpportunityAccessorPair(&SugarOpportunity::deleted, &SugarOpportunity::setDeleted, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::assignedUserId, &SugarOpportunity::setAssignedUserId, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::assignedUserName, &SugarOpportunity::setAssignedUserName,
-                                        i18nc("@item:intable", "Assigned To")));
-    mAccessors->insert(QLatin1String("opportunity_type"),
-                       new OpportunityAccessorPair(&SugarOpportunity::opportunityType, &SugarOpportunity::setOpportunityType,
-                                        i18nc("@item:intable", "Type")));
-    mAccessors->insert(QLatin1String("account_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::accountName, &SugarOpportunity::setAccountName,
-                                        i18nc("@item:intable", "Account")));
-    // ### I wish this one was available, but SuiteCRM doesn't return it!
-    // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)
-    mAccessors->insert(QLatin1String("account_id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::accountId, &SugarOpportunity::setAccountId, QString()));
-    mAccessors->insert(QLatin1String("campaign_id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::campaignId, &SugarOpportunity::setCampaignId, QString()));
-    mAccessors->insert(QLatin1String("campaign_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::campaignName, &SugarOpportunity::setCampaignName,
-                                        i18nc("@item:intable", "Campaign")));
-    mAccessors->insert(QLatin1String("lead_source"),
-                       new OpportunityAccessorPair(&SugarOpportunity::leadSource, &SugarOpportunity::setLeadSource,
-                                        i18nc("@item:intable", "Lead Source")));
-    mAccessors->insert(QLatin1String("amount"),
-                       new OpportunityAccessorPair(&SugarOpportunity::amount, &SugarOpportunity::setAmount,
-                                        i18nc("@item:intable", "Amount")));
-    mAccessors->insert(QLatin1String("amount_usdollar"),
-                       new OpportunityAccessorPair(&SugarOpportunity::amountUsDollar, &SugarOpportunity::setAmountUsDollar,
-                                        i18nc("@item:intable", "Amount in USD")));
-    mAccessors->insert(QLatin1String("currency_id"),
-                       new OpportunityAccessorPair(&SugarOpportunity::currencyId, &SugarOpportunity::setCurrencyId, QString()));
-    mAccessors->insert(QLatin1String("currency_name"),
-                       new OpportunityAccessorPair(&SugarOpportunity::currencyName, &SugarOpportunity::setCurrencyName,
-                                        i18nc("@item:intable", "Currency")));
-    mAccessors->insert(QLatin1String("currency_symbol"),
-                       new OpportunityAccessorPair(&SugarOpportunity::currencySymbol, &SugarOpportunity::setCurrencySymbol, QString()));
-    mAccessors->insert(QLatin1String("date_closed"),
-                       new OpportunityAccessorPair(&SugarOpportunity::dateClosed, &SugarOpportunity::setDateClosed, QString()));
-    mAccessors->insert(QLatin1String("next_step"),
-                       new OpportunityAccessorPair(&SugarOpportunity::nextStep, &SugarOpportunity::setNextStep,
-                                        i18nc("@item:intable", "Next Step")));
-    mAccessors->insert(QLatin1String("sales_stage"),
-                       new OpportunityAccessorPair(&SugarOpportunity::salesStage, &SugarOpportunity::setSalesStage,
-                                        i18nc("@item:intable", "Sales Stage")));
-    mAccessors->insert(QLatin1String("probability"),
-                       new OpportunityAccessorPair(&SugarOpportunity::probability, &SugarOpportunity::setProbability,
-                                        i18nc("@item:intable", "Probability (percent)")));
-    mAccessors->insert(QLatin1String("next_call_date_c"),
-                       new OpportunityAccessorPair(&SugarOpportunity::nextCallDateRaw, &SugarOpportunity::setNextCallDateRaw,
-                                        i18nc("@item:intable", "Next Call Date")));
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
 {
-    qDeleteAll(*mAccessors);
-    delete mAccessors;
 }
 
 Akonadi::Collection OpportunitiesHandler::handlerCollection() const
@@ -170,14 +77,14 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarOpportunity opp = item.payload<SugarOpportunity>();
-    OpportunityAccessorHash::const_iterator it    = mAccessors->constBegin();
-    OpportunityAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
-        const valueGetter getter = (*it)->getter;
+        const SugarOpportunity::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
         field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
@@ -199,7 +106,7 @@ QString OpportunitiesHandler::orderByForListing() const
 
 QStringList OpportunitiesHandler::supportedFields() const
 {
-    return mAccessors->keys();
+    return mAccessors.keys();
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -220,14 +127,14 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     opportunity.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         //qDebug() << namedValue.name() << "=" << namedValue.value();
-        const OpportunityAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
-        if (accessIt == mAccessors->constEnd()) {
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        if (accessIt == mAccessors.constEnd()) {
             qDebug() << "skipping field" << namedValue.name();
             // no accessor for field
             continue;
         }
 
-        (opportunity.*(accessIt.value()->setter))(KDCRMUtils::decodeXML(namedValue.value()));
+        (opportunity.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarOpportunity>(opportunity);
     item.setRemoteRevision(opportunity.dateModified());
@@ -252,21 +159,21 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
         i18nc("@title:column", "Serverside Opportunity: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    OpportunityAccessorHash::const_iterator it    = mAccessors->constBegin();
-    OpportunityAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
 
-        const valueGetter getter = (*it)->getter;
+        const SugarOpportunity::valueGetter getter = (*it).getter;
         QString leftValue = (leftOpportunity.*getter)();
         QString rightValue = (rightOpportunity.*getter)();
 
-        QString diffName = (*it)->diffName;
+        QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
-            if (it.key() == "date_closed") {
+            if (it.key() == KDCRMFields::dateClosed()) {
                 diffName = i18nc("@item:intable", "Expected Close Date");
                 leftValue = formatDate(leftOpportunity.dateClosed());
                 rightValue = formatDate(rightOpportunity.dateClosed());

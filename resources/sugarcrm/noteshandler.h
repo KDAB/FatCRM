@@ -26,8 +26,6 @@
 #include "modulehandler.h"
 #include <kdcrmdata/sugarnote.h>
 
-class NoteAccessorPair;
-
 template <typename U, typename V> class QHash;
 
 class NotesHandler : public ModuleHandler
