@@ -24,7 +24,8 @@
 
 #include "ui_opportunitydetails.h"
 #include "referenceddatamodel.h"
-#include "kdcrmutils.h"
+#include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
 #include "notesrepository.h"
 
 #include <kdcrmdata/sugaropportunity.h>
@@ -121,6 +122,13 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
+}
+
+void OpportunityDetails::getDataInternal(QMap<QString, QString> &currentData) const
+{
+    currentData[KDCRMFields::accountId()] = currentAccountId();
+    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
+    currentData[KDCRMFields::campaignId()] = currentCampaignId();
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()

@@ -36,7 +36,6 @@ static QStringList storedProperties()
 {
     static QStringList props;
     if (props.isEmpty()) {
-        props << KDCRMFields::modifiedBy();
         props << KDCRMFields::modifiedByName();
         props << KDCRMFields::modifiedUserId();
         props << KDCRMFields::dateEntered();
@@ -215,22 +214,12 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QLabel *> labels = createdModifiedContainer->findChildren<QLabel *>();
     Q_FOREACH (QLabel *lb, labels) {
         key = lb->objectName();
-        if (key == KDCRMFields::modifiedBy()) {
-            if (!data.value(KDCRMFields::modifiedByName()).isEmpty()) {
-                lb->setText(data.value(KDCRMFields::modifiedByName()));
-            } else if (!data.value(KDCRMFields::modifiedBy()).isEmpty()) {
-                lb->setText(data.value(KDCRMFields::modifiedBy()));
-            } else {
-                lb->setText(data.value("modifiedUserName"));
-            }
+        if (key == KDCRMFields::modifiedByName()) {
+            lb->setText(data.value(KDCRMFields::modifiedByName()));
         } else if (key == KDCRMFields::dateEntered()) {
             lb->setText(KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateEntered())));
-        } else if (key == KDCRMFields::createdBy()) {
-            if (!data.value(KDCRMFields::createdByName()).isEmpty()) {
-                lb->setText(data.value(KDCRMFields::createdByName()));
-            } else {
-                lb->setText(data.value(KDCRMFields::createdBy()));
-            }
+        } else if (key == KDCRMFields::createdByName()) {
+            lb->setText(data.value(KDCRMFields::createdByName()));
         }
     }
 
@@ -313,7 +302,10 @@ const QMap<QString, QString> Details::getData() const
     }
 
     Q_FOREACH (const QString &prop, storedProperties()) {
-        currentData.insert(prop, property(prop.toLatin1()).toString());
+        QVariant val = property(prop.toLatin1());
+        if (val.isValid()) {
+            currentData.insert(prop, val.toString());
+        }
     }
 
     // will be overwritten by the server, but good to have for comparison in case of change conflict
@@ -322,14 +314,7 @@ const QMap<QString, QString> Details::getData() const
     const QString fullUserName = ClientSettings::self()->fullUserName();
     currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
 
-    const QString accountId = currentAccountId();
-    currentData[KDCRMFields::parentId()] = accountId;
-    currentData[KDCRMFields::accountId()] = accountId;
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
-    const QString assignedToId = currentAssignedToId();
-    currentData[KDCRMFields::assignedUserId()] = assignedToId;
-    currentData[KDCRMFields::assignedToId()] = assignedToId;
-    currentData[KDCRMFields::reportsToId()] = currentReportsToId();
+    getDataInternal(currentData);
 
     return currentData;
 }

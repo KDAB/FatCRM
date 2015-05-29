@@ -41,7 +41,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="created_by"/>
+          <widget class="QLabel" name="created_by_name"/>
          </item>
          <item>
           <spacer name="horizontalSpacer_3">
@@ -78,7 +78,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="modified_by"/>
+          <widget class="QLabel" name="modified_by_name"/>
          </item>
         </layout>
        </widget>

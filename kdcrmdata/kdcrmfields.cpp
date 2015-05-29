@@ -115,11 +115,6 @@ QString KDCRMFields::reportsToId()
     return QLatin1String("reports_to_id");
 }
 
-QString KDCRMFields::modifiedBy()
-{
-    return QLatin1String("modified_by");
-}
-
 QString KDCRMFields::opportunityType()
 {
     return QLatin1String("opportunity_type");

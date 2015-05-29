@@ -73,17 +73,19 @@ protected:
     QStringList salutationItems() const;
 
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
+    virtual void getDataInternal(QMap<QString, QString> &) const {}
     QString id() const;
+
+    QString currentAccountId() const;
+
+    QString currentAssignedToId() const;
+    QString currentCampaignId() const;
+    QString currentReportsToId() const;
 
 private Q_SLOTS:
     void doConnects();
 
 private:
-    QString currentAccountId() const;
-    QString currentAssignedToId() const;
-    QString currentCampaignId() const;
-    QString currentReportsToId() const;
-
     const DetailsType mType;
     QByteArray mResourceIdentifier;
     QString mResourceBaseUrl;

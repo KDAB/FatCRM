@@ -51,6 +51,7 @@ private:
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    void getDataInternal(QMap<QString, QString> &currentData) const Q_DECL_OVERRIDE;
 
     QMap<QString, QString> contactData(const KABC::Addressee &contact) const;
 

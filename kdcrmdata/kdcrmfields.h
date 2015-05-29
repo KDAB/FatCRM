@@ -33,10 +33,8 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString accountId();
     KDCRMDATA_EXPORT QString assignedToId();
     KDCRMDATA_EXPORT QString reportsToId();
-    KDCRMDATA_EXPORT QString modifiedBy();
     KDCRMDATA_EXPORT QString opportunityType();
     KDCRMDATA_EXPORT QString description();
-    KDCRMDATA_EXPORT QString assignedUserId();
     KDCRMDATA_EXPORT QString deleted();
     KDCRMDATA_EXPORT QString content();
     KDCRMDATA_EXPORT QString leadSource();

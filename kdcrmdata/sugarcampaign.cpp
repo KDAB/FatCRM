@@ -581,7 +581,7 @@ QMap<QString, QString> SugarCampaign::data()
     data[KDCRMFields::dateEntered()] = d->mDateEntered;
     data[KDCRMFields::dateModified()] = d->mDateModified;
     data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
-    data["modifiedUserName"] = d->mModifiedByName;
+    data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
     data[KDCRMFields::createdBy()] = d->mCreatedBy;
     data[KDCRMFields::createdByName()] = d->mCreatedByName;
     data[KDCRMFields::deleted()] = d->mDeleted;

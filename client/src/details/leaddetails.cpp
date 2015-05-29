@@ -28,6 +28,7 @@
 #include "kdcrmutils.h"
 
 #include <kdcrmdata/sugarlead.h>
+#include <kdcrmdata/kdcrmfields.h>
 
 LeadDetails::LeadDetails(QWidget *parent)
     : Details(Lead, parent), mUi(new Ui::LeadDetails)
@@ -96,4 +97,12 @@ void LeadDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &
 
     item.setMimeType(SugarLead::mimeType());
     item.setPayload<SugarLead>(lead);
+}
+
+void LeadDetails::getDataInternal(QMap<QString, QString> &currentData) const
+{
+    currentData[KDCRMFields::reportsToId()] = currentReportsToId();
+    currentData[KDCRMFields::accountId()] = currentAccountId();
+    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
+    currentData[KDCRMFields::campaignId()] = currentCampaignId();
 }

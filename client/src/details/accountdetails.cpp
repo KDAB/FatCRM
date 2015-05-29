@@ -26,6 +26,7 @@
 #include "referenceddatamodel.h"
 
 #include <kdcrmdata/sugaraccount.h>
+#include <kdcrmdata/kdcrmfields.h>
 
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(Account, parent), mUi(new Ui::AccountDetails)
@@ -89,3 +90,11 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url));
     }
 }
+
+void AccountDetails::getDataInternal(QMap<QString, QString> &currentData) const
+{
+    currentData[KDCRMFields::parentId()] = currentAccountId();
+    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
+    currentData[KDCRMFields::campaignId()] = currentCampaignId();
+}
+

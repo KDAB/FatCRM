@@ -213,16 +213,6 @@ static void setDateModified(const QString &value, KABC::Addressee &addressee)
     addressee.insertCustom("FATCRM", "X-DateModified", value);
 }
 
-static QString getModifiedUserName(const KABC::Addressee &addressee)
-{
-    return addressee.custom("FATCRM", "X-ModifiedUserName");
-}
-
-static void setModifiedUserName(const QString &value, KABC::Addressee &addressee)
-{
-    addressee.insertCustom("FATCRM", "X-ModifiedUserName", value);
-}
-
 static QString getModifiedUserId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-ModifiedUserId");
@@ -649,8 +639,6 @@ ContactsHandler::ContactsHandler(SugarSession *session)
                        new ContactAccessorPair(getDateModified, setDateModified, QString()));
     mAccessors->insert(QLatin1String("modified_user_id"),
                        new ContactAccessorPair(getModifiedUserId, setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_user_name"),
-                       new ContactAccessorPair(getModifiedUserName, setModifiedUserName, QString()));
     mAccessors->insert(QLatin1String("date_entered"),
                        new ContactAccessorPair(getDateCreated, setDateCreated, QString()));
     mAccessors->insert(QLatin1String("id"),

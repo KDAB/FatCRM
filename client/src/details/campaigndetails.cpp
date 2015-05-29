@@ -25,8 +25,9 @@
 #include "editcalendarbutton.h"
 #include "ui_campaigndetails.h"
 #include "referenceddatamodel.h"
-#include "kdcrmutils.h"
 
+#include <kdcrmdata/kdcrmutils.h>
+#include <kdcrmdata/kdcrmfields.h>
 #include <kdcrmdata/sugarcampaign.h>
 
 CampaignDetails::CampaignDetails(QWidget *parent)
@@ -118,4 +119,8 @@ void CampaignDetails::updateItem(Akonadi::Item &item, const QMap<QString, QStrin
 
     item.setMimeType(SugarCampaign::mimeType());
     item.setPayload<SugarCampaign>(campaign);
+}
+
+void CampaignDetails::getDataInternal(QMap<QString, QString> &) const
+{
 }
