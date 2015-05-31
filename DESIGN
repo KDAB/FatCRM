@@ -1,0 +1,25 @@
+Resource:
+=========
+
+Uses SOAP to talk to the Sugar web service.
+
+Loads the data into value classes provided by the lib kdcrmdata (SugarAccount, SugarOpportunity), and KABC::Addressee for contacts.
+
+This is then serialized into XML, and stored it in Akonadi items.
+
+Sugar Client:
+=============
+
+Fetches the right collection for each type of object.
+
+Lists the collection (via the ETM).
+
+For each Akonadi item, extracts the SugarAccount, SugarOpportunity etc. by deserializing the XML.
+
+The GUI uses a generic QMap<QString, QString> to get/set data in these objects.
+
+One problem with this is, when creating a new object, how to know which keys should be filled.
+Current solution: remember keys from previous already-existing objects.
+Idea for a better solution: a static method in the kdcrmdata classes, fits well with the new static Hash some have.
+
+
