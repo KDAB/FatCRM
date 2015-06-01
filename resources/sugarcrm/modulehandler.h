@@ -54,7 +54,7 @@ public:
     QString latestTimestamp() const;
     void resetLatestTimestamp();
 
-    Akonadi::Collection collection() const;
+    Akonadi::Collection collection();
 
     void getEntriesCount(const ListEntriesScope &scope);
     void listEntries(const ListEntriesScope &scope);
@@ -87,6 +87,7 @@ protected:
     SugarSession *mSession;
     QString mModuleName;
     QString mLatestTimestamp;
+    Akonadi::Collection mCollection;
 
 protected:
     static QString formatDate(const QString &dateString);

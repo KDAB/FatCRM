@@ -61,11 +61,13 @@ void ModuleHandler::resetLatestTimestamp()
     mLatestTimestamp = QString();
 }
 
-Akonadi::Collection ModuleHandler::collection() const
+Akonadi::Collection ModuleHandler::collection()
 {
-    Akonadi::Collection coll = handlerCollection();
-    coll.setRemoteId(moduleName());
-    return coll;
+    if (!mCollection.isValid()) {
+        mCollection = handlerCollection();
+        mCollection.setRemoteId(moduleName());
+    }
+    return mCollection;
 }
 
 void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)

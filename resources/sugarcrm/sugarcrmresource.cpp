@@ -455,10 +455,9 @@ void SugarCRMResource::listModulesResult(KJob *job)
     createModuleHandlers(availableModules);
 
     Q_FOREACH (const QString &module, availableModules) {
-        Collection collection;
         ModuleHandler* handler = mModuleHandlers->value(module);
         if (handler) {
-            collection = handler->collection();
+            Collection collection = handler->collection();
             //handler->resetLatestTimestamp(); // not sure why that was here
 
             collection.setParentCollection(topLevelCollection);
