@@ -42,8 +42,10 @@ class TNS__Entry_list;
 class TNS__Entry_value;
 }
 
-class ModuleHandler : public Akonadi::DifferencesAlgorithmInterface
+class ModuleHandler : public QObject, public Akonadi::DifferencesAlgorithmInterface
 {
+    Q_OBJECT
+    Q_INTERFACES(Akonadi::DifferencesAlgorithmInterface) // just to silence moc
 public:
     explicit ModuleHandler(const QString &moduleName, SugarSession *session);
 
@@ -55,6 +57,7 @@ public:
     void resetLatestTimestamp();
 
     Akonadi::Collection collection();
+    void modifyCollection(const Akonadi::Collection &collection);
 
     void getEntriesCount(const ListEntriesScope &scope);
     void listEntries(const ListEntriesScope &scope);
@@ -63,6 +66,7 @@ public:
     static QStringList listAvailableFields(SugarSession *session, const QString &module);
 
     virtual bool setEntry(const Akonadi::Item &item) = 0;
+    virtual int expectedContentsVersion() const { return 0; }
 
     bool getEntry(const Akonadi::Item &item);
 
@@ -97,6 +101,9 @@ protected:
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;
+
+private Q_SLOTS:
+    void slotCollectionModifyResult(KJob *);
 
 private:
     mutable QStringList mAvailableFields;

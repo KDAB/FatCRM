@@ -126,6 +126,12 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     return true;
 }
 
+int AccountsHandler::expectedContentsVersion() const
+{
+    // version 1 = accounts now store all fields, including custom fields
+    return 1;
+}
+
 Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;

@@ -68,8 +68,6 @@ public: // slots
     void listEntriesError(const KDSoapMessage &fault);
 };
 
-static const char s_timeStampKey[] = "timestamp";
-
 void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_result &callResult)
 {
     if (q->handleError(callResult.error())) {
@@ -92,6 +90,12 @@ void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
         q->emitResult();
     }
 }
+
+static const char s_timeStampKey[] = "timestamp";
+
+// When the resource evolves and can store more things (or if e.g. encoding bugs are fixed)
+// then increasing the expected version ensures that old caches are thrown out.
+static const char s_contentsVersionKey[] = "contentsVersion";
 
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
@@ -128,12 +132,23 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             EntityAnnotationsAttribute *annotationsAttribute =
                     mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
             Q_ASSERT(annotationsAttribute);
+            bool changed = false;
             if (annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
                 annotationsAttribute->insert(s_timeStampKey, mHandler->latestTimestamp());
+                changed = true;
+            }
+            if (!mListScope.isUpdateScope()) {
+                // If we just did a full listing (first time, or after a contents version upgrade)
+                // then upgrade the contents version attribute.
+                const int currentVersion = mHandler->expectedContentsVersion();
+                if (annotationsAttribute->value(s_contentsVersionKey).toInt() != currentVersion) {
+                    annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
+                    changed = true;
+                }
+            }
 
-                // no parent, this job will outlive the ListEntriesJob
-                Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(mCollection);
-                Q_UNUSED(modJob);
+            if (changed) {
+                mHandler->modifyCollection(mCollection);
             }
             q->emitResult();
             return;
@@ -176,8 +191,6 @@ ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSessi
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
     d->mStage = Private::GetCount;
-    d->mListScope = ListEntriesScope(latestTimestamp());
-
     kDebug() << this;
 }
 
@@ -195,14 +208,22 @@ Collection ListEntriesJob::collection() const
 void ListEntriesJob::setModule(ModuleHandler *handler)
 {
     d->mHandler = handler;
+    d->mListScope = ListEntriesScope(latestTimestamp());
 }
 
 QString ListEntriesJob::latestTimestamp() const
 {
     EntityAnnotationsAttribute *annotationsAttribute =
             d->mCollection.attribute<EntityAnnotationsAttribute>();
-    if (annotationsAttribute)
+    if (annotationsAttribute) {
+        const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();
+        const int expected = d->mHandler->expectedContentsVersion();
+        if (contentsVersion != expected) {
+            kDebug() << d->mHandler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
+            return QString();
+        }
         return annotationsAttribute->value(s_timeStampKey);
+    }
     return QString();
 }
 

@@ -36,6 +36,8 @@ using namespace KDSoapGenerated;
 #include <QInputDialog>
 #include <QStringList>
 
+#include <akonadi/collectionmodifyjob.h>
+
 ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
     : mSession(session), mModuleName(moduleName)
 {
@@ -68,6 +70,13 @@ Akonadi::Collection ModuleHandler::collection()
         mCollection.setRemoteId(moduleName());
     }
     return mCollection;
+}
+
+void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
+{
+    // no parent, this job will outlive the ListEntriesJob
+    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection);
+    connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
 }
 
 void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)
@@ -185,4 +194,11 @@ QString ModuleHandler::sessionId() const
 Sugarsoap *ModuleHandler::soap() const
 {
     return mSession->soap();
+}
+
+void ModuleHandler::slotCollectionModifyResult(KJob *job)
+{
+    if (job->error()) {
+        kWarning() << job->errorString();
+    }
 }
