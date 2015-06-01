@@ -30,17 +30,17 @@ public:
 
     ~TasksHandler();
 
-    Akonadi::Collection handlerCollection() const;
+    Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
-    QString orderByForListing() const;
-    QStringList supportedFields() const;
+    QString orderByForListing() const Q_DECL_OVERRIDE;
+    QStringList supportedFields() const Q_DECL_OVERRIDE;
 
-    bool setEntry( const Akonadi::Item &item );
+    bool setEntry( const Akonadi::Item &item ) Q_DECL_OVERRIDE;
 
-    Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection );
+    Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection ) Q_DECL_OVERRIDE;
 
     void compare( Akonadi::AbstractDifferencesReporter *reporter,
-                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem );
+                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem ) Q_DECL_OVERRIDE;
 
 private:
     typedef QHash<QString, TaskAccessorPair*> AccessorHash;

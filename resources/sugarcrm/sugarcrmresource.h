@@ -68,17 +68,17 @@ private:
     bool mOnline;
 
 private:
-    void aboutToQuit();
-    void doSetOnline(bool online);
+    void aboutToQuit() Q_DECL_OVERRIDE;
+    void doSetOnline(bool online) Q_DECL_OVERRIDE;
 
-    void itemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection);
-    void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts);
-    void itemRemoved(const Akonadi::Item &item);
+    void itemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
+    void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts) Q_DECL_OVERRIDE;
+    void itemRemoved(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void retrieveCollections();
-    void retrieveItems(const Akonadi::Collection &col);
-    bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts);
+    void retrieveCollections() Q_DECL_OVERRIDE;
+    void retrieveItems(const Akonadi::Collection &col) Q_DECL_OVERRIDE;
+    bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts) Q_DECL_OVERRIDE;
 
     void startExplicitLogin();
     void explicitLoginResult(KJob *job);

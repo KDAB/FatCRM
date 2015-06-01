@@ -37,18 +37,18 @@ public:
 
     ~SalesforceContactsHandler();
 
-    QStringList supportedFields() const;
+    QStringList supportedFields() const Q_DECL_OVERRIDE;
 
-    virtual void setDescriptionResult(const TNS__DescribeSObjectResult &description);
+    virtual void setDescriptionResult(const TNS__DescribeSObjectResult &description) Q_DECL_OVERRIDE;
 
-    Akonadi::Collection collection() const;
+    Akonadi::Collection collection() const Q_DECL_OVERRIDE;
 
-    virtual void listEntries(const TNS__QueryLocator &locator, SforceService *soap);
+    virtual void listEntries(const TNS__QueryLocator &locator, SforceService *soap) Q_DECL_OVERRIDE;
 
-    virtual bool setEntry(const Akonadi::Item &item, SforceService *soap);
+    virtual bool setEntry(const Akonadi::Item &item, SforceService *soap) Q_DECL_OVERRIDE;
 
     virtual Akonadi::Item::List itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
-            const Akonadi::Collection &parentCollection);
+            const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
 private:
     typedef QHash<QString, ContactAccessorPair> ContactAccessorHash;
     ContactAccessorHash *mAccessors;
