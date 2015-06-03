@@ -83,7 +83,7 @@ QStringList OpportunityDetails::stageItems() const
            << QString("Id.Decision Makers")
            << QString("Perception Analysis")
            << QString("Proposal/Price Quote")
-           << QString("Negociation/Review")
+           << QString("Negotiation/Review")
            << QString("Closed Won")
            << QString("Closed Lost");
     return stages;
