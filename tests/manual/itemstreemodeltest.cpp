@@ -31,6 +31,7 @@
 #include <QTimer>
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionFetchScope>
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityTreeView>

@@ -26,6 +26,7 @@
 #include <QObject>
 
 #include <akonadi/item.h>
+#include <akonadi/collection.h>
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 

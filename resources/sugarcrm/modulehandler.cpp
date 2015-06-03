@@ -29,6 +29,8 @@
 using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 
+#include <akonadi/collection.h>
+
 #include <KLocale>
 
 #include <QInputDialog>
