@@ -534,7 +534,7 @@ void Page::addAccountsData()
             const QString billingCountry = account.billingAddressCountry();
             const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
             // See comment in itemstreemodel.cpp about why this isn't account.id()
-            accountCountryRefMap.insert(account.name(), country);
+            accountCountryRefMap.insert(account.name(), country.trimmed());
 
             AccountRepository::instance()->addAccount(account);
         }
