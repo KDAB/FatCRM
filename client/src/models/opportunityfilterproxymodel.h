@@ -56,7 +56,9 @@ public:
      * And with a possible max date.
      * And either open, or closed, or both.
      */
-    void setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
+    void setFilter(const QStringList &assignees,
+                   const QStringList &countries, const QDate &maxDate,
+                   const QDate &modifiedAfter, const QDate &modifiedBefore,
                    bool showOpen, bool showClosed);
 
     void setFilterDescriptionData(const QString &assigneeGroup, const QString &countryGroup);

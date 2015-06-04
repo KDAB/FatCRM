@@ -43,6 +43,8 @@ public:
     QSize sizeHint() const;
     QSize minimumSizeHint() const;
 
+    void clear() Q_DECL_OVERRIDE;
+
 protected:
     /*! \reimp */ void showEvent(QShowEvent *event);
     /*! \reimp */ void resizeEvent(QResizeEvent *event);

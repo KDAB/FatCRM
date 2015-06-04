@@ -44,6 +44,13 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->cbOpen, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->cbClosed, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
+    connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
+    connect(ui->modifiedBefore, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
+
+    ui->modifiedAfter->setNullable(true);
+    ui->modifiedAfter->clear();
+    ui->modifiedBefore->setNullable(true);
+    ui->modifiedBefore->clear();
     ui->cbMaxNextStepDate->setCurrentIndex(0);
 
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
@@ -109,6 +116,8 @@ void OpportunityFilterWidget::filterChanged()
     }
     const bool showOpen = ui->cbOpen->isChecked();
     const bool showClosed = ui->cbClosed->isChecked();
-    m_oppFilterProxyModel->setFilter(assignees, countries, maxNextStepDate(), showOpen, showClosed);
+    const QDate modifiedAfter = ui->modifiedAfter->date();
+    const QDate modifiedBefore = ui->modifiedBefore->date();
+    m_oppFilterProxyModel->setFilter(assignees, countries, maxNextStepDate(), modifiedAfter, modifiedBefore, showOpen, showClosed);
     m_oppFilterProxyModel->setFilterDescriptionData(ui->cbAssignee->currentText(), ui->cbCountry->currentText());
 }

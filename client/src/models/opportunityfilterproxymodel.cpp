@@ -47,6 +47,7 @@ public:
     QString assigneeGroup; // user-visible description for <assignee>
     QString countryGroup; // user-visible description for <countries>
     QDate maxDate;
+    QDate modifiedBefore, modifiedAfter;
     bool showOpen;
     bool showClosed;
 };
@@ -62,6 +63,7 @@ OpportunityFilterProxyModel::~OpportunityFilterProxyModel()
 }
 
 void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
+                                            const QDate &modifiedAfter, const QDate &modifiedBefore,
                                             bool showOpen, bool showClosed)
 {
     d->assignees = assignees;
@@ -69,6 +71,8 @@ void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const 
     d->maxDate = maxDate;
     d->showOpen = showOpen;
     d->showClosed = showClosed;
+    d->modifiedAfter = modifiedAfter;
+    d->modifiedBefore = modifiedBefore;
     invalidate();
 }
 
@@ -99,6 +103,19 @@ QString OpportunityFilterProxyModel::filterDescription() const
 
     if (!d->maxDate.isNull()) {
         txt = i18n("%1, next step before %2", txt, KDCRMUtils::formatDate(d->maxDate));
+    }
+
+    if (!d->modifiedAfter.isNull()) {
+        const QString after = KDCRMUtils::formatDate(d->modifiedAfter);
+        const QString before = KDCRMUtils::formatDate(d->modifiedBefore);
+        if (!d->modifiedBefore.isNull()) {
+            txt = i18n("%1, modified between %2 and %3", txt, after, before);
+        } else {
+            txt = i18n("%1, modified after %2", txt, after);
+        }
+    } else if (!d->modifiedBefore.isNull()) {
+        const QString before = KDCRMUtils::formatDate(d->modifiedBefore);
+        txt = i18n("%1, modified before %2", txt, before);
     }
 
     if (!filterString().isEmpty()) {
@@ -158,6 +175,10 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
         return false;
     if (d->maxDate.isValid() && (!opportunity.nextCallDate().isValid()
                                  || opportunity.nextCallDate() > d->maxDate))
+        return false;
+    if (d->modifiedAfter.isValid() && opportunity.dateModified().date() < d->modifiedAfter)
+        return false;
+    if (d->modifiedBefore.isValid() && opportunity.dateModified().date() > d->modifiedBefore)
         return false;
 
     const QString filterStr = filterString();
