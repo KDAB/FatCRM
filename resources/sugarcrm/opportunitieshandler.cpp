@@ -137,7 +137,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
         (opportunity.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarOpportunity>(opportunity);
-    item.setRemoteRevision(opportunity.dateModified());
+    item.setRemoteRevision(opportunity.dateModifiedRaw());
 
     return item;
 }
@@ -152,7 +152,7 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
     const SugarOpportunity rightOpportunity = rightItem.payload<SugarOpportunity>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(rightOpportunity.dateModified());
+    const QString modifiedOn = KDCRMUtils::formatDateTime(rightOpportunity.dateModified());
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Opportunity"));
     reporter->setRightPropertyValueTitle(

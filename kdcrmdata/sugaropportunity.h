@@ -116,13 +116,13 @@ public:
     QString dateEntered() const;
 
     /**
-      Set Modification date.
-     */
-    void setDateModified(const QString &name);
-    /**
       Return Modification date.
      */
-    QString dateModified() const;
+    QDateTime dateModified() const;
+
+    void setDateModifiedRaw(const QString &name);
+    QString dateModifiedRaw() const;
+
 
     /**
       Set Modified User id.
@@ -331,10 +331,6 @@ public:
      */
     QString probability() const;
 
-    /**
-      Set next call date.
-     */
-    void setNextCallDate(const QDate &value);
     /**
       Return next call date.
      */

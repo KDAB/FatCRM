@@ -72,7 +72,7 @@ void ReportPage::on_calculateOppCount_clicked()
 
             const QString salesStage = opportunity.salesStage();
             if (salesStage.contains("Closed")) {
-                const QDate dateModified = KDCRMUtils::dateTimeFromString(opportunity.dateModified()).date();
+                const QDate dateModified = opportunity.dateModified().date();
                 if (dateModified >= ui->from->date() && dateModified <= ui->to->date()) {
                     if (salesStage.contains("Closed Won") ) {
                         ++wonCount;

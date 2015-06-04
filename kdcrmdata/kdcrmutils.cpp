@@ -57,6 +57,11 @@ QString KDCRMUtils::dateToString(const QDate &date)
     return date.toString(QLatin1String("yyyy-MM-dd"));
 }
 
+QString KDCRMUtils::dateTimeToString(const QDateTime &dateTime)
+{
+    return dateTime.toString(TIMESTAMPFORMAT);
+}
+
 QString KDCRMUtils::formatDate(const QDate &date)
 {
     return KGlobal::locale()->formatDate(date, KLocale::ShortDate);

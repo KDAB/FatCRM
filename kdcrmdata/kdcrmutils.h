@@ -36,8 +36,9 @@ KDCRMDATA_EXPORT QString formatTimestamp(const QString &serverTimestamp);
 KDCRMDATA_EXPORT QString currentTimestamp();
 
 KDCRMDATA_EXPORT QDate dateFromString(const QString &dateString); // using yyyy-MM-dd
-KDCRMDATA_EXPORT QDateTime dateTimeFromString(const QString &dateTimeString); // using yyyy-MM-dd
+KDCRMDATA_EXPORT QDateTime dateTimeFromString(const QString &dateTimeString); // using yyyy-MM-dd hh:mm:ss
 KDCRMDATA_EXPORT QString dateToString(const QDate &date); // using yyyy-MM-dd
+KDCRMDATA_EXPORT QString dateTimeToString(const QDateTime &dateTime); // using yyyy-MM-dd hh:mm:ss
 KDCRMDATA_EXPORT QString formatDate(const QDate &date); // locale
 KDCRMDATA_EXPORT QString formatDateTime(const QDateTime &dt); // locale
 

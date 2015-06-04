@@ -43,7 +43,7 @@ public:
     QString mId;
     QString mName;
     QString mDateEntered;
-    QString mDateModified;
+    QDateTime mDateModified;
     QString mModifiedUserId;
     QString mModifiedByName;
     QString mCreatedBy;
@@ -231,15 +231,20 @@ QString SugarOpportunity::dateEntered() const
     return d->mDateEntered;
 }
 
-void SugarOpportunity::setDateModified(const QString &value)
-{
-    d->mEmpty = false;
-    d->mDateModified = value;
-}
-
-QString SugarOpportunity::dateModified() const
+QDateTime SugarOpportunity::dateModified() const
 {
     return d->mDateModified;
+}
+
+void SugarOpportunity::setDateModifiedRaw(const QString &value)
+{
+    d->mEmpty = false;
+    d->mDateModified = KDCRMUtils::dateTimeFromString(value);
+}
+
+QString SugarOpportunity::dateModifiedRaw() const
+{
+    return KDCRMUtils::dateTimeToString(d->mDateModified);
 }
 
 void SugarOpportunity::setModifiedUserId(const QString &value)
@@ -495,12 +500,6 @@ QString SugarOpportunity::probability() const
     return d->mProbability;
 }
 
-void SugarOpportunity::setNextCallDate(const QDate &value)
-{
-    d->mEmpty = false;
-    d->mNextCallDate = value;
-}
-
 QDate SugarOpportunity::nextCallDate() const
 {
     return d->mNextCallDate;
@@ -508,7 +507,8 @@ QDate SugarOpportunity::nextCallDate() const
 
 void SugarOpportunity::setNextCallDateRaw(const QString &str)
 {
-    setNextCallDate(KDCRMUtils::dateFromString(str));
+    d->mEmpty = false;
+    d->mNextCallDate = KDCRMUtils::dateFromString(str);
 }
 
 QString SugarOpportunity::nextCallDateRaw() const
@@ -523,7 +523,7 @@ void SugarOpportunity::setData(const QMap<QString, QString>& data)
     d->mId = data.value(KDCRMFields::id());
     d->mName = data.value("name");
     d->mDateEntered = data.value(KDCRMFields::dateEntered());
-    d->mDateModified = data.value(KDCRMFields::dateModified());
+    d->mDateModified = KDCRMUtils::dateTimeFromString(data.value(KDCRMFields::dateModified()));
     d->mModifiedUserId =  data.value(KDCRMFields::modifiedUserId());
     d->mModifiedByName = data.value(KDCRMFields::modifiedByName());
     d->mCreatedBy = data.value(KDCRMFields::createdBy());
@@ -556,7 +556,7 @@ QMap<QString, QString> SugarOpportunity::data()
     data[KDCRMFields::id()] = d->mId;
     data["name"] = d->mName;
     data[KDCRMFields::dateEntered()] = d->mDateEntered;
-    data[KDCRMFields::dateModified()] = d->mDateModified;
+    data[KDCRMFields::dateModified()] = KDCRMUtils::dateTimeToString(d->mDateModified);
     data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
     data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
     data[KDCRMFields::createdBy()] = d->mCreatedBy;
@@ -604,7 +604,7 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
         accessors.insert(QLatin1String("date_entered"),
                            OpportunityAccessorPair(&SugarOpportunity::dateEntered, &SugarOpportunity::setDateEntered, QString()));
         accessors.insert(QLatin1String("date_modified"),
-                           OpportunityAccessorPair(&SugarOpportunity::dateModified, &SugarOpportunity::setDateModified, QString()));
+                           OpportunityAccessorPair(&SugarOpportunity::dateModifiedRaw, &SugarOpportunity::setDateModifiedRaw, QString()));
         accessors.insert(QLatin1String("modified_user_id"),
                            OpportunityAccessorPair(&SugarOpportunity::modifiedUserId, &SugarOpportunity::setModifiedUserId, QString()));
         accessors.insert(QLatin1String("modified_by_name"),

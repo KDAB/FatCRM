@@ -344,7 +344,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case NextStep:
             return opportunity.nextStep();
         case LastModifiedDate: {
-            QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateModified());
+            QDateTime dt = opportunity.dateModified();
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
