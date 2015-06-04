@@ -25,12 +25,8 @@
 
 #include <akonadi/differencesalgorithminterface.h>
 #include <akonadi/item.h>
+#include <akonadi/collection.h>
 #include <QStringList>
-
-namespace Akonadi
-{
-class Collection;
-}
 
 class SugarSession;
 class ListEntriesScope;
