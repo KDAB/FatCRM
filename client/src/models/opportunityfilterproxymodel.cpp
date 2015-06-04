@@ -107,7 +107,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
     if (!d->countries.isEmpty()) {
         const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
-        if (!d->countries.contains(country))
+        if (!d->countries.contains(country, Qt::CaseInsensitive))
             return false;
     }
 
