@@ -55,6 +55,11 @@ public:
 
     QString filterString() const;
 
+    /**
+     * For showing in reports
+     */
+    virtual QString filterDescription() const;
+
 public Q_SLOTS:
     /**
      * Sets the filter that is used to filter for matching items

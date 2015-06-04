@@ -23,6 +23,7 @@
 #ifndef OPPORTUNITYFILTERWIDGET_H
 #define OPPORTUNITYFILTERWIDGET_H
 
+#include <QDate>
 #include <QWidget>
 
 namespace Ui {
@@ -43,6 +44,8 @@ private Q_SLOTS:
     void filterChanged();
 
 private:
+    QDate maxNextStepDate() const;
+
     Ui::OpportunityFilterWidget *ui;
     OpportunityFilterProxyModel *m_oppFilterProxyModel;
 };

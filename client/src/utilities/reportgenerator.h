@@ -35,12 +35,13 @@ class ReportGenerator
 public:
     ReportGenerator();
 
-    void generateListReport(QAbstractItemModel *model, const QString &title, QWidget *parent);
+    void generateListReport(QAbstractItemModel *model, const QString &title, const QString &subTitle, QWidget *parent);
 
 private:
     void setupReport(KDReports::Report &report);
     void addHeader(KDReports::Report &report);
     void addTitle(KDReports::Report &report, const QString &title);
+    void addSubTitle(KDReports::Report &report, const QString &text);
     void finalizeReport(KDReports::Report &report, QWidget *parent);
 };
 

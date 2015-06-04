@@ -68,6 +68,29 @@ void OpportunityFilterWidget::setupFromConfig()
     filterChanged();
 }
 
+QDate OpportunityFilterWidget::maxNextStepDate() const
+{
+    QDate date = QDate::currentDate();
+    switch (ui->cbMaxNextStepDate->currentIndex()) {
+    case 0: // Any
+        date = QDate();
+        break;
+    case 1: // Today
+        break;
+    case 2: // End of this week, i.e. next Sunday
+        // Ex: dayOfWeek = 3 (Wednesday), must add 4 days.
+        date = date.addDays(7 - date.dayOfWeek());
+        break;
+    case 3: // End of this month
+        date = QDate(date.year(), date.month(), date.daysInMonth());
+        break;
+    case 4: // End of this year
+        date = QDate(date.year(), 12, 31);
+        break;
+    }
+    return date;
+}
+
 void OpportunityFilterWidget::filterChanged()
 {
     QStringList assignees;
@@ -84,26 +107,8 @@ void OpportunityFilterWidget::filterChanged()
         const int idx = ui->cbCountry->currentIndex();
         countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
     }
-    QDate maxDate = QDate::currentDate();
-    switch (ui->cbMaxNextStepDate->currentIndex()) {
-    case 0: // Any
-        maxDate = QDate();
-        break;
-    case 1: // Today
-        break;
-    case 2: // End of this week, i.e. next Sunday
-        // Ex: dayOfWeek = 3 (Wednesday), must add 4 days.
-        maxDate = maxDate.addDays(7 - maxDate.dayOfWeek());
-        break;
-    case 3: // End of this month
-        maxDate = QDate(maxDate.year(), maxDate.month(), maxDate.daysInMonth());
-        break;
-    case 4: // End of this year
-        maxDate = QDate(maxDate.year(), 12, 31);
-        break;
-    }
-
     const bool showOpen = ui->cbOpen->isChecked();
     const bool showClosed = ui->cbClosed->isChecked();
-    m_oppFilterProxyModel->setFilter(assignees, countries, maxDate, showOpen, showClosed);
+    m_oppFilterProxyModel->setFilter(assignees, countries, maxNextStepDate(), showOpen, showClosed);
+    m_oppFilterProxyModel->setFilterDescriptionData(ui->cbAssignee->currentText(), ui->cbCountry->currentText());
 }

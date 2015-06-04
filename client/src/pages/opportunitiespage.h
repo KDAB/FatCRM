@@ -25,6 +25,9 @@
 
 #include "page.h"
 
+class OpportunityFilterWidget;
+class OpportunityFilterProxyModel;
+
 class OpportunitiesPage : public Page
 {
     Q_OBJECT
@@ -38,6 +41,10 @@ public:
 protected:
     QString reportTitle() const Q_DECL_OVERRIDE;
     QMap<QString, QString> dataForNewObject() Q_DECL_OVERRIDE;
+
+private:
+    OpportunityFilterWidget *mFilterUiWidget;
+    OpportunityFilterProxyModel *mOppFilterProxyModel;
 };
 
 #endif /* OPPORTUNITIESPAGE_H */

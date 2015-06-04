@@ -59,6 +59,9 @@ public:
     void setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
                    bool showOpen, bool showClosed);
 
+    void setFilterDescriptionData(const QString &assigneeGroup, const QString &countryGroup);
+    QString filterDescription() const;
+
 protected:
     virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
     virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;

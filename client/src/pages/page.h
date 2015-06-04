@@ -113,6 +113,7 @@ private Q_SLOTS:
 
 private:
     virtual QString reportTitle() const = 0;
+    QString reportSubTitle(int count) const;
     Details *details() const;
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
@@ -127,6 +128,7 @@ private:
     void removeCampaignsData(Akonadi::Item &item);
 
     QString typeToString(const DetailsType &type) const;
+    QString typeToTranslatedString(const DetailsType &type) const;
     DetailsDialog *createDetailsDialog();
 
 private:

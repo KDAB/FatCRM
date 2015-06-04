@@ -38,11 +38,11 @@ using namespace Akonadi;
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
     : Page(parent, SugarOpportunity::mimeType(), Opportunity)
 {
-    OpportunityFilterProxyModel *oppFilterProxyModel = new OpportunityFilterProxyModel(this);
-    setFilter(oppFilterProxyModel);
+    mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
+    setFilter(mOppFilterProxyModel);
 
-    OpportunityFilterWidget* filterUiWidget = new OpportunityFilterWidget(oppFilterProxyModel, this);
-    insertFilterWidget(filterUiWidget);
+    mFilterUiWidget = new OpportunityFilterWidget(mOppFilterProxyModel, this);
+    insertFilterWidget(mFilterUiWidget);
 }
 
 OpportunitiesPage::~OpportunitiesPage()
@@ -60,7 +60,7 @@ void OpportunitiesPage::setupModel()
 
 QString OpportunitiesPage::reportTitle() const
 {
-    return tr("List of Opportunities"); // TODO extend title with proxy filter settings
+    return tr("List of Opportunities");
 }
 
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()

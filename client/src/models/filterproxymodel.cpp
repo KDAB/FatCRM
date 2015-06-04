@@ -31,6 +31,8 @@
 #include <kabc/addressee.h>
 #include <kabc/phonenumber.h>
 
+#include <klocalizedstring.h>
+
 #include <akonadi/entitytreemodel.h>
 
 static bool accountMatchesFilter(const SugarAccount &account,
@@ -72,6 +74,13 @@ FilterProxyModel::~FilterProxyModel()
 QString FilterProxyModel::filterString() const
 {
     return d->mFilter;
+}
+
+QString FilterProxyModel::filterDescription() const
+{
+    if (!d->mFilter.isEmpty())
+        return i18n("containing \"%1\"", d->mFilter);
+    return QString();
 }
 
 void FilterProxyModel::setFilterString(const QString &filter)

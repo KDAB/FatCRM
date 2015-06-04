@@ -27,7 +27,6 @@
 #include "enums.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
-#include "filterproxymodel.h"
 #include "sugarresourcesettings.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -35,8 +34,6 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <akonadi/contact/contactstreemodel.h>
-#include <akonadi/contact/contactsfilterproxymodel.h>
 #include <akonadi/agentmanager.h>
 #include <akonadi/collectionstatistics.h>
 #include <akonadi/entitymimetypefiltermodel.h>
@@ -242,6 +239,15 @@ void Page::slotItemSaved(const Item &item)
     mDetailsWidget->setItem(item);
 }
 
+QString Page::reportSubTitle(int count) const
+{
+    const QString itemsType = typeToTranslatedString(mType);
+    const QString desc = mFilter->filterDescription();
+    if (desc.isEmpty())
+        return i18n("%1 %2", count, itemsType);
+    return i18n("%1: %2 %3", desc, count, itemsType);
+}
+
 void Page::slotRemoveItem()
 {
     const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
@@ -287,7 +293,7 @@ void Page::slotRemoveItem()
 
 void Page::slotVisibleRowCountChanged()
 {
-    mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToString(mType)));
+    mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
 }
 
 void Page::slotRowsInserted(const QModelIndex &, int, int)
@@ -490,7 +496,22 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 void Page::printReport()
 {
     ReportGenerator generator;
-    generator.generateListReport(mUi.treeView->model(), reportTitle(), this);
+    QAbstractItemModel *model = mUi.treeView->model();
+    const int count = model->rowCount();
+    if (count > 1000) {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle(i18n("SugarClient - Long report warning"));
+        msgBox.setText(i18n("The generated report will contain %1 rows, which might be long to generate and print.", count));
+        msgBox.setInformativeText(tr("Are you sure you want to proceed?"));
+        msgBox.setStandardButtons(QMessageBox::Yes |
+                                  QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+        int ret = msgBox.exec();
+        if (ret == QMessageBox::Cancel) {
+            return;
+        }
+    }
+    generator.generateListReport(model, reportTitle(), reportSubTitle(count), this);
 }
 
 QString Page::typeToString(const DetailsType &type) const
@@ -505,6 +526,23 @@ QString Page::typeToString(const DetailsType &type) const
         return QString("Contacts");
     } else if (type == Campaign) {
         return QString("Campaigns");
+    } else {
+        return QString();
+    }
+}
+
+QString Page::typeToTranslatedString(const DetailsType &type) const
+{
+    if (type == Account) {
+        return i18n("accounts");
+    } else if (type == Opportunity) {
+        return i18n("opportunities");
+    } else if (type == Lead) {
+        return i18n("leads");
+    } else if (type == Contact) {
+        return i18n("contacts");
+    } else if (type == Campaign) {
+        return i18n("campaigns");
     } else {
         return QString();
     }

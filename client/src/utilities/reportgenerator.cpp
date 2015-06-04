@@ -52,6 +52,13 @@ void ReportGenerator::addTitle(KDReports::Report &report, const QString &title)
     report.addElement(titleElement, Qt::AlignCenter);
 }
 
+void ReportGenerator::addSubTitle(KDReports::Report &report, const QString &text)
+{
+    KDReports::TextElement titleElement(text);
+    titleElement.setPointSize(12);
+    report.addElement(titleElement, Qt::AlignCenter);
+}
+
 void ReportGenerator::addHeader(KDReports::Report &report)
 {
     KDReports::Header& header = report.header();
@@ -60,11 +67,13 @@ void ReportGenerator::addHeader(KDReports::Report &report)
     header.addVariable(KDReports::DefaultLocaleLongDate);
 }
 
-void ReportGenerator::generateListReport(QAbstractItemModel *model, const QString &title, QWidget *parent)
+void ReportGenerator::generateListReport(QAbstractItemModel *model, const QString &title,
+                                         const QString &subTitle, QWidget *parent)
 {
     KDReports::Report report;
     setupReport(report);
     addTitle(report, title);
+    addSubTitle(report, subTitle);
 
     report.addVerticalSpacing(5);
 

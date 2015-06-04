@@ -26,6 +26,7 @@
 
 #include <akonadi/entitytreemodel.h>
 #include "itemstreemodel.h"
+#include "kdcrmdata/kdcrmutils.h"
 
 #include <QDate>
 #include <opportunitiespage.h>
@@ -43,6 +44,8 @@ public:
 
     QStringList assignees; // no filtering if empty
     QStringList countries; // no filtering if empty
+    QString assigneeGroup; // user-visible description for <assignee>
+    QString countryGroup; // user-visible description for <countries>
     QDate maxDate;
     bool showOpen;
     bool showClosed;
@@ -67,6 +70,43 @@ void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const 
     d->showOpen = showOpen;
     d->showClosed = showClosed;
     invalidate();
+}
+
+void OpportunityFilterProxyModel::setFilterDescriptionData(const QString &assigneeGroup, const QString &countryGroup)
+{
+    d->assigneeGroup = assigneeGroup;
+    d->countryGroup = countryGroup;
+}
+
+QString OpportunityFilterProxyModel::filterDescription() const
+{
+    QString openOrClosed;
+    if (!d->showOpen && d->showClosed)
+        openOrClosed = i18n("closed");
+    else if (d->showOpen && !d->showClosed)
+        openOrClosed = i18n("open");
+
+    QString txt;
+    if (!d->assignees.isEmpty()) {
+        txt = i18n("Assigned to %1", d->assigneeGroup);
+    } else if (!d->countries.isEmpty()) {
+        txt = i18n("In country %1", d->countryGroup);
+    }
+
+    if (!openOrClosed.isEmpty()) {
+        txt = i18n("%1, %2", txt, openOrClosed);
+    }
+
+    if (!d->maxDate.isNull()) {
+        txt = i18n("%1, next step before %2", txt, KDCRMUtils::formatDate(d->maxDate));
+    }
+
+    if (!filterString().isEmpty()) {
+        txt = i18n("%1, containing \"%2\"", txt, filterString());
+    }
+
+    return txt;
+
 }
 
 static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const QString &filter)
