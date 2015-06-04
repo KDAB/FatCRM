@@ -30,6 +30,7 @@
 #include "collectionmanager.h"
 #include "notesrepository.h"
 #include "reportpage.h"
+#include "fatcrm_version.h"
 
 #include <akonadi/agentfilterproxymodel.h>
 #include <akonadi/agentinstance.h>
@@ -113,6 +114,11 @@ void SugarClient::slotDelayedInit()
             this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
 }
 
+void SugarClient::slotAboutApp()
+{
+    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2015 Klarälvdalens Datakonsult AB (KDAB)", QString(s_version)));
+}
+
 void SugarClient::initialize()
 {
     Q_INIT_RESOURCE(icons);
@@ -139,7 +145,7 @@ void SugarClient::initialize()
 
 void SugarClient::createActions()
 {
-    // the File menu is handled in Qt Designer
+    // the other menus are handled in Qt Designer
 
     mViewMenu = new QMenu(tr("&View"), this);
     menuBar()->insertMenu(mUi.menuSettings->menuAction(), mViewMenu);
@@ -171,6 +177,8 @@ void SugarClient::setupActions()
     connect(mUi.actionOfflineMode, SIGNAL(toggled(bool)), this, SLOT(slotToggleOffline(bool)));
     connect(mUi.actionSynchronize, SIGNAL(triggered()), this, SLOT(slotSynchronize()));
     connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+
+    connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
 
     // NOT FINISHED YET
     mUi.actionImportContacts->setVisible(false);

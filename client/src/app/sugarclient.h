@@ -87,6 +87,7 @@ private:
 
 private Q_SLOTS:
     void slotDelayedInit();
+    void slotAboutApp();
     void slotToggleOffline(bool offline);
     void slotSynchronize();
     void slotSynchronizeCollection(const Akonadi::Collection &collection);
