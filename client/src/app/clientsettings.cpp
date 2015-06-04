@@ -55,7 +55,7 @@ void ClientSettings::setShowDetails(const QString &typeString, bool on)
 bool ClientSettings::showDetails(const QString &typeString) const
 {
     const QVariant value = m_settings->value("showDetails/" + typeString);
-    return value.isValid() ? value.toBool() : true;
+    return value.isValid() ? value.toBool() : false;
 }
 
 void ClientSettings::setFullUserName(const QString &name)
