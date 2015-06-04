@@ -91,5 +91,6 @@ QString KDCRMUtils::decodeXML(const QString &str)
     decoded.replace("&gt;", QChar('>'));
     decoded.replace("&lt;", QChar('<'));
     decoded.replace("&amp;", QChar('&'));
-    return decoded;
+    // While at it, remove trailing spaces, they can be confusing with e.g. country filtering.
+    return decoded.trimmed();
 }
