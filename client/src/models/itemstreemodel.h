@@ -26,6 +26,8 @@
 #include <akonadi/entitytreemodel.h>
 #include <enums.h>
 
+namespace KABC { class Addressee; }
+
 /**
  * A model for sugar items.
  * This class provides a model for displaying the sugar items.
@@ -53,11 +55,10 @@ public:
         EndDate,
         User,
         FullName,
-        Role,
+        Title,
         Organization,
         PreferredEmail,
         PhoneNumber,
-        GivenName,
         LeadName,
         LeadAccountName,
         LeadEmail,
@@ -103,6 +104,8 @@ public:
     QVariant entityData(const Akonadi::Collection &collection, int column, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
     QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
     int entityColumnCount(HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
+
+    static QString countryForContact(const KABC::Addressee &addressee);
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;

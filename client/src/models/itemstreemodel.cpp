@@ -128,6 +128,17 @@ int ItemsTreeModel::entityColumnCount(HeaderGroup headerGroup) const
     }
 }
 
+QString ItemsTreeModel::countryForContact(const KABC::Addressee &addressee)
+{
+    // Get the country from the contact, if it has an address.
+    const QString cc = addressee.address(KABC::Address::Work | KABC::Address::Pref).country();
+    if (!cc.isEmpty())
+        return cc;
+    // Otherwise get the country via the account
+    const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(addressee.organization());
+    return country;
+}
+
 /**
  * Reimp: Return the Header data to display
  */
@@ -251,16 +262,16 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
         switch (columnTypes().at(column)) {
         case FullName:
             return addressee.assembledName();
-        case Role:
-            return addressee.role();
+        case Title:
+            return addressee.title();
         case Organization:
             return addressee.organization();
         case PreferredEmail:
             return addressee.preferredEmail();
         case PhoneNumber:
             return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
-        case GivenName:
-            return addressee.givenName();
+        case Country:
+            return countryForContact(addressee);
         default:
             return QVariant();
         }
@@ -376,11 +387,11 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
         break;
     case Contact:
         columns << ItemsTreeModel::FullName
-                << ItemsTreeModel::Role
+                << ItemsTreeModel::Title
                 << ItemsTreeModel::Organization
+                << ItemsTreeModel::Country
                 << ItemsTreeModel::PreferredEmail
-                << ItemsTreeModel::PhoneNumber
-                << ItemsTreeModel::GivenName;
+                << ItemsTreeModel::PhoneNumber;
         break;
     case Lead:
         columns << ItemsTreeModel::LeadName
@@ -443,16 +454,14 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column Assigned User Name", "User");
     case FullName:
         return i18nc("@title:column full name of a contact ", "Name");
-    case Role:
-        return i18nc("@title:column role - role", "Role");
+    case Title:
+        return i18nc("@title:column contact title", "Title");
     case Organization:
         return i18nc("@title:column company", "Organization");
     case PreferredEmail:
         return i18nc("@title:column email", "Preferred Email");
     case PhoneNumber:
         return i18nc("@title:column phone work", "Phone Work");
-    case GivenName:
-        return i18nc("@title:column given name", "Given Name");
     case LeadName:
         return i18nc("@title:column Lead's Full Name", "Name");
     case LeadStatus:
@@ -508,6 +517,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Account:
         break;
     case Contact:
+        // too wide and too seldom filled in
+        columns.removeAll(ItemsTreeModel::Title);
         break;
     case Lead:
         break;

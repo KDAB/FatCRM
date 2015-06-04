@@ -39,7 +39,7 @@ static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);
 static bool campaignMatchesFilter(const SugarCampaign &campaign,
                                   const QString &filterString);
-static bool contactMatchesFilter(const KABC::Addressee addressee,
+static bool contactMatchesFilter(const KABC::Addressee &addressee,
                                  const QString &filterString);
 static bool leadMatchesFilter(const SugarLead &lead,
                               const QString &filterString);
@@ -170,12 +170,9 @@ static bool campaignMatchesFilter(const SugarCampaign &campaign, const QString &
     return false;
 }
 
-static bool contactMatchesFilter(const KABC::Addressee contact, const QString &filter)
+static bool contactMatchesFilter(const KABC::Addressee& contact, const QString &filter)
 {
     if (contact.assembledName().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (contact.role().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
     if (contact.organization().contains(filter, Qt::CaseInsensitive)) {
@@ -188,6 +185,9 @@ static bool contactMatchesFilter(const KABC::Addressee contact, const QString &f
         return true;
     }
     if (contact.givenName().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
+    if (ItemsTreeModel::countryForContact(contact).contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
 
