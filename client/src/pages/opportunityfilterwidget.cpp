@@ -112,7 +112,9 @@ void OpportunityFilterWidget::filterChanged()
         }
     } else if (ui->rbCountry->isChecked()) {
         const int idx = ui->cbCountry->currentIndex();
-        countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
+        if (idx != -1) {
+            countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
+        }
     }
     const bool showOpen = ui->cbOpen->isChecked();
     const bool showClosed = ui->cbClosed->isChecked();
