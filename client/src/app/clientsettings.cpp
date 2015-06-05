@@ -25,6 +25,8 @@
 #include <QWidget>
 #include <QSettings>
 
+#include <klocalizedstring.h>
+
 Q_GLOBAL_STATIC(ClientSettings, s_self);
 
 ClientSettings *ClientSettings::self()
@@ -122,8 +124,15 @@ QString ClientSettings::GroupFilters::toString() const
 
 void ClientSettings::GroupFilters::loadFromString(const QString &str)
 {
-    Q_FOREACH(const QString &itemStr, str.split('|', QString::SkipEmptyParts)) {
-        const QStringList lst = itemStr.split(';', QString::SkipEmptyParts);
+    if (str.isEmpty()) {
+        // Initial set
+        Group item;
+        item.group = i18n("No country set");
+        item.entries = QStringList() << QString();
+        m_filters.append(item);
+    }
+    Q_FOREACH(const QString &itemStr, str.split('|')) {
+        const QStringList lst = itemStr.split(';');
         if (lst.isEmpty()) {
             continue;
         }
