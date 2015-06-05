@@ -149,3 +149,9 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();
 }
+
+void OpportunityDetails::on_buttonOpenAccount_clicked()
+{
+    const QString accountId = currentAccountId();
+    emit openObject(Account, accountId);
+}

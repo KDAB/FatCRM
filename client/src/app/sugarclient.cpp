@@ -189,6 +189,8 @@ void SugarClient::setupActions()
         connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
         connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
+        connect(page, SIGNAL(openObject(DetailsType,QString)),
+                this, SLOT(slotOpenObject(DetailsType,QString)));
     }
 }
 
@@ -483,6 +485,14 @@ void SugarClient::slotOppModelCreated(ItemsTreeModel *model)
     mReportPage->setOppModel(model);
 }
 
+void SugarClient::slotOpenObject(DetailsType type, const QString &id)
+{
+    Page *page = pageForType(type);
+    if (page) {
+        page->openDialog(id);
+    }
+}
+
 Page *SugarClient::currentPage() const
 {
     const int index = mUi.tabWidget->currentIndex();
@@ -507,6 +517,16 @@ void SugarClient::initialResourceSelection()
         mResourceDialog->show();
         mResourceDialog->raise();
     }
+}
+
+Page *SugarClient::pageForType(DetailsType type) const
+{
+    foreach(Page *page, mPages) {
+        if (page->detailsType() == type) {
+            return page;
+        }
+    }
+    return 0;
 }
 
 #include "sugarclient.moc"

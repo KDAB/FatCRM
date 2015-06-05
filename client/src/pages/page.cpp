@@ -80,6 +80,20 @@ QAction *Page::showDetailsAction(const QString &title) const
     return mShowDetailsAction;
 }
 
+void Page::openDialog(const QString &id)
+{
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
+        const QModelIndex index = mItemsTreeModel->index(i, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.remoteId() == id) {
+            DetailsDialog *dialog = createDetailsDialog();
+            dialog->setItem(item);
+            dialog->show();
+        }
+    }
+}
+
 bool Page::showsDetails() const
 {
     return mShowDetailsAction->isChecked();
@@ -380,6 +394,8 @@ void Page::initialize()
     detailLayout->setMargin(0);
     detailLayout->addWidget(mDetailsWidget);
     showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
+
+    connectToDetails(mDetailsWidget->details());
 }
 
 void Page::setupModel()
@@ -417,6 +433,12 @@ void Page::setupModel()
 Details *Page::details() const
 {
     return mDetailsWidget->details();
+}
+
+void Page::connectToDetails(Details *details)
+{
+    connect(details, SIGNAL(openObject(DetailsType,QString)),
+            this, SIGNAL(openObject(DetailsType,QString)));
 }
 
 void Page::insertFilterWidget(QWidget *widget)
@@ -553,6 +575,7 @@ DetailsDialog *Page::createDetailsDialog()
     Details* details = DetailsWidget::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
+    connectToDetails(details);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     return dialog;
@@ -562,7 +585,8 @@ void Page::addAccountsData()
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
-    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
@@ -587,7 +611,8 @@ void Page::addCampaignsData()
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> campaignRefMap, assignedToRefMap;
-    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
@@ -605,8 +630,8 @@ void Page::addContactsData()
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
-
-    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
@@ -626,7 +651,8 @@ void Page::addLeadsData()
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
 
-    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarLead>()) {
@@ -641,7 +667,8 @@ void Page::addOpportunitiesData()
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
-    for (int i = 0; i <  mItemsTreeModel->rowCount(); ++i) {
+    const int count = mItemsTreeModel->rowCount();
+    for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarOpportunity>()) {

@@ -57,11 +57,13 @@ public:
     ~Page();
 
     QString mimeType() const { return mMimeType; }
+    DetailsType detailsType() const { return mType; }
     void setCollection(const Akonadi::Collection& collection);
     void setNotesRepository(NotesRepository *repo);
     void setModificationsIgnored(bool b);
 
     QAction *showDetailsAction(const QString &title) const;
+    void openDialog(const QString &id);
 
     bool showsDetails() const;
     void printReport();
@@ -74,6 +76,7 @@ Q_SIGNALS:
     void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
     void ignoreModifications(bool ignore); // emitted while loading reference data
+    void openObject(DetailsType type, const QString &id);
 
 public Q_SLOTS:
     void showDetails(bool on);
@@ -114,7 +117,8 @@ private Q_SLOTS:
 private:
     virtual QString reportTitle() const = 0;
     QString reportSubTitle(int count) const;
-    Details *details() const;
+    Details *details() const; // the one in the embedded details widget
+    void connectToDetails(Details *details);
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
     bool askSave();

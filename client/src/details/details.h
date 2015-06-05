@@ -62,6 +62,7 @@ public:
 
 Q_SIGNALS:
     void modified();
+    void openObject(DetailsType type, const QString &id);
 
 protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }

@@ -107,9 +107,12 @@ private Q_SLOTS:
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
     void slotIgnoreModifications(bool ignore);
     void slotOppModelCreated(ItemsTreeModel *model);
+    void slotOpenObject(DetailsType type, const QString &id);
+
 
 private:
     Page *currentPage() const;
+    Page *pageForType(DetailsType type) const;
     QComboBox *createResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();
