@@ -234,6 +234,7 @@ void Details::setData(const QMap<QString, QString> &data,
 
     if (mKeys.isEmpty()) {
         mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
+        Q_ASSERT(!mKeys.isEmpty());
     }
 }
 
