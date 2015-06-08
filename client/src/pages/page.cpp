@@ -407,6 +407,7 @@ void Page::setupModel()
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
+    connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
     filterModel->setSourceModel(mItemsTreeModel);
@@ -423,8 +424,6 @@ void Page::setupModel()
 
     connect(mUi.searchLE, SIGNAL(textChanged(QString)),
             mFilter, SLOT(setFilterString(QString)));
-
-    connect(mUi.treeView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this,  SLOT(slotCurrentItemChanged(QModelIndex)));
@@ -448,14 +447,31 @@ void Page::insertFilterWidget(QWidget *widget)
     mUi.verticalLayout->insertWidget(1, widget);
 }
 
+static QString countryForAccount(const SugarAccount &account)
+{
+    const QString billingCountry = account.billingAddressCountry();
+    const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
+    return country.trimmed();
+}
+
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    for (int row = topLeft.row(); row <= bottomRight.row(); ++row) {
-        const QModelIndex index = mUi.treeView->model()->index(row, 0, QModelIndex());
-        const Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-        emit modelItemChanged(item);
+    const int start = topLeft.row();
+    const int end = bottomRight.row();
+    const int firstColumn = topLeft.column();
+    const int lastColumn = bottomRight.column();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
+        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        emit modelItemChanged(item); // update details dialog
         if (index == mCurrentIndex && mDetailsWidget) {
-            mDetailsWidget->setItem(item);
+            mDetailsWidget->setItem(item); // update details widget
+        }
+        if (mType == Account && item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            if (firstColumn <= ItemsTreeModel::Country && ItemsTreeModel::Country <= lastColumn) {
+                ReferencedData::instance(AccountCountryRef)->setReferencedData(account.name(), countryForAccount(account));
+            }
         }
     }
 }
@@ -594,17 +610,15 @@ void Page::addAccountsData(int start, int end)
             const SugarAccount account = item.payload<SugarAccount>();
             accountRefMap.insert(account.id(), account.name());
             assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
-            const QString billingCountry = account.billingAddressCountry();
-            const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
             // See comment in itemstreemodel.cpp about why this isn't account.id()
-            accountCountryRefMap.insert(account.name(), country.trimmed());
+            accountCountryRefMap.insert(account.name(), countryForAccount(account));
 
             AccountRepository::instance()->addAccount(account);
         }
     }
-    ReferencedData::instance(AccountRef)->addMap(accountRefMap);
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
-    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap);
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap); // TODO detect renamings
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap); // we assume user names don't change later
+    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap); // country changes are handled in slotDataChanged
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
@@ -640,7 +654,7 @@ void Page::addContactsData(int start, int end)
             assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
-    ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap);
+    ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap); // TODO handle changes in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
