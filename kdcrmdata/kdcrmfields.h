@@ -81,6 +81,18 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString shippingAddressState();
     KDCRMDATA_EXPORT QString shippingAddressCountry();
     KDCRMDATA_EXPORT QString shippingAddressPostalcode();
+
+    // for Contacts
+    KDCRMDATA_EXPORT QString primaryAddressStreet();
+    KDCRMDATA_EXPORT QString primaryAddressCity();
+    KDCRMDATA_EXPORT QString primaryAddressState();
+    KDCRMDATA_EXPORT QString primaryAddressPostalcode();
+    KDCRMDATA_EXPORT QString primaryAddressCountry();
+    KDCRMDATA_EXPORT QString altAddressStreet();
+    KDCRMDATA_EXPORT QString altAddressCity();
+    KDCRMDATA_EXPORT QString altAddressState();
+    KDCRMDATA_EXPORT QString altAddressPostalcode();
+    KDCRMDATA_EXPORT QString altAddressCountry();
 }
 
 #endif // KDCRMFIELDS_H

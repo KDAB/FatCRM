@@ -99,18 +99,18 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data["phoneFax"] = addressee.phoneNumber(KABC::PhoneNumber::Fax).number();
 
     const KABC::Address address = addressee.address(KABC::Address::Work | KABC::Address::Pref);
-    data["primaryAddressStreet"] = address.street();
-    data["primaryAddressCity"] = address.locality();
-    data["primaryAddressState"] = address.region();
-    data["primaryAddressPostalcode"] = address.postalCode();
-    data["primaryAddressCountry"] = address.country();
+    data.insert(KDCRMFields::primaryAddressStreet(), address.street());
+    data.insert(KDCRMFields::primaryAddressCity(), address.locality());
+    data.insert(KDCRMFields::primaryAddressState(), address.region());
+    data.insert(KDCRMFields::primaryAddressPostalcode(), address.postalCode());
+    data.insert(KDCRMFields::primaryAddressCountry(), address.country());
 
     const KABC::Address other = addressee.address(KABC::Address::Home);
-    data["altAddressStreet"] = other.street();
-    data["altAddressCity"] = other.locality();
-    data["altAddressState"] = other.region();
-    data["altAddressPostalcode"] = other.postalCode();
-    data["altAddressCountry"] = other.country();
+    data.insert(KDCRMFields::altAddressStreet(), other.street());
+    data.insert(KDCRMFields::altAddressCity(), other.locality());
+    data.insert(KDCRMFields::altAddressState(), other.region());
+    data.insert(KDCRMFields::altAddressPostalcode(), other.postalCode());
+    data.insert(KDCRMFields::altAddressCountry(), other.country());
     data["birthdate"] = KDCRMUtils::dateToString(addressee.birthday().date());
     data["assistant"] = addressee.custom("KADDRESSBOOK", "X-AssistantsName");
     data["phoneAssistant"] = addressee.custom("FATCRM", "X-AssistantsPhone");
@@ -159,20 +159,20 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
 
     KABC::Address primaryAddress;
     primaryAddress.setType(KABC::Address::Work | KABC::Address::Pref);
-    primaryAddress.setStreet(data.value("primaryAddressStreet"));
-    primaryAddress.setLocality(data.value("primaryAddressCity"));
-    primaryAddress.setRegion(data.value("primaryAddressState"));
-    primaryAddress.setPostalCode(data.value("primaryAddressPostalcode"));
-    primaryAddress.setCountry(data.value("primaryAddressCountry"));
+    primaryAddress.setStreet(data.value(KDCRMFields::primaryAddressStreet()));
+    primaryAddress.setLocality(data.value(KDCRMFields::primaryAddressCity()));
+    primaryAddress.setRegion(data.value(KDCRMFields::primaryAddressState()));
+    primaryAddress.setPostalCode(data.value(KDCRMFields::primaryAddressPostalcode()));
+    primaryAddress.setCountry(data.value(KDCRMFields::primaryAddressCountry()));
     addressee.insertAddress(primaryAddress);
 
     KABC::Address otherAddress;
     otherAddress.setType(KABC::Address::Home);
-    otherAddress.setStreet(data.value("altAddressStreet"));
-    otherAddress.setLocality(data.value("altAddressCity"));
-    otherAddress.setRegion(data.value("altAddressState"));
-    otherAddress.setPostalCode(data.value("altAddressPostalcode"));
-    otherAddress.setCountry(data.value("altAddressCountry"));
+    otherAddress.setStreet(data.value(KDCRMFields::altAddressStreet()));
+    otherAddress.setLocality(data.value(KDCRMFields::altAddressCity()));
+    otherAddress.setRegion(data.value(KDCRMFields::altAddressState()));
+    otherAddress.setPostalCode(data.value(KDCRMFields::altAddressPostalcode()));
+    otherAddress.setCountry(data.value(KDCRMFields::altAddressCountry()));
     addressee.insertAddress(otherAddress);
 
     addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value("birthdate"))));

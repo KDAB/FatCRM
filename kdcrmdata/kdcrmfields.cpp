@@ -266,3 +266,54 @@ QString KDCRMFields::shippingAddressPostalcode()
 {
     return QLatin1String("shipping_address_postalcode");
 }
+
+QString KDCRMFields::primaryAddressStreet()
+{
+    return QLatin1String("primaryAddressStreet");
+}
+
+QString KDCRMFields::primaryAddressCity()
+{
+    return QLatin1String("primaryAddressCity");
+}
+
+QString KDCRMFields::primaryAddressState()
+{
+    return QLatin1String("primaryAddressState");
+}
+
+QString KDCRMFields::primaryAddressCountry()
+{
+    return QLatin1String("primaryAddressCountry");
+}
+
+QString KDCRMFields::primaryAddressPostalcode()
+{
+    return QLatin1String("primaryAddressPostalcode");
+}
+
+
+QString KDCRMFields::altAddressStreet()
+{
+    return QLatin1String("altAddressStreet");
+}
+
+QString KDCRMFields::altAddressCity()
+{
+    return QLatin1String("altAddressCity");
+}
+
+QString KDCRMFields::altAddressState()
+{
+    return QLatin1String("altAddressState");
+}
+
+QString KDCRMFields::altAddressCountry()
+{
+    return QLatin1String("altAddressCountry");
+}
+
+QString KDCRMFields::altAddressPostalcode()
+{
+    return QLatin1String("altAddressPostalcode");
+}
