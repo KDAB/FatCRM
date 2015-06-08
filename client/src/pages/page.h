@@ -103,7 +103,7 @@ private Q_SLOTS:
     void slotModifyItem(const Akonadi::Item &item);
     void slotRemoveItem();
     void slotVisibleRowCountChanged();
-    void slotRowsInserted(const QModelIndex &, int, int);
+    void slotRowsInserted(const QModelIndex &, int start, int end);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotResetSearch();
     void slotReloadCollection();
@@ -123,11 +123,11 @@ private:
     void initialize();
     bool askSave();
     // manages accounts combo box
-    void addAccountsData();
-    void addCampaignsData();
-    void addContactsData();
-    void addLeadsData();
-    void addOpportunitiesData();
+    void addAccountsData(int start, int end);
+    void addCampaignsData(int start, int end);
+    void addContactsData(int start, int end);
+    void addLeadsData(int start, int end);
+    void addOpportunitiesData(int start, int end);
     void removeAccountsData(Akonadi::Item &item);
     void removeCampaignsData(Akonadi::Item &item);
 
