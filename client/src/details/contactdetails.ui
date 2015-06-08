@@ -332,7 +332,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="primaryAddressCounty"/>
+       <widget class="QLineEdit" name="primaryAddressCountry"/>
       </item>
      </layout>
     </widget>
@@ -395,7 +395,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="altAddressCounty"/>
+       <widget class="QLineEdit" name="altAddressCountry"/>
       </item>
      </layout>
     </widget>
