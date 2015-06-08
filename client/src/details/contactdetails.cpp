@@ -139,6 +139,8 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     KABC::Addressee addressee;
     if (item.hasPayload<KABC::Addressee>()) {
         addressee = item.payload<KABC::Addressee>();
+        foreach (const KABC::Address &addr, addressee.addresses())
+            addressee.removeAddress(addr);
     }
 
     addressee.setGivenName(data.value("firstName"));
