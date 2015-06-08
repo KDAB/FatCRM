@@ -310,41 +310,43 @@ void Page::slotVisibleRowCountChanged()
     mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
 }
 
-void Page::slotRowsInserted(const QModelIndex &, int, int)
+void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    //kDebug() << typeToString(mType) << ": model has" << mItemsTreeModel->rowCount()
+    //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
+
+    // inserting rows into comboboxes can change the current index, thus marking the data as modified
+    emit ignoreModifications(true);
+    //kDebug() << "Finished loading" << typeToString(mType);
+    switch (mType) {
+    case Account:
+        addAccountsData(start, end);
+        break;
+    case Campaign:
+        addCampaignsData(start, end);
+        break;
+    case Contact:
+        addContactsData(start, end);
+        break;
+    case Lead:
+        addLeadsData(start, end);
+        break;
+    case Opportunity:
+        addOpportunitiesData(start, end);
+        break;
+    default: // other objects (like Note) not shown in a Page
+        break;
+    }
+    // Select the first row
+    // Looks nicer than empty widgets,
+    // and allows to fill mKeys in details.cpp, critical for saving new objects.
+    //kDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     if (mItemsTreeModel->rowCount() == mCollection.statistics().count()) {
-        // inserting rows into comboboxes can change the current index, thus marking the data as modified
-        emit ignoreModifications(true);
-        //kDebug() << "Finished loading" << typeToString(mType);
-        switch (mType) {
-        case Account:
-            addAccountsData();
-            break;
-        case Campaign:
-            addCampaignsData();
-            break;
-        case Contact:
-            addContactsData();
-            break;
-        case Lead:
-            addLeadsData();
-            break;
-        case Opportunity:
-            addOpportunitiesData();
-            break;
-        default: // other objects (like Note) not shown in a Page
-            break;
-        }
-        // Select the first row
-        // Looks nicer than empty widgets,
-        // and allows to fill mKeys in details.cpp, critical for saving new objects.
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
-        emit ignoreModifications(false);
     }
+    emit ignoreModifications(false);
 }
 
 void Page::initialize()
@@ -581,13 +583,12 @@ DetailsDialog *Page::createDetailsDialog()
     return dialog;
 }
 
-void Page::addAccountsData()
+void Page::addAccountsData(int start, int end)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
-    const int count = mItemsTreeModel->rowCount();
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = mItemsTreeModel->index(i, 0);
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
@@ -607,13 +608,12 @@ void Page::addAccountsData()
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addCampaignsData()
+void Page::addCampaignsData(int start, int end)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> campaignRefMap, assignedToRefMap;
-    const int count = mItemsTreeModel->rowCount();
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = mItemsTreeModel->index(i, 0);
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
@@ -626,13 +626,12 @@ void Page::addCampaignsData()
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addContactsData()
+void Page::addContactsData(int start, int end)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
-    const int count = mItemsTreeModel->rowCount();
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = mItemsTreeModel->index(i, 0);
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
@@ -646,14 +645,13 @@ void Page::addContactsData()
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addLeadsData()
+void Page::addLeadsData(int start, int end)
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
 
-    const int count = mItemsTreeModel->rowCount();
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = mItemsTreeModel->index(i, 0);
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarLead>()) {
             const SugarLead lead = item.payload<SugarLead>();
@@ -663,13 +661,12 @@ void Page::addLeadsData()
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
 }
 
-void Page::addOpportunitiesData()
+void Page::addOpportunitiesData(int start, int end)
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
-    const int count = mItemsTreeModel->rowCount();
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = mItemsTreeModel->index(i, 0);
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
