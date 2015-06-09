@@ -40,7 +40,6 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);
     mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    mUi->date_closed->setNullable(true);
     initialize();
 }
 
