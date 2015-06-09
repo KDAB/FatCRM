@@ -25,6 +25,9 @@
 #include <QDebug>
 #include <QAbstractProxyModel>
 #include <QSignalSpy>
+#include <QVBoxLayout>
+#include <QLineEdit>
+#include <QPushButton>
 
 class QDateEditExTest : public QObject
 {
@@ -65,10 +68,42 @@ private Q_SLOTS:
         QCOMPARE(w.text(), QString(""));
         QCOMPARE(spy.count(), 0);
         w.show();
+        QPushButton *clearButton = w.findChild<QPushButton *>();
+        QVERIFY(clearButton);
+        QVERIFY(!clearButton->isVisible());
         QCOMPARE(w.text(), QString(""));
         QCOMPARE(spy.count(), 0);
-        QTest::qWait(50);
+        QTest::qWait(500);
+        QCOMPARE(w.text(), QString(""));
         QCOMPARE(spy.count(), 0);
+
+        w.setDate(QDate::currentDate());
+        QVERIFY(clearButton->isVisible());
+    }
+
+    void focusOutFromNullDateShouldNotShowDate()
+    {
+        QWidget top;
+        QVBoxLayout *layout = new QVBoxLayout(&top);
+        QDateEditEx *w = new QDateEditEx(&top);
+        layout->addWidget(w);
+        QLineEdit *other = new QLineEdit(&top);
+        layout->addWidget(other);
+
+        w->setNullable(true);
+        w->setDate(QDate());
+        QCOMPARE(w->text(), QString());
+        w->setFocus();
+        top.show();
+        QCOMPARE(w->text(), QString());
+        QTest::qWait(100);
+        QCOMPARE(w->text(), QString());
+
+        // click elsewhere
+        other->setFocus();
+        QCOMPARE(w->text(), QString());
+        QTest::qWait(100);
+        QCOMPARE(w->text(), QString());
     }
 
 private:

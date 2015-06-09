@@ -292,7 +292,7 @@ void QDateEditEx::mousePressEvent(QMouseEvent *event)
 {
     bool saveNull = d->null;
     QDateEdit::mousePressEvent(event);
-    if (d->nullable && saveNull && calendarWidget()->isVisible()) {
+    if (d->nullable && saveNull && calendarWidget() && calendarWidget()->isVisible()) {
         setDateTime(QDateTime::currentDateTime());
     }
 }
@@ -307,6 +307,18 @@ bool QDateEditEx::focusNextPrevChild(bool next)
     } else {
         return QDateEdit::focusNextPrevChild(next);
     }
+}
+
+void QDateEditEx::focusInEvent(QFocusEvent *event)
+{
+    QDateEdit::focusInEvent(event);
+    d->setNull(d->null); // force empty string back in
+}
+
+void QDateEditEx::focusOutEvent(QFocusEvent *event)
+{
+    QDateEdit::focusOutEvent(event);
+    d->setNull(d->null); // force empty string back in
 }
 
 QValidator::State QDateEditEx::validate(QString &input, int &pos) const

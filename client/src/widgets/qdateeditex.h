@@ -52,6 +52,8 @@ protected:
     /*! \reimp */ void keyPressEvent(QKeyEvent *event);
     /*! \reimp */ void mousePressEvent(QMouseEvent *event);
     /*! \reimp */ bool focusNextPrevChild(bool next);
+    /*! \reimp */ void focusInEvent(QFocusEvent *event);
+    /*! \reimp */ void focusOutEvent(QFocusEvent *event);
     /*! \reimp */ QValidator::State validate(QString &input, int &pos) const;
 
 public Q_SLOTS:
