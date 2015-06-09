@@ -48,9 +48,9 @@ static QStringList storedProperties()
         props << KDCRMFields::currencySymbol(); // opportunity
         props << KDCRMFields::contactId(); // leads, notes
 
-        props << "opportunityRoleFields"; // contacts
-        props << "cAcceptStatusFields"; // contacts
-        props << "mAcceptStatusFields"; // contacts
+        props << KDCRMFields::opportunityRoleFields(); // contacts
+        props << KDCRMFields::cAcceptStatusFields(); // contacts
+        props << KDCRMFields::mAcceptStatusFields(); // contacts
     }
     return props;
 }

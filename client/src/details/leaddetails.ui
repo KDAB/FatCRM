@@ -58,7 +58,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="phoneWork"/>
+       <widget class="QLineEdit" name="phone_work"/>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_17">
@@ -68,7 +68,7 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="phoneMobile"/>
+       <widget class="QLineEdit" name="phone_mobile"/>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_28">
@@ -78,7 +78,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="phoneHome"/>
+       <widget class="QLineEdit" name="phone_home"/>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="label_29">
@@ -88,7 +88,7 @@
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QLineEdit" name="phoneOther"/>
+       <widget class="QLineEdit" name="phone_other"/>
       </item>
       <item row="7" column="0">
        <widget class="QLabel" name="label_30">
@@ -98,7 +98,7 @@
        </widget>
       </item>
       <item row="7" column="1">
-       <widget class="QLineEdit" name="phoneFax"/>
+       <widget class="QLineEdit" name="phone_fax"/>
       </item>
       <item row="8" column="0">
        <widget class="QLabel" name="label_31">
@@ -108,7 +108,7 @@
        </widget>
       </item>
       <item row="8" column="1">
-       <widget class="QCheckBox" name="doNotCall">
+       <widget class="QCheckBox" name="do_not_call">
         <property name="text">
          <string/>
         </property>
@@ -327,7 +327,7 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QLineEdit" name="firstName"/>
+       <widget class="QLineEdit" name="first_name"/>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="label_6">
@@ -337,7 +337,7 @@
        </widget>
       </item>
       <item row="6" column="1">
-       <widget class="QLineEdit" name="lastName"/>
+       <widget class="QLineEdit" name="last_name"/>
       </item>
       <item row="7" column="0">
        <widget class="QLabel" name="label_7">
@@ -425,8 +425,8 @@
   <tabstop>campaign_name</tabstop>
   <tabstop>referredBy</tabstop>
   <tabstop>salutation</tabstop>
-  <tabstop>firstName</tabstop>
-  <tabstop>lastName</tabstop>
+  <tabstop>first_name</tabstop>
+  <tabstop>last_name</tabstop>
   <tabstop>birthdate</tabstop>
   <tabstop>clearDateButton</tabstop>
   <tabstop>calendarButton</tabstop>
@@ -437,12 +437,12 @@
   <tabstop>status</tabstop>
   <tabstop>statusDescription</tabstop>
   <tabstop>opportunityAmount</tabstop>
-  <tabstop>phoneWork</tabstop>
-  <tabstop>phoneMobile</tabstop>
-  <tabstop>phoneHome</tabstop>
-  <tabstop>phoneOther</tabstop>
-  <tabstop>phoneFax</tabstop>
-  <tabstop>doNotCall</tabstop>
+  <tabstop>phone_work</tabstop>
+  <tabstop>phone_mobile</tabstop>
+  <tabstop>phone_home</tabstop>
+  <tabstop>phone_other</tabstop>
+  <tabstop>phone_fax</tabstop>
+  <tabstop>do_not_call</tabstop>
   <tabstop>email1</tabstop>
   <tabstop>email2</tabstop>
   <tabstop>primaryAddressStreet</tabstop>

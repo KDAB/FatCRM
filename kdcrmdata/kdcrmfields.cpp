@@ -317,3 +317,98 @@ QString KDCRMFields::altAddressPostalcode()
 {
     return QLatin1String("altAddressPostalcode");
 }
+QString KDCRMFields::firstName()
+{
+    return QLatin1String("first_name");
+}
+
+QString KDCRMFields::lastName()
+{
+    return QLatin1String("last_name");
+}
+
+QString KDCRMFields::title()
+{
+    return QLatin1String("title");
+}
+
+QString KDCRMFields::department()
+{
+    return QLatin1String("department");
+}
+
+QString KDCRMFields::email1()
+{
+    return QLatin1String("email1");
+}
+
+QString KDCRMFields::email2()
+{
+    return QLatin1String("email2");
+}
+
+QString KDCRMFields::phoneHome()
+{
+    return QLatin1String("phone_home");
+}
+
+QString KDCRMFields::phoneMobile()
+{
+    return QLatin1String("phone_mobile");
+}
+
+QString KDCRMFields::phoneWork()
+{
+    return QLatin1String("phone_work");
+}
+
+QString KDCRMFields::phoneOther()
+{
+    return QLatin1String("phone_other");
+}
+
+QString KDCRMFields::phoneFax()
+{
+    return QLatin1String("phone_fax");
+}
+
+QString KDCRMFields::birthdate()
+{
+    return QLatin1String("birthdate");
+}
+
+QString KDCRMFields::assistant()
+{
+    return QLatin1String("assistant");
+}
+
+QString KDCRMFields::phoneAssistant()
+{
+    return QLatin1String("phoneAssistant");
+}
+
+QString KDCRMFields::salutation()
+{
+    return QLatin1String("salutation");
+}
+
+QString KDCRMFields::doNotCall()
+{
+    return QLatin1String("do_not_call");
+}
+
+QString KDCRMFields::cAcceptStatusFields()
+{
+    return QLatin1String("cAcceptStatusFields");
+}
+
+QString KDCRMFields::mAcceptStatusFields()
+{
+    return QLatin1String("mAcceptStatusFields");
+}
+
+QString KDCRMFields::opportunityRoleFields()
+{
+    return QLatin1String("opportunityRoleFields");
+}
+
