@@ -43,6 +43,7 @@ public:
 
 private Q_SLOTS:
     void slotAutoNextStepDate();
+    void slotSalesStageActivated(const QString &stage);
 
     void on_viewNotesButton_clicked();
     void on_buttonOpenAccount_clicked();

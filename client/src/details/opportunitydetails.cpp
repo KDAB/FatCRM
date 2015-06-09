@@ -57,11 +57,29 @@ void OpportunityDetails::initialize()
     mUi->sales_stage->addItems(stageItems());
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
+    connect(mUi->sales_stage, SIGNAL(activated(QString)),
+            this, SLOT(slotSalesStageActivated(QString)));
 }
 
 void OpportunityDetails::slotAutoNextStepDate()
 {
     mUi->next_call_date->setDate(QDate::currentDate().addDays(14));
+}
+
+void OpportunityDetails::slotSalesStageActivated(const QString &stage)
+{
+    int percent = 50;
+    if (stage == "Prospecting")
+        percent = 10;
+    else if (stage == "Proposal/Price Quote")
+        percent = 65;
+    else if (stage == "Negotiation/Review")
+        percent = 80;
+    else if (stage == "Closed Won")
+        percent = 100;
+    else if (stage == "Closed Lost")
+        percent = 0;
+    mUi->probability->setValue(percent);
 }
 
 QStringList OpportunityDetails::typeItems() const
