@@ -33,7 +33,7 @@ template <typename U, typename V> class QHash;
 class OpportunitiesHandler : public ModuleHandler
 {
 public:
-    OpportunitiesHandler(SugarSession *session);
+    explicit OpportunitiesHandler(SugarSession *session);
 
     ~OpportunitiesHandler();
 
@@ -55,4 +55,3 @@ private:
 };
 
 #endif /* OPPORTUNITIESHANDLER_H */
-

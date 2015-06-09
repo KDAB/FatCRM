@@ -32,7 +32,7 @@ template <typename U, typename V> class QHash;
 class LeadsHandler : public ModuleHandler
 {
 public:
-    LeadsHandler(SugarSession *session);
+    explicit LeadsHandler(SugarSession *session);
 
     ~LeadsHandler();
 
@@ -67,4 +67,3 @@ private:
 };
 
 #endif /* LEADSHANDLER_H */
-

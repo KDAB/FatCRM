@@ -26,11 +26,13 @@
 #include "referenceddatamodel.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
+#include "kdcrmdata/sugaropportunity.h"
 #include "notesrepository.h"
+#include "notesdialog.h"
 
-#include <kdcrmdata/sugaropportunity.h>
-#include <notesdialog.h>
 #include <KLocale>
+
+#include <QCalendarWidget>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)

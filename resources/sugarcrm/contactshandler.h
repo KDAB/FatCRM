@@ -32,7 +32,7 @@ template <typename U, typename V> class QHash;
 class ContactsHandler : public ModuleHandler
 {
 public:
-    ContactsHandler(SugarSession *session);
+    explicit ContactsHandler(SugarSession *session);
 
     ~ContactsHandler();
 
