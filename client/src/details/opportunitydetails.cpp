@@ -42,7 +42,6 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);
     mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
-    mUi->date_closed->setNullable(true);
     initialize();
 }
 
@@ -59,11 +58,29 @@ void OpportunityDetails::initialize()
     mUi->sales_stage->addItems(stageItems());
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
+    connect(mUi->sales_stage, SIGNAL(activated(QString)),
+            this, SLOT(slotSalesStageActivated(QString)));
 }
 
 void OpportunityDetails::slotAutoNextStepDate()
 {
     mUi->next_call_date->setDate(QDate::currentDate().addDays(14));
+}
+
+void OpportunityDetails::slotSalesStageActivated(const QString &stage)
+{
+    int percent = 50;
+    if (stage == "Prospecting")
+        percent = 10;
+    else if (stage == "Proposal/Price Quote")
+        percent = 65;
+    else if (stage == "Negotiation/Review")
+        percent = 80;
+    else if (stage == "Closed Won")
+        percent = 100;
+    else if (stage == "Closed Lost")
+        percent = 0;
+    mUi->probability->setValue(percent);
 }
 
 QStringList OpportunityDetails::typeItems() const
@@ -128,9 +145,9 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 
 void OpportunityDetails::getDataInternal(QMap<QString, QString> &currentData) const
 {
-    currentData[KDCRMFields::accountId()] = currentAccountId();
-    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
+    currentData.insert(KDCRMFields::accountId(),  currentAccountId());
+    currentData.insert(KDCRMFields::assignedUserId(), currentAssignedToId());
+    currentData.insert(KDCRMFields::campaignId(), currentCampaignId());
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()
