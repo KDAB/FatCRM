@@ -144,9 +144,9 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 
 void OpportunityDetails::getDataInternal(QMap<QString, QString> &currentData) const
 {
-    currentData[KDCRMFields::accountId()] = currentAccountId();
-    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
+    currentData.insert(KDCRMFields::accountId(),  currentAccountId());
+    currentData.insert(KDCRMFields::assignedUserId(), currentAssignedToId());
+    currentData.insert(KDCRMFields::campaignId(), currentCampaignId());
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()
