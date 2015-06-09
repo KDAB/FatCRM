@@ -67,9 +67,15 @@ QString NotesHandler::orderByForListing() const
     return QLatin1String("notes.name");
 }
 
-QStringList NotesHandler::supportedFields() const
+QStringList NotesHandler::supportedSugarFields() const
 {
     return mAccessors.keys();
+}
+
+QStringList NotesHandler::supportedCRMFields() const
+{
+    // No GUI, so this doesn't matter
+    return supportedSugarFields();
 }
 
 bool NotesHandler::setEntry(const Akonadi::Item &item)

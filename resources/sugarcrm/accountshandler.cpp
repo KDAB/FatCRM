@@ -65,9 +65,15 @@ QString AccountsHandler::orderByForListing() const
     return QLatin1String("accounts.name");
 }
 
-QStringList AccountsHandler::supportedFields() const
+QStringList AccountsHandler::supportedSugarFields() const
 {
-    // get everything
+    // get everything, given that SugarAccount has support for custom fields
+    return availableFields();
+}
+
+QStringList AccountsHandler::supportedCRMFields() const
+{
+    // SugarAccountIO uses the Sugar field names, so it matches
     return availableFields();
 }
 

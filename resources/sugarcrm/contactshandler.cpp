@@ -24,7 +24,8 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
-#include "kdcrmutils.h"
+#include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/kabc/contactparts.h>
@@ -728,9 +729,64 @@ QString ContactsHandler::orderByForListing() const
     return QLatin1String("contacts.last_name");
 }
 
-QStringList ContactsHandler::supportedFields() const
+QStringList ContactsHandler::supportedSugarFields() const
 {
     return mAccessors->keys();
+}
+
+QStringList ContactsHandler::supportedCRMFields() const
+{
+    QStringList ret;
+    // This comes from ContactDetails...
+
+    ret.append(KDCRMFields::accountName());
+    ret.append(KDCRMFields::accountId());
+
+    ret.append(KDCRMFields::salutation());
+    ret.append(KDCRMFields::firstName());
+    ret.append(KDCRMFields::lastName());
+    ret.append(KDCRMFields::title());
+    ret.append(KDCRMFields::department());
+    ret.append(KDCRMFields::accountName());
+    ret.append(KDCRMFields::email1());
+    ret.append(KDCRMFields::email2());
+    ret.append(KDCRMFields::phoneHome());
+    ret.append(KDCRMFields::phoneMobile());
+    ret.append(KDCRMFields::phoneWork());
+    ret.append(KDCRMFields::phoneOther());
+    ret.append(KDCRMFields::phoneFax());
+    ret.append(KDCRMFields::primaryAddressStreet());
+    ret.append(KDCRMFields::primaryAddressCity());
+    ret.append(KDCRMFields::primaryAddressState());
+    ret.append(KDCRMFields::primaryAddressPostalcode());
+    ret.append(KDCRMFields::primaryAddressCountry());
+    ret.append(KDCRMFields::altAddressStreet());
+    ret.append(KDCRMFields::altAddressCity());
+    ret.append(KDCRMFields::altAddressState());
+    ret.append(KDCRMFields::altAddressPostalcode());
+    ret.append(KDCRMFields::altAddressCountry());
+    ret.append(KDCRMFields::birthdate());
+    ret.append(KDCRMFields::assistant());
+    ret.append(KDCRMFields::phoneAssistant());
+    ret.append(KDCRMFields::leadSource());
+    ret.append(KDCRMFields::campaign());
+    ret.append(KDCRMFields::assignedTo());
+    ret.append(KDCRMFields::reportsTo());
+    ret.append(KDCRMFields::doNotCall());
+    ret.append(KDCRMFields::description());
+    ret.append(KDCRMFields::modifiedByName());
+    ret.append(KDCRMFields::dateModified());
+    ret.append(KDCRMFields::dateEntered());
+    ret.append(KDCRMFields::createdByName());
+    ret.append(KDCRMFields::modifiedUserId());
+    ret.append(KDCRMFields::id());
+    ret.append(KDCRMFields::opportunityRoleFields());
+    ret.append(KDCRMFields::cAcceptStatusFields());
+    ret.append(KDCRMFields::mAcceptStatusFields());
+    ret.append(KDCRMFields::deleted());
+    ret.append(KDCRMFields::createdBy());
+
+    return ret;
 }
 
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

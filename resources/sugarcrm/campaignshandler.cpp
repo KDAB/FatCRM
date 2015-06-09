@@ -155,7 +155,7 @@ QString CampaignsHandler::orderByForListing() const
     return QLatin1String("campaigns.name");
 }
 
-QStringList CampaignsHandler::supportedFields() const
+QStringList CampaignsHandler::supportedSugarFields() const
 {
     return mAccessors->keys();
 }

@@ -7,6 +7,11 @@ Loads the data into value classes provided by the lib kdcrmdata (SugarAccount, S
 
 This is then serialized into XML, and stored it in Akonadi items.
 
+Each collection has an attribute which stores
+  - the timestamp of the last sync, so that the resource can fetch only new/modified items each time
+  - the contents version of the items (this allows the resource to re-download everything when supporting more fields)
+  - the list of fields that it supports (for the client to use, see below)
+
 Sugar Client:
 =============
 
@@ -18,8 +23,11 @@ For each Akonadi item, extracts the SugarAccount, SugarOpportunity etc. by deser
 
 The GUI uses a generic QMap<QString, QString> to get/set data in these objects.
 
-One problem with this is, when creating a new object, how to know which keys should be filled.
-Current solution: remember keys from previous already-existing objects.
-Idea for a better solution: a static method in the kdcrmdata classes, fits well with the new static Hash some have.
+The key used in the XML and in the QMap is the same, and comes from KDCRMFields methods.
 
+The "details" widgets contain named widgets, where the name of each widget also matches this KDCRMFields key name.
+
+Upon saving, the details widget iterates over all child widgets, and for those that have a name in the list
+of supported fields (from the resource), adds them to the map. This is because there are uninteresting
+child widgets, like the QLineEdit inside a QSpinBox or a QComboBox, with an internal Qt name, we have to skip that.
 

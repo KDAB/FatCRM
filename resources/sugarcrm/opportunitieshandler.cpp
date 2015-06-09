@@ -104,8 +104,14 @@ QString OpportunitiesHandler::orderByForListing() const
     return QLatin1String("opportunities.name");
 }
 
-QStringList OpportunitiesHandler::supportedFields() const
+QStringList OpportunitiesHandler::supportedSugarFields() const
 {
+    return mAccessors.keys();
+}
+
+QStringList OpportunitiesHandler::supportedCRMFields() const
+{
+    // SugarAccountIO uses the Sugar field names, so it matches
     return mAccessors.keys();
 }
 

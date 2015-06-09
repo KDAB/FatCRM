@@ -73,7 +73,13 @@ public:
 
     virtual QString queryStringForListing() const { return QString(); }
     virtual QString orderByForListing() const = 0;
-    virtual QStringList supportedFields() const = 0;
+
+    // List of fields to pass the Sugar SOAP interface
+    virtual QStringList supportedSugarFields() const = 0;
+
+    // List of fields saved into the QMap data
+    // and into the XML. This is then communicated to the client app.
+    virtual QStringList supportedCRMFields() const = 0;
 
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;

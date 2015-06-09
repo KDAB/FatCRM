@@ -229,7 +229,7 @@ QString LeadsHandler::orderByForListing() const
     return QLatin1String("leads.last_name");
 }
 
-QStringList LeadsHandler::supportedFields() const
+QStringList LeadsHandler::supportedSugarFields() const
 {
     return mAccessors->keys();
 }
