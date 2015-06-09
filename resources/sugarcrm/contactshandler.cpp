@@ -712,7 +712,8 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
         }
         KDSoapGenerated::TNS__Name_value field;
         field.setName(it.key());
-        field.setValue((*it)->getter(addressee));
+        const QString value = KDCRMUtils::encodeXML((*it)->getter(addressee));
+        field.setValue(value);
 
         itemList << field;
     }
@@ -789,6 +790,12 @@ QStringList ContactsHandler::supportedCRMFields() const
     return ret;
 }
 
+int ContactsHandler::expectedContentsVersion() const
+{
+    // version 1 = decodeXML/encodeXML added to solve special chars
+    return 1;
+}
+
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;
@@ -816,12 +823,14 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
             continue;
         }
 
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+
         if (isAddressValue(namedValue.name())) {
             KABC::Address &address =
                 isPrimaryAddressValue(namedValue.name()) ? workAddress : homeAddress;
-            (*accessIt)->setter.aSetter(namedValue.value(), address);
+            (*accessIt)->setter.aSetter(value, address);
         } else {
-            (*accessIt)->setter.vSetter(namedValue.value(), addressee);
+            (*accessIt)->setter.vSetter(value, addressee);
         }
     }
     addressee.insertAddress(workAddress);
