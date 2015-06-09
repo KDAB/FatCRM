@@ -27,6 +27,7 @@
 #include "opportunityfilterproxymodel.h"
 #include "detailswidget.h"
 #include "kdcrmdata/kdcrmfields.h"
+#include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <akonadi/entitymimetypefiltermodel.h>
@@ -68,5 +69,7 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     QMap<QString, QString> initialData;
     initialData.insert(KDCRMFields::salesStage(), "Prospecting");
     initialData.insert(KDCRMFields::probability(), "10");
+    initialData.insert(KDCRMFields::dateClosed(), KDCRMUtils::dateToString(QDate::currentDate().addMonths(1)));
+    initialData.insert(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
     return initialData;
 }
