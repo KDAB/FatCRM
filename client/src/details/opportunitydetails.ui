@@ -220,6 +220,23 @@
    <header>qdateeditex.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>account_name</tabstop>
+  <tabstop>buttonOpenAccount</tabstop>
+  <tabstop>opportunity_type</tabstop>
+  <tabstop>lead_source</tabstop>
+  <tabstop>campaign_name</tabstop>
+  <tabstop>sales_stage</tabstop>
+  <tabstop>assigned_user_name</tabstop>
+  <tabstop>amount</tabstop>
+  <tabstop>date_closed</tabstop>
+  <tabstop>next_step</tabstop>
+  <tabstop>next_call_date</tabstop>
+  <tabstop>nextStepDateAutoButton</tabstop>
+  <tabstop>probability</tabstop>
+  <tabstop>viewNotesButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
