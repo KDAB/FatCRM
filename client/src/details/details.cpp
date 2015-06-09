@@ -48,9 +48,9 @@ static QStringList storedProperties()
         props << KDCRMFields::currencySymbol(); // opportunity
         props << KDCRMFields::contactId(); // leads, notes
 
-        props << "opportunityRoleFields"; // contacts
-        props << "cAcceptStatusFields"; // contacts
-        props << "mAcceptStatusFields"; // contacts
+        props << KDCRMFields::opportunityRoleFields(); // contacts
+        props << KDCRMFields::cAcceptStatusFields(); // contacts
+        props << KDCRMFields::mAcceptStatusFields(); // contacts
     }
     return props;
 }
@@ -128,6 +128,12 @@ void Details::setResourceIdentifier(const QByteArray &ident, const QString &base
 {
     mResourceIdentifier = ident;
     mResourceBaseUrl = baseUrl;
+}
+
+void Details::setSupportedFields(const QStringList &fields)
+{
+    mKeys = fields;
+    Q_ASSERT(mKeys.contains("id"));
 }
 
 // TODO should probably be virtual and include item specific data, e.g. a contact's full name
@@ -234,7 +240,7 @@ void Details::setData(const QMap<QString, QString> &data,
 
     if (mKeys.isEmpty()) {
         mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
-        Q_ASSERT(!mKeys.isEmpty());
+        Q_ASSERT(mKeys.contains("id"));
     }
 }
 
@@ -244,7 +250,7 @@ void Details::setData(const QMap<QString, QString> &data,
  */
 const QMap<QString, QString> Details::getData() const
 {
-    Q_ASSERT(!mKeys.isEmpty());
+    Q_ASSERT(mKeys.contains("id"));
 
     QMap<QString, QString> currentData;
     QString key;

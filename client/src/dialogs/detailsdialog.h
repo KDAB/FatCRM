@@ -28,6 +28,7 @@
 namespace Akonadi
 {
 class Item;
+class Collection;
 }
 
 class Details;
@@ -41,7 +42,7 @@ public:
 
     ~DetailsDialog();
 
-    void showNewItem(const QMap<QString, QString> &data);
+    void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection);
 
 public Q_SLOTS:
     void setItem(const Akonadi::Item &item);

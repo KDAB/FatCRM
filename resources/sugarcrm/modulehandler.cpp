@@ -92,7 +92,7 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     const int fetchDeleted = scope.deleted();
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(supportedFields());
+    selectedFields.setItems(supportedSugarFields());
 
     soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }
@@ -144,7 +144,7 @@ bool ModuleHandler::getEntry(const Akonadi::Item &item)
     }
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(supportedFields());
+    selectedFields.setItems(supportedSugarFields());
 
     soap()->asyncGet_entry(sessionId(), mModuleName, item.remoteId(), selectedFields);
     return true;

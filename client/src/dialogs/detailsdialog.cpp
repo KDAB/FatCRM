@@ -60,6 +60,7 @@ public:
     Ui::DetailsDialog mUi;
 
     Item mItem;
+    Collection mCollection;
     Details *mDetails;
     QDialogButtonBox *mButtonBox;
     QPushButton *mSaveButton;
@@ -108,8 +109,8 @@ void DetailsDialog::Private::saveClicked()
         job = new ItemModifyJob(item, q);
     } else {
         kDebug() << "Item create";
-        Q_ASSERT(item.parentCollection().isValid());
-        job = new ItemCreateJob(item, item.parentCollection(), q);
+        Q_ASSERT(mCollection.isValid());
+        job = new ItemCreateJob(item, mCollection, q);
     }
     job->setProperty("item", QVariant::fromValue(item));
 
@@ -131,13 +132,6 @@ void DetailsDialog::Private::saveResult(KJob *job)
     }
     emit q->itemSaved(job->property("item").value<Akonadi::Item>());
     q->accept();
-#if 0
-    ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
-    if (createJob != 0) {
-        kDebug() << "item" << createJob->item().id() << "created";
-        q->setItem(createJob->item());
-    }
-#endif
 }
 
 DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
@@ -169,9 +163,11 @@ DetailsDialog::~DetailsDialog()
 }
 
 // open for creation
-void DetailsDialog::showNewItem(const QMap<QString, QString> &data)
+void DetailsDialog::showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection)
 {
     d->setData(data);
+
+    d->mCollection = collection;
 
     // hide creation/modification date/user
     d->mUi.createdModifiedContainer->hide();

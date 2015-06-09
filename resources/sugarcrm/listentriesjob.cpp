@@ -92,6 +92,7 @@ void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
 }
 
 static const char s_timeStampKey[] = "timestamp";
+static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in page.cpp
 
 // When the resource evolves and can store more things (or if e.g. encoding bugs are fixed)
 // then increasing the expected version ensures that old caches are thrown out.
@@ -145,6 +146,12 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
                     annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
                     changed = true;
                 }
+            }
+            // Also store the list of supported fields, so that the GUI knows what to expect and set
+            const QString fields = mHandler->supportedCRMFields().join(",");
+            if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
+                annotationsAttribute->insert(s_supportedFieldsKey, fields);
+                changed = true;
             }
 
             if (changed) {

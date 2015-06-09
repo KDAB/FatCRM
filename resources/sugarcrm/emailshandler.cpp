@@ -67,9 +67,15 @@ QString EmailsHandler::orderByForListing() const
     return QLatin1String("emails.name");
 }
 
-QStringList EmailsHandler::supportedFields() const
+QStringList EmailsHandler::supportedSugarFields() const
 {
     return mAccessors.keys();
+}
+
+QStringList EmailsHandler::supportedCRMFields() const
+{
+    // No GUI, so this doesn't matter
+    return supportedSugarFields();
 }
 
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)

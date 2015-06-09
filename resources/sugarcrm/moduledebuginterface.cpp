@@ -48,7 +48,7 @@ QStringList ModuleDebugInterface::supportedFields() const
 {
     ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
     if (handler != 0) {
-        return handler->supportedFields();
+        return handler->supportedSugarFields();
     }
 
     return QStringList();

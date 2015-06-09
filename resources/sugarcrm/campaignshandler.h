@@ -39,7 +39,7 @@ public:
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
     QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList supportedFields() const Q_DECL_OVERRIDE;
+    QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
 
     bool setEntry(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 

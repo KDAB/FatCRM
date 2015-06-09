@@ -21,7 +21,6 @@
 */
 
 #include "sugaraccount.h"
-#include "kdcrmfields.h"
 
 #include <klocalizedstring.h>
 #include <QtCore/QSharedData>

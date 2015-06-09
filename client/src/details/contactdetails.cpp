@@ -80,45 +80,45 @@ QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
 QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addressee) const
 {
     QMap<QString, QString> data;
-    data["salutation"] = addressee.custom("FATCRM", "X-Salutation");
-    data["firstName"] = addressee.givenName();
-    data["lastName"] = addressee.familyName();
-    data["title"] = addressee.title();
-    data["department"] = addressee.department();
+    data[KDCRMFields::salutation()] = addressee.custom("FATCRM", "X-Salutation");
+    data[KDCRMFields::firstName()] = addressee.givenName();
+    data[KDCRMFields::lastName()] = addressee.familyName();
+    data[KDCRMFields::title()] = addressee.title();
+    data[KDCRMFields::department()] = addressee.department();
     data[KDCRMFields::accountName()] = addressee.organization();
-    data["email1"] = addressee.preferredEmail();
+    data[KDCRMFields::email1()] = addressee.preferredEmail();
     QStringList emails = addressee.emails();
     emails.removeAll(addressee.preferredEmail());
     if (emails.count() > 0) {
-        data["email2"] = emails.at(0);
+        data[KDCRMFields::email2()] = emails.at(0);
     }
-    data["phoneHome"] = addressee.phoneNumber(KABC::PhoneNumber::Home).number();
-    data["phoneMobile"] = addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
-    data["phoneWork"] = addressee.phoneNumber(KABC::PhoneNumber::Work).number();
-    data["phoneOther"] = addressee.phoneNumber(KABC::PhoneNumber::Car).number();
-    data["phoneFax"] = addressee.phoneNumber(KABC::PhoneNumber::Fax).number();
+    data[KDCRMFields::phoneHome()] = addressee.phoneNumber(KABC::PhoneNumber::Home).number();
+    data[KDCRMFields::phoneMobile()] = addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
+    data[KDCRMFields::phoneWork()] = addressee.phoneNumber(KABC::PhoneNumber::Work).number();
+    data[KDCRMFields::phoneOther()] = addressee.phoneNumber(KABC::PhoneNumber::Car).number();
+    data[KDCRMFields::phoneFax()] = addressee.phoneNumber(KABC::PhoneNumber::Fax).number();
 
     const KABC::Address address = addressee.address(KABC::Address::Work | KABC::Address::Pref);
-    data["primaryAddressStreet"] = address.street();
-    data["primaryAddressCity"] = address.locality();
-    data["primaryAddressState"] = address.region();
-    data["primaryAddressPostalcode"] = address.postalCode();
-    data["primaryAddressCountry"] = address.country();
+    data.insert(KDCRMFields::primaryAddressStreet(), address.street());
+    data.insert(KDCRMFields::primaryAddressCity(), address.locality());
+    data.insert(KDCRMFields::primaryAddressState(), address.region());
+    data.insert(KDCRMFields::primaryAddressPostalcode(), address.postalCode());
+    data.insert(KDCRMFields::primaryAddressCountry(), address.country());
 
     const KABC::Address other = addressee.address(KABC::Address::Home);
-    data["altAddressStreet"] = other.street();
-    data["altAddressCity"] = other.locality();
-    data["altAddressState"] = other.region();
-    data["altAddressPostalcode"] = other.postalCode();
-    data["altAddressCountry"] = other.country();
-    data["birthdate"] = KDCRMUtils::dateToString(addressee.birthday().date());
-    data["assistant"] = addressee.custom("KADDRESSBOOK", "X-AssistantsName");
-    data["phoneAssistant"] = addressee.custom("FATCRM", "X-AssistantsPhone");
+    data.insert(KDCRMFields::altAddressStreet(), other.street());
+    data.insert(KDCRMFields::altAddressCity(), other.locality());
+    data.insert(KDCRMFields::altAddressState(), other.region());
+    data.insert(KDCRMFields::altAddressPostalcode(), other.postalCode());
+    data.insert(KDCRMFields::altAddressCountry(), other.country());
+    data[KDCRMFields::birthdate()] = KDCRMUtils::dateToString(addressee.birthday().date());
+    data[KDCRMFields::assistant()] = addressee.custom("KADDRESSBOOK", "X-AssistantsName");
+    data[KDCRMFields::phoneAssistant()] = addressee.custom("FATCRM", "X-AssistantsPhone");
     data[KDCRMFields::leadSource()] = addressee.custom("FATCRM", "X-LeadSourceName");
     data[KDCRMFields::campaign()] = addressee.custom("FATCRM", "X-CampaignName");
     data[KDCRMFields::assignedTo()] = addressee.custom("FATCRM", "X-AssignedUserName");
     data[KDCRMFields::reportsTo()] = addressee.custom("FATCRM", "X-ReportsToUserName");
-    data["doNotCall"] = addressee.custom("FATCRM", "X-DoNotCall");
+    data[KDCRMFields::doNotCall()] = addressee.custom("FATCRM", "X-DoNotCall");
     data[KDCRMFields::description()] = addressee.note();
     data[KDCRMFields::modifiedByName()] = addressee.custom("FATCRM", "X-ModifiedByName");
     data[KDCRMFields::dateModified()] = addressee.custom("FATCRM", "X-DateModified");
@@ -126,9 +126,9 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data[KDCRMFields::createdByName()] = addressee.custom("FATCRM", "X-CreatedByName");
     data[KDCRMFields::modifiedUserId()] = addressee.custom("FATCRM", "X-ModifiedUserId");
     data[KDCRMFields::id()] = addressee.custom("FATCRM", "X-ContactId");
-    data["opportunityRoleFields"] = addressee.custom("FATCRM", "X-OpportunityRoleFields");
-    data["cAcceptStatusFields"] = addressee.custom("FATCRM", "X-CacceptStatusFields");
-    data["mAcceptStatusFields"] = addressee.custom("FATCRM", "X-MacceptStatusFields");
+    data[KDCRMFields::opportunityRoleFields()] = addressee.custom("FATCRM", "X-OpportunityRoleFields");
+    data[KDCRMFields::cAcceptStatusFields()] = addressee.custom("FATCRM", "X-CacceptStatusFields");
+    data[KDCRMFields::mAcceptStatusFields()] = addressee.custom("FATCRM", "X-MacceptStatusFields");
     data[KDCRMFields::deleted()] = addressee.custom("FATCRM", "X-Deleted");
     data[KDCRMFields::createdBy()] = addressee.custom("FATCRM", "X-CreatedById");
     return data;
@@ -139,65 +139,67 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     KABC::Addressee addressee;
     if (item.hasPayload<KABC::Addressee>()) {
         addressee = item.payload<KABC::Addressee>();
+        foreach (const KABC::Address &addr, addressee.addresses())
+            addressee.removeAddress(addr);
     }
 
-    addressee.setGivenName(data.value("firstName"));
-    addressee.setFamilyName(data.value("lastName"));
-    addressee.setTitle(data.value("title"));
-    addressee.setDepartment(data.value("department"));
+    addressee.setGivenName(data.value(KDCRMFields::firstName()));
+    addressee.setFamilyName(data.value(KDCRMFields::lastName()));
+    addressee.setTitle(data.value(KDCRMFields::title()));
+    addressee.setDepartment(data.value(KDCRMFields::department()));
     addressee.setOrganization(data.value(KDCRMFields::accountName()));
     addressee.insertCustom("FATCRM", "X-AccountId", data.value(KDCRMFields::accountId()));
-    addressee.insertEmail(data.value("email1"), true);
-    addressee.insertEmail(data.value("email2"));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value("phoneHome"), KABC::PhoneNumber::Home));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value("phoneMobile"), KABC::PhoneNumber::Cell));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value("phoneWork"), KABC::PhoneNumber::Work));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value("phoneOther"), KABC::PhoneNumber::Car));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value("phoneFax"), KABC::PhoneNumber::Work | KABC::PhoneNumber::Fax));
+    addressee.insertEmail(data.value(KDCRMFields::email1()), true);
+    addressee.insertEmail(data.value(KDCRMFields::email2()));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneHome()), KABC::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KABC::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneWork()), KABC::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneOther()), KABC::PhoneNumber::Car));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneFax()), KABC::PhoneNumber::Work | KABC::PhoneNumber::Fax));
 
     KABC::Address primaryAddress;
     primaryAddress.setType(KABC::Address::Work | KABC::Address::Pref);
-    primaryAddress.setStreet(data.value("primaryAddressStreet"));
-    primaryAddress.setLocality(data.value("primaryAddressCity"));
-    primaryAddress.setRegion(data.value("primaryAddressState"));
-    primaryAddress.setPostalCode(data.value("primaryAddressPostalcode"));
-    primaryAddress.setCountry(data.value("primaryAddressCountry"));
+    primaryAddress.setStreet(data.value(KDCRMFields::primaryAddressStreet()));
+    primaryAddress.setLocality(data.value(KDCRMFields::primaryAddressCity()));
+    primaryAddress.setRegion(data.value(KDCRMFields::primaryAddressState()));
+    primaryAddress.setPostalCode(data.value(KDCRMFields::primaryAddressPostalcode()));
+    primaryAddress.setCountry(data.value(KDCRMFields::primaryAddressCountry()));
     addressee.insertAddress(primaryAddress);
 
     KABC::Address otherAddress;
     otherAddress.setType(KABC::Address::Home);
-    otherAddress.setStreet(data.value("altAddressStreet"));
-    otherAddress.setLocality(data.value("altAddressCity"));
-    otherAddress.setRegion(data.value("altAddressState"));
-    otherAddress.setPostalCode(data.value("altAddressPostalcode"));
-    otherAddress.setCountry(data.value("altAddressCountry"));
+    otherAddress.setStreet(data.value(KDCRMFields::altAddressStreet()));
+    otherAddress.setLocality(data.value(KDCRMFields::altAddressCity()));
+    otherAddress.setRegion(data.value(KDCRMFields::altAddressState()));
+    otherAddress.setPostalCode(data.value(KDCRMFields::altAddressPostalcode()));
+    otherAddress.setCountry(data.value(KDCRMFields::altAddressCountry()));
     addressee.insertAddress(otherAddress);
 
-    addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value("birthdate"))));
+    addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value(KDCRMFields::birthdate()))));
 
     addressee.setNote(data.value(KDCRMFields::description()));
-    addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", data.value("assistant"));
-    addressee.insertCustom("FATCRM", "X-AssistantsPhone", data.value("phoneAssistant"));
+    addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", data.value(KDCRMFields::assistant()));
+    addressee.insertCustom("FATCRM", "X-AssistantsPhone", data.value(KDCRMFields::phoneAssistant()));
     addressee.insertCustom("FATCRM", "X-LeadSourceName", data.value(KDCRMFields::leadSource()));
     addressee.insertCustom("FATCRM", "X-CampaignName", data.value(KDCRMFields::campaign()));
     addressee.insertCustom("FATCRM", "X-CampaignId", data.value(KDCRMFields::campaignId()));
-    addressee.insertCustom("FATCRM", "X-CacceptStatusFields", data.value("cAcceptStatusFields"));
-    addressee.insertCustom("FATCRM", "X-MacceptStatusFields", data.value("mAcceptStatusFields"));
+    addressee.insertCustom("FATCRM", "X-CacceptStatusFields", data.value(KDCRMFields::cAcceptStatusFields()));
+    addressee.insertCustom("FATCRM", "X-MacceptStatusFields", data.value(KDCRMFields::mAcceptStatusFields()));
     addressee.insertCustom("FATCRM", "X-AssignedUserName", data.value(KDCRMFields::assignedTo()));
     addressee.insertCustom("FATCRM", "X-AssignedUserId", data.value(KDCRMFields::assignedToId()));
     addressee.insertCustom("FATCRM", "X-ReportsToUserName", data.value(KDCRMFields::reportsTo()));
     addressee.insertCustom("FATCRM", "X-ReportsToUserId", data.value(KDCRMFields::reportsToId()));
-    addressee.insertCustom("FATCRM", "X-OpportunityRoleFields", data.value("opportunityRoleFields"));
+    addressee.insertCustom("FATCRM", "X-OpportunityRoleFields", data.value(KDCRMFields::opportunityRoleFields()));
     addressee.insertCustom("FATCRM", "X-ModifiedByName", data.value(KDCRMFields::modifiedByName()));
-    addressee.insertCustom("FATCRM", "X-DateModified", data.value("modifiedDate"));
+    addressee.insertCustom("FATCRM", "X-DateModified", data.value(KDCRMFields::dateModified()));
     addressee.insertCustom("FATCRM", "X-ModifiedUserId", data.value(KDCRMFields::modifiedUserId()));
-    addressee.insertCustom("FATCRM", "X-DateCreated", data.value("createdDate"));
+    addressee.insertCustom("FATCRM", "X-DateCreated", data.value(KDCRMFields::dateEntered()));
     addressee.insertCustom("FATCRM", "X-CreatedByName", data.value(KDCRMFields::createdByName()));
     addressee.insertCustom("FATCRM", "X-CreatedById", data.value(KDCRMFields::createdBy()));
-    addressee.insertCustom("FATCRM", "X-ContactId", data.value("id"));
-    addressee.insertCustom("FATCRM", "X-Salutation", data.value("salutation"));
+    addressee.insertCustom("FATCRM", "X-ContactId", data.value(KDCRMFields::id()));
+    addressee.insertCustom("FATCRM", "X-Salutation", data.value(KDCRMFields::salutation()));
     addressee.insertCustom("FATCRM", "X-Deleted", data.value(KDCRMFields::deleted()));
-    addressee.insertCustom("FATCRM", "X-DoNotCall", data.value("doNotCall"));
+    addressee.insertCustom("FATCRM", "X-DoNotCall", data.value(KDCRMFields::doNotCall()));
 
     item.setMimeType(KABC::Addressee::mimeType());
     item.setPayload<KABC::Addressee>(addressee);

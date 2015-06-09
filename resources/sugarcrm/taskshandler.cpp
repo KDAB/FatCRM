@@ -324,9 +324,15 @@ QString TasksHandler::orderByForListing() const
     return QLatin1String("tasks.id");
 }
 
-QStringList TasksHandler::supportedFields() const
+QStringList TasksHandler::supportedSugarFields() const
 {
     return mAccessors->keys();
+}
+
+QStringList TasksHandler::supportedCRMFields() const
+{
+    // No GUI, so this doesn't matter
+    return supportedSugarFields();
 }
 
 bool TasksHandler::setEntry( const Akonadi::Item &item )

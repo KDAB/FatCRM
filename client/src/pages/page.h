@@ -107,7 +107,7 @@ private Q_SLOTS:
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotResetSearch();
     void slotReloadCollection();
-    void slotCollectionChanged(const Akonadi::Collection &collection);
+    void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const Akonadi::Item &item);
     void slotCreateJobResult(KJob *job);
@@ -122,6 +122,7 @@ private:
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
     bool askSave();
+    void updateSupportedFields();
     // manages accounts combo box
     void addAccountsData(int start, int end);
     void addCampaignsData(int start, int end);
@@ -148,6 +149,7 @@ private:
     QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
     QString mResourceBaseUrl;
+    QStringList mSupportedFields;
     NotesRepository *mNotesRepository;
 };
 

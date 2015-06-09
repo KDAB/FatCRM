@@ -87,15 +87,15 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setAssignedUserId(xml.readElementText());
         } else if (xml.name() == KDCRMFields::assignedUserName()) {
             lead.setAssignedUserName(xml.readElementText());
-        } else if (xml.name() == "salutation") {
+        } else if (xml.name() == KDCRMFields::salutation()) {
             lead.setSalutation(xml.readElementText());
         } else if (xml.name() == "first_name") {
             lead.setFirstName(xml.readElementText());
         } else if (xml.name() == "last_name") {
             lead.setLastName(xml.readElementText());
-        } else if (xml.name() == "title") {
+        } else if (xml.name() == KDCRMFields::title()) {
             lead.setTitle(xml.readElementText());
-        } else if (xml.name() == "department") {
+        } else if (xml.name() == KDCRMFields::department()) {
             lead.setDepartment(xml.readElementText());
         } else if (xml.name() == "do_not_call") {
             lead.setDoNotCall(xml.readElementText());
@@ -109,31 +109,31 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setPhoneOther(xml.readElementText());
         } else if (xml.name() == "phone_fax") {
             lead.setPhoneFax(xml.readElementText());
-        } else if (xml.name() == "email1") {
+        } else if (xml.name() == KDCRMFields::email1()) {
             lead.setEmail1(xml.readElementText());
-        } else if (xml.name() == "email2") {
+        } else if (xml.name() == KDCRMFields::email2()) {
             lead.setEmail2(xml.readElementText());
-        } else if (xml.name() == "primary_address_street") {
+        } else if (xml.name() == KDCRMFields::primaryAddressStreet()) {
             lead.setPrimaryAddressStreet(xml.readElementText());
-        } else if (xml.name() == "primary_address_city") {
+        } else if (xml.name() == KDCRMFields::primaryAddressCity()) {
             lead.setPrimaryAddressCity(xml.readElementText());
-        } else if (xml.name() == "primary_address_state") {
+        } else if (xml.name() == KDCRMFields::primaryAddressState()) {
             lead.setPrimaryAddressState(xml.readElementText());
-        } else if (xml.name() == "primary_address_postalcode") {
+        } else if (xml.name() == KDCRMFields::primaryAddressPostalcode()) {
             lead.setPrimaryAddressPostalcode(xml.readElementText());
-        } else if (xml.name() == "primary_address_country") {
+        } else if (xml.name() == KDCRMFields::primaryAddressCountry()) {
             lead.setPrimaryAddressCountry(xml.readElementText());
-        } else if (xml.name() == "alt_address_street") {
+        } else if (xml.name() == KDCRMFields::altAddressStreet()) {
             lead.setAltAddressStreet(xml.readElementText());
-        } else if (xml.name() == "alt_address_city") {
+        } else if (xml.name() == KDCRMFields::altAddressCity()) {
             lead.setAltAddressCity(xml.readElementText());
-        } else if (xml.name() == "alt_address_state") {
+        } else if (xml.name() == KDCRMFields::altAddressState()) {
             lead.setAltAddressState(xml.readElementText());
-        } else if (xml.name() == "alt_address_postalcode") {
+        } else if (xml.name() == KDCRMFields::altAddressPostalcode()) {
             lead.setAltAddressPostalcode(xml.readElementText());
-        } else if (xml.name() == "alt_address_country") {
+        } else if (xml.name() == KDCRMFields::altAddressCountry()) {
             lead.setAltAddressCountry(xml.readElementText());
-        } else if (xml.name() == "assistant") {
+        } else if (xml.name() == KDCRMFields::assistant()) {
             lead.setAssistant(xml.readElementText());
         } else if (xml.name() == "assistant_phone") {
             lead.setAssistantPhone(xml.readElementText());
@@ -175,7 +175,7 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setCAcceptStatusFields(xml.readElementText());
         } else if (xml.name() == "m_accept_status_fields") {
             lead.setMAcceptStatusFields(xml.readElementText());
-        } else if (xml.name() == "birthdate") {
+        } else if (xml.name() == KDCRMFields::birthdate()) {
             lead.setBirthdate(xml.readElementText());
         } else if (xml.name() == "portal_name") {
             lead.setPortalName(xml.readElementText());
@@ -210,30 +210,30 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     writer.writeTextElement(QString(KDCRMFields::deleted()), lead.deleted());
     writer.writeTextElement(QString("assigned_user_id"), lead.assignedUserId());
     writer.writeTextElement(KDCRMFields::assignedUserName(), lead.assignedUserName());
-    writer.writeTextElement(QString("salutation"), lead.salutation());
+    writer.writeTextElement(QString(KDCRMFields::salutation()), lead.salutation());
     writer.writeTextElement(QString("first_name"), lead.firstName());
     writer.writeTextElement(QString("last_name"), lead.lastName());
-    writer.writeTextElement(QString("title"), lead.title());
-    writer.writeTextElement(QString("department"), lead.department());
+    writer.writeTextElement(QString(KDCRMFields::title()), lead.title());
+    writer.writeTextElement(QString(KDCRMFields::department()), lead.department());
     writer.writeTextElement(QString("do_not_call"), lead.doNotCall());
     writer.writeTextElement(QString("phone_home"), lead.phoneHome());
     writer.writeTextElement(QString("phone_mobile"), lead.phoneMobile());
     writer.writeTextElement(QString("phone_work"), lead.phoneWork());
     writer.writeTextElement(QString("phone_other"), lead.phoneOther());
     writer.writeTextElement(QString("phone_fax"), lead.phoneFax());
-    writer.writeTextElement(QString("email1"), lead.email1());
-    writer.writeTextElement(QString("email2"), lead.email2());
-    writer.writeTextElement(QString("primary_address_street"), lead.primaryAddressStreet());
-    writer.writeTextElement(QString("primary_address_city"), lead.primaryAddressCity());
-    writer.writeTextElement(QString("primary_address_state"), lead.primaryAddressState());
-    writer.writeTextElement(QString("primary_address_postalcode"), lead.primaryAddressPostalcode());
-    writer.writeTextElement(QString("primary_address_country"), lead.primaryAddressCountry());
-    writer.writeTextElement(QString("alt_address_street"), lead.altAddressStreet());
-    writer.writeTextElement(QString("alt_address_city"), lead.altAddressCity());
-    writer.writeTextElement(QString("alt_address_state"), lead.altAddressState());
-    writer.writeTextElement(QString("alt_address_postalcode"), lead.altAddressPostalcode());
-    writer.writeTextElement(QString("alt_address_country"), lead.altAddressCountry());
-    writer.writeTextElement(QString("assistant"), lead.assistant());
+    writer.writeTextElement(QString(KDCRMFields::email1()), lead.email1());
+    writer.writeTextElement(QString(KDCRMFields::email2()), lead.email2());
+    writer.writeTextElement(KDCRMFields::primaryAddressStreet(), lead.primaryAddressStreet());
+    writer.writeTextElement(KDCRMFields::primaryAddressCity(), lead.primaryAddressCity());
+    writer.writeTextElement(KDCRMFields::primaryAddressState(), lead.primaryAddressState());
+    writer.writeTextElement(KDCRMFields::primaryAddressPostalcode(), lead.primaryAddressPostalcode());
+    writer.writeTextElement(KDCRMFields::primaryAddressCountry(), lead.primaryAddressCountry());
+    writer.writeTextElement(KDCRMFields::altAddressStreet(), lead.altAddressStreet());
+    writer.writeTextElement(KDCRMFields::altAddressCity(), lead.altAddressCity());
+    writer.writeTextElement(KDCRMFields::altAddressState(), lead.altAddressState());
+    writer.writeTextElement(KDCRMFields::altAddressPostalcode(), lead.altAddressPostalcode());
+    writer.writeTextElement(KDCRMFields::altAddressCountry(), lead.altAddressCountry());
+    writer.writeTextElement(QString(KDCRMFields::assistant()), lead.assistant());
     writer.writeTextElement(QString("assistant_phone"), lead.assistantPhone());
     writer.writeTextElement(QString("converted"), lead.converted());
     writer.writeTextElement(QString("refered_by"), lead.referedBy());
@@ -254,7 +254,7 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     writer.writeTextElement(QString("campaign_name"), lead.campaignName());
     writer.writeTextElement(QString("c_accept_status_fields"), lead.cAcceptStatusFields());
     writer.writeTextElement(QString("m_accept_status_fields"), lead.mAcceptStatusFields());
-    writer.writeTextElement(QString("birthdate"), lead.birthdate());
+    writer.writeTextElement(QString(KDCRMFields::birthdate()), lead.birthdate());
     writer.writeTextElement(QString("portal_name"), lead.portalName());
     writer.writeTextElement(QString("portal_app"), lead.portalApp());
 

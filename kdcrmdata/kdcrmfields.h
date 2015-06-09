@@ -81,6 +81,38 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString shippingAddressState();
     KDCRMDATA_EXPORT QString shippingAddressCountry();
     KDCRMDATA_EXPORT QString shippingAddressPostalcode();
+
+    // for Contacts
+    KDCRMDATA_EXPORT QString primaryAddressStreet();
+    KDCRMDATA_EXPORT QString primaryAddressCity();
+    KDCRMDATA_EXPORT QString primaryAddressState();
+    KDCRMDATA_EXPORT QString primaryAddressPostalcode();
+    KDCRMDATA_EXPORT QString primaryAddressCountry();
+    KDCRMDATA_EXPORT QString altAddressStreet();
+    KDCRMDATA_EXPORT QString altAddressCity();
+    KDCRMDATA_EXPORT QString altAddressState();
+    KDCRMDATA_EXPORT QString altAddressPostalcode();
+    KDCRMDATA_EXPORT QString altAddressCountry();
+    KDCRMDATA_EXPORT QString firstName();
+    KDCRMDATA_EXPORT QString lastName();
+    KDCRMDATA_EXPORT QString title();
+    KDCRMDATA_EXPORT QString department();
+    KDCRMDATA_EXPORT QString email1();
+    KDCRMDATA_EXPORT QString email2();
+    KDCRMDATA_EXPORT QString phoneHome();
+    KDCRMDATA_EXPORT QString phoneMobile();
+    KDCRMDATA_EXPORT QString phoneWork();
+    KDCRMDATA_EXPORT QString phoneOther();
+    KDCRMDATA_EXPORT QString phoneFax();
+    KDCRMDATA_EXPORT QString birthdate();
+    KDCRMDATA_EXPORT QString assistant();
+    KDCRMDATA_EXPORT QString phoneAssistant();
+    KDCRMDATA_EXPORT QString salutation();
+    KDCRMDATA_EXPORT QString doNotCall();
+    KDCRMDATA_EXPORT QString cAcceptStatusFields();
+    KDCRMDATA_EXPORT QString mAcceptStatusFields();
+    KDCRMDATA_EXPORT QString opportunityRoleFields();
 }
 
 #endif // KDCRMFIELDS_H
+

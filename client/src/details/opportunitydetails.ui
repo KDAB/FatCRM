@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>855</width>
-    <height>204</height>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -95,7 +95,9 @@
         <item>
          <widget class="QToolButton" name="buttonOpenAccount">
           <property name="icon">
-           <iconset theme="document-open"/>
+           <iconset theme="document-open">
+            <normaloff/>
+           </iconset>
           </property>
          </widget>
         </item>
@@ -220,6 +222,23 @@
    <header>qdateeditex.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>name</tabstop>
+  <tabstop>account_name</tabstop>
+  <tabstop>buttonOpenAccount</tabstop>
+  <tabstop>opportunity_type</tabstop>
+  <tabstop>lead_source</tabstop>
+  <tabstop>campaign_name</tabstop>
+  <tabstop>sales_stage</tabstop>
+  <tabstop>assigned_user_name</tabstop>
+  <tabstop>amount</tabstop>
+  <tabstop>date_closed</tabstop>
+  <tabstop>next_step</tabstop>
+  <tabstop>next_call_date</tabstop>
+  <tabstop>nextStepDateAutoButton</tabstop>
+  <tabstop>probability</tabstop>
+  <tabstop>viewNotesButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

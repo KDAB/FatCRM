@@ -41,7 +41,10 @@ public:
     bool setEntry(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
     QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList supportedFields() const Q_DECL_OVERRIDE;
+    QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
+    QStringList supportedCRMFields() const Q_DECL_OVERRIDE;
+
+    int expectedContentsVersion() const Q_DECL_OVERRIDE;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
 
