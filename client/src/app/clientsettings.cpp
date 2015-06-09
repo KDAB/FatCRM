@@ -93,6 +93,13 @@ ClientSettings::GroupFilters ClientSettings::assigneeFilters() const
 {
     ClientSettings::GroupFilters ret;
     ret.loadFromString(m_settings->value("assigneeFilters").toString());
+
+    // Clean up after a previous bug
+    const QStringList groups = ret.groupNames();
+    const int idx = groups.indexOf(i18n("No country set"));
+    if (idx >= 0)
+        ret.removeGroup(idx);
+
     return ret;
 }
 
@@ -105,7 +112,17 @@ void ClientSettings::setCountryFilters(const ClientSettings::GroupFilters &filte
 ClientSettings::GroupFilters ClientSettings::countryFilters() const
 {
     ClientSettings::GroupFilters ret;
-    ret.loadFromString(m_settings->value("countryFilters").toString());
+    const QString str = m_settings->value("countryFilters").toString();
+
+    if (str.isEmpty()) {
+        // Initial set
+        ClientSettings::GroupFilters::Group item;
+        item.group = i18n("No country set");
+        item.entries = QStringList() << QString();
+        ret.addGroup(item);
+    }
+    ret.loadFromString(str);
+
     return ret;
 }
 
@@ -124,13 +141,6 @@ QString ClientSettings::GroupFilters::toString() const
 
 void ClientSettings::GroupFilters::loadFromString(const QString &str)
 {
-    if (str.isEmpty()) {
-        // Initial set
-        Group item;
-        item.group = i18n("No country set");
-        item.entries = QStringList() << QString();
-        m_filters.append(item);
-    }
     Q_FOREACH(const QString &itemStr, str.split('|')) {
         const QStringList lst = itemStr.split(';');
         if (lst.isEmpty()) {
@@ -167,6 +177,11 @@ QStringList ClientSettings::GroupFilters::groupNames() const
         ret.append(item.group);
     }
     return ret;
+}
+
+void ClientSettings::GroupFilters::addGroup(const ClientSettings::GroupFilters::Group &item)
+{
+    m_filters.append(item);
 }
 
 

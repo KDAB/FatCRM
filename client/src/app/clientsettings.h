@@ -63,6 +63,7 @@ public:
         void prependGroup(const QString &group);
         void updateGroup(int row, const QStringList &users);
         QStringList groupNames() const;
+        void addGroup(const Group &item);
     private:
         QVector<Group> m_filters;
     };
