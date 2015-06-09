@@ -48,6 +48,7 @@ public:
     void clear();
 
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
+    void setSupportedFields(const QStringList &fields);
     virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
 
     DetailsType type() const

@@ -133,6 +133,7 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 void Page::setCollection(const Collection &collection)
 {
     mCollection = collection;
+    updateSupportedFields();
 
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
@@ -336,9 +337,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     default: // other objects (like Note) not shown in a Page
         break;
     }
-    // Select the first row
-    // Looks nicer than empty widgets,
-    // and allows to fill mKeys in details.cpp, critical for saving new objects.
+    // Select the first row; looks nicer than empty fields in the details widget.
     //kDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     if (mItemsTreeModel->rowCount() == mCollection.statistics().count()) {
@@ -382,8 +381,8 @@ void Page::initialize()
     mChangeRecorder->itemFetchScope().fetchFullPayload(true);
     mChangeRecorder->setMimeTypeMonitored(mMimeType);
 
-    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection)),
-            this, SLOT(slotCollectionChanged(Akonadi::Collection)));
+    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection, QSet<QByteArray>)),
+            this, SLOT(slotCollectionChanged(Akonadi::Collection, QSet<QByteArray>)));
 
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);
@@ -488,6 +487,28 @@ bool Page::askSave()
     return ret == QMessageBox::Save;
 }
 
+// duplicated in listentriesjob.cpp
+static const char s_supportedFieldsKey[] = "supportedFields";
+
+void Page::updateSupportedFields()
+{
+    EntityAnnotationsAttribute *annotationsAttribute =
+            mCollection.attribute<EntityAnnotationsAttribute>();
+    if (annotationsAttribute) {
+        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(",", QString::SkipEmptyParts);
+        //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
+        if (mSupportedFields.isEmpty()) {
+            static bool errorShown = false;
+            if (!errorShown) {
+                errorShown = true;
+                QMessageBox::warning(this, i18n("Internal error"), i18n("The list of fields for type '%1'' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", typeToString(mType)));
+            }
+        } else {
+            mDetailsWidget->details()->setSupportedFields(mSupportedFields);
+        }
+    }
+}
+
 void Page::slotResetSearch()
 {
     mUi.searchLE->clear();
@@ -500,10 +521,14 @@ void Page::slotReloadCollection()
     }
 }
 
-void Page::slotCollectionChanged(const Akonadi::Collection &collection)
+void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
+
+        if (attributeNames.contains(s_supportedFieldsKey)) {
+            updateSupportedFields();
+        }
     }
 }
 
@@ -593,6 +618,7 @@ DetailsDialog *Page::createDetailsDialog()
     Details* details = DetailsWidget::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
+    details->setSupportedFields(mSupportedFields);
     connectToDetails(details);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);

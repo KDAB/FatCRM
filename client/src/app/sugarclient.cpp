@@ -211,9 +211,10 @@ void SugarClient::slotResourceSelectionChanged(int index)
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         mCollectionManager->setResource(identifier);
+        // TODO store current resource, and on change, clear caches (account repo, reference data...)
     } else {
         mUi.actionSynchronize->setEnabled(false);
-        mUi.actionSynchronize->setEnabled(false);
+        mUi.actionOfflineMode->setEnabled(false);
     }
 }
 

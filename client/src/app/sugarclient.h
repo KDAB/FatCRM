@@ -72,7 +72,7 @@ private:
     QList<Page *> mPages;
     QCheckBox *mShowDetails;
 
-    QComboBox *mResourceSelector;  // Login;
+    QComboBox *mResourceSelector;
 
     Ui_MainWindow mUi;
     QMenu *mViewMenu;
