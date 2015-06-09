@@ -497,7 +497,7 @@ void SugarClient::slotOpenObject(DetailsType type, const QString &id)
 Page *SugarClient::currentPage() const
 {
     const int index = mUi.tabWidget->currentIndex();
-    if (index <= mPages.count())
+    if (index >= 0 && index <= mPages.count())
         return mPages[ index ];
     return 0;
 }
