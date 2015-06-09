@@ -204,7 +204,7 @@ void Page::slotNewClicked()
         DetailsDialog *dialog = createDetailsDialog();
         Item item;
         item.setParentCollection(mCollection);
-        dialog->showNewItem(data);
+        dialog->showNewItem(data, mCollection);
         dialog->show();
     }
 }
