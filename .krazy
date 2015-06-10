@@ -1,0 +1,17 @@
+CHECKSETS qt4,c++,foss
+
+#KDAB-specific checks
+EXTRA kdabcopyright
+
+#additional checks
+EXTRA defines,null,camelcase
+
+#SKIP contrib files
+SKIP /resources/sugarcrm/taskshandler\.h|/resources/sugarcrm/taskshandler.cpp
+SKIP /resources/sugarcrm/taskaccessorpair\.h|/resources/sugarcrm/taskaccessorpair\.cpp
+SKIP /client/src/widgets/qdateeditex\.h|/client/src/widgets/qdateeditex\.cpp
+SKIP /client/src/utilities/qcsvreader\.h|/client/src/utilities/qcsvreader\.cpp
+SKIP /client/FindXsltproc\.cmake
+
+#if you have a build subdir, skip it
+SKIP /build-
