@@ -47,6 +47,26 @@ void CollectionManager::setResource(const QByteArray &identifier)
             this, SLOT(slotCollectionFetchResult(KJob*)));
 }
 
+static int orderForCollection(const QString &contentMimeType)
+{
+    static const char* s_orderedMimeTypes[] = {
+        "application/x-vnd.kdab.crm.opportunity",
+        "application/x-vnd.kdab.crm.account",
+        "application/x-vnd.kdab.crm.contacts",
+        "application/x-vnd.kdab.crm.note",
+        "application/x-vnd.kdab.crm.email",
+        "application/x-vnd.akonadi.calendar.todo",
+        "inode/directory",
+        "text/directory"
+    };
+    for (uint i = 0 ; i < sizeof(s_orderedMimeTypes) / sizeof(*s_orderedMimeTypes); ++i) {
+        if (contentMimeType == s_orderedMimeTypes[i])
+            return i;
+    }
+    kDebug() << "unexpected content mimetype for ordering:" << contentMimeType;
+    return 20;
+}
+
 static bool collectionLessThan(const Collection &c1, const Collection &c2)
 {
     // In my tests contentMimeTypes always had exactly one entry.
@@ -54,21 +74,12 @@ static bool collectionLessThan(const Collection &c1, const Collection &c2)
     const QString contentMimeType2 = c2.contentMimeTypes().at(0);
 
     // Now emit them in the right order for fast startup.
-    // We want to see Opportunities first, and load Notes last.
+    // We want to see Opportunities first, and load Notes/Emails last.
 
-    static const char s_opp[] = "application/x-vnd.kdab.crm.opportunity";
-    if (contentMimeType1 == s_opp)
-        return true;
-    if (contentMimeType2 == s_opp)
-        return false;
+    const int order1 = orderForCollection(contentMimeType1);
+    const int order2 = orderForCollection(contentMimeType2);
 
-    static const char s_note[] = "application/x-vnd.kdab.crm.note";
-    if (contentMimeType1 == s_note)
-        return false;
-    if (contentMimeType2 == s_note)
-        return true;
-
-    return contentMimeType1 < contentMimeType2;
+    return order1 < order2;
 }
 
 void CollectionManager::slotCollectionFetchResult(KJob *job)

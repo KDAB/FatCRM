@@ -22,26 +22,20 @@
 
 #include "notesrepository.h"
 #include <akonadi/collection.h>
+#include <akonadi/collectionstatistics.h>
 #include <akonadi/itemfetchjob.h>
 #include <akonadi/itemfetchscope.h>
 
 NotesRepository::NotesRepository(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    mNotesLoaded(0),
+    mEmailsLoaded(0)
 {
 }
 
 void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
 {
     mNotesCollection = collection;
-
-    // load notes
-    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
-    job->fetchScope().setFetchRemoteIdentification(false);
-    job->fetchScope().setIgnoreRetrievalErrors(true);
-    job->fetchScope().fetchFullPayload(true);
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotNotesReceived(Akonadi::Item::List)));
-    // TODO setFetchChangedSince(), later on
 }
 
 QVector<SugarNote> NotesRepository::notesForOpportunity(const QString &id) const
@@ -51,6 +45,7 @@ QVector<SugarNote> NotesRepository::notesForOpportunity(const QString &id) const
 
 void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
 {
+    mNotesLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
         //kDebug() << item.id() << item.mimeType() << ;
         if (item.hasPayload<SugarNote>()) {
@@ -64,12 +59,33 @@ void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
             }
         }
     }
-    //kDebug() << "got" << items.count() << "items; now hash has" << mNotesHash.count() << "entries";
+    //kDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
+    if (mNotesLoaded == mNotesCollection.statistics().count())
+        emit notesLoaded(mNotesLoaded);
 }
 
 void NotesRepository::setEmailsCollection(const Akonadi::Collection &collection)
 {
     mEmailsCollection = collection;
+}
+
+void NotesRepository::loadNotes()
+{
+    //kDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
+
+    // load notes
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
+    job->fetchScope().setFetchRemoteIdentification(false);
+    job->fetchScope().setIgnoreRetrievalErrors(true);
+    job->fetchScope().fetchFullPayload(true);
+    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
+            this, SLOT(slotNotesReceived(Akonadi::Item::List)));
+    // TODO setFetchChangedSince(), later on
+}
+
+void NotesRepository::loadEmails()
+{
+    //kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -88,6 +104,7 @@ QVector<SugarEmail> NotesRepository::emailsForOpportunity(const QString &id) con
 
 void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
 {
+    mEmailsLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
         //kDebug() << item.id() << item.mimeType() << ;
         if (item.hasPayload<SugarEmail>()) {
@@ -101,5 +118,7 @@ void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
             }
         }
     }
-    //kDebug() << "got" << items.count() << "items; now hash has" << mEmailsHash.count() << "entries";
+    //kDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
+    if (mEmailsLoaded == mEmailsCollection.statistics().count())
+        emit emailsLoaded(mEmailsLoaded);
 }

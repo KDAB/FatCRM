@@ -72,6 +72,7 @@ public:
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
+    void modelLoaded(DetailsType type);
     void showDetailsChanged(bool on);
     void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
@@ -132,8 +133,6 @@ private:
     void removeAccountsData(Akonadi::Item &item);
     void removeCampaignsData(Akonadi::Item &item);
 
-    QString typeToString(const DetailsType &type) const;
-    QString typeToTranslatedString(const DetailsType &type) const;
     DetailsDialog *createDetailsDialog();
 
 private:

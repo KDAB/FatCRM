@@ -94,6 +94,9 @@ private Q_SLOTS:
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
     void slotShowMessage(const QString &);
+    void slotModelLoaded(DetailsType type);
+    void slotNotesLoaded(int count);
+    void slotEmailsLoaded(int count);
     void slotConfigureResources();
     void slotResourceError(const Akonadi::AgentInstance &resource, const QString &message);
     void slotResourceOnline(const Akonadi::AgentInstance &resource, bool online);

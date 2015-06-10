@@ -141,6 +141,11 @@ void SugarClient::initialize()
     mProgressBarHideTimer = new QTimer(this);
     mProgressBarHideTimer->setInterval(1000);
     connect(mProgressBarHideTimer, SIGNAL(timeout()), mProgressBar, SLOT(hide()));
+
+    connect(mNotesRepository, SIGNAL(notesLoaded(int)),
+            this, SLOT(slotNotesLoaded(int)));
+    connect(mNotesRepository, SIGNAL(emailsLoaded(int)),
+            this, SLOT(slotEmailsLoaded(int)));
 }
 
 void SugarClient::createActions()
@@ -187,6 +192,7 @@ void SugarClient::setupActions()
 
     Q_FOREACH (const Page *page, mPages) {
         connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
+        connect(page, SIGNAL(modelLoaded(DetailsType)), this, SLOT(slotModelLoaded(DetailsType)));
         connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
         connect(page, SIGNAL(openObject(DetailsType,QString)),
@@ -211,6 +217,7 @@ void SugarClient::slotResourceSelectionChanged(int index)
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         mCollectionManager->setResource(identifier);
+        slotShowMessage(i18n("(0/5) Listing folders..."));
         // TODO store current resource, and on change, clear caches (account repo, reference data...)
     } else {
         mUi.actionSynchronize->setEnabled(false);
@@ -265,6 +272,42 @@ void SugarClient::slotShowMessage(const QString &message)
 {
     kDebug() << message;
     statusBar()->showMessage(message);
+}
+
+void SugarClient::slotModelLoaded(DetailsType type)
+{
+    // We load Opps, Accounts, Contacts, Notes and Emails in this order (see CollectionManager)
+    //qDebug() << typeToString(type) << "loaded";
+    switch (type)
+    {
+    case Opportunity:
+        slotShowMessage(i18n("(2/5) Loading accounts..."));
+        break;
+    case Account:
+        slotShowMessage(i18n("(3/5) Loading contacts..."));
+        break;
+    case Contact:
+        slotShowMessage(i18n("(4/5) Loading notes..."));
+        mNotesRepository->loadNotes();
+        break;
+    case Lead:
+    case Campaign:
+        // currently unused
+        break;
+    }
+}
+
+void SugarClient::slotNotesLoaded(int count)
+{
+    Q_UNUSED(count);
+    slotShowMessage(i18n("(5/5) Loading emails..."));
+    mNotesRepository->loadEmails();
+}
+
+void SugarClient::slotEmailsLoaded(int count)
+{
+    Q_UNUSED(count);
+    slotShowMessage(i18n("Ready"));
 }
 
 void SugarClient::createTabs()
@@ -460,6 +503,9 @@ void SugarClient::slotPrintReport()
 
 void SugarClient::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
+    if (mimeType == "application/x-vnd.kdab.crm.opportunity") {
+        slotShowMessage(i18n("(1/5) Loading opportunities..."));
+    }
     foreach(Page *page, mPages) {
         if (page->mimeType() == mimeType) {
             page->setCollection(collection);
