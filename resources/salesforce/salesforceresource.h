@@ -49,7 +49,7 @@ class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBa
     Q_OBJECT
 
 public:
-    SalesforceResource(const QString &id);
+    explicit SalesforceResource(const QString &id);
     ~SalesforceResource();
 
 public Q_SLOTS:

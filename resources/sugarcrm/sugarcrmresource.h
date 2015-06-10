@@ -46,7 +46,7 @@ class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase
     Q_OBJECT
 
 public:
-    SugarCRMResource(const QString &id);
+    explicit SugarCRMResource(const QString &id);
     ~SugarCRMResource();
 
 public Q_SLOTS:

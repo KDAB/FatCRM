@@ -67,7 +67,7 @@ private:
 class WorkaroundFilterProxyModel : public QSortFilterProxyModel
 {
 public:
-    WorkaroundFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
+    explicit WorkaroundFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent) {
         setDynamicSortFilter(true);
     }
     bool filterAcceptsRow(int source_row, const QModelIndex &) const Q_DECL_OVERRIDE;

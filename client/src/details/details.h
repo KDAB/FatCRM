@@ -27,7 +27,7 @@
 
 #include <akonadi/item.h>
 
-#include <QtGui>
+#include <QWidget>
 
 class NotesRepository;
 
@@ -94,4 +94,3 @@ private:
     QStringList mKeys;
 };
 #endif /* DETAILS_H */
-

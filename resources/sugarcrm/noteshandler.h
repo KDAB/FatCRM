@@ -31,7 +31,7 @@ template <typename U, typename V> class QHash;
 class NotesHandler : public ModuleHandler
 {
 public:
-    NotesHandler(SugarSession *session);
+    explicit NotesHandler(SugarSession *session);
 
     ~NotesHandler();
 
@@ -54,4 +54,3 @@ private:
 };
 
 #endif
-

@@ -22,6 +22,8 @@
 
 #include "page.h"
 
+#include "accountrepository.h"
+#include "clientsettings.h"
 #include "detailsdialog.h"
 #include "detailswidget.h"
 #include "enums.h"
@@ -49,8 +51,7 @@
 
 #include <kdebug.h>
 #include <QMessageBox>
-#include <clientsettings.h>
-#include <accountrepository.h>
+#include <QShortcut>
 
 using namespace Akonadi;
 
@@ -218,7 +219,7 @@ void Page::slotAddItem() // save new item
 
         // job starts automatically
         ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-        connect(job, SIGNAL(result(KJob *)), this, SLOT(slotCreateJobResult(KJob *)));
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
     }
 }
 
@@ -235,7 +236,7 @@ void Page::slotModifyItem(const Akonadi::Item &item) // save modified item
 {
     // job starts automatically
     ItemModifyJob *job = new ItemModifyJob(item);
-    connect(job, SIGNAL(result(KJob *)), this, SLOT(slotModifyJobResult(KJob *)));
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotModifyJobResult(KJob*)));
 }
 
 void Page::slotModifyJobResult(KJob *job)
@@ -383,8 +384,8 @@ void Page::initialize()
     mChangeRecorder->itemFetchScope().fetchFullPayload(true);
     mChangeRecorder->setMimeTypeMonitored(mMimeType);
 
-    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection, QSet<QByteArray>)),
-            this, SLOT(slotCollectionChanged(Akonadi::Collection, QSet<QByteArray>)));
+    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
+            this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);
@@ -497,7 +498,7 @@ void Page::updateSupportedFields()
     EntityAnnotationsAttribute *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
-        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(",", QString::SkipEmptyParts);
+        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
         //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
         if (mSupportedFields.isEmpty()) {
             static bool errorShown = false;
@@ -644,7 +645,7 @@ void Page::addContactsData(int start, int end)
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-            const QString fullName = addressee.givenName() + " " + addressee.familyName();
+            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
             reportsToRefMap.insert(addressee.custom("FATCRM", "X-ContactId"), fullName);
             assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }

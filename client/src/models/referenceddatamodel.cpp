@@ -80,9 +80,9 @@ ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *paren
 {
     d->mData = ReferencedData::instance(type);
     connect(d->mData, SIGNAL(dataChanged(int)), this, SLOT(slotDataChanged(int)));
-    connect(d->mData, SIGNAL(rowsAboutToBeInserted(int, int)), this, SLOT(slotRowsAboutToBeInserted(int, int)));
+    connect(d->mData, SIGNAL(rowsAboutToBeInserted(int,int)), this, SLOT(slotRowsAboutToBeInserted(int,int)));
     connect(d->mData, SIGNAL(rowsInserted()), this, SLOT(slotRowsInserted()));
-    connect(d->mData, SIGNAL(rowsAboutToBeRemoved(int, int)), this, SLOT(slotRowsAboutToBeRemoved(int, int)));
+    connect(d->mData, SIGNAL(rowsAboutToBeRemoved(int,int)), this, SLOT(slotRowsAboutToBeRemoved(int,int)));
     connect(d->mData, SIGNAL(rowsRemoved()), this, SLOT(slotRowsRemoved()));
 }
 
