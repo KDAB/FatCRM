@@ -39,10 +39,15 @@ public:
     void setNotesCollection(const Akonadi::Collection &collection);
     void setEmailsCollection(const Akonadi::Collection &collection);
 
+    void loadNotes();
+    void loadEmails();
+
     QVector<SugarNote> notesForOpportunity(const QString &id) const;
     QVector<SugarEmail> emailsForOpportunity(const QString &id) const;
 
 signals:
+    void notesLoaded(int count);
+    void emailsLoaded(int count);
 
 private Q_SLOTS:
     void slotNotesReceived(const Akonadi::Item::List &items);
@@ -52,10 +57,12 @@ private:
     Akonadi::Collection mNotesCollection;
     typedef QHash<QString, QVector<SugarNote> > NotesHash;
     NotesHash mNotesHash;
+    int mNotesLoaded;
 
     Akonadi::Collection mEmailsCollection;
     typedef QHash<QString, QVector<SugarEmail> > EmailsHash;
     EmailsHash mEmailsHash;
+    int mEmailsLoaded;
 };
 
 #endif // NOTESREPOSITORY_H

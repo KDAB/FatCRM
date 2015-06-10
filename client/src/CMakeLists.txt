@@ -33,6 +33,7 @@ set(sugarclient_SRCS
     utilities/contactsimporter.cpp
     utilities/dbuswinidprovider.cpp
     utilities/editcalendarbutton.cpp
+    utilities/enums.cpp
     utilities/notesrepository.cpp
     utilities/qcsvreader.cpp
     utilities/referenceddata.cpp

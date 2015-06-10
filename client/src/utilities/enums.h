@@ -23,6 +23,8 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+#include <QString>
+
 enum DetailsType {
     Account,
     Opportunity,
@@ -30,6 +32,9 @@ enum DetailsType {
     Contact,
     Campaign
 };
+
+QString typeToString(DetailsType type);
+QString typeToTranslatedString(DetailsType type);
 
 enum ReferencedDataType {
     AccountRef,

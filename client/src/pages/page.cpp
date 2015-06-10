@@ -344,6 +344,8 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
+        //emit modelLoaded(mType, i18n("%1 %2 loaded", mItemsTreeModel->rowCount(), typeToString(mType)));
+        emit modelLoaded(mType);
     }
     emit ignoreModifications(false);
 }
@@ -579,39 +581,6 @@ void Page::printReport()
     generator.generateListReport(model, reportTitle(), reportSubTitle(count), this);
 }
 
-QString Page::typeToString(const DetailsType &type) const
-{
-    if (type == Account) {
-        return QString("Accounts");
-    } else if (type == Opportunity) {
-        return QString("Opportunities");
-    } else if (type == Lead) {
-        return QString("Leads");
-    } else if (type == Contact) {
-        return QString("Contacts");
-    } else if (type == Campaign) {
-        return QString("Campaigns");
-    } else {
-        return QString();
-    }
-}
-
-QString Page::typeToTranslatedString(const DetailsType &type) const
-{
-    if (type == Account) {
-        return i18n("accounts");
-    } else if (type == Opportunity) {
-        return i18n("opportunities");
-    } else if (type == Lead) {
-        return i18n("leads");
-    } else if (type == Contact) {
-        return i18n("contacts");
-    } else if (type == Campaign) {
-        return i18n("campaigns");
-    } else {
-        return QString();
-    }
-}
 
 DetailsDialog *Page::createDetailsDialog()
 {
