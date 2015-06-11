@@ -139,6 +139,8 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
 {
     d->mUi.setupUi(this);
 
+    setWindowTitle(details->windowTitle());
+
     QVBoxLayout *detailsLayout = new QVBoxLayout(d->mUi.detailsContainer);
     detailsLayout->addWidget(details);
 
