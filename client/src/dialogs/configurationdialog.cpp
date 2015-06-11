@@ -139,7 +139,9 @@ void ConfigurationDialog::slotUsersChanged()
 void ConfigurationDialog::slotEditCountryGroup()
 {
     EditListDialog dialog(this);
-    dialog.setItems(m_countryFilters.groups().at(m_currentCountryGroupRow).entries);
+    ClientSettings::GroupFilters::Group group = m_countryFilters.groups().at(m_currentCountryGroupRow);
+    dialog.setWindowTitle(i18n("Editing country group %1", group.group));
+    dialog.setItems(group.entries);
     if (dialog.exec()) {
         m_countryFilters.updateGroup(m_currentCountryGroupRow, dialog.items());
     }

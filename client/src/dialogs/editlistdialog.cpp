@@ -23,13 +23,16 @@
 #include "editlistdialog.h"
 
 #include <QDialogButtonBox>
+#include <QLabel>
 #include <QVBoxLayout>
 #include <keditlistwidget.h>
+#include <klocalizedstring.h>
 
 EditListDialog::EditListDialog(QWidget *parent) :
     QDialog(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
+    layout->addWidget(new QLabel(i18n("Type country names to add them to the group:"), this));
     mEditListWidget = new KEditListWidget(this);
     layout->addWidget(mEditListWidget);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, this);
