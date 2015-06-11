@@ -1,15 +1,8 @@
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-
 find_package (KdepimLibs REQUIRED)
 find_package (Boost REQUIRED)
 
 find_program(XSLTPROC_EXECUTABLE xsltproc)
 macro_log_feature(XSLTPROC_EXECUTABLE "xsltproc" "The command line XSLT processor from libxslt" "http://xmlsoft.org/XSLT/" FALSE "" "Needed for building Akonadi resources. Recommended.")
-
-# To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
-find_package(KDSoap CONFIG) # first try KDSoapConfig.cmake
-find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
-macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the Salesforce SOAP webservice. Required.")
 
 if (XSLTPROC_EXECUTABLE)
   # generates a D-Bus interface description from a KConfigXT file

@@ -10,6 +10,8 @@ include(MacroLibrary)
 include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+
 # Stolen from zanshin
 macro(assert_min_ver version)
         set(error_msg "${CMAKE_CXX_COMPILER} ${CMAKE_CXX_COMPILER_VERSION} not supported")
