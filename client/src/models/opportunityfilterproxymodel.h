@@ -24,6 +24,7 @@
 #define OPPORTUNITYFILTERPROXYMODEL_H
 
 #include "filterproxymodel.h"
+class OpportunityFilterSettings;
 
 /**
  * A proxy model for sugar tree models.
@@ -51,17 +52,8 @@ public:
      */
     ~OpportunityFilterProxyModel();
 
-    /**
-     * Filter by assignees OR by country.
-     * And with a possible max date.
-     * And either open, or closed, or both.
-     */
-    void setFilter(const QStringList &assignees,
-                   const QStringList &countries, const QDate &maxDate,
-                   const QDate &modifiedAfter, const QDate &modifiedBefore,
-                   bool showOpen, bool showClosed);
+    void setFilter(const OpportunityFilterSettings &settings);
 
-    void setFilterDescriptionData(const QString &assigneeGroup, const QString &countryGroup);
     QString filterDescription() const;
 
 protected:

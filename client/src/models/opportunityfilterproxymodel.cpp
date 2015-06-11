@@ -26,7 +26,7 @@
 
 #include <akonadi/entitytreemodel.h>
 #include "itemstreemodel.h"
-#include "kdcrmdata/kdcrmutils.h"
+#include "opportunityfiltersettings.h"
 
 #include <QDate>
 #include <opportunitiespage.h>
@@ -38,18 +38,10 @@ class OpportunityFilterProxyModel::Private
 {
 public:
     Private()
-        : showOpen(true),
-          showClosed(false)
     {}
 
-    QStringList assignees; // no filtering if empty
-    QStringList countries; // no filtering if empty
-    QString assigneeGroup; // user-visible description for <assignee>
-    QString countryGroup; // user-visible description for <countries>
-    QDate maxDate;
-    QDate modifiedBefore, modifiedAfter;
-    bool showOpen;
-    bool showClosed;
+    OpportunityFilterSettings settings;
+
 };
 
 OpportunityFilterProxyModel::OpportunityFilterProxyModel(QObject *parent)
@@ -62,68 +54,21 @@ OpportunityFilterProxyModel::~OpportunityFilterProxyModel()
     delete d;
 }
 
-void OpportunityFilterProxyModel::setFilter(const QStringList &assignees, const QStringList &countries, const QDate &maxDate,
-                                            const QDate &modifiedAfter, const QDate &modifiedBefore,
-                                            bool showOpen, bool showClosed)
+void OpportunityFilterProxyModel::setFilter(const OpportunityFilterSettings &settings)
 {
-    d->assignees = assignees;
-    d->countries = countries;
-    d->maxDate = maxDate;
-    d->showOpen = showOpen;
-    d->showClosed = showClosed;
-    d->modifiedAfter = modifiedAfter;
-    d->modifiedBefore = modifiedBefore;
+    d->settings = settings;
     invalidate();
-}
-
-void OpportunityFilterProxyModel::setFilterDescriptionData(const QString &assigneeGroup, const QString &countryGroup)
-{
-    d->assigneeGroup = assigneeGroup;
-    d->countryGroup = countryGroup;
 }
 
 QString OpportunityFilterProxyModel::filterDescription() const
 {
-    QString openOrClosed;
-    if (!d->showOpen && d->showClosed)
-        openOrClosed = i18n("closed");
-    else if (d->showOpen && !d->showClosed)
-        openOrClosed = i18n("open");
-
-    QString txt;
-    if (!d->assignees.isEmpty()) {
-        txt = i18n("Assigned to %1", d->assigneeGroup);
-    } else if (!d->countries.isEmpty()) {
-        txt = i18n("In country %1", d->countryGroup);
-    }
-
-    if (!openOrClosed.isEmpty()) {
-        txt = i18n("%1, %2", txt, openOrClosed);
-    }
-
-    if (!d->maxDate.isNull()) {
-        txt = i18n("%1, next step before %2", txt, KDCRMUtils::formatDate(d->maxDate));
-    }
-
-    if (!d->modifiedAfter.isNull()) {
-        const QString after = KDCRMUtils::formatDate(d->modifiedAfter);
-        const QString before = KDCRMUtils::formatDate(d->modifiedBefore);
-        if (!d->modifiedBefore.isNull()) {
-            txt = i18n("%1, modified between %2 and %3", txt, after, before);
-        } else {
-            txt = i18n("%1, modified after %2", txt, after);
-        }
-    } else if (!d->modifiedBefore.isNull()) {
-        const QString before = KDCRMUtils::formatDate(d->modifiedBefore);
-        txt = i18n("%1, modified before %2", txt, before);
-    }
+    QString txt = d->settings.filterDescription();
 
     if (!filterString().isEmpty()) {
         txt = i18n("%1, containing \"%2\"", txt, filterString());
     }
 
     return txt;
-
 }
 
 static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const QString &filter)
@@ -159,26 +104,28 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     Q_ASSERT(item.hasPayload<SugarOpportunity>());
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
-    if (!d->assignees.isEmpty() && !d->assignees.contains(opportunity.assignedUserName()))
+    const QStringList assignees = d->settings.assignees();
+    if (!assignees.isEmpty() && !assignees.contains(opportunity.assignedUserName()))
         return false;
 
-    if (!d->countries.isEmpty()) {
+    const QStringList countries = d->settings.countries();
+    if (!countries.isEmpty()) {
         const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
-        if (!d->countries.contains(country, Qt::CaseInsensitive))
+        if (!countries.contains(country, Qt::CaseInsensitive))
             return false;
     }
 
     const bool isClosed = opportunity.salesStage().contains("Closed");
-    if (!d->showClosed && isClosed)
+    if (!d->settings.showClosed() && isClosed)
         return false;
-    if (!d->showOpen && !isClosed)
+    if (!d->settings.showOpen() && !isClosed)
         return false;
-    if (d->maxDate.isValid() && (!opportunity.nextCallDate().isValid()
-                                 || opportunity.nextCallDate() > d->maxDate))
+    if (d->settings.maxDate().isValid() && (!opportunity.nextCallDate().isValid()
+                                 || opportunity.nextCallDate() > d->settings.maxDate()))
         return false;
-    if (d->modifiedAfter.isValid() && opportunity.dateModified().date() < d->modifiedAfter)
+    if (d->settings.modifiedAfter().isValid() && opportunity.dateModified().date() < d->settings.modifiedAfter())
         return false;
-    if (d->modifiedBefore.isValid() && opportunity.dateModified().date() > d->modifiedBefore)
+    if (d->settings.modifiedBefore().isValid() && opportunity.dateModified().date() > d->settings.modifiedBefore())
         return false;
 
     const QString filterStr = filterString();

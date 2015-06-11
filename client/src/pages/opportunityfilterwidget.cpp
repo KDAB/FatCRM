@@ -26,6 +26,7 @@
 #include "clientsettings.h"
 #include <QDate>
 #include <QDebug>
+#include <opportunityfiltersettings.h>
 
 OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel,
                                                  QWidget *parent) :
@@ -100,6 +101,7 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
 
 void OpportunityFilterWidget::filterChanged()
 {
+    OpportunityFilterSettings filterSettings;
     QStringList assignees;
     QStringList countries;
     if (ui->rbAssignedTo->isChecked()) {
@@ -116,10 +118,11 @@ void OpportunityFilterWidget::filterChanged()
             countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
         }
     }
-    const bool showOpen = ui->cbOpen->isChecked();
-    const bool showClosed = ui->cbClosed->isChecked();
-    const QDate modifiedAfter = ui->modifiedAfter->date();
-    const QDate modifiedBefore = ui->modifiedBefore->date();
-    m_oppFilterProxyModel->setFilter(assignees, countries, maxNextStepDate(), modifiedAfter, modifiedBefore, showOpen, showClosed);
-    m_oppFilterProxyModel->setFilterDescriptionData(ui->cbAssignee->currentText(), ui->cbCountry->currentText());
+    filterSettings.setAssignees(assignees, ui->cbAssignee->currentText());
+    filterSettings.setCountries(countries, ui->cbCountry->currentText());
+    filterSettings.setShowOpenClosed(ui->cbOpen->isChecked(), ui->cbClosed->isChecked());
+    filterSettings.setModifiedAfter(ui->modifiedAfter->date());
+    filterSettings.setModifiedBefore(ui->modifiedBefore->date());
+    filterSettings.setMaxDate(maxNextStepDate());
+    m_oppFilterProxyModel->setFilter(filterSettings);
 }

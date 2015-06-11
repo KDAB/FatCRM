@@ -35,6 +35,7 @@ set(sugarclient_SRCS
     utilities/editcalendarbutton.cpp
     utilities/enums.cpp
     utilities/notesrepository.cpp
+    utilities/opportunityfiltersettings.cpp
     utilities/qcsvreader.cpp
     utilities/referenceddata.cpp
     utilities/reportgenerator.cpp
