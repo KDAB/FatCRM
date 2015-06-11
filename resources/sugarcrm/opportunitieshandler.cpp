@@ -112,7 +112,11 @@ QStringList OpportunitiesHandler::supportedSugarFields() const
 QStringList OpportunitiesHandler::supportedCRMFields() const
 {
     // SugarAccountIO uses the Sugar field names, so it matches
-    return mAccessors.keys();
+    // One exception: custom fields.
+    // TODO: support them generically like in Accounts.
+    QStringList lst = mAccessors.keys();
+    lst.replaceInStrings("next_call_date_c", KDCRMFields::nextCallDate());
+    return lst;
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
