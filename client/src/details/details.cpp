@@ -443,6 +443,7 @@ QStringList Details::industryItems() const
  */
 QStringList Details::sourceItems() const
 {
+    // TODO grab this from SugarCRM !!!
     QStringList sources;
     sources << QString("") << QString("Cold Call")
             << QString("Existing Customer") << QString("Self Generated")
@@ -451,6 +452,7 @@ QStringList Details::sourceItems() const
             << QString("Conference") << QString("Trade Show")
             << QString("Web Site") << QString("Word of mouth")
             << QString("Email") << QString("Campaign")
+            << QString("Qt Training")
             << QString("Other");
     return sources;
 }
