@@ -29,6 +29,7 @@
 #include "opportunityfiltersettings.h"
 
 #include <QDate>
+#include <clientsettings.h>
 #include <opportunitiespage.h>
 #include <referenceddata.h>
 

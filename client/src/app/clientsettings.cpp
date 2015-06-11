@@ -24,6 +24,7 @@
 
 #include <QWidget>
 #include <QSettings>
+#include <opportunityfiltersettings.h>
 
 #include <klocalizedstring.h>
 
@@ -193,4 +194,16 @@ void ClientSettings::setVisibleColumns(const QString &viewId, const QStringList 
 QStringList ClientSettings::visibleColumns(const QString &viewId, const QStringList &defaultColumns) const
 {
     return m_settings->value("columns/" + viewId, defaultColumns).toStringList();
+}
+
+void ClientSettings::setFilterSettings(const OpportunityFilterSettings &settings)
+{
+    settings.save(*m_settings, "defaultOppFilter");
+}
+
+OpportunityFilterSettings ClientSettings::filterSettings() const
+{
+    OpportunityFilterSettings settings;
+    settings.load(*m_settings, "defaultOppFilter");
+    return settings;
 }

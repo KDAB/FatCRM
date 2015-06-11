@@ -73,6 +73,19 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groupNames());
     ui->cbCountry->clear();
     ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());
+
+    const OpportunityFilterSettings settings = ClientSettings::self()->filterSettings();
+
+    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.assigneeGroup())));
+    ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
+    ui->cbOpen->setChecked(settings.showOpen());
+    ui->cbClosed->setChecked(settings.showClosed());
+    ui->cbMaxNextStepDate->setCurrentIndex(settings.maxDateIndex());
+    ui->modifiedBefore->setDate(settings.modifiedBefore());
+    ui->modifiedAfter->setDate(settings.modifiedAfter());
+    ui->rbAll->setChecked(true); // unless one of the two below gets checked
+    ui->rbAssignedTo->setChecked(!settings.assigneeGroup().isEmpty());
+    ui->rbCountry->setChecked(!settings.countryGroup().isEmpty());
     filterChanged();
 }
 
@@ -123,6 +136,9 @@ void OpportunityFilterWidget::filterChanged()
     filterSettings.setShowOpenClosed(ui->cbOpen->isChecked(), ui->cbClosed->isChecked());
     filterSettings.setModifiedAfter(ui->modifiedAfter->date());
     filterSettings.setModifiedBefore(ui->modifiedBefore->date());
-    filterSettings.setMaxDate(maxNextStepDate());
+    //qDebug() << "modified after" << ui->modifiedAfter->date() << "before" << ui->modifiedBefore->date();
+    filterSettings.setMaxDate(maxNextStepDate(), ui->cbMaxNextStepDate->currentIndex());
     m_oppFilterProxyModel->setFilter(filterSettings);
+    // immediate save
+    ClientSettings::self()->setFilterSettings(filterSettings);
 }

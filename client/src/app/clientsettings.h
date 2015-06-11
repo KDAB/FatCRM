@@ -24,6 +24,7 @@
 #define CLIENTSETTINGS_H
 
 class QSettings;
+class OpportunityFilterSettings;
 #include <QSize>
 #include <QStringList>
 #include <QVector>
@@ -47,6 +48,9 @@ public:
 
     void setVisibleColumns(const QString &viewId, const QStringList &names);
     QStringList visibleColumns(const QString &viewId, const QStringList &defaultColumns) const;
+
+    void setFilterSettings(const OpportunityFilterSettings &settings);
+    OpportunityFilterSettings filterSettings() const;
 
     class GroupFilters
     {

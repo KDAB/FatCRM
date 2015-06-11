@@ -1,9 +1,11 @@
 #include "opportunityfiltersettings.h"
+#include <QSettings>
 #include <klocalizedstring.h>
 #include <kdcrmdata/kdcrmutils.h>
 
 OpportunityFilterSettings::OpportunityFilterSettings()
-    : mShowOpen(true),
+    : mMaxDateIndex(0),
+      mShowOpen(true),
       mShowClosed(false)
 {
 }
@@ -20,14 +22,15 @@ void OpportunityFilterSettings::setCountries(const QStringList &countries, const
     mCountryGroup = countryGroup;
 }
 
-void OpportunityFilterSettings::setMaxDate(const QDate &maxDate)
+void OpportunityFilterSettings::setMaxDate(const QDate &maxDate, int comboIndex)
 {
     mMaxDate = maxDate;
+    mMaxDateIndex = comboIndex;
 }
 
 void OpportunityFilterSettings::setModifiedAfter(const QDate &modifiedAfter)
 {
-    mMaxDate = modifiedAfter;
+    mModifiedAfter = modifiedAfter;
 }
 
 void OpportunityFilterSettings::setModifiedBefore(const QDate &modifiedBefore)
@@ -78,4 +81,33 @@ QString OpportunityFilterSettings::filterDescription() const
     }
 
     return txt;
+}
+
+void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix) const
+{
+    // I'm not using settings.beginGroup(prefix) because
+    // in the load method that would break const-ness...
+    // KConfigGroup is missing in QSettings :)
+    //settings.setValue(prefix + "/assignees", mAssignees);
+    settings.setValue(prefix + "/assigneeGroup", mAssigneeGroup);
+    //settings.setValue(prefix + "/countries", mCountries);
+    settings.setValue(prefix + "/countryGroup", mCountryGroup);
+    settings.setValue(prefix + "/maxDateIndex", mMaxDateIndex);
+    settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
+    settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
+    settings.setValue(prefix + "/showOpen", mShowOpen);
+    settings.setValue(prefix + "/showClosed", mShowClosed);
+}
+
+void OpportunityFilterSettings::load(const QSettings &settings, const QString &prefix)
+{
+    //mAssignees = settings.value(prefix + "/assignees").toStringList();
+    mAssigneeGroup = settings.value(prefix + "/assigneeGroup").toString();
+    //mCountries = settings.value(prefix + "/countries").toStringList();
+    mCountryGroup = settings.value(prefix + "/countryGroup").toString();
+    mMaxDateIndex = settings.value(prefix + "/maxDateIndex").toInt();
+    mModifiedBefore = settings.value(prefix + "/modifiedBefore").toDate();
+    mModifiedAfter = settings.value(prefix + "/modifiedAfter").toDate();
+    mShowOpen = settings.value(prefix + "/showOpen").toBool();
+    mShowClosed = settings.value(prefix + "/showClosed").toBool();
 }
