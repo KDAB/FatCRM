@@ -19,18 +19,18 @@ if (XSLTPROC_EXECUTABLE)
   endmacro( kcfg_generate_dbus_interface )
 endif (XSLTPROC_EXECUTABLE)
 
-if (KDSoap_KDWSDL2CPP)
+if (KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
   macro ( kdsoap_generate_soap_bindings _sources _wsdl _name )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
-      COMMAND ${KDSoap_KDWSDL2CPP} -o ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.h
               ${_wsdl}
       DEPENDS ${_wsdl}
     )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp
-      COMMAND ${KDSoap_KDWSDL2CPP} -o ${_name}.cpp -impl ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.cpp -impl ${_name}.h
               ${_wsdl}
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
               ${_wsdl}
@@ -42,7 +42,7 @@ if (KDSoap_KDWSDL2CPP)
 
     SET(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
   endmacro( kdsoap_generate_soap_bindings )
-endif (KDSoap_KDWSDL2CPP)
+endif ()
 
 if(WIN32)
     set(LIB_INSTALL_DIR ${LIB_INSTALL_DIR}
