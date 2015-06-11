@@ -37,7 +37,7 @@ cd ..
 ```
 git clone https://github.com/KDAB/KDReports.git
 cd KDReports
-./configure.sh -prefix /usr/local/KDAB/KDReports-Qt4
+./autogen.py -prefix /usr/local/KDAB/KDReports-Qt4
 make
 sudo make install
 cd ..
