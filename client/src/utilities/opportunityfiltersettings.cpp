@@ -108,6 +108,7 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     mMaxDateIndex = settings.value(prefix + "/maxDateIndex").toInt();
     mModifiedBefore = settings.value(prefix + "/modifiedBefore").toDate();
     mModifiedAfter = settings.value(prefix + "/modifiedAfter").toDate();
-    mShowOpen = settings.value(prefix + "/showOpen").toBool();
+    QVariant val = settings.value(prefix + "/showOpen");
+    mShowOpen = val.isValid() ? val.toBool() : true;
     mShowClosed = settings.value(prefix + "/showClosed").toBool();
 }
