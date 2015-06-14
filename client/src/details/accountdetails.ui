@@ -256,11 +256,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="billing_address_street">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
+       <widget class="BetterPlainTextEdit" name="billing_address_street"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_19">
@@ -311,6 +307,9 @@
       <string>Shipping Address</string>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
+      <property name="fieldGrowthPolicy">
+       <enum>QFormLayout::ExpandingFieldsGrow</enum>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_23">
         <property name="text">
@@ -319,11 +318,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="shipping_address_street">
-        <property name="text">
-         <string/>
-        </property>
-       </widget>
+       <widget class="BetterPlainTextEdit" name="shipping_address_street"/>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_24">
@@ -370,6 +365,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BetterPlainTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header location="global">betterplaintextedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>name</tabstop>
   <tabstop>website</tabstop>

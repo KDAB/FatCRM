@@ -40,6 +40,7 @@ set(sugarclient_SRCS
     utilities/referenceddata.cpp
     utilities/reportgenerator.cpp
     views/itemstreeview.cpp
+    widgets/betterplaintextedit.cpp
     widgets/qdateeditex.cpp
 )
 
