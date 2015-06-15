@@ -58,6 +58,11 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
     : EntityTreeModel(monitor, parent), d(new Private), mType(type)
 {
     d->mColumns = columnTypes(mType);
+
+    if (mType == Opportunity) {
+        connect(ReferencedData::instance(AccountCountryRef), SIGNAL(dataChanged(int)),
+                this, SLOT(slotAccountCountryChanged(int)));
+    }
 }
 
 ItemsTreeModel::~ItemsTreeModel()
@@ -137,6 +142,17 @@ QString ItemsTreeModel::countryForContact(const KABC::Addressee &addressee)
     // Otherwise get the country via the account
     const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(addressee.organization());
     return country;
+}
+
+void ItemsTreeModel::slotAccountCountryChanged(int row)
+{
+    if (mType == Opportunity) {
+        const int countryColumn = d->mColumns.indexOf(Country);
+        //const QString account = ReferencedData::instance(AccountCountryRef)->data(row);
+        Q_UNUSED(row);
+        // We could iterate over all opps to find those which use that account.... but maybe this is just faster:
+        emit dataChanged(index(0, countryColumn), index(rowCount() - 1, countryColumn));
+    }
 }
 
 /**
