@@ -88,10 +88,10 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     // I'm not using settings.beginGroup(prefix) because
     // in the load method that would break const-ness...
     // KConfigGroup is missing in QSettings :)
-    //settings.setValue(prefix + "/assignees", mAssignees);
-    settings.setValue(prefix + "/assigneeGroup", mAssigneeGroup);
-    //settings.setValue(prefix + "/countries", mCountries);
-    settings.setValue(prefix + "/countryGroup", mCountryGroup);
+    settings.setValue(prefix + "/assignees", mAssignees);
+    settings.setValue(prefix + "/assigneeGroup", mAssignees.isEmpty() ? QString() : mAssigneeGroup);
+    settings.setValue(prefix + "/countries", mCountries);
+    settings.setValue(prefix + "/countryGroup", mCountries.isEmpty() ? QString() : mCountryGroup);
     settings.setValue(prefix + "/maxDateIndex", mMaxDateIndex);
     settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
@@ -101,9 +101,9 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
 
 void OpportunityFilterSettings::load(const QSettings &settings, const QString &prefix)
 {
-    //mAssignees = settings.value(prefix + "/assignees").toStringList();
+    mAssignees = settings.value(prefix + "/assignees").toStringList();
     mAssigneeGroup = settings.value(prefix + "/assigneeGroup").toString();
-    //mCountries = settings.value(prefix + "/countries").toStringList();
+    mCountries = settings.value(prefix + "/countries").toStringList();
     mCountryGroup = settings.value(prefix + "/countryGroup").toString();
     mMaxDateIndex = settings.value(prefix + "/maxDateIndex").toInt();
     mModifiedBefore = settings.value(prefix + "/modifiedBefore").toDate();

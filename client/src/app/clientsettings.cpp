@@ -28,7 +28,7 @@
 
 #include <klocalizedstring.h>
 
-Q_GLOBAL_STATIC(ClientSettings, s_self);
+Q_GLOBAL_STATIC(ClientSettings, s_self)
 
 ClientSettings *ClientSettings::self()
 {
