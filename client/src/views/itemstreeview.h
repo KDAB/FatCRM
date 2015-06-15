@@ -35,9 +35,14 @@ public:
     void setViewName(const QString &name);
 
     void setModels(QAbstractItemModel *model, ItemsTreeModel *sourceModel, const ItemsTreeModel::ColumnTypes &defaultColumns);
+
 signals:
+    void returnPressed(const Akonadi::Item &item);
 
 public slots:
+
+protected:
+    void keyPressEvent(QKeyEvent *event);
 
 private slots:
     void slotHeaderContextMenu(const QPoint &point);

@@ -353,6 +353,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 void Page::initialize()
 {
     connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
+    connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
 
     const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
@@ -547,6 +548,7 @@ void Page::slotEnsureDetailsVisible()
     }
 }
 
+// triggered on double-click and Key_Return
 void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
     DetailsDialog *dialog = createDetailsDialog();

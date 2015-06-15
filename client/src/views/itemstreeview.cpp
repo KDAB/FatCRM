@@ -65,6 +65,20 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
     }
 }
 
+void ItemsTreeView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter) {
+        const QModelIndex idx = currentIndex();
+        if (idx.isValid()) {
+            const Akonadi::Item item = idx.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+            if (item.isValid()) {
+                emit returnPressed(item);
+            }
+        }
+    }
+    Akonadi::EntityTreeView::keyPressEvent(event);
+}
+
 void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
 {
     const int section = header()->logicalIndexAt(point);
