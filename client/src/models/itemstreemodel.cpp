@@ -284,8 +284,10 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.organization();
         case PreferredEmail:
             return addressee.preferredEmail();
-        case PhoneNumber:
+        case PhoneWork:
             return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
+        case PhoneMobile:
+            return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
         case Country:
             return countryForContact(addressee);
         default:
@@ -407,7 +409,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::Organization
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::PreferredEmail
-                << ItemsTreeModel::PhoneNumber;
+                << ItemsTreeModel::PhoneWork
+                << ItemsTreeModel::PhoneMobile;
         break;
     case Lead:
         columns << ItemsTreeModel::LeadName
@@ -476,8 +479,10 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column company", "Organization");
     case PreferredEmail:
         return i18nc("@title:column email", "Preferred Email");
-    case PhoneNumber:
-        return i18nc("@title:column phone work", "Phone Work");
+    case PhoneWork:
+        return i18nc("@title:column phone (work)", "Office Phone");
+    case PhoneMobile:
+        return i18nc("@title:column phone (mobile)", "Mobile");
     case LeadName:
         return i18nc("@title:column Lead's Full Name", "Name");
     case LeadStatus:
