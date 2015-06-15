@@ -184,6 +184,9 @@ static bool contactMatchesFilter(const KABC::Addressee& contact, const QString &
     if (contact.phoneNumber(KABC::PhoneNumber::Work).number().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
+    if (contact.phoneNumber(KABC::PhoneNumber::Cell).number().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
     if (contact.givenName().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
