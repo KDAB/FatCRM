@@ -307,6 +307,7 @@ void SugarClient::slotNotesLoaded(int count)
 void SugarClient::slotEmailsLoaded(int count)
 {
     Q_UNUSED(count);
+    mNotesRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
 }
 

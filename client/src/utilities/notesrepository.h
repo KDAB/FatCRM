@@ -30,6 +30,12 @@
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 
+namespace Akonadi
+{
+    class Monitor;
+    class ItemFetchScope;
+}
+
 class NotesRepository : public QObject
 {
     Q_OBJECT
@@ -41,6 +47,7 @@ public:
 
     void loadNotes();
     void loadEmails();
+    void monitorChanges();
 
     QVector<SugarNote> notesForOpportunity(const QString &id) const;
     QVector<SugarEmail> emailsForOpportunity(const QString &id) const;
@@ -51,10 +58,17 @@ signals:
 
 private Q_SLOTS:
     void slotNotesReceived(const Akonadi::Item::List &items);
+    void slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection);
+
     void slotEmailsReceived(const Akonadi::Item::List &items);
 
 private:
+    void storeNote(const Akonadi::Item &item);
+    void storeEmail(const Akonadi::Item &item);
+    void configureItemFetchScope(Akonadi::ItemFetchScope &scope);
+
     Akonadi::Collection mNotesCollection;
+    Akonadi::Monitor *mMonitor;
     typedef QHash<QString, QVector<SugarNote> > NotesHash;
     NotesHash mNotesHash;
     int mNotesLoaded;
