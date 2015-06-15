@@ -78,18 +78,18 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes() const
  */
 QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) const
 {
-    // avoid string comparisons for all other roles
+    // avoid calling item.payload() for all other roles
     if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::DecorationRole) {
 
-        if (item.mimeType() == SugarAccount::mimeType()) {
+        if (mType == Account) {
             return accountData(item, column, role);
-        } else if (item.mimeType() == SugarCampaign::mimeType()) {
+        } else if (mType == Campaign) {
             return campaignData(item, column, role);
-        } else if (item.mimeType() == KABC::Addressee::mimeType()) {
+        } else if (mType == Contact) {
             return contactData(item, column, role);
-        } else if (item.mimeType() == SugarLead::mimeType()) {
+        } else if (mType == Lead) {
             return leadData(item, column, role);
-        } else if (item.mimeType() == SugarOpportunity::mimeType()) {
+        } else if (mType == Opportunity) {
             return opportunityData(item, column, role);
         }
     }

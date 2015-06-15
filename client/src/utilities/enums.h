@@ -37,11 +37,11 @@ QString typeToString(DetailsType type);
 QString typeToTranslatedString(DetailsType type);
 
 enum ReferencedDataType {
-    AccountRef,
-    AssignedToRef,
-    CampaignRef,
-    ReportsToRef,
-    AccountCountryRef
+    AccountRef,        // account.id()     => account.name()
+    AssignedToRef,     // user id          => user name
+    CampaignRef,       // campaign.id()    => campaign.name()
+    ReportsToRef,      // contact id       => full name
+    AccountCountryRef  // account name (*) => country      (*) ID would better...
 };
 
 #endif /* ENUMS_H */
