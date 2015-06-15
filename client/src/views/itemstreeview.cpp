@@ -32,6 +32,7 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     Akonadi::EntityTreeView(parent),
     mItemsTreeModel(0)
 {
+    setRootIsDecorated(false);
     header()->setResizeMode(QHeaderView::ResizeToContents);
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
