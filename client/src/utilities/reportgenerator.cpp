@@ -38,7 +38,7 @@ void ReportGenerator::setupReport(KDReports::Report &report)
     report.setOrientation(QPrinter::Landscape);
 
     QFont font;
-    font.setPointSize(10);
+    font.setPointSize(8);
     report.setDefaultFont(font);
 
     addHeader(report);
