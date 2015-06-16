@@ -1,4 +1,5 @@
 CHECKSETS qt4,c++,foss
+EXCLUDE copyright
 
 #KDAB-specific checks
 EXTRA kdabcopyright
