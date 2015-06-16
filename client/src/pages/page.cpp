@@ -218,7 +218,7 @@ void Page::slotAddItem() // save new item
 
         // job starts automatically
         ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-        connect(job, SIGNAL(result(KJob *)), this, SLOT(slotCreateJobResult(KJob *)));
+        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
     }
 }
 
@@ -235,7 +235,7 @@ void Page::slotModifyItem(const Akonadi::Item &item) // save modified item
 {
     // job starts automatically
     ItemModifyJob *job = new ItemModifyJob(item);
-    connect(job, SIGNAL(result(KJob *)), this, SLOT(slotModifyJobResult(KJob *)));
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotModifyJobResult(KJob*)));
 }
 
 void Page::slotModifyJobResult(KJob *job)
@@ -384,8 +384,8 @@ void Page::initialize()
     mChangeRecorder->itemFetchScope().fetchFullPayload(true);
     mChangeRecorder->setMimeTypeMonitored(mMimeType);
 
-    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection, QSet<QByteArray>)),
-            this, SLOT(slotCollectionChanged(Akonadi::Collection, QSet<QByteArray>)));
+    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
+            this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);

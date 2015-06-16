@@ -44,9 +44,9 @@ private Q_SLOTS:
         QAbstractItemModel *sourceModel = proxy->sourceModel();
         QCOMPARE(sourceModel->rowCount(), 1); // +1 for empty item at the top
         QCOMPARE(combo->count(), 1); // +1 for empty item at the top
-        QSignalSpy spyRowsInserted(sourceModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
-        QSignalSpy spyRowsATBI(sourceModel, SIGNAL(rowsAboutToBeInserted(QModelIndex, int, int)));
-        QSignalSpy spyProxyRowsInserted(sourceModel, SIGNAL(rowsInserted(QModelIndex, int, int)));
+        QSignalSpy spyRowsInserted(sourceModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
+        QSignalSpy spyRowsATBI(sourceModel, SIGNAL(rowsAboutToBeInserted(QModelIndex,int,int)));
+        QSignalSpy spyProxyRowsInserted(sourceModel, SIGNAL(rowsInserted(QModelIndex,int,int)));
 
         // And then loading data into the model
         ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
