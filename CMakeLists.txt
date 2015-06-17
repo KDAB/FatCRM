@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 2.4)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
+enable_testing()
+
 # search packages used by KDE
 find_package(KDE4 REQUIRED)
 include(KDE4Defaults)
