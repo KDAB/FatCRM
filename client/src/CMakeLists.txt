@@ -69,6 +69,8 @@ qt4_add_resources(sugarclient_SRCS
   icons/icons.qrc
 )
 
+# Generate DBus interface in order to find out the config of the sugar resource (for the web link)
+# TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
 qt4_add_dbus_interface(sugarclient_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
