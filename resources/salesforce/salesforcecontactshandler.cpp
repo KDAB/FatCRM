@@ -21,8 +21,8 @@
 */
 
 #include "salesforcecontactshandler.h"
-
 #include "salesforcesoap.h"
+using namespace KDSoapGenerated;
 
 #include <akonadi/collection.h>
 

@@ -29,8 +29,9 @@
 
 class SalesforceModuleHandler;
 class KDSoapMessage;
-class SforceService;
 
+namespace KDSoapGenerated {
+class SforceService;
 class TNS__DeleteResponse;
 class TNS__DescribeGlobalResponse;
 class TNS__DescribeSObjectsResponse;
@@ -38,6 +39,7 @@ class TNS__LoginResponse;
 class TNS__QueryMoreResponse;
 class TNS__QueryResponse;
 class TNS__UpsertResponse;
+}
 
 template <typename U, typename V> class QHash;
 
@@ -56,7 +58,7 @@ public Q_SLOTS:
     virtual void configure(WId windowId);
 
 protected:
-    SforceService *mSoap;
+    KDSoapGenerated::SforceService *mSoap;
 
     QString mSessionId;
 
@@ -85,24 +87,24 @@ protected Q_SLOTS:
     void retrieveItems(const Akonadi::Collection &col);
     bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts);
 
-    void loginDone(const TNS__LoginResponse &callResult);
+    void loginDone(const KDSoapGenerated::TNS__LoginResponse &callResult);
     void loginError(const KDSoapMessage &fault);
 
-    void getEntryListDone(const TNS__QueryResponse &callResult);
-    void getEntryListDone(const TNS__QueryMoreResponse &callResult);
+    void getEntryListDone(const KDSoapGenerated::TNS__QueryResponse &callResult);
+    void getEntryListDone(const KDSoapGenerated::TNS__QueryMoreResponse &callResult);
     void getEntryListError(const KDSoapMessage &fault);
 
-    void setEntryDone(const TNS__UpsertResponse &callResult);
+    void setEntryDone(const KDSoapGenerated::TNS__UpsertResponse &callResult);
     void setEntryError(const KDSoapMessage &fault);
 
-    void deleteEntryDone(const TNS__DeleteResponse &callResult);
+    void deleteEntryDone(const KDSoapGenerated::TNS__DeleteResponse &callResult);
     void deleteEntryError(const KDSoapMessage &fault);
 
-    void describeGlobalDone(const TNS__DescribeGlobalResponse &callResult);
+    void describeGlobalDone(const KDSoapGenerated::TNS__DescribeGlobalResponse &callResult);
     void describeGlobalError(const KDSoapMessage &fault);
 
     void describeSObjects(const QStringList &objects);
-    void describeSObjectsDone(const TNS__DescribeSObjectsResponse &callResult);
+    void describeSObjectsDone(const KDSoapGenerated::TNS__DescribeSObjectsResponse &callResult);
     void describeSObjectsError(const KDSoapMessage &fault);
 };
 

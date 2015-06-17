@@ -32,10 +32,12 @@ namespace Akonadi
 class Collection;
 }
 
+namespace KDSoapGenerated {
 class SforceService;
 class TNS__DescribeSObjectResult;
 class TNS__QueryLocator;
 class TNS__QueryResult;
+}
 
 class SalesforceModuleHandler
 {
@@ -50,15 +52,15 @@ public:
 
     virtual QStringList supportedFields() const = 0;
 
-    virtual void setDescriptionResult(const TNS__DescribeSObjectResult &description);
+    virtual void setDescriptionResult(const KDSoapGenerated::TNS__DescribeSObjectResult &description);
 
     virtual Akonadi::Collection collection() const = 0;
 
-    virtual void listEntries(const TNS__QueryLocator &locator, SforceService *soap) = 0;
+    virtual void listEntries(const KDSoapGenerated::TNS__QueryLocator &locator, KDSoapGenerated::SforceService *soap) = 0;
 
-    virtual bool setEntry(const Akonadi::Item &item, SforceService *soap) = 0;
+    virtual bool setEntry(const Akonadi::Item &item, KDSoapGenerated::SforceService *soap) = 0;
 
-    virtual Akonadi::Item::List itemsFromListEntriesResponse(const TNS__QueryResult &queryResult,
+    virtual Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__QueryResult &queryResult,
             const Akonadi::Collection &parentCollection) = 0;
 
 protected:

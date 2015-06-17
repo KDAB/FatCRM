@@ -21,8 +21,8 @@
 */
 
 #include "salesforcemodulehandler.h"
-
 #include "salesforcesoap.h"
+using namespace KDSoapGenerated;
 
 SalesforceModuleHandler::SalesforceModuleHandler(const QString &moduleName)
     : mModuleName(moduleName)

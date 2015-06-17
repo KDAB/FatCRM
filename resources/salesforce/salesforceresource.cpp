@@ -29,6 +29,7 @@
 #include "settingsadaptor.h"
 #include "salesforceconfigdialog.h"
 #include "salesforcesoap.h"
+using namespace KDSoapGenerated;
 
 #include <akonadi/changerecorder.h>
 #include <akonadi/collection.h>
