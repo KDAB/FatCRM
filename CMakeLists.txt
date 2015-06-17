@@ -10,7 +10,7 @@ include(KDE4Defaults)
 find_package(KdepimLibs REQUIRED)
 find_package(Boost REQUIRED)
 
-find_package(Xsltproc)
+find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
 include(MacroLibrary)
