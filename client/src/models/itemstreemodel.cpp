@@ -60,10 +60,13 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
     d->mColumns = columnTypes(mType);
 
     if (mType == Opportunity) {
+        // Update country column once all accounts are loaded
+        connect(ReferencedData::instance(AccountCountryRef), SIGNAL(initialLoadingDone()),
+                this, SLOT(oppCountryColumnChanged()));
+
+        // and update it again later in case of single changes (by the user or when updating from server)
         connect(ReferencedData::instance(AccountCountryRef), SIGNAL(dataChanged(int)),
                 this, SLOT(slotAccountCountryChanged(int)));
-        connect(ReferencedData::instance(AccountCountryRef), SIGNAL(rowsInserted()),
-                this, SLOT(oppCountryColumnChanged()));
     }
 }
 
@@ -158,8 +161,8 @@ void ItemsTreeModel::slotAccountCountryChanged(int row)
 
 void ItemsTreeModel::oppCountryColumnChanged()
 {
-    //const int countryColumn = d->mColumns.indexOf(Country);
-    //emit dataChanged(index(0, countryColumn), index(rowCount() - 1, countryColumn));
+    const int countryColumn = d->mColumns.indexOf(Country);
+    emit dataChanged(index(0, countryColumn), index(rowCount() - 1, countryColumn));
 }
 
 /**

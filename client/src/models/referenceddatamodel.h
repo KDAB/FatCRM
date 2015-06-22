@@ -55,6 +55,7 @@ private:
     Q_PRIVATE_SLOT(d, void slotRowsInserted())
     Q_PRIVATE_SLOT(d, void slotRowsAboutToBeRemoved(int, int))
     Q_PRIVATE_SLOT(d, void slotRowsRemoved())
+    Q_PRIVATE_SLOT(d, void slotInitialLoadingDone())
 };
 
 #endif

@@ -48,7 +48,7 @@ public:
 //    void clear();
 
     void setReferencedData(const QString &id, const QString &data);
-    void addMap(const QMap<QString, QString> &idDataMap);
+    void addMap(const QMap<QString, QString> &idDataMap, bool emitChanges);
 
     QString referencedData(const QString &id) const;
 
@@ -57,6 +57,8 @@ public:
     QPair<QString, QString> data(int row) const;
     int count() const;
 
+    static void emitInitialLoadingDone();
+
 Q_SIGNALS:
     void dataChanged(int row);
     void rowsAboutToBeInserted(int start, int end);
@@ -64,8 +66,11 @@ Q_SIGNALS:
     void rowsAboutToBeRemoved(int start, int end);
     void rowsRemoved();
 
+    void initialLoadingDone();
+
 private:
     explicit ReferencedData(ReferencedDataType type, QObject *parent = 0);
+    void setReferencedDataInternal(const QString &id, const QString &data, bool emitChanges);
 
 private:
     class Private;

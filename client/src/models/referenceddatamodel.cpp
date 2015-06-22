@@ -47,6 +47,7 @@ public: // slots
     void slotRowsInserted();
     void slotRowsAboutToBeRemoved(int, int);
     void slotRowsRemoved();
+    void slotInitialLoadingDone();
 };
 
 void ReferencedDataModel::Private::slotDataChanged(int row)
@@ -75,6 +76,15 @@ void ReferencedDataModel::Private::slotRowsRemoved()
     q->endRemoveRows();
 }
 
+void ReferencedDataModel::Private::slotInitialLoadingDone()
+{
+    // workaround QComboBox not resizing itself on layoutChanged or modelReset (only works since 5aa40e5b00e in Qt 5.5)
+    q->beginInsertRows(QModelIndex(), 0, q->rowCount() - 1);
+    q->endInsertRows();
+    // we cheated a bit, so force the sorting to actually happen
+    emit q->layoutChanged();
+}
+
 ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
@@ -84,6 +94,7 @@ ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *paren
     connect(d->mData, SIGNAL(rowsInserted()), this, SLOT(slotRowsInserted()));
     connect(d->mData, SIGNAL(rowsAboutToBeRemoved(int,int)), this, SLOT(slotRowsAboutToBeRemoved(int,int)));
     connect(d->mData, SIGNAL(rowsRemoved()), this, SLOT(slotRowsRemoved()));
+    connect(d->mData, SIGNAL(initialLoadingDone()), this, SLOT(slotInitialLoadingDone()));
 }
 
 ReferencedDataModel::~ReferencedDataModel()

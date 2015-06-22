@@ -223,13 +223,14 @@ void DetailsWidget::setModified(bool modified)
 void DetailsWidget::setModificationsIgnored(bool b)
 {
     mIgnoreModifications = b;
+}
 
+void DetailsWidget::initialLoadingDone()
+{
     // A combo was just loaded; if the user didn't make any changes yet,
     // retry selecting the right account/etc. from the combo
-    if (!b) {
-        if (!mModified && mItem.isValid()) {
-            setItem(mItem);
-        }
+    if (!mModified && mItem.isValid()) {
+        setItem(mItem);
     }
 }
 

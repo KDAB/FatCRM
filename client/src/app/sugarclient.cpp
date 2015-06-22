@@ -50,6 +50,7 @@
 #include <contactsimporter.h>
 #include <QMessageBox>
 #include <accountimportdialog.h>
+#include <referenceddata.h>
 
 using namespace Akonadi;
 
@@ -288,6 +289,10 @@ void SugarClient::slotModelLoaded(DetailsType type)
         break;
     case Contact:
         slotShowMessage(i18n("(4/5) Loading notes..."));
+        ReferencedData::emitInitialLoadingDone(); // fill combos
+        Q_FOREACH (Page *page, mPages) {
+            page->initialLoadingDone(); // select correct item in newly filled combos
+        }
         mNotesRepository->loadNotes();
         break;
     case Lead:

@@ -61,7 +61,8 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mDetailsWidget(new DetailsWidget(type)),
       mChangeRecorder(new ChangeRecorder(this)),
       mItemsTreeModel(0),
-      mShowDetailsAction(0)
+      mShowDetailsAction(0),
+      mInitialLoadingDone(false)
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
@@ -161,6 +162,11 @@ void Page::setNotesRepository(NotesRepository *repo)
 void Page::setModificationsIgnored(bool b)
 {
     mDetailsWidget->setModificationsIgnored(b);
+}
+
+void Page::initialLoadingDone()
+{
+    mDetailsWidget->initialLoadingDone();
 }
 
 void Page::slotCurrentItemChanged(const QModelIndex &index)
@@ -317,22 +323,24 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 
     // inserting rows into comboboxes can change the current index, thus marking the data as modified
     emit ignoreModifications(true);
-    //kDebug() << "Finished loading" << typeToString(mType);
+
+    const bool emitChanges = mInitialLoadingDone;
+
     switch (mType) {
     case Account:
-        addAccountsData(start, end);
+        addAccountsData(start, end, emitChanges);
         break;
     case Campaign:
-        addCampaignsData(start, end);
+        addCampaignsData(start, end, emitChanges);
         break;
     case Contact:
-        addContactsData(start, end);
+        addContactsData(start, end, emitChanges);
         break;
     case Lead:
-        addLeadsData(start, end);
+        addLeadsData(start, end, emitChanges);
         break;
     case Opportunity:
-        addOpportunitiesData(start, end);
+        addOpportunitiesData(start, end, emitChanges);
         break;
     default: // other objects (like Note) not shown in a Page
         break;
@@ -340,10 +348,14 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     // Select the first row; looks nicer than empty fields in the details widget.
     //kDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
-    if (mItemsTreeModel->rowCount() == mCollection.statistics().count()) {
+    const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
+    if (done) {
+        //kDebug() << "Finished loading" << typeToString(mType);
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
+        mInitialLoadingDone = true;
+        // Move to the next model
         //emit modelLoaded(mType, i18n("%1 %2 loaded", mItemsTreeModel->rowCount(), typeToString(mType)));
         emit modelLoaded(mType);
     }
@@ -596,9 +608,10 @@ DetailsDialog *Page::createDetailsDialog()
     return dialog;
 }
 
-void Page::addAccountsData(int start, int end)
+void Page::addAccountsData(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //kDebug() << start << end;
+    // QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
@@ -613,13 +626,13 @@ void Page::addAccountsData(int start, int end)
             AccountRepository::instance()->addAccount(account);
         }
     }
-    ReferencedData::instance(AccountRef)->addMap(accountRefMap); // TODO detect renamings
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap); // we assume user names don't change later
-    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap); // country changes are handled in slotDataChanged
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // TODO detect renamings
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
+    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap, emitChanges); // country changes are handled in slotDataChanged
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addCampaignsData(int start, int end)
+void Page::addCampaignsData(int start, int end, bool emitChanges)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> campaignRefMap, assignedToRefMap;
@@ -632,12 +645,12 @@ void Page::addCampaignsData(int start, int end)
             assignedToRefMap.insert(campaign.assignedUserId(), campaign.assignedUserName());
         }
     }
-    ReferencedData::instance(CampaignRef)->addMap(campaignRefMap);
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addContactsData(int start, int end)
+void Page::addContactsData(int start, int end, bool emitChanges)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
@@ -651,12 +664,12 @@ void Page::addContactsData(int start, int end)
             assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
-    ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap); // TODO handle changes in slotDataChanged
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap, emitChanges); // TODO handle changes in slotDataChanged
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
-void Page::addLeadsData(int start, int end)
+void Page::addLeadsData(int start, int end, bool emitChanges)
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
@@ -669,10 +682,10 @@ void Page::addLeadsData(int start, int end)
             assignedToRefMap.insert(lead.assignedUserId(), lead.assignedUserName());
         }
     }
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
-void Page::addOpportunitiesData(int start, int end)
+void Page::addOpportunitiesData(int start, int end, bool emitChanges)
 {
     //kDebug();
     QMap<QString, QString> assignedToRefMap;
@@ -684,7 +697,7 @@ void Page::addOpportunitiesData(int start, int end)
             assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
         }
     }
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
 void Page::removeAccountsData(Akonadi::Item &item)

@@ -49,6 +49,7 @@ public:
         return mModified;
     }
     void setModificationsIgnored(bool b);
+    void initialLoadingDone();
 
     void setItem(const Akonadi::Item &item);
     void clearFields();

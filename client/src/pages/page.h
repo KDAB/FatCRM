@@ -61,6 +61,7 @@ public:
     void setCollection(const Akonadi::Collection& collection);
     void setNotesRepository(NotesRepository *repo);
     void setModificationsIgnored(bool b);
+    void initialLoadingDone();
 
     QAction *showDetailsAction(const QString &title) const;
     void openDialog(const QString &id);
@@ -125,11 +126,11 @@ private:
     bool askSave();
     void updateSupportedFields();
     // manages accounts combo box
-    void addAccountsData(int start, int end);
-    void addCampaignsData(int start, int end);
-    void addContactsData(int start, int end);
-    void addLeadsData(int start, int end);
-    void addOpportunitiesData(int start, int end);
+    void addAccountsData(int start, int end, bool emitChanges);
+    void addCampaignsData(int start, int end, bool emitChanges);
+    void addContactsData(int start, int end, bool emitChanges);
+    void addLeadsData(int start, int end, bool emitChanges);
+    void addOpportunitiesData(int start, int end, bool emitChanges);
     void removeAccountsData(Akonadi::Item &item);
     void removeCampaignsData(Akonadi::Item &item);
 
@@ -150,6 +151,7 @@ private:
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
     NotesRepository *mNotesRepository;
+    bool mInitialLoadingDone;
 };
 
 #endif

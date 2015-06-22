@@ -61,13 +61,22 @@ public:
     ReferencedDataType mType;
 };
 
+
+class ReferenceDataMap
+{
+public:
+    ~ReferenceDataMap() { qDeleteAll(map); }
+    QMap<ReferencedDataType, ReferencedData *> map;
+};
+
+Q_GLOBAL_STATIC(ReferenceDataMap, s_instances)
+
 ReferencedData *ReferencedData::instance(ReferencedDataType type)
 {
-    static QMap<ReferencedDataType, ReferencedData *> s_instances;
-    ReferencedData* instance = s_instances.value(type);
+    ReferencedData* instance = s_instances()->map.value(type);
     if (!instance) {
         instance = new ReferencedData(type);
-        s_instances.insert(type, instance);
+        s_instances()->map.insert(type, instance);
     }
     return instance;
 }
@@ -93,22 +102,33 @@ void ReferencedData::setReferencedData(const QString &id, const QString &data)
         return;
     }
 
+    setReferencedDataInternal(id, data, true);
+}
+
+void ReferencedData::setReferencedDataInternal(const QString &id, const QString &data, bool emitChanges)
+{
     KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
     if (findIt != d->mVector.end()) {
         if (data != findIt->value) {
             findIt->value = data;
-            emit dataChanged(findIt - d->mVector.begin());
+            if (emitChanges) {
+                emit dataChanged(findIt - d->mVector.begin());
+            }
         }
     } else {
         findIt = qLowerBound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
         const int row = findIt - d->mVector.begin();
-        emit rowsAboutToBeInserted(row, row);
+        if (emitChanges) {
+            emit rowsAboutToBeInserted(row, row);
+        }
         d->mVector.insert(findIt, KeyValue(id, data));
-        emit rowsInserted();
+        if (emitChanges) {
+            emit rowsInserted();
+        }
     }
 }
 
-void ReferencedData::addMap(const QMap<QString, QString> &idDataMap)
+void ReferencedData::addMap(const QMap<QString, QString> &idDataMap, bool emitChanges)
 {
     QMap<QString, QString>::const_iterator it = idDataMap.constBegin();
     const QMap<QString, QString>::const_iterator end = idDataMap.constEnd();
@@ -117,15 +137,19 @@ void ReferencedData::addMap(const QMap<QString, QString> &idDataMap)
         // The vector is currently empty -> fast path
         // The map is already sorted, we can just copy right away
         // and emit the signals only once, which is the whole point of this method.
-        emit rowsAboutToBeInserted(0, idDataMap.count() - 1);
+        if (emitChanges) {
+            emit rowsAboutToBeInserted(0, idDataMap.count() - 1);
+        }
         for ( ; it != end ; ++it) {
             d->mVector.append(KeyValue(it.key(), it.value()));
         }
-        emit rowsInserted();
+        if (emitChanges) {
+            emit rowsInserted();
+        }
     } else {
         // Append to existing data -> slower code path
         for ( ; it != end ; ++it) {
-            setReferencedData(it.key(), it.value());
+            setReferencedDataInternal(it.key(), it.value(), emitChanges);
         }
     }
 }
@@ -162,6 +186,13 @@ QPair<QString, QString> ReferencedData::data(int row) const
 int ReferencedData::count() const
 {
     return d->mVector.count();
+}
+
+void ReferencedData::emitInitialLoadingDone()
+{
+    foreach(ReferencedData *data, s_instances()->map) {
+        emit data->initialLoadingDone();
+    }
 }
 
 ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
