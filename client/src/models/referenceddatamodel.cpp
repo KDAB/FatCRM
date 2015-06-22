@@ -106,6 +106,7 @@ void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedDataType 
 {
     QSortFilterProxyModel *proxy = new QSortFilterProxyModel(combo);
     proxy->setDynamicSortFilter(true);
+    proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     ReferencedDataModel *model = new ReferencedDataModel(type, combo);
     proxy->setSourceModel(model);
     proxy->sort(0);
