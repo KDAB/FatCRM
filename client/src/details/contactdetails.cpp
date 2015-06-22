@@ -49,7 +49,7 @@ void ContactDetails::initialize()
     mUi->salutation->addItems(salutationItems());
     ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
     mUi->lead_source->addItems(sourceItems());
-    ReferencedDataModel::setModelForCombo(mUi->campaign, CampaignRef);
+    //ReferencedDataModel::setModelForCombo(mUi->campaign, CampaignRef);
     ReferencedDataModel::setModelForCombo(mUi->reports_to, ReportsToRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_to, AssignedToRef);
 

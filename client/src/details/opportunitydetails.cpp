@@ -36,6 +36,7 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
 {
     mUi->setupUi(this);
+
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
     mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);

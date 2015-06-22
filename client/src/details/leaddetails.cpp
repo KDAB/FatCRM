@@ -46,7 +46,7 @@ LeadDetails::~LeadDetails()
 void LeadDetails::initialize()
 {
     mUi->lead_source->addItems(sourceItems());
-    ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
+    //ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
     mUi->salutation->addItems(salutationItems());
     // TODO FIXME: leads can refer to account names which are do not match sugar accounts
     ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);

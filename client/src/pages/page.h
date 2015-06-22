@@ -132,7 +132,7 @@ private:
     void addLeadsData(int start, int end, bool emitChanges);
     void addOpportunitiesData(int start, int end, bool emitChanges);
     void removeAccountsData(Akonadi::Item &item);
-    void removeCampaignsData(Akonadi::Item &item);
+    //void removeCampaignsData(Akonadi::Item &item);
 
     DetailsDialog *createDetailsDialog();
 

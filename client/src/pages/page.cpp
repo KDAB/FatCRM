@@ -307,8 +307,8 @@ void Page::slotRemoveItem()
 
     if (mType == Account) {
         removeAccountsData(item);
-    } else if (mType == Campaign) {
-        removeCampaignsData(item);
+    //} else if (mType == Campaign) {
+    //    removeCampaignsData(item);
     }
 }
 
@@ -639,17 +639,18 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
 void Page::addCampaignsData(int start, int end, bool emitChanges)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
-    QMap<QString, QString> campaignRefMap, assignedToRefMap;
+    QMap<QString, QString> campaignRefMap;
+    QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarCampaign>()) {
             const SugarCampaign campaign = item.payload<SugarCampaign>();
-            campaignRefMap.insert(campaign.id(), campaign.name());
+            //campaignRefMap.insert(campaign.id(), campaign.name());
             assignedToRefMap.insert(campaign.assignedUserId(), campaign.assignedUserName());
         }
     }
-    ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
+    //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
@@ -713,6 +714,7 @@ void Page::removeAccountsData(Akonadi::Item &item)
     }
 }
 
+#if 0
 void Page::removeCampaignsData(Akonadi::Item &item)
 {
     if (item.hasPayload<SugarCampaign>()) {
@@ -721,6 +723,7 @@ void Page::removeCampaignsData(Akonadi::Item &item)
         data->removeReferencedData(campaign.id());
     }
 }
+#endif
 
 void Page::retrieveResourceUrl()
 {

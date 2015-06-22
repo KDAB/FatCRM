@@ -30,7 +30,6 @@
 
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(Account, parent), mUi(new Ui::AccountDetails)
-
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -49,7 +48,7 @@ void AccountDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->parent_name, AccountRef);
     mUi->industry->addItems(industryItems());
     mUi->account_type->addItems(typeItems());
-    ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
+    //ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
 }
 
