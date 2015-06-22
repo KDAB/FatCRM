@@ -53,6 +53,7 @@ class ReferencedData::Private
 {
 public:
     explicit Private()
+        : mType(AccountRef)
     {
     }
 

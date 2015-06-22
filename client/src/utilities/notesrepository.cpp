@@ -29,6 +29,7 @@
 
 NotesRepository::NotesRepository(QObject *parent) :
     QObject(parent),
+    mMonitor(0),
     mNotesLoaded(0),
     mEmailsLoaded(0)
 {

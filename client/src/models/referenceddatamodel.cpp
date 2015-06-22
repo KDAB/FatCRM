@@ -34,7 +34,7 @@ class ReferencedDataModel::Private
 
 public:
     Private(ReferencedDataModel *parent)
-        : q(parent)
+        : q(parent), mData(0)
     {
     }
 
