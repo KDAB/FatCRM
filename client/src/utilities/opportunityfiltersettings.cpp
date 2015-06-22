@@ -113,9 +113,9 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     // in the load method that would break const-ness...
     // KConfigGroup is missing in QSettings :)
     settings.setValue(prefix + "/assignees", mAssignees);
-    settings.setValue(prefix + "/assigneeGroup", mAssignees.isEmpty() ? QString() : mAssigneeGroup);
+    settings.setValue(prefix + "/assigneeGroup", mAssigneeGroup);
     settings.setValue(prefix + "/countries", mCountries);
-    settings.setValue(prefix + "/countryGroup", mCountries.isEmpty() ? QString() : mCountryGroup);
+    settings.setValue(prefix + "/countryGroup", mCountryGroup);
     settings.setValue(prefix + "/maxDateIndex", mMaxDateIndex);
     settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);

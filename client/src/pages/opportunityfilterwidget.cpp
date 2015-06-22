@@ -84,8 +84,8 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->modifiedBefore->setDate(settings.modifiedBefore());
     ui->modifiedAfter->setDate(settings.modifiedAfter());
     ui->rbAll->setChecked(true); // unless one of the two below gets checked
-    ui->rbAssignedTo->setChecked(!settings.assigneeGroup().isEmpty());
-    ui->rbCountry->setChecked(!settings.countryGroup().isEmpty());
+    ui->rbAssignedTo->setChecked(!settings.assignees().isEmpty());
+    ui->rbCountry->setChecked(!settings.countries().isEmpty());
     filterChanged();
 }
 
