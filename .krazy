@@ -12,7 +12,10 @@ SKIP /resources/sugarcrm/taskshandler\.h|/resources/sugarcrm/taskshandler.cpp
 SKIP /resources/sugarcrm/taskaccessorpair\.h|/resources/sugarcrm/taskaccessorpair\.cpp
 SKIP /client/src/widgets/qdateeditex\.h|/client/src/widgets/qdateeditex\.cpp
 SKIP /client/src/utilities/qcsvreader\.h|/client/src/utilities/qcsvreader\.cpp
-SKIP /client/FindXsltproc\.cmake
+SKIP /cmake/FindXsltproc\.cmake
+
+#SKIP Squish tests
+SKIP /tests/squish/
 
 #if you have a build subdir, skip it
 SKIP /build-
