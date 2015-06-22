@@ -358,6 +358,10 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
         // Move to the next model
         //emit modelLoaded(mType, i18n("%1 %2 loaded", mItemsTreeModel->rowCount(), typeToString(mType)));
         emit modelLoaded(mType);
+
+        if (mType == Account) {
+            ReferencedData::instance(AccountCountryRef)->emitInitialLoadingDone();
+        }
     }
     emit ignoreModifications(false);
 }

@@ -57,7 +57,12 @@ public:
     QPair<QString, QString> data(int row) const;
     int count() const;
 
-    static void emitInitialLoadingDone();
+
+    ReferencedDataType dataType() const;
+
+    void emitInitialLoadingDone();
+
+    static void emitInitialLoadingDoneForAll();
 
 Q_SIGNALS:
     void dataChanged(int row);

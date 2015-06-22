@@ -188,11 +188,23 @@ int ReferencedData::count() const
     return d->mVector.count();
 }
 
-void ReferencedData::emitInitialLoadingDone()
+ReferencedDataType ReferencedData::dataType() const
+{
+    return d->mType;
+}
+
+void ReferencedData::emitInitialLoadingDoneForAll()
 {
     foreach(ReferencedData *data, s_instances()->map) {
-        emit data->initialLoadingDone();
+        if (data->dataType() != AccountCountryRef) { // that one was already done earlier
+            emit data->initialLoadingDone();
+        }
     }
+}
+
+void ReferencedData::emitInitialLoadingDone()
+{
+    emit initialLoadingDone();
 }
 
 ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
