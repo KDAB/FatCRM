@@ -170,8 +170,12 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
         if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
-        //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
-        cb->setCurrentIndex(cb->findText(data.value(key)));
+        if (key == KDCRMFields::accountName()) {
+            cb->setCurrentIndex(cb->findData(data.value(KDCRMFields::accountId()), ReferencedDataModel::IdRole));
+        } else {
+            //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
+            cb->setCurrentIndex(cb->findText(data.value(key)));
+        }
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();

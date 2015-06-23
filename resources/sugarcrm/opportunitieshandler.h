@@ -32,12 +32,15 @@ template <typename U, typename V> class QHash;
 
 class OpportunitiesHandler : public ModuleHandler
 {
+    Q_OBJECT
 public:
     OpportunitiesHandler(SugarSession *session);
 
     ~OpportunitiesHandler();
 
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
+
+    int expectedContentsVersion() const Q_DECL_OVERRIDE;
 
     bool setEntry(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
@@ -49,6 +52,10 @@ public:
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
+
+private Q_SLOTS:
+    void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
+    void slotUpdateJobResult(KJob *job);
 
 private:
     SugarOpportunity::AccessorHash mAccessors;

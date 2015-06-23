@@ -458,8 +458,6 @@ void SugarCRMResource::listModulesResult(KJob *job)
         ModuleHandler* handler = mModuleHandlers->value(module);
         if (handler) {
             Collection collection = handler->collection();
-            //handler->resetLatestTimestamp(); // not sure why that was here
-
             collection.setParentCollection(topLevelCollection);
             collections << collection;
         }
@@ -686,6 +684,9 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
                 //kDebug() << "No module handler for" << module;
                 continue;
             }
+
+            handler->initialCheck();
+
             mModuleHandlers->insert(module, handler);
 
             // create a debug interface for the module, if we haven't done so already

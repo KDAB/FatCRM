@@ -23,12 +23,14 @@
 #include "accountshandler.h"
 
 #include "kdcrmutils.h"
+#include "sugaraccountcache.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/collection.h>
+#include <akonadi/itemfetchjob.h>
+#include <akonadi/itemfetchscope.h>
 
 #include <kabc/address.h>
 
@@ -37,11 +39,18 @@ using namespace KDSoapGenerated;
 #include <KLocale>
 
 #include <QHash>
+#include <sugaropportunity.h>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),
       mAccessors(SugarAccount::accessorHash())
 {
+    // Load a cache of all accounts from the database
+    // This is used to resolve account_name to account_id in opportunities.
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection(), this);
+    job->fetchScope().setCacheOnly(true);
+    job->fetchScope().fetchFullPayload(true);
+    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(slotItemsReceived(Akonadi::Item::List)));
 }
 
 AccountsHandler::~AccountsHandler()
@@ -124,7 +133,6 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
         itemList << field;
     }
 
-
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
     soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
@@ -135,7 +143,8 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
 int AccountsHandler::expectedContentsVersion() const
 {
     // version 1 = accounts now store all fields, including custom fields
-    return 1;
+    // version 2 = ensure we get trimmed names (no trailing spaces)
+    return 2;
 }
 
 Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -164,6 +173,11 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
         (account.*(accessIt.value().setter))(value);
     }
+
+    SugarAccountCache *cache = SugarAccountCache::instance();
+    cache->addAccount(account.name(), account.id());
+    // when renaming an account we'll have oldname->id and newname->id, shouldn't harm
+
     item.setPayload<SugarAccount>(account);
     item.setRemoteRevision(account.dateModified());
 
@@ -275,5 +289,22 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
             reporter->addProperty(Akonadi::AbstractDifferencesReporter::ConflictMode,
                                   diffName, leftValue, rightValue);
         }
+    }
+}
+
+void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
+{
+    SugarAccountCache *cache = SugarAccountCache::instance();
+    foreach (const Akonadi::Item &item, items) {
+        const SugarAccount account = item.payload<SugarAccount>();
+        cache->addAccount(account.name(), account.id());
+    }
+    //kDebug() << "Added" << items.count() << "items into cache for" << moduleName();
+}
+
+void AccountsHandler::slotUpdateJobResult(KJob *job)
+{
+    if (job->error()) {
+        kError() << job->errorString();
     }
 }

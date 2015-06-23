@@ -474,6 +474,7 @@ static QString countryForAccount(const SugarAccount &account)
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
+    //kDebug() << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
     const int firstColumn = topLeft.column();
@@ -488,7 +489,10 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         if (mType == Account && item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
             if (firstColumn <= ItemsTreeModel::Country && ItemsTreeModel::Country <= lastColumn) {
-                ReferencedData::instance(AccountCountryRef)->setReferencedData(account.name(), countryForAccount(account));
+                ReferencedData::instance(AccountCountryRef)->setReferencedData(account.id(), countryForAccount(account));
+            }
+            if (firstColumn <= ItemsTreeModel::Name && ItemsTreeModel::Name <= lastColumn) {
+                ReferencedData::instance(AccountRef)->setReferencedData(account.id(), account.name());
             }
         }
     }
@@ -624,13 +628,12 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
             const SugarAccount account = item.payload<SugarAccount>();
             accountRefMap.insert(account.id(), account.name());
             assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
-            // See comment in itemstreemodel.cpp about why this isn't account.id()
-            accountCountryRefMap.insert(account.name(), countryForAccount(account));
+            accountCountryRefMap.insert(account.id(), countryForAccount(account));
 
             AccountRepository::instance()->addAccount(account);
         }
     }
-    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // TODO detect renamings
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
     ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap, emitChanges); // country changes are handled in slotDataChanged
     //kDebug() << "done," << dt.elapsed() << "ms";

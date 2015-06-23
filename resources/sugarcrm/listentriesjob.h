@@ -51,6 +51,7 @@ public:
     Akonadi::Collection collection() const;
     void setModule(ModuleHandler *handler);
 
+    static int currentContentsVersion(const Akonadi::Collection &collection);
     QString latestTimestamp() const;
 
 Q_SIGNALS:

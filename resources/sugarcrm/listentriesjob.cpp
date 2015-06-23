@@ -218,6 +218,15 @@ void ListEntriesJob::setModule(ModuleHandler *handler)
     d->mListScope = ListEntriesScope(latestTimestamp());
 }
 
+int ListEntriesJob::currentContentsVersion(const Collection &collection)
+{
+    EntityAnnotationsAttribute *annotationsAttribute =
+            collection.attribute<EntityAnnotationsAttribute>();
+    if (annotationsAttribute)
+        return annotationsAttribute->value(s_contentsVersionKey).toInt();
+    return 0;
+}
+
 QString ListEntriesJob::latestTimestamp() const
 {
     EntityAnnotationsAttribute *annotationsAttribute =

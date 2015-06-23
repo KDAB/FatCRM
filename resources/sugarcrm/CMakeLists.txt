@@ -18,7 +18,9 @@ set(sugarcrmresource_SRCS
   modulehandler.cpp
   noteshandler.cpp
   opportunitieshandler.cpp
+  referenceupdatejob.cpp
   resourcedebuginterface.cpp
+  sugaraccountcache.cpp
   sugarconfigdialog.cpp
   sugarcrmresource.cpp
   sugarjob.cpp

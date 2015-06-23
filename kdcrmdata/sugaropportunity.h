@@ -206,13 +206,15 @@ public:
     QString opportunityType() const;
 
     /**
-      Set the Account Name.
+      Set the Account Name; used temporarily during listing.
+      Don't use from the GUI, use the account ID instead.
      */
-    void setAccountName(const QString &value);
+    void setTempAccountName(const QString &value);
     /**
-      Return the Account Name.
+      Return the temporary Account Name.
+      Don't use from the GUI, use the account ID instead.
     */
-    QString accountName() const;
+    QString tempAccountName() const;
 
     /**
       Set the Account Id.

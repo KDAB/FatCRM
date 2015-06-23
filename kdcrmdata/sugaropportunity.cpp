@@ -346,13 +346,13 @@ QString SugarOpportunity::opportunityType() const
     return d->mOpportunityType;
 }
 
-void SugarOpportunity::setAccountName(const QString &value)
+void SugarOpportunity::setTempAccountName(const QString &value)
 {
     d->mEmpty = false;
     d->mAccountName = value;
 }
 
-QString SugarOpportunity::accountName() const
+QString SugarOpportunity::tempAccountName() const
 {
     return d->mAccountName;
 }
@@ -567,7 +567,7 @@ QMap<QString, QString> SugarOpportunity::data()
     data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
     data[KDCRMFields::opportunityType()] = d->mOpportunityType;
     data[KDCRMFields::accountName()] = d->mAccountName;
-    data[KDCRMFields::accountId()] = d->mAccountName;
+    data[KDCRMFields::accountId()] = d->mAccountId;
     data[KDCRMFields::campaignId()] = d->mCampaignId;
     data[KDCRMFields::campaignName()] = d->mCampaignName;
     data[KDCRMFields::leadSource()] = d->mLeadSource;
@@ -628,7 +628,7 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
                            OpportunityAccessorPair(&SugarOpportunity::opportunityType, &SugarOpportunity::setOpportunityType,
                                             i18nc("@item:intable", "Type")));
         accessors.insert(QLatin1String("account_name"),
-                           OpportunityAccessorPair(&SugarOpportunity::accountName, &SugarOpportunity::setAccountName,
+                           OpportunityAccessorPair(&SugarOpportunity::tempAccountName, &SugarOpportunity::setTempAccountName,
                                             i18nc("@item:intable", "Account")));
         // ### I wish this one was available, but SuiteCRM doesn't return it!
         // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)

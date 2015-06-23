@@ -25,6 +25,7 @@
 #include "sugarsession.h"
 #include "sugarsoap.h"
 #include "listentriesscope.h"
+#include "listentriesjob.h"
 
 using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
@@ -34,6 +35,8 @@ using namespace KDSoapGenerated;
 #include <QInputDialog>
 #include <QStringList>
 
+#include <akonadi/agentmanager.h>
+#include <akonadi/collectionfetchjob.h>
 #include <akonadi/collectionmodifyjob.h>
 
 ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
@@ -49,6 +52,12 @@ ModuleHandler::~ModuleHandler()
 QString ModuleHandler::moduleName() const
 {
     return mModuleName;
+}
+
+void ModuleHandler::initialCheck()
+{
+    Akonadi::CollectionFetchJob *job = new Akonadi::CollectionFetchJob(collection(), Akonadi::CollectionFetchJob::Base, this);
+    connect(job, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(slotCollectionsReceived(Akonadi::Collection::List)));
 }
 
 QString ModuleHandler::latestTimestamp() const
@@ -72,8 +81,7 @@ Akonadi::Collection ModuleHandler::collection()
 
 void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 {
-    // no parent, this job will outlive the ListEntriesJob
-    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection);
+    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection, this);
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
 }
 
@@ -198,5 +206,23 @@ void ModuleHandler::slotCollectionModifyResult(KJob *job)
 {
     if (job->error()) {
         kWarning() << job->errorString();
+    }
+}
+
+void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &collections)
+{
+    if (collections.count() != 1) {
+        return;
+    }
+    const Akonadi::Collection collection = collections.at(0);
+    if (ListEntriesJob::currentContentsVersion(collection) != expectedContentsVersion()) {
+        // the contents need to be relisted, do this right now before users get a chance to view bad data
+        kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
+                 << ListEntriesJob::currentContentsVersion(collection) << "!="
+                 << expectedContentsVersion();
+        //Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection, this);
+        //job->fetchScope().setCacheOnly(false);
+        //Q_UNUSED(job);
+        Akonadi::AgentManager::self()->synchronizeCollection(collection);
     }
 }

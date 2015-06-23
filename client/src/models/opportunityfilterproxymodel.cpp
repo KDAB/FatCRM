@@ -77,7 +77,8 @@ static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const 
     if (opportunity.name().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
-    if (opportunity.accountName().contains(filter, Qt::CaseInsensitive)) {
+    const QString accountName = ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
+    if (accountName.contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
     if (opportunity.salesStage().contains(filter, Qt::CaseInsensitive)) {
@@ -111,7 +112,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
     const QStringList countries = d->settings.countries();
     if (!countries.isEmpty()) {
-        const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
+        const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountId());
         if (!countries.contains(country, Qt::CaseInsensitive))
             return false;
     }

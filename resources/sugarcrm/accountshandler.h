@@ -30,6 +30,7 @@ template <typename U, typename V> class QHash;
 
 class AccountsHandler : public ModuleHandler
 {
+    Q_OBJECT
 public:
     AccountsHandler(SugarSession *session);
 
@@ -50,6 +51,10 @@ public:
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
+
+private Q_SLOTS:
+    void slotItemsReceived(const Akonadi::Item::List &items);
+    void slotUpdateJobResult(KJob *job);
 
 private:
     SugarAccount::AccessorHash mAccessors;

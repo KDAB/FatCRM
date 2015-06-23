@@ -26,6 +26,8 @@
 #include "sugarsoap.h"
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
+#include "sugaraccountcache.h"
+#include "referenceupdatejob.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/collection.h>
@@ -33,11 +35,15 @@ using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h>
 
 #include <KLocale>
+#include <KDebug>
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Opportunities"), session),
       mAccessors(SugarOpportunity::accessorHash())
 {
+    SugarAccountCache *cache = SugarAccountCache::instance();
+    connect(cache, SIGNAL(pendingAccountAdded(QString,QString)),
+            this, SLOT(slotPendingAccountAdded(QString,QString)));
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
@@ -99,6 +105,12 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     return true;
 }
 
+int OpportunitiesHandler::expectedContentsVersion() const
+{
+    // version 1 = account_name is resolved to account_id upon loading
+    return 1;
+}
+
 QString OpportunitiesHandler::orderByForListing() const
 {
     return QLatin1String("opportunities.name");
@@ -146,6 +158,17 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
 
         (opportunity.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
+
+    if (opportunity.accountId().isEmpty()) {
+        // Resolve account id using name, since Sugar doesn't do that
+        SugarAccountCache *cache = SugarAccountCache::instance();
+        opportunity.setAccountId(cache->accountIdForName(opportunity.tempAccountName()));
+        if (opportunity.accountId().isEmpty()) {
+            kWarning() << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
+            cache->addPendingAccountName(opportunity.tempAccountName());
+       }
+    }
+
     item.setPayload<SugarOpportunity>(opportunity);
     item.setRemoteRevision(opportunity.dateModifiedRaw());
 
@@ -209,3 +232,53 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
         }
     }
 }
+
+
+// Resolve account name to account id in pending opp
+class OppAccountModifyJob : public ReferenceUpdateJob
+{
+public:
+    OppAccountModifyJob(const Akonadi::Collection &coll, QObject *parent)
+        : ReferenceUpdateJob(coll, parent) {}
+
+    void setAccountName(const QString &accountName) {
+        mAccountName = accountName;
+    }
+    void setAccountId(const QString &accountId) {
+        mAccountId = accountId;
+    }
+
+protected:
+    bool updateItem(Akonadi::Item &item) Q_DECL_OVERRIDE
+    {
+        Q_ASSERT(item.hasPayload<SugarOpportunity>());
+        SugarOpportunity opp = item.payload<SugarOpportunity>();
+        if (opp.tempAccountName() == mAccountName) {
+            kDebug() << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
+            opp.setAccountId(mAccountId);
+            item.setPayload(opp);
+            return true;
+        }
+        return false;
+    }
+private:
+    QString mAccountName;
+    QString mAccountId;
+};
+
+void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
+{
+    kDebug() << "Fixing opp to set account_id:" << accountName << accountId;
+    OppAccountModifyJob *job = new OppAccountModifyJob(collection(), this);
+    job->setAccountName(accountName);
+    job->setAccountId(accountId);
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotUpdateJobResult(KJob*)));
+}
+
+void OpportunitiesHandler::slotUpdateJobResult(KJob *job)
+{
+    if (job->error()) {
+        kError() << job->errorString();
+    }
+}
+

@@ -60,13 +60,17 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
     d->mColumns = columnTypes(mType);
 
     if (mType == Opportunity) {
-        // Update country column once all accounts are loaded
+        // Update accountName and country columns once all accounts are loaded
         connect(ReferencedData::instance(AccountCountryRef), SIGNAL(initialLoadingDone()),
                 this, SLOT(oppCountryColumnChanged()));
+        connect(ReferencedData::instance(AccountRef), SIGNAL(initialLoadingDone()),
+                this, SLOT(oppAccountNameColumnChanged()));
 
         // and update it again later in case of single changes (by the user or when updating from server)
         connect(ReferencedData::instance(AccountCountryRef), SIGNAL(dataChanged(int)),
                 this, SLOT(slotAccountCountryChanged(int)));
+        connect(ReferencedData::instance(AccountRef), SIGNAL(dataChanged(int)),
+                this, SLOT(slotAccountNameChanged(int)));
     }
 }
 
@@ -153,16 +157,33 @@ void ItemsTreeModel::slotAccountCountryChanged(int row)
 {
     if (mType == Opportunity) {
         Q_UNUSED(row);
-        //const QString account = ReferencedData::instance(AccountCountryRef)->data(row);
+        //const QString accountId = ReferencedData::instance(AccountCountryRef)->data(row);
         // We could iterate over all opps to find those which use that account.... but maybe this is just faster:
         oppCountryColumnChanged();
     }
 }
 
+void ItemsTreeModel::slotAccountNameChanged(int row)
+{
+    kDebug() << row;
+    if (mType == Opportunity) {
+        Q_UNUSED(row); // same reasoning as in slotAccountCountryChanged(row)
+        oppAccountNameColumnChanged();
+    }
+}
+
 void ItemsTreeModel::oppCountryColumnChanged()
 {
-    const int countryColumn = d->mColumns.indexOf(Country);
-    emit dataChanged(index(0, countryColumn), index(rowCount() - 1, countryColumn));
+    const int column = d->mColumns.indexOf(Country);
+    //kDebug() << "emitting dataChanged for column" << column;
+    emit dataChanged(index(0, column), index(rowCount() - 1, column));
+}
+
+void ItemsTreeModel::oppAccountNameColumnChanged()
+{
+    const int column = d->mColumns.indexOf(OpportunityAccountName);
+    //kDebug() << "emitting dataChanged for column" << column;
+    emit dataChanged(index(0, column), index(rowCount() - 1, column));
 }
 
 /**
@@ -365,7 +386,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case OpportunityName:
             return opportunity.name();
         case OpportunityAccountName:
-            return opportunity.accountName();
+            return ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
         case SalesStage:
             return opportunity.salesStage();
         case Amount:
@@ -391,8 +412,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case AssignedTo:
             return opportunity.assignedUserName();
         case Country:
-            // I wish I could use accountId() as key, but SuiteCRM doesn't give me account_id for opportunities...
-            return ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountName());
+            return ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountId());
         default:
             return QVariant();
         }

@@ -41,7 +41,7 @@ enum ReferencedDataType {
     AssignedToRef,     // user id          => user name
     //CampaignRef,       // campaign.id()    => campaign.name()
     ReportsToRef,      // contact id       => full name
-    AccountCountryRef  // account name (*) => country      (*) ID would better...
+    AccountCountryRef  // account.id()     => country
 };
 
 #endif /* ENUMS_H */

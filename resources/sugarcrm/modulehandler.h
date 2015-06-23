@@ -49,6 +49,8 @@ public:
 
     QString moduleName() const;
 
+    void initialCheck();
+
     QString latestTimestamp() const;
     void resetLatestTimestamp();
 
@@ -106,6 +108,7 @@ protected:
 
 private Q_SLOTS:
     void slotCollectionModifyResult(KJob *);
+    void slotCollectionsReceived(const Akonadi::Collection::List &collections);
 
 private:
     mutable QStringList mAvailableFields;

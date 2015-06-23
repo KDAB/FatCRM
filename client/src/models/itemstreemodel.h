@@ -110,7 +110,9 @@ public:
 
 private Q_SLOTS:
     void slotAccountCountryChanged(int row);
+    void slotAccountNameChanged(int row);
     void oppCountryColumnChanged();
+    void oppAccountNameColumnChanged();
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;
