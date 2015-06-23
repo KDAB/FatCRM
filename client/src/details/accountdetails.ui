@@ -297,7 +297,7 @@
    <item row="1" column="2">
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
-      <string>Shipping Address</string>
+      <string>Office Address</string>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
       <property name="fieldGrowthPolicy">

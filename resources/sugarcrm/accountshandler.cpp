@@ -247,7 +247,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
             } else if (it.key().startsWith(QLatin1String("shipping"))) {
                 if (!seenShippingAddress) {
                     seenShippingAddress = true;
-                    diffName = i18nc("@item:intable", "Shipping Address");
+                    diffName = i18nc("@item:intable", "Office Address");
 
                     KABC::Address leftAddress(KABC::Address::Parcel);
                     leftAddress.setStreet(leftAccount.shippingAddressStreet());
