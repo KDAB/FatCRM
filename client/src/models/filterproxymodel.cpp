@@ -26,7 +26,6 @@
 #include <kdcrmdata/sugaraccount.h>
 #include <kdcrmdata/sugarcampaign.h>
 #include <kdcrmdata/sugarlead.h>
-#include <kdcrmdata/sugaropportunity.h>
 
 #include <kabc/addressee.h>
 #include <kabc/phonenumber.h>
@@ -43,8 +42,6 @@ static bool contactMatchesFilter(const KABC::Addressee &addressee,
                                  const QString &filterString);
 static bool leadMatchesFilter(const SugarLead &lead,
                               const QString &filterString);
-static bool opportunityMatchesFilter(const SugarOpportunity &opportunity,
-                                     const QString &filterString);
 
 using namespace Akonadi;
 
@@ -119,11 +116,8 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
         const SugarLead lead = item.payload<SugarLead>();
         return leadMatchesFilter(lead, d->mFilter);
     }
-    case Opportunity: {
-        Q_ASSERT(item.hasPayload<SugarOpportunity>());
-        const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-        return opportunityMatchesFilter(opportunity, d->mFilter);
-    }
+    case Opportunity: // notreached, handled by subclass
+        return false;
     }
     return true;
 }
@@ -215,27 +209,6 @@ static bool leadMatchesFilter(const SugarLead &lead, const QString &filter)
         return true;
     }
     if (lead.assignedUserName().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-
-    return false;
-}
-
-static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const QString &filter)
-{
-    if (opportunity.name().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (opportunity.accountName().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (opportunity.salesStage().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (opportunity.amount().contains(filter, Qt::CaseInsensitive)) {
-        return true;
-    }
-    if (opportunity.assignedUserName().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
 
