@@ -85,6 +85,8 @@ private:
     CollectionManager *mCollectionManager;
     NotesRepository *mNotesRepository;
 
+    QToolBar *mMainToolBar;
+
 private Q_SLOTS:
     void slotDelayedInit();
     void slotAboutApp();
@@ -93,6 +95,7 @@ private Q_SLOTS:
     void slotSynchronizeCollection(const Akonadi::Collection &collection);
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
+    void slotResourceCountChanged();
     void slotShowMessage(const QString &);
     void slotModelLoaded(DetailsType type);
     void slotNotesLoaded(int count);
@@ -116,7 +119,7 @@ private Q_SLOTS:
 private:
     Page *currentPage() const;
     Page *pageForType(DetailsType type) const;
-    QComboBox *createResourcesCombo();
+    void setupResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();
 };

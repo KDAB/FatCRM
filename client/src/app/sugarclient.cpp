@@ -56,6 +56,7 @@ using namespace Akonadi;
 
 SugarClient::SugarClient()
     : QMainWindow(),
+      mShowDetails(0),
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
@@ -91,10 +92,8 @@ void SugarClient::slotDelayedInit()
     }
 
     // initialize additional UI
-    mResourceSelector = createResourcesCombo();
 
-    connect(mResourceSelector, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(slotResourceSelectionChanged(int)));
+    setupResourcesCombo();
 
     mResourceDialog = new ResourceConfigDialog(this);
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
@@ -128,7 +127,6 @@ void SugarClient::initialize()
     createActions();
     createTabs();
     setupActions();
-    mResourceSelector = 0;
     // initialize view actions
     mUi.actionSynchronize->setEnabled(false);
     mUi.actionOfflineMode->setEnabled(false);
@@ -162,11 +160,17 @@ void SugarClient::createActions()
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
 
-    QToolBar *detailsToolBar = addToolBar(tr("Details Toolbar"));
+    mMainToolBar = addToolBar(tr("Main ToolBar"));
+    mResourceSelector = new QComboBox(this);
+    mMainToolBar->addWidget(mResourceSelector);
+    mMainToolBar->addAction(mUi.actionSynchronize);
+
     mShowDetails = new QCheckBox(tr("Show Details"));
-    detailsToolBar->addWidget(mShowDetails);
-    connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
-    detailsToolBar->addAction(printAction);
+    // A checkbox in a toolbar looks weird; and there are menu items for this already
+    //mMainToolBar->addWidget(mShowDetails);
+    //connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
+
+    mMainToolBar->addAction(printAction);
 }
 
 void SugarClient::setupActions()
@@ -237,6 +241,12 @@ void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
             return;
         }
     }
+}
+
+void SugarClient::slotResourceCountChanged()
+{
+    // an empty combo or a combo with one item just looks stupid
+    mResourceSelector->setVisible(mResourceSelector->count() > 1);
 }
 
 void SugarClient::slotToggleOffline(bool offline)
@@ -368,10 +378,8 @@ void SugarClient::slotConfigureResources()
     mResourceDialog->raise();
 }
 
-QComboBox *SugarClient::createResourcesCombo()
+void SugarClient::setupResourcesCombo()
 {
-    QComboBox *container = new QComboBox();
-
     // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel(this);
     AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel(this);
@@ -382,15 +390,16 @@ QComboBox *SugarClient::createResourcesCombo()
 #if 1
     WorkaroundFilterProxyModel *workaround = new WorkaroundFilterProxyModel(this);
     workaround->setSourceModel(agentFilterModel);
-    container->setModel(workaround);
+    mResourceSelector->setModel(workaround);
 #endif
 
-
-    QToolBar *resourceToolBar = addToolBar(tr("CRM Account Selection"));
-    resourceToolBar->addWidget(container);
-    resourceToolBar->addAction(mUi.actionSynchronize);
-
-    return container;
+    connect(mResourceSelector, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(slotResourceSelectionChanged(int)));
+    connect(mResourceSelector->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
+            this, SLOT(slotResourceCountChanged()));
+    connect(mResourceSelector->model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
+            this, SLOT(slotResourceCountChanged()));
+    slotResourceCountChanged();
 }
 
 void SugarClient::closeEvent(QCloseEvent *event)
@@ -460,8 +469,9 @@ void SugarClient::slotShowDetails(bool on)
 void SugarClient::slotPageShowDetailsChanged()
 {
     Page *page = currentPage();
-    if (page)
+    if (page) {
         mShowDetails->setChecked(page->showsDetails());
+    }
 }
 
 void SugarClient::slotCurrentTabChanged(int index)

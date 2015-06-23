@@ -132,9 +132,6 @@ void Page::setFilter(FilterProxyModel *filter)
 // Connected to signal resourceSelected() from the mainwindow
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
-    disconnect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(slotCurrentItemChanged(QModelIndex)));
-
     delete mChangeRecorder;
     mChangeRecorder = 0;
     mCollection = Collection();
