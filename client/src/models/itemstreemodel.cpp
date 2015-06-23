@@ -241,9 +241,9 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
         case Name:
             return account.name();
         case City:
-            return account.billingAddressCity();
+            return account.shippingAddressCity().isEmpty() ? account.billingAddressCity() : account.shippingAddressCity();
         case Country:
-            return account.billingAddressCountry();
+            return account.shippingAddressCountry().isEmpty() ? account.billingAddressCountry() : account.shippingAddressCountry();
         case Phone:
             return account.phoneOffice();
         case Email:
