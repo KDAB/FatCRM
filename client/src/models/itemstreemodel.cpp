@@ -165,7 +165,6 @@ void ItemsTreeModel::slotAccountCountryChanged(int row)
 
 void ItemsTreeModel::slotAccountNameChanged(int row)
 {
-    kDebug() << row;
     if (mType == Opportunity) {
         Q_UNUSED(row); // same reasoning as in slotAccountCountryChanged(row)
         oppAccountNameColumnChanged();

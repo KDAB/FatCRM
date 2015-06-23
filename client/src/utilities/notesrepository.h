@@ -42,6 +42,8 @@ class NotesRepository : public QObject
 public:
     explicit NotesRepository(QObject *parent = 0);
 
+    void clear();
+
     void setNotesCollection(const Akonadi::Collection &collection);
     void setEmailsCollection(const Akonadi::Collection &collection);
 

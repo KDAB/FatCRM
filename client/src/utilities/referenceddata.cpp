@@ -82,20 +82,25 @@ ReferencedData *ReferencedData::instance(ReferencedDataType type)
     return instance;
 }
 
+void ReferencedData::clearAll()
+{
+    foreach(ReferencedData *data, s_instances()->map) {
+        data->clear();
+    }
+}
+
 ReferencedData::~ReferencedData()
 {
     delete d;
 }
 
-#if 0
 void ReferencedData::clear()
 {
-    if (!mVector.isEmpty()) {
-        mVector.clear();
-        emit cleared(type);
+    if (!d->mVector.isEmpty()) {
+        d->mVector.clear();
+        emit cleared();
     }
 }
-#endif
 
 void ReferencedData::setReferencedData(const QString &id, const QString &data)
 {

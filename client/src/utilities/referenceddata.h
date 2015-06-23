@@ -42,10 +42,11 @@ class ReferencedData : public QObject
 
 public:
     static ReferencedData *instance(ReferencedDataType type);
+    static void clearAll();
 
     ~ReferencedData();
 
-//    void clear();
+    void clear();
 
     void setReferencedData(const QString &id, const QString &data);
     void addMap(const QMap<QString, QString> &idDataMap, bool emitChanges);
@@ -70,6 +71,7 @@ Q_SIGNALS:
     void rowsInserted();
     void rowsAboutToBeRemoved(int start, int end);
     void rowsRemoved();
+    void cleared();
 
     void initialLoadingDone();
 

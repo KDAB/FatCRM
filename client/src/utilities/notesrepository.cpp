@@ -35,6 +35,16 @@ NotesRepository::NotesRepository(QObject *parent) :
 {
 }
 
+void NotesRepository::clear()
+{
+    mNotesLoaded = 0;
+    mEmailsLoaded = 0;
+    mNotesHash.clear();
+    mEmailsHash.clear();
+    delete mMonitor;
+    mMonitor = 0;
+}
+
 void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
 {
     mNotesCollection = collection;

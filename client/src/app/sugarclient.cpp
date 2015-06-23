@@ -51,6 +51,7 @@
 #include <QMessageBox>
 #include <accountimportdialog.h>
 #include <referenceddata.h>
+#include <accountrepository.h>
 
 using namespace Akonadi;
 
@@ -217,9 +218,11 @@ void SugarClient::slotResourceSelectionChanged(int index)
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
+        ReferencedData::clearAll();
+        AccountRepository::instance()->clear();
+        mNotesRepository->clear();
         mCollectionManager->setResource(identifier);
         slotShowMessage(i18n("(0/5) Listing folders..."));
-        // TODO store current resource, and on change, clear caches (account repo, reference data...)
     } else {
         mUi.actionSynchronize->setEnabled(false);
         mUi.actionOfflineMode->setEnabled(false);

@@ -33,6 +33,7 @@ public:
     static AccountRepository *instance();
     ~AccountRepository();
 
+    void clear();
     void addAccount(const SugarAccount &account);
 
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;

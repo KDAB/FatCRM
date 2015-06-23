@@ -60,9 +60,10 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mMimeType(mimeType),
       mType(type),
       mDetailsWidget(new DetailsWidget(type)),
-      mChangeRecorder(new ChangeRecorder(this)),
+      mChangeRecorder(0),
       mItemsTreeModel(0),
       mShowDetailsAction(0),
+      mFilterModel(0),
       mInitialLoadingDone(false)
 {
     mUi.setupUi(this);
@@ -112,22 +113,43 @@ void Page::showDetails(bool on)
     emit showDetailsChanged(on);
 }
 
+void Page::setFilter(FilterProxyModel *filter)
+{
+    mFilter = filter;
+
+    mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
+    connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
+    connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
+    connect(mFilter, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
+
+    connect(mUi.searchLE, SIGNAL(textChanged(QString)),
+            mFilter, SLOT(setFilterString(QString)));
+}
+
 // Connected to signal resourceSelected() from the mainwindow
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
-    if (mCollection.isValid()) {
-        mChangeRecorder->setCollectionMonitored(mCollection, false);
-    }
+    disconnect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(slotCurrentItemChanged(QModelIndex)));
 
+    delete mChangeRecorder;
+    mChangeRecorder = 0;
     mCollection = Collection();
     mResourceIdentifier = identifier;
+    mCurrentIndex = QModelIndex();
 
+    // cleanup from last time (useful when switching resources)
+    mFilter->setSourceModel(0);
+    delete mFilterModel;
+    mFilterModel = 0;
     mUi.treeView->setModel(0);
     delete mItemsTreeModel;
     mItemsTreeModel = 0;
 
     retrieveResourceUrl();
     mUi.reloadPB->setEnabled(false);
+
+    mInitialLoadingDone = false;
 
     // now we wait for the collection manager to find our collection and tell us
 }
@@ -140,7 +162,14 @@ void Page::setCollection(const Collection &collection)
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
         mUi.reloadPB->setEnabled(true);
+
+        mChangeRecorder = new ChangeRecorder(this);
         mChangeRecorder->setCollectionMonitored(mCollection, true);
+        // automatically get the full data when items change
+        mChangeRecorder->itemFetchScope().fetchFullPayload(true);
+        mChangeRecorder->setMimeTypeMonitored(mMimeType);
+        connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
+                this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 
         // if empty, the collection might not have been loaded yet, try synchronizing
         if (mCollection.statistics().count() == 0) {
@@ -315,7 +344,9 @@ void Page::slotRemoveItem()
 
 void Page::slotVisibleRowCountChanged()
 {
-    mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
+    if (mUi.treeView->model()) {
+        mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
+    }
 }
 
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
@@ -397,13 +428,6 @@ void Page::initialize()
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
     connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
 
-    // automatically get the full data when items change
-    mChangeRecorder->itemFetchScope().fetchFullPayload(true);
-    mChangeRecorder->setMimeTypeMonitored(mMimeType);
-
-    connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
-            this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
-
     mShowDetailsAction = new QAction(this);
     mShowDetailsAction->setCheckable(true);
     connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
@@ -428,26 +452,18 @@ void Page::setupModel()
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
-    EntityMimeTypeFilterModel *filterModel = new EntityMimeTypeFilterModel(this);
-    filterModel->setSourceModel(mItemsTreeModel);
-    filterModel->addMimeTypeInclusionFilter(mMimeType);
-    filterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
+    mFilterModel = new EntityMimeTypeFilterModel(this);
+    mFilterModel->setSourceModel(mItemsTreeModel);
+    mFilterModel->addMimeTypeInclusionFilter(mMimeType);
+    mFilterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
 
-    mFilter->setSourceModel(filterModel);
-    mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
+    mFilter->setSourceModel(mFilterModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
-
-    connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
-    connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
-    connect(mFilter, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
-
-    connect(mUi.searchLE, SIGNAL(textChanged(QString)),
-            mFilter, SLOT(setFilterString(QString)));
 
     connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
             this,  SLOT(slotCurrentItemChanged(QModelIndex)));
 
-    emit modelCreated(mItemsTreeModel);
+    emit modelCreated(mItemsTreeModel); // give it to the reports page
 }
 
 Details *Page::details() const

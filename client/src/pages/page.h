@@ -38,6 +38,7 @@ namespace Akonadi
 class ChangeRecorder;
 class Item;
 class Collection;
+class EntityMimeTypeFilterModel;
 }
 
 class Details;
@@ -88,10 +89,7 @@ protected:
     {
         return mUi.treeView;
     }
-    void setFilter(FilterProxyModel *filter)
-    {
-        mFilter = filter;
-    }
+    void setFilter(FilterProxyModel *filter);
 
     virtual void setupModel();
 
@@ -151,6 +149,7 @@ private:
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
     NotesRepository *mNotesRepository;
+    Akonadi::EntityMimeTypeFilterModel *mFilterModel;
     bool mInitialLoadingDone;
 };
 

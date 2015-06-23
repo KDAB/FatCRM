@@ -30,7 +30,12 @@ AccountRepository *AccountRepository::instance()
 
 AccountRepository::~AccountRepository()
 {
+}
 
+void AccountRepository::clear()
+{
+    mKeyMap.clear();
+    mNameMap.clear();
 }
 
 void AccountRepository::addAccount(const SugarAccount &account)

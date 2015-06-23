@@ -58,10 +58,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
     //kDebug() << "wanted columns:" << columns;
     for (int i = 0; i < header()->count(); ++i) {
         const QString name = mItemsTreeModel->columnName(i);
-        if (!columns.contains(name)) {
-            //kDebug() << "Hiding section" << i;
-            header()->setSectionHidden(i, true);
-        }
+        header()->setSectionHidden(i, !columns.contains(name));
     }
 }
 

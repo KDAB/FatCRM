@@ -48,6 +48,7 @@ public: // slots
     void slotRowsAboutToBeRemoved(int, int);
     void slotRowsRemoved();
     void slotInitialLoadingDone();
+    void slotCleared();
 };
 
 void ReferencedDataModel::Private::slotDataChanged(int row)
@@ -85,6 +86,13 @@ void ReferencedDataModel::Private::slotInitialLoadingDone()
     emit q->layoutChanged();
 }
 
+void ReferencedDataModel::Private::slotCleared()
+{
+    // do we need aboutToClear()?
+    q->beginRemoveRows(QModelIndex(), 0, q->rowCount() - 1);
+    q->endRemoveRows();
+}
+
 ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
@@ -95,6 +103,7 @@ ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *paren
     connect(d->mData, SIGNAL(rowsAboutToBeRemoved(int,int)), this, SLOT(slotRowsAboutToBeRemoved(int,int)));
     connect(d->mData, SIGNAL(rowsRemoved()), this, SLOT(slotRowsRemoved()));
     connect(d->mData, SIGNAL(initialLoadingDone()), this, SLOT(slotInitialLoadingDone()));
+    connect(d->mData, SIGNAL(cleared()), this, SLOT(slotCleared()));
 }
 
 ReferencedDataModel::~ReferencedDataModel()
