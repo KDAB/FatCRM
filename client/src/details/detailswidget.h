@@ -53,6 +53,7 @@ public:
     void initialLoadingDone();
 
     void setItem(const Akonadi::Item &item);
+    void setItemRevision(const Akonadi::Item &item);
     void clearFields();
     QMap<QString, QString> data() const;
     Details *details() const { return mDetails; }
@@ -81,8 +82,6 @@ private:
 
 private:
     Details *mDetails;
-
-    QMap<QString, QString> mData;
 
     DetailsType mType;
     bool mModified;

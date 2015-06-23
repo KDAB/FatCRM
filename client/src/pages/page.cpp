@@ -270,18 +270,21 @@ void Page::slotCreateJobResult(KJob *job)
     }
 }
 
-void Page::slotModifyItem(const Akonadi::Item &item) // save modified item
+void Page::slotModifyItem(const Akonadi::Item &item) // save modified item (from details widget)
 {
     // job starts automatically
     ItemModifyJob *job = new ItemModifyJob(item);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(slotModifyJobResult(KJob*)));
 }
 
-void Page::slotModifyJobResult(KJob *job)
+void Page::slotModifyJobResult(KJob *job) // saving done (from details widget)
 {
     if (job->error()) {
         emit statusMessage(job->errorString());
     } else {
+        ItemModifyJob *imJob = static_cast<ItemModifyJob *>(job);
+        // As documented in ItemModifyJob, store revision of saved item
+        mDetailsWidget->setItemRevision(imJob->item());
         emit statusMessage("Item successfully saved");
     }
 }

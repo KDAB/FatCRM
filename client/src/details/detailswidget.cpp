@@ -141,6 +141,13 @@ void DetailsWidget::setItem(const Item &item)
     mUi.createdModifiedContainer->show();
 }
 
+void DetailsWidget::setItemRevision(const Item &item)
+{
+    if (mItem.id() == item.id()) {
+        mItem.setRevision(item.revision());
+    }
+}
+
 /*
  * Fill in the widgets with their data and properties.
  * It covers all the item types.
@@ -185,22 +192,17 @@ void DetailsWidget::slotModified()
  */
 void DetailsWidget::saveData()
 {
-    if (!mData.empty()) {
-        mData.clear();
-    }
-
-    QMap<QString, QString> detailsMap = data();
-    QMap<QString, QString>::const_iterator i = detailsMap.constBegin();
-    while (i != detailsMap.constEnd()) {
-        mData[i.key()] = mData[i.value()];
-        ++i;
-    }
-
     if (mCreateNew) {
         emit createItem();
     } else {
         Item item = mItem;
-        mDetails->updateItem(item, data());
+        const QMap<QString, QString> detailsMap = data();
+
+        // The modified-by and modified-date just got changed, update gui
+        setData(detailsMap);
+
+        mDetails->updateItem(item, detailsMap);
+        mItem = item;
         emit modifyItem(item);
     }
     setModified(false);

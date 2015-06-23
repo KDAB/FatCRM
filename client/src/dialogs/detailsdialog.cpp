@@ -112,7 +112,6 @@ void DetailsDialog::Private::saveClicked()
         Q_ASSERT(mCollection.isValid());
         job = new ItemCreateJob(item, mCollection, q);
     }
-    job->setProperty("item", QVariant::fromValue(item));
 
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
@@ -130,7 +129,14 @@ void DetailsDialog::Private::saveResult(KJob *job)
         // TODO
         return;
     }
-    emit q->itemSaved(job->property("item").value<Akonadi::Item>());
+    ItemModifyJob *modifyJob = qobject_cast<ItemModifyJob *>(job);
+    if (modifyJob) {
+        emit q->itemSaved(modifyJob->item());
+    } else {
+        ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
+        Q_ASSERT(createJob);
+        emit q->itemSaved(createJob->item());
+    }
     q->accept();
 }
 
