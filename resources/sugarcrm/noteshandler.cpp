@@ -27,8 +27,8 @@
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/collection.h>
+#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <Akonadi/Collection>
 
 #include <KLocale>
 

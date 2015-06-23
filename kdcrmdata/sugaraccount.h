@@ -23,10 +23,10 @@
 #ifndef SUGARACCOUNT_H
 #define SUGARACCOUNT_H
 
-#include <QtCore/QMetaType>
-#include <QtCore/QSharedDataPointer>
-
 #include "kdcrmdata_export.h"
+
+#include <QMetaType>
+#include <QSharedDataPointer>
 
 /**
   @short sugar account entry
@@ -510,4 +510,3 @@ private:
 Q_DECLARE_METATYPE(SugarAccount)
 
 #endif /* SUGARACCOUNT_H */
-

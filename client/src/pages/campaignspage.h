@@ -25,8 +25,6 @@
 
 #include "page.h"
 
-#include <akonadi/item.h>
-
 class CampaignsPage : public Page
 {
     Q_OBJECT
@@ -40,4 +38,3 @@ protected:
 };
 
 #endif /* CAMPAIGNSPAGE_H */
-

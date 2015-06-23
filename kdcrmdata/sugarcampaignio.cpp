@@ -24,9 +24,8 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDebug>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarCampaignIO::SugarCampaignIO()
 {
@@ -171,4 +170,3 @@ bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevic
 
     return true;
 }
-

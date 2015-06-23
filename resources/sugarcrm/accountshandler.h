@@ -24,7 +24,7 @@
 #define ACCOUNTSHANDLER_H
 
 #include "modulehandler.h"
-#include <kdcrmdata/sugaraccount.h>
+#include "kdcrmdata/sugaraccount.h"
 
 template <typename U, typename V> class QHash;
 
@@ -61,4 +61,3 @@ private:
 };
 
 #endif /* ACCOUNTSHANDLER_H */
-

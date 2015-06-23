@@ -23,10 +23,10 @@
 #ifndef SUGARCAMPAIGN_H
 #define SUGARCAMPAIGN_H
 
-#include <QtCore/QMetaType>
-#include <QtCore/QSharedDataPointer>
-
 #include "kdcrmdata_export.h"
+
+#include <QMetaType>
+#include <QSharedDataPointer>
 
 /**
  Short: sugar campaign entry
@@ -363,4 +363,3 @@ private:
 Q_DECLARE_METATYPE(SugarCampaign)
 
 #endif /* SUGARCAMPAIGN_H */
-

@@ -25,10 +25,11 @@
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDate>
-#include <QtCore/QDebug>
+#include <QDate>
+#include <QDebug>
+#include <QHash>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarOpportunityIO::SugarOpportunityIO()
 {
@@ -109,4 +110,3 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
 
     return true;
 }
-

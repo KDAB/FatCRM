@@ -28,17 +28,15 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
-#include <akonadi/changerecorder.h>
-#include <akonadi/collection.h>
+#include <Akonadi/Collection>
 
 #include <QWidget>
 
 namespace Akonadi
 {
 class ChangeRecorder;
-class Item;
-class Collection;
 class EntityMimeTypeFilterModel;
+class Item;
 }
 
 class Details;

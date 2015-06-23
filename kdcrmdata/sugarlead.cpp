@@ -23,9 +23,9 @@
 #include "sugarlead.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QSharedData>
-#include <QtCore/QString>
-#include <QDebug>
+#include <QMap>
+#include <QSharedData>
+#include <QString>
 
 class SugarLead::Private : public QSharedData
 {
@@ -1147,4 +1147,3 @@ QString SugarLead::mimeType()
 {
     return QLatin1String("application/x-vnd.kdab.crm.lead");
 }
-

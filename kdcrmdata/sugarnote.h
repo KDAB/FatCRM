@@ -23,10 +23,10 @@
 #ifndef SUGARNOTE_H
 #define SUGARNOTE_H
 
-#include <QtCore/QMetaType>
-#include <QtCore/QSharedDataPointer>
-
 #include "kdcrmdata_export.h"
+
+#include <QMetaType>
+#include <QSharedDataPointer>
 
 /**
  Short: sugar note entry
@@ -245,4 +245,3 @@ private:
 Q_DECLARE_METATYPE(SugarNote)
 
 #endif /* SUGARNOTE_H */
-

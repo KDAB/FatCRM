@@ -23,9 +23,9 @@
 #ifndef SERIALIZERPLUGINSUGARLEAD_H
 #define SERIALIZERPLUGINSUGARLEAD_H
 
-#include <QtCore/QObject>
+#include <Akonadi/ItemSerializerPlugin>
 
-#include <akonadi/itemserializerplugin.h>
+#include <QObject>
 
 namespace Akonadi
 {
@@ -43,4 +43,3 @@ public:
 }
 
 #endif /* SERIALIZERPLUGINSUGARLEAD_H */
-

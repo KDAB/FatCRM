@@ -19,10 +19,9 @@
 
 #include "qcsvreader.h"
 
-#include <QtCore/QStringList>
-#include <QtCore/QTextCodec>
-#include <QtCore/QTextStream>
-#include <QDebug>
+#include <QStringList>
+#include <QTextCodec>
+#include <QTextStream>
 
 #include <KLocalizedString>
 
@@ -407,4 +406,3 @@ void QCsvStandardBuilder::error( const QString &errorMsg )
 {
     d->mLastErrorString = errorMsg;
 }
-

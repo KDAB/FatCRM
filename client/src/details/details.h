@@ -25,9 +25,9 @@
 
 #include "enums.h"
 
-#include <akonadi/item.h>
+#include <Akonadi/Item>
 
-#include <QtGui>
+#include <QWidget>
 
 class NotesRepository;
 
@@ -94,4 +94,3 @@ private:
     QStringList mKeys;
 };
 #endif /* DETAILS_H */
-

@@ -21,17 +21,17 @@
 */
 
 #include "opportunityfilterproxymodel.h"
-
-#include <kdcrmdata/sugaropportunity.h>
-
-#include <akonadi/entitytreemodel.h>
+#include "clientsettings.h"
 #include "itemstreemodel.h"
+#include "opportunitiespage.h"
 #include "opportunityfiltersettings.h"
+#include "referenceddata.h"
+
+#include "kdcrmdata/sugaropportunity.h"
+
+#include <Akonadi/EntityTreeModel>
 
 #include <QDate>
-#include <clientsettings.h>
-#include <opportunitiespage.h>
-#include <referenceddata.h>
 
 using namespace Akonadi;
 
@@ -161,4 +161,3 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
 }
 
 #include "opportunityfilterproxymodel.moc"
-

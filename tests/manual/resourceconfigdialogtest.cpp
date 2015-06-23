@@ -20,11 +20,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <resourceconfigdialog.h>
+#include "resourceconfigdialog.h"
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <KApplication>
+#include <KAboutData>
+#include <KCmdLineArgs>
 #include <KLocale>
 
 int main(int argc, char **argv)
@@ -40,6 +40,3 @@ int main(int argc, char **argv)
     dlg->show();
     return app.exec();
 }
-
-
-

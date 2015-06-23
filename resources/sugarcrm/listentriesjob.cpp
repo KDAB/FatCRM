@@ -25,19 +25,18 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 #include "listentriesscope.h"
-
 using namespace KDSoapGenerated;
+
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <akonadi/collection.h>
+#include <Akonadi/Collection>
+#include <Akonadi/CollectionModifyJob>
+#include <Akonadi/EntityAnnotationsAttribute>
+using namespace Akonadi;
 
 #include <KDebug>
 
 #include <QStringList>
-
-#include <akonadi/collectionmodifyjob.h>
-#include <akonadi/entityannotationsattribute.h>
-using namespace Akonadi;
 
 class ListEntriesJob::Private
 {
@@ -174,7 +173,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 }
 
 void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
-{    
+{
     if (!q->handleLoginError(fault)) {
         kWarning() << q << "List Entries Error:" << fault.faultAsString();
 

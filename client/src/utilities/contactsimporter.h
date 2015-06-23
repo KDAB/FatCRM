@@ -23,9 +23,11 @@
 #ifndef CONTACTSIMPORTER_H
 #define CONTACTSIMPORTER_H
 
+#include "kdcrmdata/sugaraccount.h"
+
+#include <KABC/Addressee>
+
 #include <QVector>
-#include <kabc/addressee.h>
-#include <kdcrmdata/sugaraccount.h>
 
 class ContactsImporter
 {

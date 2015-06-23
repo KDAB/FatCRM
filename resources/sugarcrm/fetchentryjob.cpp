@@ -24,11 +24,11 @@
 
 #include "modulehandler.h"
 #include "sugarsoap.h"
-
 using namespace KDSoapGenerated;
+
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <akonadi/item.h>
+#include <Akonadi/Item>
 
 #include <KDebug>
 #include <KLocale>

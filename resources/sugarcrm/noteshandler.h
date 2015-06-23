@@ -24,7 +24,7 @@
 #define NOTESHANDLER_H
 
 #include "modulehandler.h"
-#include <kdcrmdata/sugarnote.h>
+#include "kdcrmdata/sugarnote.h"
 
 template <typename U, typename V> class QHash;
 
@@ -54,4 +54,3 @@ private:
 };
 
 #endif
-

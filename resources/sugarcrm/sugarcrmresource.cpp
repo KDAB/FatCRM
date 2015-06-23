@@ -46,13 +46,13 @@
 #include "taskshandler.h"
 #include "updateentryjob.h"
 
-#include <akonadi/changerecorder.h>
-#include <akonadi/collection.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/itemmodifyjob.h>
-#include <akonadi/cachepolicy.h>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/Collection>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/CachePolicy>
 
-#include <kabc/addressee.h>
+#include <KABC/Addressee>
 
 #include <KLocale>
 #include <KWindowSystem>

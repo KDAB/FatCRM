@@ -24,8 +24,8 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
-#include <kabc/addressee.h>
-#include <kabc/address.h>
+#include <KABC/Address>
+#include <KABC/Addressee>
 
 using namespace Akonadi;
 

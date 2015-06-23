@@ -23,9 +23,10 @@
 #ifndef MODULEHANDLER_H
 #define MODULEHANDLER_H
 
-#include <akonadi/differencesalgorithminterface.h>
-#include <akonadi/item.h>
-#include <akonadi/collection.h>
+#include <akonadi/differencesalgorithminterface.h> //krazy:exclude=camelcase
+#include <Akonadi/Item>
+#include <Akonadi/Collection>
+
 #include <QStringList>
 
 class SugarSession;

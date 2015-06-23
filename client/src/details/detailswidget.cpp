@@ -31,7 +31,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
 
-#include <akonadi/item.h>
+#include <Akonadi/Item>
 
 using namespace Akonadi;
 
@@ -121,7 +121,7 @@ void DetailsWidget::clearFields()
     mDetails->assignToMe();
 
     // we are creating a new entry
-    mCreateNew = true;    
+    mCreateNew = true;
 
     setConnections();
 }

@@ -26,7 +26,8 @@
 
 #include <QAction>
 #include <QHeaderView>
-#include <QtGui>
+#include <QKeyEvent>
+#include <QMenu>
 
 ItemsTreeView::ItemsTreeView(QWidget *parent) :
     Akonadi::EntityTreeView(parent),

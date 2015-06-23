@@ -23,7 +23,7 @@
 #ifndef SALESFORCERESOURCE_H
 #define SALESFORCERESOURCE_H
 
-#include <akonadi/resourcebase.h>
+#include <Akonadi/ResourceBase>
 
 #include <QStringList>
 

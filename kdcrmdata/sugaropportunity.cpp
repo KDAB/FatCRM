@@ -23,12 +23,13 @@
 #include "sugaropportunity.h"
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
-#include <klocalizedstring.h>
 
-#include <QtCore/QSharedData>
-#include <QtCore/QString>
+#include <KLocalizedString>
+
 #include <QDate>
 #include <QDebug>
+#include <QSharedData>
+#include <QString>
 
 class SugarOpportunity::Private : public QSharedData
 {

@@ -24,12 +24,12 @@
 #define SUGARCLIENT_H
 
 #include "ui_mainwindow.h"
-#include <accountspage.h>
-#include <opportunitiespage.h>
-#include <leadspage.h>
-#include <contactspage.h>
-#include <campaignspage.h>
+#include "accountspage.h"
+#include "campaignspage.h"
+#include "contactspage.h"
 #include "enums.h"
+#include "leadspage.h"
+#include "opportunitiespage.h"
 
 #include <QMainWindow>
 

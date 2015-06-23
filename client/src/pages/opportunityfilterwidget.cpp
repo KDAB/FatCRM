@@ -22,11 +22,12 @@
 
 #include "opportunityfilterwidget.h"
 #include "ui_opportunityfilterwidget.h"
-#include "opportunityfilterproxymodel.h"
 #include "clientsettings.h"
+#include "opportunityfilterproxymodel.h"
+#include "opportunityfiltersettings.h"
+
 #include <QDate>
 #include <QDebug>
-#include <opportunityfiltersettings.h>
 
 OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel,
                                                  QWidget *parent) :

@@ -26,20 +26,20 @@
 #include "sugaraccountcache.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
-
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/itemfetchjob.h>
-#include <akonadi/itemfetchscope.h>
 
-#include <kabc/address.h>
+#include "kdcrmdata/sugaraccount.h"
 
-#include <kdcrmdata/sugaraccount.h>
+#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <Akonadi/Collection>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
+#include <KABC/Address>
 
 #include <KLocale>
 
 #include <QHash>
-#include <sugaropportunity.h>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),

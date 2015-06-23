@@ -23,8 +23,9 @@
 #ifndef ITEMSTREEMODEL_H
 #define ITEMSTREEMODEL_H
 
-#include <akonadi/entitytreemodel.h>
-#include <enums.h>
+#include "enums.h"
+
+#include <Akonadi/EntityTreeModel>
 
 namespace KABC { class Addressee; }
 
@@ -129,4 +130,3 @@ private:
 };
 
 #endif /* ITEMSTREEMODEL_H */
-

@@ -21,12 +21,10 @@
 */
 
 #include "referenceddatamodel.h"
-
 #include "referenceddata.h"
 
-#include <QSortFilterProxyModel>
 #include <QComboBox>
-#include <kdebug.h>
+#include <QSortFilterProxyModel>
 
 class ReferencedDataModel::Private
 {

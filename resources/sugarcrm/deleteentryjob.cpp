@@ -28,8 +28,8 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <akonadi/collection.h>
-#include <akonadi/item.h>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include <KDebug>
 

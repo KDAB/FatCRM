@@ -27,14 +27,15 @@
 #include "enums.h"
 #include "details.h"
 
-#include <kdcrmdata/sugaraccount.h>
-#include <kdcrmdata/sugarlead.h>
-#include <kdcrmdata/sugaropportunity.h>
-#include <kdcrmdata/sugarcampaign.h>
+#include "kdcrmdata/sugaraccount.h"
+#include "kdcrmdata/sugarlead.h"
+#include "kdcrmdata/sugaropportunity.h"
+#include "kdcrmdata/sugarcampaign.h"
 
-#include <kabc/addressee.h>
+#include <Akonadi/Item>
 
-#include <akonadi/item.h>
+#include <KABC/Addressee>
+
 #include <QtGui/QWidget>
 
 class DetailsWidget : public QWidget
@@ -92,4 +93,3 @@ private:
 };
 
 #endif /* DETAILSWIDGET_H */
-

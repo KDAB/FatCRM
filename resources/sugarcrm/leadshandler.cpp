@@ -21,18 +21,17 @@
 */
 
 #include "leadshandler.h"
-
-#include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
-
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/collection.h>
 
-#include <kabc/address.h>
+#include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/sugarlead.h"
 
-#include <kdcrmdata/sugarlead.h>
+#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <Akonadi/Collection>
+
+#include <KABC/Address>
 
 #include <KLocale>
 

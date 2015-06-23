@@ -22,9 +22,9 @@
 
 #include "sugarclient.h"
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <KApplication>
+#include <KAboutData>
+#include <KCmdLineArgs>
 #include <KLocale>
 
 static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
@@ -44,4 +44,3 @@ int main(int argc, char **argv)
     sugarClt->show();
     return app.exec();
 }
-

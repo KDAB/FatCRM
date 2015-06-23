@@ -20,11 +20,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "referenceddata.h"
+#include "referenceddatamodel.h"
+#include "enums.h"
+
 #include <QtTest/QtTestGui>
 #include <QComboBox>
-#include <referenceddatamodel.h>
-#include <referenceddata.h>
-#include <enums.h>
 #include <QDebug>
 #include <QAbstractProxyModel>
 #include <QSignalSpy>

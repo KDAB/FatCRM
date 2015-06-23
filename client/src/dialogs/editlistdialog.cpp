@@ -22,11 +22,12 @@
 
 #include "editlistdialog.h"
 
+#include <KEditListWidget>
+#include <KLocalizedString>
+
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QVBoxLayout>
-#include <keditlistwidget.h>
-#include <klocalizedstring.h>
 
 EditListDialog::EditListDialog(QWidget *parent) :
     QDialog(parent)

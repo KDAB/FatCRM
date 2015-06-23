@@ -22,10 +22,12 @@
 
 #include "sugaraccount.h"
 
-#include <klocalizedstring.h>
-#include <QtCore/QSharedData>
-#include <QtCore/QString>
-#include <QDebug>
+#include <KLocalizedString>
+
+#include <QHash>
+#include <QMap>
+#include <QSharedData>
+#include <QString>
 
 class SugarAccount::Private : public QSharedData
 {

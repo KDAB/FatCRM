@@ -26,9 +26,9 @@
 #include "ui_campaigndetails.h"
 #include "referenceddatamodel.h"
 
-#include <kdcrmdata/kdcrmutils.h>
-#include <kdcrmdata/kdcrmfields.h>
-#include <kdcrmdata/sugarcampaign.h>
+#include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
+#include "kdcrmdata/sugarcampaign.h"
 
 CampaignDetails::CampaignDetails(QWidget *parent)
     : Details(Campaign, parent), mUi(new Ui::CampaignDetails)

@@ -24,20 +24,20 @@
 
 #include "referenceddata.h"
 
-#include <kdcrmdata/sugaraccount.h>
-#include <kdcrmdata/sugarcampaign.h>
-#include <kdcrmdata/sugarlead.h>
-#include <kdcrmdata/sugaropportunity.h>
-#include <kdcrmdata/kdcrmutils.h>
+#include "kdcrmdata/sugaraccount.h"
+#include "kdcrmdata/sugarcampaign.h"
+#include "kdcrmdata/sugarlead.h"
+#include "kdcrmdata/sugaropportunity.h"
+#include "kdcrmdata/kdcrmutils.h"
 
-#include <kabc/addressee.h>
-#include <kabc/phonenumber.h>
+#include <KABC/Addressee>
+#include <KABC/PhoneNumber>
 
-#include <QtGui>
-#include <kglobal.h>
-#include <kicon.h>
-#include <kiconloader.h>
-#include <klocale.h>
+#include <KGlobal>
+#include <KIcon>
+#include <KIconLoader>
+#include <KLocale>
+#include <QMetaEnum>
 
 using namespace Akonadi;
 

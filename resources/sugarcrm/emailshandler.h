@@ -24,7 +24,7 @@
 #define EMAILSHANDLER_H
 
 #include "modulehandler.h"
-#include <kdcrmdata/sugaremail.h>
+#include "kdcrmdata/sugaremail.h"
 
 class EmailAccessorPair;
 
@@ -59,4 +59,3 @@ private:
 };
 
 #endif
-

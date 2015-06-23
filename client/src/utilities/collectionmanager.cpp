@@ -21,8 +21,9 @@
 */
 
 #include "collectionmanager.h"
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionfetchscope.h>
+
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionFetchScope>
 
 #include <QStringList>
 

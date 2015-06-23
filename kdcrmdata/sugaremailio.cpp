@@ -23,9 +23,10 @@
 #include "sugaremailio.h"
 #include "sugaremail.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDebug>
+#include <QDebug>
+#include <QHash>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarEmailIO::SugarEmailIO()
 {
@@ -100,4 +101,3 @@ bool SugarEmailIO::writeSugarEmail(const SugarEmail &email, QIODevice *device)
 
     return true;
 }
-

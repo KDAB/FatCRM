@@ -22,13 +22,12 @@
 
 #include "reportpage.h"
 #include "ui_reportpage.h"
-
 #include "itemstreemodel.h"
-#include <sugaropportunity.h>
-#include <kdcrmutils.h>
+#include "sugaropportunity.h"
+#include "kdcrmutils.h"
 
-#include <akonadi/entitytreemodel.h>
-#include <akonadi/item.h>
+#include <Akonadi/EntityTreeModel>
+#include <Akonadi/Item>
 
 ReportPage::ReportPage(QWidget *parent) :
     QWidget(parent),

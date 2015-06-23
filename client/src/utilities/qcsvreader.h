@@ -20,7 +20,7 @@
 #ifndef QCSVREADER_H
 #define QCSVREADER_H
 
-#include <QtCore/QObject>
+#include <QObject>
 
 class QIODevice;
 

@@ -26,18 +26,18 @@
 #include "sugarsoap.h"
 #include "listentriesscope.h"
 #include "listentriesjob.h"
-
 using namespace KDSoapGenerated;
+
 #include "kdcrmdata/kdcrmutils.h"
+
+#include <Akonadi/AgentManager>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionModifyJob>
 
 #include <KLocale>
 
 #include <QInputDialog>
 #include <QStringList>
-
-#include <akonadi/agentmanager.h>
-#include <akonadi/collectionfetchjob.h>
-#include <akonadi/collectionmodifyjob.h>
 
 ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
     : mSession(session), mModuleName(moduleName)

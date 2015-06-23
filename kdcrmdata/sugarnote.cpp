@@ -23,9 +23,8 @@
 #include "sugarnote.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QSharedData>
-#include <QtCore/QString>
-#include <QDebug>
+#include <QSharedData>
+#include <QString>
 
 #include <KLocale>
 

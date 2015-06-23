@@ -23,12 +23,13 @@
 #ifndef NOTESREPOSITORY_H
 #define NOTESREPOSITORY_H
 
-#include <QObject>
-
-#include <akonadi/item.h>
-#include <akonadi/collection.h>
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
+
+#include <Akonadi/Item>
+#include <Akonadi/Collection>
+
+#include <QObject>
 
 namespace Akonadi
 {

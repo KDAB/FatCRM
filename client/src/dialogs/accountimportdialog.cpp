@@ -22,12 +22,12 @@
 
 #include "accountimportdialog.h"
 #include "ui_accountimportdialog.h"
+#include "accountrepository.h"
 
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
-#include <accountrepository.h>
 
 AccountImportDialog::AccountImportDialog(QWidget *parent) :
     QDialog(parent),

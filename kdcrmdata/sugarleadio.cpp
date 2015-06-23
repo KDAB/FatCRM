@@ -24,9 +24,8 @@
 #include "sugarlead.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDebug>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarLeadIO::SugarLeadIO()
 {
@@ -262,4 +261,3 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
 
     return true;
 }
-

@@ -21,19 +21,17 @@
 */
 
 #include "conflicthandler.h"
-
 #include "conflictresolvedialog.h"
 
-#include <akonadi/collection.h>
-#include <akonadi/item.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemmodifyjob.h>
-#include <akonadi/session.h>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/Session>
+using namespace Akonadi;
 
 #include <KLocale>
 #include <KWindowSystem>
-
-using namespace Akonadi;
 
 class ConflictHandler::Private
 {

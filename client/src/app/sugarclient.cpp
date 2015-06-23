@@ -22,38 +22,37 @@
 
 #include "sugarclient.h"
 
+#include "accountimportdialog.h"
+#include "accountrepository.h"
+#include "clientsettings.h"
+#include "collectionmanager.h"
+#include "configurationdialog.h"
+#include "contactsimporter.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
-#include "resourceconfigdialog.h"
-#include "clientsettings.h"
-#include "configurationdialog.h"
-#include "collectionmanager.h"
-#include "notesrepository.h"
-#include "reportpage.h"
 #include "fatcrm_version.h"
+#include "notesrepository.h"
+#include "referenceddata.h"
+#include "reportpage.h"
+#include "resourceconfigdialog.h"
 
-#include <akonadi/agentfilterproxymodel.h>
-#include <akonadi/agentinstance.h>
-#include <akonadi/agentinstancemodel.h>
-#include <akonadi/agentmanager.h>
-#include <akonadi/control.h>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceModel>
+#include <Akonadi/AgentManager>
+#include <Akonadi/Control>
+using namespace Akonadi;
 
-#include <QCloseEvent>
 #include <QCheckBox>
+#include <QCloseEvent>
 #include <QComboBox>
 #include <QDockWidget>
-#include <QInputDialog>
-#include <QProgressBar>
-#include <QToolBar>
-#include <QTimer>
 #include <QFileDialog>
-#include <contactsimporter.h>
+#include <QInputDialog>
 #include <QMessageBox>
-#include <accountimportdialog.h>
-#include <referenceddata.h>
-#include <accountrepository.h>
-
-using namespace Akonadi;
+#include <QProgressBar>
+#include <QTimer>
+#include <QToolBar>
 
 SugarClient::SugarClient()
     : QMainWindow(),

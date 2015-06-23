@@ -25,8 +25,8 @@
 #include "ui_accountdetails.h"
 #include "referenceddatamodel.h"
 
-#include <kdcrmdata/sugaraccount.h>
-#include <kdcrmdata/kdcrmfields.h>
+#include "kdcrmdata/sugaraccount.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(Account, parent), mUi(new Ui::AccountDetails)
@@ -96,4 +96,3 @@ void AccountDetails::getDataInternal(QMap<QString, QString> &currentData) const
     currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
     currentData[KDCRMFields::campaignId()] = currentCampaignId();
 }
-

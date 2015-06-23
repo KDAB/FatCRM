@@ -26,11 +26,10 @@
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
 #include "detailswidget.h"
+
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
-
-#include <akonadi/entitymimetypefiltermodel.h>
 
 #include <QDebug>
 

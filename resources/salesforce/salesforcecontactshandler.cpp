@@ -24,9 +24,9 @@
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
-#include <akonadi/collection.h>
+#include <Akonadi/Collection>
 
-#include <kabc/addressee.h>
+#include <KABC/Addressee>
 
 #include <KLocale>
 

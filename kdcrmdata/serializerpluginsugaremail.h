@@ -23,9 +23,9 @@
 #ifndef SERIALIZERPLUGINSUGAREMAIL_H
 #define SERIALIZERPLUGINSUGAREMAIL_H
 
-#include <QtCore/QObject>
+#include <Akonadi/ItemSerializerPlugin>
 
-#include <akonadi/itemserializerplugin.h>
+#include <QObject>
 
 namespace Akonadi
 {
@@ -43,4 +43,3 @@ public:
 }
 
 #endif
-

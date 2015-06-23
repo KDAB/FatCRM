@@ -21,11 +21,12 @@
 */
 
 #include "notesrepository.h"
-#include <akonadi/collection.h>
-#include <akonadi/collectionstatistics.h>
-#include <akonadi/itemfetchjob.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/monitor.h>
+
+#include <Akonadi/Collection>
+#include <Akonadi/CollectionStatistics>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/Monitor>
 
 NotesRepository::NotesRepository(QObject *parent) :
     QObject(parent),

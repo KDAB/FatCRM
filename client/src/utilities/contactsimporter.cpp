@@ -22,11 +22,13 @@
 
 #define QT_NO_CAST_FROM_ASCII
 #define QT_NO_CAST_TO_ASCII
+
 #include "contactsimporter.h"
-#include <kdcrmdata/kdcrmfields.h>
+#include "qcsvreader.h"
+#include "kdcrmdata/kdcrmfields.h"
+
 #include <QFile>
 #include <QDebug>
-#include <qcsvreader.h>
 #include <QTextCodec>
 
 ContactsImporter::ContactsImporter()

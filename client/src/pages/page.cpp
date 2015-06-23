@@ -23,6 +23,8 @@
 #include "page.h"
 
 #include "detailsdialog.h"
+#include "accountrepository.h"
+#include "clientsettings.h"
 #include "detailswidget.h"
 #include "enums.h"
 #include "referenceddata.h"
@@ -35,23 +37,24 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <akonadi/agentmanager.h>
-#include <akonadi/collectionstatistics.h>
-#include <akonadi/entitymimetypefiltermodel.h>
-#include <akonadi/item.h>
-#include <akonadi/itemcreatejob.h>
-#include <akonadi/itemdeletejob.h>
-#include <akonadi/itemfetchscope.h>
-#include <akonadi/itemmodifyjob.h>
-#include <akonadi/entityannotationsattribute.h>
+#include <Akonadi/AgentManager>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/CollectionStatistics>
+#include <Akonadi/EntityMimeTypeFilterModel>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/EntityAnnotationsAttribute>
 
-#include <kabc/addressee.h>
-#include <kabc/address.h>
+#include <KABC/Address>
+#include <KABC/Addressee>
 
-#include <kdebug.h>
+#include <KDebug>
+
 #include <QMessageBox>
-#include <clientsettings.h>
-#include <accountrepository.h>
+#include <QShortcut>
 
 using namespace Akonadi;
 

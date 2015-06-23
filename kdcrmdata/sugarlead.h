@@ -23,10 +23,10 @@
 #ifndef SUGARLEAD_H
 #define SUGARLEAD_H
 
-#include <QtCore/QMetaType>
-#include <QtCore/QSharedDataPointer>
-
 #include "kdcrmdata_export.h"
+
+#include <QMetaType>
+#include <QSharedDataPointer>
 
 /**
  Short: sugar lead entry
@@ -633,4 +633,3 @@ private:
 Q_DECLARE_METATYPE(SugarLead)
 
 #endif /* SUGARLEAD_H */
-

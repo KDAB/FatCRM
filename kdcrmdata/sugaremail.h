@@ -23,10 +23,10 @@
 #ifndef SUGAREMAIL_H
 #define SUGAREMAIL_H
 
-#include <QtCore/QMetaType>
-#include <QtCore/QSharedDataPointer>
-
 #include "kdcrmdata_export.h"
+
+#include <QMetaType>
+#include <QSharedDataPointer>
 
 /**
  Short: sugar email entry
@@ -249,4 +249,3 @@ private:
 Q_DECLARE_METATYPE(SugarEmail)
 
 #endif /* SUGAREMAIL_H */
-

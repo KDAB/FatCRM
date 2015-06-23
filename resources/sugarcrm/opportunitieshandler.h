@@ -24,7 +24,7 @@
 #define OPPORTUNITIESHANDLER_H
 
 #include "modulehandler.h"
-#include <kdcrmdata/sugaropportunity.h>
+#include "kdcrmdata/sugaropportunity.h"
 
 class OpportunityAccessorPair;
 
@@ -62,4 +62,3 @@ private:
 };
 
 #endif /* OPPORTUNITIESHANDLER_H */
-

@@ -23,9 +23,9 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
-#include <QtCore/QSharedData>
-#include <QtCore/QString>
-#include <QDebug>
+#include <QMap>
+#include <QSharedData>
+#include <QString>
 
 class SugarCampaign::Private : public QSharedData
 {
@@ -611,4 +611,3 @@ QString SugarCampaign::mimeType()
 {
     return QLatin1String("application/x-vnd.kdab.crm.campaign");
 }
-

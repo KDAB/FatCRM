@@ -21,21 +21,20 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+using namespace KDSoapGenerated;
+
 #include "kdcrmdata/kdcrmutils.h"
 
-#include <kcalcore/todo.h>
+#include <KCalCore/Todo>
+using namespace KCalCore;
 
-#include <akonadi/collection.h>
 #include <akonadi/abstractdifferencesreporter.h>
+#include <Akonadi/Collection>
 
-#include <kdatetime.h>
-
+#include <KDateTime>
 #include <KLocale>
 
 #include <QHash>
-
-using namespace KCalCore;
-using namespace KDSoapGenerated;
 
 static QString getId( const KCalCore::Todo &todo )
 {
@@ -236,26 +235,26 @@ static void setContactId( const QString &value, KCalCore::Todo &todo )
 static QString getPriority( const KCalCore::Todo &todo )
 {
     if ( todo.priority() == 1 ) {
-	return QLatin1String( "High" );
+        return QLatin1String( "High" );
     } else if ( todo.priority() == 5 ) {
-	return QLatin1String( "Medium" );
+        return QLatin1String( "Medium" );
     } else if ( todo.priority() == 9 ) {
-	return QLatin1String( "Low" );
+        return QLatin1String( "Low" );
     } else {
-	return QLatin1String( "None" );
+        return QLatin1String( "None" );
     }
 }
 
 static void setPriority( const QString &value, KCalCore::Todo &todo )
 {
     if ( value == QLatin1String( "High" ) ) {
-	todo.setPriority( 1 );
+        todo.setPriority( 1 );
     } else if ( value == QLatin1String( "Medium" ) ) {
-	todo.setPriority( 5 );
+        todo.setPriority( 5 );
     } else if ( value == QLatin1String( "Low" ) ) {
-	todo.setPriority( 9 );
+        todo.setPriority( 9 );
     } else {
-	todo.setPriority( 0 );
+        todo.setPriority( 0 );
     }
 }
 
@@ -402,8 +401,8 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
         }
 
         (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), *todo );
-    }    
-    
+    }
+
     item.setPayload<KCalCore::Todo::Ptr>( todo );
     item.setRemoteRevision( getDateModified( *todo ) );
 

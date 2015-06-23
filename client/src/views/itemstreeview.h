@@ -23,8 +23,8 @@
 #ifndef ITEMSTREEVIEW_H
 #define ITEMSTREEVIEW_H
 
-#include <akonadi/entitytreeview.h>
 #include "itemstreemodel.h"
+#include <Akonadi/EntityTreeView>
 
 class ItemsTreeView : public Akonadi::EntityTreeView
 {

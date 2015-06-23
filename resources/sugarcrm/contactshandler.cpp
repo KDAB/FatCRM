@@ -28,13 +28,13 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/kabc/contactparts.h>
+#include <akonadi/kabc/contactparts.h> //krazy:exclude=camelcase
 
-#include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/collection.h>
+#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <Akonadi/Collection>
 
-#include <kabc/addressee.h>
-#include <kabc/address.h>
+#include <KABC/Addressee>
+#include <KABC/Address>
 
 #include <KLocale>
 

@@ -23,9 +23,10 @@
 #ifndef ACCOUNTREPOSITORY_H
 #define ACCOUNTREPOSITORY_H
 
+#include "sugaraccount.h"
+
 #include <QMap>
 #include <QVector>
-#include <sugaraccount.h>
 
 class AccountRepository
 {

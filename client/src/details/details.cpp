@@ -21,12 +21,19 @@
 */
 
 #include "details.h"
-#include "kdcrmutils.h"
-#include "kdcrmfields.h"
 #include "clientsettings.h"
+#include "kdcrmfields.h"
+#include "kdcrmutils.h"
+#include "qdateeditex.h"
+#include "referenceddatamodel.h"
 
-#include <qdateeditex.h>
-#include <referenceddatamodel.h>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QLabel>
+#include <QLineEdit>
+#include <QPlainTextEdit>
+#include <QSpinBox>
+#include <QTextEdit>
 
 using namespace Akonadi;
 

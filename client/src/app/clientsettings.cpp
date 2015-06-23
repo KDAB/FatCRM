@@ -21,12 +21,12 @@
 */
 
 #include "clientsettings.h"
+#include "opportunityfiltersettings.h"
+
+#include <KLocalizedString>
 
 #include <QWidget>
 #include <QSettings>
-#include <opportunityfiltersettings.h>
-
-#include <klocalizedstring.h>
 
 Q_GLOBAL_STATIC(ClientSettings, s_self)
 

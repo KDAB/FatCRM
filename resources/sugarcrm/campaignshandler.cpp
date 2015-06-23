@@ -23,14 +23,13 @@
 #include "campaignshandler.h"
 
 #include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/sugarcampaign.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h>
-#include <akonadi/collection.h>
-
-#include <kdcrmdata/sugarcampaign.h>
+#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <Akonadi/Collection>
 
 #include <KLocale>
 

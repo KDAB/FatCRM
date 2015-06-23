@@ -25,8 +25,6 @@
 
 #include "page.h"
 
-#include <akonadi/item.h>
-
 class ContactsPage : public Page
 {
     Q_OBJECT

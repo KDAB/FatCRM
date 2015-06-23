@@ -20,15 +20,16 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <resourceconfigdialog.h>
+#include "itemstreemodel.h"
+#include "resourceconfigdialog.h"
+#include "sugaraccount.h"
+#include "sugaropportunity.h"
 
-#include <kapplication.h>
-#include <kaboutdata.h>
-#include <kcmdlineargs.h>
+#include <KApplication>
+#include <KAboutData>
+#include <KCmdLineArgs>
 #include <KLocale>
 
-#include <QTreeView>
-#include <QTimer>
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionFetchScope>
@@ -37,11 +38,10 @@
 #include <Akonadi/EntityTreeView>
 #include <Akonadi/EntityMimeTypeFilterModel>
 #include <Akonadi/Session>
-#include <itemstreemodel.h>
-#include <sugaraccount.h>
-#include <sugaropportunity.h>
-
 using namespace Akonadi;
+
+#include <QTreeView>
+#include <QTimer>
 
 class Controller : public QObject
 {

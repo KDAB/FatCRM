@@ -24,22 +24,21 @@
 
 #include "ui_resourceconfigdialog.h"
 
-#include <akonadi/agentfilterproxymodel.h>
-#include <akonadi/agentinstance.h>
-#include <akonadi/agentinstancecreatejob.h>
-#include <akonadi/agentinstancewidget.h>
-#include <akonadi/agentmanager.h>
-#include <akonadi/agenttype.h>
-#include <akonadi/agenttypedialog.h>
-#include <akonadi/agenttypemodel.h>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceCreateJob>
+#include <Akonadi/AgentInstanceWidget>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AgentType>
+#include <Akonadi/AgentTypeDialog>
+#include <Akonadi/AgentTypeModel>
+using namespace Akonadi;
 
 #include <KDebug>
 
 #include <QAbstractItemView>
 #include <QItemSelectionModel>
 #include <QMessageBox>
-
-using namespace Akonadi;
 
 class ResourceConfigDialog::Private
 {

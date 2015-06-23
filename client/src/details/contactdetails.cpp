@@ -28,8 +28,8 @@
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 
-#include <kabc/address.h>
-#include <kabc/addressee.h>
+#include <KABC/Address>
+#include <KABC/Addressee>
 
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails)

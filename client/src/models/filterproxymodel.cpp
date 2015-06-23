@@ -23,16 +23,16 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 
-#include <kdcrmdata/sugaraccount.h>
-#include <kdcrmdata/sugarcampaign.h>
-#include <kdcrmdata/sugarlead.h>
+#include "kdcrmdata/sugaraccount.h"
+#include "kdcrmdata/sugarcampaign.h"
+#include "kdcrmdata/sugarlead.h"
 
-#include <kabc/addressee.h>
-#include <kabc/phonenumber.h>
+#include <KABC/Addressee>
+#include <KABC/PhoneNumber>
 
-#include <klocalizedstring.h>
+#include <Akonadi/EntityTreeModel>
 
-#include <akonadi/entitytreemodel.h>
+#include <KLocalizedString>
 
 static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);
@@ -216,4 +216,3 @@ static bool leadMatchesFilter(const SugarLead &lead, const QString &filter)
 }
 
 #include "filterproxymodel.moc"
-

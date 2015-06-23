@@ -23,9 +23,11 @@
 #include "sugaraccountio.h"
 #include "sugaraccount.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDebug>
+#include <QDebug>
+#include <QHash>
+#include <QMap>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarAccountIO::SugarAccountIO()
 {
@@ -112,4 +114,3 @@ bool SugarAccountIO::writeSugarAccount(const SugarAccount &account, QIODevice *d
 
     return true;
 }
-

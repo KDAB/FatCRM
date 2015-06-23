@@ -23,9 +23,9 @@
 #include "sugarnoteio.h"
 #include "sugarnote.h"
 
-#include <QtCore/QIODevice>
-#include <QtCore/QXmlStreamWriter>
-#include <QtCore/QDebug>
+#include <QHash>
+#include <QIODevice>
+#include <QXmlStreamWriter>
 
 SugarNoteIO::SugarNoteIO()
 {
@@ -99,4 +99,3 @@ bool SugarNoteIO::writeSugarNote(const SugarNote &note, QIODevice *device)
 
     return true;
 }
-

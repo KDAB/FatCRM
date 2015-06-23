@@ -24,8 +24,10 @@
 #include "ui_notesdialog.h"
 #include "kdcrmutils.h"
 #include "clientsettings.h"
-#include <kdcrmdata/sugarnote.h>
-#include <kdcrmdata/sugaremail.h>
+
+#include "kdcrmdata/sugarnote.h"
+#include "kdcrmdata/sugaremail.h"
+
 #include <QScrollBar>
 
 NotesDialog::NotesDialog(QWidget *parent) :

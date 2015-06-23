@@ -27,8 +27,8 @@
 #include "referenceddatamodel.h"
 #include "kdcrmutils.h"
 
-#include <kdcrmdata/sugarlead.h>
-#include <kdcrmdata/kdcrmfields.h>
+#include "kdcrmdata/sugarlead.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 LeadDetails::LeadDetails(QWidget *parent)
     : Details(Lead, parent), mUi(new Ui::LeadDetails)
