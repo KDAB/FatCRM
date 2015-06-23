@@ -52,14 +52,14 @@ public:
 class ReferencedData::Private
 {
 public:
-    explicit Private()
-        : mType(AccountRef)
+    explicit Private(ReferencedDataType type)
+        : mType(type)
     {
     }
 
 public:
     KeyValueVector mVector;
-    ReferencedDataType mType;
+    const ReferencedDataType mType;
 };
 
 
@@ -209,9 +209,8 @@ void ReferencedData::emitInitialLoadingDone()
 }
 
 ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
-    : QObject(parent), d(new Private())
+    : QObject(parent), d(new Private(type))
 {
-    d->mType = type;
 }
 
 #include "referenceddata.moc"
