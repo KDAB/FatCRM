@@ -65,6 +65,7 @@ QStringList AccountDetails::typeItems() const
 
 QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const
 {
+    Q_ASSERT(item.hasPayload<SugarAccount>());
     SugarAccount account = item.payload<SugarAccount>();
     return account.data();
 }

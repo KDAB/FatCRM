@@ -51,8 +51,8 @@ void CollectionManager::setResource(const QByteArray &identifier)
 static int orderForCollection(const QString &contentMimeType)
 {
     static const char* s_orderedMimeTypes[] = {
-        "application/x-vnd.kdab.crm.opportunity",
         "application/x-vnd.kdab.crm.account",
+        "application/x-vnd.kdab.crm.opportunity",
         "application/x-vnd.kdab.crm.contacts",
         "application/x-vnd.kdab.crm.note",
         "application/x-vnd.kdab.crm.email",
@@ -75,7 +75,8 @@ static bool collectionLessThan(const Collection &c1, const Collection &c2)
     const QString contentMimeType2 = c2.contentMimeTypes().at(0);
 
     // Now emit them in the right order for fast startup.
-    // We want to see Opportunities first, and load Notes/Emails last.
+    // We want to see Accounts first (because required by Opportunities),
+    // then Opportunities (because visible on screen), and load Notes/Emails last.
 
     const int order1 = orderForCollection(contentMimeType1);
     const int order2 = orderForCollection(contentMimeType2);

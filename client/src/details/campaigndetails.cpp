@@ -105,6 +105,7 @@ QStringList CampaignDetails::typeItems() const
 
 QMap<QString, QString> CampaignDetails::data(const Akonadi::Item &item) const
 {
+    Q_ASSERT(item.hasPayload<SugarCampaign>());
     SugarCampaign campaign = item.payload<SugarCampaign>();
     return campaign.data();
 }

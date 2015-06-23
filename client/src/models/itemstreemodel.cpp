@@ -174,15 +174,21 @@ void ItemsTreeModel::slotAccountNameChanged(int row)
 void ItemsTreeModel::oppCountryColumnChanged()
 {
     const int column = d->mColumns.indexOf(Country);
-    //kDebug() << "emitting dataChanged for column" << column;
-    emit dataChanged(index(0, column), index(rowCount() - 1, column));
+    const int rows = rowCount();
+    if (rows > 0) {
+        //kDebug() << "emitting dataChanged for column" << column;
+        emit dataChanged(index(0, column), index(rows - 1, column));
+    }
 }
 
 void ItemsTreeModel::oppAccountNameColumnChanged()
 {
     const int column = d->mColumns.indexOf(OpportunityAccountName);
-    //kDebug() << "emitting dataChanged for column" << column;
-    emit dataChanged(index(0, column), index(rowCount() - 1, column));
+    const int rows = rowCount();
+    if (rows > 0) {
+        //kDebug() << "emitting dataChanged for column" << column;
+        emit dataChanged(index(0, column), index(rows- 1, column));
+    }
 }
 
 /**

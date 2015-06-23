@@ -283,10 +283,10 @@ void SugarClient::slotModelLoaded(DetailsType type)
     //qDebug() << typeToString(type) << "loaded";
     switch (type)
     {
-    case Opportunity:
-        slotShowMessage(i18n("(2/5) Loading accounts..."));
-        break;
     case Account:
+        slotShowMessage(i18n("(2/5) Loading opportunities..."));
+        break;
+    case Opportunity:
         slotShowMessage(i18n("(3/5) Loading contacts..."));
         break;
     case Contact:
@@ -511,8 +511,8 @@ void SugarClient::slotPrintReport()
 
 void SugarClient::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
-    if (mimeType == "application/x-vnd.kdab.crm.opportunity") {
-        slotShowMessage(i18n("(1/5) Loading opportunities..."));
+    if (mimeType == "application/x-vnd.kdab.crm.account") {
+        slotShowMessage(i18n("(1/5) Loading accounts..."));
     }
     foreach(Page *page, mPages) {
         if (page->mimeType() == mimeType) {

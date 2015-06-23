@@ -83,6 +83,7 @@ QStringList LeadDetails::statusItems() const
 
 QMap<QString, QString> LeadDetails::data(const Akonadi::Item &item) const
 {
+    Q_ASSERT(item.hasPayload<SugarLead>());
     SugarLead lead = item.payload<SugarLead>();
     return lead.data();
 }

@@ -73,6 +73,7 @@ void ContactDetails::slotClearDate()
 
 QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
 {
+    Q_ASSERT(item.hasPayload<KABC::Addressee>());
     KABC::Addressee contact = item.payload<KABC::Addressee>();
     return contactData(contact);
 }

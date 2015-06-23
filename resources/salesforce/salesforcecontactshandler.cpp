@@ -232,6 +232,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         object.setId(item.remoteId());
     }
 
+    Q_ASSERT(item.hasPayload<KABC::Addressee>());
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
 
     QList<KDSoapValue> valueList;

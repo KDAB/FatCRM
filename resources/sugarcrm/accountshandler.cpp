@@ -296,6 +296,7 @@ void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
 {
     SugarAccountCache *cache = SugarAccountCache::instance();
     foreach (const Akonadi::Item &item, items) {
+        Q_ASSERT(item.hasPayload<SugarAccount>());
         const SugarAccount account = item.payload<SugarAccount>();
         cache->addAccount(account.name(), account.id());
     }
