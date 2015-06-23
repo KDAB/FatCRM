@@ -32,7 +32,7 @@ template <typename U, typename V> class QHash;
 class CampaignsHandler : public ModuleHandler
 {
 public:
-    CampaignsHandler(SugarSession *session);
+    explicit CampaignsHandler(SugarSession *session);
 
     ~CampaignsHandler();
 
@@ -54,4 +54,3 @@ private:
 };
 
 #endif /* CAMPAIGNSHANDLER_H */
-

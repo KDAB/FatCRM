@@ -29,7 +29,7 @@ class ListEntriesScope
 {
 public:
     ListEntriesScope();
-    ListEntriesScope(const QString &timestamp);
+    explicit ListEntriesScope(const QString &timestamp);
 
     bool isUpdateScope() const;
 

@@ -34,7 +34,7 @@ class OpportunitiesHandler : public ModuleHandler
 {
     Q_OBJECT
 public:
-    OpportunitiesHandler(SugarSession *session);
+    explicit OpportunitiesHandler(SugarSession *session);
 
     ~OpportunitiesHandler();
 

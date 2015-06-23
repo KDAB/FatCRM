@@ -33,7 +33,7 @@ template <typename U, typename V> class QHash;
 class EmailsHandler : public ModuleHandler
 {
 public:
-    EmailsHandler(SugarSession *session);
+    explicit EmailsHandler(SugarSession *session);
 
     ~EmailsHandler();
 

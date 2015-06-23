@@ -32,7 +32,7 @@ class AccountsHandler : public ModuleHandler
 {
     Q_OBJECT
 public:
-    AccountsHandler(SugarSession *session);
+    explicit AccountsHandler(SugarSession *session);
 
     ~AccountsHandler();
 
