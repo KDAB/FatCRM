@@ -34,7 +34,7 @@ ReportGenerator::ReportGenerator()
 
 void ReportGenerator::setupReport(KDReports::Report &report)
 {
-    report.setMargins(5, 10, 5, 10);
+    report.setMargins(10, 10, 10, 10);
     report.setOrientation(QPrinter::Landscape);
 
     QFont font;
