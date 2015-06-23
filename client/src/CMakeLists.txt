@@ -28,6 +28,7 @@ set(sugarclient_SRCS
   dialogs/editlistdialog.cpp
   dialogs/notesdialog.cpp
   dialogs/resourceconfigdialog.cpp
+  reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
   utilities/accountrepository.cpp
   utilities/collectionmanager.cpp

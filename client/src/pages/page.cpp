@@ -28,6 +28,7 @@
 #include "referenceddata.h"
 #include "reportgenerator.h"
 #include "sugarresourcesettings.h"
+#include "rearrangecolumnsproxymodel.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
@@ -600,7 +601,22 @@ void Page::printReport()
             return;
         }
     }
-    generator.generateListReport(model, reportTitle(), reportSubTitle(count), this);
+
+    // Take care of hidden and reordered columns
+    QHeaderView *headerView = mUi.treeView->header();
+    QVector<int> sourceColumns;
+    sourceColumns.reserve(headerView->count());
+    for (int col = 0; col < headerView->count(); ++col) {
+        const int logicalColumn = headerView->logicalIndex(col);
+        if (!headerView->isSectionHidden(logicalColumn)) {
+            sourceColumns.append(logicalColumn);
+        }
+    }
+
+    RearrangeColumnsProxyModel proxy;
+    proxy.setSourceColumns(sourceColumns);
+    proxy.setSourceModel(model);
+    generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
 }
 
 
