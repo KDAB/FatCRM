@@ -1,4 +1,4 @@
-include_directories(${CMAKE_SOURCE_DIR} app details dialogs models pages utilities widgets views)
+include_directories(${CMAKE_SOURCE_DIR} app details dialogs models pages reports utilities widgets views)
 
 set(sugarclient_SRCS
   app/sugarclient.cpp
@@ -28,6 +28,7 @@ set(sugarclient_SRCS
   dialogs/editlistdialog.cpp
   dialogs/notesdialog.cpp
   dialogs/resourceconfigdialog.cpp
+  reports/reportgenerator.cpp
   utilities/accountrepository.cpp
   utilities/collectionmanager.cpp
   utilities/contactsimporter.cpp
@@ -38,7 +39,6 @@ set(sugarclient_SRCS
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp
   utilities/referenceddata.cpp
-  utilities/reportgenerator.cpp
   views/itemstreeview.cpp
   widgets/betterplaintextedit.cpp
   widgets/qdateeditex.cpp
