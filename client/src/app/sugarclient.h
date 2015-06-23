@@ -86,6 +86,7 @@ private:
     NotesRepository *mNotesRepository;
 
     QToolBar *mMainToolBar;
+    QAction *mResourceSelectorAction;
 
 private Q_SLOTS:
     void slotDelayedInit();

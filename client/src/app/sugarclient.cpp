@@ -162,7 +162,7 @@ void SugarClient::createActions()
 
     mMainToolBar = addToolBar(tr("Main ToolBar"));
     mResourceSelector = new QComboBox(this);
-    mMainToolBar->addWidget(mResourceSelector);
+    mResourceSelectorAction = mMainToolBar->addWidget(mResourceSelector);
     mMainToolBar->addAction(mUi.actionSynchronize);
 
     mShowDetails = new QCheckBox(tr("Show Details"));
@@ -246,7 +246,7 @@ void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
 void SugarClient::slotResourceCountChanged()
 {
     // an empty combo or a combo with one item just looks stupid
-    mResourceSelector->setVisible(mResourceSelector->count() > 1);
+    mResourceSelectorAction->setVisible(mResourceSelector->count() > 1);
 }
 
 void SugarClient::slotToggleOffline(bool offline)
