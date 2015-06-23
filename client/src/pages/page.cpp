@@ -538,7 +538,7 @@ void Page::updateSupportedFields()
     EntityAnnotationsAttribute *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
-        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(",", QString::SkipEmptyParts);
+        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
         //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
         if (mSupportedFields.isEmpty()) {
             static bool errorShown = false;
@@ -702,7 +702,7 @@ void Page::addContactsData(int start, int end, bool emitChanges)
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-            const QString fullName = addressee.givenName() + " " + addressee.familyName();
+            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
             reportsToRefMap.insert(addressee.custom("FATCRM", "X-ContactId"), fullName);
             assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }

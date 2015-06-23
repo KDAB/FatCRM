@@ -73,7 +73,7 @@ void SugarAccountIO::readAccount(SugarAccount &account)
         if (accessIt != accessors.constEnd()) {
             (account.*(accessIt.value().setter))(value);
         } else {
-            if (!key.endsWith("_c")) {
+            if (!key.endsWith(QLatin1String("_c"))) {
                 qDebug() << "Got unknown field in XML for account:" << xml.name();
             }
             account.setCustomField(key, value);

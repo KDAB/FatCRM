@@ -99,7 +99,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
         const Akonadi::Item &item = items.at(i);
         if (!query.isEmpty())
             query += " or ";
-        query += "email_id='" + item.remoteId() + "'";
+        query += "email_id='" + item.remoteId() + '\'';
         itemIndexById.insert(item.remoteId(), i);
     }
     KDSoapGenerated::TNS__Select_fields selectedFields;
