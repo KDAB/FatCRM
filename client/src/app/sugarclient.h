@@ -97,6 +97,7 @@ private Q_SLOTS:
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
     void slotResourceCountChanged();
+    void slotServerStarted();
     void slotShowMessage(const QString &);
     void slotModelLoaded(DetailsType type);
     void slotNotesLoaded(int count);

@@ -41,6 +41,7 @@
 #include <Akonadi/AgentInstanceModel>
 #include <Akonadi/AgentManager>
 #include <Akonadi/Control>
+#include <Akonadi/ServerManager>
 using namespace Akonadi;
 
 #include <QCheckBox>
@@ -103,6 +104,9 @@ void SugarClient::slotDelayedInit()
             this, SLOT(slotCollectionResult(QString,Akonadi::Collection)));
 
     initialResourceSelection();
+
+    connect(Akonadi::ServerManager::self(), SIGNAL(started()),
+            SLOT(slotServerStarted()));
 
     connect(AgentManager::self(), SIGNAL(instanceError(Akonadi::AgentInstance,QString)),
             this, SLOT(slotResourceError(Akonadi::AgentInstance,QString)));
@@ -240,6 +244,14 @@ void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
             mResourceSelector->setCurrentIndex(index);
             return;
         }
+    }
+}
+
+void SugarClient::slotServerStarted()
+{
+    kDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
+    if (mResourceSelector->count() > 0) {
+        initialResourceSelection();
     }
 }
 
