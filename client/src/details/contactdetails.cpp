@@ -87,6 +87,7 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data[KDCRMFields::title()] = addressee.title();
     data[KDCRMFields::department()] = addressee.department();
     data[KDCRMFields::accountName()] = addressee.organization();
+    data[KDCRMFields::accountId()] = addressee.custom("FATCRM", "X-AccountId");
     data[KDCRMFields::email1()] = addressee.preferredEmail();
     QStringList emails = addressee.emails();
     emails.removeAll(addressee.preferredEmail());
