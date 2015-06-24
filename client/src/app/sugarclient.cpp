@@ -425,12 +425,16 @@ void SugarClient::slotResourceError(const AgentInstance &resource, const QString
 
 void SugarClient::updateWindowTitle(bool online)
 {
-    const int index = mResourceSelector->currentIndex();
-    const QString context = mResourceSelector->itemText(index);
-    const QString contextTitle =
-        online ? QString("FatCRM (%1)").arg(context)
-        : QString("FatCRM (%1, offline)").arg(context);
-    setWindowTitle(contextTitle);
+    if (mResourceSelector->count() == 1) {
+        setWindowTitle(online ? i18n("FatCRM") : i18n("FatCRM (offline)"));
+    } else {
+        const int index = mResourceSelector->currentIndex();
+        const QString context = mResourceSelector->itemText(index);
+        const QString contextTitle =
+                online ? i18n("FatCRM: %1", context)
+                       : i18n("FatCRM: %1 (offline)", context);
+        setWindowTitle(contextTitle);
+    }
 }
 
 void SugarClient::slotResourceOnline(const AgentInstance &resource, bool online)
