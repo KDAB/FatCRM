@@ -213,13 +213,9 @@ void SugarClient::slotResourceSelectionChanged(int index)
 {
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
-        const QString context = mResourceSelector->itemText(index);
         const QByteArray identifier = agent.identifier().toLatin1();
         emit resourceSelected(identifier);
-        const QString contextTitle =
-            agent.isOnline() ? QString("SugarCRM Client: %1").arg(context)
-            : QString("SugarCRM Client: %1 (offline)").arg(context);
-        setWindowTitle(contextTitle);
+        updateWindowTitle(agent.isOnline());
         mUi.actionSynchronize->setEnabled(true);
         mUi.actionOfflineMode->setEnabled(true);
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
@@ -427,16 +423,21 @@ void SugarClient::slotResourceError(const AgentInstance &resource, const QString
     }
 }
 
+void SugarClient::updateWindowTitle(bool online)
+{
+    const int index = mResourceSelector->currentIndex();
+    const QString context = mResourceSelector->itemText(index);
+    const QString contextTitle =
+        online ? QString("FatCRM (%1)").arg(context)
+        : QString("FatCRM (%1, offline)").arg(context);
+    setWindowTitle(contextTitle);
+}
+
 void SugarClient::slotResourceOnline(const AgentInstance &resource, bool online)
 {
     const AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
-        const int index = mResourceSelector->currentIndex();
-        const QString context = mResourceSelector->itemText(index);
-        const QString contextTitle =
-            online ? QString("SugarCRM Client: %1").arg(context)
-            : QString("SugarCRM Client: %1 (offline)").arg(context);
-        setWindowTitle(contextTitle);
+        updateWindowTitle(online);
         mUi.actionOfflineMode->setChecked(!online);
         if (online) {
             Q_FOREACH (Page *page, mPages) {

@@ -68,6 +68,7 @@ private:
     void createActions();
     void setupActions();
     void createTabs();
+    void updateWindowTitle(bool online);
 
     QList<Page *> mPages;
     QCheckBox *mShowDetails;
