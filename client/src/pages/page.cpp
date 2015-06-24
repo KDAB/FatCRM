@@ -96,6 +96,7 @@ void Page::openDialog(const QString &id)
             DetailsDialog *dialog = createDetailsDialog();
             dialog->setItem(item);
             dialog->show();
+            // cppcheck-suppress memleak as dialog deletes itself
         }
     }
 }
@@ -243,6 +244,7 @@ void Page::slotNewClicked()
         item.setParentCollection(mCollection);
         dialog->showNewItem(data, mCollection);
         dialog->show();
+        // cppcheck-suppress memleak as dialog deletes itself
     }
 }
 
