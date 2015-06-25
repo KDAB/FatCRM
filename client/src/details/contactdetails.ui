@@ -20,9 +20,6 @@
       <string>Details</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -81,7 +78,20 @@
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QComboBox" name="account_name"/>
+       <layout class="QHBoxLayout" name="accountLayout">
+        <item>
+         <widget class="QComboBox" name="account_name"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="buttonOpenAccount">
+          <property name="icon">
+           <iconset theme="document-open">
+            <normaloff/>
+           </iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="6" column="0">
        <widget class="QLabel" name="label_7">
@@ -406,6 +416,7 @@
   <tabstop>title</tabstop>
   <tabstop>department</tabstop>
   <tabstop>account_name</tabstop>
+  <tabstop>buttonOpenAccount</tabstop>
   <tabstop>lead_source</tabstop>
   <tabstop>reports_to</tabstop>
   <tabstop>email1</tabstop>

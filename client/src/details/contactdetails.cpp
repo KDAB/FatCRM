@@ -224,3 +224,9 @@ void ContactDetails::getDataInternal(QMap<QString, QString> &currentData) const
     currentData[KDCRMFields::campaignId()] = currentCampaignId();
 
 }
+
+void ContactDetails::on_buttonOpenAccount_clicked()
+{
+    const QString accountId = currentAccountId();
+    emit openObject(Account, accountId);
+}
