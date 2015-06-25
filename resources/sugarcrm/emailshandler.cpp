@@ -109,9 +109,9 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             soap()->get_entry_list(sessionId(), "EmailText", query, QString() /*orderBy*/,
                                    0 /*offset*/, selectedFields, items.count() /*maxResults*/, 0 /*fetchDeleted*/);
 
-    foreach(KDSoapGenerated::TNS__Entry_value entry, result.entry_list().items()) {
+    foreach(const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {
         QString email_id, description;
-        foreach(KDSoapGenerated::TNS__Name_value val, entry.name_value_list().items()) {
+        foreach(const KDSoapGenerated::TNS__Name_value &val, entry.name_value_list().items()) {
             if (val.name() == "email_id") {
                 email_id = val.value();
             } else if (val.name() == "description") {
