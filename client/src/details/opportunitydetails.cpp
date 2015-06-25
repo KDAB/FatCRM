@@ -101,7 +101,7 @@ QStringList OpportunityDetails::stageItems() const
            << QString("Qualification")
            << QString("Needs Analysis")
            << QString("Value Proposition")
-           << QString("Id.Decision Makers")
+           << QString("Id. Decision Makers")
            << QString("Perception Analysis")
            << QString("Proposal/Price Quote")
            << QString("Negotiation/Review")
