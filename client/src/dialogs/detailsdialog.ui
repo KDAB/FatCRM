@@ -111,7 +111,11 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QTextEdit" name="description"/>
+       <widget class="QTextEdit" name="description">
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

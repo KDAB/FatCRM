@@ -38,7 +38,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QTextEdit" name="statusDescription"/>
+       <widget class="QTextEdit" name="statusDescription">
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_15">
@@ -287,7 +291,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QTextEdit" name="leadSourceDescription"/>
+       <widget class="QTextEdit" name="leadSourceDescription">
+        <property name="acceptRichText">
+         <bool>false</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
