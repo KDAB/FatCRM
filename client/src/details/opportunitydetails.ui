@@ -71,14 +71,18 @@
        <widget class="QComboBox" name="lead_source"/>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label_6">
+       <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Sales Stage:</string>
+         <string>Expected Close Date:</string>
         </property>
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QComboBox" name="sales_stage"/>
+       <widget class="QDateEditEx" name="date_closed">
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_7">
@@ -103,42 +107,31 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Expected Close Date:</string>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="amount">
+        <property name="maximum">
+         <double>1000000000.000000000000000</double>
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QDateEditEx" name="date_closed">
-          <property name="calendarPopup">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="3" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
          <string>Next Step:</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
+      <item row="1" column="1">
        <widget class="QLineEdit" name="next_step"/>
       </item>
-      <item row="4" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
          <string>Next Step Date</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="1">
+      <item row="2" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="QDateEditEx" name="next_call_date">
@@ -156,14 +149,24 @@
         </item>
        </layout>
       </item>
-      <item row="5" column="0">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Sales Stage:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QComboBox" name="sales_stage"/>
+      </item>
+      <item row="4" column="0">
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>Probability:</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
+      <item row="4" column="1">
        <widget class="QSpinBox" name="probability">
         <property name="suffix">
          <string> %</string>
@@ -173,27 +176,20 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="amount">
-        <property name="maximum">
-         <double>1000000000.000000000000000</double>
+      <item row="5" column="1">
+       <widget class="QPushButton" name="viewNotesButton">
+        <property name="text">
+         <string>&amp;View Notes</string>
         </property>
        </widget>
       </item>
-      <item row="7" column="1">
+      <item row="6" column="1">
        <widget class="QLabel" name="urllabel">
         <property name="text">
          <string>-</string>
         </property>
         <property name="openExternalLinks">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QPushButton" name="viewNotesButton">
-        <property name="text">
-         <string>&amp;View Notes</string>
         </property>
        </widget>
       </item>
@@ -215,13 +211,13 @@
   <tabstop>buttonOpenAccount</tabstop>
   <tabstop>opportunity_type</tabstop>
   <tabstop>lead_source</tabstop>
-  <tabstop>sales_stage</tabstop>
+  <tabstop>date_closed</tabstop>
   <tabstop>assigned_user_name</tabstop>
   <tabstop>amount</tabstop>
-  <tabstop>date_closed</tabstop>
   <tabstop>next_step</tabstop>
   <tabstop>next_call_date</tabstop>
   <tabstop>nextStepDateAutoButton</tabstop>
+  <tabstop>sales_stage</tabstop>
   <tabstop>probability</tabstop>
   <tabstop>viewNotesButton</tabstop>
  </tabstops>
