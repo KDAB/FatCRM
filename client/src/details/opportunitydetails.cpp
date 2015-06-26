@@ -112,6 +112,7 @@ QStringList OpportunityDetails::stageItems() const
 
 QMap<QString, QString> OpportunityDetails::data(const Akonadi::Item &item) const
 {
+    Q_ASSERT(item.isValid());
     Q_ASSERT(item.hasPayload<SugarOpportunity>());
     SugarOpportunity opportunity = item.payload<SugarOpportunity>();
     return opportunity.data();
