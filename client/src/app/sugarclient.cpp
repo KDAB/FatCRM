@@ -457,11 +457,15 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
         const int progress = resource.progress();
         const QString message = resource.statusMessage();
+        AgentInstance::Status status = resource.status();
 
-        if (resource.status() == AgentInstance::Broken
-                || resource.status() == AgentInstance::NotConfigured
+        if (status == AgentInstance::Broken
+                || status == AgentInstance::NotConfigured
                 || !resource.isOnline()) {
             mProgressBar->hide();
+        } else if (status == AgentInstance::Idle) {
+            statusBar()->clearMessage();
+            mProgressBarHideTimer->start();
         } else {
             kDebug() << progress << message;
             mProgressBar->show();
