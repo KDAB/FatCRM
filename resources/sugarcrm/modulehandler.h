@@ -53,7 +53,6 @@ public:
     void initialCheck();
 
     QString latestTimestamp() const;
-    void resetLatestTimestamp();
 
     Akonadi::Collection collection();
     void modifyCollection(const Akonadi::Collection &collection);
@@ -88,7 +87,7 @@ public:
                                         const Akonadi::Collection &parentCollection) = 0;
 
     Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
-            const Akonadi::Collection &parentCollection);
+            const Akonadi::Collection &parentCollection, QString *lastTimestamp);
 
     virtual bool needBackendChange(const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts) const;
 

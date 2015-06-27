@@ -35,6 +35,11 @@ ListEntriesScope::ListEntriesScope(const QString &timestamp)
 {
 }
 
+QString ListEntriesScope::timestamp() const
+{
+    return mUpdateTimestamp;
+}
+
 bool ListEntriesScope::isUpdateScope() const
 {
     return !mUpdateTimestamp.isEmpty();

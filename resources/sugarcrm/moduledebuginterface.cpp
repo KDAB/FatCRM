@@ -54,22 +54,4 @@ QStringList ModuleDebugInterface::supportedFields() const
     return QStringList();
 }
 
-QString ModuleDebugInterface::lastestTimestamp() const
-{
-    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
-    if (handler != 0) {
-        return handler->latestTimestamp();
-    }
-
-    return QString();
-}
-
-void ModuleDebugInterface::resetLatestTimestamp()
-{
-    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
-    if (handler != 0) {
-        handler->resetLatestTimestamp();
-    }
-}
-
 #include "moduledebuginterface.moc"

@@ -20,8 +20,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LISTENTRIESJOB_H
-#define LISTENTRIESJOB_H
+#ifndef LISTDELETEDENTRIESJOB_H
+#define LISTDELETEDENTRIESJOB_H
 
 #include "sugarjob.h"
 
@@ -39,29 +39,22 @@ class TNS__Get_entries_count_result;
 class TNS__Get_entry_list_result;
 }
 
-class ListEntriesJob : public SugarJob
+class ListDeletedEntriesJob : public SugarJob
 {
     Q_OBJECT
 
 public:
-    ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
-
-    ~ListEntriesJob();
+    ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
+    ~ListDeletedEntriesJob();
 
     Akonadi::Collection collection() const;
     void setModule(ModuleHandler *handler);
     ModuleHandler *module() const;
     void setLatestTimestamp(const QString &timestamp);
-    QString latestTimestamp() const;
-
+    void setCollectionAttributesChanged(bool b);
     bool collectionAttributesChanged() const;
 
-    static int currentContentsVersion(const Akonadi::Collection &collection);
-    static QString latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler);
-
-Q_SIGNALS:
-    void totalItems(int count);
-    void itemsReceived(const Akonadi::Item::List &items);
+    static QString latestTimestamp(const Akonadi::Collection &collection);
 
 protected:
     void startSugarTask();
@@ -70,10 +63,10 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT(d, void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult))
-    Q_PRIVATE_SLOT(d, void getEntriesCountError(const KDSoapMessage &fault))
     Q_PRIVATE_SLOT(d, void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult))
     Q_PRIVATE_SLOT(d, void listEntriesError(const KDSoapMessage &fault))
+    Q_PRIVATE_SLOT(d, void slotResolvedDeletedItems(KJob *))
+    Q_PRIVATE_SLOT(d, void slotDeleteJobResult(KJob *))
 };
 
 #endif

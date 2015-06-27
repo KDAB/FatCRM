@@ -26,4 +26,5 @@ add_sugarclient_tests(
   referenceddatatest
   qdateeditextest
   test_contactsimporter
+  kdcrmutilstest
 )

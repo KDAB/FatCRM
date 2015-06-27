@@ -28,6 +28,7 @@
 using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>
+#include <kdcrmdata/kdcrmutils.h>
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionModifyJob>
@@ -38,6 +39,9 @@ using namespace Akonadi;
 
 #include <QStringList>
 
+#include <akonadi/itemfetchjob.h>
+#include <akonadi/itemfetchscope.h>
+
 class ListEntriesJob::Private
 {
     ListEntriesJob *const q;
@@ -45,12 +49,15 @@ class ListEntriesJob::Private
 public:
     enum Stage {
         GetCount,
-        GetExisting,
-        GetDeleted
+        GetExisting
     };
 
     explicit Private(ListEntriesJob *parent, const Akonadi::Collection &collection)
-        : q(parent), mCollection(collection), mHandler(0), mStage(GetCount)
+        : q(parent),
+          mCollection(collection),
+          mHandler(0),
+          mStage(GetCount),
+          mCollectionAttributesChanged(false)
     {
     }
 
@@ -59,6 +66,8 @@ public:
     ModuleHandler *mHandler;
     ListEntriesScope mListScope;
     Stage mStage;
+    QString mLatestTimestampFromItems;
+    bool mCollectionAttributesChanged;
 
 public: // slots
     void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult);
@@ -73,10 +82,15 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
         return;
     }
 
-    kDebug() << q << "About to list" << callResult.result_count() << "entries";
-    emit q->totalItems( callResult.result_count() );
-    mStage = GetExisting;
-    q->startSugarTask(); // proceed to next stage
+    const int count = callResult.result_count();
+    kDebug() << q << "About to list" << count << "entries";
+    emit q->totalItems( count );
+    if (count == 0) {
+        q->emitResult();
+    } else {
+        mStage = GetExisting;
+        q->startSugarTask(); // proceed to next stage
+    }
 }
 
 void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
@@ -105,71 +119,51 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         Item::List items =
-            mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection);
-        switch (mStage) {
-        case GetCount:
-            Q_ASSERT(0);
-            break;
-        case GetExisting:
-            if (mHandler->needsExtraInformation())
-                mHandler->getExtraInformation(items);
-            kDebug() << "List Entries for" << mHandler->moduleName()
-                     << "received" << items.count() << "items";
-            emit q->itemsReceived(items);
-            break;
-        case GetDeleted:
-            kDebug() << "List Entries for" << mHandler->moduleName()
-                     << "received" << items.count() << "deletes";
-            emit q->deletedReceived(items);
-            break;
-        }
+            mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
+
+        if (mHandler->needsExtraInformation())
+            mHandler->getExtraInformation(items);
+        kDebug() << "List Entries for" << mHandler->moduleName()
+                 << "received" << items.count() << "items."
+                 << " Latest timestamp=" << mLatestTimestampFromItems;
+
+        emit q->itemsReceived(items);
+
         mListScope.setOffset(callResult.next_offset());
+        mHandler->listEntries(mListScope);
     } else {
-        if (mStage == GetDeleted || !mListScope.isUpdateScope()) {
-            kDebug() << q << "List Entries for" << mHandler->moduleName() << "done, will emitResult";
+        kDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
-            // Store timestamp into DB, to persist it across restarts
-            EntityAnnotationsAttribute *annotationsAttribute =
-                    mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
-            Q_ASSERT(annotationsAttribute);
-            bool changed = false;
-            if (annotationsAttribute->value(s_timeStampKey) != mHandler->latestTimestamp()) {
-                annotationsAttribute->insert(s_timeStampKey, mHandler->latestTimestamp());
+        // Store timestamp into DB, to persist it across restarts
+        // Add one second, so we don't get the same stuff all over again every time
+        KDCRMUtils::incrementTimeStamp(mLatestTimestampFromItems);
+        EntityAnnotationsAttribute *annotationsAttribute =
+                mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
+        Q_ASSERT(annotationsAttribute);
+        bool changed = false;
+        if (!mLatestTimestampFromItems.isEmpty() && annotationsAttribute->value(s_timeStampKey) != mLatestTimestampFromItems) {
+            annotationsAttribute->insert(s_timeStampKey, mLatestTimestampFromItems);
+            changed = true;
+        }
+        if (!mListScope.isUpdateScope()) {
+            // We just did a full listing (first time, or after a contents version upgrade)
+            // then upgrade the contents version attribute.
+            const int currentVersion = mHandler->expectedContentsVersion();
+            if (annotationsAttribute->value(s_contentsVersionKey).toInt() != currentVersion) {
+                annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
                 changed = true;
             }
-            if (!mListScope.isUpdateScope()) {
-                // If we just did a full listing (first time, or after a contents version upgrade)
-                // then upgrade the contents version attribute.
-                const int currentVersion = mHandler->expectedContentsVersion();
-                if (annotationsAttribute->value(s_contentsVersionKey).toInt() != currentVersion) {
-                    annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
-                    changed = true;
-                }
-            }
-            // Also store the list of supported fields, so that the GUI knows what to expect and set
-            const QString fields = mHandler->supportedCRMFields().join(",");
-            if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
-                annotationsAttribute->insert(s_supportedFieldsKey, fields);
-                changed = true;
-            }
-
-            if (changed) {
-                mHandler->modifyCollection(mCollection);
-            }
-            q->emitResult();
-            return;
+        }
+        // Also store the list of supported fields, so that the GUI knows what to expect and set
+        const QString fields = mHandler->supportedCRMFields().join(",");
+        if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
+            annotationsAttribute->insert(s_supportedFieldsKey, fields);
+            changed = true;
         }
 
-        Q_ASSERT(mListScope.isUpdateScope() && mStage == GetExisting);
-
-        // if GetExisting is finished, continue getting the deleted
-        mStage = GetDeleted;
-        mListScope.fetchDeleted();
-        kDebug() << q << "Listing updates for" << mHandler->moduleName()
-                 << "done, getting deletes";
+        mCollectionAttributesChanged = changed;
+        q->emitResult();
     }
-
-    mHandler->listEntries(mListScope);
 }
 
 void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
@@ -197,13 +191,13 @@ ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSessi
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
     d->mStage = Private::GetCount;
-    kDebug() << this;
+    //kDebug() << this;
 }
 
 ListEntriesJob::~ListEntriesJob()
 {
     delete d;
-    kDebug() << this;
+    //kDebug() << this;
 }
 
 Collection ListEntriesJob::collection() const
@@ -214,7 +208,26 @@ Collection ListEntriesJob::collection() const
 void ListEntriesJob::setModule(ModuleHandler *handler)
 {
     d->mHandler = handler;
-    d->mListScope = ListEntriesScope(latestTimestamp());
+}
+
+ModuleHandler *ListEntriesJob::module() const
+{
+    return d->mHandler;
+}
+
+void ListEntriesJob::setLatestTimestamp(const QString &timestamp)
+{
+    d->mListScope = ListEntriesScope(timestamp);
+}
+
+QString ListEntriesJob::latestTimestamp() const
+{
+    return d->mListScope.timestamp();
+}
+
+bool ListEntriesJob::collectionAttributesChanged() const
+{
+    return d->mCollectionAttributesChanged;
 }
 
 int ListEntriesJob::currentContentsVersion(const Collection &collection)
@@ -226,15 +239,15 @@ int ListEntriesJob::currentContentsVersion(const Collection &collection)
     return 0;
 }
 
-QString ListEntriesJob::latestTimestamp() const
+QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler)
 {
     EntityAnnotationsAttribute *annotationsAttribute =
-            d->mCollection.attribute<EntityAnnotationsAttribute>();
+            collection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
         const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();
-        const int expected = d->mHandler->expectedContentsVersion();
+        const int expected = handler->expectedContentsVersion();
         if (contentsVersion != expected) {
-            kDebug() << d->mHandler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
+            kDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
             return QString();
         }
         return annotationsAttribute->value(s_timeStampKey);
@@ -254,7 +267,6 @@ void ListEntriesJob::startSugarTask()
         d->mHandler->getEntriesCount(d->mListScope);
         break;
     case Private::GetExisting:
-    case Private::GetDeleted:
         d->mHandler->listEntries(d->mListScope);
         break;
     }

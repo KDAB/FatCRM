@@ -32,6 +32,7 @@
 #include "fetchentryjob.h"
 #include "leadshandler.h"
 #include "listentriesjob.h"
+#include "listdeletedentriesjob.h"
 #include "listmodulesjob.h"
 #include "loginerrordialog.h"
 #include "loginjob.h"
@@ -311,6 +312,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
 
         ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
+        job->setLatestTimestamp(ListEntriesJob::latestTimestamp(collection, handler));
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
 
@@ -324,8 +326,6 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
                 this, SLOT(slotTotalItems(int)));
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(itemsReceived(Akonadi::Item::List)));
-        connect(job, SIGNAL(deletedReceived(Akonadi::Item::List)),
-                this, SLOT(deletedReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
@@ -481,11 +481,6 @@ void SugarCRMResource::itemsReceived(const Item::List &items)
     itemsRetrievedIncremental(items, Item::List());
 }
 
-void SugarCRMResource::deletedReceived(const Item::List &items)
-{
-    itemsRetrievedIncremental(Item::List(), items);
-}
-
 void SugarCRMResource::listEntriesResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
@@ -509,6 +504,55 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     itemsRetrievedIncremental(Item::List(), Item::List());
 
     itemsRetrievalDone();
+
+    ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
+
+    if (!listEntriesJob->latestTimestamp().isEmpty()) {
+        // Next step: list deleted items (must be done outside of the ItemSync)
+        ListDeletedItemsArg arg;
+        arg.collection = listEntriesJob->collection();
+        arg.module = listEntriesJob->module();
+        arg.collectionAttributesChanged = listEntriesJob->collectionAttributesChanged();
+        scheduleCustomTask(this, "listDeletedItems", QVariant::fromValue(arg));
+    } else {
+        // Commit attribute changes
+        if (listEntriesJob->collectionAttributesChanged()) {
+            listEntriesJob->module()->modifyCollection(listEntriesJob->collection());
+        }
+    }
+    status(Idle);
+}
+
+void SugarCRMResource::listDeletedItems(const QVariant &val)
+{
+    const ListDeletedItemsArg arg = val.value<ListDeletedItemsArg>();
+    ListDeletedEntriesJob *ldeJob = new ListDeletedEntriesJob(arg.collection, mSession, this);
+    ldeJob->setModule(arg.module);
+    ldeJob->setCollectionAttributesChanged(arg.collectionAttributesChanged);
+    ldeJob->setLatestTimestamp(ListDeletedEntriesJob::latestTimestamp(arg.collection));
+    connect(ldeJob, SIGNAL(result(KJob *)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
+    mCurrentJob = ldeJob;
+    // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
+    const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
+    kDebug() << message;
+    status(Running, message);
+    ldeJob->start();
+}
+
+void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
+{
+    if (job->error()) {
+        kWarning() << job->errorString();
+    }
+    mCurrentJob = 0;
+
+    // Commit attribute changes
+    ListDeletedEntriesJob *listDelEntriesJob = static_cast<ListDeletedEntriesJob *>(job);
+    if (listDelEntriesJob->collectionAttributesChanged()) {
+        listDelEntriesJob->module()->modifyCollection(listDelEntriesJob->collection());
+    }
+
+    taskDone();
     status(Idle);
 }
 

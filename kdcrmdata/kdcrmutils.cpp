@@ -36,6 +36,15 @@ QDateTime KDCRMUtils::dateTimeFromString(const QString &serverTimestamp)
     return dt;
 }
 
+void KDCRMUtils::incrementTimeStamp(QString &serverTimestamp)
+{
+    if (!serverTimestamp.isEmpty()) {
+        QDateTime dt = QDateTime::fromString(serverTimestamp, TIMESTAMPFORMAT);
+        dt = dt.addSecs(1);
+        serverTimestamp = dateTimeToString(dt);
+    }
+}
+
 QString KDCRMUtils::formatTimestamp(const QString &serverTimestamp)
 {
     const QDateTime dt = dateTimeFromString(serverTimestamp).toLocalTime();

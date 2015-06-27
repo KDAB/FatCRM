@@ -20,30 +20,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MODULEDEBUGINTERFACE_H
-#define MODULEDEBUGINTERFACE_H
+#include "kdcrmutils.h"
 
-#include <QObject>
-#include <QStringList>
+#include <QtTest/QtTest>
+#include <QDebug>
 
-class SugarCRMResource;
-
-class ModuleDebugInterface : public QObject
+class KDCRMUtilsTest : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ModuleDebug")
-
 public:
-    ModuleDebugInterface(const QString &moduleName, SugarCRMResource *resource);
-    ~ModuleDebugInterface();
+private Q_SLOTS:
+    void testIncrementTimestamp_data()
+    {
+        QTest::addColumn<QString>("input");
+        QTest::addColumn<QString>("output");
 
-public Q_SLOTS:
-    Q_SCRIPTABLE QStringList availableFields() const;
-    Q_SCRIPTABLE QStringList supportedFields() const;
+        QTest::newRow("28") << "2015-06-26 21:39:28" << "2015-06-26 21:39:29";
+        QTest::newRow("59") << "2015-06-26 21:39:59" << "2015-06-26 21:40:00";
+        QTest::newRow("midnight") << "2015-06-26 23:59:59" << "2015-06-27 00:00:00";
+        QTest::newRow("empty") << "" << "";
+    }
 
-private:
-    const QString mModuleName;
-    SugarCRMResource *const mResource;
+    void testIncrementTimestamp()
+    {
+        QFETCH(QString, input);
+        QFETCH(QString, output);
+
+        QString str = input;
+        KDCRMUtils::incrementTimeStamp(str);
+        QCOMPARE(str, output);
+    }
 };
 
-#endif
+QTEST_MAIN(KDCRMUtilsTest)
+#include "kdcrmutils.moc"

@@ -31,6 +31,7 @@ public:
     ListEntriesScope();
     explicit ListEntriesScope(const QString &timestamp);
 
+    QString timestamp() const;
     bool isUpdateScope() const;
 
     void setOffset(int offset);

@@ -38,6 +38,14 @@ class SugarJob;
 
 template <typename U, typename V> class QHash;
 
+struct ListDeletedItemsArg
+{
+    Akonadi::Collection collection;
+    ModuleHandler *module;
+    bool collectionAttributesChanged;
+};
+
+
 class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
 {
     friend class ModuleDebugInterface;
@@ -87,8 +95,10 @@ private Q_SLOTS:
 
     void slotTotalItems(int count);
     void itemsReceived(const Akonadi::Item::List &items);
-    void deletedReceived(const Akonadi::Item::List &items);
     void listEntriesResult(KJob *job);
+
+    void listDeletedItems(const QVariant &val);
+    void slotListDeletedEntriesResult(KJob*);
 
     void createEntryResult(KJob *job);
 
@@ -108,5 +118,7 @@ private:
 
     bool handleLoginError(KJob *job);
 };
+
+Q_DECLARE_METATYPE(ListDeletedItemsArg)
 
 #endif

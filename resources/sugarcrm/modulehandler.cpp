@@ -65,11 +65,6 @@ QString ModuleHandler::latestTimestamp() const
     return mLatestTimestamp;
 }
 
-void ModuleHandler::resetLatestTimestamp()
-{
-    mLatestTimestamp = QString();
-}
-
 Akonadi::Collection ModuleHandler::collection()
 {
     if (!mCollection.isValid()) {
@@ -158,7 +153,7 @@ bool ModuleHandler::getEntry(const Akonadi::Item &item)
     return true;
 }
 
-Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection)
+Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection, QString *lastTimestamp)
 {
     Akonadi::Item::List items;
 
@@ -166,8 +161,8 @@ Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGene
         const Akonadi::Item item = itemFromEntry(entry, parentCollection);
         if (!item.remoteId().isEmpty()) {
             items << item;
-            if (mLatestTimestamp.isNull() || item.remoteRevision() > mLatestTimestamp) {
-                mLatestTimestamp = item.remoteRevision();
+            if (lastTimestamp->isEmpty() || item.remoteRevision() > *lastTimestamp) {
+                *lastTimestamp = item.remoteRevision();
             }
         }
     }
