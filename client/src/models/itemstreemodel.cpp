@@ -326,6 +326,13 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
         case Country:
             return countryForContact(addressee);
+        case LastModifiedDate:
+        {
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom("FATCRM", "X-DateModified"));
+            if (role == Qt::DisplayRole)
+                return KDCRMUtils::formatDate(dt.date());
+            return dt; // for sorting
+        }
         default:
             return QVariant();
         }
@@ -397,7 +404,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case Amount:
             return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
         case CreationDate: {
-            QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
@@ -409,7 +416,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case NextStep:
             return opportunity.nextStep();
         case LastModifiedDate: {
-            QDateTime dt = opportunity.dateModified();
+            const QDateTime dt = opportunity.dateModified();
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
@@ -445,7 +452,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::PreferredEmail
                 << ItemsTreeModel::PhoneWork
-                << ItemsTreeModel::PhoneMobile;
+                << ItemsTreeModel::PhoneMobile
+                << ItemsTreeModel::LastModifiedDate;
         break;
     case Lead:
         columns << ItemsTreeModel::LeadName
@@ -575,6 +583,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Contact:
         // too wide and too seldom filled in
         columns.removeAll(ItemsTreeModel::Title);
+        columns.removeAll(ItemsTreeModel::LastModifiedDate);
         break;
     case Lead:
         break;
