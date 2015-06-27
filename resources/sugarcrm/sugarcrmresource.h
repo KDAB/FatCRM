@@ -42,7 +42,9 @@ struct ListDeletedItemsArg
 {
     Akonadi::Collection collection;
     ModuleHandler *module;
+    QString fullSyncTimestamp;
     bool collectionAttributesChanged;
+    bool isUpdateJob;
 };
 
 
@@ -73,6 +75,7 @@ private:
     ModuleDebugInterfaceHash *mModuleDebugInterfaces;
 
     ConflictHandler *mConflictHandler;
+    int mTotalItems;
     bool mOnline;
 
 private:
@@ -94,6 +97,7 @@ private Q_SLOTS:
     void listModulesResult(KJob *job);
 
     void slotTotalItems(int count);
+    void slotProgress(int count);
     void itemsReceived(const Akonadi::Item::List &items);
     void listEntriesResult(KJob *job);
 

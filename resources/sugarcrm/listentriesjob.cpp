@@ -67,6 +67,7 @@ public:
     ListEntriesScope mListScope;
     Stage mStage;
     QString mLatestTimestampFromItems;
+    Akonadi::Item::List mFullItems;
     bool mCollectionAttributesChanged;
 
 public: // slots
@@ -124,10 +125,14 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         if (mHandler->needsExtraInformation())
             mHandler->getExtraInformation(items);
         kDebug() << "List Entries for" << mHandler->moduleName()
-                 << "received" << items.count() << "items."
-                 << " Latest timestamp=" << mLatestTimestampFromItems;
+                 << "received" << items.count() << "items.";
 
-        emit q->itemsReceived(items);
+        if (mListScope.isUpdateScope()) {
+            emit q->itemsReceived(items);
+        } else {
+            mFullItems.append(items);
+            emit q->progress(mFullItems.count());
+        }
 
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
@@ -220,14 +225,24 @@ void ListEntriesJob::setLatestTimestamp(const QString &timestamp)
     d->mListScope = ListEntriesScope(timestamp);
 }
 
-QString ListEntriesJob::latestTimestamp() const
+QString ListEntriesJob::newTimestamp() const
 {
-    return d->mListScope.timestamp();
+    return d->mLatestTimestampFromItems;
 }
 
 bool ListEntriesJob::collectionAttributesChanged() const
 {
     return d->mCollectionAttributesChanged;
+}
+
+bool ListEntriesJob::isUpdateJob() const
+{
+    return d->mListScope.isUpdateScope();
+}
+
+Item::List ListEntriesJob::fullItems() const
+{
+    return d->mFullItems;
 }
 
 int ListEntriesJob::currentContentsVersion(const Collection &collection)

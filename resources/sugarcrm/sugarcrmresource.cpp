@@ -316,14 +316,16 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
 
-        const QString message = job->latestTimestamp().isEmpty()
-                ? i18nc("@info:status", "Retrieving contents of folder %1", collection.name())
-                : i18nc("@info:status", "Updating contents of folder %1", collection.name());
+        const QString message = job->isUpdateJob()
+                ? i18nc("@info:status", "Updating contents of folder %1", collection.name())
+                : i18nc("@info:status", "Retrieving contents of folder %1", collection.name());
         kDebug() << message;
         status(Running, message);
 
         connect(job, SIGNAL(totalItems(int)),
                 this, SLOT(slotTotalItems(int)));
+        connect(job, SIGNAL(progress(int)),
+                this, SLOT(slotProgress(int)));
         connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
                 this, SLOT(itemsReceived(Akonadi::Item::List)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
@@ -472,8 +474,14 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
 void SugarCRMResource::slotTotalItems(int count)
 {
-    // we're not done when we have listed <count> items, we have another phase, hence the +1
-    setTotalItems(count /*+1*/);
+    mTotalItems = count;
+    setTotalItems(count);
+}
+
+void SugarCRMResource::slotProgress(int count)
+{
+    // only emitted in the non-incremental case
+    emit percent(100 * count / mTotalItems);
 }
 
 void SugarCRMResource::itemsReceived(const Item::List &items)
@@ -483,6 +491,8 @@ void SugarCRMResource::itemsReceived(const Item::List &items)
 
 void SugarCRMResource::listEntriesResult(KJob *job)
 {
+    ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
+
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = 0;
     if (handleLoginError(job)) {
@@ -500,26 +510,23 @@ void SugarCRMResource::listEntriesResult(KJob *job)
         return;
     }
 
-    // ensure the incremental mode is ON even if there were neither an update nor a delete
-    itemsRetrievedIncremental(Item::List(), Item::List());
-
+    if (listEntriesJob->isUpdateJob()) {
+        // ensure the incremental mode is ON even if there were neither an update nor a delete
+        itemsRetrievedIncremental(Item::List(), Item::List());
+    } else {
+        itemsRetrieved(listEntriesJob->fullItems());
+    }
     itemsRetrievalDone();
 
-    ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
+    // Next step: list deleted items (must be done outside of the ItemSync)
+    ListDeletedItemsArg arg;
+    arg.collection = listEntriesJob->collection();
+    arg.module = listEntriesJob->module();
+    arg.collectionAttributesChanged = listEntriesJob->collectionAttributesChanged();
+    arg.isUpdateJob = listEntriesJob->isUpdateJob();
+    arg.fullSyncTimestamp = listEntriesJob->newTimestamp();
+    scheduleCustomTask(this, "listDeletedItems", QVariant::fromValue(arg));
 
-    if (!listEntriesJob->latestTimestamp().isEmpty()) {
-        // Next step: list deleted items (must be done outside of the ItemSync)
-        ListDeletedItemsArg arg;
-        arg.collection = listEntriesJob->collection();
-        arg.module = listEntriesJob->module();
-        arg.collectionAttributesChanged = listEntriesJob->collectionAttributesChanged();
-        scheduleCustomTask(this, "listDeletedItems", QVariant::fromValue(arg));
-    } else {
-        // Commit attribute changes
-        if (listEntriesJob->collectionAttributesChanged()) {
-            listEntriesJob->module()->modifyCollection(listEntriesJob->collection());
-        }
-    }
     status(Idle);
 }
 
@@ -530,6 +537,23 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
     ldeJob->setModule(arg.module);
     ldeJob->setCollectionAttributesChanged(arg.collectionAttributesChanged);
     ldeJob->setLatestTimestamp(ListDeletedEntriesJob::latestTimestamp(arg.collection));
+
+    if (!arg.isUpdateJob) {
+        // Set initial timestamp for "deleted items" based on the time of the full sync
+        // (no need to get all old deletions). No need to even run the job either, in that case.
+        ldeJob->setInitialTimestamp(arg.fullSyncTimestamp);
+
+        // Commit attribute changes
+        if (ldeJob->collectionAttributesChanged()) {
+            ldeJob->module()->modifyCollection(ldeJob->collection());
+        }
+
+        delete ldeJob;
+        taskDone();
+        status(Idle);
+        return;
+    }
+
     connect(ldeJob, SIGNAL(result(KJob *)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
     mCurrentJob = ldeJob;
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()

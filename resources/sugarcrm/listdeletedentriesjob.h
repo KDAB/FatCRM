@@ -50,7 +50,8 @@ public:
     Akonadi::Collection collection() const;
     void setModule(ModuleHandler *handler);
     ModuleHandler *module() const;
-    void setLatestTimestamp(const QString &timestamp);
+    void setLatestTimestamp(const QString &timestamp); // before starting incremental job
+    void setInitialTimestamp(const QString &timestamp); // after full sync
     void setCollectionAttributesChanged(bool b);
     bool collectionAttributesChanged() const;
 

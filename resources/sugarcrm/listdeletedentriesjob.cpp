@@ -73,13 +73,12 @@ public: // slots
     void slotResolvedDeletedItems(KJob *);
     void slotDeleteJobResult(KJob *job);
 
-private:
     void updateAnnotationAttribute();
 };
 
 void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    kDebug() << q << "error" << callResult.error().number();
+    //kDebug() << q << "error" << callResult.error().number();
     if (q->handleError(callResult.error())) {
         return;
     }
@@ -128,7 +127,6 @@ void ListDeletedEntriesJob::Private::slotResolvedDeletedItems(KJob *job)
         // (especially the very first time this code will run...)
         updateAnnotationAttribute();
 
-        kWarning() << job->errorString();
         q->setError(job->error());
         q->setErrorText(job->errorText());
         q->emitResult();
@@ -179,13 +177,13 @@ ListDeletedEntriesJob::ListDeletedEntriesJob(const Akonadi::Collection &collecti
     connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
-    kDebug() << this;
+    //kDebug() << this;
 }
 
 ListDeletedEntriesJob::~ListDeletedEntriesJob()
 {
     delete d;
-    kDebug() << this;
+    //kDebug() << this;
 }
 
 Collection ListDeletedEntriesJob::collection() const
@@ -207,6 +205,12 @@ void ListDeletedEntriesJob::setLatestTimestamp(const QString &timestamp)
 {
     d->mListScope = ListEntriesScope(timestamp);
     d->mListScope.fetchDeleted();
+}
+
+void ListDeletedEntriesJob::setInitialTimestamp(const QString &timestamp)
+{
+    d->mLatestTimestampFromItems = timestamp;
+    d->updateAnnotationAttribute();
 }
 
 void ListDeletedEntriesJob::setCollectionAttributesChanged(bool b)

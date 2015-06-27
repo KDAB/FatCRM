@@ -52,9 +52,11 @@ public:
     void setModule(ModuleHandler *handler);
     ModuleHandler *module() const;
     void setLatestTimestamp(const QString &timestamp);
-    QString latestTimestamp() const;
+    QString newTimestamp() const;
 
     bool collectionAttributesChanged() const;
+    bool isUpdateJob() const;
+    Akonadi::Item::List fullItems() const;
 
     static int currentContentsVersion(const Akonadi::Collection &collection);
     static QString latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler);
@@ -62,6 +64,7 @@ public:
 Q_SIGNALS:
     void totalItems(int count);
     void itemsReceived(const Akonadi::Item::List &items);
+    void progress(int count);
 
 protected:
     void startSugarTask();
