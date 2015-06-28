@@ -13,14 +13,22 @@
 include(FindPackageHandleStandardArgs)
 
 find_library(KDSoap_LIBRARIES
-        NAMES KDSoap kdsoap
-        PATH_SUFFIXES bin)
+  NAMES KDSoap kdsoap
+  PATH_SUFFIXES bin
+)
 find_path(KDSoap_INCLUDE_DIR
-        NAMES KDSoap KDSoapValue.h
-        PATH_SUFFIXES KDSoapClient)
+  NAMES KDSoap KDSoapValue.h
+)
+if(NOT KDSoap_INCLUDE_DIR)
+  find_path(KDSoap_INCLUDE_DIR
+    NAMES KDSoap KDSoapValue.h
+    PATH_SUFFIXES KDSoapClient
+  )
+endif()
 find_program(KDSoap_CODEGENERATOR
-        NAMES kdwsdl2cpp
-        PATH_SUFFIXES bin)
+  NAMES kdwsdl2cpp
+  PATH_SUFFIXES bin
+)
 
 mark_as_advanced(KDSoap_LIBRARIES KDSoap_INCLUDE_DIR KDSoap_CODEGENERATOR)
 
