@@ -316,8 +316,11 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.assembledName();
         case Title:
             return addressee.title();
-        case Organization:
-            return addressee.organization();
+        case Organization: {
+            // not using addressee.organization() since that doesn't follow account renames/deletions
+            const QString accountId = addressee.custom("FATCRM", "X-AccountId");
+            return ReferencedData::instance(AccountRef)->referencedData(accountId);
+        }
         case PreferredEmail:
             return addressee.preferredEmail();
         case PhoneWork:
