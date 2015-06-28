@@ -745,30 +745,21 @@ void Page::addOpportunitiesData(int start, int end, bool emitChanges)
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
-void Page::removeAccountsData(Akonadi::Item &item)
+void Page::removeOpportunitiesData(int start, int end, bool emitChanges)
 {
-    if (item.hasPayload<SugarAccount>()) {
-        const SugarAccount account = item.payload<SugarAccount>();
-        ReferencedData *data = ReferencedData::instance(AccountRef);
-        data->removeReferencedData(account.id());
-    }
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(emitChanges)
 }
-
-#if 0
-void Page::removeCampaignsData(Akonadi::Item &item)
-{
-    if (item.hasPayload<SugarCampaign>()) {
-        const SugarCampaign campaign = item.payload<SugarCampaign>();
-        ReferencedData *data = ReferencedData::instance(CampaignRef);
-        data->removeReferencedData(campaign.id());
-    }
-}
-#endif
 
 void Page::retrieveResourceUrl()
 {
     OrgKdeAkonadiSugarCRMSettingsInterface iface(
                 QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/Settings"), QDBusConnection::sessionBus() );
-    mResourceBaseUrl = iface.host();
-    mDetailsWidget->details()->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
+    QDBusPendingReply<QString> reply = iface.host();
+    reply.waitForFinished();
+    if (reply.isValid()) {
+        mResourceBaseUrl = iface.host();
+        mDetailsWidget->details()->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
+    }
 }
