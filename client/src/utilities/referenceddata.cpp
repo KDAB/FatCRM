@@ -168,14 +168,18 @@ QString ReferencedData::referencedData(const QString &id) const
     return QString();
 }
 
-void ReferencedData::removeReferencedData(const QString &id)
+void ReferencedData::removeReferencedData(const QString &id, bool emitChanges)
 {
     KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
     if (findIt != d->mVector.end()) {
         const int row = findIt - d->mVector.begin();
-        emit rowsAboutToBeRemoved(row, row);
+        if (emitChanges) {
+            emit rowsAboutToBeRemoved(row, row);
+        }
         d->mVector.remove(row);
-        emit rowsRemoved();
+        if (emitChanges) {
+            emit rowsRemoved();
+        }
     }
 }
 

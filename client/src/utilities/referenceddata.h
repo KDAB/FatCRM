@@ -50,10 +50,9 @@ public:
 
     void setReferencedData(const QString &id, const QString &data);
     void addMap(const QMap<QString, QString> &idDataMap, bool emitChanges);
+    void removeReferencedData(const QString &id, bool emitChanges);
 
     QString referencedData(const QString &id) const;
-
-    void removeReferencedData(const QString &id);
 
     QPair<QString, QString> data(int row) const;
     int count() const;

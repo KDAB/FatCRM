@@ -36,6 +36,7 @@ public:
 
     void clear();
     void addAccount(const SugarAccount &account);
+    void removeAccount(const SugarAccount &account);
 
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;
     QList<SugarAccount> accountsByKey(const QString &key) const;

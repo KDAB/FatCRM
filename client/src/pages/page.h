@@ -102,6 +102,7 @@ private Q_SLOTS:
     void slotRemoveItem();
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int start, int end);
+    void slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotResetSearch();
     void slotReloadCollection();
@@ -121,14 +122,17 @@ private:
     void initialize();
     bool askSave();
     void updateSupportedFields();
-    // manages accounts combo box
+
     void addAccountsData(int start, int end, bool emitChanges);
+    void removeAccountsData(int start, int end, bool emitChanges);
     void addCampaignsData(int start, int end, bool emitChanges);
+    void removeCampaignsData(int start, int end, bool emitChanges);
     void addContactsData(int start, int end, bool emitChanges);
+    void removeContactsData(int start, int end, bool emitChanges);
     void addLeadsData(int start, int end, bool emitChanges);
+    void removeLeadsData(int start, int end, bool emitChanges);
     void addOpportunitiesData(int start, int end, bool emitChanges);
-    void removeAccountsData(Akonadi::Item &item);
-    //void removeCampaignsData(Akonadi::Item &item);
+    void removeOpportunitiesData(int start, int end, bool emitChanges);
 
     DetailsDialog *createDetailsDialog();
 

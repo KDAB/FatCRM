@@ -339,12 +339,6 @@ void Page::slotRemoveItem()
     if (mDetailsWidget != 0) {
         mDetailsWidget->setItem(Item());
     }
-
-    if (mType == Account) {
-        removeAccountsData(item);
-    //} else if (mType == Campaign) {
-    //    removeCampaignsData(item);
-    }
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -403,6 +397,33 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     emit ignoreModifications(false);
 }
 
+void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
+{
+    // inserting rows into comboboxes can change the current index, thus marking the data as modified
+    emit ignoreModifications(true);
+
+    switch (mType) {
+    case Account:
+        removeAccountsData(start, end, mInitialLoadingDone);
+        break;
+    case Campaign:
+        removeCampaignsData(start, end, mInitialLoadingDone);
+        break;
+    case Contact:
+        removeContactsData(start, end, mInitialLoadingDone);
+        break;
+    case Lead:
+        removeLeadsData(start, end, mInitialLoadingDone);
+        break;
+    case Opportunity:
+        removeOpportunitiesData(start, end, mInitialLoadingDone);
+        break;
+    default: // other objects (like Note) not shown in a Page
+        break;
+    }
+    emit ignoreModifications(false);
+}
+
 void Page::initialize()
 {
     connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
@@ -455,6 +476,7 @@ void Page::setupModel()
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
+    connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     mFilterModel = new EntityMimeTypeFilterModel(this);
@@ -676,10 +698,25 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
+void Page::removeAccountsData(int start, int end, bool emitChanges)
+{
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = mItemsTreeModel->index(row, 0);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            ReferencedData::instance(AccountRef)->removeReferencedData(account.id(), emitChanges);
+            ReferencedData::instance(AccountCountryRef)->removeReferencedData(account.id(), emitChanges);
+
+            AccountRepository::instance()->removeAccount(account);
+        }
+    }
+}
+
 void Page::addCampaignsData(int start, int end, bool emitChanges)
 {
     //kDebug(); QElapsedTimer dt; dt.start();
-    QMap<QString, QString> campaignRefMap;
+    //QMap<QString, QString> campaignRefMap;
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
@@ -693,6 +730,13 @@ void Page::addCampaignsData(int start, int end, bool emitChanges)
     //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
     //kDebug() << "done," << dt.elapsed() << "ms";
+}
+
+void Page::removeCampaignsData(int start, int end, bool emitChanges)
+{
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(emitChanges)
 }
 
 void Page::addContactsData(int start, int end, bool emitChanges)
@@ -714,6 +758,13 @@ void Page::addContactsData(int start, int end, bool emitChanges)
     //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
+void Page::removeContactsData(int start, int end, bool emitChanges)
+{
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(emitChanges)
+}
+
 void Page::addLeadsData(int start, int end, bool emitChanges)
 {
     //kDebug();
@@ -728,6 +779,13 @@ void Page::addLeadsData(int start, int end, bool emitChanges)
         }
     }
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
+}
+
+void Page::removeLeadsData(int start, int end, bool emitChanges)
+{
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(emitChanges)
 }
 
 void Page::addOpportunitiesData(int start, int end, bool emitChanges)
