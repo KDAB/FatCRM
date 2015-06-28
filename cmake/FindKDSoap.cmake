@@ -19,12 +19,6 @@ find_library(KDSoap_LIBRARIES
 find_path(KDSoap_INCLUDE_DIR
   NAMES KDSoap KDSoapValue.h
 )
-if(NOT KDSoap_INCLUDE_DIR)
-  find_path(KDSoap_INCLUDE_DIR
-    NAMES KDSoap KDSoapValue.h
-    PATH_SUFFIXES KDSoapClient
-  )
-endif()
 find_program(KDSoap_CODEGENERATOR
   NAMES kdwsdl2cpp
   PATH_SUFFIXES bin
