@@ -102,6 +102,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
             connect(job, SIGNAL(result(KJob*)),
                     q, SLOT(slotResolvedDeletedItems(KJob*)));
         } else {
+            kDebug() << "found 0 deleted items";
             q->emitResult();
         }
     }
