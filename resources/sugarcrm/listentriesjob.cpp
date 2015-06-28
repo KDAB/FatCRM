@@ -27,20 +27,21 @@
 #include "listentriesscope.h"
 using namespace KDSoapGenerated;
 
+#include "kdcrmdata/kdcrmutils.h"
+
 #include <KDSoapClient/KDSoapMessage.h>
-#include <kdcrmdata/kdcrmutils.h>
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/EntityAnnotationsAttribute>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+
 using namespace Akonadi;
 
 #include <KDebug>
 
 #include <QStringList>
-
-#include <akonadi/itemfetchjob.h>
-#include <akonadi/itemfetchscope.h>
 
 class ListEntriesJob::Private
 {

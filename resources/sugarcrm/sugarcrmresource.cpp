@@ -554,7 +554,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
         return;
     }
 
-    connect(ldeJob, SIGNAL(result(KJob *)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
+    connect(ldeJob, SIGNAL(result(KJob*)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
     mCurrentJob = ldeJob;
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
     const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
