@@ -271,7 +271,6 @@ void MainWindow::slotSynchronize()
 {
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
-        slotShowMessage(tr("Synchronizing with server"));
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
         currentAgent.synchronize();
@@ -282,7 +281,6 @@ void MainWindow::slotSynchronizeCollection(const Collection &collection)
 {
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
-        slotShowMessage(tr("Synchronizing '%1' with server").arg(collection.name()));
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
         AgentManager::self()->synchronizeCollection(collection);
