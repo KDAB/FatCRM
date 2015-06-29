@@ -39,7 +39,16 @@ endif()
 
 set(KDE4_ICON_DIR ${KDE4_INSTALL_DIR}/share/icons)
 
-include_directories(${CMAKE_SOURCE_DIR} ${KDSoap_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${KDSoap_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
+
+if (APPLE OR WIN32)
+   set (_default_kwallet_option 0)
+else()
+   set (_default_kwallet_option 1)
+endif()
+option(USE_KWALLET "Use KWallet for password storage (default 1 on Unix, 0 on Windows/Mac)" ${_default_kwallet_option})
+configure_file(config-kwallet.h.in ${CMAKE_CURRENT_BINARY_DIR}/config-kwallet.h)
 
 add_subdirectory(salesforce)
 add_subdirectory(sugarcrm)
+

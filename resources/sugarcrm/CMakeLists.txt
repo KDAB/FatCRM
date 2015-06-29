@@ -13,12 +13,12 @@ set(sugarcrmresource_SRCS
   listentriesjob.cpp
   listentriesscope.cpp
   listmodulesjob.cpp
-  loginerrordialog.cpp
   loginjob.cpp
   moduledebuginterface.cpp
   modulehandler.cpp
   noteshandler.cpp
   opportunitieshandler.cpp
+  passwordhandler.cpp
   referenceupdatejob.cpp
   resourcedebuginterface.cpp
   sugaraccountcache.cpp

@@ -22,19 +22,20 @@
 
 #include "sugarconfigdialog.h"
 
+#include "passwordhandler.h"
 #include "settings.h"
 
-SugarConfigDialog::SugarConfigDialog(Settings *settings, const QString &accountName, QWidget *parent)
+SugarConfigDialog::SugarConfigDialog(PasswordHandler *passwordHandler, const QString &accountName, QWidget *parent)
     : QDialog(parent)
 {
     mUi.setupUi(this);
 
     mUi.accountName->setText(accountName);
-    mUi.host->setText(settings->host());
-    mUi.user->setText(settings->user());
-    mUi.password->setText(settings->password());
+    mUi.host->setText(Settings::host());
+    mUi.user->setText(Settings::user());
+    mUi.password->setText(passwordHandler->password());
 
-    mUi.checkIntervalSpinbox->setValue(settings->intervalCheckTime());
+    mUi.checkIntervalSpinbox->setValue(Settings::intervalCheckTime());
 }
 
 SugarConfigDialog::~SugarConfigDialog()

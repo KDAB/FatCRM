@@ -24,6 +24,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "passwordhandler.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
@@ -57,6 +58,7 @@ public: // slots
 
     void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
     void loginError(const KDSoapMessage &fault);
+    void slotPasswordAvailable();
 };
 
 void SugarJob::Private::startLogin()
@@ -130,6 +132,12 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
     q->emitResult();
 }
 
+void SugarJob::Private::slotPasswordAvailable()
+{
+    kDebug();
+    startLogin();
+}
+
 SugarJob::SugarJob(SugarSession *session, QObject *parent)
     : KJob(parent), d(new Private(this, session))
 {
@@ -151,7 +159,12 @@ void SugarJob::start()
     d->mTryRelogin = true;
 
     if (d->mSession->sessionId().isEmpty()) {
-        QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
+        if (d->mSession->passwordHandler()->isPasswordAvailable()) {
+            QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
+        } else {
+            connect(d->mSession->passwordHandler(), SIGNAL(passwordAvailable()),
+                    this, SLOT(slotPasswordAvailable()));
+        }
     } else {
         QMetaObject::invokeMethod(this, "startTask", Qt::QueuedConnection);
     }

@@ -40,8 +40,9 @@ static QString endPointFromHostString(const QString &host)
 class SugarSession::Private
 {
 public:
-    explicit Private()
-        : mSoap(0)
+    explicit Private(PasswordHandler *passwordHandler)
+        : mSoap(0),
+          mPasswordHandler(passwordHandler)
     {
     }
 
@@ -51,10 +52,11 @@ public:
     QString mPassword;
     QString mHost;
     Sugarsoap *mSoap;
+    PasswordHandler *mPasswordHandler;
 };
 
-SugarSession::SugarSession(QObject *parent)
-    : QObject(parent), d(new Private())
+SugarSession::SugarSession(PasswordHandler *passwordHandler, QObject *parent)
+    : QObject(parent), d(new Private(passwordHandler))
 {
 }
 
@@ -81,6 +83,11 @@ SugarSession::RequiredAction SugarSession::setSessionParameters(const QString &u
     d->mHost = host;
 
     return result;
+}
+
+PasswordHandler *SugarSession::passwordHandler()
+{
+    return d->mPasswordHandler;
 }
 
 void SugarSession::createSoapInterface()

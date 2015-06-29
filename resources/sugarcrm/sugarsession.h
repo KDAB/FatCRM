@@ -29,6 +29,7 @@ namespace KDSoapGenerated
 {
 class Sugarsoap;
 }
+class PasswordHandler;
 
 class SugarSession : public QObject
 {
@@ -46,12 +47,13 @@ public:
         NewLogin
     };
 
-    explicit SugarSession(QObject *parent = 0);
+    explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = 0);
 
     ~SugarSession();
 
     RequiredAction setSessionParameters(const QString &username, const QString &password,
                                         const QString &host);
+    PasswordHandler *passwordHandler();
 
     void createSoapInterface();
 

@@ -34,7 +34,6 @@
 #include "listentriesjob.h"
 #include "listdeletedentriesjob.h"
 #include "listmodulesjob.h"
-#include "loginerrordialog.h"
 #include "loginjob.h"
 #include "moduledebuginterface.h"
 #include "noteshandler.h"
@@ -46,6 +45,7 @@
 #include "sugarsession.h"
 #include "taskshandler.h"
 #include "updateentryjob.h"
+#include "passwordhandler.h"
 
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/Collection>
@@ -64,7 +64,8 @@ using namespace Akonadi;
 
 SugarCRMResource::SugarCRMResource(const QString &id)
     : ResourceBase(id),
-      mSession(new SugarSession(this)),
+      mPasswordHandler(new PasswordHandler(id, this)),
+      mSession(new SugarSession(mPasswordHandler, this)),
       mCurrentJob(0),
       mLoginJob(0),
       mDebugInterface(new ResourceDebugInterface(this)),
@@ -93,8 +94,9 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     // make sure these call have the collection available as well
     changeRecorder()->fetchCollection(true);
 
-    mSession->setSessionParameters(Settings::self()->user(), Settings::self()->password(),
-                                   Settings::self()->host());
+    const QString password = mPasswordHandler->password();
+    mSession->setSessionParameters(Settings::user(), password,
+                                   Settings::host());
     mSession->createSoapInterface();
 
     connect(mConflictHandler, SIGNAL(commitChange(Akonadi::Item)),
@@ -102,7 +104,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     connect(mConflictHandler, SIGNAL(updateOnBackend(Akonadi::Item)),
             this, SLOT(updateOnBackend(Akonadi::Item)));
 
-    createModuleHandlers(Settings::self()->availableModules());
+    createModuleHandlers(Settings::availableModules());
 }
 
 SugarCRMResource::~SugarCRMResource()
@@ -114,7 +116,7 @@ SugarCRMResource::~SugarCRMResource()
 
 void SugarCRMResource::configure(WId windowId)
 {
-    SugarConfigDialog dialog(Settings::self(), name());
+    SugarConfigDialog dialog(mPasswordHandler, name());
 
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
@@ -149,11 +151,11 @@ void SugarCRMResource::configure(WId windowId)
         break;
     }
 
-    Settings::self()->setHost(host);
-    Settings::self()->setUser(user);
-    Settings::self()->setPassword(password);
-    Settings::self()->setIntervalCheckTime(intervalCheckTime);
+    Settings::setHost(host);
+    Settings::setUser(user);
+    Settings::setIntervalCheckTime(intervalCheckTime);
     Settings::self()->writeConfig();
+    mPasswordHandler->setPassword(password);
 
     setName(accountName);
 
@@ -174,11 +176,11 @@ void SugarCRMResource::doSetOnline(bool online)
         kDebug() << online;
         mOnline = online;
         if (online) {
-            if (Settings::self()->host().isEmpty()) {
+            if (Settings::host().isEmpty()) {
                 const QString message = i18nc("@info:status", "No server configured");
                 status(Broken, message);
                 error(message);
-            } else if (Settings::self()->user().isEmpty()) {
+            } else if (Settings::user().isEmpty()) {
                 const QString message = i18nc("@info:status", "No user name configured");
                 status(Broken, message);
                 error(message);
@@ -392,11 +394,11 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 
         if (Settings::host().isEmpty()) {
             message = i18nc("@info:status", "No server configured");
-        } else if (Settings::self()->user().isEmpty()) {
+        } else if (Settings::user().isEmpty()) {
             message = i18nc("@info:status", "No user name configured");
         } else {
             message = i18nc("@info:status", "Unable to login user %1 on %2: %3",
-                            Settings::self()->user(), Settings::self()->host(), message);
+                            Settings::user(), Settings::host(), message);
         }
 
         kWarning() << message;
@@ -447,7 +449,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     Akonadi::CachePolicy policy;
     policy.setInheritFromParent( false );
-    policy.setIntervalCheckTime( Settings::self()->intervalCheckTime() );
+    policy.setIntervalCheckTime( Settings::intervalCheckTime() );
     topLevelCollection.setCachePolicy( policy );
 
     collections << topLevelCollection;
@@ -465,7 +467,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
         }
     }
 
-    Settings::self()->setAvailableModules(availableModules);
+    Settings::setAvailableModules(availableModules);
     Settings::self()->writeConfig();
 
     collectionsRetrieved(collections);
@@ -790,39 +792,6 @@ bool SugarCRMResource::handleLoginError(KJob *job)
     } else {
         return false;
     }
-
-    // The popup is really annoying when simply not having internet access
-    // Let's try to do like the imap resource, with the code above.
-#if 0
-    const QString message = job->errorText();
-    kWarning() << "error=" << job->error() << ":" << message;
-
-    LoginErrorDialog dialog(job, mSession, this);
-
-    WId windowId = winIdForDialogs();
-    if (windowId != 0) {
-        KWindowSystem::setMainWindow(&dialog, windowId);
-    }
-
-    if (dialog.exec() == QDialog::Rejected) {
-        setOnline(false);
-
-        status(Broken, message);
-        error(message);
-
-        // if this is any other job than an explicit login, defer to next attempt
-        if (qobject_cast<LoginJob *>(job) == 0) {
-            deferTask();
-        } else {
-            taskDone();
-        }
-    } else {
-        // handleLoginError is called in the jobs result slot
-        // we can not restart before processing that has ended, otherwise
-        // auto delete will delete the job prematurely
-        QMetaObject::invokeMethod(job, "restart", Qt::QueuedConnection);
-    }
-#endif
 
     return true;
 }

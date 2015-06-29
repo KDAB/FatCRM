@@ -50,7 +50,7 @@ bool ResourceDebugInterface::kdSoapDebugEnabled() const
 
 QStringList ResourceDebugInterface::availableModules() const
 {
-    return Settings::self()->availableModules();
+    return Settings::availableModules();
 }
 
 QStringList ResourceDebugInterface::supportedModules() const

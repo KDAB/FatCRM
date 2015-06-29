@@ -26,12 +26,13 @@
 #include "ui_sugarconfigdialog.h"
 
 class Settings;
+class PasswordHandler;
 
 class SugarConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SugarConfigDialog(Settings *settings, const QString &accountName, QWidget *parent = 0);
+    explicit SugarConfigDialog(PasswordHandler *passwordHandler, const QString &accountName, QWidget *parent = 0);
 
     ~SugarConfigDialog();
 

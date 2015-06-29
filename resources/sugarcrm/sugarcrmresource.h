@@ -35,6 +35,7 @@ class ModuleHandler;
 class SugarSession;
 class LoginJob;
 class SugarJob;
+class PasswordHandler;
 
 template <typename U, typename V> class QHash;
 
@@ -63,6 +64,7 @@ public Q_SLOTS:
     virtual void configure(WId windowId);
 
 private:
+    PasswordHandler *mPasswordHandler;
     SugarSession *mSession;
     SugarJob *mCurrentJob; // do we ever run two jobs in parallel? in that case make it a list
     LoginJob *mLoginJob; // this one can happen in parallel, e.g. start listjob, setonline(false), setonline(true) -> LoginJob is created, and only afterwards the listjob finishes.
