@@ -27,8 +27,8 @@
 
 /**
  * @brief The reference update job goes through a collection and changes
- * all references from A to B. Example: renaming an account means changing
- * the account name in all opportunities for this account.
+ * all references from A to B. Example: resolving the account name to an
+ * account id in all opportunities loaded before the corresponding account.
  */
 class ReferenceUpdateJob : public KCompositeJob
 {
