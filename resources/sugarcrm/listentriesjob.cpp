@@ -32,7 +32,6 @@ using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
 #include <Akonadi/Collection>
-#include <Akonadi/CollectionModifyJob>
 #include <Akonadi/EntityAnnotationsAttribute>
 #include <Akonadi/ItemFetchJob>
 #include <Akonadi/ItemFetchScope>
