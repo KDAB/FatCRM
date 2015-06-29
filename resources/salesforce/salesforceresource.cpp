@@ -78,10 +78,6 @@ SalesforceResource::SalesforceResource(const QString &id)
     changeRecorder()->fetchCollection(true);
 
     connectSoapProxy();
-
-#if 0
-    mSoap->setEndPoint(endPointFromHostString(Settings::self()->host()));
-#endif
 }
 
 SalesforceResource::~SalesforceResource()
@@ -93,7 +89,7 @@ SalesforceResource::~SalesforceResource()
 
 void SalesforceResource::configure(WId windowId)
 {
-    SalesforceConfigDialog dialog(Settings::self(), name());
+    SalesforceConfigDialog dialog(name());
 
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
@@ -117,7 +113,7 @@ void SalesforceResource::configure(WId windowId)
 
     // change of host requires new instance of the SOAP client as its setEndPoint() method
     // does not change the internal client interface which actually handles the communication
-    if (host != Settings::self()->host()) {
+    if (host != Settings::host()) {
         if (!mSessionId.isEmpty()) {
             mSoap->logout();
             mSessionId = QString();
@@ -135,7 +131,7 @@ void SalesforceResource::configure(WId windowId)
         newLogin = true;
     }
 
-    if (user != Settings::self()->user() || password != Settings::self()->password()) {
+    if (user != Settings::user() || password != Settings::password()) {
         if (!mSessionId.isEmpty()) {
             mSoap->logout();
             mSessionId = QString();
@@ -144,9 +140,9 @@ void SalesforceResource::configure(WId windowId)
         newLogin = true;
     }
 
-    Settings::self()->setHost(host);
-    Settings::self()->setUser(user);
-    Settings::self()->setPassword(password);
+    Settings::setHost(host);
+    Settings::setUser(user);
+    Settings::setPassword(password);
     Settings::self()->writeConfig();
 
     emit configurationDialogAccepted();
@@ -170,16 +166,16 @@ void SalesforceResource::doSetOnline(bool online)
 
     if (online) {
 #if 0
-        if (Settings::self()->host().isEmpty()) {
+        if (Settings::host().isEmpty()) {
             const QString message = i18nc("@info:status", "No server configured");
             status(Broken, message);
             error(message);
-        } else if (Settings::self()->user().isEmpty()) {
+        } else if (Settings::user().isEmpty()) {
             const QString message = i18nc("@info:status", "No user name configured");
             status(Broken, message);
             error(message);
 #else
-        if (Settings::self()->user().isEmpty()) {
+        if (Settings::user().isEmpty()) {
             const QString message = i18nc("@info:status", "No user name configured");
             status(Broken, message);
             error(message);
@@ -192,8 +188,8 @@ void SalesforceResource::doSetOnline(bool online)
 
 void SalesforceResource::doLogin()
 {
-    const QString username = Settings::self()->user();
-    const QString password = Settings::self()->password();
+    const QString username = Settings::user();
+    const QString password = Settings::password();
 
     TNS__Login userAuth;
     userAuth.setUsername(username);
@@ -345,7 +341,7 @@ void SalesforceResource::retrieveCollections()
 #if 0
             message = i18nc("@info:status", "No server configured");
 #endif
-        } else if (Settings::self()->user().isEmpty()) {
+        } else if (Settings::user().isEmpty()) {
             message = i18nc("@info:status", "No user name configured");
         } else {
             message = i18nc("@info:status", "Unable to login to %1", Settings::host());
@@ -412,7 +408,7 @@ void SalesforceResource::retrieveItems(const Akonadi::Collection &collection)
         QString message;
         if (Settings::host().isEmpty()) {
             message = i18nc("@info:status", "No server configured");
-        } else if (Settings::self()->user().isEmpty()) {
+        } else if (Settings::user().isEmpty()) {
             message = i18nc("@info:status", "No user name configured");
         } else {
             message = i18nc("@info:status", "Unable to login to %1", Settings::host());

@@ -24,22 +24,22 @@
 
 #include "settings.h"
 
-SalesforceConfigDialog::SalesforceConfigDialog(Settings *settings, const QString &accountName)
+SalesforceConfigDialog::SalesforceConfigDialog(const QString &accountName)
     : QDialog()
 {
     mUi.setupUi(this);
 
     mUi.accountName->setText(accountName);
 #if 0
-    mUi.host->setText(settings->host());
+    mUi.host->setText(Settings::host());
 #else
     // hide the host/endpoint input until we find a way to determine the
     // end point URL from some user visible one
     mUi.label->setVisible(false);
     mUi.host->setVisible(false);
 #endif
-    mUi.user->setText(settings->user());
-    mUi.password->setText(settings->password());
+    mUi.user->setText(Settings::user());
+    mUi.password->setText(Settings::password());
 }
 
 SalesforceConfigDialog::~SalesforceConfigDialog()

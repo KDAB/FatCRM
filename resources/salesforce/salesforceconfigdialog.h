@@ -31,7 +31,7 @@ class SalesforceConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit SalesforceConfigDialog(Settings *settings, const QString &accountName);
+    explicit SalesforceConfigDialog(const QString &accountName);
 
     ~SalesforceConfigDialog();
 
