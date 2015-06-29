@@ -85,7 +85,7 @@ void SugarJob::Private::startLogin()
     mSession->setSessionId(QString());
 
     // results handled by slots loginDone() and loginError()
-    soap->asyncLogin(userAuth, QLatin1String("SugarClient"));
+    soap->asyncLogin(userAuth, QLatin1String("FatCRM"));
 }
 
 void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)

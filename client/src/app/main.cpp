@@ -32,9 +32,9 @@ static const char version[] = "0.1";
 
 int main(int argc, char **argv)
 {
-    KAboutData about("sugarclient", 0, ki18n("SugarClient"),
+    KAboutData about("fatcrm", 0, ki18n("FatCRM"),
                      version, ki18n(description),
-                     KAboutData::License_Custom, ki18n("(C) 2010 KDAB"),
+                     KAboutData::License_GPL_V2, ki18n("(C) 2010-2015 KDAB"),
                      KLocalizedString(), 0, "info@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);

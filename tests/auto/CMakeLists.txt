@@ -11,18 +11,18 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../..
 )
 
-macro(add_sugarclient_tests)
+macro(add_fatcrm_tests)
   foreach(_testname ${ARGN})
     kde4_add_unit_test(${_testname} TESTNAME "${_testname}" ${_testname}.cpp)
     target_link_libraries(${_testname}
-      sugarclientprivate
+      fatcrmprivate
       ${QT_QTTEST_LIBRARY}
       ${QT_QTGUI_LIBS}
     )
   endforeach()
 endmacro()
 
-add_sugarclient_tests(
+add_fatcrm_tests(
   referenceddatatest
   qdateeditextest
   test_contactsimporter

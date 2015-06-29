@@ -1,11 +1,11 @@
 
 2010-09-24
 
-Here is a quick description about how to use SugarClient.
+Here is a quick description about how to use FatCRM.
 We are still in the implementation stage and the step described 
 below will most probably change during the development process.
 
-When using the Windows installer, just click the SugarClient item in Windows
+When using the Windows installer, just click the FatCRM item in Windows
 start menu, Folder "FatCRM" and skip to (3).
 When running for the first time, check Appendix (B).
 
@@ -15,11 +15,11 @@ Open a shell. and run:
 'akonadictl start' ( to stop run 'akonadictl stop' ).
 
 
-2/ Start the SugarClient from another shell by running:
+2/ Start FatCRM from another shell by running:
 ======================================================
-'sugarclient'
+'fatcrm'
 
-If you did not start akonadictl as recommended in 1 - sugarclient will start it by itself. Or you can even login for its File menu.
+If you did not start akonadictl as recommended in 1 - FatCRM will start it by itself. Or you can even login for its File menu.
 
 Akonadictl being started, the treeviews for the different modules 
 supported at the moment should be dilled up with data.

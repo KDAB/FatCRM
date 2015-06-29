@@ -224,39 +224,39 @@
 :Select Sugar Resource.OK_QPushButton	{text='OK' type='QPushButton' unnamed='1' visible='1' window=':Select Sugar Resource_QInputDialog'}
 :Select Sugar Resource.Resource: _QLabel	{text='Resource: ' type='QLabel' unnamed='1' visible='1' window=':Select Sugar Resource_QInputDialog'}
 :Select Sugar Resource_QInputDialog	{type='QInputDialog' unnamed='1' visible='1' windowTitle='Select Sugar Resource'}
-:SugarCRM Client.&Contact Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client_SugarClient' windowTitle='&Contact Details'}
-:SugarCRM Client.&Lead Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client_SugarClient' windowTitle='&Lead Details'}
-:SugarCRM Client.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client_SugarClient'}
-:SugarCRM Client.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client_SugarClient'}
-:SugarCRM Client.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client_SugarClient'}
-:SugarCRM Client.qt_tabwidget_tabbar_QTabBar	{name='qt_tabwidget_tabbar' type='QTabBar' visible='1' window=':SugarCRM Client_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Account Details'}
-:SugarCRM Client: admin@SugarCRM on localhost.&Campaign Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Campaign Details'}
-:SugarCRM Client: admin@SugarCRM on localhost.&Contact Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Contact Details'}
-:SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Lead Details'}
-:SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='&Opportunity Details'}
-:SugarCRM Client: admin@SugarCRM on localhost.Details controller_QToolBar	{type='QToolBar' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient' windowTitle='Details controller'}
-:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu_2	{name='menuFile' title='File' type='QMenu' visible='0' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget	{name='qt_tabwidget_stackedwidget' type='QStackedWidget' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar	{name='qt_tabwidget_tabbar' type='QTabBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_SugarClient'}
-:SugarCRM Client: admin@SugarCRM on localhost_SugarClient	{name='MainWindow' type='SugarClient' visible='1' windowTitle='SugarCRM Client: admin@SugarCRM on localhost'}
-:SugarCRM Client_SugarClient	{name='MainWindow' type='SugarClient' visible='1' windowTitle='SugarCRM Client'}
-:SugarClient - Delete Account.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Account_QMessageBox'}
-:SugarClient - Delete Account_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Account'}
-:SugarClient - Delete Campaign.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Campaign_QMessageBox'}
-:SugarClient - Delete Campaign_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Campaign'}
-:SugarClient - Delete Contact.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Contact_QMessageBox'}
-:SugarClient - Delete Contact_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Contact'}
-:SugarClient - Delete Lead.Cancel_QPushButton	{text='Cancel' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
-:SugarClient - Delete Lead.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Lead_QMessageBox'}
-:SugarClient - Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Lead'}
-:SugarClient - Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete Opportunity_QMessageBox'}
-:SugarClient - Delete Opportunity_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete Opportunity'}
-:SugarClient - Delete record.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':SugarClient - Delete record_QMessageBox'}
-:SugarClient - Delete record_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='SugarClient - Delete record'}
+:SugarCRM Client.&Contact Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client_FatCRM' windowTitle='&Contact Details'}
+:SugarCRM Client.&Lead Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client_FatCRM' windowTitle='&Lead Details'}
+:SugarCRM Client.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client_FatCRM'}
+:SugarCRM Client.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client_FatCRM'}
+:SugarCRM Client.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client_FatCRM'}
+:SugarCRM Client.qt_tabwidget_tabbar_QTabBar	{name='qt_tabwidget_tabbar' type='QTabBar' visible='1' window=':SugarCRM Client_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Account Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='&Account Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Campaign Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='&Campaign Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Contact Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='&Contact Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Lead Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='&Lead Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.&Opportunity Details_QDockWidget	{type='QDockWidget' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='&Opportunity Details'}
+:SugarCRM Client: admin@SugarCRM on localhost.Details controller_QToolBar	{type='QToolBar' unnamed='1' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM' windowTitle='Details controller'}
+:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu	{name='menuFile' title='File' type='QMenu' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.File_QMenu_2	{name='menuFile' title='File' type='QMenu' visible='0' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.Show Details_QCheckBox	{name='showDetails' text='Show Details' type='QCheckBox' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.menubar_QMenuBar	{name='menubar' type='QMenuBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget	{name='qt_tabwidget_stackedwidget' type='QStackedWidget' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_tabbar_QTabBar	{name='qt_tabwidget_tabbar' type='QTabBar' visible='1' window=':SugarCRM Client: admin@SugarCRM on localhost_FatCRM'}
+:SugarCRM Client: admin@SugarCRM on localhost_FatCRM	{name='MainWindow' type='FatCRM' visible='1' windowTitle='SugarCRM Client: admin@SugarCRM on localhost'}
+:SugarCRM Client_FatCRM	{name='MainWindow' type='FatCRM' visible='1' windowTitle='SugarCRM Client'}
+:Delete Account.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete Account_QMessageBox'}
+:Delete Account_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete Account'}
+:Delete Campaign.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete Campaign_QMessageBox'}
+:Delete Campaign_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete Campaign'}
+:Delete Contact.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete Contact_QMessageBox'}
+:Delete Contact_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete Contact'}
+:Delete Lead.Cancel_QPushButton	{text='Cancel' type='QPushButton' unnamed='1' visible='1' window=':Delete Lead_QMessageBox'}
+:Delete Lead.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete Lead_QMessageBox'}
+:Delete Lead_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete Lead'}
+:Delete Opportunity.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete Opportunity_QMessageBox'}
+:Delete Opportunity_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete Opportunity'}
+:Delete record.Yes_QPushButton	{text='Yes' type='QPushButton' unnamed='1' visible='1' window=':Delete record_QMessageBox'}
+:Delete record_QMessageBox	{type='QMessageBox' unnamed='1' visible='1' windowTitle='Delete record'}
 :_QMessageBox	{type='QMessageBox' unnamed='1' visible='1'}
 :contactsTV_QScrollBar	{container=':Contacts.contactsTV_Akonadi::EntityTreeView' type='QScrollBar' unnamed='1' visible='1'}
 :qt_tabwidget_stackedwidget.Contacts_ContactsPage	{container=':SugarCRM Client: admin@SugarCRM on localhost.qt_tabwidget_stackedwidget_QStackedWidget' name='ContactsPage' type='ContactsPage' visible='1' windowTitle='Contacts'}

@@ -133,7 +133,7 @@ def removeContact(firstName):
     type(waitForObject(":Contacts.searchLE_QLineEdit"), firstName)    
     mouseClick((":Contacts.contactsTV_Akonadi::EntityTreeView"), 20, 42, 0, Qt.LeftButton)
     clickButton(waitForObject(":Contacts.Remove Contact_QPushButton"))
-    clickButton(waitForObject(":SugarClient - Delete Contact.Yes_QPushButton"))
+    clickButton(waitForObject(":Delete Contact.Yes_QPushButton"))
     clickButton(waitForObject(":Contacts.Clear_QToolButton"))
     type(waitForObject(":Contacts.searchLE_QLineEdit"), firstName)
     treeView = waitForObject(":Contacts.contactsTV_Akonadi::EntityTreeView")

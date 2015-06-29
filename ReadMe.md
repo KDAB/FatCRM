@@ -60,7 +60,7 @@ In SugarCRM, click on your own name in the topright corner, go to the Advanced t
 
 * Starting FatCRM
 
-The executable name is sugarclient. It should appear in your K menu under the name "FatCRM".
+The executable name is fatcrm. It should appear in your K menu under the name "FatCRM".
 
 * First time setup
 

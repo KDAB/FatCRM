@@ -29,9 +29,9 @@
 
 int main(int argc, char **argv)
 {
-    KAboutData about("sugarclient", 0, ki18n("SugarClient"),
-                     "0.1", ki18n("Resource Config Dialog test"),
-                     KAboutData::License_Custom, ki18n("(C) 2015 KDAB"),
+    KAboutData about("resourceconfigdialogtest", 0, ki18n("ResourceConfigDialog test"),
+                     "0.1", ki18n("Resource Config Dialog test program"),
+                     KAboutData::License_GPL_V2, ki18n("(C) 2015 KDAB"),
                      KLocalizedString(), 0, "david.faure@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);

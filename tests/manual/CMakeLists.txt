@@ -11,12 +11,12 @@ include_directories(
 
 add_executable(resourceconfigdialogtest resourceconfigdialogtest.cpp)
 target_link_libraries(resourceconfigdialogtest
-  sugarclientprivate
+  fatcrmprivate
   ${QT_QTGUI_LIBS}
 )
 
 kde4_add_executable(itemstreemodeltest itemstreemodeltest.cpp)
 target_link_libraries(itemstreemodeltest
-  sugarclientprivate
+  fatcrmprivate
   ${QT_QTGUI_LIBS}
 )

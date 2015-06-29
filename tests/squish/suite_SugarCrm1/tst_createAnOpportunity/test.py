@@ -1,5 +1,5 @@
 def main():
-    startApplication("sugarclient")
+    startApplication("fatcrm")
     # load methods 
     import opportunitiesHandling
     import mainWindowHandling

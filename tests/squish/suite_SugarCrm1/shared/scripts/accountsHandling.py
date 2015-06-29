@@ -114,7 +114,7 @@ def removeAccount( accountName ):
      type(waitForObject(":Page.searchLE_QLineEdit"), accountName)
      waitForObjectItem(":Page.treeView_Akonadi::EntityTreeView", "admin")          
      clickButton(waitForObject(":Page.Remove_QPushButton"))
-     clickButton(waitForObject(":SugarClient - Delete record.Yes_QPushButton"))
+     clickButton(waitForObject(":Delete record.Yes_QPushButton"))
      clickButton(waitForObject(":Page.Clear_QToolButton"))     
      type(waitForObject(":Page.searchLE_QLineEdit"), accountName)
      treeView = waitForObject(":Page.treeView_Akonadi::EntityTreeView")

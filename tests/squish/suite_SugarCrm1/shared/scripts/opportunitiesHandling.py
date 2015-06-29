@@ -64,7 +64,7 @@ def removeOpportunity(opportunityName):
     type(waitForObject(":Form.searchLE_QLineEdit_2"), opportunityName)
     mouseClick(waitForObject(":Form.opportunitiesTV_Akonadi::EntityTreeView"), 135, 9, 0, Qt.LeftButton)
     clickButton(waitForObject(":Form.Remove Opportunity_QPushButton"))
-    clickButton(waitForObject(":SugarClient - Delete Opportunity.Yes_QPushButton"))
+    clickButton(waitForObject(":Delete Opportunity.Yes_QPushButton"))
     clickButton(waitForObject(":Form.Clear_QToolButton_2"))
     type(waitForObject(":Form.searchLE_QLineEdit_2"), opportunityName)
     treeView = waitForObject(":Form.opportunitiesTV_Akonadi::EntityTreeView")

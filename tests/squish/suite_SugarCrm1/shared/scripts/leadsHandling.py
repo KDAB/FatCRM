@@ -140,7 +140,7 @@ def removeLead(firstName):
     type(waitForObject(":Form.searchLE_QLineEdit_3"), firstName)    
     mouseClick((":Form.leadsTV_Akonadi::EntityTreeView"), 62, 8, 0, Qt.LeftButton)
     clickButton(waitForObject(":Form.Remove Lead_QPushButton"))
-    clickButton(waitForObject(":SugarClient - Delete Lead.Yes_QPushButton"))
+    clickButton(waitForObject(":Delete Lead.Yes_QPushButton"))
     clickButton(waitForObject(":Form.Clear_QToolButton_3"))
     type(waitForObject(":Form.searchLE_QLineEdit_3"), firstName)
     treeView = waitForObject(":Form.leadsTV_Akonadi::EntityTreeView")

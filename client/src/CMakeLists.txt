@@ -77,9 +77,9 @@ qt4_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-kde4_add_library(sugarclientprivate ${app_SRCS})
+kde4_add_library(fatcrmprivate ${app_SRCS})
 
-target_link_libraries(sugarclientprivate
+target_link_libraries(fatcrmprivate
   kdcrmdata
   ${KDE4_KDECORE_LIBS}
   ${KDE4_AKONADI_LIBS}
@@ -87,18 +87,18 @@ target_link_libraries(sugarclientprivate
   ${QT_QTGUI_LIBS}
 )
 
-target_link_libraries(sugarclientprivate
+target_link_libraries(fatcrmprivate
   ${KDReports_LIBRARIES}
 )
 
-kde4_add_executable(sugarclient app/main.cpp)
+kde4_add_executable(fatcrm app/main.cpp)
 
-target_link_libraries(sugarclient
-  sugarclientprivate
+target_link_libraries(fatcrm
+  fatcrmprivate
 )
 
-install(TARGETS sugarclientprivate ${INSTALL_TARGETS_DEFAULT_ARGS})
-install(TARGETS sugarclient ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS fatcrmprivate ${INSTALL_TARGETS_DEFAULT_ARGS})
+install(TARGETS fatcrm ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 

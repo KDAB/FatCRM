@@ -314,7 +314,7 @@ void Page::slotRemoveItem()
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
 
     QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("SugarClient - Delete record"));
+    msgBox.setWindowTitle(tr("Delete record"));
     msgBox.setText(QString("The selected item will be removed permanentely!"));
     msgBox.setInformativeText(tr("Are you sure you want to delete it?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
@@ -633,7 +633,7 @@ void Page::printReport()
     const int count = model->rowCount();
     if (count > 1000) {
         QMessageBox msgBox;
-        msgBox.setWindowTitle(i18n("SugarClient - Long report warning"));
+        msgBox.setWindowTitle(i18n("Long report warning"));
         msgBox.setText(i18n("The generated report will contain %1 rows, which might be long to generate and print.", count));
         msgBox.setInformativeText(tr("Are you sure you want to proceed?"));
         msgBox.setStandardButtons(QMessageBox::Yes |
