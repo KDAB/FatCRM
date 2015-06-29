@@ -41,6 +41,7 @@
     <addaction name="actionImportContacts"/>
     <addaction name="separator"/>
     <addaction name="actionSynchronize"/>
+    <addaction name="actionFullReload"/>
     <addaction name="actionOfflineMode"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -88,6 +89,9 @@
    <property name="text">
     <string>Offline Mode</string>
    </property>
+   <property name="statusTip">
+    <string>Make resource offline. This stops any synchronization with the server. Local changes will be applied when going back online.</string>
+   </property>
   </action>
   <action name="actionQuit">
    <property name="text">
@@ -110,6 +114,17 @@
   <action name="actionAboutFatCRM">
    <property name="text">
     <string>About &amp;FatCRM...</string>
+   </property>
+  </action>
+  <action name="actionFullReload">
+   <property name="text">
+    <string>Full Reload</string>
+   </property>
+   <property name="toolTip">
+    <string>Full Reload</string>
+   </property>
+   <property name="statusTip">
+    <string>Reload everything from the server. This is useful after merging accounts, which does not correctly update the opportunities and accounts that were using the old account.</string>
    </property>
   </action>
  </widget>

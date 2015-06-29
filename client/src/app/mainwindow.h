@@ -88,6 +88,7 @@ private:
 
     QToolBar *mMainToolBar;
     QAction *mResourceSelectorAction;
+    QList<KJob *> mClearTimestampJobs;
 
 private Q_SLOTS:
     void slotDelayedInit();
@@ -95,6 +96,7 @@ private Q_SLOTS:
     void slotToggleOffline(bool offline);
     void slotSynchronize();
     void slotSynchronizeCollection(const Akonadi::Collection &collection);
+    void slotFullReload();
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
     void slotResourceCountChanged();
@@ -117,6 +119,7 @@ private Q_SLOTS:
     void slotIgnoreModifications(bool ignore);
     void slotOppModelCreated(ItemsTreeModel *model);
     void slotOpenObject(DetailsType type, const QString &id);
+    void slotClearTimestampResult(KJob*);
 
 
 private:

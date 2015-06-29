@@ -39,6 +39,7 @@
 
 #include <Akonadi/AgentManager>
 #include <Akonadi/ChangeRecorder>
+#include <Akonadi/CollectionModifyJob>
 #include <Akonadi/CollectionStatistics>
 #include <Akonadi/EntityMimeTypeFilterModel>
 #include <Akonadi/Item>
@@ -820,4 +821,22 @@ void Page::retrieveResourceUrl()
         mResourceBaseUrl = iface.host();
         mDetailsWidget->details()->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     }
+}
+
+// duplicated in listentriesjob.cpp
+static const char s_timeStampKey[] = "timestamp";
+
+KJob *Page::clearTimestamp()
+{
+    Collection coll(mCollection.id());
+    coll.setResource(mCollection.resource());
+    EntityAnnotationsAttribute *annotationsAttribute =
+            mCollection.attribute<EntityAnnotationsAttribute>();
+    EntityAnnotationsAttribute *newAnnotationsAttribute =
+            coll.attribute<EntityAnnotationsAttribute>(Entity::AddIfMissing);
+    if (annotationsAttribute)
+        *newAnnotationsAttribute = *annotationsAttribute;
+    newAnnotationsAttribute->insert(s_timeStampKey, QString());
+    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
+    return modJob;
 }

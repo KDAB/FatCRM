@@ -133,6 +133,7 @@ void MainWindow::initialize()
     setupActions();
     // initialize view actions
     mUi.actionSynchronize->setEnabled(false);
+    mUi.actionFullReload->setEnabled(false);
     mUi.actionOfflineMode->setEnabled(false);
 
     mProgressBar = new QProgressBar(this);
@@ -190,6 +191,7 @@ void MainWindow::setupActions()
     connect(mUi.actionImportContacts, SIGNAL(triggered()), this, SLOT(slotImportContacts()));
     connect(mUi.actionOfflineMode, SIGNAL(toggled(bool)), this, SLOT(slotToggleOffline(bool)));
     connect(mUi.actionSynchronize, SIGNAL(triggered()), this, SLOT(slotSynchronize()));
+    connect(mUi.actionFullReload, SIGNAL(triggered()), this, SLOT(slotFullReload()));
     connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
@@ -217,6 +219,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         emit resourceSelected(identifier);
         updateWindowTitle(agent.isOnline());
         mUi.actionSynchronize->setEnabled(true);
+        mUi.actionFullReload->setEnabled(true);
         mUi.actionOfflineMode->setEnabled(true);
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
@@ -228,6 +231,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         slotShowMessage(i18n("(0/5) Listing folders..."));
     } else {
         mUi.actionSynchronize->setEnabled(false);
+        mUi.actionFullReload->setEnabled(false);
         mUi.actionOfflineMode->setEnabled(false);
     }
 }
@@ -284,6 +288,18 @@ void MainWindow::slotSynchronizeCollection(const Collection &collection)
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
         AgentManager::self()->synchronizeCollection(collection);
+    }
+}
+
+void MainWindow::slotFullReload()
+{
+    // Kick off one collection-modify job per collection, to clear the timestamp attribute
+    // Once all these jobs are done, we'll trigger a resource synchronization
+    mClearTimestampJobs.clear();
+    Q_FOREACH (Page *page, mPages) {
+        KJob *modJob = page->clearTimestamp();
+        connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotClearTimestampResult(KJob*)));
+        mClearTimestampJobs.append(modJob);
     }
 }
 
@@ -574,6 +590,14 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
     Page *page = pageForType(type);
     if (page) {
         page->openDialog(id);
+    }
+}
+
+void MainWindow::slotClearTimestampResult(KJob *job)
+{
+    mClearTimestampJobs.removeAll(job);
+    if (mClearTimestampJobs.isEmpty()) {
+        slotSynchronize();
     }
 }
 

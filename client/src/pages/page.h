@@ -68,6 +68,7 @@ public:
     bool showsDetails() const;
     void printReport();
     void retrieveResourceUrl();
+    KJob *clearTimestamp();
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
