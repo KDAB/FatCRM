@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "sugarclient.h"
+#include "mainwindow.h"
 
 #include "accountimportdialog.h"
 #include "accountrepository.h"
@@ -55,7 +55,7 @@ using namespace Akonadi;
 #include <QTimer>
 #include <QToolBar>
 
-SugarClient::SugarClient()
+MainWindow::MainWindow()
     : QMainWindow(),
       mShowDetails(0),
       mProgressBar(0),
@@ -78,12 +78,12 @@ SugarClient::SugarClient()
      ClientSettings::self()->restoreWindowSize("main", this);
 }
 
-SugarClient::~SugarClient()
+MainWindow::~MainWindow()
 {
     ClientSettings::self()->saveWindowSize("main", this);
 }
 
-void SugarClient::slotDelayedInit()
+void MainWindow::slotDelayedInit()
 {
     Q_FOREACH (const Page *page, mPages) {
         connect(this, SIGNAL(resourceSelected(QByteArray)),
@@ -118,12 +118,12 @@ void SugarClient::slotDelayedInit()
             this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
 }
 
-void SugarClient::slotAboutApp()
+void MainWindow::slotAboutApp()
 {
     QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2015 Klarälvdalens Datakonsult AB (KDAB)", QString(s_version)));
 }
 
-void SugarClient::initialize()
+void MainWindow::initialize()
 {
     Q_INIT_RESOURCE(icons);
 
@@ -151,7 +151,7 @@ void SugarClient::initialize()
             this, SLOT(slotEmailsLoaded(int)));
 }
 
-void SugarClient::createActions()
+void MainWindow::createActions()
 {
     // the other menus are handled in Qt Designer
 
@@ -177,7 +177,7 @@ void SugarClient::createActions()
     mMainToolBar->addAction(printAction);
 }
 
-void SugarClient::setupActions()
+void MainWindow::setupActions()
 {
     const QIcon reloadIcon =
         (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, 0)
@@ -209,7 +209,7 @@ void SugarClient::setupActions()
     }
 }
 
-void SugarClient::slotResourceSelectionChanged(int index)
+void MainWindow::slotResourceSelectionChanged(int index)
 {
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
@@ -232,7 +232,7 @@ void SugarClient::slotResourceSelectionChanged(int index)
     }
 }
 
-void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
+void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
 {
     for (int index = 0; index < mResourceSelector->count(); ++index) {
         const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
@@ -243,7 +243,7 @@ void SugarClient::slotResourceSelected(const Akonadi::AgentInstance &resource)
     }
 }
 
-void SugarClient::slotServerStarted()
+void MainWindow::slotServerStarted()
 {
     kDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
     if (mResourceSelector->count() > 0) {
@@ -251,13 +251,13 @@ void SugarClient::slotServerStarted()
     }
 }
 
-void SugarClient::slotResourceCountChanged()
+void MainWindow::slotResourceCountChanged()
 {
     // an empty combo or a combo with one item just looks stupid
     mResourceSelectorAction->setVisible(mResourceSelector->count() > 1);
 }
 
-void SugarClient::slotToggleOffline(bool offline)
+void MainWindow::slotToggleOffline(bool offline)
 {
     AgentInstance currentAgent = currentResource();
     const bool online = !offline;
@@ -267,7 +267,7 @@ void SugarClient::slotToggleOffline(bool offline)
     }
 }
 
-void SugarClient::slotSynchronize()
+void MainWindow::slotSynchronize()
 {
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
@@ -278,7 +278,7 @@ void SugarClient::slotSynchronize()
     }
 }
 
-void SugarClient::slotSynchronizeCollection(const Collection &collection)
+void MainWindow::slotSynchronizeCollection(const Collection &collection)
 {
     AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid()) {
@@ -289,13 +289,13 @@ void SugarClient::slotSynchronizeCollection(const Collection &collection)
     }
 }
 
-void SugarClient::slotShowMessage(const QString &message)
+void MainWindow::slotShowMessage(const QString &message)
 {
     kDebug() << message;
     statusBar()->showMessage(message);
 }
 
-void SugarClient::slotModelLoaded(DetailsType type)
+void MainWindow::slotModelLoaded(DetailsType type)
 {
     // We load Opps, Accounts, Contacts, Notes and Emails in this order (see CollectionManager)
     //qDebug() << typeToString(type) << "loaded";
@@ -322,21 +322,21 @@ void SugarClient::slotModelLoaded(DetailsType type)
     }
 }
 
-void SugarClient::slotNotesLoaded(int count)
+void MainWindow::slotNotesLoaded(int count)
 {
     Q_UNUSED(count);
     slotShowMessage(i18n("(5/5) Loading emails..."));
     mNotesRepository->loadEmails();
 }
 
-void SugarClient::slotEmailsLoaded(int count)
+void MainWindow::slotEmailsLoaded(int count)
 {
     Q_UNUSED(count);
     mNotesRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
 }
 
-void SugarClient::createTabs()
+void MainWindow::createTabs()
 {
     Page *page = new AccountsPage(this);
     mPages << page;
@@ -380,13 +380,13 @@ void SugarClient::createTabs()
     mUi.tabWidget->setCurrentIndex(1);
 }
 
-void SugarClient::slotConfigureResources()
+void MainWindow::slotConfigureResources()
 {
     mResourceDialog->show();
     mResourceDialog->raise();
 }
 
-void SugarClient::setupResourcesCombo()
+void MainWindow::setupResourcesCombo()
 {
     // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel(this);
@@ -410,12 +410,12 @@ void SugarClient::setupResourcesCombo()
     slotResourceCountChanged();
 }
 
-void SugarClient::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
     QMainWindow::closeEvent(event);
 }
 
-void SugarClient::slotResourceError(const AgentInstance &resource, const QString &message)
+void MainWindow::slotResourceError(const AgentInstance &resource, const QString &message)
 {
     const AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
@@ -423,7 +423,7 @@ void SugarClient::slotResourceError(const AgentInstance &resource, const QString
     }
 }
 
-void SugarClient::updateWindowTitle(bool online)
+void MainWindow::updateWindowTitle(bool online)
 {
     if (mResourceSelector->count() == 1) {
         setWindowTitle(online ? i18n("FatCRM") : i18n("FatCRM (offline)"));
@@ -437,7 +437,7 @@ void SugarClient::updateWindowTitle(bool online)
     }
 }
 
-void SugarClient::slotResourceOnline(const AgentInstance &resource, bool online)
+void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
 {
     const AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
@@ -451,7 +451,7 @@ void SugarClient::slotResourceOnline(const AgentInstance &resource, bool online)
     }
 }
 
-void SugarClient::slotResourceProgress(const AgentInstance &resource)
+void MainWindow::slotResourceProgress(const AgentInstance &resource)
 {
     const AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
@@ -482,12 +482,12 @@ void SugarClient::slotResourceProgress(const AgentInstance &resource)
     }
 }
 
-void SugarClient::slotShowDetails(bool on)
+void MainWindow::slotShowDetails(bool on)
 {
     mPages[ mUi.tabWidget->currentIndex() ]->showDetails(on);
 }
 
-void SugarClient::slotPageShowDetailsChanged()
+void MainWindow::slotPageShowDetailsChanged()
 {
     Page *page = currentPage();
     if (page) {
@@ -495,14 +495,14 @@ void SugarClient::slotPageShowDetailsChanged()
     }
 }
 
-void SugarClient::slotCurrentTabChanged(int index)
+void MainWindow::slotCurrentTabChanged(int index)
 {
     if (index < mPages.count()) {
         mShowDetails->setChecked(mPages[ index ]->showsDetails());
     }
 }
 
-void SugarClient::slotImportContacts()
+void MainWindow::slotImportContacts()
 {
     const QString csvFile = QFileDialog::getOpenFileName(this, tr("Select contacts file"), QString(), "*.csv");
     if (!csvFile.isEmpty()) {
@@ -519,7 +519,7 @@ void SugarClient::slotImportContacts()
     }
 }
 
-void SugarClient::slotConfigure()
+void MainWindow::slotConfigure()
 {
     ConfigurationDialog dlg;
     dlg.setFullUserName(ClientSettings::self()->fullUserName());
@@ -533,14 +533,14 @@ void SugarClient::slotConfigure()
     }
 }
 
-void SugarClient::slotPrintReport()
+void MainWindow::slotPrintReport()
 {
     Page *page = currentPage();
     if (page)
         page->printReport();
 }
 
-void SugarClient::slotCollectionResult(const QString &mimeType, const Collection &collection)
+void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
     if (mimeType == "application/x-vnd.kdab.crm.account") {
         slotShowMessage(i18n("(1/5) Loading accounts..."));
@@ -559,19 +559,19 @@ void SugarClient::slotCollectionResult(const QString &mimeType, const Collection
 
 }
 
-void SugarClient::slotIgnoreModifications(bool ignore)
+void MainWindow::slotIgnoreModifications(bool ignore)
 {
     foreach(Page *page, mPages) {
         page->setModificationsIgnored(ignore);
     }
 }
 
-void SugarClient::slotOppModelCreated(ItemsTreeModel *model)
+void MainWindow::slotOppModelCreated(ItemsTreeModel *model)
 {
     mReportPage->setOppModel(model);
 }
 
-void SugarClient::slotOpenObject(DetailsType type, const QString &id)
+void MainWindow::slotOpenObject(DetailsType type, const QString &id)
 {
     Page *page = pageForType(type);
     if (page) {
@@ -579,7 +579,7 @@ void SugarClient::slotOpenObject(DetailsType type, const QString &id)
     }
 }
 
-Page *SugarClient::currentPage() const
+Page *MainWindow::currentPage() const
 {
     const int index = mUi.tabWidget->currentIndex();
     if (index >= 0 && index <= mPages.count())
@@ -587,13 +587,13 @@ Page *SugarClient::currentPage() const
     return 0;
 }
 
-AgentInstance SugarClient::currentResource() const
+AgentInstance MainWindow::currentResource() const
 {
     const int index = mResourceSelector->currentIndex();
     return mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
 }
 
-void SugarClient::initialResourceSelection()
+void MainWindow::initialResourceSelection()
 {
     const int selectors = mResourceSelector->count();
     if (selectors == 1) {
@@ -605,7 +605,7 @@ void SugarClient::initialResourceSelection()
     }
 }
 
-Page *SugarClient::pageForType(DetailsType type) const
+Page *MainWindow::pageForType(DetailsType type) const
 {
     foreach(Page *page, mPages) {
         if (page->detailsType() == type) {
@@ -615,4 +615,4 @@ Page *SugarClient::pageForType(DetailsType type) const
     return 0;
 }
 
-#include "sugarclient.moc"
+#include "mainwindow.moc"

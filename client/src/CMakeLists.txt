@@ -1,7 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR} app details dialogs models pages reports utilities widgets views)
 
-set(sugarclient_SRCS
-  app/sugarclient.cpp
+set(app_SRCS
+  app/mainwindow.cpp
   app/clientsettings.cpp
   pages/page.cpp
   pages/accountspage.cpp
@@ -45,7 +45,7 @@ set(sugarclient_SRCS
   widgets/qdateeditex.cpp
 )
 
-kde4_add_ui_files(sugarclient_SRCS
+kde4_add_ui_files(app_SRCS
   app/mainwindow.ui
   pages/page.ui
   pages/reportpage.ui
@@ -63,21 +63,21 @@ kde4_add_ui_files(sugarclient_SRCS
   dialogs/resourceconfigdialog.ui
 )
 
-qt4_add_resources(sugarclient_SRCS
+qt4_add_resources(app_SRCS
   widgets/widgets.qrc
 )
-qt4_add_resources(sugarclient_SRCS
+qt4_add_resources(app_SRCS
   icons/icons.qrc
 )
 
 # Generate DBus interface in order to find out the config of the sugar resource (for the web link)
 # TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
-qt4_add_dbus_interface(sugarclient_SRCS
+qt4_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-kde4_add_library(sugarclientprivate ${sugarclient_SRCS})
+kde4_add_library(sugarclientprivate ${app_SRCS})
 
 target_link_libraries(sugarclientprivate
   kdcrmdata

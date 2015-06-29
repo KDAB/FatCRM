@@ -20,8 +20,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SUGARCLIENT_H
-#define SUGARCLIENT_H
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
 
 #include "ui_mainwindow.h"
 #include "accountspage.h"
@@ -49,13 +49,13 @@ namespace Akonadi
 class AgentInstance;
 }
 
-class SugarClient : public QMainWindow
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    SugarClient();
+    MainWindow();
 
-    ~SugarClient();
+    ~MainWindow();
 
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);

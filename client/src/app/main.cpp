@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "sugarclient.h"
+#include "mainwindow.h"
 
 #include <KApplication>
 #include <KAboutData>
@@ -39,8 +39,8 @@ int main(int argc, char **argv)
 
     KCmdLineArgs::init(argc, argv, &about);
     KApplication app;
-    SugarClient *sugarClt = new SugarClient;
-    sugarClt->setAttribute(Qt::WA_DeleteOnClose);
-    sugarClt->show();
+    MainWindow *window = new MainWindow;
+    window->setAttribute(Qt::WA_DeleteOnClose);
+    window->show();
     return app.exec();
 }
