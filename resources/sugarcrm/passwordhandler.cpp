@@ -42,8 +42,8 @@ PasswordHandler::PasswordHandler(const QString &resourceId, QObject *parent) :
 
     Wallet *wallet = Wallet::openWallet( Wallet::NetworkWallet(), m_winId, Wallet::Asynchronous );
     if ( wallet ) {
-      connect( wallet, SIGNAL( walletOpened(bool) ),
-               this, SLOT( onWalletOpened(bool) ) );
+      connect( wallet, SIGNAL(walletOpened(bool)),
+               this, SLOT(onWalletOpened(bool)) );
     }
 #endif
 }
