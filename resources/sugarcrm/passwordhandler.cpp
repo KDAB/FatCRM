@@ -23,7 +23,7 @@
 #include <settings.h>
 
 #if USE_KWALLET
-#include <kwallet.h>
+#include <KWallet/Wallet>
 using KWallet::Wallet;
 
 static const char s_walletFolderName[] = "SugarCRM";
