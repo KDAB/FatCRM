@@ -121,9 +121,9 @@ void PasswordHandler::onWalletOpened(bool success)
 #endif
 }
 
+#if USE_KWALLET
 bool PasswordHandler::savePassword()
 {
-#if USE_KWALLET
     QScopedPointer<Wallet> wallet(Wallet::openWallet(Wallet::NetworkWallet(), m_winId));
     if (wallet && wallet->isOpen()) {
         if (!wallet->hasFolder(QString(s_walletFolderName)))
@@ -136,5 +136,5 @@ bool PasswordHandler::savePassword()
         return true;
     }
     return false;
-#endif
 }
+#endif
