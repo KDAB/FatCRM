@@ -109,12 +109,16 @@ void PasswordHandler::setPassword(const QString &password)
 
 void PasswordHandler::onWalletOpened(bool success)
 {
+#if USE_KWALLET
     Wallet *wallet = qobject_cast<Wallet*>( sender() );
     if (wallet && success) {
         // read and store the password
         password();
         emit passwordAvailable();
     }
+#else
+    Q_UNUSED(success);
+#endif
 }
 
 bool PasswordHandler::savePassword()
