@@ -122,7 +122,7 @@ private:
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
     bool askSave();
-    void updateSupportedFields();
+    void readSupportedFields();
 
     void addAccountsData(int start, int end, bool emitChanges);
     void removeAccountsData(int start, int end, bool emitChanges);

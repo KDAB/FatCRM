@@ -159,7 +159,7 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 void Page::setCollection(const Collection &collection)
 {
     mCollection = collection;
-    updateSupportedFields();
+    readSupportedFields();
 
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
@@ -558,7 +558,7 @@ bool Page::askSave()
 // duplicated in listentriesjob.cpp
 static const char s_supportedFieldsKey[] = "supportedFields";
 
-void Page::updateSupportedFields()
+void Page::readSupportedFields()
 {
     EntityAnnotationsAttribute *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>();
@@ -595,7 +595,7 @@ void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QS
         mCollection = collection;
 
         if (attributeNames.contains(s_supportedFieldsKey)) {
-            updateSupportedFields();
+            readSupportedFields();
         }
     }
 }
