@@ -126,6 +126,16 @@ static void setAssignedUserId( const QString &value, KCalCore::Todo &todo )
     todo.setCustomProperty( "SugarCRM", "X-AssignedUserId", value );
 }
 
+static QString getAssignedUserName( const KCalCore::Todo &todo )
+{
+    return todo.customProperty( "SugarCRM", "X-AssignedUserName" );
+}
+
+static void setAssignedUserName( const QString &value, KCalCore::Todo &todo )
+{
+    todo.setCustomProperty( "SugarCRM", "X-AssignedUserName", value );
+}
+
 static QString getStatus( const KCalCore::Todo &todo )
 {
     if ( todo.status() == KCalCore::Todo::StatusConfirmed ) {
@@ -280,6 +290,8 @@ TasksHandler::TasksHandler( SugarSession *session )
                         new TaskAccessorPair( getDeleted, setDeleted, QString() ) );
     mAccessors->insert( QLatin1String( "assigned_user_id" ),
                         new TaskAccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
+    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+                        new TaskAccessorPair( getAssignedUserName, setAssignedUserName, QString() ) );
     mAccessors->insert( QLatin1String( "status" ),
                         new TaskAccessorPair( getStatus, setStatus, i18nc( "@item:intable", "Status" ) ) );
     mAccessors->insert( QLatin1String( "date_due_flag" ),

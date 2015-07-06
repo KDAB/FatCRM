@@ -96,6 +96,22 @@ void Details::doConnects()
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 }
 
+void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
+{
+    if (combo->count() == 0) {
+        const int enumIndex = mEnumDefinitions.indexOf(objectName);
+        if (enumIndex == -1) {
+            kWarning() << "Enum definition not found for" << objectName << "in" << typeToString(mType);
+        } else {
+            const EnumDefinitions::Enum &def = mEnumDefinitions.at(enumIndex);
+            for (EnumDefinitions::Enum::Map::const_iterator it = def.mEnumValues.constBegin();
+                 it != def.mEnumValues.constEnd(); ++it) {
+                combo->addItem(it.value(), it.key());
+            }
+        }
+    }
+}
+
 /*
  *  Reset all widgets
  *
@@ -143,6 +159,11 @@ void Details::setSupportedFields(const QStringList &fields)
     Q_ASSERT(mKeys.contains("id"));
 }
 
+void Details::setEnumDefinitions(const EnumDefinitions &enums)
+{
+    mEnumDefinitions = enums;
+}
+
 // TODO should probably be virtual and include item specific data, e.g. a contact's full name
 QString Details::windowTitle() const
 {
@@ -165,6 +186,21 @@ QString Details::windowTitle() const
 void Details::setData(const QMap<QString, QString> &data,
                       QWidget *createdModifiedContainer)
 {
+    Q_FOREACH (const QString &prop, storedProperties()) {
+        if (data.contains(prop)) {
+            setProperty(prop.toLatin1(), data.value(prop));
+        }
+    }
+    setProperty("name", data.value("name")); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
+
+    if (mKeys.isEmpty()) {
+        mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
+        Q_ASSERT(mKeys.contains("id"));
+    }
+
+    // Ensure comboboxes are filled
+    setDataInternal(data);
+
     QString key;
 
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
@@ -177,12 +213,14 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
         if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
-        if (key == KDCRMFields::accountName()) {
-            cb->setCurrentIndex(cb->findData(data.value(KDCRMFields::accountId()), ReferencedDataModel::IdRole));
-        } else {
-            //qDebug() << cb << "setCurrentIndex" << cb->findText(data.value(key)) << "from findText" << data.value(key);
-            cb->setCurrentIndex(cb->findText(data.value(key)));
+        const int idx = cb->findData(data.value(key));
+        if (idx == -1 && cb->count() > 1) {
+            kDebug() << "Didn't find" << data.value(key) << "in combo" << key;
+            //for (int row = 0; row < cb->count(); ++row) {
+            //    kDebug() << "  " << cb->itemData(row);
+            //}
         }
+        cb->setCurrentIndex(idx);
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
@@ -215,7 +253,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
-        //qDebug() << data.value(key);
+        //kDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
         if (key == KDCRMFields::amount())
             w->setSuffix(data.value(KDCRMFields::currencySymbol()));
@@ -224,7 +262,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
-        //qDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
+        //kDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 
@@ -238,20 +276,6 @@ void Details::setData(const QMap<QString, QString> &data,
         } else if (key == KDCRMFields::createdByName()) {
             lb->setText(data.value(KDCRMFields::createdByName()));
         }
-    }
-
-    Q_FOREACH (const QString &prop, storedProperties()) {
-        if (data.contains(prop)) {
-            setProperty(prop.toLatin1(), data.value(prop));
-        }
-    }
-    setProperty("name", data.value("name")); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
-
-    setDataInternal(data);
-
-    if (mKeys.isEmpty()) {
-        mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
-        Q_ASSERT(mKeys.contains("id"));
     }
 }
 
@@ -276,8 +300,8 @@ const QMap<QString, QString> Details::getData() const
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (!mKeys.contains(key)) continue;
-        currentData[key] = cb->currentText();
+        if (!mKeys.contains(key)) { kDebug() << "skipping" << key; continue; }
+        currentData[key] = cb->itemData(cb->currentIndex()).toString();
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
@@ -332,8 +356,6 @@ const QMap<QString, QString> Details::getData() const
     const QString fullUserName = ClientSettings::self()->fullUserName();
     currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
 
-    getDataInternal(currentData);
-
     return currentData;
 }
 
@@ -342,47 +364,15 @@ const QMap<QString, QString> Details::getData() const
  */
 QString Details::currentAccountId() const
 {
-    // Account has KDCRMFields::parentName()
-    // Contact, Leads, Opportunity have KDCRMFields::accountName()
+    // Account has KDCRMFields::parentId()
+    // Contact, Leads, Opportunity have KDCRMFields::accountId()
     if (mType != Campaign) {
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
-            if (key == KDCRMFields::parentName() || key == KDCRMFields::accountName()) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
+            if (key == KDCRMFields::parentId() || key == KDCRMFields::accountId()) {
+                return cb->itemData(cb->currentIndex()).toString();
             }
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the selected Campaign Id.
- */
-QString Details::currentCampaignId() const
-{
-    if (mType != Campaign) {
-        const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == KDCRMFields::campaignName() || key == KDCRMFields::campaign()) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the selected "Assigned To" Id
- */
-QString Details::currentAssignedToId() const
-{
-    const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
-        const QString key = cb->objectName();
-        if (key == KDCRMFields::assignedUserName() || key == KDCRMFields::assignedTo()) {
-            return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
         }
     }
     return QString();
@@ -396,89 +386,13 @@ void Details::assignToMe()
     const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         const QString key = cb->objectName();
-        if (key == KDCRMFields::assignedUserName() || key == KDCRMFields::assignedTo()) {
+        if (key == KDCRMFields::assignedUserId()) {
             const int idx = cb->findText(fullUserName);
             if (idx >= 0) {
                 cb->setCurrentIndex(idx);
             }
         }
     }
-}
-
-
-/*
- * Return the selected "Reports To" Id
- */
-QString Details::currentReportsToId() const
-{
-    if (mType == Contact) {
-        const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
-            const QString key = cb->objectName();
-            if (key == KDCRMFields::reportsTo()) {
-                return cb->itemData(cb->currentIndex(), ReferencedDataModel::IdRole).toString();
-            }
-        }
-    }
-    return QString();
-}
-
-/*
- * Return the list of items for the industry combo boxes
- *
- */
-QStringList Details::industryItems() const
-{
-    QStringList industries;
-    industries << QString("") << QString("Apparel") << QString("Banking")
-               << QString("Biotechnology") << QString("Chemicals")
-               << QString("Communications") << QString("Construction")
-               << QString("Consulting") << QString("Education")
-               << QString("Electronics") << QString("Energy")
-               << QString("Engineering") << QString("Entertainment")
-               << QString("Environmental") << QString("Finance")
-               << QString("Government") << QString("Healthcare")
-               << QString("Hospitality") << QString("Insurance")
-               << QString("Machinery") << QString("Manufacturing")
-               << QString("Media") << QString("Not For Profit")
-               << QString("Recreation") << QString("Retail")
-               << QString("Shipping") << QString("Technology")
-               << QString("Telecommunication") << QString("Transportation")
-               << QString("Utilities") << QString("Other");
-    return industries;
-}
-
-/*
- * Return the list of items for the source combo boxes
- *
- */
-QStringList Details::sourceItems() const
-{
-    // TODO grab this from SugarCRM !!!
-    QStringList sources;
-    sources << QString("") << QString("Cold Call")
-            << QString("Existing Customer") << QString("Self Generated")
-            << QString("Employee") << QString("Partner")
-            << QString("Public Relations") << QString("Direct Mail")
-            << QString("Conference") << QString("Trade Show")
-            << QString("Web Site") << QString("Word of mouth")
-            << QString("Email") << QString("Campaign")
-            << QString("Qt Training")
-            << QString("Other");
-    return sources;
-}
-
-/*
- * Return the list of items for the salutation combo boxes
- *
- */
-QStringList Details::salutationItems() const
-{
-    QStringList salutations;
-    salutations << QString("") << QString("Mr.")
-                << QString("Ms.") << QString("Mrs.")
-                << QString("Dr.") << QString("Prof.");
-    return salutations;
 }
 
 QString Details::id() const

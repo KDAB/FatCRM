@@ -45,22 +45,9 @@ void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
 
-    ReferencedDataModel::setModelForCombo(mUi->parent_name, AccountRef);
-    mUi->industry->addItems(industryItems());
-    mUi->account_type->addItems(typeItems());
-    //ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
-    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
-}
-
-QStringList AccountDetails::typeItems() const
-{
-    QStringList types;
-    types << QString("") << QString("Analyst") << QString("Competitor")
-          << QString("Customer") << QString("Integrator")
-          << QString("Investor") << QString("Partner")
-          << QString("Press") << QString("Prospect")
-          << QString("Reseller") << QString("Other");
-    return types;
+    ReferencedDataModel::setModelForCombo(mUi->parent_id, AccountRef);
+    //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 }
 
 QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const
@@ -84,16 +71,12 @@ void AccountDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
 
 void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
 {
+    fillComboBox(mUi->industry, KDCRMFields::industry());
+    fillComboBox(mUi->account_type, KDCRMFields::accountType());
+
     const QString baseUrl = resourceBaseUrl();
     if (!baseUrl.isEmpty() && !id().isEmpty()) {
         const QString url = baseUrl + "?action=DetailView&module=Accounts&record=" + id();
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url));
     }
-}
-
-void AccountDetails::getDataInternal(QMap<QString, QString> &currentData) const
-{
-    currentData[KDCRMFields::parentId()] = currentAccountId();
-    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
 }

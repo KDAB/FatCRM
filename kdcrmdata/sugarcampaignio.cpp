@@ -98,7 +98,7 @@ void SugarCampaignIO::readCampaign(SugarCampaign &campaign)
             campaign.setStartDate(xml.readElementText());
         } else if (xml.name() == "end_date") {
             campaign.setEndDate(xml.readElementText());
-        } else if (xml.name() == "status") {
+        } else if (xml.name() == KDCRMFields::status()) {
             campaign.setStatus(xml.readElementText());
         } else if (xml.name() == "impressions") {
             campaign.setImpressions(xml.readElementText());
@@ -155,7 +155,7 @@ bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevic
     writer.writeTextElement(QString("tracker_text"), campaign.trackerText());
     writer.writeTextElement(QString("start_date"), campaign.startDate());
     writer.writeTextElement(QString("end_date"), campaign.endDate());
-    writer.writeTextElement(QString("status"), campaign.status());
+    writer.writeTextElement(KDCRMFields::status(), campaign.status());
     writer.writeTextElement(QString("impressions"), campaign.impressions());
     writer.writeTextElement(QString("currency_id"), campaign.currencyId());
     writer.writeTextElement(QString("budget"), campaign.budget());

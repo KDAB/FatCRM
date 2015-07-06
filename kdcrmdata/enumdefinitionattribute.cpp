@@ -20,45 +20,45 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONTACTDETAILS_H
-#define CONTACTDETAILS_H
+#include "enumdefinitionattribute.h"
 
-#include "details.h"
+#include <Akonadi/Collection>
+#include <QByteArray>
+#include <QString>
 
-namespace KABC
+EnumDefinitionAttribute::EnumDefinitionAttribute()
 {
-class Addressee;
 }
 
-namespace Ui
+void EnumDefinitionAttribute::setValue(const QString &value)
 {
-class ContactDetails;
+    mValue = value;
 }
 
-class ContactDetails : public Details
+QString EnumDefinitionAttribute::value() const
 {
-    Q_OBJECT
-public:
-    explicit ContactDetails(QWidget *parent = 0);
+    return mValue;
+}
 
-    ~ContactDetails();
+QByteArray EnumDefinitionAttribute::type() const
+{
+    return "CRM-enumdefinitions";
+}
 
-private:
-    Ui::ContactDetails *mUi;
+Akonadi::Attribute *EnumDefinitionAttribute::clone() const
+{
+    EnumDefinitionAttribute *attr = new EnumDefinitionAttribute;
+    attr->setValue(mValue);
+    return attr;
+}
 
-private:
-    void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+QByteArray EnumDefinitionAttribute::serialized() const
+{
+    const QByteArray result = mValue.toUtf8();
+    return result;
+}
 
-    QMap<QString, QString> contactData(const KABC::Addressee &contact) const;
-
-private Q_SLOTS:
-    void slotSetBirthday();
-    void slotClearDate();
-    void on_buttonOpenAccount_clicked();
-};
-
-#endif /* CONTACTDETAILS_H */
-
+void EnumDefinitionAttribute::deserialize(const QByteArray &data)
+{
+    mValue = QString::fromUtf8(data);
+}

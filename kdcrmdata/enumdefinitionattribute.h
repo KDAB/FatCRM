@@ -20,44 +20,39 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef OPPORTUNITYDETAILS_H
-#define OPPORTUNITYDETAILS_H
+#ifndef ENUMDEFINITIONATTRIBUTE_H
+#define ENUMDEFINITIONATTRIBUTE_H
 
-#include "details.h"
+#include <Akonadi/Attribute>
+#include <QMap>
+#include <QString>
 
-namespace Ui
-{
-class OpportunityDetails;
+namespace Akonadi {
+    class Collection;
 }
-class NotesRepository;
 
-class OpportunityDetails : public Details
+/**
+ * An attribute for letting the resource store the definition of enums, that FatCRM can use.
+ */
+class AKONADI_EXPORT EnumDefinitionAttribute : public Akonadi::Attribute
 {
-    Q_OBJECT
 public:
-    explicit OpportunityDetails(QWidget *parent = 0);
+    EnumDefinitionAttribute();
 
-    ~OpportunityDetails();
+    // I tried to make this generic (QString) and with a type enum
+    // to reuse the attribute class, but AttributeFactory::registerAttribute expects
+    // a default ctor and a constant type()....
 
-    void setNotesRepository(NotesRepository *notesRepo) Q_DECL_OVERRIDE { mNotesRepository = notesRepo; }
+    void setValue(const QString &value);
+    QString value() const;
 
-private Q_SLOTS:
-    void slotAutoNextStepDate();
-    void slotSalesStageActivated(const QString &stage);
-
-    void on_viewNotesButton_clicked();
-    void on_buttonOpenAccount_clicked();
-
-private:
-    void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    QByteArray type() const Q_DECL_OVERRIDE;
+    Attribute *clone() const Q_DECL_OVERRIDE;
+    QByteArray serialized() const Q_DECL_OVERRIDE;
+    void deserialize(const QByteArray &data) Q_DECL_OVERRIDE;
 
 private:
-    Ui::OpportunityDetails *mUi;
-    NotesRepository *mNotesRepository;
+    QString mValue;
 };
 
-#endif /* OPPORTUNITYDETAILS_H */
-
+#endif

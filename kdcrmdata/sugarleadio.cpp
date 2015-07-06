@@ -82,7 +82,7 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setDescription(xml.readElementText());
         } else if (xml.name() == KDCRMFields::deleted()) {
             lead.setDeleted(xml.readElementText());
-        } else if (xml.name() == "assigned_user_id") {
+        } else if (xml.name() == KDCRMFields::assignedUserId()) {
             lead.setAssignedUserId(xml.readElementText());
         } else if (xml.name() == KDCRMFields::assignedUserName()) {
             lead.setAssignedUserName(xml.readElementText());
@@ -144,13 +144,13 @@ void SugarLeadIO::readLead(SugarLead &lead)
             lead.setLeadSource(xml.readElementText());
         } else if (xml.name() == "lead_source_description") {
             lead.setLeadSourceDescription(xml.readElementText());
-        } else if (xml.name() == "status") {
+        } else if (xml.name() == KDCRMFields::status()) {
             lead.setStatus(xml.readElementText());
         } else if (xml.name() == "status_description") {
             lead.setStatusDescription(xml.readElementText());
-        } else if (xml.name() == "reports_to_id") {
+        } else if (xml.name() == KDCRMFields::reportsToId()) {
             lead.setReportsToId(xml.readElementText());
-        } else if (xml.name() == "report_to_name") {
+        } else if (xml.name() == KDCRMFields::reportsTo()) {
             lead.setReportToName(xml.readElementText());
         } else if (xml.name() == "account_name") {
             lead.setAccountName(xml.readElementText());
@@ -238,10 +238,10 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     writer.writeTextElement(QString("refered_by"), lead.referedBy());
     writer.writeTextElement(QString("lead_source"), lead.leadSource());
     writer.writeTextElement(QString("lead_source_description"), lead.leadSourceDescription());
-    writer.writeTextElement(QString("status"), lead.status());
+    writer.writeTextElement(KDCRMFields::status(), lead.status());
     writer.writeTextElement(QString("status_description"), lead.statusDescription());
-    writer.writeTextElement(QString("reports_to_id"), lead.reportsToId());
-    writer.writeTextElement(QString("report_to_name"), lead.reportToName());
+    writer.writeTextElement(KDCRMFields::reportsToId(), lead.reportsToId());
+    writer.writeTextElement(KDCRMFields::reportsTo(), lead.reportToName());
     writer.writeTextElement(QString("account_name"), lead.accountName());
     writer.writeTextElement(QString("account_description"), lead.accountDescription());
     writer.writeTextElement(QString("contact_id"), lead.contactId());

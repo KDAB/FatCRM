@@ -137,7 +137,7 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         // first entry is from the model itself (not in the data).
         // used for clearing a field
         if (row == 0) {
-            if (role == Qt::DisplayRole) {
+            if (role == Qt::DisplayRole || role == Qt::UserRole) {
                 return QString();
             }
             return QVariant();
@@ -147,7 +147,7 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         const QPair<QString, QString> pair = d->mData->data(row);
 
         switch (role) {
-        case IdRole: return pair.first;
+        case Qt::UserRole: return pair.first;
         case Qt::DisplayRole: return elideText(pair.second);
         }
 

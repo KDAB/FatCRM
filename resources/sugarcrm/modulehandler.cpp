@@ -28,21 +28,31 @@
 #include "listentriesjob.h"
 using namespace KDSoapGenerated;
 
-#include "kdcrmdata/kdcrmutils.h"
+#include <kdcrmdata/kdcrmutils.h>
+#include <kdcrmdata/enumdefinitionattribute.h>
 
 #include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionModifyJob>
 
 #include <KLocale>
 
-#include <QInputDialog>
-#include <QStringList>
+#include <QVector>
 
 ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
-    : mSession(session), mModuleName(moduleName)
+    : mSession(session),
+      mModuleName(moduleName),
+      mParsedEnumDefinitions(false),
+      mHasEnumDefinitions(false)
 {
     Q_ASSERT(mSession != 0);
+
+    static bool initDone = false;
+    if (!initDone) {
+        Akonadi::AttributeFactory::registerAttribute<EnumDefinitionAttribute>();
+        initDone = true;
+    }
 }
 
 ModuleHandler::~ModuleHandler()
@@ -153,6 +163,46 @@ bool ModuleHandler::getEntry(const Akonadi::Item &item)
     return true;
 }
 
+bool ModuleHandler::hasEnumDefinitions()
+{
+    return mHasEnumDefinitions;
+}
+
+void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
+{
+    if (!mParsedEnumDefinitions) {
+        mParsedEnumDefinitions = true;
+        foreach (const KDSoapGenerated::TNS__Field &field, fields.items()) {
+            const QString fieldName = field.name();
+            //kDebug() << fieldName << "TYPE" << field.type();
+            if (field.type() == QLatin1String("enum")) {
+                //kDebug() << moduleName() << "enum" << fieldName;
+                EnumDefinitions::Enum definition(fieldName);
+                foreach (const KDSoapGenerated::TNS__Name_value &nameValue, field.options().items()) {
+                    // In general, name==value except for some like
+                    // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"
+                    //kDebug() << nameValue.name() << nameValue.value();
+                    definition.mEnumValues.insert(nameValue.name(), nameValue.value());
+                }
+                mEnumDefinitions.append(definition);
+            }
+        }
+        kDebug() << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
+        // Accounts: account_type, industry
+        // Contacts: salutation, lead_source, portal_user_type
+        // Opportunities: opportunity_type, lead_source, sales_stage
+        // Emails: type, status
+        // Notes: <none>
+        Akonadi::Collection coll = collection();
+        EnumDefinitionAttribute *attr = coll.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
+        const QString serialized = mEnumDefinitions.toString();
+        if (attr->value() != serialized) {
+            attr->setValue(serialized);
+            modifyCollection(coll);
+        }
+    }
+}
+
 Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection, QString *lastTimestamp)
 {
     Akonadi::Item::List items;
@@ -209,15 +259,15 @@ void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &col
     if (collections.count() != 1) {
         return;
     }
-    const Akonadi::Collection collection = collections.at(0);
+    Akonadi::Collection collection = collections.at(0);
     if (ListEntriesJob::currentContentsVersion(collection) != expectedContentsVersion()) {
         // the contents need to be relisted, do this right now before users get a chance to view bad data
         kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
                  << ListEntriesJob::currentContentsVersion(collection) << "!="
                  << expectedContentsVersion();
-        //Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection, this);
-        //job->fetchScope().setCacheOnly(false);
-        //Q_UNUSED(job);
         Akonadi::AgentManager::self()->synchronizeCollection(collection);
     }
+
+    EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>();
+    mHasEnumDefinitions = attr;
 }

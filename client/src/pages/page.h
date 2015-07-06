@@ -28,6 +28,8 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
+#include <kdcrmdata/enumdefinitions.h>
+
 #include <Akonadi/Collection>
 
 #include <QWidget>
@@ -123,6 +125,7 @@ private:
     void initialize();
     bool askSave();
     void readSupportedFields();
+    void readEnumDefinitionAttributes();
 
     void addAccountsData(int start, int end, bool emitChanges);
     void removeAccountsData(int start, int end, bool emitChanges);
@@ -149,9 +152,13 @@ private:
     Ui_page mUi;
     QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
+
+    // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
     NotesRepository *mNotesRepository;
+    EnumDefinitions mEnumDefinitions;
+
     Akonadi::EntityMimeTypeFilterModel *mFilterModel;
     bool mInitialLoadingDone;
 };

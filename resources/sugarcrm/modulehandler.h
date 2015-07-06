@@ -27,6 +27,8 @@
 #include <Akonadi/Item>
 #include <Akonadi/Collection>
 
+#include <kdcrmdata/enumdefinitions.h>
+
 #include <QStringList>
 
 class SugarSession;
@@ -37,6 +39,7 @@ namespace KDSoapGenerated
 class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
+class TNS__Field_list;
 }
 
 class ModuleHandler : public QObject, public Akonadi::DifferencesAlgorithmInterface
@@ -83,8 +86,12 @@ public:
     // and into the XML. This is then communicated to the client app.
     virtual QStringList supportedCRMFields() const = 0;
 
+    bool hasEnumDefinitions();
+
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;
+
+    void parseFieldList(const KDSoapGenerated::TNS__Field_list &fields);
 
     Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
             const Akonadi::Collection &parentCollection, QString *lastTimestamp);
@@ -113,6 +120,9 @@ private Q_SLOTS:
 private:
     mutable QStringList mAvailableFields;
 
+    EnumDefinitions mEnumDefinitions;
+    bool mParsedEnumDefinitions;
+    bool mHasEnumDefinitions; // whether present in DB (possibly old, though)
 };
 
 #endif

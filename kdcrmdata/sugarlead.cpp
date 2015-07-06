@@ -1059,7 +1059,7 @@ void SugarLead::setData(const QMap<QString, QString>& data)
     d->mReferedBy = data.value("referedBy");
     d->mLeadSource = data.value(KDCRMFields::leadSource());
     d->mLeadSourceDescription = data.value("leadSourceDescription");
-    d->mStatus = data.value("status");
+    d->mStatus = data.value(KDCRMFields::status());
     d->mStatusDescription = data.value("statusDescription");
     d->mReportsToId = data.value(KDCRMFields::reportsToId());
     d->mReportToName = data.value("reportToName");
@@ -1122,7 +1122,7 @@ QMap<QString, QString> SugarLead::data()
     data["referedBy"] = d->mReferedBy;
     data[KDCRMFields::leadSource()] = d->mLeadSource;
     data["leadSourceDescription"] = d->mLeadSourceDescription;
-    data["status"] = d->mStatus;
+    data[KDCRMFields::status()] = d->mStatus;
     data["statusDescription"] = d->mStatusDescription;
     data[KDCRMFields::reportsToId()] = d->mReportsToId;
     data["reportToName"] = d->mReportToName;

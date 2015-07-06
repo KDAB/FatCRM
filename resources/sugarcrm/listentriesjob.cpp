@@ -119,6 +119,8 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         return;
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
+        mHandler->parseFieldList(callResult.field_list());
+
         Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
 
@@ -265,7 +267,15 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
             kDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
             return QString();
         }
-        return annotationsAttribute->value(s_timeStampKey);
+
+        QString timeStamp = annotationsAttribute->value(s_timeStampKey);
+
+        // If we don't have enum definitions, go back a little to get some update
+        if (!handler->hasEnumDefinitions()) {
+            kDebug() << handler->moduleName() << "no enum definitions, going back a bit to get something";
+            KDCRMUtils::decrementTimeStamp(timeStamp);
+        }
+        return timeStamp;
     }
     return QString();
 }

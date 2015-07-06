@@ -35,11 +35,13 @@
 #include "referenceddata.h"
 #include "reportpage.h"
 #include "resourceconfigdialog.h"
+#include <kdcrmdata/enumdefinitionattribute.h>
 
 #include <Akonadi/AgentFilterProxyModel>
 #include <Akonadi/AgentInstance>
 #include <Akonadi/AgentInstanceModel>
 #include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
 #include <Akonadi/Control>
 #include <Akonadi/ServerManager>
 using namespace Akonadi;
@@ -116,6 +118,8 @@ void MainWindow::slotDelayedInit()
             this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
     connect(AgentManager::self(), SIGNAL(instanceStatusChanged(Akonadi::AgentInstance)),
             this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
+
+    Akonadi::AttributeFactory::registerAttribute<EnumDefinitionAttribute>();
 }
 
 void MainWindow::slotAboutApp()

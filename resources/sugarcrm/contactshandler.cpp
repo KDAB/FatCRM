@@ -771,8 +771,10 @@ QStringList ContactsHandler::supportedCRMFields() const
     ret.append(KDCRMFields::phoneAssistant());
     ret.append(KDCRMFields::leadSource());
     ret.append(KDCRMFields::campaign());
-    ret.append(KDCRMFields::assignedTo());
+    ret.append(KDCRMFields::assignedUserId());
+    ret.append(KDCRMFields::assignedUserName());
     ret.append(KDCRMFields::reportsTo());
+    ret.append(KDCRMFields::reportsToId());
     ret.append(KDCRMFields::doNotCall());
     ret.append(KDCRMFields::description());
     ret.append(KDCRMFields::modifiedByName());

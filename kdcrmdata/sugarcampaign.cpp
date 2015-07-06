@@ -559,7 +559,7 @@ void SugarCampaign::setData(const QMap<QString, QString>& data)
     d->mTrackerText = data.value("trackerText");
     d->mStartDate = data.value("startDate");
     d->mEndDate = data.value("endDate");
-    d->mStatus = data.value("status");
+    d->mStatus = data.value(KDCRMFields::status());
     d->mImpressions = data.value("impressions");
     d->mCurrencyId = data.value(KDCRMFields::currencyId());
     d->mBudget = data.value("budget");
@@ -593,7 +593,7 @@ QMap<QString, QString> SugarCampaign::data()
     data["trackerText"] = d->mTrackerText;
     data["startDate"] = d->mStartDate;
     data["endDate"] = d->mEndDate;
-    data["status"] = d->mStatus;
+    data[KDCRMFields::status()] = d->mStatus;
     data["impressions"] = d->mImpressions;
     data[KDCRMFields::currencyId()] = d->mCurrencyId;
     data["budget"] = d->mBudget;

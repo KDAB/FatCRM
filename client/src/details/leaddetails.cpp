@@ -45,18 +45,14 @@ LeadDetails::~LeadDetails()
 
 void LeadDetails::initialize()
 {
-    mUi->lead_source->addItems(sourceItems());
-    //ReferencedDataModel::setModelForCombo(mUi->campaign_name, CampaignRef);
-    mUi->salutation->addItems(salutationItems());
+    //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
     // TODO FIXME: leads can refer to account names which are do not match sugar accounts
-    ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
-    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthDate()));
-
-    mUi->status->addItems(statusItems());
 }
 
 void LeadDetails::slotSetBirthDate()
@@ -69,16 +65,6 @@ void LeadDetails::slotSetBirthDate()
 void LeadDetails::slotClearDate()
 {
     mUi->birthdate->clear();
-}
-
-QStringList LeadDetails::statusItems() const
-{
-    QStringList status;
-    status << QString("") << QString("New")
-           << QString("Assigned") << QString("In Process")
-           << QString("Converted") << QString("Recycled")
-           << QString("Dead");
-    return status;
 }
 
 QMap<QString, QString> LeadDetails::data(const Akonadi::Item &item) const
@@ -100,10 +86,10 @@ void LeadDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &
     item.setPayload<SugarLead>(lead);
 }
 
-void LeadDetails::getDataInternal(QMap<QString, QString> &currentData) const
+void LeadDetails::setDataInternal(const QMap<QString, QString> &data) const
 {
-    currentData[KDCRMFields::reportsToId()] = currentReportsToId();
-    currentData[KDCRMFields::accountId()] = currentAccountId();
-    currentData[KDCRMFields::assignedUserId()] = currentAssignedToId();
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
+    Q_UNUSED(data);
+    fillComboBox(mUi->salutation, KDCRMFields::salutation());
+    fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
+    fillComboBox(mUi->status, KDCRMFields::status());
 }

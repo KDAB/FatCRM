@@ -34,6 +34,7 @@ namespace KDCRMUtils
 KDCRMDATA_EXPORT QString formatTimestamp(const QString &serverTimestamp);
 
 KDCRMDATA_EXPORT void incrementTimeStamp(QString &serverTimestamp);
+KDCRMDATA_EXPORT void decrementTimeStamp(QString &serverTimestamp);
 
 KDCRMDATA_EXPORT QString currentTimestamp();
 

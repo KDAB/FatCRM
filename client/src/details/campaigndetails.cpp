@@ -45,8 +45,6 @@ CampaignDetails::~CampaignDetails()
 
 void CampaignDetails::initialize()
 {
-    mUi->status->addItems(statusItems());
-    mUi->campaign_type->addItems(typeItems());
     connect(mUi->clearStartDateButton, SIGNAL(clicked()), this, SLOT(slotClearStartDate()));
     connect(mUi->startDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetStartDate()));
@@ -54,7 +52,7 @@ void CampaignDetails::initialize()
     connect(mUi->endDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetEndDate()));
 
-    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 }
 
 void CampaignDetails::slotSetStartDate()
@@ -82,27 +80,6 @@ void CampaignDetails::slotClearEndDate()
     mUi->endDate->clear();
 }
 
-QStringList CampaignDetails::statusItems() const
-{
-    QStringList status;
-    status << QString("") << QString("Planning")
-           << QString("Active") << QString("Inactive")
-           << QString("Complete") << QString("In Queue")
-           << QString("Sending");
-    return status;
-}
-
-QStringList CampaignDetails::typeItems() const
-{
-    QStringList types;
-    types << QString("") << QString("Telesales")
-          << QString("Mail") << QString("Email")
-          << QString("Print") << QString("Web")
-          << QString("Radio") << QString("Television")
-          << QString("Newsletter");
-    return types;
-}
-
 QMap<QString, QString> CampaignDetails::data(const Akonadi::Item &item) const
 {
     Q_ASSERT(item.hasPayload<SugarCampaign>());
@@ -122,6 +99,8 @@ void CampaignDetails::updateItem(Akonadi::Item &item, const QMap<QString, QStrin
     item.setPayload<SugarCampaign>(campaign);
 }
 
-void CampaignDetails::getDataInternal(QMap<QString, QString> &) const
+void CampaignDetails::setDataInternal(const QMap<QString, QString> &) const
 {
+    fillComboBox(mUi->status, KDCRMFields::status());
+    fillComboBox(mUi->campaign_type, KDCRMFields::campaignType());
 }

@@ -54,11 +54,8 @@ OpportunityDetails::~OpportunityDetails()
 
 void OpportunityDetails::initialize()
 {
-    ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
-    mUi->opportunity_type->addItems(typeItems());
-    mUi->lead_source->addItems(sourceItems());
-    mUi->sales_stage->addItems(stageItems());
-    ReferencedDataModel::setModelForCombo(mUi->assigned_user_name, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
@@ -85,31 +82,6 @@ void OpportunityDetails::slotSalesStageActivated(const QString &stage)
     mUi->probability->setValue(percent);
 }
 
-QStringList OpportunityDetails::typeItems() const
-{
-    QStringList types;
-    types << QString("") << QString("Existing Business")
-          << QString("New Business");
-    return types;
-}
-
-QStringList OpportunityDetails::stageItems() const
-{
-    QStringList stages;
-    stages << QString("")
-           << QString("Prospecting")
-           << QString("Qualification")
-           << QString("Needs Analysis")
-           << QString("Value Proposition")
-           << QString("Id. Decision Makers")
-           << QString("Perception Analysis")
-           << QString("Proposal/Price Quote")
-           << QString("Negotiation/Review")
-           << QString("Closed Won")
-           << QString("Closed Lost");
-    return stages;
-}
-
 QMap<QString, QString> OpportunityDetails::data(const Akonadi::Item &item) const
 {
     Q_ASSERT(item.isValid());
@@ -132,6 +104,10 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
 
 void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
 {
+    fillComboBox(mUi->opportunity_type, KDCRMFields::opportunityType());
+    fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
+    fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
+
     const QString baseUrl = resourceBaseUrl();
     const QString oppId = id();
     if (!baseUrl.isEmpty() && !oppId.isEmpty()) {
@@ -145,13 +121,6 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
-}
-
-void OpportunityDetails::getDataInternal(QMap<QString, QString> &currentData) const
-{
-    currentData.insert(KDCRMFields::accountId(),  currentAccountId());
-    currentData.insert(KDCRMFields::assignedUserId(), currentAssignedToId());
-    currentData.insert(KDCRMFields::campaignId(), currentCampaignId());
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()

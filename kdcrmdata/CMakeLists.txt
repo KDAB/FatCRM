@@ -2,6 +2,8 @@ set(SHARED_MIME_INFO_MINIMUM_VERSION "0.20")
 find_package(SharedMimeInfo REQUIRED)
 
 set(kdcrmdata_LIB_SRCS
+  enumdefinitionattribute.cpp
+  enumdefinitions.cpp
   kdcrmutils.cpp
   kdcrmfields.cpp
   sugaraccount.cpp

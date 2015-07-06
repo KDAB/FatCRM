@@ -46,14 +46,13 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString campaignName();
     KDCRMDATA_EXPORT QString campaignType();
     KDCRMDATA_EXPORT QString campaignId();
+    KDCRMDATA_EXPORT QString status();
     KDCRMDATA_EXPORT QString parentName();
     KDCRMDATA_EXPORT QString tickerSymbol();
     KDCRMDATA_EXPORT QString campaign();
-    KDCRMDATA_EXPORT QString assignedTo();
     KDCRMDATA_EXPORT QString reportsTo();
     KDCRMDATA_EXPORT QString parentId();
     KDCRMDATA_EXPORT QString accountId();
-    KDCRMDATA_EXPORT QString assignedToId();
     KDCRMDATA_EXPORT QString reportsToId();
     KDCRMDATA_EXPORT QString opportunityType();
     KDCRMDATA_EXPORT QString description();
@@ -81,6 +80,8 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString shippingAddressState();
     KDCRMDATA_EXPORT QString shippingAddressCountry();
     KDCRMDATA_EXPORT QString shippingAddressPostalcode();
+    KDCRMDATA_EXPORT QString industry();
+    KDCRMDATA_EXPORT QString accountType();
 
     // for Contacts
     KDCRMDATA_EXPORT QString primaryAddressStreet();

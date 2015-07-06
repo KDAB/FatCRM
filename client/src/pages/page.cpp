@@ -36,6 +36,7 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
+#include <kdcrmdata/enumdefinitionattribute.h>
 
 #include <Akonadi/AgentManager>
 #include <Akonadi/ChangeRecorder>
@@ -160,6 +161,7 @@ void Page::setCollection(const Collection &collection)
 {
     mCollection = collection;
     readSupportedFields();
+    readEnumDefinitionAttributes();
 
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
@@ -577,6 +579,27 @@ void Page::readSupportedFields()
     }
 }
 
+void Page::readEnumDefinitionAttributes()
+{
+    EnumDefinitionAttribute *enumsAttr = mCollection.attribute<EnumDefinitionAttribute>();
+    if (enumsAttr) {
+        mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
+        mDetailsWidget->details()->setEnumDefinitions(mEnumDefinitions);
+    } else {
+        kWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
+        kWarning() << "Collection attributes:";
+        foreach (Akonadi::Attribute *attr, mCollection.attributes()) {
+            kWarning() << attr->type();
+        }
+
+        static bool errorShown = false;
+        if (!errorShown) {
+            errorShown = true;
+            QMessageBox::warning(this, i18n("Internal error"), i18n("The list of enumeration values for type '%1'' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", typeToString(mType)));
+        }
+    }
+}
+
 void Page::slotResetSearch()
 {
     mUi.searchLE->clear();
@@ -670,6 +693,7 @@ DetailsDialog *Page::createDetailsDialog()
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
     details->setSupportedFields(mSupportedFields);
+    details->setEnumDefinitions(mEnumDefinitions);
     connectToDetails(details);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);

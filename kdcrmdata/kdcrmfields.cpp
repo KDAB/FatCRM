@@ -92,6 +92,11 @@ QString KDCRMFields::campaignId()
     return QLatin1String("campaign_id");
 }
 
+QString KDCRMFields::status()
+{
+    return QLatin1String("status");
+}
+
 QString KDCRMFields::parentName()
 {
     return QLatin1String("parent_name");
@@ -107,11 +112,6 @@ QString KDCRMFields::campaign()
     return QLatin1String("campaign");
 }
 
-QString KDCRMFields::assignedTo()
-{
-    return QLatin1String("assigned_to");
-}
-
 QString KDCRMFields::reportsTo()
 {
     return QLatin1String("reports_to");
@@ -125,11 +125,6 @@ QString KDCRMFields::parentId()
 QString KDCRMFields::accountId()
 {
     return QLatin1String("account_id");
-}
-
-QString KDCRMFields::assignedToId()
-{
-    return QLatin1String("assigned_to_id");
 }
 
 QString KDCRMFields::reportsToId()
@@ -265,6 +260,16 @@ QString KDCRMFields::shippingAddressCountry()
 QString KDCRMFields::shippingAddressPostalcode()
 {
     return QLatin1String("shipping_address_postalcode");
+}
+
+QString KDCRMFields::industry()
+{
+    return QLatin1String("industry");
+}
+
+QString KDCRMFields::accountType()
+{
+    return QLatin1String("account_type");
 }
 
 QString KDCRMFields::primaryAddressStreet()

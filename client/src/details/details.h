@@ -27,8 +27,11 @@
 
 #include <Akonadi/Item>
 
+#include <kdcrmdata/enumdefinitions.h>
+
 #include <QWidget>
 
+class QComboBox;
 class NotesRepository;
 
 class Details : public QWidget
@@ -49,6 +52,7 @@ public:
 
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     void setSupportedFields(const QStringList &fields);
+    void setEnumDefinitions(const EnumDefinitions &enums);
     virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
 
     DetailsType type() const
@@ -69,20 +73,12 @@ protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
     QString resourceBaseUrl() const { return mResourceBaseUrl; }
 
-    QStringList industryItems() const;
-    QStringList sourceItems() const;
-    QStringList stageItems() const;
-    QStringList salutationItems() const;
+    void fillComboBox(QComboBox *combo, const QString &objectName) const;
 
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
-    virtual void getDataInternal(QMap<QString, QString> &) const {}
     QString id() const;
 
     QString currentAccountId() const;
-
-    QString currentAssignedToId() const;
-    QString currentCampaignId() const;
-    QString currentReportsToId() const;
 
 private Q_SLOTS:
     void doConnects();
@@ -92,5 +88,6 @@ private:
     QByteArray mResourceIdentifier;
     QString mResourceBaseUrl;
     QStringList mKeys;
+    EnumDefinitions mEnumDefinitions;
 };
 #endif /* DETAILS_H */

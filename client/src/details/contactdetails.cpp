@@ -46,12 +46,10 @@ ContactDetails::~ContactDetails()
 
 void ContactDetails::initialize()
 {
-    mUi->salutation->addItems(salutationItems());
-    ReferencedDataModel::setModelForCombo(mUi->account_name, AccountRef);
-    mUi->lead_source->addItems(sourceItems());
+    ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     //ReferencedDataModel::setModelForCombo(mUi->campaign, CampaignRef);
-    ReferencedDataModel::setModelForCombo(mUi->reports_to, ReportsToRef);
-    ReferencedDataModel::setModelForCombo(mUi->assigned_to, AssignedToRef);
+    ReferencedDataModel::setModelForCombo(mUi->reports_to_id, ReportsToRef);
+    ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
@@ -118,7 +116,9 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     data[KDCRMFields::phoneAssistant()] = addressee.custom("FATCRM", "X-AssistantsPhone");
     data[KDCRMFields::leadSource()] = addressee.custom("FATCRM", "X-LeadSourceName");
     data[KDCRMFields::campaign()] = addressee.custom("FATCRM", "X-CampaignName");
-    data[KDCRMFields::assignedTo()] = addressee.custom("FATCRM", "X-AssignedUserName");
+    data[KDCRMFields::assignedUserId()] = addressee.custom("FATCRM", "X-AssignedUserId");
+    data[KDCRMFields::assignedUserName()] = addressee.custom("FATCRM", "X-AssignedUserName");
+    data[KDCRMFields::reportsToId()] = addressee.custom("FATCRM", "X-ReportsToUserId");
     data[KDCRMFields::reportsTo()] = addressee.custom("FATCRM", "X-ReportsToUserName");
     data[KDCRMFields::doNotCall()] = addressee.custom("FATCRM", "X-DoNotCall");
     data[KDCRMFields::description()] = addressee.note();
@@ -187,8 +187,8 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.insertCustom("FATCRM", "X-CampaignId", data.value(KDCRMFields::campaignId()));
     addressee.insertCustom("FATCRM", "X-CacceptStatusFields", data.value(KDCRMFields::cAcceptStatusFields()));
     addressee.insertCustom("FATCRM", "X-MacceptStatusFields", data.value(KDCRMFields::mAcceptStatusFields()));
-    addressee.insertCustom("FATCRM", "X-AssignedUserName", data.value(KDCRMFields::assignedTo()));
-    addressee.insertCustom("FATCRM", "X-AssignedUserId", data.value(KDCRMFields::assignedToId()));
+    addressee.insertCustom("FATCRM", "X-AssignedUserId", data.value(KDCRMFields::assignedUserId()));
+    addressee.insertCustom("FATCRM", "X-AssignedUserName", data.value(KDCRMFields::assignedUserName()));
     addressee.insertCustom("FATCRM", "X-ReportsToUserName", data.value(KDCRMFields::reportsTo()));
     addressee.insertCustom("FATCRM", "X-ReportsToUserId", data.value(KDCRMFields::reportsToId()));
     addressee.insertCustom("FATCRM", "X-OpportunityRoleFields", data.value(KDCRMFields::opportunityRoleFields()));
@@ -209,20 +209,14 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
 
 void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
 {
+    fillComboBox(mUi->salutation, KDCRMFields::salutation());
+    fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
+
     const QString baseUrl = resourceBaseUrl();
     if (!baseUrl.isEmpty() && !id().isEmpty()) {
         const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url));
     }
-}
-
-void ContactDetails::getDataInternal(QMap<QString, QString> &currentData) const
-{
-    currentData[KDCRMFields::assignedToId()] = currentAssignedToId();
-    currentData[KDCRMFields::reportsToId()] = currentReportsToId();
-    currentData[KDCRMFields::accountId()] = currentAccountId();
-    currentData[KDCRMFields::campaignId()] = currentCampaignId();
-
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()
