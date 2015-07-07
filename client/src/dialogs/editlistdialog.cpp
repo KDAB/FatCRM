@@ -29,11 +29,11 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-EditListDialog::EditListDialog(QWidget *parent) :
+EditListDialog::EditListDialog(const QString &labelText, QWidget *parent) :
     QDialog(parent)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->addWidget(new QLabel(i18n("Type country names to add them to the group:"), this));
+    layout->addWidget(new QLabel(labelText, this));
     mEditListWidget = new KEditListWidget(this);
     layout->addWidget(mEditListWidget);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, this);
