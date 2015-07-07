@@ -34,36 +34,37 @@ private Q_SLOTS:
     void testSerialization_data()
     {
         QTest::addColumn<EnumDefinitions>("enums");
+        QTest::addColumn<QString>("expectedIndexOfString");
+        QTest::addColumn<int>("expectedIndexOfValue");
 
-        QTest::newRow("empty") << EnumDefinitions();
-        QTest::newRow("emptyEnum") << (EnumDefinitions() << EnumDefinitions::Enum("e1"));
-        QTest::newRow("emptyEnums") << (EnumDefinitions() << EnumDefinitions::Enum("e1") << EnumDefinitions::Enum("e2"));
+        QTest::newRow("empty") << EnumDefinitions() << "" << -1;
+        QTest::newRow("emptyEnum") << (EnumDefinitions() << EnumDefinitions::Enum("e1")) << "" << -1;
+        QTest::newRow("emptyEnums") << (EnumDefinitions() << EnumDefinitions::Enum("e1") << EnumDefinitions::Enum("e2")) << "" << -1;
 
         EnumDefinitions::Enum leadSource("lead_source");
         leadSource.mEnumValues.insert("key", "value");
-        QTest::newRow("oneValue") << (EnumDefinitions() << leadSource);
+        QTest::newRow("oneValue") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
         leadSource.mEnumValues.insert("key2", "value 2");
-        QTest::newRow("twoValues") << (EnumDefinitions() << leadSource);
+        QTest::newRow("twoValues") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
 
         EnumDefinitions::Enum salutation("salutation");
         salutation.mEnumValues.insert("another", "value");
-        QTest::newRow("twoEnums") << (EnumDefinitions() << leadSource << salutation);
+        QTest::newRow("twoEnums") << (EnumDefinitions() << leadSource << salutation) << "salutation" << 1;
     }
 
     void testSerialization()
     {
         QFETCH(EnumDefinitions, enums);
+        QFETCH(QString, expectedIndexOfString);
+        QFETCH(int, expectedIndexOfValue);
 
         const QString str = enums.toString();
         EnumDefinitions reloaded = EnumDefinitions::fromString(str);
         QCOMPARE(reloaded.toString(), str);
         QCOMPARE(reloaded.count(), enums.count());
 
-        if (reloaded.count() > 0) {
-            QCOMPARE(reloaded.indexOf("lead_source"), 0);
-        }
-        if (reloaded.count() > 1) {
-            QCOMPARE(reloaded.indexOf("salutation"), 1);
+        if (expectedIndexOfValue > -1) {
+            QCOMPARE(reloaded.indexOf(expectedIndexOfString), expectedIndexOfValue);
         }
     }
 
