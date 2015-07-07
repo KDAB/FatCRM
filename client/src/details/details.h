@@ -63,8 +63,6 @@ public:
     QString windowTitle() const;
     void assignToMe();
 
-    Akonadi::Job *saveItemJob();
-
 Q_SIGNALS:
     void modified();
     void openObject(DetailsType type, const QString &id);

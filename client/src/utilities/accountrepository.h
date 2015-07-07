@@ -38,6 +38,8 @@ public:
     void addAccount(const SugarAccount &account);
     void removeAccount(const SugarAccount &account);
 
+    SugarAccount accountById(const QString &id) const;
+
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;
     QList<SugarAccount> accountsByKey(const QString &key) const;
 
@@ -45,6 +47,7 @@ private:
     AccountRepository();
 
     typedef QMap<QString, SugarAccount> Map;
+    Map mIdMap;
     Map mKeyMap;
     Map mNameMap;
 };

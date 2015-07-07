@@ -31,6 +31,9 @@
 #include <KABC/Address>
 #include <KABC/Addressee>
 
+#include <QMessageBox>
+#include <accountrepository.h>
+
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails)
 {
@@ -54,6 +57,7 @@ void ContactDetails::initialize()
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthday()));
+    connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
 }
 
 void ContactDetails::slotSetBirthday()
@@ -67,6 +71,42 @@ void ContactDetails::slotSetBirthday()
 void ContactDetails::slotClearDate()
 {
     mUi->birthdate->clear();
+}
+
+void ContactDetails::slotAccountActivated()
+{
+    const QString accountId = currentAccountId();
+    if (accountId.isEmpty()) {
+        return;
+    }
+    const SugarAccount account = AccountRepository::instance()->accountById(accountId);
+    if (account.isEmpty()) {
+        return;
+    }
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(i18n("Copy address from account?"));
+    msgBox.setText(i18n("Do you want to copy the address and phone number from the account '%1' into this contact?", account.name()));
+    msgBox.setStandardButtons(QMessageBox::Yes |
+                              QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+    if (ret == QMessageBox::Cancel) {
+        return;
+    }
+    if (!account.shippingAddressStreet().isEmpty()) {
+        mUi->primaryAddressStreet->setPlainText(account.shippingAddressStreet());
+        mUi->primaryAddressCity->setText(account.shippingAddressCity());
+        mUi->primaryAddressState->setText(account.shippingAddressState());
+        mUi->primaryAddressPostalcode->setText(account.shippingAddressPostalcode());
+        mUi->primaryAddressCountry->setText(account.shippingAddressCountry());
+    } else {
+        mUi->primaryAddressStreet->setPlainText(account.billingAddressStreet());
+        mUi->primaryAddressCity->setText(account.billingAddressCity());
+        mUi->primaryAddressState->setText(account.billingAddressState());
+        mUi->primaryAddressPostalcode->setText(account.billingAddressPostalcode());
+        mUi->primaryAddressCountry->setText(account.billingAddressCountry());
+    }
+    mUi->phone_work->setText(account.phoneOffice());
 }
 
 QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
