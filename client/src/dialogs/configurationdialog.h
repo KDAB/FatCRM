@@ -56,14 +56,14 @@ private Q_SLOTS:
     void slotCountryListClicked(const QModelIndex &idx);
     void slotCountryRemoved(const QString &country);
     void slotCountryAdded(const QString &country);
-    void slotUsersChanged();
     void slotEditCountryGroup();
+    void slotEditAssigneeGroup();
 
 private:
     Ui::ConfigurationDialog *ui;
     ClientSettings::GroupFilters m_assigneeFilters;
     ClientSettings::GroupFilters m_countryFilters;
-    int m_currentFilterRow;
+    int m_currentAssigneeFilterRow;
     int m_currentCountryGroupRow;
 };
 

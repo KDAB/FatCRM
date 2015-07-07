@@ -30,7 +30,7 @@
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::ConfigurationDialog),
-    m_currentFilterRow(-1),
+    m_currentAssigneeFilterRow(-1),
     m_currentCountryGroupRow(-1)
 {
     ui->setupUi(this);
@@ -41,9 +41,9 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
             this, SLOT(slotGroupRemoved(QString)));
     connect(ui->groupListWidget, SIGNAL(added(QString)),
             this, SLOT(slotGroupAdded(QString)));
-    connect(ui->usersListWidget, SIGNAL(changed()),
-            this, SLOT(slotUsersChanged()));
-    ui->usersListWidget->setEnabled(false);
+    connect(ui->editSelectedAssigneeFilter, SIGNAL(clicked()),
+            this, SLOT(slotEditAssigneeGroup()));
+    ui->editSelectedAssigneeFilter->setEnabled(false);
 
     connect(ui->countryListWidget->listView(), SIGNAL(clicked(QModelIndex)),
             this, SLOT(slotCountryListClicked(QModelIndex)));
@@ -95,17 +95,14 @@ ClientSettings::GroupFilters ConfigurationDialog::countryFilters() const
 
 void ConfigurationDialog::slotGroupListClicked(const QModelIndex &idx)
 {
-    m_currentFilterRow = idx.row();
-    ui->usersListWidget->setEnabled(true);
-    qDebug() << "m_currentFilterRow=" << m_currentFilterRow;
-    ui->usersListWidget->setItems(m_assigneeFilters.groups().at(m_currentFilterRow).entries);
+    m_currentAssigneeFilterRow = idx.row();
+    ui->editSelectedAssigneeFilter->setEnabled(true);
 }
 
 void ConfigurationDialog::slotGroupRemoved(const QString &group)
 {
     Q_UNUSED(group);
-    m_assigneeFilters.removeGroup(m_currentFilterRow);
-    ui->groupListWidget->setEnabled(!m_assigneeFilters.groups().isEmpty());
+    m_assigneeFilters.removeGroup(m_currentAssigneeFilterRow);
 }
 
 void ConfigurationDialog::slotGroupAdded(const QString &group)
@@ -130,15 +127,20 @@ void ConfigurationDialog::slotCountryAdded(const QString &country)
     m_countryFilters.prependGroup(country);
 }
 
-void ConfigurationDialog::slotUsersChanged()
+void ConfigurationDialog::slotEditAssigneeGroup()
 {
-    qDebug() << "Updating group" << m_currentFilterRow << "with list" << ui->usersListWidget->items();
-    m_assigneeFilters.updateGroup(m_currentFilterRow, ui->usersListWidget->items());
+    EditListDialog dialog(i18n("Type the full name of users to add them to the group:"), this);
+    ClientSettings::GroupFilters::Group group = m_assigneeFilters.groups().at(m_currentAssigneeFilterRow);
+    dialog.setWindowTitle(i18n("Editing assignee group %1", group.group));
+    dialog.setItems(group.entries);
+    if (dialog.exec()) {
+        m_assigneeFilters.updateGroup(m_currentAssigneeFilterRow, dialog.items());
+    }
 }
 
 void ConfigurationDialog::slotEditCountryGroup()
 {
-    EditListDialog dialog(this);
+    EditListDialog dialog(i18n("Type country names to add them to the group:"), this);
     ClientSettings::GroupFilters::Group group = m_countryFilters.groups().at(m_currentCountryGroupRow);
     dialog.setWindowTitle(i18n("Editing country group %1", group.group));
     dialog.setItems(group.entries);
