@@ -23,12 +23,12 @@
 #ifndef PAGE_H
 #define PAGE_H
 
-#include "ui_page.h"
 #include "enums.h"
-#include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "itemstreemodel.h"
+#include "ui_page.h"
 
-#include <kdcrmdata/enumdefinitions.h>
+#include "kdcrmdata/enumdefinitions.h"
 
 #include <Akonadi/Collection>
 

@@ -35,7 +35,8 @@
 #include "referenceddata.h"
 #include "reportpage.h"
 #include "resourceconfigdialog.h"
-#include <kdcrmdata/enumdefinitionattribute.h>
+
+#include "kdcrmdata/enumdefinitionattribute.h"
 
 #include <Akonadi/AgentFilterProxyModel>
 #include <Akonadi/AgentInstance>
@@ -206,10 +207,14 @@ void MainWindow::setupActions()
     connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
 
     Q_FOREACH (const Page *page, mPages) {
-        connect(page, SIGNAL(statusMessage(QString)), this, SLOT(slotShowMessage(QString)));
-        connect(page, SIGNAL(modelLoaded(DetailsType)), this, SLOT(slotModelLoaded(DetailsType)));
-        connect(page, SIGNAL(showDetailsChanged(bool)), this, SLOT(slotPageShowDetailsChanged()));
-        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)), this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
+        connect(page, SIGNAL(statusMessage(QString)),
+                this, SLOT(slotShowMessage(QString)));
+        connect(page, SIGNAL(modelLoaded(DetailsType)),
+                this, SLOT(slotModelLoaded(DetailsType)));
+        connect(page, SIGNAL(showDetailsChanged(bool)),
+                this, SLOT(slotPageShowDetailsChanged()));
+        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)),
+                this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
         connect(page, SIGNAL(openObject(DetailsType,QString)),
                 this, SLOT(slotOpenObject(DetailsType,QString)));
     }

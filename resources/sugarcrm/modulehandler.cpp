@@ -28,8 +28,8 @@
 #include "listentriesjob.h"
 using namespace KDSoapGenerated;
 
-#include <kdcrmdata/kdcrmutils.h>
-#include <kdcrmdata/enumdefinitionattribute.h>
+#include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/enumdefinitionattribute.h"
 
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>

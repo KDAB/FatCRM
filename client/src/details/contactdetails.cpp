@@ -22,9 +22,11 @@
 
 #include "contactdetails.h"
 
+#include "accountrepository.h"
 #include "editcalendarbutton.h"
-#include "ui_contactdetails.h"
 #include "referenceddatamodel.h"
+#include "ui_contactdetails.h"
+
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 
@@ -32,7 +34,6 @@
 #include <KABC/Addressee>
 
 #include <QMessageBox>
-#include <accountrepository.h>
 
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails)

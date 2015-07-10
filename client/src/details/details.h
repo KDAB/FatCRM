@@ -24,10 +24,9 @@
 #define DETAILS_H
 
 #include "enums.h"
+#include "kdcrmdata/enumdefinitions.h"
 
 #include <Akonadi/Item>
-
-#include <kdcrmdata/enumdefinitions.h>
 
 #include <QWidget>
 

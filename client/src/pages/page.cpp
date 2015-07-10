@@ -32,11 +32,11 @@
 #include "sugarresourcesettings.h"
 #include "rearrangecolumnsproxymodel.h"
 
+#include "kdcrmdata/enumdefinitionattribute.h"
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
-#include <kdcrmdata/enumdefinitionattribute.h>
 
 #include <Akonadi/AgentManager>
 #include <Akonadi/ChangeRecorder>
