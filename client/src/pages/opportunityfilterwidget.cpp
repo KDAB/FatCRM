@@ -38,6 +38,14 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     ui->setupUi(this);
     ui->rbAssignedTo->setChecked(true);
 
+    ui->modifiedAfter->setNullable(true);
+    ui->modifiedAfter->clear();
+    ui->modifiedBefore->setNullable(true);
+    ui->modifiedBefore->clear();
+    ui->cbMaxNextStepDate->setCurrentIndex(0);
+
+    setupFromConfig();
+
     connect(ui->rbAll, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->rbAssignedTo, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->rbCountry, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
@@ -49,17 +57,8 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
     connect(ui->modifiedBefore, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
 
-    ui->modifiedAfter->setNullable(true);
-    ui->modifiedAfter->clear();
-    ui->modifiedBefore->setNullable(true);
-    ui->modifiedBefore->clear();
-    ui->cbMaxNextStepDate->setCurrentIndex(0);
-
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
     connect(ClientSettings::self(), SIGNAL(countryFiltersChanged()), this, SLOT(setupFromConfig()));
-
-    ui->rbAssignedTo->setChecked(true);
-    setupFromConfig();
 }
 
 OpportunityFilterWidget::~OpportunityFilterWidget()
