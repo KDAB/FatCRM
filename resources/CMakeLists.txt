@@ -21,7 +21,7 @@ if(KDSoap_CODEGENERATOR)
               ${_wsdl}
     )
 
-    qt4_generate_moc(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
+    qt5_generate_moc(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 
     set(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)

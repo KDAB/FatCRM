@@ -60,11 +60,11 @@ void DBusWinIdProvider::Private::tryRegister()
         mObjectRegistered = bus.registerObject(QLatin1String("/Actions"), q,
                                                QDBusConnection::ExportScriptableSlots);
         if (!mObjectRegistered) {
-            kWarning() << "Failed to register provider object /Actions";
+            qWarning() << "Failed to register provider object /Actions";
         }
     }
 
-    kDebug() << "currentOwner="
+    qDebug() << "currentOwner="
              << busInterface->serviceOwner(QLatin1String("org.freedesktop.akonaditray"));
 }
 

@@ -23,7 +23,7 @@
 #ifndef SERIALIZERPLUGINSUGARACCOUNT_H
 #define SERIALIZERPLUGINSUGARACCOUNT_H
 
-#include <Akonadi/ItemSerializerPlugin>
+#include <AkonadiCore/ItemSerializerPlugin>
 
 #include <QObject>
 
@@ -34,6 +34,7 @@ class SerializerPluginSugarAccount : public QObject, public ItemSerializerPlugin
 {
     Q_OBJECT
     Q_INTERFACES(Akonadi::ItemSerializerPlugin)
+    Q_PLUGIN_METADATA(IID "org.kde.akonadi.SerializerPluginSugarAccount")
 
 public:
     bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version);

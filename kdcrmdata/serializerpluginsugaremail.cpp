@@ -25,7 +25,7 @@
 #include "sugaremail.h"
 #include "sugaremailio.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -62,7 +62,5 @@ void SerializerPluginSugarEmail::serialize(const Item &item, const QByteArray &l
     SugarEmailIO io;
     io.writeSugarEmail(sugarEmail, &data);
 }
-
-Q_EXPORT_PLUGIN2(akonadi_serializer_sugaremail, Akonadi::SerializerPluginSugarEmail)
 
 #include "serializerpluginsugaremail.moc"

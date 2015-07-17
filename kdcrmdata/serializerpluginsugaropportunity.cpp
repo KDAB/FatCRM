@@ -25,7 +25,7 @@
 #include "sugaropportunity.h"
 #include "sugaropportunityio.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -62,7 +62,5 @@ void SerializerPluginSugarOpportunity::serialize(const Item &item, const QByteAr
     SugarOpportunityIO io;
     io.writeSugarOpportunity(sugarOpportunity, &data);
 }
-
-Q_EXPORT_PLUGIN2(akonadi_serializer_sugaropportunity, Akonadi::SerializerPluginSugarOpportunity)
 
 #include "serializerpluginsugaropportunity.moc"

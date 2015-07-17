@@ -31,9 +31,9 @@
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
-#include <Akonadi/ChangeRecorder>
+#include <AkonadiCore/ChangeRecorder>
 #include <Akonadi/Collection>
-#include <Akonadi/ItemFetchScope>
+#include <AkonadiCore/ItemFetchScope>
 
 #include <KLocale>
 #include <KWindowSystem>

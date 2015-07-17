@@ -30,8 +30,8 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/kdcrmutils.h"
 
-#include <KABC/Addressee>
-#include <KABC/PhoneNumber>
+#include <KContacts/Addressee>
+#include <KContacts/PhoneNumber>
 
 #include <KGlobal>
 #include <KIcon>
@@ -142,10 +142,10 @@ int ItemsTreeModel::entityColumnCount(HeaderGroup headerGroup) const
     }
 }
 
-QString ItemsTreeModel::countryForContact(const KABC::Addressee &addressee)
+QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
 {
     // Get the country from the contact, if it has an address.
-    const QString cc = addressee.address(KABC::Address::Work | KABC::Address::Pref).country();
+    const QString cc = addressee.address(KContacts::Address::Work | KContacts::Address::Pref).country();
     if (!cc.isEmpty())
         return cc;
     // Otherwise get the country via the account
@@ -176,7 +176,7 @@ void ItemsTreeModel::oppCountryColumnChanged()
     const int column = d->mColumns.indexOf(Country);
     const int rows = rowCount();
     if (rows > 0) {
-        //kDebug() << "emitting dataChanged for column" << column;
+        //qDebug() << "emitting dataChanged for column" << column;
         emit dataChanged(index(0, column), index(rows - 1, column));
     }
 }
@@ -186,7 +186,7 @@ void ItemsTreeModel::oppAccountNameColumnChanged()
     const int column = d->mColumns.indexOf(OpportunityAccountName);
     const int rows = rowCount();
     if (rows > 0) {
-        //kDebug() << "emitting dataChanged for column" << column;
+        //qDebug() << "emitting dataChanged for column" << column;
         emit dataChanged(index(0, column), index(rows- 1, column));
     }
 }
@@ -294,11 +294,11 @@ QVariant ItemsTreeModel::campaignData(const Item &item, int column, int role) co
 }
 
 /**
- * Return the data. KABC::Addressee type - ref: Contacts
+ * Return the data. KContacts::Addressee type - ref: Contacts
  */
 QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) const
 {
-    if (!item.hasPayload<KABC::Addressee>()) {
+    if (!item.hasPayload<KContacts::Addressee>()) {
 
         // Pass modeltest
         if (role == Qt::DisplayRole) {
@@ -308,7 +308,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
         return QVariant();
     }
 
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
         switch (columnTypes().at(column)) {
@@ -324,9 +324,9 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
         case PreferredEmail:
             return addressee.preferredEmail();
         case PhoneWork:
-            return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
+            return addressee.phoneNumber(KContacts::PhoneNumber::Work).number();
         case PhoneMobile:
-            return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
+            return addressee.phoneNumber(KContacts::PhoneNumber::Cell).number();
         case Country:
             return countryForContact(addressee);
         case LastModifiedDate:

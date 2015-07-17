@@ -30,7 +30,7 @@
 
 #include "kdcrmdata/enumdefinitions.h"
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 #include <QWidget>
 

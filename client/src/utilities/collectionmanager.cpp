@@ -22,8 +22,8 @@
 
 #include "collectionmanager.h"
 
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/CollectionFetchScope>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
 
 #include <QStringList>
 
@@ -64,7 +64,7 @@ static int orderForCollection(const QString &contentMimeType)
         if (contentMimeType == s_orderedMimeTypes[i])
             return i;
     }
-    kDebug() << "unexpected content mimetype for ordering:" << contentMimeType;
+    qDebug() << "unexpected content mimetype for ordering:" << contentMimeType;
     return 20;
 }
 

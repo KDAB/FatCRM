@@ -47,13 +47,13 @@
 #include "updateentryjob.h"
 #include "passwordhandler.h"
 
-#include <Akonadi/ChangeRecorder>
+#include <AkonadiCore/ChangeRecorder>
 #include <Akonadi/Collection>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/CachePolicy>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/CachePolicy>
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include <KLocale>
 #include <KWindowSystem>

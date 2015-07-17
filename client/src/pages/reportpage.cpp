@@ -26,8 +26,8 @@
 #include "sugaropportunity.h"
 #include "kdcrmutils.h"
 
-#include <Akonadi/EntityTreeModel>
-#include <Akonadi/Item>
+#include <AkonadiCore/EntityTreeModel>
+#include <AkonadiCore/Item>
 
 ReportPage::ReportPage(QWidget *parent) :
     QWidget(parent),

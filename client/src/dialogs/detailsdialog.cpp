@@ -30,15 +30,16 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemModifyJob>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemModifyJob>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDebug>
+#include <KDebug>
 
 using namespace Akonadi;
 
@@ -105,10 +106,10 @@ void DetailsDialog::Private::saveClicked()
 
     Job *job = 0;
     if (item.isValid()) {
-        kDebug() << "Item modify";
+        qDebug() << "Item modify";
         job = new ItemModifyJob(item, q);
     } else {
-        kDebug() << "Item create";
+        qDebug() << "Item create";
         Q_ASSERT(mCollection.isValid());
         job = new ItemCreateJob(item, mCollection, q);
     }
@@ -123,7 +124,7 @@ void DetailsDialog::Private::dataModified()
 
 void DetailsDialog::Private::saveResult(KJob *job)
 {
-    kDebug() << "save result=" << job->error();
+    qDebug() << "save result=" << job->error();
     if (job->error() != 0) {
         kError() << job->errorText();
         // TODO
