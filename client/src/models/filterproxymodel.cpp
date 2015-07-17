@@ -216,4 +216,3 @@ static bool leadMatchesFilter(const SugarLead &lead, const QString &filter)
     return false;
 }
 
-#include "filterproxymodel.moc"

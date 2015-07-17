@@ -28,9 +28,13 @@ set(KDEPIMLIBS_LIB_VERSION "4.88.0")
 set(QT_REQUIRED_VERSION "5.4.0")
 set(KF5_VERSION "5.12.0")
 set(KCONTACTS_LIB_VERSION "4.89.0")
+set(KCALENDARCORE_LIB_VERSION "4.81.0")
 
+find_package(KF5Wallet ${KF5_VERSION} CONFIG REQUIRED)
 find_package(KF5Akonadi ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5AkonadiContact ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
 
 # search packages used by KDE
 find_package(Boost REQUIRED)
@@ -107,6 +111,5 @@ include_directories(
 
 add_subdirectory(kdcrmdata)
 add_subdirectory(client)
-MESSAGE(STATUS "REACTIVATE IT")
-#add_subdirectory(resources)
+add_subdirectory(resources)
 add_subdirectory(tests)

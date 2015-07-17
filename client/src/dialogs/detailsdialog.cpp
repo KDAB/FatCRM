@@ -126,7 +126,7 @@ void DetailsDialog::Private::saveResult(KJob *job)
 {
     qDebug() << "save result=" << job->error();
     if (job->error() != 0) {
-        kError() << job->errorText();
+        qCritical() << job->errorText();
         // TODO
         return;
     }
@@ -160,7 +160,7 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     connect(d->mSaveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(cancelButton, &QAbstractButton::clicked, this, &QDialog::reject);
 
     ClientSettings::self()->restoreWindowSize("details", this);
 }
@@ -204,4 +204,4 @@ void DetailsDialog::updateItem(const Akonadi::Item &item)
     }
 }
 
-#include "detailsdialog.moc"
+#include "moc_detailsdialog.cpp"

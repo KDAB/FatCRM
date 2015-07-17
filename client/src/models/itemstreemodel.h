@@ -24,7 +24,7 @@
 #define ITEMSTREEMODEL_H
 
 #include "enums.h"
-
+#include "fatcrmprivate_export.h"
 #include <AkonadiCore/EntityTreeModel>
 
 namespace KContacts { class Addressee; }
@@ -34,7 +34,7 @@ namespace KContacts { class Addressee; }
  * This class provides a model for displaying the sugar items.
  *
  */
-class ItemsTreeModel : public Akonadi::EntityTreeModel
+class FATCRMPRIVATE_EXPORT ItemsTreeModel : public Akonadi::EntityTreeModel
 {
     Q_OBJECT
 

@@ -608,4 +608,3 @@ QString ItemsTreeModel::columnName(int column) const
     return columnNameFromType(d->mColumns.at(column));
 }
 
-#include "itemstreemodel.moc"

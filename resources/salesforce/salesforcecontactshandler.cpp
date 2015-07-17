@@ -24,7 +24,7 @@
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
 #include <KContacts/Addressee>
 
@@ -179,7 +179,7 @@ void SalesforceContactsHandler::setDescriptionResult(const TNS__DescribeSObjectR
         it->isAvailable = fields.contains(it.key());
 
         if (!it->isAvailable) {
-            kDebug() << "Disabling accessor pair for" << it.key()
+            qDebug() << "Disabling accessor pair for" << it.key()
                      << "because it is not part of the server's available fields";
         }
     }
@@ -218,7 +218,7 @@ void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, Sf
 bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
 {
     if (!item.hasPayload<KContacts::Addressee>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
     }
@@ -247,7 +247,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         if (it->isAvailable) {
             const QString value = it->getter(addressee);
             valueList << KDSoapValue(it.key(), value);
-            kDebug() << "Upsert: name=" << it.key() << "value=" << value;
+            qDebug() << "Upsert: name=" << it.key() << "value=" << value;
         }
     }
 
@@ -269,8 +269,8 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
     Q_FOREACH (const ENS__SObject &entry, queryResult.records()) {
         const QList<KDSoapValue> valueList = entry.any();
         if (valueList.isEmpty()) {
-            kWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
-            kDebug() << "fieldsToNull:" << entry.fieldsToNull();
+            qWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
+            qDebug() << "fieldsToNull:" << entry.fieldsToNull();
             continue;
         }
 
@@ -291,7 +291,7 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
                     accessorIt->setter(it->value().value<QString>(), addressee);
                 }
             } else {
-                kWarning() << "Contacts entry for id=" << entry.id().value()
+                qWarning() << "Contacts entry for id=" << entry.id().value()
                            << "has unknown value named" << it->name();
             }
         }
@@ -300,6 +300,6 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
         items << item;
     }
 
-    kDebug() << "Query result had" << items.count() << "valid contact items";
+    qDebug() << "Query result had" << items.count() << "valid contact items";
     return items;
 }

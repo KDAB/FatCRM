@@ -28,7 +28,7 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <KDebug>
 #include <KLocale>
@@ -89,17 +89,17 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     }
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
-    kDebug() << "remote=" << remoteItem.remoteRevision()
+    qDebug() << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
     bool hasConflict = false;
     if (mItem.remoteRevision().isEmpty()) {
-        kWarning() << "local item (id=" << mItem.id()
+        qWarning() << "local item (id=" << mItem.id()
                    << ", remoteId=" << mItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
         hasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if (remoteItem.remoteRevision().isEmpty()) {
-        kWarning() << "remote item (id=" << remoteItem.id()
+        qWarning() << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
@@ -130,7 +130,7 @@ void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
     }
 
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
+        qWarning() << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -144,7 +144,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    kDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
+    qDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 
     mStage = Private::GetRevision;
@@ -158,7 +158,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void UpdateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
+        qWarning() << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -178,7 +178,7 @@ void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Get_en
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
     mItem.setRemoteRevision(remoteItem.remoteRevision());
-    kDebug() << "Got remote revision" << mItem.remoteRevision();
+    qDebug() << "Got remote revision" << mItem.remoteRevision();
 
     q->emitResult();
 }
@@ -190,7 +190,7 @@ void UpdateEntryJob::Private::getRevisionError(const KDSoapMessage &fault)
         return;
     }
 
-    kWarning() << "Error when getting remote revision:" << fault.faultAsString();
+    qWarning() << "Error when getting remote revision:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();
@@ -254,5 +254,4 @@ void UpdateEntryJob::startSugarTask()
         emitResult();
     }
 }
-
-#include "updateentryjob.moc"
+#include "moc_updateentryjob.cpp"

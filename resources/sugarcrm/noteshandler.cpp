@@ -27,8 +27,8 @@
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KLocale>
 
@@ -81,7 +81,7 @@ QStringList NotesHandler::supportedCRMFields() const
 bool NotesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarNote>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Note payload";
         return false;
     }
@@ -127,7 +127,7 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Notes entry for id=" << entry.id() << "has no values";
+        qWarning() << "Notes entry for id=" << entry.id() << "has no values";
         return item;
     }
 

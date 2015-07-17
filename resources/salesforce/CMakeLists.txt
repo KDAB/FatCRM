@@ -25,15 +25,16 @@ qt5_add_dbus_adaptor(salesforceresource_SRCS
 
 kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap)
 
-add_executable(akonadi_salesforce_resource RUN_UNINSTALLED ${salesforceresource_SRCS})
+add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 
 target_link_libraries(akonadi_salesforce_resource
   ${KDSoap_LIBRARIES}
-  ${KDE4_AKONADI_LIBS}
   KF5::Contacts
   KF5::KDELibs4Support
   Qt5::DBus
   Qt5::Core
+  KF5::AkonadiCore
+  KF5::AkonadiAgentBase
 )
 
 install(TARGETS akonadi_salesforce_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

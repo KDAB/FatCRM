@@ -22,8 +22,8 @@
 #define REFERENCEUPDATEJOB_H
 
 #include <KCompositeJob>
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 /**
  * @brief The reference update job goes through a collection and changes

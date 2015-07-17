@@ -30,6 +30,7 @@
 #include "enums.h"
 #include "leadspage.h"
 #include "opportunitiespage.h"
+#include "fatcrmprivate_export.h"
 
 #include <QMainWindow>
 
@@ -49,7 +50,7 @@ namespace Akonadi
 class AgentInstance;
 }
 
-class MainWindow : public QMainWindow
+class FATCRMPRIVATE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:

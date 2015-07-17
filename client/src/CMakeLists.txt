@@ -78,13 +78,12 @@ qt5_add_dbus_interface(app_SRCS
 )
 
 add_library(fatcrmprivate ${app_SRCS})
-
+generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
   kdcrmdata
   KF5::KDELibs4Support
-  ${KDE4_AKONADI_LIBS}
+  KF5::AkonadiWidgets
   KF5::Contacts
-  ${QT_QTGUI_LIBS}
 )
 
 target_link_libraries(fatcrmprivate

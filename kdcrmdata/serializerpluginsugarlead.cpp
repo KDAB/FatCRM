@@ -63,4 +63,3 @@ void SerializerPluginSugarLead::serialize(const Item &item, const QByteArray &la
     io.writeSugarLead(sugarLead, &data);
 }
 
-#include "serializerpluginsugarlead.moc"

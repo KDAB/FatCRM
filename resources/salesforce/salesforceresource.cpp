@@ -32,7 +32,7 @@
 using namespace KDSoapGenerated;
 
 #include <AkonadiCore/ChangeRecorder>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchScope>
 
 #include <KLocale>
@@ -356,13 +356,13 @@ void SalesforceResource::retrieveCollections()
         const TNS__DescribeGlobalResponse callResult = mSoap->describeGlobal();
         const QString error = mSoap->lastError();
         const TNS__DescribeGlobalResult result = callResult.result();
-        kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+        qDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
                  << "encoding=" << result.encoding()
                  << "error=" << error;
         const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
-        kDebug() << sobjects.count() << "SObjects";
+        qDebug() << sobjects.count() << "SObjects";
         Q_FOREACH (const TNS__DescribeGlobalSObjectResult &object, sobjects) {
-            kDebug() << "name=" << object.name() << "label=" << object.label()
+            qDebug() << "name=" << object.name() << "label=" << object.label()
                      << "keyPrefix=" << object.keyPrefix();
         }
 
@@ -432,7 +432,7 @@ void SalesforceResource::retrieveItems(const Akonadi::Collection &collection)
             TNS__QueryLocator locator;
             moduleIt.value()->listEntries(locator, mSoap);
         } else {
-            kDebug() << "No module handler for collection" << collection;
+            qDebug() << "No module handler for collection" << collection;
             itemsRetrieved(Item::List());
         }
     }
@@ -465,7 +465,7 @@ void SalesforceResource::loginDone(const TNS__LoginResponse &callResult)
         message = i18nc("@info:status", "Login failed: server returned an invalid session identifier");
     } else {
         mSessionId = sessionId;
-        kDebug() << "Login succeeded: sessionId=" << mSessionId;
+        qDebug() << "Login succeeded: sessionId=" << mSessionId;
     }
 
     if (message.isEmpty()) {
@@ -493,7 +493,7 @@ void SalesforceResource::loginError(const KDSoapMessage &fault)
     mSessionId = QString();
 
     const QString message = fault.faultAsString();
-    kError() << message;
+    qCritical() << message;
 
     status(Broken, message);
     error(message);
@@ -502,7 +502,7 @@ void SalesforceResource::loginError(const KDSoapMessage &fault)
 void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
 {
     const Collection collection = currentCollection();
-    kDebug() << "got Query result for module" << collection.remoteId();
+    qDebug() << "got Query result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -511,7 +511,7 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
     if (moduleIt != mModuleHandlers->constEnd()) {
         const TNS__QueryResult queryResult = callResult.result();
-        kDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
+        qDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if (queryResult.size() > 0) {
             itemsRetrieved(moduleIt.value()->itemsFromListEntriesResponse(queryResult, collection));
 
@@ -526,14 +526,14 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
             itemsRetrievalDone();
         }
     } else {
-        kError() << "no handler for this module?";
+        qCritical() << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResult)
 {
     const Collection collection = currentCollection();
-    kDebug() << "got QueryMore result for module" << collection.remoteId();
+    qDebug() << "got QueryMore result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -542,7 +542,7 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
     if (moduleIt != mModuleHandlers->constEnd()) {
         const TNS__QueryResult queryResult = callResult.result();
-        kDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
+        qDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if (queryResult.size() > 0) {
             itemsRetrieved(moduleIt.value()->itemsFromListEntriesResponse(queryResult, collection));
 
@@ -557,14 +557,14 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
             itemsRetrievalDone();
         }
     } else {
-        kError() << "no handler for this module?";
+        qCritical() << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    kError() << message;
+    qCritical() << message;
 
     status(Broken, message);
     error(message);
@@ -577,11 +577,11 @@ void SalesforceResource::setEntryDone(const TNS__UpsertResponse &callResult)
 
     const QList<TNS__UpsertResult> upsertResults = callResult.result();
     if (upsertResults.isEmpty()) {
-        kError() << "UpsertResponse does not contain any results";
+        qCritical() << "UpsertResponse does not contain any results";
         message = i18nc("@info:status", "Server did not respond as expected: result set is empty");
     } else {
         if (upsertResults.count() > 1) {
-            kError() << "Expecting one upsert result in response but got"
+            qCritical() << "Expecting one upsert result in response but got"
                      << upsertResults.count() << ". Will just take first one";
         }
 
@@ -606,12 +606,12 @@ void SalesforceResource::setEntryDone(const TNS__UpsertResponse &callResult)
     }
 
     if (!message.isEmpty()) {
-        kError() << message;
+        qCritical() << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
     } else {
-        kDebug() << "itemAdded/itemChanged done, comitting pending item (id="
+        qDebug() << "itemAdded/itemChanged done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
         status(Idle);
@@ -625,7 +625,7 @@ void SalesforceResource::setEntryError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
 
-    kError() << message;
+    qCritical() << message;
     status(Broken, message);
     error(message);
     cancelTask(message);
@@ -639,11 +639,11 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
 
     const QList<TNS__DeleteResult> deleteResults = callResult.result();
     if (deleteResults.isEmpty()) {
-        kError() << "deleteResponse does not contain any results";
+        qCritical() << "deleteResponse does not contain any results";
         message = i18nc("@info:status", "Server did not respond as expected: result set is empty");
     } else {
         if (deleteResults.count() > 1) {
-            kError() << "Expecting one delete result in response but got"
+            qCritical() << "Expecting one delete result in response but got"
                      << deleteResults.count() << ". Will just take first one";
         }
 
@@ -660,12 +660,12 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
     }
 
     if (!message.isEmpty()) {
-        kError() << message;
+        qCritical() << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
     } else {
-        kDebug() << "itemRemoved done, comitting pending item (id="
+        qDebug() << "itemRemoved done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
         status(Idle);
@@ -678,7 +678,7 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
 void SalesforceResource::deleteEntryError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    kError() << message;
+    qCritical() << message;
 
     status(Broken, message);
     error(message);
@@ -702,14 +702,14 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
     collections << mTopLevelCollection;
 
     const TNS__DescribeGlobalResult result = callResult.result();
-    kDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+    qDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
              << "encoding=" << result.encoding();
     const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
-    kDebug() << sobjects.count() << "SObjects";
+    qDebug() << sobjects.count() << "SObjects";
 
     QStringList unknownModules;
     Q_FOREACH (const TNS__DescribeGlobalSObjectResult &object, sobjects) {
-//         kDebug() << "name=" << object.name() << "label=" << object.label()
+//         qDebug() << "name=" << object.name() << "label=" << object.label()
 //                  << "keyPrefix=" << object.keyPrefix();
 
         // assume for now that each "sobject" describes a module
@@ -731,7 +731,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
                 handler = new SalesforceContactsHandler;
                 unknownModules << module;
             } else {
-                //kDebug() << "No module handler for" << module;
+                //qDebug() << "No module handler for" << module;
                 continue;
             }
             mModuleHandlers->insert(module, handler);
@@ -743,7 +743,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
         }
     }
 
-    kDebug() << collections.count() << "collections"
+    qDebug() << collections.count() << "collections"
              << unknownModules.count() << "new modules";
 
     if (!unknownModules.isEmpty()) {
@@ -762,7 +762,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
 void SalesforceResource::describeGlobalError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    kError() << message;
+    qCritical() << message;
 
     status(Broken, message);
     error(message);
@@ -771,7 +771,7 @@ void SalesforceResource::describeGlobalError(const KDSoapMessage &fault)
 
 void SalesforceResource::describeSObjects(const QStringList &objects)
 {
-    kDebug() << "Getting descriptions for new modules:" << objects;
+    qDebug() << "Getting descriptions for new modules:" << objects;
 
     TNS__DescribeSObjects param;
     param.setSObjectType(objects);
@@ -785,7 +785,7 @@ void SalesforceResource::describeSObjectsDone(const TNS__DescribeSObjectsRespons
 
     const QList<TNS__DescribeSObjectResult> resultList = callResult.result();
     Q_FOREACH (const TNS__DescribeSObjectResult &result, resultList) {
-        kDebug() << "describeSObject result: name=" << result.name();
+        qDebug() << "describeSObject result: name=" << result.name();
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(result.name());
         if (moduleIt != mModuleHandlers->constEnd()) {
             moduleIt.value()->setDescriptionResult(result);
@@ -804,7 +804,7 @@ void SalesforceResource::describeSObjectsDone(const TNS__DescribeSObjectsRespons
 void SalesforceResource::describeSObjectsError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    kError() << message;
+    qCritical() << message;
 
     status(Broken, message);
     error(message);
@@ -813,4 +813,3 @@ void SalesforceResource::describeSObjectsError(const KDSoapMessage &fault)
 
 AKONADI_RESOURCE_MAIN(SalesforceResource)
 
-#include "salesforceresource.moc"

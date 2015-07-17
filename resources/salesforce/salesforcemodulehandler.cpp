@@ -52,6 +52,6 @@ void SalesforceModuleHandler::setDescriptionResult(const TNS__DescribeSObjectRes
         mAvailableFields << field.name();
     }
 
-    kDebug() << "Module" << moduleName() << "has" << mAvailableFields.count() << "fields:"
+    qDebug() << "Module" << moduleName() << "has" << mAvailableFields.count() << "fields:"
              << mAvailableFields;
 }

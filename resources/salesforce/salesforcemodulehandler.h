@@ -23,7 +23,7 @@
 #ifndef MODULEHANDLER_H
 #define MODULEHANDLER_H
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <QStringList>
 

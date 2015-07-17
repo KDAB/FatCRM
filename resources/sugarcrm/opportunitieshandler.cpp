@@ -31,8 +31,8 @@
 
 using namespace KDSoapGenerated;
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KLocale>
 #include <KDebug>
@@ -65,7 +65,7 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
 bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
         return false;
     }
@@ -137,7 +137,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Opportunities entry for id=" << entry.id() << "has no values";
+        qWarning() << "Opportunities entry for id=" << entry.id() << "has no values";
         return item;
     }
 
@@ -164,7 +164,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
         SugarAccountCache *cache = SugarAccountCache::instance();
         opportunity.setAccountId(cache->accountIdForName(opportunity.tempAccountName()));
         if (opportunity.accountId().isEmpty()) {
-            kWarning() << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
+            qWarning() << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
             cache->addPendingAccountName(opportunity.tempAccountName());
        }
     }
@@ -254,7 +254,7 @@ protected:
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
         if (opp.tempAccountName() == mAccountName) {
-            kDebug() << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
+            qDebug() << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
             opp.setAccountId(mAccountId);
             item.setPayload(opp);
             return true;
@@ -268,7 +268,7 @@ private:
 
 void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
 {
-    kDebug() << "Fixing opp to set account_id:" << accountName << accountId;
+    qDebug() << "Fixing opp to set account_id:" << accountName << accountId;
     OppAccountModifyJob *job = new OppAccountModifyJob(collection(), this);
     job->setAccountName(accountName);
     job->setAccountId(accountId);
@@ -278,7 +278,7 @@ void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, c
 void OpportunitiesHandler::slotUpdateJobResult(KJob *job)
 {
     if (job->error()) {
-        kError() << job->errorString();
+        qCritical() << job->errorString();
     }
 }
 

@@ -63,4 +63,3 @@ void SerializerPluginSugarCampaign::serialize(const Item &item, const QByteArray
     io.writeSugarCampaign(sugarCampaign, &data);
 }
 
-#include "serializerpluginsugarcampaign.moc"

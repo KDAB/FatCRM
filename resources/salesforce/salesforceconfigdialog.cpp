@@ -66,4 +66,3 @@ QString SalesforceConfigDialog::password() const
     return mUi.password->text();
 }
 
-#include "salesforceconfigdialog.moc"

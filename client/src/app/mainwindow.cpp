@@ -43,7 +43,7 @@
 #include <AkonadiCore/AgentInstanceModel>
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/Control>
+#include <AkonadiWidgets/ControlGui>
 #include <AkonadiCore/ServerManager>
 using namespace Akonadi;
 
@@ -75,7 +75,7 @@ MainWindow::MainWindow()
      * this creates an overlay in case Akonadi is not running,
      * allowing the user to restart it
      */
-    Akonadi::Control::widgetNeedsAkonadi(this);
+    Akonadi::ControlGui::widgetNeedsAkonadi(this);
     QMetaObject::invokeMethod(this, "slotDelayedInit", Qt::AutoConnection);
 
     (void)new DBusWinIdProvider(this);
@@ -648,4 +648,3 @@ Page *MainWindow::pageForType(DetailsType type) const
     return 0;
 }
 
-#include "mainwindow.moc"

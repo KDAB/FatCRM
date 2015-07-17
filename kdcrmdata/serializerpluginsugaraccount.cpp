@@ -63,4 +63,3 @@ void SerializerPluginSugarAccount::serialize(const Item &item, const QByteArray 
     io.writeSugarAccount(sugarAccount, &data);
 }
 
-#include "serializerpluginsugaraccount.moc"

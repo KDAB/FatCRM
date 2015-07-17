@@ -63,4 +63,3 @@ void SerializerPluginSugarOpportunity::serialize(const Item &item, const QByteAr
     io.writeSugarOpportunity(sugarOpportunity, &data);
 }
 
-#include "serializerpluginsugaropportunity.moc"

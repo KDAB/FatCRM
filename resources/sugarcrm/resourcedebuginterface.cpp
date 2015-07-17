@@ -76,7 +76,7 @@ int ResourceDebugInterface::getCount(const QString &module) const
     //const QString query = QString("parent_type=\"Opportunities\"");
     const QString query = QString();
     KDSoapGenerated::TNS__Get_entries_count_result response = soap->get_entries_count(sessionId, module, query, 0);
-    kDebug() << response.result_count() << "entries";
+    qDebug() << response.result_count() << "entries";
 
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
@@ -89,10 +89,9 @@ int ResourceDebugInterface::getCount(const QString &module) const
             qDebug() << value.name() << "=" << value.value();
         }
     } else {
-        kDebug() << "No items found. lastError=" << soap->lastError();
+        qDebug() << "No items found. lastError=" << soap->lastError();
     }
 
     return response.result_count();
 }
 
-#include "resourcedebuginterface.moc"

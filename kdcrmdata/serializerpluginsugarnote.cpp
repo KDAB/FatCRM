@@ -63,4 +63,3 @@ void SerializerPluginSugarNote::serialize(const Item &item, const QByteArray &la
     io.writeSugarNote(sugarNote, &data);
 }
 
-#include "serializerpluginsugarnote.moc"

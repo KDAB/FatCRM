@@ -23,7 +23,7 @@
 #include "mainwindow.h"
 
 #include <KApplication>
-#include <KAboutData>
+#include <K4AboutData>
 #include <KCmdLineArgs>
 #include <KLocale>
 
@@ -32,9 +32,9 @@ static const char version[] = "0.1";
 
 int main(int argc, char **argv)
 {
-    KAboutData about("fatcrm", 0, ki18n("FatCRM"),
+    K4AboutData about("fatcrm", 0, ki18n("FatCRM"),
                      version, ki18n(description),
-                     KAboutData::License_GPL_V2, ki18n("(C) 2010-2015 KDAB"),
+                     K4AboutData::License_GPL_V2, ki18n("(C) 2010-2015 KDAB"),
                      KLocalizedString(), 0, "info@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);

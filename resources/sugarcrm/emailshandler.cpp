@@ -27,8 +27,8 @@
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KLocale>
 
@@ -119,11 +119,11 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             }
         }
         if (email_id.isEmpty()) {
-            kWarning() << "No email_id found in entry";
+            qWarning() << "No email_id found in entry";
         } else {
             const int pos = itemIndexById.value(email_id, -1);
             if (pos == -1) {
-                kWarning() << "Email not found:" << email_id;
+                qWarning() << "Email not found:" << email_id;
             } else {
                 SugarEmail email = items[pos].payload<SugarEmail>();
                 email.setDescription(description);
@@ -136,7 +136,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
 bool EmailsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarEmail>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Email payload";
         return false;
     }
@@ -182,7 +182,7 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Emails entry for id=" << entry.id() << "has no values";
+        qWarning() << "Emails entry for id=" << entry.id() << "has no values";
         return item;
     }
 

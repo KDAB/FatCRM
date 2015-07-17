@@ -28,8 +28,8 @@
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KLocale>
 
@@ -162,7 +162,7 @@ QStringList CampaignsHandler::supportedSugarFields() const
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarCampaign>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Campaign payload";
         return false;
     }
@@ -208,7 +208,7 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
+        qWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
         return item;
     }
 

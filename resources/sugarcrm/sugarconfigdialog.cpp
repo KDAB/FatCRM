@@ -68,4 +68,3 @@ int SugarConfigDialog::intervalCheckTime() const
     return val == mUi.checkIntervalSpinbox->minimum() ? -1 : val;
 }
 
-#include "sugarconfigdialog.moc"

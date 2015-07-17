@@ -28,10 +28,10 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/kabc/contactparts.h> //krazy:exclude=camelcase
+#include <Akonadi/Contact/ContactParts>
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KContacts/Addressee>
 #include <KContacts/Address>
@@ -685,7 +685,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 bool ContactsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<KContacts::Addressee>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
     }
@@ -804,7 +804,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Contacts entry for id=" << entry.id() << "has no values";
+        qWarning() << "Contacts entry for id=" << entry.id() << "has no values";
         return item;
     }
 

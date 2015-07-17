@@ -160,4 +160,3 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
     return FilterProxyModel::lessThan(left, right);
 }
 
-#include "opportunityfilterproxymodel.moc"

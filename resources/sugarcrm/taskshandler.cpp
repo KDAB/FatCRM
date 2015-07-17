@@ -28,8 +28,8 @@ using namespace KDSoapGenerated;
 #include <KCalCore/Todo>
 using namespace KCalCore;
 
-#include <akonadi/abstractdifferencesreporter.h>
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h>
+#include <AkonadiCore/Collection>
 
 #include <KDateTime>
 #include <KLocale>
@@ -349,7 +349,7 @@ QStringList TasksHandler::supportedCRMFields() const
 bool TasksHandler::setEntry( const Akonadi::Item &item )
 {
     if ( !item.hasPayload<KCalCore::Todo::Ptr>() ) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Todo payload";
         return false;
     }
@@ -394,7 +394,7 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
 
     const QList<TNS__Name_value> valueList = entry.name_value_list().items();
     if ( valueList.isEmpty() ) {
-        kWarning() << "Tasks entry for id=" << entry.id() << "has no values";
+        qWarning() << "Tasks entry for id=" << entry.id() << "has no values";
         return item;
     }
 

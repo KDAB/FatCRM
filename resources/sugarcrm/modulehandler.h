@@ -25,9 +25,9 @@
 
 #include "kdcrmdata/enumdefinitions.h"
 
-#include <akonadi/differencesalgorithminterface.h> //krazy:exclude=camelcase
-#include <Akonadi/Item>
-#include <Akonadi/Collection>
+#include <AkonadiCore/differencesalgorithminterface.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Item>
+#include <AkonadiCore/Collection>
 
 #include <QStringList>
 

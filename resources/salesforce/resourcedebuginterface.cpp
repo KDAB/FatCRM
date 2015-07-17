@@ -55,4 +55,3 @@ QStringList ResourceDebugInterface::supportedModules() const
     return mResource->mModuleHandlers->keys();
 }
 
-#include "resourcedebuginterface.moc"

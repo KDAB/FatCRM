@@ -22,9 +22,9 @@
 
 #include "conflictresolvedialog.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <akonadi/differencesalgorithminterface.h> //krazy:exclude=camelcase
-#include <Akonadi/Item>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/differencesalgorithminterface.h>
+#include <AkonadiCore/Item>
 
 #include <KColorScheme>
 #include <KLocale>
@@ -225,4 +225,4 @@ ConflictHandler::ResolveStrategy ConflictResolveDialog::resolveStrategy() const
     return d->mStrategy;
 }
 
-#include "conflictresolvedialog.moc"
+#include "moc_conflictresolvedialog.cpp"

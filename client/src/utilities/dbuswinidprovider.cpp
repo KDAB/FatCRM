@@ -94,4 +94,4 @@ qlonglong DBusWinIdProvider::getWinId()
     return (qlonglong) d->mWindow->winId();
 }
 
-#include "dbuswinidprovider.moc"
+#include "moc_dbuswinidprovider.cpp"

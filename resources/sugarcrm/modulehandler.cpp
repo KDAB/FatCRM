@@ -113,7 +113,7 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
 QStringList ModuleHandler::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {
-        kDebug() << "Available Fields for " << mModuleName
+        qDebug() << "Available Fields for " << mModuleName
                  << "not fetched yet, getting them now";
 
         mAvailableFields = listAvailableFields(mSession, mModuleName);
@@ -140,9 +140,9 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
         Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
             availableFields << field.name();
         }
-        kDebug() << "Got" << availableFields << "fields";
+        qDebug() << "Got" << availableFields << "fields";
     } else {
-        kDebug() << "Got error: number=" << error.number()
+        qDebug() << "Got error: number=" << error.number()
                  << "name=" << error.name()
                  << "description=" << error.description();
     }
@@ -152,7 +152,7 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
 bool ModuleHandler::getEntry(const Akonadi::Item &item)
 {
     if (item.remoteId().isEmpty()) {
-        kError() << "Item remoteId is empty. id=" << item.id();
+        qCritical() << "Item remoteId is empty. id=" << item.id();
         return false;
     }
 
@@ -174,20 +174,20 @@ void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
         mParsedEnumDefinitions = true;
         foreach (const KDSoapGenerated::TNS__Field &field, fields.items()) {
             const QString fieldName = field.name();
-            //kDebug() << fieldName << "TYPE" << field.type();
+            //qDebug() << fieldName << "TYPE" << field.type();
             if (field.type() == QLatin1String("enum")) {
-                //kDebug() << moduleName() << "enum" << fieldName;
+                //qDebug() << moduleName() << "enum" << fieldName;
                 EnumDefinitions::Enum definition(fieldName);
                 foreach (const KDSoapGenerated::TNS__Name_value &nameValue, field.options().items()) {
                     // In general, name==value except for some like
                     // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"
-                    //kDebug() << nameValue.name() << nameValue.value();
+                    //qDebug() << nameValue.name() << nameValue.value();
                     definition.mEnumValues.insert(nameValue.name(), nameValue.value());
                 }
                 mEnumDefinitions.append(definition);
             }
         }
-        kDebug() << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
+        qDebug() << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
         // Accounts: account_type, industry
         // Contacts: salutation, lead_source, portal_user_type
         // Opportunities: opportunity_type, lead_source, sales_stage
@@ -250,7 +250,7 @@ Sugarsoap *ModuleHandler::soap() const
 void ModuleHandler::slotCollectionModifyResult(KJob *job)
 {
     if (job->error()) {
-        kWarning() << job->errorString();
+        qWarning() << job->errorString();
     }
 }
 
@@ -262,7 +262,7 @@ void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &col
     Akonadi::Collection collection = collections.at(0);
     if (ListEntriesJob::currentContentsVersion(collection) != expectedContentsVersion()) {
         // the contents need to be relisted, do this right now before users get a chance to view bad data
-        kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
+        qDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
                  << ListEntriesJob::currentContentsVersion(collection) << "!="
                  << expectedContentsVersion();
         Akonadi::AgentManager::self()->synchronizeCollection(collection);

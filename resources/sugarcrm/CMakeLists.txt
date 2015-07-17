@@ -49,18 +49,20 @@ qt5_add_dbus_adaptor(sugarcrmresource_SRCS
 
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap)
 
-add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
+add_executable(akonadi_sugarcrm_resource ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource
   kdcrmdata
   ${KDSoap_LIBRARIES}
-  ${KDE4_AKONADI_KABC_LIBS}
-  ${KDE4_AKONADI_LIBS}
   KF5::Contacts
   KF5::CalendarCore
   KF5::KDELibs4Support
   Qt5::DBus
   Qt5::Core
+  KF5::Wallet
+  KF5::CalendarCore
+  KF5::AkonadiAgentBase
+  KF5::AkonadiContact
 )
 
 install(TARGETS akonadi_sugarcrm_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

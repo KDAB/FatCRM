@@ -26,7 +26,7 @@
 #include "sugaropportunity.h"
 
 #include <KApplication>
-#include <KAboutData>
+#include <K4AboutData>
 #include <KCmdLineArgs>
 #include <KLocale>
 
@@ -98,9 +98,9 @@ private:
 
 int main(int argc, char **argv)
 {
-    KAboutData about("itemstreemodeltest", 0, ki18n("ItemsTreeModel test"),
+    K4AboutData about("itemstreemodeltest", 0, ki18n("ItemsTreeModel test"),
                      "0.1", ki18n("Interactive test program for ItemsTreeModel"),
-                     KAboutData::License_GPL_V2, ki18n("(C) 2015 KDAB"),
+                     K4AboutData::License_GPL_V2, ki18n("(C) 2015 KDAB"),
                      KLocalizedString(), 0, "david.faure@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);

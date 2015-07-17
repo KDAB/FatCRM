@@ -31,11 +31,11 @@ using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemDeleteJob>
 #include <AkonadiCore/ItemFetchScope>
-#include <Akonadi/EntityAnnotationsAttribute>
+#include <AkonadiCore/EntityAnnotationsAttribute>
 using namespace Akonadi;
 
 #include <KDebug>
@@ -78,21 +78,21 @@ public: // slots
 
 void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    //kDebug() << q << "error" << callResult.error().number();
+    //qDebug() << q << "error" << callResult.error().number();
     if (q->handleError(callResult.error())) {
         return;
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
-        kDebug() << "List Entries for" << mHandler->moduleName()
+        qDebug() << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "deletes";
         mPendingDeletedItems += items;
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
     } else {
         if (!mPendingDeletedItems.isEmpty()) {
-            kDebug() << "Resolving" << mPendingDeletedItems.count() << "deleted items";
+            qDebug() << "Resolving" << mPendingDeletedItems.count() << "deleted items";
             // workaround for RID REMOVE not working in akonadiserver. Our deleted items need an ID.
             Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mPendingDeletedItems, q);
             job->setCollection(mCollection);
@@ -102,7 +102,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
             connect(job, SIGNAL(result(KJob*)),
                     q, SLOT(slotResolvedDeletedItems(KJob*)));
         } else {
-            kDebug() << "found 0 deleted items";
+            qDebug() << "found 0 deleted items";
             q->emitResult();
         }
     }
@@ -111,7 +111,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
 void ListDeletedEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << q << "List Entries Error:" << fault.faultAsString();
+        qWarning() << q << "List Entries Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -160,7 +160,7 @@ void ListDeletedEntriesJob::Private::updateAnnotationAttribute()
 void ListDeletedEntriesJob::Private::slotDeleteJobResult(KJob *job)
 {
     if (job->error()) {
-        kWarning() << job->errorString();
+        qWarning() << job->errorString();
         q->setError(job->error());
         q->setErrorText(job->errorText());
     } else {
@@ -178,13 +178,13 @@ ListDeletedEntriesJob::ListDeletedEntriesJob(const Akonadi::Collection &collecti
     connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
-    //kDebug() << this;
+    //qDebug() << this;
 }
 
 ListDeletedEntriesJob::~ListDeletedEntriesJob()
 {
     delete d;
-    //kDebug() << this;
+    //qDebug() << this;
 }
 
 Collection ListDeletedEntriesJob::collection() const
@@ -241,5 +241,4 @@ void ListDeletedEntriesJob::startSugarTask()
 
     d->mHandler->listEntries(d->mListScope);
 }
-
-#include "listdeletedentriesjob.moc"
+#include "moc_listdeletedentriesjob.cpp"

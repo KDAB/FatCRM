@@ -221,4 +221,4 @@ ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
 {
 }
 
-#include "referenceddata.moc"
+#include "moc_referenceddata.cpp"

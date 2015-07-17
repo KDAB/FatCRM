@@ -56,7 +56,7 @@ void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module
     const KDSoapGenerated::TNS__Select_fields moduleNames = callResult.modules();
     mModules = moduleNames.items();
 
-    kDebug() << "Got" << mModules.count() << "available modules";
+    qDebug() << "Got" << mModules.count() << "available modules";
     Q_ASSERT(!mModules.isEmpty()); // abort before deleting everything locally...
 
     q->emitResult();
@@ -65,7 +65,7 @@ void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module
 void ListModulesJob::Private::listModulesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "List Modules Error:" << fault.faultAsString();
+        qWarning() << "List Modules Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -97,4 +97,4 @@ void ListModulesJob::startSugarTask()
     soap()->asyncGet_available_modules(sessionId());
 }
 
-#include "listmodulesjob.moc"
+#include "moc_listmodulesjob.cpp"

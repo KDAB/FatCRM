@@ -28,8 +28,8 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 #include <KDebug>
 
@@ -62,7 +62,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
+    qDebug() << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();
 }
@@ -70,7 +70,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void DeleteEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Delete Entry Error:" << fault.faultAsString();
+        qWarning() << "Delete Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -117,5 +117,4 @@ void DeleteEntryJob::startSugarTask()
 
     soap()->asyncSet_entry(sessionId(), d->mItem.parentCollection().remoteId(), valueList);
 }
-
-#include "deleteentryjob.moc"
+#include "moc_deleteentryjob.cpp"

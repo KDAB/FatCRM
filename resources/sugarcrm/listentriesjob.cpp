@@ -31,8 +31,8 @@ using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Collection>
-#include <Akonadi/EntityAnnotationsAttribute>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/EntityAnnotationsAttribute>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 
@@ -84,7 +84,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
     }
 
     const int count = callResult.result_count();
-    kDebug() << q << "About to list" << count << "entries";
+    qDebug() << q << "About to list" << count << "entries";
     emit q->totalItems( count );
     if (count == 0) {
         q->emitResult();
@@ -97,7 +97,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
 void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << q << fault.faultAsString();
+        qWarning() << q << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -114,7 +114,7 @@ static const char s_contentsVersionKey[] = "contentsVersion";
 
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    kDebug() << q << "stage" << mStage << "error" << callResult.error().number();
+    qDebug() << q << "stage" << mStage << "error" << callResult.error().number();
     if (q->handleError(callResult.error())) {
         return;
     }
@@ -126,7 +126,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 
         if (mHandler->needsExtraInformation())
             mHandler->getExtraInformation(items);
-        kDebug() << "List Entries for" << mHandler->moduleName()
+        qDebug() << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "items.";
 
         if (mListScope.isUpdateScope()) {
@@ -139,7 +139,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
     } else {
-        kDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
+        qDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
         // Store timestamp into DB, to persist it across restarts
         // Add one second, so we don't get the same stuff all over again every time
@@ -176,7 +176,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << q << "List Entries Error:" << fault.faultAsString();
+        qWarning() << q << "List Entries Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -198,13 +198,13 @@ ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSessi
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
     d->mStage = Private::GetCount;
-    //kDebug() << this;
+    //qDebug() << this;
 }
 
 ListEntriesJob::~ListEntriesJob()
 {
     delete d;
-    //kDebug() << this;
+    //qDebug() << this;
 }
 
 Collection ListEntriesJob::collection() const
@@ -264,7 +264,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
         const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();
         const int expected = handler->expectedContentsVersion();
         if (contentsVersion != expected) {
-            kDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
+            qDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
             return QString();
         }
 
@@ -272,7 +272,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
 
         // If we don't have enum definitions, go back a little to get some update
         if (!handler->hasEnumDefinitions()) {
-            kDebug() << handler->moduleName() << "no enum definitions, going back a bit to get something";
+            qDebug() << handler->moduleName() << "no enum definitions, going back a bit to get something";
             KDCRMUtils::decrementTimeStamp(timeStamp);
         }
         return timeStamp;
@@ -296,5 +296,4 @@ void ListEntriesJob::startSugarTask()
         break;
     }
 }
-
-#include "listentriesjob.moc"
+#include "moc_listentriesjob.cpp"

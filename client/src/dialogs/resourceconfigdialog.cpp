@@ -240,4 +240,4 @@ bool WorkaroundFilterProxyModel::filterAcceptsRow(int source_row, const QModelIn
     return capabilities.contains("KDCRM");
 }
 
-#include "resourceconfigdialog.moc"
+#include "moc_resourceconfigdialog.cpp"

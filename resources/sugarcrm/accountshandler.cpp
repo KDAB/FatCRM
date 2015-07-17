@@ -30,8 +30,8 @@ using namespace KDSoapGenerated;
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
 
@@ -89,7 +89,7 @@ QStringList AccountsHandler::supportedCRMFields() const
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarAccount>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
         return false;
     }
@@ -153,7 +153,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Accounts entry for id=" << entry.id() << "has no values";
+        qWarning() << "Accounts entry for id=" << entry.id() << "has no values";
         return item;
     }
 
@@ -300,12 +300,12 @@ void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
         const SugarAccount account = item.payload<SugarAccount>();
         cache->addAccount(account.name(), account.id());
     }
-    //kDebug() << "Added" << items.count() << "items into cache for" << moduleName();
+    //qDebug() << "Added" << items.count() << "items into cache for" << moduleName();
 }
 
 void AccountsHandler::slotUpdateJobResult(KJob *job)
 {
     if (job->error()) {
-        kError() << job->errorString();
+        qCritical() << job->errorString();
     }
 }

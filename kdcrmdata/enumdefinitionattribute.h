@@ -22,7 +22,7 @@
 
 #ifndef ENUMDEFINITIONATTRIBUTE_H
 #define ENUMDEFINITIONATTRIBUTE_H
-
+#include "kdcrmdata_export.h"
 #include <AkonadiCore/Attribute>
 #include <QMap>
 #include <QString>
@@ -34,7 +34,7 @@ namespace Akonadi {
 /**
  * An attribute for letting the resource store the definition of enums, that FatCRM can use.
  */
-class EnumDefinitionAttribute : public Akonadi::Attribute
+class KDCRMDATA_EXPORT EnumDefinitionAttribute : public Akonadi::Attribute
 {
 public:
     EnumDefinitionAttribute();

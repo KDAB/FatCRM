@@ -28,8 +28,8 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
 #include <KContacts/Address>
 
@@ -236,7 +236,7 @@ QStringList LeadsHandler::supportedSugarFields() const
 bool LeadsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarLead>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Lead payload";
         return false;
     }
@@ -281,7 +281,7 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Leads entry for id=" << entry.id() << "has no values";
+        qWarning() << "Leads entry for id=" << entry.id() << "has no values";
         return item;
     }
 
