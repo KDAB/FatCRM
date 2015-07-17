@@ -743,9 +743,9 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
                 handler = new LeadsHandler(mSession);
             } else if (module == QLatin1String("Campaigns")) {
                 handler = new CampaignsHandler(mSession);
-#endif
             } else if (module == QLatin1String("Tasks")) {
                 handler = new TasksHandler(mSession);
+#endif
             } else if (module == QLatin1String("Notes")) {
                 handler = new NotesHandler(mSession);
             } else if (module == QLatin1String("Emails")) {
