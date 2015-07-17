@@ -20,9 +20,9 @@
 
 #include "referenceupdatejob.h"
 
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/ItemModifyJob>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
 
 ReferenceUpdateJob::ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent) :
     KCompositeJob(parent),

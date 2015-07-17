@@ -25,9 +25,9 @@
 
 #include "enums.h"
 
-#include <AkonadiCore/EntityTreeModel>
+#include <Akonadi/EntityTreeModel>
 
-namespace KContacts { class Addressee; }
+namespace KABC { class Addressee; }
 
 /**
  * A model for sugar items.
@@ -107,7 +107,7 @@ public:
     QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
     int entityColumnCount(HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
 
-    static QString countryForContact(const KContacts::Addressee &addressee);
+    static QString countryForContact(const KABC::Addressee &addressee);
 
 private Q_SLOTS:
     void slotAccountCountryChanged(int row);

@@ -33,323 +33,323 @@ using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
 #include <Akonadi/Collection>
 
-#include <KContacts/Addressee>
-#include <KContacts/Address>
+#include <KABC/Addressee>
+#include <KABC/Address>
 
 #include <KLocale>
 
 #include <QHash>
 
-typedef QString(*valueGetter)(const KContacts::Addressee &);
-typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
-typedef void (*addressSetter)(const QString &, KContacts::Address &);
+typedef QString(*valueGetter)(const KABC::Addressee &);
+typedef void (*valueSetter)(const QString &, KABC::Addressee &);
+typedef void (*addressSetter)(const QString &, KABC::Address &);
 
-static QString getFirstName(const KContacts::Addressee &addressee)
+static QString getFirstName(const KABC::Addressee &addressee)
 {
     return addressee.givenName();
 }
 
-static void setFirstName(const QString &value, KContacts::Addressee &addressee)
+static void setFirstName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setGivenName(value);
 }
 
-static QString getLastName(const KContacts::Addressee &addressee)
+static QString getLastName(const KABC::Addressee &addressee)
 {
     return addressee.familyName();
 }
 
-static void setLastName(const QString &value, KContacts::Addressee &addressee)
+static void setLastName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setFamilyName(value);
 }
 
-static QString getTitle(const KContacts::Addressee &addressee)
+static QString getTitle(const KABC::Addressee &addressee)
 {
     return addressee.title();
 }
 
-static void setTitle(const QString &value, KContacts::Addressee &addressee)
+static void setTitle(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setTitle(value);
 }
 
-static QString getDepartment(const KContacts::Addressee &addressee)
+static QString getDepartment(const KABC::Addressee &addressee)
 {
     return addressee.department();
 }
 
-static void setDepartment(const QString &value, KContacts::Addressee &addressee)
+static void setDepartment(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setDepartment(value);
 }
 
-static QString getAccountName(const KContacts::Addressee &addressee)
+static QString getAccountName(const KABC::Addressee &addressee)
 {
     return addressee.organization();
 }
 
-static void setAccountName(const QString &value, KContacts::Addressee &addressee)
+static void setAccountName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setOrganization(value);
 }
 
-static QString getAccountId(const KContacts::Addressee &addressee)
+static QString getAccountId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-AccountId");
 }
 
-static void setAccountId(const QString &value, KContacts::Addressee &addressee)
+static void setAccountId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-AccountId", value);
 }
 
-static QString getAssistantName(const KContacts::Addressee &addressee)
+static QString getAssistantName(const KABC::Addressee &addressee)
 {
     return addressee.custom("KADDRESSBOOK", "X-AssistantsName");
 }
 
-static void setAssistantName(const QString &value, KContacts::Addressee &addressee)
+static void setAssistantName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", value);
 }
 
-static QString getAssistantPhone(const KContacts::Addressee &addressee)
+static QString getAssistantPhone(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-AssistantsPhone");
 }
 
-static void setAssistantPhone(const QString &value, KContacts::Addressee &addressee)
+static void setAssistantPhone(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-AssistantsPhone", value);
 }
 
-static QString getLeadSourceName(const KContacts::Addressee &addressee)
+static QString getLeadSourceName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-LeadSourceName");
 }
 
-static void setLeadSourceName(const QString &value, KContacts::Addressee &addressee)
+static void setLeadSourceName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-LeadSourceName", value);
 }
 
-static QString getCampaignName(const KContacts::Addressee &addressee)
+static QString getCampaignName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-CampaignName");
 }
 
-static void setCampaignName(const QString &value, KContacts::Addressee &addressee)
+static void setCampaignName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-CampaignName", value);
 }
 
-static QString getCampaignId(const KContacts::Addressee &addressee)
+static QString getCampaignId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-CampaignId");
 }
 
-static void setCampaignId(const QString &value, KContacts::Addressee &addressee)
+static void setCampaignId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-CampaignId", value);
 }
 
-static QString getAssignedUserName(const KContacts::Addressee &addressee)
+static QString getAssignedUserName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-AssignedUserName");
 }
 
-static void setAssignedUserName(const QString &value, KContacts::Addressee &addressee)
+static void setAssignedUserName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-AssignedUserName", value);
 }
 
-static QString getAssignedUserId(const KContacts::Addressee &addressee)
+static QString getAssignedUserId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-AssignedUserId");
 }
 
-static void setAssignedUserId(const QString &value, KContacts::Addressee &addressee)
+static void setAssignedUserId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-AssignedUserId", value);
 }
 
-static QString getReportsToUserName(const KContacts::Addressee &addressee)
+static QString getReportsToUserName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-ReportsToUserName");
 }
 
-static void setReportsToUserName(const QString &value, KContacts::Addressee &addressee)
+static void setReportsToUserName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-ReportsToUserName", value);
 }
 
-static QString getReportsToUserId(const KContacts::Addressee &addressee)
+static QString getReportsToUserId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-ReportsToUserId");
 }
 
-static void setReportsToUserId(const QString &value, KContacts::Addressee &addressee)
+static void setReportsToUserId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-ReportsToUserId", value);
 }
 
-static QString getModifiedByName(const KContacts::Addressee &addressee)
+static QString getModifiedByName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-ModifiedByName");
 }
 
-static void setModifiedByName(const QString &value, KContacts::Addressee &addressee)
+static void setModifiedByName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-ModifiedByName", value);
 }
 
-static QString getDateModified(const KContacts::Addressee &addressee)
+static QString getDateModified(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-DateModified");
 }
 
-static void setDateModified(const QString &value, KContacts::Addressee &addressee)
+static void setDateModified(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-DateModified", value);
 }
 
-static QString getModifiedUserId(const KContacts::Addressee &addressee)
+static QString getModifiedUserId(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-ModifiedUserId");
 }
 
-static void setModifiedUserId(const QString &value, KContacts::Addressee &addressee)
+static void setModifiedUserId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-ModifiedUserId", value);
 }
 
-static QString getDateCreated(const KContacts::Addressee &addressee)
+static QString getDateCreated(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-DateCreated");
 }
 
-static void setDateCreated(const QString &value, KContacts::Addressee &addressee)
+static void setDateCreated(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-DateCreated", value);
 }
 
-static void setContactId(const QString &value, KContacts::Addressee &addressee)
+static void setContactId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-ContactId", value);
 }
 
-static QString getCreatedByName(const KContacts::Addressee &addressee)
+static QString getCreatedByName(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-CreatedByName");
 }
 
-static void setCreatedByName(const QString &value, KContacts::Addressee &addressee)
+static void setCreatedByName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-CreatedByName", value);
 }
 
-static QString getCreatedById(const KContacts::Addressee &addressee)
+static QString getCreatedById(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-CreatedById");
 }
 
-static void setCreatedById(const QString &value, KContacts::Addressee &addressee)
+static void setCreatedById(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-CreatedById", value);
 }
 
-static QString getSalutation(const KContacts::Addressee &addressee)
+static QString getSalutation(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-Salutation");
 }
 
-static void setSalutation(const QString &value, KContacts::Addressee &addressee)
+static void setSalutation(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-Salutation", value);
 }
 
-static QString getOpportunityRoleFields(const KContacts::Addressee &addressee)
+static QString getOpportunityRoleFields(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-OpportunityRoleFields");
 }
 
-static void setOpportunityRoleFields(const QString &value, KContacts::Addressee &addressee)
+static void setOpportunityRoleFields(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-OpportunityRoleFields", value);
 }
 
-static QString getCAcceptStatusFields(const KContacts::Addressee &addressee)
+static QString getCAcceptStatusFields(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-CacceptStatusFields");
 }
 
-static void setCAcceptStatusFields(const QString &value, KContacts::Addressee &addressee)
+static void setCAcceptStatusFields(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-CacceptStatusFields", value);
 }
 
-static QString getMAcceptStatusFields(const KContacts::Addressee &addressee)
+static QString getMAcceptStatusFields(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-MacceptStatusFields");
 }
 
-static void setMAcceptStatusFields(const QString &value, KContacts::Addressee &addressee)
+static void setMAcceptStatusFields(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-MacceptStatusFields", value);
 }
 
-static QString getDeleted(const KContacts::Addressee &addressee)
+static QString getDeleted(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-Deleted");
 }
 
-static void setDeleted(const QString &value, KContacts::Addressee &addressee)
+static void setDeleted(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-Deleted", value);
 }
 
-static QString getDoNotCall(const KContacts::Addressee &addressee)
+static QString getDoNotCall(const KABC::Addressee &addressee)
 {
     return addressee.custom("FATCRM", "X-DoNotCall");
 }
 
-static void setDoNotCall(const QString &value, KContacts::Addressee &addressee)
+static void setDoNotCall(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertCustom("FATCRM", "X-DoNotCall", value);
 }
 
-static QString getNote(const KContacts::Addressee &addressee)
+static QString getNote(const KABC::Addressee &addressee)
 {
     return addressee.note();
 }
 
-static void setNote(const QString &value, KContacts::Addressee &addressee)
+static void setNote(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setNote(value);
 }
 
-static QString getBirthday(const KContacts::Addressee &addressee)
+static QString getBirthday(const KABC::Addressee &addressee)
 {
     return KDCRMUtils::dateToString(addressee.birthday().date());
 }
 
-static void setBirthday(const QString &value, KContacts::Addressee &addressee)
+static void setBirthday(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(value)));
 }
 
-static QString getEmail1(const KContacts::Addressee &addressee)
+static QString getEmail1(const KABC::Addressee &addressee)
 {
     return addressee.preferredEmail();
 }
 
-static void setEmail1(const QString &value, KContacts::Addressee &addressee)
+static void setEmail1(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertEmail(value, true);
 }
 
-static QString getEmail2(const KContacts::Addressee &addressee)
+static QString getEmail2(const KABC::Addressee &addressee)
 {
     // preferred might not be the first one, so remove it and take the first of
     // the remaining instead of always taking the second one
@@ -362,159 +362,159 @@ static QString getEmail2(const KContacts::Addressee &addressee)
     return QString();
 }
 
-static void setEmail2(const QString &value, KContacts::Addressee &addressee)
+static void setEmail2(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertEmail(value, false);
 }
 
-static QString getHomePhone(const KContacts::Addressee &addressee)
+static QString getHomePhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Home).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Home).number();
 }
 
-static void setHomePhone(const QString &value, KContacts::Addressee &addressee)
+static void setHomePhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Home));
 }
 
-static QString getWorkPhone(const KContacts::Addressee &addressee)
+static QString getWorkPhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Work).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
 }
 
-static void setWorkPhone(const QString &value, KContacts::Addressee &addressee)
+static void setWorkPhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Work));
 }
 
-static QString getMobilePhone(const KContacts::Addressee &addressee)
+static QString getMobilePhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Cell).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
 }
 
-static void setMobilePhone(const QString &value, KContacts::Addressee &addressee)
+static void setMobilePhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Cell));
 }
 
 // Pending (michel)
 // we need to decide what other phone will be
-static QString getOtherPhone(const KContacts::Addressee &addressee)
+static QString getOtherPhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Car).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Car).number();
 }
 
-static void setOtherPhone(const QString &value, KContacts::Addressee &addressee)
+static void setOtherPhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Car));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Car));
 }
 
-static QString getFaxPhone(const KContacts::Addressee &addressee)
+static QString getFaxPhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Work | KContacts::PhoneNumber::Fax).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Work | KABC::PhoneNumber::Fax).number();
 }
 
-static void setFaxPhone(const QString &value, KContacts::Addressee &addressee)
+static void setFaxPhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Work | KContacts::PhoneNumber::Fax));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Work | KABC::PhoneNumber::Fax));
 }
 
-static QString getPrimaryStreet(const KContacts::Addressee &addressee)
+static QString getPrimaryStreet(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Work).street();
+    return addressee.address(KABC::Address::Work).street();
 }
 
-static void setPrimaryStreet(const QString &value, KContacts::Address &address)
+static void setPrimaryStreet(const QString &value, KABC::Address &address)
 {
     address.setStreet(value);
 }
 
-static QString getPrimaryCity(const KContacts::Addressee &addressee)
+static QString getPrimaryCity(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Work | KContacts::Address::Pref).locality();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).locality();
 }
 
-static void setPrimaryCity(const QString &value, KContacts::Address &address)
+static void setPrimaryCity(const QString &value, KABC::Address &address)
 {
     address.setLocality(value);
 }
 
-static QString getPrimaryState(const KContacts::Addressee &addressee)
+static QString getPrimaryState(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Work | KContacts::Address::Pref).region();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).region();
 }
 
-static void setPrimaryState(const QString &value, KContacts::Address &address)
+static void setPrimaryState(const QString &value, KABC::Address &address)
 {
     address.setRegion(value);
 }
 
-static QString getPrimaryPostalcode(const KContacts::Addressee &addressee)
+static QString getPrimaryPostalcode(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Work | KContacts::Address::Pref).postalCode();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).postalCode();
 }
 
-static void setPrimaryPostalcode(const QString &value, KContacts::Address &address)
+static void setPrimaryPostalcode(const QString &value, KABC::Address &address)
 {
     address.setPostalCode(value);
 }
 
-static QString getPrimaryCountry(const KContacts::Addressee &addressee)
+static QString getPrimaryCountry(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Work | KContacts::Address::Pref).country();
+    return addressee.address(KABC::Address::Work | KABC::Address::Pref).country();
 }
 
-static void setPrimaryCountry(const QString &value, KContacts::Address &address)
+static void setPrimaryCountry(const QString &value, KABC::Address &address)
 {
     address.setCountry(value);
 }
 
-static QString getOtherStreet(const KContacts::Addressee &addressee)
+static QString getOtherStreet(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Home).street();
+    return addressee.address(KABC::Address::Home).street();
 }
 
-static void setOtherStreet(const QString &value, KContacts::Address &address)
+static void setOtherStreet(const QString &value, KABC::Address &address)
 {
     address.setStreet(value);
 }
 
-static QString getOtherCity(const KContacts::Addressee &addressee)
+static QString getOtherCity(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Home).locality();
+    return addressee.address(KABC::Address::Home).locality();
 }
 
-static void setOtherCity(const QString &value, KContacts::Address &address)
+static void setOtherCity(const QString &value, KABC::Address &address)
 {
     address.setLocality(value);
 }
 
-static QString getOtherState(const KContacts::Addressee &addressee)
+static QString getOtherState(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Home).region();
+    return addressee.address(KABC::Address::Home).region();
 }
 
-static void setOtherState(const QString &value, KContacts::Address &address)
+static void setOtherState(const QString &value, KABC::Address &address)
 {
     address.setRegion(value);
 }
 
-static QString getOtherPostalcode(const KContacts::Addressee &addressee)
+static QString getOtherPostalcode(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Home).postalCode();
+    return addressee.address(KABC::Address::Home).postalCode();
 }
 
-static void setOtherPostalcode(const QString &value, KContacts::Address &address)
+static void setOtherPostalcode(const QString &value, KABC::Address &address)
 {
     address.setPostalCode(value);
 }
 
-static QString getOtherCountry(const KContacts::Addressee &addressee)
+static QString getOtherCountry(const KABC::Addressee &addressee)
 {
-    return addressee.address(KContacts::Address::Home).country();
+    return addressee.address(KABC::Address::Home).country();
 }
 
-static void setOtherCountry(const QString &value, KContacts::Address &address)
+static void setOtherCountry(const QString &value, KABC::Address &address)
 {
     address.setCountry(value);
 }
@@ -673,7 +673,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleName());
-    contactCollection.setContentMimeTypes(QStringList() << KContacts::Addressee::mimeType());
+    contactCollection.setContentMimeTypes(QStringList() << KABC::Addressee::mimeType());
     contactCollection.setName(i18nc("@item folder name", "Contacts"));
     contactCollection.setRights(Akonadi::Collection::CanChangeItem |
                                 Akonadi::Collection::CanCreateItem |
@@ -684,7 +684,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 
 bool ContactsHandler::setEntry(const Akonadi::Item &item)
 {
-    if (!item.hasPayload<KContacts::Addressee>()) {
+    if (!item.hasPayload<KABC::Addressee>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
@@ -702,7 +702,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
         itemList << field;
     }
 
-    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
     ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
     ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
@@ -810,13 +810,13 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     item.setRemoteId(entry.id());
     item.setParentCollection(parentCollection);
-    item.setMimeType(KContacts::Addressee::mimeType());
+    item.setMimeType(KABC::Addressee::mimeType());
 
-    KContacts::Addressee addressee;
+    KABC::Addressee addressee;
     addressee.setUid(entry.id());
-    KContacts::Address workAddress,  homeAddress;
-    workAddress.setType(KContacts::Address::Work | KContacts::Address::Pref);
-    homeAddress.setType(KContacts::Address::Home);
+    KABC::Address workAddress,  homeAddress;
+    workAddress.setType(KABC::Address::Work | KABC::Address::Pref);
+    homeAddress.setType(KABC::Address::Home);
 
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
@@ -828,7 +828,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
 
         if (isAddressValue(namedValue.name())) {
-            KContacts::Address &address =
+            KABC::Address &address =
                 isPrimaryAddressValue(namedValue.name()) ? workAddress : homeAddress;
             (*accessIt)->setter.aSetter(value, address);
         } else {
@@ -837,7 +837,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     }
     addressee.insertAddress(workAddress);
     addressee.insertAddress(homeAddress);
-    item.setPayload<KContacts::Addressee>(addressee);
+    item.setPayload<KABC::Addressee>(addressee);
     item.setRemoteRevision(getDateModified(addressee));
 
     return item;
@@ -856,11 +856,11 @@ bool ContactsHandler::needBackendChange(const Akonadi::Item &item, const QSet<QB
 void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                               const Akonadi::Item &leftItem, const Akonadi::Item &rightItem)
 {
-    Q_ASSERT(leftItem.hasPayload<KContacts::Addressee>());
-    Q_ASSERT(rightItem.hasPayload<KContacts::Addressee>());
+    Q_ASSERT(leftItem.hasPayload<KABC::Addressee>());
+    Q_ASSERT(rightItem.hasPayload<KABC::Addressee>());
 
-    const KContacts::Addressee leftContact = leftItem.payload<KContacts::Addressee>();
-    const KContacts::Addressee rightContact = rightItem.payload<KContacts::Addressee>();
+    const KABC::Addressee leftContact = leftItem.payload<KABC::Addressee>();
+    const KABC::Addressee rightContact = rightItem.payload<KABC::Addressee>();
 
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate(getDateModified(rightContact));
@@ -891,10 +891,10 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     if (!seenPrimaryAddress) {
                         diffName = i18nc("item:intable", "Primary Address");
                         seenPrimaryAddress = true;
-                        const KContacts::Address leftAddress =
-                            leftContact.address(KContacts::Address::Work | KContacts::Address::Pref);
-                        const KContacts::Address rightAddress =
-                            rightContact.address(KContacts::Address::Work | KContacts::Address::Pref);
+                        const KABC::Address leftAddress =
+                            leftContact.address(KABC::Address::Work | KABC::Address::Pref);
+                        const KABC::Address rightAddress =
+                            rightContact.address(KABC::Address::Work | KABC::Address::Pref);
 
                         leftValue = leftAddress.formattedAddress();
                         rightValue = rightAddress.formattedAddress();
@@ -906,10 +906,10 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     if (!seenOtherAddress) {
                         seenOtherAddress = true;
                         diffName = i18nc("item:intable", "Other Address");
-                        const KContacts::Address leftAddress =
-                            leftContact.address(KContacts::Address::Home);
-                        const KContacts::Address rightAddress =
-                            rightContact.address(KContacts::Address::Home);
+                        const KABC::Address leftAddress =
+                            leftContact.address(KABC::Address::Home);
+                        const KABC::Address rightAddress =
+                            rightContact.address(KABC::Address::Home);
 
                         leftValue = leftAddress.formattedAddress();
                         rightValue = rightAddress.formattedAddress();

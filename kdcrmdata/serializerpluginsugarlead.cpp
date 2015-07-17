@@ -25,7 +25,7 @@
 #include "sugarlead.h"
 #include "sugarleadio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -62,5 +62,7 @@ void SerializerPluginSugarLead::serialize(const Item &item, const QByteArray &la
     SugarLeadIO io;
     io.writeSugarLead(sugarLead, &data);
 }
+
+Q_EXPORT_PLUGIN2(akonadi_serializer_sugarlead, Akonadi::SerializerPluginSugarLead)
 
 #include "serializerpluginsugarlead.moc"

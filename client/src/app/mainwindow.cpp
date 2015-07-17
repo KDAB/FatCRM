@@ -38,13 +38,13 @@
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
-#include <AkonadiCore/AgentFilterProxyModel>
-#include <AkonadiCore/AgentInstance>
-#include <AkonadiCore/AgentInstanceModel>
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/Control>
-#include <AkonadiCore/ServerManager>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceModel>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/Control>
+#include <Akonadi/ServerManager>
 using namespace Akonadi;
 
 #include <QCheckBox>
@@ -57,8 +57,6 @@ using namespace Akonadi;
 #include <QProgressBar>
 #include <QTimer>
 #include <QToolBar>
-
-#include <KDebug>
 
 MainWindow::MainWindow()
     : QMainWindow(),
@@ -260,7 +258,7 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
 
 void MainWindow::slotServerStarted()
 {
-    qDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
+    kDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
     if (mResourceSelector->count() > 0) {
         initialResourceSelection();
     }
@@ -277,7 +275,7 @@ void MainWindow::slotToggleOffline(bool offline)
     AgentInstance currentAgent = currentResource();
     const bool online = !offline;
     if (currentAgent.isValid() && currentAgent.isOnline() != online) {
-        qDebug() << "setting agent" << currentAgent.identifier() << "to online=" << online;
+        kDebug() << "setting agent" << currentAgent.identifier() << "to online=" << online;
         currentAgent.setIsOnline(online);
     }
 }
@@ -316,7 +314,7 @@ void MainWindow::slotFullReload()
 
 void MainWindow::slotShowMessage(const QString &message)
 {
-    qDebug() << message;
+    kDebug() << message;
     statusBar()->showMessage(message);
 }
 
@@ -492,7 +490,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             statusBar()->clearMessage();
             mProgressBarHideTimer->start();
         } else {
-            qDebug() << progress << message;
+            kDebug() << progress << message;
             mProgressBar->show();
             mProgressBar->setValue(progress);
             if (progress == 100) {

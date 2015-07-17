@@ -32,9 +32,9 @@ using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
 #include <Akonadi/Collection>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityAnnotationsAttribute>
 using namespace Akonadi;
 

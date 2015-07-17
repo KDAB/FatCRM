@@ -20,26 +20,24 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SERIALIZERPLUGINSUGARNOTE_H
-#define SERIALIZERPLUGINSUGARNOTE_H
+#ifndef KDCRMDATA_EXPORT_H
+#define KDCRMDATA_EXPORT_H
 
-#include <Akonadi/ItemSerializerPlugin>
+/* needed for KDE_EXPORT and KDE_IMPORT macros */
+#include <kdemacros.h>
 
-#include <QObject>
+#ifndef KDCRMDATA_EXPORT
+# if defined(MAKE_KDCRMDATA_LIB)
+/* We are building this library */
+#  define KDCRMDATA_EXPORT KDE_EXPORT
+# else
+/* We are using this library */
+#  define KDCRMDATA_EXPORT KDE_IMPORT
+# endif
+#endif
 
-namespace Akonadi
-{
-
-class SerializerPluginSugarNote : public QObject, public ItemSerializerPlugin
-{
-    Q_OBJECT
-    Q_INTERFACES(Akonadi::ItemSerializerPlugin)
-
-public:
-    bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version);
-    void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version);
-};
-
-}
+# ifndef KDCRMDATA_EXPORT_DEPRECATED
+#  define KDCRMDATA_EXPORT_DEPRECATED KDE_DEPRECATED KDCRMDATA_EXPORT
+# endif
 
 #endif

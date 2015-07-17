@@ -26,103 +26,103 @@ using namespace KDSoapGenerated;
 
 #include <Akonadi/Collection>
 
-#include <KContacts/Addressee>
+#include <KABC/Addressee>
 
 #include <KLocale>
 
 #include <QHash>
 
-typedef QString(*valueGetter)(const KContacts::Addressee &);
-typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
+typedef QString(*valueGetter)(const KABC::Addressee &);
+typedef void (*valueSetter)(const QString &, KABC::Addressee &);
 
-static QString getId(const KContacts::Addressee &addressee)
+static QString getId(const KABC::Addressee &addressee)
 {
     return addressee.uid();
 }
 
-static void setId(const QString &value, KContacts::Addressee &addressee)
+static void setId(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setUid(value);
 }
 
-static QString getFirstName(const KContacts::Addressee &addressee)
+static QString getFirstName(const KABC::Addressee &addressee)
 {
     return addressee.givenName();
 }
 
-static void setFirstName(const QString &value, KContacts::Addressee &addressee)
+static void setFirstName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setGivenName(value);
 }
 
-static QString getLastName(const KContacts::Addressee &addressee)
+static QString getLastName(const KABC::Addressee &addressee)
 {
     return addressee.familyName();
 }
 
-static void setLastName(const QString &value, KContacts::Addressee &addressee)
+static void setLastName(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setFamilyName(value);
 }
 
-static QString getTitle(const KContacts::Addressee &addressee)
+static QString getTitle(const KABC::Addressee &addressee)
 {
     return addressee.title();
 }
 
-static void setTitle(const QString &value, KContacts::Addressee &addressee)
+static void setTitle(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setTitle(value);
 }
 
-static QString getDepartment(const KContacts::Addressee &addressee)
+static QString getDepartment(const KABC::Addressee &addressee)
 {
     return addressee.department();
 }
 
-static void setDepartment(const QString &value, KContacts::Addressee &addressee)
+static void setDepartment(const QString &value, KABC::Addressee &addressee)
 {
     addressee.setDepartment(value);
 }
 
-static QString getEmail1(const KContacts::Addressee &addressee)
+static QString getEmail1(const KABC::Addressee &addressee)
 {
     return addressee.preferredEmail();
 }
 
-static void setEmail1(const QString &value, KContacts::Addressee &addressee)
+static void setEmail1(const QString &value, KABC::Addressee &addressee)
 {
     addressee.insertEmail(value, true);
 }
 
-static QString getHomePhone(const KContacts::Addressee &addressee)
+static QString getHomePhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Home).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Home).number();
 }
 
-static void setHomePhone(const QString &value, KContacts::Addressee &addressee)
+static void setHomePhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Home));
 }
 
-static QString getWorkPhone(const KContacts::Addressee &addressee)
+static QString getWorkPhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Work).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
 }
 
-static void setWorkPhone(const QString &value, KContacts::Addressee &addressee)
+static void setWorkPhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Work));
 }
 
-static QString getMobilePhone(const KContacts::Addressee &addressee)
+static QString getMobilePhone(const KABC::Addressee &addressee)
 {
-    return addressee.phoneNumber(KContacts::PhoneNumber::Cell).number();
+    return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
 }
 
-static void setMobilePhone(const QString &value, KContacts::Addressee &addressee)
+static void setMobilePhone(const QString &value, KABC::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Cell));
 }
 
 class ContactAccessorPair
@@ -189,7 +189,7 @@ Akonadi::Collection SalesforceContactsHandler::collection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleName());
-    contactCollection.setContentMimeTypes(QStringList() << KContacts::Addressee::mimeType());
+    contactCollection.setContentMimeTypes(QStringList() << KABC::Addressee::mimeType());
     contactCollection.setName(i18nc("@item folder name", "Contacts"));
     contactCollection.setRights(Akonadi::Collection::CanChangeItem |
                                 Akonadi::Collection::CanCreateItem |
@@ -217,7 +217,7 @@ void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, Sf
 
 bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
 {
-    if (!item.hasPayload<KContacts::Addressee>()) {
+    if (!item.hasPayload<KABC::Addressee>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
@@ -232,8 +232,8 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         object.setId(item.remoteId());
     }
 
-    Q_ASSERT(item.hasPayload<KContacts::Addressee>());
-    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+    Q_ASSERT(item.hasPayload<KABC::Addressee>());
+    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
 
     QList<KDSoapValue> valueList;
     ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
@@ -277,9 +277,9 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
         Akonadi::Item item;
         item.setRemoteId(entry.id().value());
         item.setParentCollection(parentCollection);
-        item.setMimeType(KContacts::Addressee::mimeType());
+        item.setMimeType(KABC::Addressee::mimeType());
 
-        KContacts::Addressee addressee;
+        KABC::Addressee addressee;
         addressee.setUid(entry.id().value());
 
         QList<KDSoapValue>::const_iterator it    = valueList.constBegin();
@@ -296,7 +296,7 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
             }
         }
 
-        item.setPayload<KContacts::Addressee>(addressee);
+        item.setPayload<KABC::Addressee>(addressee);
         items << item;
     }
 

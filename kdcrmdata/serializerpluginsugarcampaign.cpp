@@ -25,7 +25,7 @@
 #include "sugarcampaign.h"
 #include "sugarcampaignio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -62,5 +62,7 @@ void SerializerPluginSugarCampaign::serialize(const Item &item, const QByteArray
     SugarCampaignIO io;
     io.writeSugarCampaign(sugarCampaign, &data);
 }
+
+Q_EXPORT_PLUGIN2(akonadi_serializer_sugarcampaign, Akonadi::SerializerPluginSugarCampaign)
 
 #include "serializerpluginsugarcampaign.moc"

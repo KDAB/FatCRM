@@ -32,7 +32,6 @@
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <KLocale>
-#include <KDebug>
 
 #include <QCalendarWidget>
 
@@ -128,9 +127,9 @@ void OpportunityDetails::on_viewNotesButton_clicked()
 {
     const QString oppId = id();
     const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(oppId);
-    qDebug() << notes.count() << "notes found for opp" << oppId;
+    kDebug() << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
-    qDebug() << emails.count() << "emails found for opp" << oppId;
+    kDebug() << emails.count() << "emails found for opp" << oppId;
     NotesDialog *dlg = new NotesDialog(this);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", property("name").toString()));
     foreach(const SugarNote &note, notes) {

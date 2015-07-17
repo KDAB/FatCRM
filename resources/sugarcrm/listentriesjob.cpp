@@ -33,8 +33,8 @@ using namespace KDSoapGenerated;
 
 #include <Akonadi/Collection>
 #include <Akonadi/EntityAnnotationsAttribute>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 
 using namespace Akonadi;
 

@@ -27,10 +27,10 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <KContacts/Addressee>
-#include <KContacts/PhoneNumber>
+#include <KABC/Addressee>
+#include <KABC/PhoneNumber>
 
-#include <AkonadiCore/EntityTreeModel>
+#include <Akonadi/EntityTreeModel>
 
 #include <KLocalizedString>
 
@@ -38,7 +38,7 @@ static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);
 static bool campaignMatchesFilter(const SugarCampaign &campaign,
                                   const QString &filterString);
-static bool contactMatchesFilter(const KContacts::Addressee &addressee,
+static bool contactMatchesFilter(const KABC::Addressee &addressee,
                                  const QString &filterString);
 static bool leadMatchesFilter(const SugarLead &lead,
                               const QString &filterString);
@@ -107,8 +107,8 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
         return campaignMatchesFilter(campaign, d->mFilter);
     }
     case Contact: {
-        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
-        const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
+        Q_ASSERT(item.hasPayload<KABC::Addressee>());
+        const KABC::Addressee contact = item.payload<KABC::Addressee>();
         return contactMatchesFilter(contact, d->mFilter);
     }
     case Lead: {
@@ -165,7 +165,7 @@ static bool campaignMatchesFilter(const SugarCampaign &campaign, const QString &
     return false;
 }
 
-static bool contactMatchesFilter(const KContacts::Addressee& contact, const QString &filter)
+static bool contactMatchesFilter(const KABC::Addressee& contact, const QString &filter)
 {
     if (contact.assembledName().contains(filter, Qt::CaseInsensitive)) {
         return true;
@@ -176,10 +176,10 @@ static bool contactMatchesFilter(const KContacts::Addressee& contact, const QStr
     if (contact.preferredEmail().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
-    if (contact.phoneNumber(KContacts::PhoneNumber::Work).number().contains(filter, Qt::CaseInsensitive)) {
+    if (contact.phoneNumber(KABC::PhoneNumber::Work).number().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
-    if (contact.phoneNumber(KContacts::PhoneNumber::Cell).number().contains(filter, Qt::CaseInsensitive)) {
+    if (contact.phoneNumber(KABC::PhoneNumber::Cell).number().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
     if (contact.givenName().contains(filter, Qt::CaseInsensitive)) {

@@ -23,7 +23,7 @@
 #ifndef SERIALIZERPLUGINSUGAREMAIL_H
 #define SERIALIZERPLUGINSUGAREMAIL_H
 
-#include <AkonadiCore/ItemSerializerPlugin>
+#include <Akonadi/ItemSerializerPlugin>
 
 #include <QObject>
 
@@ -34,7 +34,7 @@ class SerializerPluginSugarEmail : public QObject, public ItemSerializerPlugin
 {
     Q_OBJECT
     Q_INTERFACES(Akonadi::ItemSerializerPlugin)
-    Q_PLUGIN_METADATA(IID "org.kde.akonadi.SerializerPluginSugarEmail")
+
 public:
     bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version);
     void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version);

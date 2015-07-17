@@ -25,7 +25,7 @@
 #include "sugaraccount.h"
 #include "sugaraccountio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -62,5 +62,7 @@ void SerializerPluginSugarAccount::serialize(const Item &item, const QByteArray 
     SugarAccountIO io;
     io.writeSugarAccount(sugarAccount, &data);
 }
+
+Q_EXPORT_PLUGIN2(akonadi_serializer_sugaraccount, Akonadi::SerializerPluginSugarAccount)
 
 #include "serializerpluginsugaraccount.moc"

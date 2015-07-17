@@ -45,7 +45,7 @@ set(app_SRCS
   widgets/qdateeditex.cpp
 )
 
-ki18n_wrap_ui(app_SRCS
+kde4_add_ui_files(app_SRCS
   app/mainwindow.ui
   pages/page.ui
   pages/reportpage.ui
@@ -63,27 +63,27 @@ ki18n_wrap_ui(app_SRCS
   dialogs/resourceconfigdialog.ui
 )
 
-qt5_add_resources(app_SRCS
+qt4_add_resources(app_SRCS
   widgets/widgets.qrc
 )
-qt5_add_resources(app_SRCS
+qt4_add_resources(app_SRCS
   icons/icons.qrc
 )
 
 # Generate DBus interface in order to find out the config of the sugar resource (for the web link)
 # TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
-qt5_add_dbus_interface(app_SRCS
+qt4_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-add_library(fatcrmprivate ${app_SRCS})
+kde4_add_library(fatcrmprivate ${app_SRCS})
 
 target_link_libraries(fatcrmprivate
   kdcrmdata
-  KF5::KDELibs4Support
+  ${KDE4_KDECORE_LIBS}
   ${KDE4_AKONADI_LIBS}
-  KF5::Contacts
+  ${KDEPIMLIBS_KABC_LIBS}
   ${QT_QTGUI_LIBS}
 )
 
@@ -91,7 +91,7 @@ target_link_libraries(fatcrmprivate
   ${KDReports_LIBRARIES}
 )
 
-add_executable(fatcrm app/main.cpp)
+kde4_add_executable(fatcrm app/main.cpp)
 
 target_link_libraries(fatcrm
   fatcrmprivate

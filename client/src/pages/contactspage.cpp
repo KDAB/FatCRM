@@ -24,13 +24,13 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
-#include <KContacts/Address>
-#include <KContacts/Addressee>
+#include <KABC/Address>
+#include <KABC/Addressee>
 
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, QString(KContacts::Addressee::mimeType()), Contact)
+    : Page(parent, QString(KABC::Addressee::mimeType()), Contact)
 {
     setFilter(new FilterProxyModel(Contact, this));
 }

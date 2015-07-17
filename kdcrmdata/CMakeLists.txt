@@ -20,13 +20,11 @@ set(kdcrmdata_LIB_SRCS
   sugarnoteio.cpp
 )
 
-add_library(kdcrmdata SHARED ${kdcrmdata_LIB_SRCS})
-generate_export_header(kdcrmdata BASE_NAME kdcrmdata)
+kde4_add_library(kdcrmdata SHARED ${kdcrmdata_LIB_SRCS})
 
 target_link_libraries(kdcrmdata PUBLIC
-  Qt5::Core
-  KF5::AkonadiCore
-  KF5::KDELibs4Support
+  ${QT_QTCORE_LIBRARY}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 
 set_target_properties(kdcrmdata PROPERTIES
@@ -40,79 +38,73 @@ install(TARGETS kdcrmdata ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ### next target
 set(akonadi_serializer_sugaraccount_PART_SRCS serializerpluginsugaraccount.cpp)
-add_library(akonadi_serializer_sugaraccount
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugaraccount
   ${akonadi_serializer_sugaraccount_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaraccount
   kdcrmdata
-  KF5::KDELibs4Support
-  KF5::AkonadiCore
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugaraccount DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugaropportunity_PART_SRCS serializerpluginsugaropportunity.cpp)
-add_library(akonadi_serializer_sugaropportunity
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugaropportunity
   ${akonadi_serializer_sugaropportunity_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaropportunity
   kdcrmdata
   ${KDE4_CORE_LIBS}
-  KF5::AkonadiCore
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugaropportunity DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugarlead_PART_SRCS serializerpluginsugarlead.cpp)
-add_library(akonadi_serializer_sugarlead
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugarlead
   ${akonadi_serializer_sugarlead_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarlead
   kdcrmdata
-  KF5::KDELibs4Support
-  KF5::AkonadiCore
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugarlead DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugarcampaign_PART_SRCS serializerpluginsugarcampaign.cpp)
-add_library(akonadi_serializer_sugarcampaign
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugarcampaign
   ${akonadi_serializer_sugarcampaign_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarcampaign
   kdcrmdata
-  KF5::KDELibs4Support
-  KF5::AkonadiCore
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugarcampaign DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugarnote_PART_SRCS serializerpluginsugarnote.cpp)
-add_library(akonadi_serializer_sugarnote
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugarnote
   ${akonadi_serializer_sugarnote_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarnote
   kdcrmdata
-  KF5::KDELibs4Support
-  KF5::AkonadiCore
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugarnote DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugaremail_PART_SRCS serializerpluginsugaremail.cpp)
-add_library(akonadi_serializer_sugaremail
- MODULE 
+kde4_add_plugin(akonadi_serializer_sugaremail
   ${akonadi_serializer_sugaremail_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaremail
   kdcrmdata
-  KF5::KDELibs4Support
-  KF5::AkonadiCore
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugaremail DESTINATION ${PLUGIN_INSTALL_DIR})
 

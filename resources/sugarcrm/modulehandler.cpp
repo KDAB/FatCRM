@@ -31,10 +31,10 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/CollectionFetchJob>
-#include <AkonadiCore/CollectionModifyJob>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionModifyJob>
 
 #include <KLocale>
 

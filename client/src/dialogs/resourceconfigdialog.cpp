@@ -24,14 +24,14 @@
 
 #include "ui_resourceconfigdialog.h"
 
-#include <AkonadiCore/AgentFilterProxyModel>
-#include <AkonadiCore/AgentInstance>
-#include <AkonadiCore/AgentInstanceCreateJob>
-#include <AkonadiWidgets/agentinstancewidget.h>
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AgentType>
-#include <AkonadiWidgets/AgentTypeDialog>
-#include <AkonadiCore/AgentTypeModel>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceCreateJob>
+#include <Akonadi/AgentInstanceWidget>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AgentType>
+#include <Akonadi/AgentTypeDialog>
+#include <Akonadi/AgentTypeModel>
 using namespace Akonadi;
 
 #include <KDebug>
@@ -72,7 +72,7 @@ void ResourceConfigDialog::Private::updateButtonStates()
 
     mCurrentResource = AgentInstance();
 
-    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     switch (selectedResources.count()) {
     case 0:
         break;
@@ -121,7 +121,7 @@ void ResourceConfigDialog::Private::configureResource()
 
 void ResourceConfigDialog::Private::syncResources()
 {
-    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     Q_FOREACH (AgentInstance resource, selectedResources) {
         resource.synchronize();
     }
@@ -129,7 +129,7 @@ void ResourceConfigDialog::Private::syncResources()
 
 void ResourceConfigDialog::Private::removeResource()
 {
-    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     Q_FOREACH (const AgentInstance &resource, selectedResources) {
         if (resource == mSelectedResource) {
             mSelectedResource = AgentInstance();
@@ -144,7 +144,7 @@ void ResourceConfigDialog::Private::removeResource()
 
 void ResourceConfigDialog::Private::resourceCreateResult(KJob *job)
 {
-    qDebug() << "error=" << job->error() << "string=" << job->errorString();
+    kDebug() << "error=" << job->error() << "string=" << job->errorString();
     if (job->error() != 0) {
         QMessageBox::critical(q, i18nc("@title:window", "Failed to create CRM connector"),
                               job->errorString());

@@ -32,10 +32,10 @@ using namespace KDSoapGenerated;
 
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
 #include <Akonadi/Collection>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 
-#include <KContacts/Address>
+#include <KABC/Address>
 
 #include <KLocale>
 
@@ -224,14 +224,14 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     seenBillingAddress = true;
                     diffName = i18nc("@item:intable", "Billing Address");
 
-                    KContacts::Address leftAddress;
+                    KABC::Address leftAddress;
                     leftAddress.setStreet(leftAccount.billingAddressStreet());
                     leftAddress.setLocality(leftAccount.billingAddressCity());
                     leftAddress.setRegion(leftAccount.billingAddressState());
                     leftAddress.setCountry(leftAccount.billingAddressCountry());
                     leftAddress.setPostalCode(leftAccount.billingAddressPostalcode());
 
-                    KContacts::Address rightAddress;
+                    KABC::Address rightAddress;
                     rightAddress.setStreet(rightAccount.billingAddressStreet());
                     rightAddress.setLocality(rightAccount.billingAddressCity());
                     rightAddress.setRegion(rightAccount.billingAddressState());
@@ -249,14 +249,14 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     seenShippingAddress = true;
                     diffName = i18nc("@item:intable", "Office Address");
 
-                    KContacts::Address leftAddress(KContacts::Address::Parcel);
+                    KABC::Address leftAddress(KABC::Address::Parcel);
                     leftAddress.setStreet(leftAccount.shippingAddressStreet());
                     leftAddress.setLocality(leftAccount.shippingAddressCity());
                     leftAddress.setRegion(leftAccount.shippingAddressState());
                     leftAddress.setCountry(leftAccount.shippingAddressCountry());
                     leftAddress.setPostalCode(leftAccount.shippingAddressPostalcode());
 
-                    KContacts::Address rightAddress(KContacts::Address::Parcel);
+                    KABC::Address rightAddress(KABC::Address::Parcel);
                     rightAddress.setStreet(rightAccount.shippingAddressStreet());
                     rightAddress.setLocality(rightAccount.shippingAddressCity());
                     rightAddress.setRegion(rightAccount.shippingAddressState());

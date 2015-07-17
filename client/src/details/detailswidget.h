@@ -32,9 +32,9 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
-#include <KContacts/Addressee>
+#include <KABC/Addressee>
 
 #include <QtGui/QWidget>
 

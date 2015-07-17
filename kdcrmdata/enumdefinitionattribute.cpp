@@ -22,7 +22,7 @@
 
 #include "enumdefinitionattribute.h"
 
-#include <AkonadiCore/Collection>
+#include <Akonadi/Collection>
 #include <QByteArray>
 #include <QString>
 

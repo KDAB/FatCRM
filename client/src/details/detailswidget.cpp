@@ -31,7 +31,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 using namespace Akonadi;
 
