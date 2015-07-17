@@ -38,20 +38,20 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <Akonadi/AgentManager>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/CollectionModifyJob>
-#include <Akonadi/CollectionStatistics>
-#include <Akonadi/EntityMimeTypeFilterModel>
-#include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemDeleteJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/EntityAnnotationsAttribute>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/CollectionModifyJob>
+#include <AkonadiCore/collectionstatistics.h>
+#include <AkonadiCore/EntityMimeTypeFilterModel>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemDeleteJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/EntityAnnotationsAttribute>
 
-#include <KABC/Address>
-#include <KABC/Addressee>
+#include <KContacts/Address>
+#include <KContacts/Addressee>
 
 #include <KDebug>
 
@@ -209,15 +209,15 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
     if (mDetailsWidget && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
         if (mCurrentIndex == index) // called by the setCurrentIndex below
             return;
-        //kDebug() << "going from" << mCurrentIndex << "to" << index;
+        //qDebug() << "going from" << mCurrentIndex << "to" << index;
         if (askSave()) {
-            //kDebug() << "Saving" << mCurrentIndex;
+            //qDebug() << "Saving" << mCurrentIndex;
             mDetailsWidget->saveData();
         }
     }
 
     // show the new item
-    //kDebug() << "showing new item" << index;
+    //qDebug() << "showing new item" << index;
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
         if (mDetailsWidget != 0) {
@@ -225,7 +225,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
         }
 
         mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
-        //kDebug() << "mCurrentIndex=" << mCurrentIndex;
+        //qDebug() << "mCurrentIndex=" << mCurrentIndex;
     }
 }
 
@@ -353,7 +353,7 @@ void Page::slotVisibleRowCountChanged()
 
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
+    //qDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
 
     // inserting rows into comboboxes can change the current index, thus marking the data as modified
     emit ignoreModifications(true);
@@ -380,11 +380,11 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
         break;
     }
     // Select the first row; looks nicer than empty fields in the details widget.
-    //kDebug() << "model has" << mItemsTreeModel->rowCount()
+    //qDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
     if (done) {
-        //kDebug() << "Finished loading" << typeToString(mType);
+        //qDebug() << "Finished loading" << typeToString(mType);
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
@@ -521,7 +521,7 @@ static QString countryForAccount(const SugarAccount &account)
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    //kDebug() << typeToString(mType) << topLeft << bottomRight;
+    //qDebug() << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
     const int firstColumn = topLeft.column();
@@ -566,7 +566,7 @@ void Page::readSupportedFields()
             mCollection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
         mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
-        //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
+        //qDebug() << typeToString(mType) << "supported fields" << msupportedFields;
         if (mSupportedFields.isEmpty()) {
             static bool errorShown = false;
             if (!errorShown) {
@@ -586,10 +586,10 @@ void Page::readEnumDefinitionAttributes()
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
         mDetailsWidget->details()->setEnumDefinitions(mEnumDefinitions);
     } else {
-        kWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
-        kWarning() << "Collection attributes:";
+        qWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
+        qWarning() << "Collection attributes:";
         foreach (Akonadi::Attribute *attr, mCollection.attributes()) {
-            kWarning() << attr->type();
+            qWarning() << attr->type();
         }
 
         static bool errorShown = false;
@@ -702,7 +702,7 @@ DetailsDialog *Page::createDetailsDialog()
 
 void Page::addAccountsData(int start, int end, bool emitChanges)
 {
-    //kDebug() << start << end;
+    //qDebug() << start << end;
     // QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
     for (int row = start; row <= end; ++row) {
@@ -720,7 +720,7 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
     ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap, emitChanges); // country changes are handled in slotDataChanged
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeAccountsData(int start, int end, bool emitChanges)
@@ -740,7 +740,7 @@ void Page::removeAccountsData(int start, int end, bool emitChanges)
 
 void Page::addCampaignsData(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //qDebug(); QElapsedTimer dt; dt.start();
     //QMap<QString, QString> campaignRefMap;
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
@@ -754,7 +754,7 @@ void Page::addCampaignsData(int start, int end, bool emitChanges)
     }
     //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeCampaignsData(int start, int end, bool emitChanges)
@@ -766,13 +766,13 @@ void Page::removeCampaignsData(int start, int end, bool emitChanges)
 
 void Page::addContactsData(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //qDebug(); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KABC::Addressee>()) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
             const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
             reportsToRefMap.insert(addressee.custom("FATCRM", "X-ContactId"), fullName);
             assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
@@ -780,7 +780,7 @@ void Page::addContactsData(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap, emitChanges); // TODO handle changes in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeContactsData(int start, int end, bool emitChanges)
@@ -792,7 +792,7 @@ void Page::removeContactsData(int start, int end, bool emitChanges)
 
 void Page::addLeadsData(int start, int end, bool emitChanges)
 {
-    //kDebug();
+    //qDebug();
     QMap<QString, QString> assignedToRefMap;
 
     for (int row = start; row <= end; ++row) {
@@ -815,7 +815,7 @@ void Page::removeLeadsData(int start, int end, bool emitChanges)
 
 void Page::addOpportunitiesData(int start, int end, bool emitChanges)
 {
-    //kDebug();
+    //qDebug();
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);

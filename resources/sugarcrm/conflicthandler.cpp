@@ -25,9 +25,9 @@
 
 #include <Akonadi/Collection>
 #include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/Session>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/Session>
 using namespace Akonadi;
 
 #include <KLocale>

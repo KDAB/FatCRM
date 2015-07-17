@@ -25,7 +25,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include <QVector>
 
@@ -36,11 +36,11 @@ public:
 
     bool importFile(const QString &fileName);
 
-    QVector<KABC::Addressee> contacts() const;
+    QVector<KContacts::Addressee> contacts() const;
     QVector<SugarAccount> accounts() const;
 
 private:
-    QVector<KABC::Addressee> mAddressees;
+    QVector<KContacts::Addressee> mAddressees;
     QVector<SugarAccount> mAccounts;
 
 };

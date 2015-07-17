@@ -101,7 +101,7 @@
   <customwidget>
    <class>Akonadi::AgentInstanceWidget</class>
    <extends>QWidget</extends>
-   <header>akonadi/agentinstancewidget.h</header>
+   <header location="global">AkonadiWidgets/AgentInstanceWidget</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

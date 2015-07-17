@@ -31,7 +31,7 @@ using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
 #include <Akonadi/Collection>
 
-#include <KABC/Address>
+#include <KContacts/Address>
 
 #include <KLocale>
 
@@ -346,14 +346,14 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                         seenPrimaryAddress = true;
                         diffName = i18nc("@item:intable", "Primary Address");
 
-                        KABC::Address leftAddress(KABC::Address::Work | KABC::Address::Pref);
+                        KContacts::Address leftAddress(KContacts::Address::Work | KContacts::Address::Pref);
                         leftAddress.setStreet(leftLead.primaryAddressStreet());
                         leftAddress.setLocality(leftLead.primaryAddressCity());
                         leftAddress.setRegion(leftLead.primaryAddressState());
                         leftAddress.setCountry(leftLead.primaryAddressCountry());
                         leftAddress.setPostalCode(leftLead.primaryAddressPostalcode());
 
-                        KABC::Address rightAddress(KABC::Address::Work | KABC::Address::Pref);
+                        KContacts::Address rightAddress(KContacts::Address::Work | KContacts::Address::Pref);
                         rightAddress.setStreet(rightLead.primaryAddressStreet());
                         rightAddress.setLocality(rightLead.primaryAddressCity());
                         rightAddress.setRegion(rightLead.primaryAddressState());
@@ -371,14 +371,14 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                         seenOtherAddress = true;
                         diffName = i18nc("@item:intable", "Other Address");
 
-                        KABC::Address leftAddress(KABC::Address::Home);
+                        KContacts::Address leftAddress(KContacts::Address::Home);
                         leftAddress.setStreet(leftLead.altAddressStreet());
                         leftAddress.setLocality(leftLead.altAddressCity());
                         leftAddress.setRegion(leftLead.altAddressState());
                         leftAddress.setCountry(leftLead.altAddressCountry());
                         leftAddress.setPostalCode(leftLead.altAddressPostalcode());
 
-                        KABC::Address rightAddress(KABC::Address::Home);
+                        KContacts::Address rightAddress(KContacts::Address::Home);
                         rightAddress.setStreet(rightLead.altAddressStreet());
                         rightAddress.setLocality(rightLead.altAddressCity());
                         rightAddress.setRegion(rightLead.altAddressState());

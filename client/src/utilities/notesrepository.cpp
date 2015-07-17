@@ -22,11 +22,11 @@
 
 #include "notesrepository.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/CollectionStatistics>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/Monitor>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/collectionstatistics.h>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/Monitor>
 
 NotesRepository::NotesRepository(QObject *parent) :
     QObject(parent),
@@ -53,7 +53,7 @@ void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadNotes()
 {
-    //kDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
+    //qDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
 
     // load notes
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
@@ -73,14 +73,14 @@ void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeNote(item);
     }
-    //kDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
+    //qDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
     if (mNotesLoaded == mNotesCollection.statistics().count())
         emit notesLoaded(mNotesLoaded);
 }
 
 void NotesRepository::storeNote(const Akonadi::Item &item)
 {
-    //kDebug() << item.id() << item.mimeType() << ;
+    //qDebug() << item.id() << item.mimeType() << ;
     if (item.hasPayload<SugarNote>()) {
         SugarNote note = item.payload<SugarNote>();
         if (note.parentType() == QLatin1String("Opportunities")) {
@@ -88,7 +88,7 @@ void NotesRepository::storeNote(const Akonadi::Item &item)
         } else {
             // We also get notes for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring notes for" << note.parentType();
+            //qDebug() << "ignoring notes for" << note.parentType();
         }
     }
 }
@@ -102,7 +102,7 @@ void NotesRepository::setEmailsCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadEmails()
 {
-    //kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
+    //qDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -132,14 +132,14 @@ void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeEmail(item);
     }
-    //kDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
+    //qDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
     if (mEmailsLoaded == mEmailsCollection.statistics().count())
         emit emailsLoaded(mEmailsLoaded);
 }
 
 void NotesRepository::storeEmail(const Akonadi::Item &item)
 {
-    //kDebug() << item.id() << item.mimeType() << ;
+    //qDebug() << item.id() << item.mimeType() << ;
     if (item.hasPayload<SugarEmail>()) {
         SugarEmail email = item.payload<SugarEmail>();
         if (email.parentType() == QLatin1String("Opportunities")) {
@@ -147,7 +147,7 @@ void NotesRepository::storeEmail(const Akonadi::Item &item)
         } else {
             // We also get emails for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring emails for" << email.parentType();
+            //qDebug() << "ignoring emails for" << email.parentType();
         }
     }
 }
@@ -162,12 +162,12 @@ void NotesRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
 void NotesRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
     if (collection == mNotesCollection) {
-        //kDebug() << item.id() << item.mimeType();
+        //qDebug() << item.id() << item.mimeType();
         storeNote(item);
     } else if (collection == mEmailsCollection) {
         storeEmail(item);
     } else {
-        kWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id();
+        qWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id();
         return;
     }
 }

@@ -29,7 +29,7 @@
 
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <Akonadi/EntityTreeModel>
+#include <AkonadiCore/EntityTreeModel>
 
 #include <QDate>
 

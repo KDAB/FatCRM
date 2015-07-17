@@ -79,7 +79,7 @@ bool ContactsImporter::importFile(const QString &fileName)
     return true;
 }
 
-QVector<KABC::Addressee> ContactsImporter::contacts() const
+QVector<KContacts::Addressee> ContactsImporter::contacts() const
 {
     return mAddressees;
 }

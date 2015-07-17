@@ -23,6 +23,7 @@
 #ifndef CLIENTSETTINGS_H
 #define CLIENTSETTINGS_H
 
+#include <QObject>
 class QSettings;
 class OpportunityFilterSettings;
 #include <QSize>

@@ -30,14 +30,14 @@
 #include <KCmdLineArgs>
 #include <KLocale>
 
-#include <Akonadi/Collection>
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/CollectionFetchScope>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/EntityTreeView>
-#include <Akonadi/EntityMimeTypeFilterModel>
-#include <Akonadi/Session>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiWidgets/EntityTreeView>
+#include <AkonadiCore/EntityMimeTypeFilterModel>
+#include <AkonadiCore/Session>
 using namespace Akonadi;
 
 #include <QTreeView>
@@ -62,14 +62,14 @@ public:
 private Q_SLOTS:
     void rootFetchJobDone(KJob *job) {
         if (job->error()) {
-            kWarning() << job->errorString();
+            qWarning() << job->errorString();
             return;
         }
         CollectionFetchJob *collectionJob = qobject_cast<CollectionFetchJob *>(job);
         const Collection::List list = collectionJob->collections();
 
-        kDebug() << list.count();
-        kDebug() << list.first().name();
+        qDebug() << list.count();
+        qDebug() << list.first().name();
         mChangeRecorder->setCollectionMonitored(list.first(), true);
 
         ItemsTreeModel *model = new ItemsTreeModel(Opportunity, mChangeRecorder);

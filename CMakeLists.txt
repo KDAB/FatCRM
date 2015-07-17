@@ -1,22 +1,45 @@
 project(FatCRM)
 
-cmake_minimum_required(VERSION 2.4)
+cmake_minimum_required(VERSION 2.8.12)
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+# we need some parts of the ECM CMake helpers
+find_package(ECM 5.12.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${ECM_MODULE_PATH})
+
+include(ECMOptionalAddSubdirectory)
+include(ECMInstallIcons)
+include(ECMSetupVersion)
+include(ECMAddTests)
+include(ECMMarkNonGuiExecutable)
+
+include(CMakePackageConfigHelpers)
+include(FeatureSummary)
+include(CheckFunctionExists)
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(ECMAddAppIcon)
+
 
 enable_testing()
 
+set(KDEPIMLIBS_LIB_VERSION "4.88.0")
+set(QT_REQUIRED_VERSION "5.4.0")
+set(KF5_VERSION "5.12.0")
+set(KCONTACTS_LIB_VERSION "4.89.0")
+
+find_package(KF5Akonadi ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
+
 # search packages used by KDE
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
-find_package(KdepimLibs REQUIRED)
 find_package(Boost REQUIRED)
 
 find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
 include(MacroLibrary)
-include(MacroOptionalAddSubdirectory)
+#include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 
 # Stolen from zanshin
@@ -45,7 +68,7 @@ else()
   add_definitions(-DQ_NULLPTR=0)
 endif()
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+kde_enable_exceptions()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   include(CheckCXXCompilerFlag)
@@ -79,13 +102,11 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif()
 
 include_directories(
-  ${QT_INCLUDES}
-  ${KDE4_INCLUDES}
-  ${KDEPIMLIBS_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
 )
 
 add_subdirectory(kdcrmdata)
 add_subdirectory(client)
-add_subdirectory(resources)
+MESSAGE(STATUS "REACTIVATE IT")
+#add_subdirectory(resources)
 add_subdirectory(tests)

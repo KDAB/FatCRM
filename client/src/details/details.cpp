@@ -35,6 +35,8 @@
 #include <QSpinBox>
 #include <QTextEdit>
 
+#include <KDebug>
+
 using namespace Akonadi;
 
 // These are basically the "readonly" fields, that the user cannot see or modify
@@ -101,7 +103,7 @@ void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
     if (combo->count() == 0) {
         const int enumIndex = mEnumDefinitions.indexOf(objectName);
         if (enumIndex == -1) {
-            kWarning() << "Enum definition not found for" << objectName << "in" << typeToString(mType);
+            qWarning() << "Enum definition not found for" << objectName << "in" << typeToString(mType);
         } else {
             const EnumDefinitions::Enum &def = mEnumDefinitions.at(enumIndex);
             for (EnumDefinitions::Enum::Map::const_iterator it = def.mEnumValues.constBegin();
@@ -215,9 +217,9 @@ void Details::setData(const QMap<QString, QString> &data,
         if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
         const int idx = cb->findData(data.value(key));
         if (idx == -1 && cb->count() > 1) {
-            kDebug() << "Didn't find" << data.value(key) << "in combo" << key;
+            qDebug() << "Didn't find" << data.value(key) << "in combo" << key;
             //for (int row = 0; row < cb->count(); ++row) {
-            //    kDebug() << "  " << cb->itemData(row);
+            //    qDebug() << "  " << cb->itemData(row);
             //}
         }
         cb->setCurrentIndex(idx);
@@ -253,7 +255,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
-        //kDebug() << data.value(key);
+        //qDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
         if (key == KDCRMFields::amount())
             w->setSuffix(data.value(KDCRMFields::currencySymbol()));
@@ -262,7 +264,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         key = w->objectName();
         if (!data.contains(key)) continue;
-        //kDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
+        //qDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 
@@ -300,7 +302,7 @@ const QMap<QString, QString> Details::getData() const
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (!mKeys.contains(key)) { kDebug() << "skipping" << key; continue; }
+        if (!mKeys.contains(key)) { qDebug() << "skipping" << key; continue; }
         currentData[key] = cb->itemData(cb->currentIndex()).toString();
     }
 
