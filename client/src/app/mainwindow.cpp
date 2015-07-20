@@ -58,7 +58,7 @@ using namespace Akonadi;
 #include <QTimer>
 #include <QToolBar>
 
-#include <KDebug>
+#include <QDebug>
 
 MainWindow::MainWindow()
     : QMainWindow(),

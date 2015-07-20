@@ -27,7 +27,7 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QStringList>
 

@@ -38,7 +38,7 @@ using namespace KDSoapGenerated;
 
 using namespace Akonadi;
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QStringList>
 

@@ -38,7 +38,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/EntityAnnotationsAttribute>
 using namespace Akonadi;
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QStringList>
 

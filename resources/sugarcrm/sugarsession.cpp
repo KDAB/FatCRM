@@ -26,7 +26,7 @@
 
 using namespace KDSoapGenerated;
 #include <KUrl>
-#include <KDebug>
+#include <QDebug>
 
 static QString endPointFromHostString(const QString &host)
 {

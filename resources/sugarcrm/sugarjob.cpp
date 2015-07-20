@@ -30,7 +30,7 @@ using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 //#include <QCryptographicHash>
 
-#include <KDebug>
+#include <QDebug>
 #include <KLocale>
 
 #include <QNetworkReply>

@@ -22,7 +22,7 @@
 
 #include "dbuswinidprovider.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>

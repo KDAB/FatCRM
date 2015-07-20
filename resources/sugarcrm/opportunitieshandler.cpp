@@ -35,7 +35,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/Collection>
 
 #include <KLocale>
-#include <KDebug>
+#include <QDebug>
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Opportunities"), session),

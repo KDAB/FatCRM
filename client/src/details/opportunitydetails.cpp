@@ -32,7 +32,7 @@
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <KLocale>
-#include <KDebug>
+#include <QDebug>
 
 #include <QCalendarWidget>
 

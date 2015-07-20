@@ -34,7 +34,7 @@
 #include <AkonadiCore/AgentTypeModel>
 using namespace Akonadi;
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QAbstractItemView>
 #include <QItemSelectionModel>

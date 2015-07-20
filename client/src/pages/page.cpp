@@ -53,7 +53,7 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QMessageBox>
 #include <QShortcut>
