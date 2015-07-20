@@ -79,7 +79,7 @@ void ResourceConfigDialog::Private::updateButtonStates()
 
     case 1:
         mCurrentResource = selectedResources.at(0);
-        canConfigure = !mCurrentResource.type().capabilities().contains(QLatin1String("NoConfig"));
+        canConfigure = !mCurrentResource.type().capabilities().contains(QStringLiteral("NoConfig"));
         canDelete = true;
         break;
 
@@ -99,7 +99,7 @@ void ResourceConfigDialog::Private::addResource()
     AgentTypeDialog dialog(q);
 
     AgentFilterProxyModel *filterModel = dialog.agentFilterProxyModel();
-    filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
+    filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));
 
     if (dialog.exec() == QDialog::Accepted) {
         const AgentType resourceType = dialog.agentType();
@@ -170,7 +170,7 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     d->mUi.setupUi(this);
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
-    filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
+    filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));
 
     // Remove this and use filterModel on the last line when everyone has kdepimlibs >= 4.14.7
 #if 1

@@ -52,80 +52,80 @@ public:
 };
 
 CampaignsHandler::CampaignsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Campaigns"), session),
+    : ModuleHandler(QStringLiteral("Campaigns"), session),
       mAccessors(new CampaignAccessorHash)
 {
-    mAccessors->insert(QLatin1String("id"),
+    mAccessors->insert(QStringLiteral("id"),
                        new CampaignAccessorPair(&SugarCampaign::id, &SugarCampaign::setId, QString()));
-    mAccessors->insert(QLatin1String("name"),
+    mAccessors->insert(QStringLiteral("name"),
                        new CampaignAccessorPair(&SugarCampaign::name, &SugarCampaign::setName,
                                         i18nc("@item:intable campaign name", "Name")));
-    mAccessors->insert(QLatin1String("date_entered"),
+    mAccessors->insert(QStringLiteral("date_entered"),
                        new CampaignAccessorPair(&SugarCampaign::dateEntered, &SugarCampaign::setDateEntered, QString()));
-    mAccessors->insert(QLatin1String("date_modified"),
+    mAccessors->insert(QStringLiteral("date_modified"),
                        new CampaignAccessorPair(&SugarCampaign::dateModified, &SugarCampaign::setDateModified, QString()));
-    mAccessors->insert(QLatin1String("modified_user_id"),
+    mAccessors->insert(QStringLiteral("modified_user_id"),
                        new CampaignAccessorPair(&SugarCampaign::modifiedUserId, &SugarCampaign::setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_by_name"),
+    mAccessors->insert(QStringLiteral("modified_by_name"),
                        new CampaignAccessorPair(&SugarCampaign::modifiedByName, &SugarCampaign::setModifiedByName, QString()));
-    mAccessors->insert(QLatin1String("created_by"),
+    mAccessors->insert(QStringLiteral("created_by"),
                        new CampaignAccessorPair(&SugarCampaign::createdBy, &SugarCampaign::setCreatedBy, QString()));
-    mAccessors->insert(QLatin1String("created_by_name"),
+    mAccessors->insert(QStringLiteral("created_by_name"),
                        new CampaignAccessorPair(&SugarCampaign::createdByName, &SugarCampaign::setCreatedByName, QString()));
-    mAccessors->insert(QLatin1String("deleted"),
+    mAccessors->insert(QStringLiteral("deleted"),
                        new CampaignAccessorPair(&SugarCampaign::deleted, &SugarCampaign::setDeleted, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_id"),
+    mAccessors->insert(QStringLiteral("assigned_user_id"),
                        new CampaignAccessorPair(&SugarCampaign::assignedUserId, &SugarCampaign::setAssignedUserId, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_name"),
+    mAccessors->insert(QStringLiteral("assigned_user_name"),
                        new CampaignAccessorPair(&SugarCampaign::assignedUserName, &SugarCampaign::setAssignedUserName,
                                         i18nc("@item:intable", "Assigned To")));
-    mAccessors->insert(QLatin1String("tracker_key"),
+    mAccessors->insert(QStringLiteral("tracker_key"),
                        new CampaignAccessorPair(&SugarCampaign::trackerKey, &SugarCampaign::setTrackerKey, QString()));
-    mAccessors->insert(QLatin1String("tracker_count"),
+    mAccessors->insert(QStringLiteral("tracker_count"),
                        new CampaignAccessorPair(&SugarCampaign::trackerCount, &SugarCampaign::setTrackerCount, QString()));
-    mAccessors->insert(QLatin1String("refer_url"),
+    mAccessors->insert(QStringLiteral("refer_url"),
                        new CampaignAccessorPair(&SugarCampaign::referUrl, &SugarCampaign::setReferUrl,
                                         i18nc("@item:intable", "Referer URL")));
-    mAccessors->insert(QLatin1String("tracker_text"),
+    mAccessors->insert(QStringLiteral("tracker_text"),
                        new CampaignAccessorPair(&SugarCampaign::trackerText, &SugarCampaign::setTrackerText,
                                         i18nc("@item:intable", "Tracker")));
-    mAccessors->insert(QLatin1String("start_date"),
+    mAccessors->insert(QStringLiteral("start_date"),
                        new CampaignAccessorPair(&SugarCampaign::startDate, &SugarCampaign::setStartDate,
                                         i18nc("@item:intable", "Start Date")));
-    mAccessors->insert(QLatin1String("end_date"),
+    mAccessors->insert(QStringLiteral("end_date"),
                        new CampaignAccessorPair(&SugarCampaign::endDate, &SugarCampaign::setEndDate,
                                         i18nc("@item:intable", "End Date")));
-    mAccessors->insert(QLatin1String("status"),
+    mAccessors->insert(QStringLiteral("status"),
                        new CampaignAccessorPair(&SugarCampaign::status, &SugarCampaign::setStatus,
                                         i18nc("@item:intable", "Status")));
-    mAccessors->insert(QLatin1String("impressions"),
+    mAccessors->insert(QStringLiteral("impressions"),
                        new CampaignAccessorPair(&SugarCampaign::impressions, &SugarCampaign::setImpressions,
                                         i18nc("@item:intable", "Impressions")));
-    mAccessors->insert(QLatin1String("currency_id"),
+    mAccessors->insert(QStringLiteral("currency_id"),
                        new CampaignAccessorPair(&SugarCampaign::currencyId, &SugarCampaign::setCurrencyId,
                                         i18nc("@item:intable", "Currency")));
-    mAccessors->insert(QLatin1String("budget"),
+    mAccessors->insert(QStringLiteral("budget"),
                        new CampaignAccessorPair(&SugarCampaign::budget, &SugarCampaign::setBudget,
                                         i18nc("@item:intable", "Budget")));
-    mAccessors->insert(QLatin1String("expected_cost"),
+    mAccessors->insert(QStringLiteral("expected_cost"),
                        new CampaignAccessorPair(&SugarCampaign::expectedCost, &SugarCampaign::setExpectedCost,
                                         i18nc("@item:intable", "Expected Costs")));
-    mAccessors->insert(QLatin1String("actual_cost"),
+    mAccessors->insert(QStringLiteral("actual_cost"),
                        new CampaignAccessorPair(&SugarCampaign::actualCost, &SugarCampaign::setActualCost,
                                         i18nc("@item:intable", "Actual Costs")));
-    mAccessors->insert(QLatin1String("expected_revenue"),
+    mAccessors->insert(QStringLiteral("expected_revenue"),
                        new CampaignAccessorPair(&SugarCampaign::expectedRevenue, &SugarCampaign::setExpectedRevenue,
                                         i18nc("@item:intable", "Expected Revenue")));
-    mAccessors->insert(QLatin1String("campaign_type"),
+    mAccessors->insert(QStringLiteral("campaign_type"),
                        new CampaignAccessorPair(&SugarCampaign::campaignType, &SugarCampaign::setCampaignType,
                                         i18nc("@item:intable", "Type")));
-    mAccessors->insert(QLatin1String("objective"),
+    mAccessors->insert(QStringLiteral("objective"),
                        new CampaignAccessorPair(&SugarCampaign::objective, &SugarCampaign::setObjective,
                                         i18nc("@item:intable", "Objective")));
-    mAccessors->insert(QLatin1String("content"),
+    mAccessors->insert(QStringLiteral("content"),
                        new CampaignAccessorPair(&SugarCampaign::content, &SugarCampaign::setContent,
                                         i18nc("@item:intable", "Content")));
-    mAccessors->insert(QLatin1String("frequency"),
+    mAccessors->insert(QStringLiteral("frequency"),
                        new CampaignAccessorPair(&SugarCampaign::frequency, &SugarCampaign::setFrequency,
                                         i18nc("@item:intable", "Frequency")));
 }
@@ -151,7 +151,7 @@ Akonadi::Collection CampaignsHandler::handlerCollection() const
 
 QString CampaignsHandler::orderByForListing() const
 {
-    return QLatin1String("campaigns.name");
+    return QStringLiteral("campaigns.name");
 }
 
 QStringList CampaignsHandler::supportedSugarFields() const
@@ -173,7 +173,7 @@ bool CampaignsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the campaign being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;

@@ -150,7 +150,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
     mStage = Private::GetRevision;
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(QStringList() << QLatin1String("date_modified"));
+    selectedFields.setItems(QStringList() << QStringLiteral("date_modified"));
 
     q->soap()->asyncGet_entry(q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields);
 }

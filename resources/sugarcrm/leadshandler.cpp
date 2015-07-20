@@ -54,153 +54,153 @@ public:
 };
 
 LeadsHandler::LeadsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Leads"), session),
+    : ModuleHandler(QStringLiteral("Leads"), session),
       mAccessors(new LeadsAccessorHash)
 {
-    mAccessors->insert(QLatin1String("id"),
+    mAccessors->insert(QStringLiteral("id"),
                        new LeadAccessorPair(&SugarLead::id, &SugarLead::setId, QString()));
-    mAccessors->insert(QLatin1String("date_entered"),
+    mAccessors->insert(QStringLiteral("date_entered"),
                        new LeadAccessorPair(&SugarLead::dateEntered, &SugarLead::setDateEntered, QString()));
-    mAccessors->insert(QLatin1String("date_modified"),
+    mAccessors->insert(QStringLiteral("date_modified"),
                        new LeadAccessorPair(&SugarLead::dateModified, &SugarLead::setDateModified, QString()));
-    mAccessors->insert(QLatin1String("modified_user_id"),
+    mAccessors->insert(QStringLiteral("modified_user_id"),
                        new LeadAccessorPair(&SugarLead::modifiedUserId, &SugarLead::setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_by_name"),
+    mAccessors->insert(QStringLiteral("modified_by_name"),
                        new LeadAccessorPair(&SugarLead::modifiedByName, &SugarLead::setModifiedByName, QString()));
-    mAccessors->insert(QLatin1String("created_by"),
+    mAccessors->insert(QStringLiteral("created_by"),
                        new LeadAccessorPair(&SugarLead::createdBy, &SugarLead::setCreatedBy, QString()));
-    mAccessors->insert(QLatin1String("created_by_name"),
+    mAccessors->insert(QStringLiteral("created_by_name"),
                        new LeadAccessorPair(&SugarLead::createdByName, &SugarLead::setCreatedByName, QString()));
-    mAccessors->insert(QLatin1String("description"),
+    mAccessors->insert(QStringLiteral("description"),
                        new LeadAccessorPair(&SugarLead::description, &SugarLead::setDescription,
                                         i18nc("@item:intable", "Description")));
-    mAccessors->insert(QLatin1String("deleted"),
+    mAccessors->insert(QStringLiteral("deleted"),
                        new LeadAccessorPair(&SugarLead::deleted, &SugarLead::setDeleted, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_id"),
+    mAccessors->insert(QStringLiteral("assigned_user_id"),
                        new LeadAccessorPair(&SugarLead::assignedUserId, &SugarLead::setAssignedUserId, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_name"),
+    mAccessors->insert(QStringLiteral("assigned_user_name"),
                        new LeadAccessorPair(&SugarLead::assignedUserName, &SugarLead::setAssignedUserName,
                                         i18nc("@item:intable", "Assigned To")));
-    mAccessors->insert(QLatin1String("salutation"),
+    mAccessors->insert(QStringLiteral("salutation"),
                        new LeadAccessorPair(&SugarLead::salutation, &SugarLead::setSalutation,
                                         i18nc("@item:intable", "Salutation")));
-    mAccessors->insert(QLatin1String("first_name"),
+    mAccessors->insert(QStringLiteral("first_name"),
                        new LeadAccessorPair(&SugarLead::firstName, &SugarLead::setFirstName,
                                         i18nc("@item:intable", "First Name")));
-    mAccessors->insert(QLatin1String("last_name"),
+    mAccessors->insert(QStringLiteral("last_name"),
                        new LeadAccessorPair(&SugarLead::lastName, &SugarLead::setLastName,
                                         i18nc("@item:intable", "Last Name")));
-    mAccessors->insert(QLatin1String("title"),
+    mAccessors->insert(QStringLiteral("title"),
                        new LeadAccessorPair(&SugarLead::title, &SugarLead::setTitle,
                                         i18nc("@item:intable job title", "Title")));
-    mAccessors->insert(QLatin1String("department"),
+    mAccessors->insert(QStringLiteral("department"),
                        new LeadAccessorPair(&SugarLead::department, &SugarLead::setDepartment,
                                         i18nc("@item:intable", "Department")));
-    mAccessors->insert(QLatin1String("do_not_call"),
+    mAccessors->insert(QStringLiteral("do_not_call"),
                        new LeadAccessorPair(&SugarLead::doNotCall, &SugarLead::setDoNotCall, QString()));
-    mAccessors->insert(QLatin1String("phone_home"),
+    mAccessors->insert(QStringLiteral("phone_home"),
                        new LeadAccessorPair(&SugarLead::phoneHome, &SugarLead::setPhoneHome,
                                         i18nc("@item:intable", "Phone (Home)")));
-    mAccessors->insert(QLatin1String("phone_mobile"),
+    mAccessors->insert(QStringLiteral("phone_mobile"),
                        new LeadAccessorPair(&SugarLead::phoneMobile, &SugarLead::setPhoneMobile,
                                         i18nc("@item:intable", "Phone (Mobile)")));
-    mAccessors->insert(QLatin1String("phone_work"),
+    mAccessors->insert(QStringLiteral("phone_work"),
                        new LeadAccessorPair(&SugarLead::phoneWork, &SugarLead::setPhoneWork,
                                         i18nc("@item:intable", "Phone (Office)")));
-    mAccessors->insert(QLatin1String("phone_other"),
+    mAccessors->insert(QStringLiteral("phone_other"),
                        new LeadAccessorPair(&SugarLead::phoneOther, &SugarLead::setPhoneOther,
                                         i18nc("@item:intable", "Phone (Other)")));
-    mAccessors->insert(QLatin1String("phone_fax"),
+    mAccessors->insert(QStringLiteral("phone_fax"),
                        new LeadAccessorPair(&SugarLead::phoneFax, &SugarLead::setPhoneFax,
                                         i18nc("@item:intable", "Fax")));
-    mAccessors->insert(QLatin1String("email1"),
+    mAccessors->insert(QStringLiteral("email1"),
                        new LeadAccessorPair(&SugarLead::email1, &SugarLead::setEmail1,
                                         i18nc("@item:intable", "Primary Email")));
-    mAccessors->insert(QLatin1String("email2"),
+    mAccessors->insert(QStringLiteral("email2"),
                        new LeadAccessorPair(&SugarLead::email2, &SugarLead::setEmail2,
                                         i18nc("@item:intable", "Other Email")));
-    mAccessors->insert(QLatin1String("primary_address_street"),
+    mAccessors->insert(QStringLiteral("primary_address_street"),
                        new LeadAccessorPair(&SugarLead::primaryAddressStreet, &SugarLead::setPrimaryAddressStreet, QString()));
-    mAccessors->insert(QLatin1String("primary_address_city"),
+    mAccessors->insert(QStringLiteral("primary_address_city"),
                        new LeadAccessorPair(&SugarLead::primaryAddressCity, &SugarLead::setPrimaryAddressCity, QString()));
-    mAccessors->insert(QLatin1String("primary_address_state"),
+    mAccessors->insert(QStringLiteral("primary_address_state"),
                        new LeadAccessorPair(&SugarLead::primaryAddressState, &SugarLead::setPrimaryAddressState, QString()));
-    mAccessors->insert(QLatin1String("primary_address_postalcode"),
+    mAccessors->insert(QStringLiteral("primary_address_postalcode"),
                        new LeadAccessorPair(&SugarLead::primaryAddressPostalcode, &SugarLead::setPrimaryAddressPostalcode, QString()));
-    mAccessors->insert(QLatin1String("primary_address_country"),
+    mAccessors->insert(QStringLiteral("primary_address_country"),
                        new LeadAccessorPair(&SugarLead::primaryAddressCountry, &SugarLead::setPrimaryAddressCountry, QString()));
-    mAccessors->insert(QLatin1String("alt_address_street"),
+    mAccessors->insert(QStringLiteral("alt_address_street"),
                        new LeadAccessorPair(&SugarLead::altAddressStreet, &SugarLead::setAltAddressStreet, QString()));
-    mAccessors->insert(QLatin1String("alt_address_city"),
+    mAccessors->insert(QStringLiteral("alt_address_city"),
                        new LeadAccessorPair(&SugarLead::altAddressCity, &SugarLead::setAltAddressCity, QString()));
-    mAccessors->insert(QLatin1String("alt_address_state"),
+    mAccessors->insert(QStringLiteral("alt_address_state"),
                        new LeadAccessorPair(&SugarLead::altAddressState, &SugarLead::setAltAddressState, QString()));
-    mAccessors->insert(QLatin1String("alt_address_postalcode"),
+    mAccessors->insert(QStringLiteral("alt_address_postalcode"),
                        new LeadAccessorPair(&SugarLead::altAddressPostalcode, &SugarLead::setAltAddressPostalcode, QString()));
-    mAccessors->insert(QLatin1String("alt_address_country"),
+    mAccessors->insert(QStringLiteral("alt_address_country"),
                        new LeadAccessorPair(&SugarLead::altAddressCountry, &SugarLead::setAltAddressCountry, QString()));
-    mAccessors->insert(QLatin1String("assistant"),
+    mAccessors->insert(QStringLiteral("assistant"),
                        new LeadAccessorPair(&SugarLead::assistant, &SugarLead::setAssistant,
                                         i18nc("@item:intable", "Assistant")));
-    mAccessors->insert(QLatin1String("assistant_phone"),
+    mAccessors->insert(QStringLiteral("assistant_phone"),
                        new LeadAccessorPair(&SugarLead::assistantPhone, &SugarLead::setAssistantPhone,
                                         i18nc("@item:intable", "Assistant Phone")));
-    mAccessors->insert(QLatin1String("converted"),
+    mAccessors->insert(QStringLiteral("converted"),
                        new LeadAccessorPair(&SugarLead::converted, &SugarLead::setConverted, QString()));
-    mAccessors->insert(QLatin1String("refered_by"),
+    mAccessors->insert(QStringLiteral("refered_by"),
                        new LeadAccessorPair(&SugarLead::referedBy, &SugarLead::setReferedBy,
                                         i18nc("@item:intable", "Referred By")));
-    mAccessors->insert(QLatin1String("lead_source"),
+    mAccessors->insert(QStringLiteral("lead_source"),
                        new LeadAccessorPair(&SugarLead::leadSource, &SugarLead::setLeadSource,
                                         i18nc("@item:intable", "Lead Source")));
-    mAccessors->insert(QLatin1String("lead_source_description"),
+    mAccessors->insert(QStringLiteral("lead_source_description"),
                        new LeadAccessorPair(&SugarLead::leadSourceDescription, &SugarLead::setLeadSourceDescription,
                                         i18nc("@item:intable", "Lead Source Description")));
-    mAccessors->insert(QLatin1String("status"),
+    mAccessors->insert(QStringLiteral("status"),
                        new LeadAccessorPair(&SugarLead::status, &SugarLead::setStatus,
                                         i18nc("@item:intable", "Status")));
-    mAccessors->insert(QLatin1String("status_description"),
+    mAccessors->insert(QStringLiteral("status_description"),
                        new LeadAccessorPair(&SugarLead::statusDescription, &SugarLead::setStatusDescription,
                                         i18nc("@item:intable", "Status Description")));
-    mAccessors->insert(QLatin1String("reports_to_id"),
+    mAccessors->insert(QStringLiteral("reports_to_id"),
                        new LeadAccessorPair(&SugarLead::reportsToId, &SugarLead::setReportsToId, QString()));
-    mAccessors->insert(QLatin1String("report_to_name"),
+    mAccessors->insert(QStringLiteral("report_to_name"),
                        new LeadAccessorPair(&SugarLead::reportToName, &SugarLead::setReportToName,
                                         i18nc("@item:intable", "Reports To")));
-    mAccessors->insert(QLatin1String("account_name"),
+    mAccessors->insert(QStringLiteral("account_name"),
                        new LeadAccessorPair(&SugarLead::accountName, &SugarLead::setAccountName,
                                         i18nc("@item:intable", "Account")));
-    mAccessors->insert(QLatin1String("account_description"),
+    mAccessors->insert(QStringLiteral("account_description"),
                        new LeadAccessorPair(&SugarLead::accountDescription, &SugarLead::setAccountDescription,
                                         i18nc("@item:intable", "Account Description")));
-    mAccessors->insert(QLatin1String("contact_id"),
+    mAccessors->insert(QStringLiteral("contact_id"),
                        new LeadAccessorPair(&SugarLead::contactId, &SugarLead::setContactId, QString()));
-    mAccessors->insert(QLatin1String("account_id"),
+    mAccessors->insert(QStringLiteral("account_id"),
                        new LeadAccessorPair(&SugarLead::accountId, &SugarLead::setAccountId, QString()));
-    mAccessors->insert(QLatin1String("opportunity_id"),
+    mAccessors->insert(QStringLiteral("opportunity_id"),
                        new LeadAccessorPair(&SugarLead::opportunityId, &SugarLead::setOpportunityId, QString()));
-    mAccessors->insert(QLatin1String("opportunity_name"),
+    mAccessors->insert(QStringLiteral("opportunity_name"),
                        new LeadAccessorPair(&SugarLead::opportunityName, &SugarLead::setOpportunityName,
                                         i18nc("@item:intable", "Opportunity")));
-    mAccessors->insert(QLatin1String("opportunity_amount"),
+    mAccessors->insert(QStringLiteral("opportunity_amount"),
                        new LeadAccessorPair(&SugarLead::opportunityAmount, &SugarLead::setOpportunityAmount,
                                         i18nc("@item:intable", "Opportunity Amount")));
-    mAccessors->insert(QLatin1String("campaign_id"),
+    mAccessors->insert(QStringLiteral("campaign_id"),
                        new LeadAccessorPair(&SugarLead::campaignId, &SugarLead::setCampaignId, QString()));
-    mAccessors->insert(QLatin1String("campaign_name"),
+    mAccessors->insert(QStringLiteral("campaign_name"),
                        new LeadAccessorPair(&SugarLead::campaignName, &SugarLead::setCampaignName,
                                         i18nc("@item:intable", "Campaign")));
-    mAccessors->insert(QLatin1String("c_accept_status_fields"),
+    mAccessors->insert(QStringLiteral("c_accept_status_fields"),
                        new LeadAccessorPair(&SugarLead::cAcceptStatusFields, &SugarLead::setCAcceptStatusFields, QString()));
-    mAccessors->insert(QLatin1String("m_accept_status_fields"),
+    mAccessors->insert(QStringLiteral("m_accept_status_fields"),
                        new LeadAccessorPair(&SugarLead::mAcceptStatusFields, &SugarLead::setMAcceptStatusFields, QString()));
-    mAccessors->insert(QLatin1String("birthdate"),
+    mAccessors->insert(QStringLiteral("birthdate"),
                        new LeadAccessorPair(&SugarLead::birthdate, &SugarLead::setBirthdate,
                                         i18nc("@item:intable", "Birthdate")));
-    mAccessors->insert(QLatin1String("portal_name"),
+    mAccessors->insert(QStringLiteral("portal_name"),
                        new LeadAccessorPair(&SugarLead::portalName, &SugarLead::setPortalName,
                                         i18nc("@item:intable", "Portal")));
-    mAccessors->insert(QLatin1String("portal_app"),
+    mAccessors->insert(QStringLiteral("portal_app"),
                        new LeadAccessorPair(&SugarLead::portalApp, &SugarLead::setPortalApp,
                                         i18nc("@item:intable", "Portal Application")));
 }

@@ -105,12 +105,12 @@ void DeleteEntryJob::startSugarTask()
     // delete just required identifier and "deleted" field
     // no need for type specific code
     KDSoapGenerated::TNS__Name_value idField;
-    idField.setName(QLatin1String("id"));
+    idField.setName(QStringLiteral("id"));
     idField.setValue(d->mItem.remoteId());
 
     KDSoapGenerated::TNS__Name_value deletedField;
-    deletedField.setName(QLatin1String("deleted"));
-    deletedField.setValue(QLatin1String("1"));
+    deletedField.setName(QStringLiteral("deleted"));
+    deletedField.setValue(QStringLiteral("1"));
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField);

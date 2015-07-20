@@ -35,7 +35,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 NotesHandler::NotesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Notes"), session),
+    : ModuleHandler(QStringLiteral("Notes"), session),
       mAccessors(SugarNote::accessorHash())
 {
 }
@@ -59,12 +59,12 @@ Akonadi::Collection NotesHandler::handlerCollection() const
 
 QString NotesHandler::queryStringForListing() const
 {
-    return QLatin1String("notes.parent_type='Opportunities'");
+    return QStringLiteral("notes.parent_type='Opportunities'");
 }
 
 QString NotesHandler::orderByForListing() const
 {
-    return QLatin1String("notes.name");
+    return QStringLiteral("notes.name");
 }
 
 QStringList NotesHandler::supportedSugarFields() const
@@ -92,7 +92,7 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the note being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;

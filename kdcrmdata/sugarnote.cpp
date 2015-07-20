@@ -423,7 +423,7 @@ QMap<QString, QString> SugarNote::data() const
 
 QString SugarNote::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.note");
+    return QStringLiteral("application/x-vnd.kdab.crm.note");
 }
 
 Q_GLOBAL_STATIC(SugarNote::AccessorHash, s_accessors)
@@ -456,44 +456,44 @@ embed_flag  --> skipped, what is that?
 description
 contact_name
 */
-        accessors.insert(QLatin1String("id"),
+        accessors.insert(QStringLiteral("id"),
                          NoteAccessorPair(&SugarNote::id, &SugarNote::setId, QString()));
-        accessors.insert(QLatin1String("name"),
+        accessors.insert(QStringLiteral("name"),
                          NoteAccessorPair(&SugarNote::name, &SugarNote::setName,
                                           i18nc("@item:intable note name", "Name")));
-        accessors.insert(QLatin1String("date_entered"),
+        accessors.insert(QStringLiteral("date_entered"),
                          NoteAccessorPair(&SugarNote::dateEntered, &SugarNote::setDateEntered, QString()));
-        accessors.insert(QLatin1String("date_modified"),
+        accessors.insert(QStringLiteral("date_modified"),
                          NoteAccessorPair(&SugarNote::dateModified, &SugarNote::setDateModified, QString()));
-        accessors.insert(QLatin1String("modified_user_id"),
+        accessors.insert(QStringLiteral("modified_user_id"),
                          NoteAccessorPair(&SugarNote::modifiedUserId, &SugarNote::setModifiedUserId, QString()));
-        accessors.insert(QLatin1String("modified_by_name"),
+        accessors.insert(QStringLiteral("modified_by_name"),
                          NoteAccessorPair(&SugarNote::modifiedByName, &SugarNote::setModifiedByName, QString()));
-        accessors.insert(QLatin1String("created_by"),
+        accessors.insert(QStringLiteral("created_by"),
                          NoteAccessorPair(&SugarNote::createdBy, &SugarNote::setCreatedBy, QString()));
-        accessors.insert(QLatin1String("created_by_name"),
+        accessors.insert(QStringLiteral("created_by_name"),
                          NoteAccessorPair(&SugarNote::createdByName, &SugarNote::setCreatedByName, QString()));
-        accessors.insert(QLatin1String("deleted"),
+        accessors.insert(QStringLiteral("deleted"),
                          NoteAccessorPair(&SugarNote::deleted, &SugarNote::setDeleted, QString()));
-        accessors.insert(QLatin1String("assigned_user_id"),
+        accessors.insert(QStringLiteral("assigned_user_id"),
                          NoteAccessorPair(&SugarNote::assignedUserId, &SugarNote::setAssignedUserId, QString()));
-        accessors.insert(QLatin1String("assigned_user_name"),
+        accessors.insert(QStringLiteral("assigned_user_name"),
                          NoteAccessorPair(&SugarNote::assignedUserName, &SugarNote::setAssignedUserName,
                                           i18nc("@item:intable", "Assigned To")));
 
-        accessors.insert(QLatin1String("file_mime_type"),
+        accessors.insert(QStringLiteral("file_mime_type"),
                          NoteAccessorPair(&SugarNote::fileMimeType, &SugarNote::setFileMimeType, QString()));
-        accessors.insert(QLatin1String("filename"),
+        accessors.insert(QStringLiteral("filename"),
                          NoteAccessorPair(&SugarNote::fileName, &SugarNote::setFileName, QString()));
-        accessors.insert(QLatin1String("parent_type"),
+        accessors.insert(QStringLiteral("parent_type"),
                          NoteAccessorPair(&SugarNote::parentType, &SugarNote::setParentType, QString()));
-        accessors.insert(QLatin1String("parent_id"),
+        accessors.insert(QStringLiteral("parent_id"),
                          NoteAccessorPair(&SugarNote::parentId, &SugarNote::setParentId, QString()));
-        accessors.insert(QLatin1String("contact_id"),
+        accessors.insert(QStringLiteral("contact_id"),
                          NoteAccessorPair(&SugarNote::contactId, &SugarNote::setContactId, QString()));
-        accessors.insert(QLatin1String("contact_name"),
+        accessors.insert(QStringLiteral("contact_name"),
                          NoteAccessorPair(&SugarNote::contactName, &SugarNote::setContactName, QString()));
-        accessors.insert(QLatin1String("description"),
+        accessors.insert(QStringLiteral("description"),
                          NoteAccessorPair(&SugarNote::description, &SugarNote::setDescription,
                                           i18nc("@item:intable", "Description")));
     }

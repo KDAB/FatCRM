@@ -609,5 +609,5 @@ QMap<QString, QString> SugarCampaign::data()
 
 QString SugarCampaign::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.campaign");
+    return QStringLiteral("application/x-vnd.kdab.crm.campaign");
 }
