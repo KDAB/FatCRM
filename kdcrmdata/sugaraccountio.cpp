@@ -23,6 +23,7 @@
 #include "sugaraccountio.h"
 #include "sugaraccount.h"
 
+#include <KLocalizedString>
 #include <QDebug>
 #include <QHash>
 #include <QMap>
@@ -46,7 +47,7 @@ bool SugarAccountIO::readSugarAccount(QIODevice *device, SugarAccount &account)
                 && xml.attributes().value("version") == "1.0") {
             readAccount(account);
         } else {
-            xml.raiseError(QObject::tr("It is not a sugarAccount version 1.0 data."));
+            xml.raiseError(i18n("It is not a sugarAccount version 1.0 data."));
         }
 
     }
@@ -55,10 +56,10 @@ bool SugarAccountIO::readSugarAccount(QIODevice *device, SugarAccount &account)
 
 QString SugarAccountIO::errorString() const
 {
-    return QObject::tr("%1\nLine %2, column %3")
-           .arg(xml.errorString())
-           .arg(xml.lineNumber())
-           .arg(xml.columnNumber());
+    return i18n("%1\nLine %2, column %3",
+           xml.errorString(),
+           xml.lineNumber(),
+           xml.columnNumber());
 }
 
 void SugarAccountIO::readAccount(SugarAccount &account)

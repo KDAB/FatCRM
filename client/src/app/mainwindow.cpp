@@ -161,21 +161,21 @@ void MainWindow::createActions()
 {
     // the other menus are handled in Qt Designer
 
-    mViewMenu = new QMenu(tr("&View"), this);
+    mViewMenu = new QMenu(i18n("&View"), this);
     menuBar()->insertMenu(mUi.menuSettings->menuAction(), mViewMenu);
-    QAction *printAction = new QAction(tr("Print Report..."), this);
+    QAction *printAction = new QAction(i18n("Print Report..."), this);
     printAction->setShortcut(QKeySequence::Print);
     printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
     connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
 
-    mMainToolBar = addToolBar(tr("Main ToolBar"));
+    mMainToolBar = addToolBar(i18n("Main ToolBar"));
     mResourceSelector = new QComboBox(this);
     mResourceSelectorAction = mMainToolBar->addWidget(mResourceSelector);
     mMainToolBar->addAction(mUi.actionSynchronize);
 
-    mShowDetails = new QCheckBox(tr("Show Details"));
+    mShowDetails = new QCheckBox(i18n("Show Details"));
     // A checkbox in a toolbar looks weird; and there are menu items for this already
     //mMainToolBar->addWidget(mShowDetails);
     //connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
@@ -363,40 +363,40 @@ void MainWindow::createTabs()
 {
     Page *page = new AccountsPage(this);
     mPages << page;
-    mUi.tabWidget->addTab(page, tr("&Accounts"));
-    mViewMenu->addAction(page->showDetailsAction(tr("&Account Details")));
+    mUi.tabWidget->addTab(page, i18n("&Accounts"));
+    mViewMenu->addAction(page->showDetailsAction(i18n("&Account Details")));
 
     page = new OpportunitiesPage(this);
     page->setNotesRepository(mNotesRepository);
     mPages << page;
-    mUi.tabWidget->addTab(page, tr("&Opportunities"));
-    mViewMenu->addAction(page->showDetailsAction(tr("&Opportunity Details")));
+    mUi.tabWidget->addTab(page, i18n("&Opportunities"));
+    mViewMenu->addAction(page->showDetailsAction(i18n("&Opportunity Details")));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new LeadsPage(this);
     mPages << page;
-    mUi.tabWidget->addTab(page, tr("&Leads"));
-    mViewMenu->addAction(page->showDetailsAction(tr("&Lead Details")));
+    mUi.tabWidget->addTab(page, i18n("&Leads"));
+    mViewMenu->addAction(page->showDetailsAction(i18n("&Lead Details")));
 #endif
 
     page = new ContactsPage(this);
     mPages << page;
-    mUi.tabWidget->addTab(page, tr("&Contacts"));
-    mViewMenu->addAction(page->showDetailsAction(tr("&Contact Details")));
+    mUi.tabWidget->addTab(page, i18n("&Contacts"));
+    mViewMenu->addAction(page->showDetailsAction(i18n("&Contact Details")));
 
 #if 0
     page = new CampaignsPage(this);
     mPages << page;
-    mUi.tabWidget->addTab(page, tr("&Campaigns"));
-    mViewMenu->addAction(page->showDetailsAction(tr("C&ampaign Details")));
+    mUi.tabWidget->addTab(page, i18n("&Campaigns"));
+    mViewMenu->addAction(page->showDetailsAction(i18n("C&ampaign Details")));
 #endif
 
     connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
 
     mReportPage = new ReportPage(this);
-    mUi.tabWidget->addTab(mReportPage, tr("&Reports"));
+    mUi.tabWidget->addTab(mReportPage, i18n("&Reports"));
 
     //set Opportunities page as current
     mShowDetails->setChecked(mPages[ 1 ]->showsDetails());
@@ -527,7 +527,7 @@ void MainWindow::slotCurrentTabChanged(int index)
 
 void MainWindow::slotImportContacts()
 {
-    const QString csvFile = QFileDialog::getOpenFileName(this, tr("Select contacts file"), QString(), "*.csv");
+    const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), "*.csv");
     if (!csvFile.isEmpty()) {
         ContactsImporter importer;
         if (importer.importFile(csvFile)) {

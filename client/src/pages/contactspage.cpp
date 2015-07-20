@@ -41,5 +41,5 @@ ContactsPage::~ContactsPage()
 
 QString ContactsPage::reportTitle() const
 {
-    return tr("List of Contacts");
+    return i18n("List of Contacts");
 }

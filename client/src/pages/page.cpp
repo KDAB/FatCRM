@@ -317,9 +317,9 @@ void Page::slotRemoveItem()
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
 
     QMessageBox msgBox;
-    msgBox.setWindowTitle(tr("Delete record"));
+    msgBox.setWindowTitle(i18n("Delete record"));
     msgBox.setText(QString("The selected item will be removed permanentely!"));
-    msgBox.setInformativeText(tr("Are you sure you want to delete it?"));
+    msgBox.setInformativeText(i18n("Are you sure you want to delete it?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -548,8 +548,8 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
 bool Page::askSave()
 {
     QMessageBox msgBox(this);
-    msgBox.setText(tr("The current item has been modified."));
-    msgBox.setInformativeText(tr("Do you want to save your changes?"));
+    msgBox.setText(i18n("The current item has been modified."));
+    msgBox.setInformativeText(i18n("Do you want to save your changes?"));
     msgBox.setStandardButtons(QMessageBox::Save |
                               QMessageBox::Discard);
     msgBox.setDefaultButton(QMessageBox::Save);
@@ -659,7 +659,7 @@ void Page::printReport()
         QMessageBox msgBox;
         msgBox.setWindowTitle(i18n("Long report warning"));
         msgBox.setText(i18n("The generated report will contain %1 rows, which might be long to generate and print.", count));
-        msgBox.setInformativeText(tr("Are you sure you want to proceed?"));
+        msgBox.setInformativeText(i18n("Are you sure you want to proceed?"));
         msgBox.setStandardButtons(QMessageBox::Yes |
                                   QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Yes);

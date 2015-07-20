@@ -41,5 +41,5 @@ CampaignsPage::~CampaignsPage()
 
 QString CampaignsPage::reportTitle() const
 {
-    return tr("List of Campaigns");
+    return i18n("List of Campaigns");
 }
