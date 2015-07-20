@@ -38,8 +38,8 @@
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QDebug>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
+#include "fatcrm_client_debug.h"
 
 using namespace Akonadi;
 
@@ -106,10 +106,10 @@ void DetailsDialog::Private::saveClicked()
 
     Job *job = 0;
     if (item.isValid()) {
-        qDebug() << "Item modify";
+        qCDebug(FATCRM_CLIENT_LOG) << "Item modify";
         job = new ItemModifyJob(item, q);
     } else {
-        qDebug() << "Item create";
+        qCDebug(FATCRM_CLIENT_LOG) << "Item create";
         Q_ASSERT(mCollection.isValid());
         job = new ItemCreateJob(item, mCollection, q);
     }
@@ -124,9 +124,9 @@ void DetailsDialog::Private::dataModified()
 
 void DetailsDialog::Private::saveResult(KJob *job)
 {
-    qDebug() << "save result=" << job->error();
+    qCDebug(FATCRM_CLIENT_LOG) << "save result=" << job->error();
     if (job->error() != 0) {
-        qCritical() << job->errorText();
+        qCCritical(FATCRM_CLIENT_LOG) << job->errorText();
         // TODO
         return;
     }

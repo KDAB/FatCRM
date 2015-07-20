@@ -21,7 +21,7 @@
 */
 
 #include "collectionmanager.h"
-
+#include "fatcrm_client_debug.h"
 #include <AkonadiCore/CollectionFetchJob>
 #include <AkonadiCore/CollectionFetchScope>
 
@@ -64,7 +64,7 @@ static int orderForCollection(const QString &contentMimeType)
         if (contentMimeType == s_orderedMimeTypes[i])
             return i;
     }
-    qDebug() << "unexpected content mimetype for ordering:" << contentMimeType;
+    qCDebug(FATCRM_CLIENT_LOG) << "unexpected content mimetype for ordering:" << contentMimeType;
     return 20;
 }
 
@@ -96,7 +96,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
     qSort(collections.begin(), collections.end(), collectionLessThan);
 
     Q_FOREACH (const Collection &collection, collections) {
-        //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
+        //qCDebug(FATCRM_CLIENT_LOG) << collection.contentMimeTypes() << "name" << collection.name();
         emit collectionResult(collection.contentMimeTypes().at(0), collection);
     }
 }

@@ -58,7 +58,7 @@ using namespace Akonadi;
 #include <QTimer>
 #include <QToolBar>
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 MainWindow::MainWindow()
     : QMainWindow(),
@@ -260,7 +260,7 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
 
 void MainWindow::slotServerStarted()
 {
-    qDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
+    qCDebug(FATCRM_CLIENT_LOG) << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
     if (mResourceSelector->count() > 0) {
         initialResourceSelection();
     }
@@ -277,7 +277,7 @@ void MainWindow::slotToggleOffline(bool offline)
     AgentInstance currentAgent = currentResource();
     const bool online = !offline;
     if (currentAgent.isValid() && currentAgent.isOnline() != online) {
-        qDebug() << "setting agent" << currentAgent.identifier() << "to online=" << online;
+        qCDebug(FATCRM_CLIENT_LOG) << "setting agent" << currentAgent.identifier() << "to online=" << online;
         currentAgent.setIsOnline(online);
     }
 }
@@ -316,14 +316,14 @@ void MainWindow::slotFullReload()
 
 void MainWindow::slotShowMessage(const QString &message)
 {
-    qDebug() << message;
+    qCDebug(FATCRM_CLIENT_LOG) << message;
     statusBar()->showMessage(message);
 }
 
 void MainWindow::slotModelLoaded(DetailsType type)
 {
     // We load Opps, Accounts, Contacts, Notes and Emails in this order (see CollectionManager)
-    //qDebug() << typeToString(type) << "loaded";
+    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(type) << "loaded";
     switch (type)
     {
     case Account:
@@ -492,7 +492,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             statusBar()->clearMessage();
             mProgressBarHideTimer->start();
         } else {
-            qDebug() << progress << message;
+            qCDebug(FATCRM_CLIENT_LOG) << progress << message;
             mProgressBar->show();
             mProgressBar->setValue(progress);
             if (progress == 100) {

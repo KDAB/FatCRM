@@ -22,7 +22,7 @@
 
 #include "dbuswinidprovider.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 #include <QDBusConnection>
 #include <QDBusConnectionInterface>
@@ -60,11 +60,11 @@ void DBusWinIdProvider::Private::tryRegister()
         mObjectRegistered = bus.registerObject(QLatin1String("/Actions"), q,
                                                QDBusConnection::ExportScriptableSlots);
         if (!mObjectRegistered) {
-            qWarning() << "Failed to register provider object /Actions";
+            qCWarning(FATCRM_CLIENT_LOG) << "Failed to register provider object /Actions";
         }
     }
 
-    qDebug() << "currentOwner="
+    qCDebug(FATCRM_CLIENT_LOG) << "currentOwner="
              << busInterface->serviceOwner(QLatin1String("org.freedesktop.akonaditray"));
 }
 

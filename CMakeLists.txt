@@ -30,11 +30,14 @@ set(KF5_VERSION "5.12.0")
 set(KCONTACTS_LIB_VERSION "4.89.0")
 set(KCALENDARCORE_LIB_VERSION "4.81.0")
 
+find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+
 find_package(KF5Wallet ${KF5_VERSION} CONFIG REQUIRED)
 find_package(KF5Akonadi ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5AkonadiContact ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
+
 
 # search packages used by KDE
 find_package(Boost REQUIRED)
@@ -43,7 +46,6 @@ find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
 include(MacroLibrary)
-#include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 
 # Stolen from zanshin

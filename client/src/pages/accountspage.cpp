@@ -26,7 +26,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 using namespace Akonadi;
 

@@ -24,7 +24,7 @@
 #define REARRANGECOLUMNSPROXYMODEL_H
 
 #include <QIdentityProxyModel>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 /**
  * Selects columns from the source model, in any order.

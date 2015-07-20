@@ -21,7 +21,7 @@
 */
 
 #include "notesrepository.h"
-
+#include "fatcrm_client_debug.h"
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/collectionstatistics.h>
 #include <AkonadiCore/ItemFetchJob>
@@ -53,7 +53,7 @@ void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadNotes()
 {
-    //qDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
+    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mNotesCollection.statistics().count() << "notes";
 
     // load notes
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
@@ -73,14 +73,14 @@ void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeNote(item);
     }
-    //qDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
+    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
     if (mNotesLoaded == mNotesCollection.statistics().count())
         emit notesLoaded(mNotesLoaded);
 }
 
 void NotesRepository::storeNote(const Akonadi::Item &item)
 {
-    //qDebug() << item.id() << item.mimeType() << ;
+    //qCDebug(FATCRM_CLIENT_LOG) << item.id() << item.mimeType() << ;
     if (item.hasPayload<SugarNote>()) {
         SugarNote note = item.payload<SugarNote>();
         if (note.parentType() == QLatin1String("Opportunities")) {
@@ -88,7 +88,7 @@ void NotesRepository::storeNote(const Akonadi::Item &item)
         } else {
             // We also get notes for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //qDebug() << "ignoring notes for" << note.parentType();
+            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring notes for" << note.parentType();
         }
     }
 }
@@ -102,7 +102,7 @@ void NotesRepository::setEmailsCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadEmails()
 {
-    //qDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
+    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -132,14 +132,14 @@ void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeEmail(item);
     }
-    //qDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
+    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
     if (mEmailsLoaded == mEmailsCollection.statistics().count())
         emit emailsLoaded(mEmailsLoaded);
 }
 
 void NotesRepository::storeEmail(const Akonadi::Item &item)
 {
-    //qDebug() << item.id() << item.mimeType() << ;
+    //qCDebug(FATCRM_CLIENT_LOG) << item.id() << item.mimeType() << ;
     if (item.hasPayload<SugarEmail>()) {
         SugarEmail email = item.payload<SugarEmail>();
         if (email.parentType() == QLatin1String("Opportunities")) {
@@ -147,7 +147,7 @@ void NotesRepository::storeEmail(const Akonadi::Item &item)
         } else {
             // We also get emails for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //qDebug() << "ignoring emails for" << email.parentType();
+            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring emails for" << email.parentType();
         }
     }
 }
@@ -162,12 +162,12 @@ void NotesRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
 void NotesRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
     if (collection == mNotesCollection) {
-        //qDebug() << item.id() << item.mimeType();
+        //qCDebug(FATCRM_CLIENT_LOG) << item.id() << item.mimeType();
         storeNote(item);
     } else if (collection == mEmailsCollection) {
         storeEmail(item);
     } else {
-        qWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id();
+        qCWarning(FATCRM_CLIENT_LOG) << "Unexpected collection" << collection << ", expected" << mNotesCollection.id();
         return;
     }
 }

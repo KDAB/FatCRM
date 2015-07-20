@@ -1,6 +1,7 @@
 include_directories(${CMAKE_SOURCE_DIR} app details dialogs models pages reports utilities widgets views)
 
 set(app_SRCS
+  fatcrm_client_debug.cpp
   app/mainwindow.cpp
   app/clientsettings.cpp
   pages/page.cpp

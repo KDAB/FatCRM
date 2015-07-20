@@ -25,7 +25,7 @@
 #include "ui_configurationdialog.h"
 #include <QListView>
 #include <QModelIndex>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     QDialog(parent),

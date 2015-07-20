@@ -59,7 +59,6 @@ add_library(akonadi_serializer_sugaropportunity
 )
 target_link_libraries(akonadi_serializer_sugaropportunity
   kdcrmdata
-  ${KDE4_CORE_LIBS}
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugaropportunity DESTINATION ${PLUGIN_INSTALL_DIR})

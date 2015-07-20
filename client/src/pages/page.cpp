@@ -53,7 +53,7 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 #include <QMessageBox>
 #include <QShortcut>
@@ -209,15 +209,15 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
     if (mDetailsWidget && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
         if (mCurrentIndex == index) // called by the setCurrentIndex below
             return;
-        //qDebug() << "going from" << mCurrentIndex << "to" << index;
+        //qCDebug(FATCRM_CLIENT_LOG) << "going from" << mCurrentIndex << "to" << index;
         if (askSave()) {
-            //qDebug() << "Saving" << mCurrentIndex;
+            //qCDebug(FATCRM_CLIENT_LOG) << "Saving" << mCurrentIndex;
             mDetailsWidget->saveData();
         }
     }
 
     // show the new item
-    //qDebug() << "showing new item" << index;
+    //qCDebug(FATCRM_CLIENT_LOG) << "showing new item" << index;
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
         if (mDetailsWidget != 0) {
@@ -225,7 +225,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
         }
 
         mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
-        //qDebug() << "mCurrentIndex=" << mCurrentIndex;
+        //qCDebug(FATCRM_CLIENT_LOG) << "mCurrentIndex=" << mCurrentIndex;
     }
 }
 
@@ -353,7 +353,7 @@ void Page::slotVisibleRowCountChanged()
 
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    //qDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
+    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << ": rows inserted from" << start << "to" << end;
 
     // inserting rows into comboboxes can change the current index, thus marking the data as modified
     emit ignoreModifications(true);
@@ -380,11 +380,11 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
         break;
     }
     // Select the first row; looks nicer than empty fields in the details widget.
-    //qDebug() << "model has" << mItemsTreeModel->rowCount()
+    //qCDebug(FATCRM_CLIENT_LOG) << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
     if (done) {
-        //qDebug() << "Finished loading" << typeToString(mType);
+        //qCDebug(FATCRM_CLIENT_LOG) << "Finished loading" << typeToString(mType);
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
@@ -521,7 +521,7 @@ static QString countryForAccount(const SugarAccount &account)
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    //qDebug() << typeToString(mType) << topLeft << bottomRight;
+    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
     const int firstColumn = topLeft.column();
@@ -566,7 +566,7 @@ void Page::readSupportedFields()
             mCollection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
         mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
-        //qDebug() << typeToString(mType) << "supported fields" << msupportedFields;
+        //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << "supported fields" << msupportedFields;
         if (mSupportedFields.isEmpty()) {
             static bool errorShown = false;
             if (!errorShown) {
@@ -586,10 +586,10 @@ void Page::readEnumDefinitionAttributes()
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
         mDetailsWidget->details()->setEnumDefinitions(mEnumDefinitions);
     } else {
-        qWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
-        qWarning() << "Collection attributes:";
+        qCWarning(FATCRM_CLIENT_LOG) << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
+        qCWarning(FATCRM_CLIENT_LOG) << "Collection attributes:";
         foreach (Akonadi::Attribute *attr, mCollection.attributes()) {
-            qWarning() << attr->type();
+            qCWarning(FATCRM_CLIENT_LOG) << attr->type();
         }
 
         static bool errorShown = false;
@@ -702,7 +702,7 @@ DetailsDialog *Page::createDetailsDialog()
 
 void Page::addAccountsData(int start, int end, bool emitChanges)
 {
-    //qDebug() << start << end;
+    //qCDebug(FATCRM_CLIENT_LOG) << start << end;
     // QElapsedTimer dt; dt.start();
     QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
     for (int row = start; row <= end; ++row) {
@@ -720,7 +720,7 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
     ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap, emitChanges); // country changes are handled in slotDataChanged
-    //qDebug() << "done," << dt.elapsed() << "ms";
+    //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeAccountsData(int start, int end, bool emitChanges)
@@ -740,7 +740,7 @@ void Page::removeAccountsData(int start, int end, bool emitChanges)
 
 void Page::addCampaignsData(int start, int end, bool emitChanges)
 {
-    //qDebug(); QElapsedTimer dt; dt.start();
+    //qCDebug(FATCRM_CLIENT_LOG); QElapsedTimer dt; dt.start();
     //QMap<QString, QString> campaignRefMap;
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
@@ -754,7 +754,7 @@ void Page::addCampaignsData(int start, int end, bool emitChanges)
     }
     //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //qDebug() << "done," << dt.elapsed() << "ms";
+    //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeCampaignsData(int start, int end, bool emitChanges)
@@ -766,7 +766,7 @@ void Page::removeCampaignsData(int start, int end, bool emitChanges)
 
 void Page::addContactsData(int start, int end, bool emitChanges)
 {
-    //qDebug(); QElapsedTimer dt; dt.start();
+    //qCDebug(FATCRM_CLIENT_LOG); QElapsedTimer dt; dt.start();
     QMap<QString, QString> reportsToRefMap, assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
@@ -780,7 +780,7 @@ void Page::addContactsData(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(ReportsToRef)->addMap(reportsToRefMap, emitChanges); // TODO handle changes in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //qDebug() << "done," << dt.elapsed() << "ms";
+    //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
 void Page::removeContactsData(int start, int end, bool emitChanges)
@@ -792,7 +792,7 @@ void Page::removeContactsData(int start, int end, bool emitChanges)
 
 void Page::addLeadsData(int start, int end, bool emitChanges)
 {
-    //qDebug();
+    //qCDebug(FATCRM_CLIENT_LOG);
     QMap<QString, QString> assignedToRefMap;
 
     for (int row = start; row <= end; ++row) {
@@ -815,7 +815,7 @@ void Page::removeLeadsData(int start, int end, bool emitChanges)
 
 void Page::addOpportunitiesData(int start, int end, bool emitChanges)
 {
-    //qDebug();
+    //qCDebug(FATCRM_CLIENT_LOG);
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);

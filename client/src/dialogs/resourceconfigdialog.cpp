@@ -34,7 +34,7 @@
 #include <AkonadiCore/AgentTypeModel>
 using namespace Akonadi;
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 #include <QAbstractItemView>
 #include <QItemSelectionModel>
@@ -144,7 +144,7 @@ void ResourceConfigDialog::Private::removeResource()
 
 void ResourceConfigDialog::Private::resourceCreateResult(KJob *job)
 {
-    qDebug() << "error=" << job->error() << "string=" << job->errorString();
+    qCDebug(FATCRM_CLIENT_LOG) << "error=" << job->error() << "string=" << job->errorString();
     if (job->error() != 0) {
         QMessageBox::critical(q, i18nc("@title:window", "Failed to create CRM connector"),
                               job->errorString());

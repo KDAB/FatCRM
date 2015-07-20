@@ -31,7 +31,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 using namespace Akonadi;
 

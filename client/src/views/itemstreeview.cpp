@@ -23,6 +23,7 @@
 #include "itemstreeview.h"
 #include "itemstreemodel.h"
 #include "clientsettings.h"
+#include "fatcrm_client_debug.h"
 
 #include <QAction>
 #include <QHeaderView>
@@ -56,7 +57,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         defaultColumnNames.append(ItemsTreeModel::columnNameFromType(ct));
 
     const QStringList columns = ClientSettings::self()->visibleColumns(objectName(), defaultColumnNames);
-    //qDebug() << "wanted columns:" << columns;
+    //qCDebug(FATCRM_CLIENT_LOG) << "wanted columns:" << columns;
     for (int i = 0; i < header()->count(); ++i) {
         const QString name = mItemsTreeModel->columnName(i);
         header()->setSectionHidden(i, !columns.contains(name));
@@ -96,7 +97,7 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
     case ItemsTreeModel::NextStepDate:
     case ItemsTreeModel::CreationDate:
     case ItemsTreeModel::LastModifiedDate:
-        qDebug() << "Clicked on a date!";
+        qCDebug(FATCRM_CLIENT_LOG) << "Clicked on a date!";
     default:
         break;
     }

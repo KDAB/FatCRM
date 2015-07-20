@@ -28,7 +28,7 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 #include <QFile>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 #include <QTextCodec>
 
 ContactsImporter::ContactsImporter()
@@ -63,7 +63,7 @@ bool ContactsImporter::importFile(const QString &fileName)
         QMap<int, QString>::const_iterator it = accountColumns.constBegin();
         for ( ; it != accountColumns.end() ; ++it) {
             const QString value = builder.data(row, it.key());
-            //qDebug() << it.key() << value << "->" << it.value();
+            //qCDebug(FATCRM_CLIENT_LOG) << it.key() << value << "->" << it.value();
             if (!value.isEmpty()) {
                 accountData.insert(it.value(), value);
             }
