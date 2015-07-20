@@ -101,4 +101,4 @@ install(TARGETS fatcrm ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES fatcrm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES org.kde.fatcrm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

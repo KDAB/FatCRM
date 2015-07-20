@@ -44,3 +44,4 @@ Type=Application
 X-DocPath=fatcrm/index.html
 GenericName=Desktop application for SugarCRM
 Terminal=false
+X-DBUS-ServiceName=org.kde.fatcrm
