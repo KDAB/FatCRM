@@ -24,6 +24,7 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
+#include <KLocalizedString>
 #include <QIODevice>
 #include <QXmlStreamWriter>
 
@@ -44,7 +45,7 @@ bool SugarCampaignIO::readSugarCampaign(QIODevice *device, SugarCampaign &campai
                 && xml.attributes().value("version") == "1.0") {
             readCampaign(campaign);
         } else {
-            xml.raiseError(QObject::tr("It is not a sugarCampaign version 1.0 data."));
+            xml.raiseError(i18n("It is not a sugarCampaign version 1.0 data."));
         }
 
     }
@@ -53,10 +54,10 @@ bool SugarCampaignIO::readSugarCampaign(QIODevice *device, SugarCampaign &campai
 
 QString SugarCampaignIO::errorString() const
 {
-    return QObject::tr("%1\nLine %2, column %3")
-           .arg(xml.errorString())
-           .arg(xml.lineNumber())
-           .arg(xml.columnNumber());
+    return i18n("%1\nLine %2, column %3",
+           xml.errorString(),
+           xml.lineNumber(),
+           xml.columnNumber());
 }
 
 void SugarCampaignIO::readCampaign(SugarCampaign &campaign)

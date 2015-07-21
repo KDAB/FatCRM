@@ -27,6 +27,8 @@
 #include "qdateeditex.h"
 #include "referenceddatamodel.h"
 
+#include <KLocalizedString>
+
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
@@ -170,11 +172,11 @@ void Details::setEnumDefinitions(const EnumDefinitions &enums)
 QString Details::windowTitle() const
 {
     switch (mType) {
-    case Account: return tr("Account Details");
-    case Campaign: return tr("Campaign Details");
-    case Contact: return tr("Contact Details");
-    case Lead: return tr("Lead Details");
-    case Opportunity: return tr("Opportunity Details");
+    case Account: return i18n("Account Details");
+    case Campaign: return i18n("Campaign Details");
+    case Contact: return i18n("Contact Details");
+    case Lead: return i18n("Lead Details");
+    case Opportunity: return i18n("Opportunity Details");
     }
 
     return QString();

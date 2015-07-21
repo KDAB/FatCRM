@@ -22,6 +22,8 @@
 
 #include "editcalendarbutton.h"
 
+#include <KLocalizedString>
+
 #include <QMouseEvent>
 #include <QDialog>
 #include <QVBoxLayout>
@@ -31,8 +33,8 @@ EditCalendarButton::EditCalendarButton(QWidget *parent)
       mCalendar(new QCalendarWidget()),
       mDialog(new QDialog)
 {
-    setText(tr("&Edit"));
-    mDialog->setWindowTitle(tr("Calendar"));
+    setText(i18n("&Edit"));
+    mDialog->setWindowTitle(i18n("Calendar"));
     QVBoxLayout *dlgLayout = new QVBoxLayout;
     dlgLayout->addWidget(mCalendar);
     mDialog->setLayout(dlgLayout);

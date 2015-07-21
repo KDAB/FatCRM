@@ -60,7 +60,7 @@ void OpportunitiesPage::setupModel()
 
 QString OpportunitiesPage::reportTitle() const
 {
-    return tr("List of Opportunities");
+    return i18n("List of Opportunities");
 }
 
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()

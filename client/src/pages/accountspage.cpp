@@ -42,5 +42,5 @@ AccountsPage::~AccountsPage()
 
 QString AccountsPage::reportTitle() const
 {
-    return tr("List of Accounts");
+    return i18n("List of Accounts");
 }

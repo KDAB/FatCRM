@@ -69,7 +69,7 @@ OpportunityFilterWidget::~OpportunityFilterWidget()
 void OpportunityFilterWidget::setupFromConfig()
 {
     ui->cbAssignee->clear();
-    ui->cbAssignee->addItem(tr("me"));
+    ui->cbAssignee->addItem(i18n("me"));
     ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groupNames());
     ui->cbCountry->clear();
     ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());

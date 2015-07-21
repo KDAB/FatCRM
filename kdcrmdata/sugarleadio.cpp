@@ -24,6 +24,7 @@
 #include "sugarlead.h"
 #include "kdcrmfields.h"
 
+#include <KLocalizedString>
 #include <QIODevice>
 #include <QXmlStreamWriter>
 
@@ -44,7 +45,7 @@ bool SugarLeadIO::readSugarLead(QIODevice *device, SugarLead &lead)
                 && xml.attributes().value("version") == "1.0") {
             readLead(lead);
         } else {
-            xml.raiseError(QObject::tr("It is not a sugarLead version 1.0 data."));
+            xml.raiseError(i18n("It is not a sugarLead version 1.0 data."));
         }
 
     }
@@ -53,10 +54,10 @@ bool SugarLeadIO::readSugarLead(QIODevice *device, SugarLead &lead)
 
 QString SugarLeadIO::errorString() const
 {
-    return QObject::tr("%1\nLine %2, column %3")
-           .arg(xml.errorString())
-           .arg(xml.lineNumber())
-           .arg(xml.columnNumber());
+    return i18n("%1\nLine %2, column %3",
+           xml.errorString(),
+           xml.lineNumber(),
+           xml.columnNumber());
 }
 
 void SugarLeadIO::readLead(SugarLead &lead)

@@ -42,6 +42,6 @@ LeadsPage::~LeadsPage()
 
 QString LeadsPage::reportTitle() const
 {
-    return tr("List of Leads");
+    return i18n("List of Leads");
 }
 

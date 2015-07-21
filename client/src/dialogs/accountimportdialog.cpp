@@ -57,7 +57,7 @@ static QString accountNameAndLocation(const SugarAccount &account)
 
 void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accounts)
 {
-    ui->mainLabel->setText(tr("%1 accounts parsed").arg(accounts.count()));
+    ui->mainLabel->setText(i18n("%1 accounts parsed", accounts.count()));
 
     for (int row = 0; row < accounts.count(); ++row) {
         const SugarAccount& newAccount = accounts.at(row);
@@ -91,7 +91,7 @@ void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accou
             }
         }
 
-        QCheckBox *createCheckBox = new QCheckBox(tr("Create"), this);
+        QCheckBox *createCheckBox = new QCheckBox(i18n("Create"), this);
         if (!foundMatch)
             createCheckBox->setChecked(true);
         ui->gridLayout->addWidget(createCheckBox, row, 3);

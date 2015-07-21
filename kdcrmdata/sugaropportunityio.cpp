@@ -25,6 +25,8 @@
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 
+#include <KLocalizedString>
+
 #include <QDate>
 #include <QDebug>
 #include <QHash>
@@ -48,7 +50,7 @@ bool SugarOpportunityIO::readSugarOpportunity(QIODevice *device, SugarOpportunit
                 && xml.attributes().value("version") == "1.0") {
             readOpportunity(opportunity);
         } else {
-            xml.raiseError(QObject::tr("It is not a sugarOpportunity version 1.0 data."));
+            xml.raiseError(i18n("It is not a sugarOpportunity version 1.0 data."));
         }
 
     }
@@ -57,7 +59,7 @@ bool SugarOpportunityIO::readSugarOpportunity(QIODevice *device, SugarOpportunit
 
 QString SugarOpportunityIO::errorString() const
 {
-    return QObject::tr("%1\nLine %2, column %3")
+    return i18n("%1\nLine %2, column %3")
            .arg(xml.errorString())
            .arg(xml.lineNumber())
            .arg(xml.columnNumber());
