@@ -41,7 +41,7 @@ class DeleteEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
+    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~DeleteEntryJob();
 

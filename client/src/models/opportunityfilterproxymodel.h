@@ -45,7 +45,7 @@ public:
      *
      * @param parent The parent object.
      */
-    explicit OpportunityFilterProxyModel(QObject *parent = 0);
+    explicit OpportunityFilterProxyModel(QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the filter proxy model.

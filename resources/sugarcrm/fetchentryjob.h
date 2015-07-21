@@ -41,7 +41,7 @@ class FetchEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    FetchEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
+    FetchEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~FetchEntryJob();
 

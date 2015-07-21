@@ -44,7 +44,7 @@ class ListDeletedEntriesJob : public SugarJob
     Q_OBJECT
 
 public:
-    ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
+    ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = Q_NULLPTR);
     ~ListDeletedEntriesJob();
 
     Akonadi::Collection collection() const;

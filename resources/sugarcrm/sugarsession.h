@@ -47,7 +47,7 @@ public:
         NewLogin
     };
 
-    explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = 0);
+    explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = Q_NULLPTR);
 
     ~SugarSession();
 

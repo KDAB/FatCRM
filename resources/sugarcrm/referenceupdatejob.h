@@ -34,7 +34,7 @@ class ReferenceUpdateJob : public KCompositeJob
 {
     Q_OBJECT
 public:
-    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = 0);
+    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = Q_NULLPTR);
 
     void start() Q_DECL_OVERRIDE;
 

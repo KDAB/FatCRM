@@ -33,7 +33,7 @@ class ReferencedDataModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = 0);
+    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = Q_NULLPTR);
 
     ~ReferencedDataModel();
 

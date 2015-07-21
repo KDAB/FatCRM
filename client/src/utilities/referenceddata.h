@@ -75,7 +75,7 @@ Q_SIGNALS:
     void initialLoadingDone();
 
 private:
-    explicit ReferencedData(ReferencedDataType type, QObject *parent = 0);
+    explicit ReferencedData(ReferencedDataType type, QObject *parent = Q_NULLPTR);
     void setReferencedDataInternal(const QString &id, const QString &data, bool emitChanges);
 
 private:

@@ -41,7 +41,7 @@ class NotesRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit NotesRepository(QObject *parent = 0);
+    explicit NotesRepository(QObject *parent = Q_NULLPTR);
 
     void clear();
 

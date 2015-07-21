@@ -90,7 +90,7 @@ public:
      * represented in the model.
      * param: parent The parent object.
      */
-    explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
+    explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = Q_NULLPTR);
 
     virtual ~ItemsTreeModel();
 

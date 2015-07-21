@@ -30,7 +30,7 @@ class PasswordHandler : public QObject
 {
     Q_OBJECT
 public:
-    explicit PasswordHandler(const QString &resourceId, QObject *parent = 0);
+    explicit PasswordHandler(const QString &resourceId, QObject *parent = Q_NULLPTR);
 
     bool isPasswordAvailable();
     QString password( bool *userRejected = 0 );
