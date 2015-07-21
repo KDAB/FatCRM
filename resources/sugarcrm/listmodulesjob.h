@@ -44,7 +44,7 @@ public:
     QStringList modules() const;
 
 protected:
-    void startSugarTask();
+    void startSugarTask() Q_DECL_OVERRIDE;
 
 private:
     class Private;

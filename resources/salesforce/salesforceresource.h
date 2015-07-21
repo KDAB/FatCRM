@@ -76,16 +76,16 @@ protected:
 
     void doLogin();
 
-    void itemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection);
-    void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts);
-    void itemRemoved(const Akonadi::Item &item);
+    void itemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
+    void itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts) Q_DECL_OVERRIDE;
+    void itemRemoved(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
     void connectSoapProxy();
 
 protected Q_SLOTS:
-    void retrieveCollections();
-    void retrieveItems(const Akonadi::Collection &col);
-    bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts);
+    void retrieveCollections() Q_DECL_OVERRIDE;
+    void retrieveItems(const Akonadi::Collection &col) Q_DECL_OVERRIDE;
+    bool retrieveItem(const Akonadi::Item &item, const QSet<QByteArray> &parts) Q_DECL_OVERRIDE;
 
     void loginDone(const KDSoapGenerated::TNS__LoginResponse &callResult);
     void loginError(const KDSoapMessage &fault);
