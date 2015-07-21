@@ -35,7 +35,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 EmailsHandler::EmailsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Emails"), session),
+    : ModuleHandler(QStringLiteral("Emails"), session),
       mAccessors(SugarEmail::accessorHash())
 {
 }
@@ -59,12 +59,12 @@ Akonadi::Collection EmailsHandler::handlerCollection() const
 
 QString EmailsHandler::queryStringForListing() const
 {
-    return QLatin1String("emails.parent_type='Opportunities'");
+    return QStringLiteral("emails.parent_type='Opportunities'");
 }
 
 QString EmailsHandler::orderByForListing() const
 {
-    return QLatin1String("emails.name");
+    return QStringLiteral("emails.name");
 }
 
 QStringList EmailsHandler::supportedSugarFields() const
@@ -147,7 +147,7 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the email being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;

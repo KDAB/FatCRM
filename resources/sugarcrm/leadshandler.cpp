@@ -225,7 +225,7 @@ Akonadi::Collection LeadsHandler::handlerCollection() const
 
 QString LeadsHandler::orderByForListing() const
 {
-    return QLatin1String("leads.last_name");
+    return QStringLiteral("leads.last_name");
 }
 
 QStringList LeadsHandler::supportedSugarFields() const
@@ -247,7 +247,7 @@ bool LeadsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the lead being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
         itemList << field;
     }

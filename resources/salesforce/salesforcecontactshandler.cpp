@@ -138,23 +138,23 @@ public:
 };
 
 SalesforceContactsHandler::SalesforceContactsHandler()
-    : SalesforceModuleHandler(QLatin1String("Contact")),
+    : SalesforceModuleHandler(QStringLiteral("Contact")),
       mAccessors(new ContactAccessorHash)
 {
     // interestingly, if we don't specifically request Id in queries, the resulting
     // XML does contain empty Id elements. If we request Id, we get it twice, but that's better
     // than never
-    mAccessors->insert(QLatin1String("Id"), ContactAccessorPair(getId, setId));
+    mAccessors->insert(QStringLiteral("Id"), ContactAccessorPair(getId, setId));
 
-    mAccessors->insert(QLatin1String("FirstName"), ContactAccessorPair(getFirstName, setFirstName));
-    mAccessors->insert(QLatin1String("LastName"), ContactAccessorPair(getLastName, setLastName));
+    mAccessors->insert(QStringLiteral("FirstName"), ContactAccessorPair(getFirstName, setFirstName));
+    mAccessors->insert(QStringLiteral("LastName"), ContactAccessorPair(getLastName, setLastName));
 
-    mAccessors->insert(QLatin1String("Email"), ContactAccessorPair(getEmail1, setEmail1));
-    mAccessors->insert(QLatin1String("Title"), ContactAccessorPair(getTitle, setTitle));
-    mAccessors->insert(QLatin1String("Department"), ContactAccessorPair(getDepartment, setDepartment));
-    mAccessors->insert(QLatin1String("HomePhone"), ContactAccessorPair(getHomePhone, setHomePhone));
-    mAccessors->insert(QLatin1String("Phone"), ContactAccessorPair(getWorkPhone, setWorkPhone));
-    mAccessors->insert(QLatin1String("MobilePhone"), ContactAccessorPair(getMobilePhone, setMobilePhone));
+    mAccessors->insert(QStringLiteral("Email"), ContactAccessorPair(getEmail1, setEmail1));
+    mAccessors->insert(QStringLiteral("Title"), ContactAccessorPair(getTitle, setTitle));
+    mAccessors->insert(QStringLiteral("Department"), ContactAccessorPair(getDepartment, setDepartment));
+    mAccessors->insert(QStringLiteral("HomePhone"), ContactAccessorPair(getHomePhone, setHomePhone));
+    mAccessors->insert(QStringLiteral("Phone"), ContactAccessorPair(getWorkPhone, setWorkPhone));
+    mAccessors->insert(QStringLiteral("MobilePhone"), ContactAccessorPair(getMobilePhone, setMobilePhone));
 }
 
 SalesforceContactsHandler::~SalesforceContactsHandler()

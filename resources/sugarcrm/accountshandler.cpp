@@ -42,7 +42,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Accounts"), session),
+    : ModuleHandler(QStringLiteral("Accounts"), session),
       mAccessors(SugarAccount::accessorHash())
 {
     // Load a cache of all accounts from the database
@@ -71,7 +71,7 @@ Akonadi::Collection AccountsHandler::handlerCollection() const
 
 QString AccountsHandler::orderByForListing() const
 {
-    return QLatin1String("accounts.name");
+    return QStringLiteral("accounts.name");
 }
 
 QStringList AccountsHandler::supportedSugarFields() const
@@ -100,7 +100,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the account being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -219,7 +219,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // check for special fields
-            if (it.key().startsWith(QLatin1String("billing"))) {
+            if (it.key().startsWith(QStringLiteral("billing"))) {
                 if (!seenBillingAddress) {
                     seenBillingAddress = true;
                     diffName = i18nc("@item:intable", "Billing Address");
@@ -244,7 +244,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     // already printed, skip
                     continue;
                 }
-            } else if (it.key().startsWith(QLatin1String("shipping"))) {
+            } else if (it.key().startsWith(QStringLiteral("shipping"))) {
                 if (!seenShippingAddress) {
                     seenShippingAddress = true;
                     diffName = i18nc("@item:intable", "Office Address");

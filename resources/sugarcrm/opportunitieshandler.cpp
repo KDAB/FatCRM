@@ -38,7 +38,7 @@ using namespace KDSoapGenerated;
 #include <QDebug>
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Opportunities"), session),
+    : ModuleHandler(QStringLiteral("Opportunities"), session),
       mAccessors(SugarOpportunity::accessorHash())
 {
     SugarAccountCache *cache = SugarAccountCache::instance();
@@ -76,7 +76,7 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the account being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -113,7 +113,7 @@ int OpportunitiesHandler::expectedContentsVersion() const
 
 QString OpportunitiesHandler::orderByForListing() const
 {
-    return QLatin1String("opportunities.name");
+    return QStringLiteral("opportunities.name");
 }
 
 QStringList OpportunitiesHandler::supportedSugarFields() const
