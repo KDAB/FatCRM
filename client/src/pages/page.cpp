@@ -521,14 +521,17 @@ static QString countryForAccount(const SugarAccount &account)
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    //kDebug() << typeToString(mType) << topLeft << bottomRight;
+    kDebug() << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
     const int firstColumn = topLeft.column();
     const int lastColumn = bottomRight.column();
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
-        Q_ASSERT(index.isValid());
+        if (!index.isValid()) {
+            kWarning() << "Invalid index:" << "row=" << row << "/" << mItemsTreeModel->rowCount();
+            return;
+        }
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
