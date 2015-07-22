@@ -58,7 +58,7 @@ public:
     Akonadi::Item conflictItem() const;
 
 protected:
-    void startSugarTask();
+    void startSugarTask() Q_DECL_OVERRIDE;
 
 private:
     class Private;

@@ -71,8 +71,8 @@ protected:
     ModuleHandlerHash *mModuleHandlers;
 
 protected:
-    void aboutToQuit();
-    void doSetOnline(bool online);
+    void aboutToQuit() Q_DECL_OVERRIDE;
+    void doSetOnline(bool online) Q_DECL_OVERRIDE;
 
     void doLogin();
 

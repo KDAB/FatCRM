@@ -51,7 +51,7 @@ public:
 
     ~SugarJob();
 
-    void start();
+    void start() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void restart();
