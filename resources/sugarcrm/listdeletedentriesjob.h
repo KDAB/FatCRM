@@ -35,7 +35,6 @@ class Collection;
 class ModuleHandler;
 namespace KDSoapGenerated
 {
-class TNS__Get_entries_count_result;
 class TNS__Get_entry_list_result;
 }
 

@@ -26,7 +26,6 @@
 #include "modulehandler.h"
 #include "kdcrmdata/sugaremail.h"
 
-class EmailAccessorPair;
 
 template <typename U, typename V> class QHash;
 

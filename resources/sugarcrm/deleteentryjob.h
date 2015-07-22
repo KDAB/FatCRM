@@ -30,7 +30,6 @@ namespace Akonadi
 class Item;
 }
 
-class ModuleHandler;
 namespace KDSoapGenerated
 {
 class TNS__Set_entry_result;

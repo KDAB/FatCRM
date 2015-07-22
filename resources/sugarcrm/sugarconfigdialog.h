@@ -25,7 +25,6 @@
 
 #include "ui_sugarconfigdialog.h"
 
-class Settings;
 class PasswordHandler;
 
 class SugarConfigDialog : public QDialog
