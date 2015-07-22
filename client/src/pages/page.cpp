@@ -528,7 +528,9 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
     const int lastColumn = bottomRight.column();
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
+        Q_ASSERT(index.isValid());
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
         if (index == mCurrentIndex && mDetailsWidget) {
             mDetailsWidget->setItem(item); // update details widget
