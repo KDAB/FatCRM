@@ -34,9 +34,9 @@
 #include <KContacts/PhoneNumber>
 
 #include <KGlobal>
-#include <KIcon>
+#include <QIcon>
 #include <KIconLoader>
-#include <KLocale>
+#include <KLocalizedString>
 #include <QMetaEnum>
 
 using namespace Akonadi;

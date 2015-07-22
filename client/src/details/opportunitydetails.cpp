@@ -31,7 +31,7 @@
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 #include "fatcrm_client_debug.h"
 
 #include <QCalendarWidget>
