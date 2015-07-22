@@ -32,6 +32,7 @@ class QDateEditEx : public QDateEdit
     Q_PROPERTY(bool nullable READ isNullable WRITE setNullable)
 public:
     explicit QDateEditEx(QWidget *parent = 0);
+    ~QDateEditEx();
 
     QDateTime dateTime() const;
     QDate date() const;
