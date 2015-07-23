@@ -69,6 +69,13 @@ void SugarJob::Private::startLogin()
     Sugarsoap *soap = mSession->soap();
     Q_ASSERT(soap != 0);
 
+    if (!mSession->readPassword()) {
+        // this can only happen when the user forcibly closes KWallet.
+        q->setError(SugarJob::LoginError);
+        q->emitResult();
+        return;
+    }
+
     const QString username = mSession->userName();
     const QString password = mSession->password();
 

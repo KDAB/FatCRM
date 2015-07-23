@@ -23,6 +23,7 @@
 #include "sugarsession.h"
 
 #include "sugarsoap.h"
+#include "passwordhandler.h"
 
 using namespace KDSoapGenerated;
 #include <KUrl>
@@ -119,6 +120,16 @@ QString SugarSession::password() const
 QString SugarSession::host() const
 {
     return d->mHost;
+}
+
+bool SugarSession::readPassword()
+{
+    if (d->mPassword.isEmpty()) {
+        bool userRejected = false;
+        d->mPassword = d->mPasswordHandler->password(&userRejected);
+        return !userRejected;
+    }
+    return true;
 }
 
 void SugarSession::logout()

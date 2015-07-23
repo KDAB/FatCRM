@@ -63,6 +63,8 @@ public:
     QString password() const;
     QString host() const;
 
+    // read password from wallet (and store it in session), return true on success
+    bool readPassword();
     void logout();
     void forgetSession();
 
