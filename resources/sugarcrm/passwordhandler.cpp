@@ -116,6 +116,9 @@ void PasswordHandler::onWalletOpened(bool success)
         password();
         emit passwordAvailable();
     }
+    if (wallet) {
+        wallet->deleteLater();
+    }
 #else
     Q_UNUSED(success);
 #endif
