@@ -31,7 +31,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/Item>
 
 #include <QDebug>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QStringList>
 

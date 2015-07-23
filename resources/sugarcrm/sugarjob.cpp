@@ -31,7 +31,7 @@ using namespace KDSoapGenerated;
 //#include <QCryptographicHash>
 
 #include <QDebug>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QNetworkReply>
 

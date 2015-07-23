@@ -31,7 +31,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
 #include <AkonadiCore/Collection>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 

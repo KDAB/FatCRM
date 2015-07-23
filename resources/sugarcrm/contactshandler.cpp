@@ -36,7 +36,7 @@ using namespace KDSoapGenerated;
 #include <KContacts/Addressee>
 #include <KContacts/Address>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 

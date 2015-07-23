@@ -27,9 +27,9 @@
 #include <AkonadiCore/Item>
 
 #include <KColorScheme>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KPushButton>
-#include <KTextBrowser>
+#include <QTextBrowser>
 
 #include <QVBoxLayout>
 
@@ -141,7 +141,7 @@ public:
 
     DifferencesAlgorithmInterface *mDiffInterface;
 
-    KTextBrowser *mView;
+    QTextBrowser *mView;
 
 public: // slots
     void useLocalItem();
@@ -196,7 +196,8 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *box = new QVBoxLayout(widget);
 
-    d->mView = new KTextBrowser(widget);
+    d->mView = new QTextBrowser(widget);
+    d->mView->setOpenLinks(false);
     box->addWidget(d->mView);
 
     setMainWidget(widget);

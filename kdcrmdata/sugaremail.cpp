@@ -25,8 +25,9 @@
 
 #include <QSharedData>
 #include <QString>
+#include <QMap>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 class SugarEmail::Private : public QSharedData
 {

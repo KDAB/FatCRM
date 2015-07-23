@@ -32,7 +32,7 @@ using namespace KCalCore;
 #include <AkonadiCore/Collection>
 
 #include <KDateTime>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 

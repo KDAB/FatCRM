@@ -36,7 +36,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/CollectionFetchJob>
 #include <AkonadiCore/CollectionModifyJob>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVector>
 

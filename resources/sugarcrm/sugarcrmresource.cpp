@@ -55,7 +55,7 @@
 
 #include <KContacts/Addressee>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <QtDBus/QDBusConnection>

@@ -30,7 +30,7 @@
 #include <AkonadiCore/Session>
 using namespace Akonadi;
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 class ConflictHandler::Private

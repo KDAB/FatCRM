@@ -35,7 +35,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchScope>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <KDSoapClient/KDSoapMessage.h>
