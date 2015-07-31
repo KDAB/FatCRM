@@ -41,6 +41,7 @@ class ItemsTreeModel : public Akonadi::EntityTreeModel
 public:
     /**
      * Describes the columns that can be shown by the model.
+     * Some of them are used by many object types.
      */
     enum ColumnType {
         Name,
@@ -52,6 +53,7 @@ public:
         CreatedBy,
         CampaignName,
         Status,
+        Street,
         Type,
         EndDate,
         User,

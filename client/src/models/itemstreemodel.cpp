@@ -244,6 +244,8 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
             return account.shippingAddressCity().isEmpty() ? account.billingAddressCity() : account.shippingAddressCity();
         case Country:
             return account.shippingAddressCountry().isEmpty() ? account.billingAddressCountry() : account.shippingAddressCountry();
+        case Street:
+            return account.shippingAddressStreet().isEmpty() ? account.billingAddressStreet() : account.shippingAddressStreet();
         case Phone:
             return account.phoneOffice();
         case Email:
@@ -442,6 +444,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
     switch (type) {
     case Account:
         columns << ItemsTreeModel::Name
+                << ItemsTreeModel::Street
                 << ItemsTreeModel::City
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::Phone
@@ -495,6 +498,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
     switch (col) {
     case Name:
         return i18nc("@title:column name", "Name");
+    case Street:
+        return i18nc("@title:column street", "Street");
     case City:
         return i18nc("@title:column city", "City");
     case Country:
@@ -582,6 +587,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     ItemsTreeModel::ColumnTypes columns = columnTypes();
     switch (mType) {
     case Account:
+        columns.removeAll(ItemsTreeModel::Street);
         break;
     case Contact:
         // too wide and too seldom filled in
