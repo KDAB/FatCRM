@@ -69,7 +69,6 @@ public:
 
     bool showsDetails() const;
     void printReport();
-    void retrieveResourceUrl();
     KJob *clearTimestamp();
 
 Q_SIGNALS:
@@ -81,9 +80,12 @@ Q_SIGNALS:
     void synchronizeCollection(const Akonadi::Collection &collection);
     void ignoreModifications(bool ignore); // emitted while loading reference data
     void openObject(DetailsType type, const QString &id);
+    void onlineStatusChanged(bool online);
 
 public Q_SLOTS:
     void showDetails(bool on);
+    void slotOnlineStatusChanged(bool online);
+    void slotResourceSelectionChanged(const QByteArray &identifier);
 
 protected:
     inline Akonadi::EntityTreeView *treeView()
@@ -97,7 +99,6 @@ protected:
     void insertFilterWidget(QWidget *widget);
 
 private Q_SLOTS:
-    void slotResourceSelectionChanged(const QByteArray &identifier);
     void slotCurrentItemChanged(const QModelIndex &index);
     void slotNewClicked();
     void slotAddItem();
@@ -126,6 +127,7 @@ private:
     bool askSave();
     void readSupportedFields();
     void readEnumDefinitionAttributes();
+    void retrieveResourceUrl();
 
     void addAccountsData(int start, int end, bool emitChanges);
     void removeAccountsData(int start, int end, bool emitChanges);
@@ -158,9 +160,10 @@ private:
     QStringList mSupportedFields;
     NotesRepository *mNotesRepository;
     EnumDefinitions mEnumDefinitions;
+    bool mOnline;
 
-    Akonadi::EntityMimeTypeFilterModel *mFilterModel;
     bool mInitialLoadingDone;
+    Akonadi::EntityMimeTypeFilterModel *mFilterModel;
 };
 
 #endif

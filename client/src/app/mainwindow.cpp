@@ -89,8 +89,12 @@ MainWindow::~MainWindow()
 void MainWindow::slotDelayedInit()
 {
     Q_FOREACH (const Page *page, mPages) {
+        // Connect from this to pages - this is really just a way to avoid writing a loop at emit time...
         connect(this, SIGNAL(resourceSelected(QByteArray)),
                 page, SLOT(slotResourceSelectionChanged(QByteArray)));
+        connect(this, SIGNAL(onlineStatusChanged(bool)),
+                page, SLOT(slotOnlineStatusChanged(bool)));
+
         connect(page, SIGNAL(ignoreModifications(bool)),
                 this, SLOT(slotIgnoreModifications(bool)));
     }
@@ -231,6 +235,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         mUi.actionFullReload->setEnabled(true);
         mUi.actionOfflineMode->setEnabled(true);
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
+        emit onlineStatusChanged(agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         ReferencedData::clearAll();
@@ -466,11 +471,7 @@ void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
         updateWindowTitle(online);
         mUi.actionOfflineMode->setChecked(!online);
-        if (online) {
-            Q_FOREACH (Page *page, mPages) {
-                page->retrieveResourceUrl();
-            }
-        }
+        emit onlineStatusChanged(online); // update details dialog
     }
 }
 

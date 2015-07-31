@@ -68,8 +68,9 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mChangeRecorder(0),
       mItemsTreeModel(0),
       mShowDetailsAction(0),
-      mFilterModel(0),
-      mInitialLoadingDone(false)
+      mOnline(false),
+      mInitialLoadingDone(false),
+      mFilterModel(0)
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
@@ -155,6 +156,15 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mInitialLoadingDone = false;
 
     // now we wait for the collection manager to find our collection and tell us
+}
+
+void Page::slotOnlineStatusChanged(bool online)
+{
+    mOnline = online;
+    emit onlineStatusChanged(online);
+    if (online) {
+        retrieveResourceUrl();
+    }
 }
 
 void Page::setCollection(const Collection &collection)
@@ -646,9 +656,6 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
     DetailsDialog *dialog = createDetailsDialog();
     dialog->setItem(item);
-    // in case of changes while the dialog is up
-    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
-            dialog, SLOT(updateItem(Akonadi::Item)));
     // show changes made in the dialog
     connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
             this, SLOT(slotItemSaved(Akonadi::Item)));
@@ -702,6 +709,12 @@ DetailsDialog *Page::createDetailsDialog()
     connectToDetails(details);
     DetailsDialog *dialog = new DetailsDialog(details, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setOnline(mOnline);
+    // in case of changes while the dialog is up
+    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
+            dialog, SLOT(updateItem(Akonadi::Item)));
+    connect(this, SIGNAL(onlineStatusChanged(bool)),
+            dialog, SLOT(setOnline(bool)));
     return dialog;
 }
 
