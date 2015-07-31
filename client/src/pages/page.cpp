@@ -707,7 +707,8 @@ DetailsDialog *Page::createDetailsDialog()
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
     connectToDetails(details);
-    DetailsDialog *dialog = new DetailsDialog(details, this);
+    // Don't set a parent, so that the dialogs can be minimized/restored independently
+    DetailsDialog *dialog = new DetailsDialog(details);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setOnline(mOnline);
     // in case of changes while the dialog is up
