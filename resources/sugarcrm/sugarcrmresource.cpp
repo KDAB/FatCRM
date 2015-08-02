@@ -152,7 +152,7 @@ void SugarCRMResource::configure(WId windowId)
     Settings::setHost(host);
     Settings::setUser(user);
     Settings::setIntervalCheckTime(intervalCheckTime);
-    Settings::self()->writeConfig();
+    Settings::self()->save();
     mPasswordHandler->setPassword(password);
 
     setName(accountName);
@@ -466,7 +466,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
     }
 
     Settings::setAvailableModules(availableModules);
-    Settings::self()->writeConfig();
+    Settings::self()->save();
 
     collectionsRetrieved(collections);
     status(Idle);

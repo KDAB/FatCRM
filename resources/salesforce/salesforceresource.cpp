@@ -143,7 +143,7 @@ void SalesforceResource::configure(WId windowId)
     Settings::setHost(host);
     Settings::setUser(user);
     Settings::setPassword(password);
-    Settings::self()->writeConfig();
+    Settings::self()->save();
 
     emit configurationDialogAccepted();
 

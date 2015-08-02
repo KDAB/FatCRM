@@ -132,7 +132,7 @@ bool PasswordHandler::savePassword()
         wallet->writePassword(mResourceId, mPassword);
         wallet->sync();
         Settings::setPassword(QString()); // ensure no plain-text password from before in the config file
-        Settings::self()->writeConfig();
+        Settings::self()->save();
         return true;
     }
     return false;
