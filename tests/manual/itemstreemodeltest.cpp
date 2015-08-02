@@ -25,9 +25,9 @@
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 
-#include <KApplication>
-#include <K4AboutData>
-#include <KCmdLineArgs>
+
+#include <KAboutData>
+
 #include <KLocale>
 
 #include <AkonadiCore/Collection>
@@ -42,6 +42,9 @@ using namespace Akonadi;
 
 #include <QTreeView>
 #include <QTimer>
+#include <QApplication>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 class Controller : public QObject
 {
@@ -98,13 +101,19 @@ private:
 
 int main(int argc, char **argv)
 {
-    K4AboutData about("itemstreemodeltest", 0, ki18n("ItemsTreeModel test"),
-                     "0.1", ki18n("Interactive test program for ItemsTreeModel"),
-                     K4AboutData::License_GPL_V2, ki18n("(C) 2015 KDAB"),
-                     KLocalizedString(), 0, "david.faure@kdab.com");
+    QApplication app(argc, argv);
+    KAboutData about("itemstreemodeltest", i18n("ItemsTreeModel test"),
+                     "0.1", i18n("Interactive test program for ItemsTreeModel"),
+                     KAboutLicense::GPL_V2, i18n("(C) 2015 KDAB"),
+                     QString(), "david.faure@kdab.com");
 
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(about);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    about.setupCommandLine(&parser);
+    parser.process(app); 
+    about.processCommandLine(&parser);
 
     Akonadi::ChangeRecorder recorder;
 
