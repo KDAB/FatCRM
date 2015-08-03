@@ -630,6 +630,7 @@ void MainWindow::initialResourceSelection()
     const int selectors = mResourceSelector->count();
     if (selectors == 1) {
         slotResourceSelectionChanged(mResourceSelector->currentIndex());
+        mResourceDialog->hide();
     } else {
         mResourceSelector->setCurrentIndex(-1);
         mResourceDialog->show();
