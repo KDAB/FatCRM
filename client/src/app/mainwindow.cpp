@@ -84,6 +84,7 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     ClientSettings::self()->saveWindowSize("main", this);
+    delete mResourceDialog;
 }
 
 void MainWindow::slotDelayedInit()
@@ -103,7 +104,7 @@ void MainWindow::slotDelayedInit()
 
     setupResourcesCombo();
 
-    mResourceDialog = new ResourceConfigDialog(this);
+    mResourceDialog = new ResourceConfigDialog; // no parent so it can have its own Akonadi-not-started overlay (bug in Akonadi::ErrorOverlay?)
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
             this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
 
@@ -634,7 +635,9 @@ void MainWindow::initialResourceSelection()
     } else {
         mResourceSelector->setCurrentIndex(-1);
         mResourceDialog->show();
-        mResourceDialog->raise();
+        // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
+        // This is part of the "mResourceDialog has no parent" workaround
+        QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
     }
 }
 

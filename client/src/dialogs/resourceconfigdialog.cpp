@@ -32,6 +32,7 @@
 #include <Akonadi/AgentType>
 #include <Akonadi/AgentTypeDialog>
 #include <Akonadi/AgentTypeModel>
+#include <Akonadi/Control>
 using namespace Akonadi;
 
 #include <KDebug>
@@ -168,6 +169,8 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     : QDialog(parent), d(new Private(this))
 {
     d->mUi.setupUi(this);
+
+    Akonadi::Control::widgetNeedsAkonadi(this);
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
     filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
