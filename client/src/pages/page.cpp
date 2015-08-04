@@ -486,6 +486,7 @@ void Page::setupModel()
 {
     Q_ASSERT(mFilter); // must be set by derived class ctor
 
+    Q_ASSERT(!mItemsTreeModel);
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));

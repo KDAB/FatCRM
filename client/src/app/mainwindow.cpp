@@ -430,7 +430,7 @@ void MainWindow::setupResourcesCombo()
     mResourceSelector->setModel(workaround);
 #endif
 
-    connect(mResourceSelector, SIGNAL(currentIndexChanged(int)),
+    connect(mResourceSelector, SIGNAL(activated(int)),
             this, SLOT(slotResourceSelectionChanged(int)));
     connect(mResourceSelector->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(slotResourceCountChanged()));
