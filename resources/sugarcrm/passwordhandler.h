@@ -44,8 +44,10 @@ private Q_SLOTS:
 
 private:
 #if USE_KWALLET
-    WId m_winId;
     bool savePassword();
+
+    WId m_winId;
+    bool mWalletOpened;
 #endif
     QString mPassword;
     const QString mResourceId;
