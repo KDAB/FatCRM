@@ -137,7 +137,7 @@ void ResourceConfigDialog::Private::removeResource()
         }
         if (resource == mCurrentResource) {
             mCurrentResource = AgentInstance();
-            applyResourceSelection();
+            emit q->resourceSelected(mCurrentResource);
         }
         AgentManager::self()->removeInstance(resource);
     }
@@ -154,7 +154,7 @@ void ResourceConfigDialog::Private::resourceCreateResult(KJob *job)
 
 void ResourceConfigDialog::Private::applyResourceSelection()
 {
-    q->accept(); // TODO make this depend on a checkbox state
+    q->accept();
     emit q->resourceSelected(mCurrentResource);
 }
 
