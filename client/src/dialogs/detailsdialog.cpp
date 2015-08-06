@@ -204,4 +204,9 @@ void DetailsDialog::updateItem(const Akonadi::Item &item)
     }
 }
 
+void DetailsDialog::setOnline(bool online)
+{
+    d->mUi.labelOffline->setVisible(!online);
+}
+
 #include "moc_detailsdialog.cpp"

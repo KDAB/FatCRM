@@ -92,8 +92,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     // make sure these call have the collection available as well
     changeRecorder()->fetchCollection(true);
 
-    const QString password = mPasswordHandler->password();
-    mSession->setSessionParameters(Settings::user(), password,
+    mSession->setSessionParameters(Settings::user(), QString() /*password not read yet*/,
                                    Settings::host());
     mSession->createSoapInterface();
 

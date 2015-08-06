@@ -39,11 +39,14 @@ PasswordHandler::PasswordHandler(const QString &resourceId, QObject *parent) :
     // We have no GUI to use on startup
     // We could at least use the config dialog though.
     m_winId = 0;
+    mWalletOpened = false;
 
     Wallet *wallet = Wallet::openWallet( Wallet::NetworkWallet(), m_winId, Wallet::Asynchronous );
-    if ( wallet ) {
-      connect( wallet, SIGNAL(walletOpened(bool)),
-               this, SLOT(onWalletOpened(bool)) );
+    if (wallet) {
+        connect(wallet, SIGNAL(walletOpened(bool)),
+                 this, SLOT(onWalletOpened(bool)));
+    } else {
+        qWarning() << "openWallet(Asynchronous) failed!";
     }
 #endif
 }
@@ -51,6 +54,8 @@ PasswordHandler::PasswordHandler(const QString &resourceId, QObject *parent) :
 bool PasswordHandler::isPasswordAvailable()
 {
 #if USE_KWALLET
+    if (!mWalletOpened)
+        return false;
     QScopedPointer<Wallet> wallet(Wallet::openWallet(Wallet::NetworkWallet(), m_winId));
     return wallet && wallet->isOpen();
 #else
@@ -111,10 +116,14 @@ void PasswordHandler::onWalletOpened(bool success)
 {
 #if USE_KWALLET
     Wallet *wallet = qobject_cast<Wallet*>( sender() );
+    mWalletOpened = success;
     if (wallet && success) {
         // read and store the password
         password();
         emit passwordAvailable();
+    }
+    if (wallet) {
+        wallet->deleteLater();
     }
 #else
     Q_UNUSED(success);

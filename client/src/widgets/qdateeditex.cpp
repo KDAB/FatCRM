@@ -78,6 +78,11 @@ QDateEditEx::QDateEditEx(QWidget *parent) :
 {
 }
 
+QDateEditEx::~QDateEditEx()
+{
+    delete d;
+}
+
 /*!
  * \brief returns date, if empty date is invalid
  * \return date, if empty date is invalid

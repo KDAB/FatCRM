@@ -60,6 +60,7 @@ public:
 
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);
+    void onlineStatusChanged(bool online);
 
 protected:
     void closeEvent(QCloseEvent *event);

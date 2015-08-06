@@ -68,8 +68,9 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mChangeRecorder(0),
       mItemsTreeModel(0),
       mShowDetailsAction(0),
-      mFilterModel(0),
-      mInitialLoadingDone(false)
+      mOnline(false),
+      mInitialLoadingDone(false),
+      mFilterModel(0)
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
@@ -155,6 +156,15 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mInitialLoadingDone = false;
 
     // now we wait for the collection manager to find our collection and tell us
+}
+
+void Page::slotOnlineStatusChanged(bool online)
+{
+    mOnline = online;
+    emit onlineStatusChanged(online);
+    if (online) {
+        retrieveResourceUrl();
+    }
 }
 
 void Page::setCollection(const Collection &collection)
@@ -476,6 +486,7 @@ void Page::setupModel()
 {
     Q_ASSERT(mFilter); // must be set by derived class ctor
 
+    Q_ASSERT(!mItemsTreeModel);
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
@@ -528,7 +539,12 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
     const int lastColumn = bottomRight.column();
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
+        if (!index.isValid()) {
+            qCWarning(FATCRM_CLIENT_LOG) << "Invalid index:" << "row=" << row << "/" << mItemsTreeModel->rowCount();
+            return;
+        }
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
         if (index == mCurrentIndex && mDetailsWidget) {
             mDetailsWidget->setItem(item); // update details widget
@@ -641,9 +657,6 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
     DetailsDialog *dialog = createDetailsDialog();
     dialog->setItem(item);
-    // in case of changes while the dialog is up
-    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
-            dialog, SLOT(updateItem(Akonadi::Item)));
     // show changes made in the dialog
     connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
             this, SLOT(slotItemSaved(Akonadi::Item)));
@@ -695,8 +708,15 @@ DetailsDialog *Page::createDetailsDialog()
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
     connectToDetails(details);
-    DetailsDialog *dialog = new DetailsDialog(details, this);
+    // Don't set a parent, so that the dialogs can be minimized/restored independently
+    DetailsDialog *dialog = new DetailsDialog(details);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
+    dialog->setOnline(mOnline);
+    // in case of changes while the dialog is up
+    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
+            dialog, SLOT(updateItem(Akonadi::Item)));
+    connect(this, SIGNAL(onlineStatusChanged(bool)),
+            dialog, SLOT(setOnline(bool)));
     return dialog;
 }
 

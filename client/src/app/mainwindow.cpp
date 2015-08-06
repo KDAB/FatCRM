@@ -47,6 +47,8 @@
 #include <AkonadiCore/ServerManager>
 using namespace Akonadi;
 
+#include <kdeversion.h>
+
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -86,13 +88,18 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
     ClientSettings::self()->saveWindowSize("main", this);
+    delete mResourceDialog;
 }
 
 void MainWindow::slotDelayedInit()
 {
     Q_FOREACH (const Page *page, mPages) {
+        // Connect from this to pages - this is really just a way to avoid writing a loop at emit time...
         connect(this, SIGNAL(resourceSelected(QByteArray)),
                 page, SLOT(slotResourceSelectionChanged(QByteArray)));
+        connect(this, SIGNAL(onlineStatusChanged(bool)),
+                page, SLOT(slotOnlineStatusChanged(bool)));
+
         connect(page, SIGNAL(ignoreModifications(bool)),
                 this, SLOT(slotIgnoreModifications(bool)));
     }
@@ -101,7 +108,13 @@ void MainWindow::slotDelayedInit()
 
     setupResourcesCombo();
 
+#if KDE_IS_VERSION(4, 14, 10) // technically it's about the kdepimlibs version, but there's no define for that
     mResourceDialog = new ResourceConfigDialog(this);
+#else
+    // no parent so it can have its own Akonadi-not-started overlay (bug in Akonadi::ErrorOverlay, fixed in f5f76cc, kdepimlibs >= 4.14.10)
+    mResourceDialog = new ResourceConfigDialog;
+#endif
+
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
             this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
 
@@ -233,6 +246,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         mUi.actionFullReload->setEnabled(true);
         mUi.actionOfflineMode->setEnabled(true);
         mUi.actionOfflineMode->setChecked(!agent.isOnline());
+        emit onlineStatusChanged(agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         ReferencedData::clearAll();
@@ -426,7 +440,7 @@ void MainWindow::setupResourcesCombo()
     mResourceSelector->setModel(workaround);
 #endif
 
-    connect(mResourceSelector, SIGNAL(currentIndexChanged(int)),
+    connect(mResourceSelector, SIGNAL(activated(int)),
             this, SLOT(slotResourceSelectionChanged(int)));
     connect(mResourceSelector->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(slotResourceCountChanged()));
@@ -468,11 +482,7 @@ void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
         updateWindowTitle(online);
         mUi.actionOfflineMode->setChecked(!online);
-        if (online) {
-            Q_FOREACH (Page *page, mPages) {
-                page->retrieveResourceUrl();
-            }
-        }
+        emit onlineStatusChanged(online); // update details dialog
     }
 }
 
@@ -631,10 +641,13 @@ void MainWindow::initialResourceSelection()
     const int selectors = mResourceSelector->count();
     if (selectors == 1) {
         slotResourceSelectionChanged(mResourceSelector->currentIndex());
+        mResourceDialog->hide();
     } else {
         mResourceSelector->setCurrentIndex(-1);
         mResourceDialog->show();
-        mResourceDialog->raise();
+        // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
+        // This is part of the "mResourceDialog has no parent" workaround
+        QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
     }
 }
 

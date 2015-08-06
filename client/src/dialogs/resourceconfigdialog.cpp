@@ -32,6 +32,7 @@
 #include <AkonadiCore/AgentType>
 #include <AkonadiWidgets/AgentTypeDialog>
 #include <AkonadiCore/AgentTypeModel>
+#include <AkonadiWidgets/controlgui.h>
 using namespace Akonadi;
 
 #include "fatcrm_client_debug.h"
@@ -136,7 +137,7 @@ void ResourceConfigDialog::Private::removeResource()
         }
         if (resource == mCurrentResource) {
             mCurrentResource = AgentInstance();
-            applyResourceSelection();
+            emit q->resourceSelected(mCurrentResource);
         }
         AgentManager::self()->removeInstance(resource);
     }
@@ -153,7 +154,7 @@ void ResourceConfigDialog::Private::resourceCreateResult(KJob *job)
 
 void ResourceConfigDialog::Private::applyResourceSelection()
 {
-    q->accept(); // TODO make this depend on a checkbox state
+    q->accept();
     emit q->resourceSelected(mCurrentResource);
 }
 
@@ -168,6 +169,8 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     : QDialog(parent), d(new Private(this))
 {
     d->mUi.setupUi(this);
+
+    Akonadi::ControlGui::widgetNeedsAkonadi(this);
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
     filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));

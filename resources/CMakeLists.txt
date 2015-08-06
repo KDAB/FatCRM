@@ -37,8 +37,6 @@ if(WIN32)
   )
 endif()
 
-set(KDE4_ICON_DIR ${KDE4_INSTALL_DIR}/share/icons)
-
 include_directories(${CMAKE_SOURCE_DIR} ${KDSoap_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 if (APPLE OR WIN32)
