@@ -365,13 +365,15 @@ const QMap<QString, QString> Details::getData() const
         currentData.insert(KDCRMFields::accountName(), ReferencedData::instance(AccountRef)->referencedData(accountId));
     }
 
-    // Missing when arriving here (for opps) : account_name, amount_usdollar, campaign_id, campaign_name,
-
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     // (and for showing in the GUI until the next sync)
     currentData[KDCRMFields::dateModified()] = KDCRMUtils::currentTimestamp();
     const QString fullUserName = ClientSettings::self()->fullUserName();
     currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
+
+    // Missing when arriving here (note that description is added later)
+    // for opps: amount_usdollar, campaign_id, campaign_name
+    // for accounts: parent_name, campaign_id, campaign_name
 
     return currentData;
 }
