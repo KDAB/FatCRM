@@ -181,6 +181,8 @@ void Page::setCollection(const Collection &collection)
         mChangeRecorder->setCollectionMonitored(mCollection, true);
         // automatically get the full data when items change
         mChangeRecorder->itemFetchScope().fetchFullPayload(true);
+        // don't get remote id/rev, to avoid errors in the FATCRM-75 case)
+        mChangeRecorder->itemFetchScope().setFetchRemoteIdentification(false);
         mChangeRecorder->setMimeTypeMonitored(mMimeType);
         connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
                 this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
@@ -546,7 +548,7 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
-        if (index == mCurrentIndex && mDetailsWidget) {
+        if (index == mCurrentIndex && mDetailsWidget && !mDetailsWidget->isModified()) {
             mDetailsWidget->setItem(item); // update details widget
         }
         if (mType == Account && item.hasPayload<SugarAccount>()) {

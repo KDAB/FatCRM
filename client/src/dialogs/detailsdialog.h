@@ -53,6 +53,8 @@ Q_SIGNALS:
     void itemSaved(const Akonadi::Item &item);
 
 private:
+    bool isModified() const;
+
     class Private;
     Private *const d;
 

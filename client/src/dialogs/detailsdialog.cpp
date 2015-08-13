@@ -121,12 +121,18 @@ void DetailsDialog::Private::dataModified()
     mSaveButton->setEnabled(true);
 }
 
+bool DetailsDialog::isModified() const
+{
+    return d->mSaveButton->isEnabled();
+}
+
 void DetailsDialog::Private::saveResult(KJob *job)
 {
     kDebug() << "save result=" << job->error();
     if (job->error() != 0) {
         kError() << job->errorText();
-        // TODO
+        mUi.labelOffline->setText(job->errorText());
+        mUi.labelOffline->show();
         return;
     }
     ItemModifyJob *modifyJob = qobject_cast<ItemModifyJob *>(job);
@@ -198,7 +204,8 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
 
 void DetailsDialog::updateItem(const Akonadi::Item &item)
 {
-    if (item == d->mItem) {
+    // Don't lose the user's changes (FATCRM-75)
+    if (!isModified() && item == d->mItem) {
         setItem(item);
     }
 }
@@ -206,6 +213,9 @@ void DetailsDialog::updateItem(const Akonadi::Item &item)
 void DetailsDialog::setOnline(bool online)
 {
     d->mUi.labelOffline->setVisible(!online);
+    if (!online) {
+        d->mUi.labelOffline->setText(i18n("Warning: FatCRM is currently offline. Changes will only be sent to the server once it's online again."));
+    }
 }
 
 #include "detailsdialog.moc"
