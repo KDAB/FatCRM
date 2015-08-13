@@ -196,13 +196,6 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
     d->mSaveButton->setEnabled(false);
 }
 
-void DetailsDialog::updateItem(const Akonadi::Item &item)
-{
-    if (item == d->mItem) {
-        setItem(item);
-    }
-}
-
 void DetailsDialog::setOnline(bool online)
 {
     d->mUi.labelOffline->setVisible(!online);

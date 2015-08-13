@@ -76,7 +76,6 @@ Q_SIGNALS:
     void statusMessage(const QString &);
     void modelLoaded(DetailsType type);
     void showDetailsChanged(bool on);
-    void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
     void ignoreModifications(bool ignore); // emitted while loading reference data
     void openObject(DetailsType type, const QString &id);
