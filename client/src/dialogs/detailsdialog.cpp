@@ -204,9 +204,15 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
 
 void DetailsDialog::updateItem(const Akonadi::Item &item)
 {
-    // Don't lose the user's changes (FATCRM-75)
-    if (!isModified() && item == d->mItem) {
-        setItem(item);
+    if (item == d->mItem) {
+        if (isModified()) {
+            // Don't lose the user's changes (FATCRM-75)
+            // Here we could pop up the conflict dialog, but it's private and meant for resources
+            // Alternatively we could merge in the fields that haven't been locally modified, if we had that info.
+            qWarning() << "Ignoring remote change on" << typeToString(d->mDetails->type()) << item.id() << "while modifying it";
+        } else {
+            setItem(item);
+        }
     }
 }
 
