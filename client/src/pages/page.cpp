@@ -545,6 +545,7 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         }
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
+        emit modelItemChanged(item); // update details dialog
         if (index == mCurrentIndex && mDetailsWidget) {
             mDetailsWidget->setItem(item); // update details widget
         }
@@ -711,6 +712,9 @@ DetailsDialog *Page::createDetailsDialog()
     DetailsDialog *dialog = new DetailsDialog(details);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->setOnline(mOnline);
+    // in case of changes while the dialog is up
+    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
+            dialog, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
             dialog, SLOT(setOnline(bool)));
     return dialog;

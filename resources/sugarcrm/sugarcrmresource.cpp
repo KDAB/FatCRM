@@ -476,16 +476,13 @@ void SugarCRMResource::listModulesResult(KJob *job)
 void SugarCRMResource::slotTotalItems(int count)
 {
     mTotalItems = count;
-    kDebug() << count << "items in total";
     setTotalItems(count);
 }
 
 void SugarCRMResource::slotProgress(int count)
 {
     // only emitted in the non-incremental case
-    int progress = 100 * count / mTotalItems;
-    kDebug() << 100 << '*' << count << '/' << mTotalItems << "=" << progress;
-    emit percent(progress);
+    emit percent(100 * count / mTotalItems);
 }
 
 void SugarCRMResource::itemsReceived(const Item::List &items)
