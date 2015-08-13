@@ -36,6 +36,7 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QTextEdit>
+#include <referenceddata.h>
 
 using namespace Akonadi;
 
@@ -350,6 +351,11 @@ const QMap<QString, QString> Details::getData() const
         if (val.isValid()) {
             currentData.insert(prop, val.toString());
         }
+    }
+
+    const QString assigneeId = currentData.value(KDCRMFields::assignedUserId());
+    if (!assigneeId.isEmpty()) {
+        currentData.insert(KDCRMFields::assignedUserName(), ReferencedData::instance(AssignedToRef)->referencedData(assigneeId));
     }
 
     // will be overwritten by the server, but good to have for comparison in case of change conflict
