@@ -353,10 +353,19 @@ const QMap<QString, QString> Details::getData() const
         }
     }
 
+    // Fill assignee username from assignee userid so it shows up in the model.
+    // Alternatively we could resolve assignedUserId in the model....
     const QString assigneeId = currentData.value(KDCRMFields::assignedUserId());
     if (!assigneeId.isEmpty()) {
         currentData.insert(KDCRMFields::assignedUserName(), ReferencedData::instance(AssignedToRef)->referencedData(assigneeId));
     }
+    // Do the same with accounts just in case.
+    const QString accountId = currentData.value(KDCRMFields::accountId());
+    if (!accountId.isEmpty()) {
+        currentData.insert(KDCRMFields::accountName(), ReferencedData::instance(AccountRef)->referencedData(accountId));
+    }
+
+    // Missing when arriving here (for opps) : account_name, amount_usdollar, campaign_id, campaign_name,
 
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     // (and for showing in the GUI until the next sync)
