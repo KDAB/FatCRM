@@ -39,6 +39,8 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 #include <QDebug>
+#include <QMessageBox>
+#include <QKeyEvent>
 
 using namespace Akonadi;
 
@@ -126,6 +128,29 @@ bool DetailsDialog::isModified() const
     return d->mSaveButton->isEnabled();
 }
 
+QString DetailsDialog::title() const
+{
+    if (d->mItem.isValid()) {
+        const QString name = d->mDetails->name();
+        Q_ASSERT(!name.isEmpty());
+        switch (d->mDetails->type()) {
+        case Account: return i18n("Account: %1", name);
+        case Campaign: return i18n("Campaign: %1", name);
+        case Contact: return i18n("Contact: %1", name);
+        case Lead: return i18n("Lead: %1", name);
+        case Opportunity: return i18n("Opportunity: %1", name);
+        }
+    } else {
+        switch (d->mDetails->type()) {
+        case Account: return i18n("New Account");
+        case Campaign: return i18n("New Campaign");
+        case Contact: return i18n("New Contact");
+        case Lead: return i18n("New Lead");
+        case Opportunity: return i18n("New Opportunity");
+        }
+    }
+}
+
 void DetailsDialog::Private::saveResult(KJob *job)
 {
     kDebug() << "save result=" << job->error();
@@ -143,15 +168,16 @@ void DetailsDialog::Private::saveResult(KJob *job)
         Q_ASSERT(createJob);
         emit q->itemSaved(createJob->item());
     }
-    q->accept();
+    q->close(); // was accept();
 }
 
+// This doesn't derive from QDialog anymore because for some reason KWin (or Qt)
+// places all dialogs at the same position on the screen, even in Random or Smart placement policy.
+// (FATCRM-76). Anyway we don't need modality, just support for Esc.
 DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
-    : QDialog(parent), d(new Private(details, this))
+    : QWidget(parent), d(new Private(details, this))
 {
     d->mUi.setupUi(this);
-
-    setWindowTitle(details->windowTitle());
 
     QVBoxLayout *detailsLayout = new QVBoxLayout(d->mUi.detailsContainer);
     detailsLayout->addWidget(details);
@@ -165,7 +191,7 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     connect(d->mSaveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(reject()));
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close())); // TODO confirm if modified
 
     ClientSettings::self()->restoreWindowSize("details", this);
 }
@@ -174,6 +200,49 @@ DetailsDialog::~DetailsDialog()
 {
     ClientSettings::self()->saveWindowSize("details", this);
     delete d;
+}
+
+void DetailsDialog::keyPressEvent(QKeyEvent *e)
+{
+   if (!e->modifiers()) {
+       switch (e->key()) {
+       case Qt::Key_Enter:
+           d->saveClicked();
+           return;
+       case Qt::Key_Escape:
+           reject();
+           return;
+       default:
+           break;
+       }
+   }
+   e->ignore();
+}
+
+void DetailsDialog::reject()
+{
+    if (isModified()) {
+        QMessageBox msgBox;
+        msgBox.setText(i18n("The data for %1 has been modified.", d->mDetails->name()));
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        switch (msgBox.exec()) {
+        case QMessageBox::Save:
+            // Save was clicked
+            d->saveClicked();
+            break;
+        case QMessageBox::Discard:
+            // Don't Save was clicked
+            close();
+            break;
+        default:
+            // Cancel
+            break;
+        }
+    } else {
+        close();
+    }
 }
 
 // open for creation
@@ -189,6 +258,7 @@ void DetailsDialog::showNewItem(const QMap<QString, QString> &data, const Akonad
     d->mDetails->assignToMe();
 
     d->mSaveButton->setEnabled(false);
+    setWindowTitle(title());
 }
 
 // open for modification
@@ -198,6 +268,8 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
 
     Q_ASSERT(item.isValid());
     d->setData(d->mDetails->data(item));
+
+    setWindowTitle(title());
 
     d->mSaveButton->setEnabled(false);
 }

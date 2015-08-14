@@ -167,20 +167,6 @@ void Details::setEnumDefinitions(const EnumDefinitions &enums)
     mEnumDefinitions = enums;
 }
 
-// TODO should probably be virtual and include item specific data, e.g. a contact's full name
-QString Details::windowTitle() const
-{
-    switch (mType) {
-    case Account: return i18n("Account Details");
-    case Campaign: return i18n("Campaign Details");
-    case Contact: return i18n("Contact Details");
-    case Lead: return i18n("Lead Details");
-    case Opportunity: return i18n("Opportunity Details");
-    }
-
-    return QString();
-}
-
 /*
  * Fill in the widgets with the data and properties that belong to
  * them
@@ -412,6 +398,11 @@ void Details::assignToMe()
             }
         }
     }
+}
+
+QString Details::name() const
+{
+    return property("name").toString();
 }
 
 QString Details::id() const

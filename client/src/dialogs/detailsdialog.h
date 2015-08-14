@@ -34,7 +34,7 @@ class Collection;
 class Details;
 class KJob;
 
-class DetailsDialog : public QDialog
+class DetailsDialog : public QWidget
 {
     Q_OBJECT
 public:
@@ -52,8 +52,15 @@ public Q_SLOTS:
 Q_SIGNALS:
     void itemSaved(const Akonadi::Item &item);
 
+protected:
+    void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+
+private Q_SLOTS:
+    void reject();
+
 private:
     bool isModified() const;
+    QString title() const;
 
     class Private;
     Private *const d;
