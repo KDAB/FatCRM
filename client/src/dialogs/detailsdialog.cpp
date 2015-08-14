@@ -149,6 +149,7 @@ QString DetailsDialog::title() const
         case Opportunity: return i18n("New Opportunity");
         }
     }
+    return QString(); // for stupid compilers
 }
 
 void DetailsDialog::Private::saveResult(KJob *job)
