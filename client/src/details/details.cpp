@@ -26,6 +26,7 @@
 #include "kdcrmutils.h"
 #include "qdateeditex.h"
 #include "referenceddatamodel.h"
+#include "referenceddata.h"
 
 #include <KLocalizedString>
 
@@ -36,7 +37,6 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QTextEdit>
-#include <referenceddata.h>
 
 using namespace Akonadi;
 
