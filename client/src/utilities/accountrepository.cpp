@@ -41,7 +41,9 @@ void AccountRepository::clear()
 
 void AccountRepository::addAccount(const SugarAccount &account)
 {
-    mIdMap.insert(account.id(), account);
+    const QString id = account.id();
+    Q_ASSERT(!id.isEmpty());
+    mIdMap.insert(id, account);
     // ## This does not handle the case of renaming accounts later on
     mKeyMap.insertMulti(account.key(), account);
     mNameMap.insertMulti(account.cleanAccountName(), account);
@@ -50,6 +52,7 @@ void AccountRepository::addAccount(const SugarAccount &account)
 void AccountRepository::removeAccount(const SugarAccount &account)
 {
     const QString id = account.id();
+    Q_ASSERT(!id.isEmpty());
     const QString key = account.key();
     const QString cleanAccountName = account.cleanAccountName();
 
@@ -79,6 +82,11 @@ void AccountRepository::removeAccount(const SugarAccount &account)
 SugarAccount AccountRepository::accountById(const QString &id) const
 {
     return mIdMap.value(id);
+}
+
+bool AccountRepository::hasId(const QString &id) const
+{
+    return mIdMap.contains(id);
 }
 
 QList<SugarAccount> AccountRepository::similarAccounts(const SugarAccount &account) const

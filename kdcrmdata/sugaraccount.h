@@ -475,7 +475,7 @@ public:
     /**
       Convenience: Retrieve the data for this account
      */
-    QMap<QString, QString> data();
+    QMap<QString, QString> data() const;
 
     /**
        Return the Mime type
