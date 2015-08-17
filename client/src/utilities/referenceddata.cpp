@@ -22,10 +22,11 @@
 
 #include "referenceddata.h"
 
+#include <KDebug>
+
 #include <QVector>
 #include <QMap>
 #include <QPair>
-#include <kdebug.h>
 
 struct KeyValue
 {
