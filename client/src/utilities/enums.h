@@ -40,7 +40,7 @@ enum ReferencedDataType {
     AccountRef,        // account.id()     => account.name()
     AssignedToRef,     // user id          => user name
     //CampaignRef,       // campaign.id()    => campaign.name()
-    ReportsToRef,      // contact id       => full name
+    ContactRef,        // contact id       => full name   (used for "reports to" combo)
     AccountCountryRef  // account.id()     => country
 };
 

@@ -267,6 +267,7 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
         const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
         if (agent.isValid() && agent == resource) {
             mResourceSelector->setCurrentIndex(index);
+            slotResourceSelectionChanged(index);
             return;
         }
     }

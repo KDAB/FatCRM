@@ -52,7 +52,7 @@ void ContactDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     //ReferencedDataModel::setModelForCombo(mUi->campaign, CampaignRef);
-    ReferencedDataModel::setModelForCombo(mUi->reports_to_id, ReportsToRef);
+    ReferencedDataModel::setModelForCombo(mUi->reports_to_id, ContactRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));

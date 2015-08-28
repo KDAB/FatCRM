@@ -59,7 +59,7 @@ public:
         return mType;
     }
 
-    QString windowTitle() const;
+    QString name() const;
     void assignToMe();
 
 Q_SIGNALS:

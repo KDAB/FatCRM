@@ -39,6 +39,7 @@ public:
     void removeAccount(const SugarAccount &account);
 
     SugarAccount accountById(const QString &id) const;
+    bool hasId(const QString &id) const;
 
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;
     QList<SugarAccount> accountsByKey(const QString &key) const;

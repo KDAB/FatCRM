@@ -26,6 +26,7 @@
 #include <AkonadiCore/Attribute>
 #include <QMap>
 #include <QString>
+#include "kdcrmdata_export.h"
 
 namespace Akonadi {
     class Collection;

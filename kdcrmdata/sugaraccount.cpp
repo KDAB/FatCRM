@@ -807,7 +807,7 @@ void SugarAccount::setData(const QMap<QString, QString>& data)
     // ...
 }
 
-QMap<QString, QString> SugarAccount::data()
+QMap<QString, QString> SugarAccount::data() const
 {
     QMap<QString, QString> data;
 

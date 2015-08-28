@@ -26,6 +26,7 @@
 #include "kdcrmutils.h"
 #include "qdateeditex.h"
 #include "referenceddatamodel.h"
+#include "referenceddata.h"
 
 #include <KLocalizedString>
 
@@ -166,20 +167,6 @@ void Details::setSupportedFields(const QStringList &fields)
 void Details::setEnumDefinitions(const EnumDefinitions &enums)
 {
     mEnumDefinitions = enums;
-}
-
-// TODO should probably be virtual and include item specific data, e.g. a contact's full name
-QString Details::windowTitle() const
-{
-    switch (mType) {
-    case Account: return i18n("Account Details");
-    case Campaign: return i18n("Campaign Details");
-    case Contact: return i18n("Contact Details");
-    case Lead: return i18n("Lead Details");
-    case Opportunity: return i18n("Opportunity Details");
-    }
-
-    return QString();
 }
 
 /*
@@ -354,11 +341,27 @@ const QMap<QString, QString> Details::getData() const
         }
     }
 
+    // Fill assignee username from assignee userid so it shows up in the model.
+    // Alternatively we could resolve assignedUserId in the model....
+    const QString assigneeId = currentData.value(KDCRMFields::assignedUserId());
+    if (!assigneeId.isEmpty()) {
+        currentData.insert(KDCRMFields::assignedUserName(), ReferencedData::instance(AssignedToRef)->referencedData(assigneeId));
+    }
+    // Do the same with accounts just in case.
+    const QString accountId = currentData.value(KDCRMFields::accountId());
+    if (!accountId.isEmpty()) {
+        currentData.insert(KDCRMFields::accountName(), ReferencedData::instance(AccountRef)->referencedData(accountId));
+    }
+
     // will be overwritten by the server, but good to have for comparison in case of change conflict
     // (and for showing in the GUI until the next sync)
     currentData[KDCRMFields::dateModified()] = KDCRMUtils::currentTimestamp();
     const QString fullUserName = ClientSettings::self()->fullUserName();
     currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
+
+    // Missing when arriving here (note that description is added later)
+    // for opps: amount_usdollar, campaign_id, campaign_name
+    // for accounts: parent_name, campaign_id, campaign_name
 
     return currentData;
 }
@@ -397,6 +400,11 @@ void Details::assignToMe()
             }
         }
     }
+}
+
+QString Details::name() const
+{
+    return property("name").toString();
 }
 
 QString Details::id() const
