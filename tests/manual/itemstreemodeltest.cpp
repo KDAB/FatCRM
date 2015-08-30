@@ -24,6 +24,7 @@
 #include "resourceconfigdialog.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
+#include <config-fatcrm-version.h>
 
 #include <KApplication>
 #include <KAboutData>
@@ -99,7 +100,7 @@ private:
 int main(int argc, char **argv)
 {
     KAboutData about("itemstreemodeltest", 0, ki18n("ItemsTreeModel test"),
-                     "0.1", ki18n("Interactive test program for ItemsTreeModel"),
+                     FATCRM_VERSION_STRING, ki18n("Interactive test program for ItemsTreeModel"),
                      KAboutData::License_GPL_V2, ki18n("(C) 2015 KDAB"),
                      KLocalizedString(), 0, "david.faure@kdab.com");
 

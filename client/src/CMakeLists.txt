@@ -1,4 +1,16 @@
-include_directories(${CMAKE_SOURCE_DIR} app details dialogs models pages reports utilities widgets views)
+include_directories(
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_BINARY_DIR}
+  app
+  details
+  dialogs
+  models
+  pages
+  reports
+  utilities
+  widgets
+  views
+)
 
 set(app_SRCS
   app/mainwindow.cpp
