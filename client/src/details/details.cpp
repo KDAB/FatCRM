@@ -403,7 +403,7 @@ void Details::assignToMe()
 QString Details::name() const
 {
     if (mType == Contact) {
-        return findChild<QLineEdit *>(KDCRMFields::firstName())->text() + " " + findChild<QLineEdit *>(KDCRMFields::lastName())->text();
+        return findChild<QLineEdit *>(KDCRMFields::firstName())->text() + ' ' + findChild<QLineEdit *>(KDCRMFields::lastName())->text();
     }
     return property("name").toString();
 }
