@@ -21,6 +21,14 @@ include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(ECMAddAppIcon)
 
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+endif()
+#TODO: support a real debugfull, like in KDE
+string(TOLOWER ${CMAKE_BUILD_TYPE} _lower)
+if(${_lower} MATCHES "debugfull")
+  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
+endif()
 
 enable_testing()
 
@@ -38,6 +46,34 @@ find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5AkonadiContact ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
 
+# Version setup
+set(FATCRM_VERSION_MAJOR "0")
+set(FATCRM_VERSION_MINOR "1")
+set(FATCRM_VERSION_PATCH "0")
+set(FATCRM_VERSION "${FATCRM_VERSION_MAJOR}.${FATCRM_VERSION_MINOR}.${FATCRM_VERSION_PATCH}")
+set(FATCRM_VERSION_STRING "${FATCRM_VERSION}")
+set(FATCRM_SOVERSION "0.1.0")
+
+if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
+  find_package(Git)
+  #TODO: FeatureSummary requires modern CMake
+  #include(FeatureSummary)
+  #set_package_properties(Git PROPERTIES TYPE OPTIONAL PURPOSE "Determine exact build version.")
+  if(GIT_FOUND)
+    execute_process(
+      COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      OUTPUT_VARIABLE _git_revision
+    )
+    string(REGEX REPLACE "\n" "" _git_revision "${_git_revision}")
+    set(FATCRM_VERSION_STRING "${FATCRM_VERSION_STRING} (revision: ${_git_revision})")
+  endif()
+endif()
+
+configure_file(
+  ${CMAKE_CURRENT_SOURCE_DIR}/config-fatcrm-version.h.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/config-fatcrm-version.h
+)
 
 # search packages used by KDE
 find_package(Boost REQUIRED)
@@ -119,3 +155,5 @@ add_subdirectory(client)
 add_subdirectory(resources)
 add_subdirectory(tests)
 install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
+
+message(STATUS "Building FatCRM ${FATCRM_VERSION_STRING} in ${CMAKE_BUILD_TYPE} mode")

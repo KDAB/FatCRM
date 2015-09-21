@@ -3,6 +3,7 @@
 set(_clientdir ${CMAKE_CURRENT_SOURCE_DIR}/../../client)
 
 include_directories(
+  ${CMAKE_BINARY_DIR}
   ${_clientdir}/src/dialogs
   ${_clientdir}/src/models
   ${_clientdir}/src/utilities

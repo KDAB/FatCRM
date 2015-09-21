@@ -21,6 +21,7 @@
 */
 
 #include "resourceconfigdialog.h"
+#include <config-fatcrm-version.h>
 
 #include <KApplication>
 #include <K4AboutData>

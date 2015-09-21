@@ -24,6 +24,7 @@
 #include "resourceconfigdialog.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
+#include <config-fatcrm-version.h>
 
 
 #include <KAboutData>

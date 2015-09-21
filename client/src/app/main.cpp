@@ -21,6 +21,7 @@
 */
 
 #include "mainwindow.h"
+#include <config-fatcrm-version.h>
 
 #include <KApplication>
 #include <K4AboutData>
@@ -28,7 +29,7 @@
 #include <KLocale>
 
 static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
-static const char version[] = "0.1";
+static const char version[] = FATCRM_VERSION_STRING;
 
 int main(int argc, char **argv)
 {

@@ -132,7 +132,6 @@ QString DetailsDialog::title() const
 {
     if (d->mItem.isValid()) {
         const QString name = d->mDetails->name();
-        Q_ASSERT(!name.isEmpty());
         switch (d->mDetails->type()) {
         case Account: return i18n("Account: %1", name);
         case Campaign: return i18n("Campaign: %1", name);

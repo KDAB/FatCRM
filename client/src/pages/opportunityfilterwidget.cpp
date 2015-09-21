@@ -49,13 +49,16 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->rbAll, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->rbAssignedTo, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->rbCountry, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(slotAssigneeSelected()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbOpen, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
     connect(ui->cbClosed, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(slotCountrySelected()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
     connect(ui->modifiedBefore, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
+
 
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
     connect(ClientSettings::self(), SIGNAL(countryFiltersChanged()), this, SLOT(setupFromConfig()));
@@ -87,6 +90,16 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->rbAssignedTo->setChecked(!settings.assignees().isEmpty());
     ui->rbCountry->setChecked(!settings.countries().isEmpty());
     filterChanged();
+}
+
+void OpportunityFilterWidget::slotAssigneeSelected()
+{
+    ui->rbAssignedTo->setChecked(true);
+}
+
+void OpportunityFilterWidget::slotCountrySelected()
+{
+    ui->rbCountry->setChecked(true);
 }
 
 QDate OpportunityFilterWidget::maxNextStepDate() const

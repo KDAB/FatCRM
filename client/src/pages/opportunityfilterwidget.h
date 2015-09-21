@@ -42,6 +42,8 @@ public:
 private Q_SLOTS:
     void setupFromConfig();
     void filterChanged();
+    void slotAssigneeSelected();
+    void slotCountrySelected();
 
 private:
     QDate maxNextStepDate() const;
