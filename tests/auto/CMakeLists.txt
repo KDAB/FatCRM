@@ -27,5 +27,6 @@ add_fatcrm_tests(
   qdateeditextest
   test_contactsimporter
   test_enumdefinitions
+  test_accountcache
   kdcrmutilstest
 )

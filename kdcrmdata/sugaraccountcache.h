@@ -23,11 +23,12 @@
 #ifndef SUGARACCOUNTCACHE_H
 #define SUGARACCOUNTCACHE_H
 
+#include <kdcrmdata_export.h>
 #include <QObject>
 #include <QHash>
 #include <QSet>
 
-class SugarAccountCache : public QObject
+class KDCRMDATA_EXPORT SugarAccountCache : public QObject
 {
     Q_OBJECT
 public:
@@ -42,6 +43,8 @@ public:
 
     void save();
     void restore();
+
+    void clear(); // for the unittest
 
 signals:
     void pendingAccountAdded(const QString &accountName, const QString &accountId);

@@ -71,3 +71,8 @@ void SugarAccountCache::restore()
     KConfigGroup group(config, "Cache");
     mPendingAccountNames = group.readEntry("PendingAccountNames", QStringList()).toSet();
 }
+
+void SugarAccountCache::clear()
+{
+    mPendingAccountNames.clear();
+}
