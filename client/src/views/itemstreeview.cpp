@@ -34,7 +34,6 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     mItemsTreeModel(0)
 {
     setRootIsDecorated(false);
-    header()->setResizeMode(QHeaderView::ResizeToContents);
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), SIGNAL(customContextMenuRequested(QPoint)),
@@ -51,16 +50,28 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
     setModel(model);
     mItemsTreeModel = sourceModel;
 
-    QStringList defaultColumnNames;
-    foreach(ItemsTreeModel::ColumnType ct, defaultColumns)
-        defaultColumnNames.append(ItemsTreeModel::columnNameFromType(ct));
-
-    const QStringList columns = ClientSettings::self()->visibleColumns(objectName(), defaultColumnNames);
-    //kDebug() << "wanted columns:" << columns;
-    for (int i = 0; i < header()->count(); ++i) {
-        const QString name = mItemsTreeModel->columnName(i);
-        header()->setSectionHidden(i, !columns.contains(name));
+    const QByteArray state = ClientSettings::self()->restoreHeaderView(objectName());
+    if (state.isEmpty()) {
+        QStringList defaultColumnNames;
+        foreach(ItemsTreeModel::ColumnType ct, defaultColumns)
+            defaultColumnNames.append(ItemsTreeModel::columnNameFromType(ct));
+        kDebug() << objectName() << "defaultColumnNames:" << defaultColumnNames;
+        for (int i = 0; i < header()->count(); ++i) {
+            const QString name = mItemsTreeModel->columnName(i);
+            header()->setSectionHidden(i, !defaultColumnNames.contains(name));
+        }
+        // ## too early; push to end of loading, but only on first run...
+        //header()->resizeSections(QHeaderView::ResizeToContents);
+        header()->resizeSections(QHeaderView::Stretch);
+    } else {
+        //kDebug() << objectName() << "restoring state" << state.size() << state;
+        header()->restoreState(state);
     }
+
+    connect(header(), SIGNAL(sectionResized(int,int,int)),
+            this, SLOT(saveHeaderView()));
+    connect(header(), SIGNAL(sectionMoved(int,int,int)),
+            this, SLOT(saveHeaderView()));
 }
 
 void ItemsTreeView::keyPressEvent(QKeyEvent *event)
@@ -108,20 +119,13 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
             const int toggleSection = var.toInt();
             const bool hide = !selectedAction->isChecked();
             header()->setSectionHidden(toggleSection, hide);
-            saveVisibleColumns();
+            saveHeaderView();
         }
     }
 
 }
 
-void ItemsTreeView::saveVisibleColumns()
+void ItemsTreeView::saveHeaderView()
 {
-    QStringList columns;
-    for (int i = 0; i < header()->count(); ++i) {
-        if (!header()->isSectionHidden(i)) {
-            const QString name = mItemsTreeModel->columnName(i);
-            columns.append(name);
-        }
-    }
-    ClientSettings::self()->setVisibleColumns(objectName(), columns);
+    ClientSettings::self()->saveHeaderView(objectName(), header()->saveState());
 }

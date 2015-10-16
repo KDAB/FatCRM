@@ -46,9 +46,9 @@ protected:
 
 private slots:
     void slotHeaderContextMenu(const QPoint &point);
+    void saveHeaderView();
 
 private:
-    void saveVisibleColumns();
 
     ItemsTreeModel* mItemsTreeModel;
 };

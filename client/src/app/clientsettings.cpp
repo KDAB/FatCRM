@@ -24,6 +24,7 @@
 #include "opportunityfiltersettings.h"
 
 #include <KLocalizedString>
+#include <KDebug>
 
 #include <QWidget>
 #include <QSettings>
@@ -185,15 +186,16 @@ void ClientSettings::GroupFilters::addGroup(const ClientSettings::GroupFilters::
     m_filters.append(item);
 }
 
-
-void ClientSettings::setVisibleColumns(const QString &viewId, const QStringList &names)
+void ClientSettings::saveHeaderView(const QString &viewId, const QByteArray &headerViewData)
 {
-    m_settings->setValue("columns/" + viewId, names);
+    //kDebug() << "writing" << ("header/"+viewId);
+    m_settings->setValue("header/" + viewId, headerViewData);
 }
 
-QStringList ClientSettings::visibleColumns(const QString &viewId, const QStringList &defaultColumns) const
+QByteArray ClientSettings::restoreHeaderView(const QString &viewId) const
 {
-    return m_settings->value("columns/" + viewId, defaultColumns).toStringList();
+    //kDebug() << "reading" << ("header/"+viewId);
+    return m_settings->value("header/" + viewId).toByteArray();
 }
 
 void ClientSettings::setFilterSettings(const OpportunityFilterSettings &settings)
