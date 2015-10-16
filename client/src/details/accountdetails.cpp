@@ -41,6 +41,15 @@ AccountDetails::~AccountDetails()
     delete mUi;
 }
 
+QString AccountDetails::idForItem(const Akonadi::Item &item) const
+{
+    if (item.hasPayload<SugarAccount>()) {
+        const SugarAccount account = item.payload<SugarAccount>();
+        return account.id();
+    }
+    return QString();
+}
+
 void AccountDetails::initialize()
 {
     setObjectName("accountDetails");

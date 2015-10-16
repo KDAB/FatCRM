@@ -95,7 +95,7 @@ void Page::openDialog(const QString &id)
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.remoteId() == id) {
+        if (mDetailsWidget->details()->idForItem(item) == id) {
             DetailsDialog *dialog = createDetailsDialog();
             dialog->setItem(item);
             dialog->show();

@@ -62,6 +62,8 @@ public:
     QString name() const;
     void assignToMe();
 
+    virtual QString idForItem(const Akonadi::Item &item) const;
+
 Q_SIGNALS:
     void modified();
     void openObject(DetailsType type, const QString &id);

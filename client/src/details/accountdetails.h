@@ -38,6 +38,8 @@ public:
 
     ~AccountDetails();
 
+    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
+
 private:
     Ui::AccountDetails *mUi;
 
