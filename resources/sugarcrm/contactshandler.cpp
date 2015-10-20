@@ -355,8 +355,8 @@ static QString getEmail2(const KABC::Addressee &addressee)
     // the remaining instead of always taking the second one
     QStringList emails = addressee.emails();
     emails.removeAll(addressee.preferredEmail());
-    if (emails.count() >= 1) {
-        return emails[ 0 ];
+    if (!emails.isEmpty()) {
+        return emails.at( 0 );
     }
 
     return QString();
