@@ -181,9 +181,13 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
 {
     KABC::Addressee addressee;
     if (item.hasPayload<KABC::Addressee>()) {
+        // start from the existing item (to keep custom fields not shown in GUI, I suppose)
         addressee = item.payload<KABC::Addressee>();
+        // but for anything that uses insert... below, start by clearing the lists.
         foreach (const KABC::Address &addr, addressee.addresses())
             addressee.removeAddress(addr);
+        foreach (const KABC::PhoneNumber &nr, addressee.phoneNumbers())
+            addressee.removePhoneNumber(nr);
     }
 
     addressee.setGivenName(data.value(KDCRMFields::firstName()));
@@ -192,8 +196,10 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.setDepartment(data.value(KDCRMFields::department()));
     addressee.setOrganization(data.value(KDCRMFields::accountName()));
     addressee.insertCustom("FATCRM", "X-AccountId", data.value(KDCRMFields::accountId()));
-    addressee.insertEmail(data.value(KDCRMFields::email1()), true);
-    addressee.insertEmail(data.value(KDCRMFields::email2()));
+    QStringList emails;
+    emails << data.value(KDCRMFields::email1()) // first one is preferred one
+           << data.value(KDCRMFields::email2());
+    addressee.setEmails(emails);
     addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneHome()), KABC::PhoneNumber::Home));
     addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KABC::PhoneNumber::Cell));
     addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneWork()), KABC::PhoneNumber::Work));
