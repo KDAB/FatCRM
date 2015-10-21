@@ -109,9 +109,9 @@ void NotesRepository::removeNote(const QString &id)
         kDebug() << "note" << id << "oldParentId" << oldParentId;
         // Note is no longer associated with this opportunity
         QVector<SugarNote> &notes = mNotesHash[oldParentId];
-        auto it = std::find_if(notes.begin(), notes.end(), [id](const SugarNote &n) { return n.id() == id; });
-        if (it != notes.end()) {
-            const int idx = std::distance(notes.begin(), it);
+        auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
+        if (it != notes.constEnd()) {
+            const int idx = std::distance(notes.constBegin(), it);
             kDebug() << "Removing note at" << idx;
             notes.remove(idx);
         }
@@ -197,9 +197,9 @@ void NotesRepository::removeEmail(const QString &id)
         kDebug() << "email" << id << "oldParentId" << oldParentId;
         // Email is no longer associated with this opportunity
         QVector<SugarEmail> &emails = mEmailsHash[oldParentId];
-        auto it = std::find_if(emails.begin(), emails.end(), [id](const SugarEmail &n) { return n.id() == id; });
-        if (it != emails.end()) {
-            const int idx = std::distance(emails.begin(), it);
+        auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
+        if (it != emails.constEnd()) {
+            const int idx = std::distance(emails.constBegin(), it);
             kDebug() << "Removing email at" << idx;
             emails.remove(idx);
         }
