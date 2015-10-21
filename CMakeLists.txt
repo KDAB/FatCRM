@@ -115,7 +115,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE=500 -D_DEFAULT_SOURCE -D_GNU_SOURCE")
   endif()
   if(APPLE)
-    set(CMAKE_CXX_FLAGS "-Wno-c++11-extensions -Wno-undef") #quiet lots of warnings in Boost
+    set(CMAKE_CXX_FLAGS "-Wno-undef") #quiet lots of warnings in Boost
   endif()
 endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
