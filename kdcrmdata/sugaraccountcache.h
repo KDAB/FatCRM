@@ -23,7 +23,8 @@
 #ifndef SUGARACCOUNTCACHE_H
 #define SUGARACCOUNTCACHE_H
 
-#include <kdcrmdata_export.h>
+#include "kdcrmdata_export.h"
+
 #include <QObject>
 #include <QHash>
 #include <QSet>
