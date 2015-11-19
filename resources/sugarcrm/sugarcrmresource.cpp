@@ -774,7 +774,11 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
-    if (job->error() == SugarJob::LoginError) {
+    kDebug() << "job->error()=" << job->error();
+    switch (job->error()) {
+    case KJob::NoError:
+        return false;
+    case SugarJob::LoginError:
         kDebug() << "LoginError! Going to Broken state";
         setOnline( false );
         emit status( Broken, job->errorText() );
@@ -784,12 +788,21 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         } else {
             taskDone();
         }
-    } else if (job->error() == SugarJob::CouldNotConnectError) {
+        break;
+    case SugarJob::CouldNotConnectError: // transient error, try again later
+    case SugarJob::SoapError: // assume this is transient too, e.g. capturing portal
         emit status( Idle, i18n( "Server is not available." ) );
+        kDebug() << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
-    } else {
-        return false;
+        break;
+    case SugarJob::InvalidContextError: // unrecoverable akonadi bug (no remote id, or payload missing)
+        cancelTask(job->errorText());
+        break;
+    default:
+        kWarning() << "UNHANDLED ERROR CODE" << job->error();
+        deferTask();
+        setTemporaryOffline(300); // this calls doSetOnline(false)
     }
 
     return true;
