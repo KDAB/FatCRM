@@ -91,7 +91,7 @@ bool AccountRepository::hasId(const QString &id) const
 
 QList<SugarAccount> AccountRepository::similarAccounts(const SugarAccount &account) const
 {
-    return mNameMap.values(account.name());
+    return mNameMap.values(account.cleanAccountName());
 }
 
 QList<SugarAccount> AccountRepository::accountsByKey(const QString &key) const
