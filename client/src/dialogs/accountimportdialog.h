@@ -24,11 +24,13 @@
 #define ACCOUNTIMPORTDIALOG_H
 
 #include <QDialog>
+#include <QSignalMapper>
 #include "sugaraccount.h"
 
 namespace Ui {
 class AccountImportDialog;
 }
+class QGroupBox;
 
 class AccountImportDialog : public QDialog
 {
@@ -43,8 +45,13 @@ public:
 protected:
     void accept() Q_DECL_OVERRIDE;
 
+private Q_SLOTS:
+    void slotTextChanged(QWidget *lineEdit);
 private:
+    void fillSimilarAccounts(QGroupBox *container, const SugarAccount& newAccount);
 
+    QVector<SugarAccount> m_accounts;
+    QSignalMapper m_lineEditMapper;
     Ui::AccountImportDialog *ui;
 };
 
