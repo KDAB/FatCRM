@@ -370,10 +370,6 @@ void SugarCRMResource::startExplicitLogin()
 {
     kDebug();
     Q_ASSERT(!mLoginJob); // didn't we kill it in doSetOnline(false) already?
-    if (mLoginJob) {
-        mLoginJob->kill(KJob::Quietly);
-        taskDone();
-    }
     mLoginJob = new LoginJob(mSession, this);
     connect(mLoginJob, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
     mLoginJob->start();
@@ -776,8 +772,6 @@ bool SugarCRMResource::handleLoginError(KJob *job)
 {
     kDebug() << "job->error()=" << job->error();
     switch (job->error()) {
-    case KJob::NoError:
-        return false;
     case SugarJob::LoginError:
         kDebug() << "LoginError! Going to Broken state";
         setOnline( false );
@@ -788,24 +782,18 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         } else {
             taskDone();
         }
-        break;
+        return true;
     case SugarJob::CouldNotConnectError: // transient error, try again later
     case SugarJob::SoapError: // assume this is transient too, e.g. capturing portal
         emit status( Idle, i18n( "Server is not available." ) );
         kDebug() << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
-        break;
-    case SugarJob::InvalidContextError: // unrecoverable akonadi bug (no remote id, or payload missing)
-        cancelTask(job->errorText());
-        break;
+        return true;
     default:
-        kWarning() << "UNHANDLED ERROR CODE" << job->error();
-        deferTask();
-        setTemporaryOffline(300); // this calls doSetOnline(false)
+        // no error, or another kind of error, which the caller will have to handle
+        return false;
     }
-
-    return true;
 }
 
 AKONADI_RESOURCE_MAIN(SugarCRMResource)
