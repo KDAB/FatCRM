@@ -20,11 +20,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtTest/QtTest>
-#include <QDebug>
 #include "contactsimporter.h"
-#include <QSignalSpy>
-#include <accountrepository.h>
+#include "accountrepository.h"
+
+#include <QtTest/QtTest>
 
 class TestContactsImporter : public QObject
 {
