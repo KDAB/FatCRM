@@ -273,6 +273,7 @@ void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, c
     job->setAccountName(accountName);
     job->setAccountId(accountId);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(slotUpdateJobResult(KJob*)));
+    job->start();
 }
 
 void OpportunitiesHandler::slotUpdateJobResult(KJob *job)

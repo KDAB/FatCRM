@@ -30,6 +30,10 @@ class OpportunityFilterSettings;
 #include <QStringList>
 #include <QVector>
 
+/**
+ * Settings for the FatCRM client application.
+ * Saved in ~/.config/KDAB/FatCRM.conf
+ */
 class ClientSettings : public QObject
 {
     Q_OBJECT
@@ -47,8 +51,8 @@ public:
     void saveWindowSize(const QString &windowId, QWidget *window);
     void restoreWindowSize(const QString &windowId, QWidget *window) const;
 
-    void setVisibleColumns(const QString &viewId, const QStringList &names);
-    QStringList visibleColumns(const QString &viewId, const QStringList &defaultColumns) const;
+    void saveHeaderView(const QString &viewId, const QByteArray &headerViewData);
+    QByteArray restoreHeaderView(const QString &viewId) const;
 
     void setFilterSettings(const OpportunityFilterSettings &settings);
     OpportunityFilterSettings filterSettings() const;

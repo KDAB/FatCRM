@@ -194,6 +194,7 @@ bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
 {
     if (errorValue.number() == QLatin1String("0"))
         return false; // no error
+
     if (errorValue.number() == QLatin1String("10")) {
         // Invalid login error, meaning we need to log in again
         if (d->mTryRelogin) {
@@ -203,6 +204,7 @@ bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
             return true;
         }
     }
+    kDebug() << errorValue.number() << errorValue.description();
     setError(SugarJob::SoapError);
     setErrorText(errorValue.description());
     emitResult();

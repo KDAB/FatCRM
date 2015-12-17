@@ -62,24 +62,32 @@ signals:
 private Q_SLOTS:
     void slotNotesReceived(const Akonadi::Item::List &items);
     void slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection);
+    void slotItemRemoved(const Akonadi::Item &item);
+    void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray>& partIdentifiers);
 
     void slotEmailsReceived(const Akonadi::Item::List &items);
 
 private:
     void storeNote(const Akonadi::Item &item);
+    void removeNote(const QString &id);
     void storeEmail(const Akonadi::Item &item);
+    void removeEmail(const QString &id);
     void configureItemFetchScope(Akonadi::ItemFetchScope &scope);
+    void updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection);
 
     Akonadi::Collection mNotesCollection;
     Akonadi::Monitor *mMonitor;
     typedef QHash<QString, QVector<SugarNote> > NotesHash;
     NotesHash mNotesHash;
+    QHash<QString, QString> mNotesParentIdHash; // note id -> opportunity id (to handle removals)
     int mNotesLoaded;
 
     Akonadi::Collection mEmailsCollection;
     typedef QHash<QString, QVector<SugarEmail> > EmailsHash;
     EmailsHash mEmailsHash;
+    QHash<QString, QString> mEmailsParentIdHash; // email id -> opportunity id (to handle removals)
     int mEmailsLoaded;
+
 };
 
 #endif // NOTESREPOSITORY_H

@@ -14,10 +14,13 @@ include(FindPackageHandleStandardArgs)
 
 find_library(KDSoap_LIBRARIES
   NAMES KDSoap kdsoap
-  PATH_SUFFIXES bin
+  PATH_SUFFIXES lib bin
+  HINTS ENV KDSOAPDIR
 )
 find_path(KDSoap_INCLUDE_DIR
-  NAMES KDSoapClient KDSoapValue.h
+  NAMES KDSoapClient KDSoapGlobal
+  PATH_SUFFIXES include
+  HINTS ENV KDSOAPDIR
 )
 find_program(KDSoap_CODEGENERATOR
   NAMES kdwsdl2cpp

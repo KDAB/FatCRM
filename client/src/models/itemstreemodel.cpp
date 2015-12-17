@@ -588,6 +588,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     switch (mType) {
     case Account:
         columns.removeAll(ItemsTreeModel::Street);
+        columns.removeAll(ItemsTreeModel::CreatedBy);
         break;
     case Contact:
         // too wide and too seldom filled in

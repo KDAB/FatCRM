@@ -21,7 +21,6 @@ set(sugarcrmresource_SRCS
   passwordhandler.cpp
   referenceupdatejob.cpp
   resourcedebuginterface.cpp
-  sugaraccountcache.cpp
   sugarconfigdialog.cpp
   sugarcrmresource.cpp
   sugarjob.cpp

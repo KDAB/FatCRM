@@ -20,10 +20,10 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtTest/QtTest>
-#include <QDebug>
 #include "contactsimporter.h"
-#include <QSignalSpy>
+#include "accountrepository.h"
+
+#include <QtTest/QtTest>
 
 class TestContactsImporter : public QObject
 {
@@ -42,6 +42,7 @@ private Q_SLOTS:
         QTest::newRow("sa_nocomma") << "KDAB" << "KDAB S.A." << true;
         QTest::newRow("AB_nospace") << "KDAB" << "KD" << false;
         QTest::newRow("sas_sa") << "KDAB S.A.S." << "KDAB S.A." << true;
+        QTest::newRow("case_insensitive") << "EXAMPLE SAS" << "Example" << true;
     }
 
     void testSimilarAccountNames()
@@ -59,6 +60,12 @@ private Q_SLOTS:
             QCOMPARE(ac1.key(), ac2.key());
         else
             QVERIFY(ac1.key() != ac2.key());
+
+        AccountRepository *repo = AccountRepository::instance();
+        repo->clear();
+        ac1.setId("id1");
+        repo->addAccount(ac1);
+        QCOMPARE(repo->similarAccounts(ac2).count(), expectedSame ? 1 : 0);
     }
 
     void testMultipleAccounts_data()

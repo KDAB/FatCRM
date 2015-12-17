@@ -402,6 +402,13 @@ void Details::assignToMe()
     }
 }
 
+QString Details::idForItem(const Item &item) const
+{
+    // just because I'm lazy; should be implemented in all subclasses instead.
+    Q_UNUSED(item);
+    return QString();
+}
+
 QString Details::name() const
 {
     if (mType == Contact) {

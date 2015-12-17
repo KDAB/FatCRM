@@ -203,7 +203,7 @@ QString SugarAccount::cleanAccountName() const
         result.remove(QChar(' ') + extension + '.');
         result.remove(QChar(' ') + extension);
     }
-    return result;
+    return result.toLower();
 }
 
 #if 0
