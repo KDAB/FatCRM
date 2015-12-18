@@ -784,8 +784,16 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         }
         return true;
     case SugarJob::CouldNotConnectError: // transient error, try again later
-    case SugarJob::SoapError: // assume this is transient too, e.g. capturing portal
+        kDebug() << job->errorString();
         emit status( Idle, i18n( "Server is not available." ) );
+        kDebug() << "deferring task";
+        deferTask();
+        setTemporaryOffline(300); // this calls doSetOnline(false)
+        return true;
+    case SugarJob::SoapError: // this could be transient too, e.g. capturing portal. Or it could be real...
+        if (job->errorString() == "You do not have access") // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
+            return false;
+        emit status( Idle, job->errorString() );
         kDebug() << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
