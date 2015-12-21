@@ -19,7 +19,7 @@ Compiling from sources, on Linux
 ================================
 * Prerequisites
 
-Install the package libkdepimlibs4-devel (OpenSuSE).
+Install the package for kdepimlibs development based on Qt4: libkdepimlibs4-devel (OpenSuSE), kdepimlib5-dev (Debian/Ubuntu).
 
 * Install KDSoap
 
