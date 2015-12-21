@@ -54,6 +54,8 @@ make
 sudo make install
 ```
 
+Now restart akonadi so that it sees the newly installed resource (on the command-line: `akonadictl restart`)
+
 * Web settings
 
 In SugarCRM, click on your own name in the topright corner, go to the Advanced tab, and in the first group ("User Settings"), ensure that "Show Full Names" is checked.
