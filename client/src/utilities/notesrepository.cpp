@@ -106,13 +106,13 @@ void NotesRepository::removeNote(const QString &id)
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mNotesParentIdHash.value(id);
     if (!oldParentId.isEmpty()) {
-        kDebug() << "note" << id << "oldParentId" << oldParentId;
+        qDebug() << "note" << id << "oldParentId" << oldParentId;
         // Note is no longer associated with this opportunity
         QVector<SugarNote> &notes = mNotesHash[oldParentId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
         if (it != notes.constEnd()) {
             const int idx = std::distance(notes.constBegin(), it);
-            kDebug() << "Removing note at" << idx;
+            qDebug() << "Removing note at" << idx;
             notes.remove(idx);
         }
     }
@@ -194,13 +194,13 @@ void NotesRepository::removeEmail(const QString &id)
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mEmailsParentIdHash.value(id);
     if (!oldParentId.isEmpty()) {
-        kDebug() << "email" << id << "oldParentId" << oldParentId;
+        qDebug() << "email" << id << "oldParentId" << oldParentId;
         // Email is no longer associated with this opportunity
         QVector<SugarEmail> &emails = mEmailsHash[oldParentId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
         if (it != emails.constEnd()) {
             const int idx = std::distance(emails.constBegin(), it);
-            kDebug() << "Removing email at" << idx;
+            qDebug() << "Removing email at" << idx;
             emails.remove(idx);
         }
     }
@@ -226,7 +226,7 @@ void NotesRepository::updateItem(const Akonadi::Item &item, const Akonadi::Colle
 
 void NotesRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
-    kDebug() << item.id() << item.mimeType();
+    qDebug() << item.id() << item.mimeType();
     updateItem(item, collection);
 }
 
@@ -240,14 +240,14 @@ void NotesRepository::slotItemRemoved(const Akonadi::Item &item)
     } else if (collection == mEmailsCollection) {
         removeEmail(item.remoteId());
     } else {
-        QWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
+        qWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
     }
 }
 
 void NotesRepository::slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // I get only REMOTEREVISION even when changing the parentid in the SugarEmail...
-    //kDebug() << item.id() << partIdentifiers;
+    //qDebug() << item.id() << partIdentifiers;
     Q_UNUSED(partIdentifiers);
 
     // Handle the case where the parent id changed

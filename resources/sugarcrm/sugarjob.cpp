@@ -204,7 +204,7 @@ bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
             return true;
         }
     }
-    kDebug() << errorValue.number() << errorValue.description();
+    qDebug() << errorValue.number() << errorValue.description();
     setError(SugarJob::SoapError);
     setErrorText(errorValue.description());
     emitResult();

@@ -23,7 +23,7 @@
 #ifndef FILTERPROXYMODEL_H
 #define FILTERPROXYMODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 #include "enums.h"
 
 /**

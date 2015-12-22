@@ -186,7 +186,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
         // but for anything that uses insert... below, start by clearing the lists.
         foreach (const KContacts::Address &addr, addressee.addresses())
             addressee.removeAddress(addr);
-        foreach (const KABC::PhoneNumber &nr, addressee.phoneNumbers())
+        foreach (const KContacts::PhoneNumber &nr, addressee.phoneNumbers())
             addressee.removePhoneNumber(nr);
     }
 
@@ -200,11 +200,11 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     emails << data.value(KDCRMFields::email1()) // first one is preferred one
            << data.value(KDCRMFields::email2());
     addressee.setEmails(emails);
-    addressee.insertPhoneNumber(KCONTACTS::PhoneNumber(data.value(KDCRMFields::phoneHome()), KCONTACTS::PhoneNumber::Home));
-    addressee.insertPhoneNumber(KCONTACTS::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KCONTACTS::PhoneNumber::Cell));
-    addressee.insertPhoneNumber(KCONTACTS::PhoneNumber(data.value(KDCRMFields::phoneWork()), KCONTACTS::PhoneNumber::Work));
-    addressee.insertPhoneNumber(KCONTACTS::PhoneNumber(data.value(KDCRMFields::phoneOther()), KCONTACTS::PhoneNumber::Car));
-    addressee.insertPhoneNumber(KCONTACTS::PhoneNumber(data.value(KDCRMFields::phoneFax()), KCONTACTS::PhoneNumber::Work | KCONTACTS::PhoneNumber::Fax));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneHome()), KContacts::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KContacts::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneWork()), KContacts::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneOther()), KContacts::PhoneNumber::Car));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneFax()), KContacts::PhoneNumber::Work | KContacts::PhoneNumber::Fax));
 
     KContacts::Address primaryAddress;
     primaryAddress.setType(KContacts::Address::Work | KContacts::Address::Pref);

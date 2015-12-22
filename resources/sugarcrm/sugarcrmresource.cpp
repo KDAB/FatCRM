@@ -784,7 +784,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
     case SugarJob::CouldNotConnectError: // transient error, try again later
     case SugarJob::SoapError: // assume this is transient too, e.g. capturing portal
         emit status( Idle, i18n( "Server is not available." ) );
-        kDebug() << "deferring task";
+        qDebug() << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;

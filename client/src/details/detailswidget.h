@@ -36,7 +36,7 @@
 
 #include <KContacts/Addressee>
 
-#include <QtGui/QWidget>
+#include <QWidget>
 
 class DetailsWidget : public QWidget
 {
