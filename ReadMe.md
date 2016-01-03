@@ -78,7 +78,7 @@ Contact support@kdab.com for more information.
 
 License
 =======
-The FatCRM Software is (C) 2010-2015 Klarälvdalens Datakonsult AB (KDAB),
+The FatCRM Software is (C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the GPL version 2 (or any later version,
 at your option).  See LICENSE.GPL.txt for license details.
 
@@ -95,4 +95,3 @@ of the major contributors to the Qt Project. We can give advanced or
 standard trainings anywhere around the globe.
 
 Please visit http://www.kdab.com to meet the people who write code like this.
-
