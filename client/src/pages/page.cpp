@@ -218,7 +218,7 @@ void Page::initialLoadingDone()
 void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
     // save previous item if modified
-    if (mDetailsWidget && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
+    if (mShowDetailsAction->isChecked() && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
         if (mCurrentIndex == index) // called by the setCurrentIndex below
             return;
         //kDebug() << "going from" << mCurrentIndex << "to" << index;
