@@ -30,7 +30,7 @@
 #include "contactsimporter.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
-#include "fatcrm_version.h"
+#include "config-fatcrm-version.h"
 #include "notesrepository.h"
 #include "referenceddata.h"
 #include "reportpage.h"
@@ -138,7 +138,7 @@ void MainWindow::slotDelayedInit()
 
 void MainWindow::slotAboutApp()
 {
-    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB)", QString(s_version)));
+    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB)", QString(FATCRM_VERSION_STRING)));
 }
 
 void MainWindow::initialize()
