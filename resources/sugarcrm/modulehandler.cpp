@@ -194,7 +194,11 @@ void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
         // Emails: type, status
         // Notes: <none>
         Akonadi::Collection coll = collection();
+#ifdef AKONADI_OLD_API
         EnumDefinitionAttribute *attr = coll.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
+#else
+        EnumDefinitionAttribute *attr = coll.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);
+#endif
         const QString serialized = mEnumDefinitions.toString();
         if (attr->value() != serialized) {
             attr->setValue(serialized);

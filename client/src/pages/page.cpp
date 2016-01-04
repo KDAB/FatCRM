@@ -897,8 +897,13 @@ KJob *Page::clearTimestamp()
     coll.setResource(mCollection.resource());
     EntityAnnotationsAttribute *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>();
+#ifdef AKONADI_OLD_API
     EntityAnnotationsAttribute *newAnnotationsAttribute =
             coll.attribute<EntityAnnotationsAttribute>(Entity::AddIfMissing);
+#else
+    EntityAnnotationsAttribute *newAnnotationsAttribute =
+            coll.attribute<EntityAnnotationsAttribute>(Collection::AddIfMissing);
+#endif
     if (annotationsAttribute)
         *newAnnotationsAttribute = *annotationsAttribute;
     newAnnotationsAttribute->insert(s_timeStampKey, QString());
