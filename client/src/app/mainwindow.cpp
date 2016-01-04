@@ -239,12 +239,10 @@ void MainWindow::slotResourceSelectionChanged(int index)
     if (agent.isValid()) {
         const QByteArray identifier = agent.identifier().toLatin1();
         emit resourceSelected(identifier);
-        updateWindowTitle(agent.isOnline());
+        slotResourceOnline(agent, agent.isOnline());
         mUi.actionSynchronize->setEnabled(true);
         mUi.actionFullReload->setEnabled(true);
         mUi.actionOfflineMode->setEnabled(true);
-        mUi.actionOfflineMode->setChecked(!agent.isOnline());
-        emit onlineStatusChanged(agent.isOnline());
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         ReferencedData::clearAll();
