@@ -232,9 +232,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
     //kDebug() << "showing new item" << index;
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
-        if (mDetailsWidget != 0) {
-            mDetailsWidget->setItem(item);
-        }
+        mDetailsWidget->setItem(item);
 
         mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
         //kDebug() << "mCurrentIndex=" << mCurrentIndex;
@@ -244,7 +242,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
 void Page::slotNewClicked()
 {
     const QMap<QString, QString> data = dataForNewObject();
-    if (mDetailsWidget != 0 && mShowDetailsAction->isChecked()) {
+    if (mShowDetailsAction->isChecked()) {
         if (mDetailsWidget->isModified()) {
             if (askSave()) {
                 mDetailsWidget->saveData();
@@ -265,14 +263,12 @@ void Page::slotNewClicked()
 
 void Page::slotAddItem() // save new item
 {
-    if (mDetailsWidget != 0) {
-        Item item;
-        details()->updateItem(item, mDetailsWidget->data());
+    Item item;
+    details()->updateItem(item, mDetailsWidget->data());
 
-        // job starts automatically
-        ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
-    }
+    // job starts automatically
+    ItemCreateJob *job = new ItemCreateJob(item, mCollection);
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
 }
 
 void Page::slotCreateJobResult(KJob *job)
@@ -351,9 +347,7 @@ void Page::slotRemoveItem()
         mUi.removePB->setEnabled(false);
     }
 
-    if (mDetailsWidget != 0) {
-        mDetailsWidget->setItem(Item());
-    }
+    mDetailsWidget->setItem(Item());
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -548,7 +542,7 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
-        if (index == mCurrentIndex && mDetailsWidget && !mDetailsWidget->isModified()) {
+        if (index == mCurrentIndex && !mDetailsWidget->isModified()) {
             mDetailsWidget->setItem(item); // update details widget
         }
         if (mType == Account && item.hasPayload<SugarAccount>()) {
