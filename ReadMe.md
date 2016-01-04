@@ -19,7 +19,7 @@ Compiling from sources, on Linux
 ================================
 * Prerequisites
 
-Install the package libkdepimlibs4-devel (OpenSuSE).
+Install the package for kdepimlibs development based on Qt4: libkdepimlibs4-devel (OpenSuSE), kdepimlib5-dev (Debian/Ubuntu).
 
 * Install KDSoap
 
@@ -54,6 +54,8 @@ make
 sudo make install
 ```
 
+Now restart akonadi so that it sees the newly installed resource (on the command-line: `akonadictl restart`)
+
 * Web settings
 
 In SugarCRM, click on your own name in the topright corner, go to the Advanced tab, and in the first group ("User Settings"), ensure that "Show Full Names" is checked.
@@ -76,7 +78,7 @@ Contact support@kdab.com for more information.
 
 License
 =======
-The FatCRM Software is (C) 2010-2015 Klarälvdalens Datakonsult AB (KDAB),
+The FatCRM Software is (C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the GPL version 2 (or any later version,
 at your option).  See LICENSE.GPL.txt for license details.
 
@@ -93,4 +95,3 @@ of the major contributors to the Qt Project. We can give advanced or
 standard trainings anywhere around the globe.
 
 Please visit http://www.kdab.com to meet the people who write code like this.
-

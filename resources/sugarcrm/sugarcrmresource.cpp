@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -782,8 +782,16 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         }
         return true;
     case SugarJob::CouldNotConnectError: // transient error, try again later
-    case SugarJob::SoapError: // assume this is transient too, e.g. capturing portal
+        qDebug() << job->errorString();
         emit status( Idle, i18n( "Server is not available." ) );
+        qDebug() << "deferring task";
+        deferTask();
+        setTemporaryOffline(300); // this calls doSetOnline(false)
+        return true;
+    case SugarJob::SoapError: // this could be transient too, e.g. capturing portal. Or it could be real...
+        if (job->errorString() == "You do not have access") // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
+            return false;
+        emit status( Idle, job->errorString() );
         qDebug() << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)

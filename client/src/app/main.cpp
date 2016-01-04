@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 {
     K4AboutData about("fatcrm", 0, ki18n("FatCRM"),
                      version, ki18n(description),
-                     K4AboutData::License_GPL_V2, ki18n("(C) 2010-2015 KDAB"),
+                     K4AboutData::License_GPL_V2, ki18n("(C) 2010-2016 KDAB"),
                      KLocalizedString(), 0, "info@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);

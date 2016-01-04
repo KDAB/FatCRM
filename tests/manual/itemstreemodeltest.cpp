@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -105,7 +105,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     KAboutData about("itemstreemodeltest", i18n("ItemsTreeModel test"),
                      "0.1", i18n("Interactive test program for ItemsTreeModel"),
-                     KAboutLicense::GPL_V2, i18n("(C) 2015 KDAB"),
+                     KAboutLicense::GPL_V2, i18n("(C) 2015-2016 KDAB"),
                      QString(), "david.faure@kdab.com");
 
     QCommandLineParser parser;

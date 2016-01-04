@@ -8,8 +8,6 @@ find_program(XSLTPROC_EXECUTABLE xsltproc DOC "Path to the xsltproc executable")
 mark_as_advanced(XSLTPROC_EXECUTABLE)
 
 if(XSLTPROC_EXECUTABLE)
-  set(Xsltproc_FOUND TRUE)
-
   # Macro to generate a D-Bus interface description from a KConfigXT file
   macro(kcfg_generate_dbus_interface _kcfg _name)
     add_custom_command(
@@ -23,4 +21,6 @@ if(XSLTPROC_EXECUTABLE)
       )
   endmacro()
 endif()
+
+find_package_handle_standard_args(Xsltproc DEFAULT_MSG XSLTPROC_EXECUTABLE)
 
