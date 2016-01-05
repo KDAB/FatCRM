@@ -38,6 +38,8 @@ public:
 
     ~CampaignDetails();
 
+    QUrl itemUrl() const Q_DECL_OVERRIDE;
+
 private:
     Ui::CampaignDetails *mUi;
 

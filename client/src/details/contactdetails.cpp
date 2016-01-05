@@ -61,6 +61,16 @@ void ContactDetails::initialize()
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
 }
 
+QUrl ContactDetails::itemUrl() const
+{
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
+        return QUrl(url);
+    }
+    return QUrl();
+}
+
 void ContactDetails::slotSetBirthday()
 {
     // TODO FIXME: use QDateEdit [or remove - who cares about birthdays...]
@@ -259,11 +269,9 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
 
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url));
-    }
+    const QUrl url = itemUrl();
+    if (url.isValid())
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()

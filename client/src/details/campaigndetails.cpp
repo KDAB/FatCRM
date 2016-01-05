@@ -55,6 +55,11 @@ void CampaignDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 }
 
+QUrl CampaignDetails::itemUrl() const
+{
+    return QUrl();
+}
+
 void CampaignDetails::slotSetStartDate()
 {
     // TODO FIXME: use QDateEdit

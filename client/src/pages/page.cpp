@@ -55,6 +55,9 @@
 
 #include <KDebug>
 
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>
 
@@ -437,6 +440,7 @@ void Page::initialize()
 {
     connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
     connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
+    connect(mUi.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotItemContextMenuRequested(QPoint)));
 
     const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
@@ -476,6 +480,29 @@ void Page::initialize()
     showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
 
     connectToDetails(mDetailsWidget->details());
+}
+
+void Page::slotItemContextMenuRequested(const QPoint &pos)
+{
+    mCurrentItemUrl = details()->itemUrl();
+
+    if (!mCurrentItemUrl.isValid())
+        return;
+
+    QMenu contextMenu;
+    contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+    contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+    contextMenu.exec(mUi.treeView->mapToGlobal(pos));
+}
+
+void Page::slotOpenUrl()
+{
+    QDesktopServices::openUrl(mCurrentItemUrl);
+}
+
+void Page::slotCopyLink()
+{
+    QApplication::clipboard()->setText(mCurrentItemUrl.toString());
 }
 
 void Page::setupModel()

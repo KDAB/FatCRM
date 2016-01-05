@@ -48,6 +48,7 @@ class KJob;
 class QAction;
 class QModelIndex;
 class NotesRepository;
+class QPoint;
 
 class Page : public QWidget
 {
@@ -116,6 +117,9 @@ private Q_SLOTS:
     void slotCreateJobResult(KJob *job);
     void slotModifyJobResult(KJob *job);
     void slotItemSaved(const Akonadi::Item &item);
+    void slotItemContextMenuRequested(const QPoint &pos);
+    void slotOpenUrl();
+    void slotCopyLink();
 
 private:
     virtual QString reportTitle() const = 0;
@@ -158,6 +162,7 @@ private:
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
+    QUrl mCurrentItemUrl;
     NotesRepository *mNotesRepository;
     EnumDefinitions mEnumDefinitions;
     bool mOnline;
