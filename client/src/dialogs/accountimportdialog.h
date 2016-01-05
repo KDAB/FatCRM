@@ -25,12 +25,16 @@
 
 #include <QDialog>
 #include <QSignalMapper>
+#include <Akonadi/Collection>
 #include "sugaraccount.h"
 
 namespace Ui {
 class AccountImportDialog;
 }
+class QAbstractButton;
 class QGroupBox;
+class QButtonGroup;
+class KJob;
 
 class AccountImportDialog : public QDialog
 {
@@ -40,19 +44,33 @@ public:
     explicit AccountImportDialog(QWidget *parent = 0);
     ~AccountImportDialog();
 
+    // intput
+    void setAccountCollection(const Akonadi::Collection &collection);
     void setImportedAccounts(const QVector<SugarAccount> &accounts);
+
+    // output (valid after exec() returns)
+    QVector<SugarAccount> chosenAccounts() const;
 
 protected:
     void accept() Q_DECL_OVERRIDE;
+    void reject() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotTextChanged(QWidget *lineEdit);
-private:
-    void fillSimilarAccounts(QGroupBox *container, const SugarAccount& newAccount);
+    void slotButtonClicked(QAbstractButton *button);
+    void slotCreateAccountResult(KJob *job);
+    void updateOKButton();
 
-    QVector<SugarAccount> m_accounts;
-    QSignalMapper m_lineEditMapper;
-    Ui::AccountImportDialog *ui;
+private:
+    void fillSimilarAccounts(int row);
+
+    Akonadi::Collection mAccountCollection;
+    QVector<QButtonGroup *> mButtonGroups;
+    QVector<QGroupBox *> mGroupBoxes;
+    QVector<SugarAccount> mAccounts;
+    QSignalMapper mLineEditMapper;
+    QList<KJob *> mAccountCreationJobs;
+    Ui::AccountImportDialog *mUi;
 };
 
 #endif // ACCOUNTIMPORTDIALOG_H

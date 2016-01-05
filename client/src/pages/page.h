@@ -61,6 +61,7 @@ public:
     QString mimeType() const { return mMimeType; }
     DetailsType detailsType() const { return mType; }
     void setCollection(const Akonadi::Collection& collection);
+    Akonadi::Collection collection() const { return mCollection; }
     void setNotesRepository(NotesRepository *repo);
     void setModificationsIgnored(bool b);
     void initialLoadingDone();

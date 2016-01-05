@@ -87,6 +87,8 @@ private:
     CollectionManager *mCollectionManager;
     NotesRepository *mNotesRepository;
 
+    Page *mAccountPage;
+
     QToolBar *mMainToolBar;
     QAction *mResourceSelectorAction;
     QList<KJob *> mClearTimestampJobs;

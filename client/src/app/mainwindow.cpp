@@ -374,12 +374,12 @@ void MainWindow::slotEmailsLoaded(int count)
 
 void MainWindow::createTabs()
 {
-    Page *page = new AccountsPage(this);
-    mPages << page;
-    mUi.tabWidget->addTab(page, i18n("&Accounts"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Account Details")));
+    mAccountPage = new AccountsPage(this);
+    mPages << mAccountPage;
+    mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
+    mViewMenu->addAction(mAccountPage->showDetailsAction(i18n("&Account Details")));
 
-    page = new OpportunitiesPage(this);
+    Page *page = new OpportunitiesPage(this);
     page->setNotesRepository(mNotesRepository);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
@@ -479,6 +479,7 @@ void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
         updateWindowTitle(online);
         mUi.actionOfflineMode->setChecked(!online);
+        mUi.actionImportContacts->setEnabled(online);
         emit onlineStatusChanged(online); // update details dialog
     }
 }
@@ -541,9 +542,12 @@ void MainWindow::slotImportContacts()
         ContactsImporter importer;
         if (importer.importFile(csvFile)) {
             const QVector<SugarAccount> accounts = importer.accounts();
-            AccountImportDialog importDialog(this);
-            importDialog.setImportedAccounts(accounts);
-            importDialog.exec();
+            // non modal so that we can use FatCRM to search for accounts/contacts.
+            AccountImportDialog *importDialog = new AccountImportDialog(this);
+            importDialog->setAccountCollection(mAccountPage->collection());
+            importDialog->setImportedAccounts(accounts);
+            importDialog->setAttribute(Qt::WA_DeleteOnClose);
+            importDialog->show();
         } else {
             QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
                                  i18n("Error importing %1", csvFile));
