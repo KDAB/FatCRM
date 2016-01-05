@@ -94,9 +94,35 @@ void ContactDetails::slotAccountActivated()
     if (account.isEmpty()) {
         return;
     }
+
+    const bool copyAddressFromAccount = (mUi->primaryAddressStreet->toPlainText().isEmpty() &&
+                                        mUi->primaryAddressCity->text().isEmpty() &&
+                                        mUi->primaryAddressState->text().isEmpty() &&
+                                        mUi->primaryAddressPostalcode->text().isEmpty() &&
+                                        mUi->primaryAddressCountry->text().isEmpty());
+
+    const bool copyPhoneWorkFromAccount = mUi->phone_work->text().isEmpty();
+
+    if (!copyAddressFromAccount && !copyPhoneWorkFromAccount) {
+        return;
+    }
+
+    QString title, message;
+
+    if (copyAddressFromAccount && !copyPhoneWorkFromAccount) {
+        title = i18n("Copy address from account?");
+        message = i18n("Do you want to copy the address from the account '%1' into this contact?", account.name());
+    } else if (!copyAddressFromAccount && copyPhoneWorkFromAccount) {
+        title = i18n("Copy phone from account?");
+        message = i18n("Do you want to copy the phone number from the account '%1' into this contact?", account.name());
+    } else {
+        title = i18n("Copy address and phone from account?");
+        message = i18n("Do you want to copy the address and phone number from the account '%1' into this contact?", account.name());
+    }
+
     QMessageBox msgBox;
-    msgBox.setWindowTitle(i18n("Copy address from account?"));
-    msgBox.setText(i18n("Do you want to copy the address and phone number from the account '%1' into this contact?", account.name()));
+    msgBox.setWindowTitle(title);
+    msgBox.setText(message);
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Yes);
@@ -104,20 +130,26 @@ void ContactDetails::slotAccountActivated()
     if (ret == QMessageBox::Cancel) {
         return;
     }
-    if (!account.shippingAddressStreet().isEmpty()) {
-        mUi->primaryAddressStreet->setPlainText(account.shippingAddressStreet());
-        mUi->primaryAddressCity->setText(account.shippingAddressCity());
-        mUi->primaryAddressState->setText(account.shippingAddressState());
-        mUi->primaryAddressPostalcode->setText(account.shippingAddressPostalcode());
-        mUi->primaryAddressCountry->setText(account.shippingAddressCountry());
-    } else {
-        mUi->primaryAddressStreet->setPlainText(account.billingAddressStreet());
-        mUi->primaryAddressCity->setText(account.billingAddressCity());
-        mUi->primaryAddressState->setText(account.billingAddressState());
-        mUi->primaryAddressPostalcode->setText(account.billingAddressPostalcode());
-        mUi->primaryAddressCountry->setText(account.billingAddressCountry());
+
+    if (copyAddressFromAccount) {
+        if (!account.shippingAddressStreet().isEmpty()) {
+            mUi->primaryAddressStreet->setPlainText(account.shippingAddressStreet());
+            mUi->primaryAddressCity->setText(account.shippingAddressCity());
+            mUi->primaryAddressState->setText(account.shippingAddressState());
+            mUi->primaryAddressPostalcode->setText(account.shippingAddressPostalcode());
+            mUi->primaryAddressCountry->setText(account.shippingAddressCountry());
+        } else {
+            mUi->primaryAddressStreet->setPlainText(account.billingAddressStreet());
+            mUi->primaryAddressCity->setText(account.billingAddressCity());
+            mUi->primaryAddressState->setText(account.billingAddressState());
+            mUi->primaryAddressPostalcode->setText(account.billingAddressPostalcode());
+            mUi->primaryAddressCountry->setText(account.billingAddressCountry());
+        }
     }
-    mUi->phone_work->setText(account.phoneOffice());
+
+    if (copyPhoneWorkFromAccount) {
+        mUi->phone_work->setText(account.phoneOffice());
+    }
 }
 
 QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
