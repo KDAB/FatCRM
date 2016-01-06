@@ -207,9 +207,7 @@ ReferencedDataType ReferencedData::dataType() const
 void ReferencedData::emitInitialLoadingDoneForAll()
 {
     foreach(ReferencedData *data, s_instances()->map) {
-        if (data->dataType() != AccountCountryRef) { // that one was already done earlier
-            emit data->initialLoadingDone();
-        }
+        emit data->initialLoadingDone();
     }
 }
 

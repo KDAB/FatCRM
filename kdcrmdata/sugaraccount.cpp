@@ -206,6 +206,13 @@ QString SugarAccount::cleanAccountName() const
     return result.toLower();
 }
 
+QString SugarAccount::countryForGui() const
+{
+    const QString billingCountry = d->mBillingAddressCountry;
+    const QString country = billingCountry.isEmpty() ? d->mShippingAddressCountry : billingCountry;
+    return country.trimmed();
+}
+
 #if 0
 bool SugarAccount::operator==(const SugarAccount &other) const
 {

@@ -27,6 +27,8 @@
 
 #include <Akonadi/EntityTreeModel>
 
+#include <accountrepository.h>
+
 namespace KABC { class Addressee; }
 
 /**
@@ -112,10 +114,8 @@ public:
     static QString countryForContact(const KABC::Addressee &addressee);
 
 private Q_SLOTS:
-    void slotAccountCountryChanged(int row);
-    void slotAccountNameChanged(int row);
-    void oppCountryColumnChanged();
-    void oppAccountNameColumnChanged();
+    void slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields);
+    void slotAccountsLoaded();
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;

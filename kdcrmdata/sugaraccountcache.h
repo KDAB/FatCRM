@@ -29,6 +29,8 @@
 #include <QHash>
 #include <QSet>
 
+// Cache of pending account, only used by the resource
+// This is in kdcrmdata so that it can be unit-tested.
 class KDCRMDATA_EXPORT SugarAccountCache : public QObject
 {
     Q_OBJECT

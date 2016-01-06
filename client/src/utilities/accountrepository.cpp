@@ -21,6 +21,7 @@
 */
 
 #include "accountrepository.h"
+#include <KDebug>
 
 AccountRepository *AccountRepository::instance()
 {
@@ -41,12 +42,42 @@ void AccountRepository::clear()
 
 void AccountRepository::addAccount(const SugarAccount &account)
 {
-    const QString id = account.id();
-    Q_ASSERT(!id.isEmpty());
-    mIdMap.insert(id, account);
+    const QString accountId = account.id();
+    Q_ASSERT(!accountId.isEmpty());
+    if (mIdMap.contains(accountId)) // can this happen?
+        qWarning() << "AccountRepository: already have" << accountId << mIdMap.value(accountId).name() << account.name();
+    mIdMap.insert(accountId, account);
     // ## This does not handle the case of renaming accounts later on
     mKeyMap.insertMulti(account.key(), account);
     mNameMap.insertMulti(account.cleanAccountName(), account);
+}
+
+QVector<AccountRepository::Field> AccountRepository::modifyAccount(const SugarAccount &account)
+{
+    QVector<Field> changedFields;
+    const QString accountId = account.id();
+    Q_ASSERT(!accountId.isEmpty());
+    Map::iterator it = mIdMap.find(accountId);
+    if (it != mIdMap.end()) {
+        // Existing account modified
+        const SugarAccount &oldAccount = *it;
+        if (oldAccount.name() != account.name()) {
+            qDebug() << "account renamed from" << oldAccount.name() << "to" << account.name();
+            changedFields.append(Name);
+        }
+        if (oldAccount.countryForGui() != account.countryForGui()) {
+            qDebug() << account.name() << ": country modified";
+            changedFields.append(Country);
+        }
+
+        *it = account;
+        emit accountModified(accountId, changedFields);
+        // We don't handle changes in mKeyMap and mNameMap, hoping that this doesn't matter
+        // since they are only used by the import dialog.
+    } else {
+        qWarning() << "Account not found " << accountId << "name=" << account.name();
+    }
+    return changedFields;
 }
 
 void AccountRepository::removeAccount(const SugarAccount &account)
@@ -97,6 +128,12 @@ QList<SugarAccount> AccountRepository::similarAccounts(const SugarAccount &accou
 QList<SugarAccount> AccountRepository::accountsByKey(const QString &key) const
 {
     return mKeyMap.values(key);
+}
+
+void AccountRepository::emitInitialLoadingDone()
+{
+    kDebug();
+    emit initialLoadingDone();
 }
 
 AccountRepository::AccountRepository()

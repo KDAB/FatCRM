@@ -28,21 +28,39 @@
 #include <QMap>
 #include <QVector>
 
-class AccountRepository
+class AccountRepository : public QObject
 {
+    Q_OBJECT
 public:
     static AccountRepository *instance();
     ~AccountRepository();
 
+    // Not a full list of fields, just the ones for which we care for modifications
+    enum Field
+    {
+        Name,
+        Country
+    };
+
     void clear();
     void addAccount(const SugarAccount &account);
     void removeAccount(const SugarAccount &account);
+    /**
+     * Called when account has been modified.
+     */
+    QVector<AccountRepository::Field> modifyAccount(const SugarAccount &account);
 
     SugarAccount accountById(const QString &id) const;
     bool hasId(const QString &id) const;
 
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;
     QList<SugarAccount> accountsByKey(const QString &key) const;
+
+    void emitInitialLoadingDone();
+
+signals:
+    void initialLoadingDone();
+    void accountModified(const QString &id, const QVector<AccountRepository::Field> &changedFields);
 
 private:
     AccountRepository();

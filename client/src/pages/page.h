@@ -113,6 +113,7 @@ private Q_SLOTS:
     void slotResetSearch();
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
+    void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const Akonadi::Item &item);
     void slotCreateJobResult(KJob *job);
