@@ -26,6 +26,7 @@
 #include <QDialog>
 #include <QSignalMapper>
 #include <Akonadi/Collection>
+#include <akonadi/item.h>
 #include "sugaraccount.h"
 
 namespace Ui {
@@ -60,14 +61,23 @@ private Q_SLOTS:
     void slotButtonClicked(QAbstractButton *button);
     void slotCreateAccountResult(KJob *job);
     void updateOKButton();
+    void slotAccountAdded(const QString &id, Akonadi::Item::Id akonadiId);
 
 private:
     void fillSimilarAccounts(int row);
+    void accountCreated(int row, const QString &id);
 
     Akonadi::Collection mAccountCollection;
-    QVector<QButtonGroup *> mButtonGroups;
-    QVector<QGroupBox *> mGroupBoxes;
-    QVector<SugarAccount> mAccounts;
+
+    struct PendingAccount {
+        QButtonGroup *buttonGroup;
+        QGroupBox *groupBox;
+        QPushButton *createButton;
+        SugarAccount account;
+        Akonadi::Item::Id idBeingCreated;
+    };
+
+    QVector<PendingAccount> mPendingAccounts;
     QSignalMapper mLineEditMapper;
     QList<KJob *> mAccountCreationJobs;
     Ui::AccountImportDialog *mUi;

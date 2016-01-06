@@ -40,7 +40,7 @@ void AccountRepository::clear()
     mNameMap.clear();
 }
 
-void AccountRepository::addAccount(const SugarAccount &account)
+void AccountRepository::addAccount(const SugarAccount &account, Akonadi::Item::Id akonadiId)
 {
     const QString accountId = account.id();
     Q_ASSERT(!accountId.isEmpty());
@@ -50,6 +50,7 @@ void AccountRepository::addAccount(const SugarAccount &account)
     // ## This does not handle the case of renaming accounts later on
     mKeyMap.insertMulti(account.key(), account);
     mNameMap.insertMulti(account.cleanAccountName(), account);
+    emit accountAdded(accountId, akonadiId);
 }
 
 QVector<AccountRepository::Field> AccountRepository::modifyAccount(const SugarAccount &account)

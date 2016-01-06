@@ -28,6 +28,8 @@
 #include <QMap>
 #include <QVector>
 
+#include <akonadi/item.h>
+
 class AccountRepository : public QObject
 {
     Q_OBJECT
@@ -43,7 +45,7 @@ public:
     };
 
     void clear();
-    void addAccount(const SugarAccount &account);
+    void addAccount(const SugarAccount &account, Akonadi::Item::Id akonadiId);
     void removeAccount(const SugarAccount &account);
     /**
      * Called when account has been modified.
@@ -60,6 +62,10 @@ public:
 
 signals:
     void initialLoadingDone();
+
+    // warning this is called a lot on startup; only use for later creations
+    void accountAdded(const QString &id, Akonadi::Item::Id akonadiId);
+
     void accountModified(const QString &id, const QVector<AccountRepository::Field> &changedFields);
 
 private:

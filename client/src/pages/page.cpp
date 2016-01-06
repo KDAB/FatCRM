@@ -742,7 +742,7 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
                 continue;
             accountRefMap.insert(accountId, account.name());
             assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
-            AccountRepository::instance()->addAccount(account);
+            AccountRepository::instance()->addAccount(account, item.id());
         }
     }
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
@@ -909,7 +909,7 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
         // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
         // So we wait for the first dataChanged to create new accounts
         if (newAccount) {
-            AccountRepository::instance()->addAccount(account);
+            AccountRepository::instance()->addAccount(account, item.id());
         } else {
             QVector<AccountRepository::Field> changed = AccountRepository::instance()->modifyAccount(account);
             updateNameRef = changed.contains(AccountRepository::Name);

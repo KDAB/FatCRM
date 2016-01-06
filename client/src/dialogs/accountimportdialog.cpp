@@ -43,6 +43,9 @@ AccountImportDialog::AccountImportDialog(QWidget *parent) :
     connect(&mLineEditMapper, SIGNAL(mapped(QWidget*)), this, SLOT(slotTextChanged(QWidget*)));
     connect(mUi->buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(mUi->buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+
+    connect(AccountRepository::instance(), SIGNAL(accountAdded(QString,Akonadi::Item::Id)),
+            this, SLOT(slotAccountAdded(QString,Akonadi::Item::Id)));
 }
 
 AccountImportDialog::~AccountImportDialog()
@@ -75,14 +78,16 @@ static QString accountNameAndLocation(const SugarAccount &account)
 
 void AccountImportDialog::fillSimilarAccounts(int row)
 {
-    QGroupBox *container = mGroupBoxes.at(row);
+    PendingAccount &pa = mPendingAccounts[row];
+
+    QGroupBox *container = pa.groupBox;
     QGridLayout *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
     Q_ASSERT(buttonsLayout);
 
-    QButtonGroup *group = mButtonGroups.at(row);
+    QButtonGroup *group = pa.buttonGroup;
 
     //bool foundMatch = false;
-    const SugarAccount& newAccount = mAccounts.at(row);
+    const SugarAccount& newAccount = pa.account;
     const QList<SugarAccount> similarAccounts = AccountRepository::instance()->similarAccounts(newAccount);
 
     int buttonRow = 0;
@@ -106,12 +111,12 @@ void AccountImportDialog::fillSimilarAccounts(int row)
     QPushButton *createButton = new QPushButton(i18n("Create account"), container);
     createButton->setProperty("accountRowNumber", row);
     group->addButton(createButton);
+    pa.createButton = createButton;
     buttonsLayout->addWidget(createButton, buttonRow, buttonCol);
 }
 
 void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accounts)
 {
-    mAccounts = accounts;
     mUi->mainLabel->setText(i18n("%1 accounts found in import file. For each account, check if one of the suggested accounts should be used, or if a new account should be created.", accounts.count()));
 
     for (int row = 0; row < accounts.count(); ++row) {
@@ -133,9 +138,15 @@ void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accou
         accountLineEdit->setProperty("row", row);
         QButtonGroup *buttonGroup = new QButtonGroup(this);
         connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton *)));
-        mButtonGroups.append(buttonGroup);
+
+        PendingAccount pendingAccount;
+        pendingAccount.buttonGroup = buttonGroup;
+        pendingAccount.groupBox = container;
+        pendingAccount.createButton = 0;
+        pendingAccount.account = newAccount;
+        pendingAccount.idBeingCreated = 0;
+        mPendingAccounts.append(pendingAccount);
         new QGridLayout(container); // used by fillSimilarAccounts
-        mGroupBoxes.append(container);
         fillSimilarAccounts(row);
     }
     updateOKButton();
@@ -143,22 +154,27 @@ void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accou
 
 QVector<SugarAccount> AccountImportDialog::chosenAccounts() const
 {
-    return mAccounts;
+    QVector<SugarAccount> ret;
+    ret.reserve(mPendingAccounts.count());
+    for (int row = 0 ; row < mPendingAccounts.count(); ++row) {
+        QButtonGroup *buttonGroup = mPendingAccounts.at(row).buttonGroup;
+        QAbstractButton *radio = buttonGroup->checkedButton();
+        const QVariant accountIdVar = radio->property("accountId");
+        Q_ASSERT(accountIdVar.isValid()); // the OK button is disabled if this isn't the case
+        if (accountIdVar.isValid()) {
+            const SugarAccount account = AccountRepository::instance()->accountById(accountIdVar.toString());
+            Q_ASSERT(!account.isEmpty());
+            ret.append(account);
+        }
+    }
+    return ret;
 }
 
 void AccountImportDialog::accept()
 {
-    for (int row = 0 ; row < mButtonGroups.count(); ++row) {
-        QButtonGroup *buttonGroup = mButtonGroups.at(row);
-        QAbstractButton *radio = buttonGroup->checkedButton();
-        const QVariant accountIdVar = radio->property("accountId");
-        if (accountIdVar.isValid()) {
-            // use existing account
-            const SugarAccount account = AccountRepository::instance()->accountById(accountIdVar.toString());
-            Q_ASSERT(!account.isEmpty());
-            mAccounts[row] = account;
-        }
-        // else .... no account selected? account being created? TODO
+    const QVector<SugarAccount> accounts = chosenAccounts();
+    for (int i = 0 ; i < accounts.count(); ++i) {
+        qDebug() << accounts.at(i).id() << accounts.at(i).name();
     }
     QDialog::accept();
 }
@@ -181,9 +197,10 @@ void AccountImportDialog::slotTextChanged(QWidget *obj)
     QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
     Q_ASSERT(lineEdit);
     const int row = lineEdit->property("row").toInt();
-    QButtonGroup *buttonGroup = mButtonGroups.at(row);
+    PendingAccount &pa = mPendingAccounts[row];
+    QButtonGroup *buttonGroup = pa.buttonGroup;
     qDeleteAll(buttonGroup->buttons());
-    mAccounts[row].setName(lineEdit->text());
+    pa.account.setName(lineEdit->text());
     fillSimilarAccounts(row);
     updateOKButton();
 }
@@ -196,12 +213,11 @@ void AccountImportDialog::slotButtonClicked(QAbstractButton *button)
         // create new account
         Akonadi::Item item;
         item.setMimeType(SugarAccount::mimeType());
-        const SugarAccount account = mAccounts.at(accountRowNumber.toInt());
+        const SugarAccount account = mPendingAccounts.at(accountRowNumber.toInt()).account;
         qDebug() << "Creating account id=" << account.id() << "name=" << account.name();
         item.setPayload<SugarAccount>(account);
         Akonadi::Job *job = new Akonadi::ItemCreateJob(item, mAccountCollection, this);
         job->setProperty("jobAccountRow", accountRowNumber);
-        job->setProperty("jobButton", QVariant::fromValue(button));
         mAccountCreationJobs.append(job);
         button->setEnabled(false);
         button->setText(i18n("Creating account '%1'...", account.name()));
@@ -218,43 +234,63 @@ void AccountImportDialog::slotCreateAccountResult(KJob *job)
     const QVariant accountRowNumber = job->property("jobAccountRow");
     Q_ASSERT(accountRowNumber.isValid());
     const int row = accountRowNumber.toInt();
-    const SugarAccount &account = mAccounts.at(row);
-    QAbstractButton *button = job->property("jobButton").value<QAbstractButton *>();
+    PendingAccount &pa = mPendingAccounts[row];
+    const SugarAccount &account = pa.account;
+    QAbstractButton *button = pa.createButton;
     if (job->error()) {
         button->setText(i18n("Error creating account %1", account.name()));
         button->setToolTip(job->errorString());
         mUi->statusLabel->setText(job->errorString());
         job->uiDelegate()->showErrorMessage();
     } else {
-        // TODO wait for Monitor / AccountRepository::addAcount called
-        // replace the pushbutton with a radiobutton // TOO EARLY
-        QGroupBox *container = mGroupBoxes.at(row);
-        QGridLayout *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
-        int buttonRow;
-        int buttonCol;
-        int rowSpan, colSpan;
-        buttonsLayout->getItemPosition(buttonsLayout->indexOf(button), &buttonRow, &buttonCol, &rowSpan, &colSpan);
+        // Account created in akonadi, but no ID yet (this needs the resource to be online and sync it)
+        // We need the ID to associate the contact to the account, so let's wait for AccountRepository.
 
-        delete button;
-        QRadioButton *button = new QRadioButton(accountNameAndLocation(account), container);
-        mButtonGroups.at(row)->addButton(button);
-        button->setChecked(true); // select the radiobutton that we just created (which is why we don't just call fillSimilarAccounts)
-        buttonsLayout->addWidget(button, buttonRow, buttonCol);
-        button->setProperty("accountId", account.id());
-        button->show();
-
+        button->setText(i18n("Account created, waiting for server..."));
         Akonadi::ItemCreateJob *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
-        qDebug() << "OK, created. id=" << createJob->item().id() << " remoteId=" << createJob->item().remoteId();
-
-        updateOKButton();
+        qDebug() << "OK, created. id=" << createJob->item().id();
+        pa.idBeingCreated = createJob->item().id();
     }
+}
+
+void AccountImportDialog::slotAccountAdded(const QString &id, Akonadi::Item::Id akonadiId)
+{
+    for (int row = 0 ; row < mPendingAccounts.count(); ++row) {
+        if (mPendingAccounts.at(row).idBeingCreated == akonadiId) {
+            accountCreated(row, id);
+        }
+    }
+}
+
+void AccountImportDialog::accountCreated(int row, const QString &id)
+{
+    const SugarAccount account = AccountRepository::instance()->accountById(id);
+
+    // replace the pushbutton with a radiobutton
+    QGroupBox *container = mPendingAccounts.at(row).groupBox;
+    QPushButton *createButton = mPendingAccounts.at(row).createButton;
+    QGridLayout *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
+    int buttonRow;
+    int buttonCol;
+    int rowSpan, colSpan;
+    buttonsLayout->getItemPosition(buttonsLayout->indexOf(createButton), &buttonRow, &buttonCol, &rowSpan, &colSpan);
+
+    delete createButton;
+    QRadioButton *button = new QRadioButton(accountNameAndLocation(account), container);
+    mPendingAccounts.at(row).buttonGroup->addButton(button);
+    button->setChecked(true); // select the radiobutton that we just created (which is why we don't just call fillSimilarAccounts)
+    buttonsLayout->addWidget(button, buttonRow, buttonCol);
+    button->setProperty("accountId", account.id());
+    button->show();
+
+    updateOKButton();
 }
 
 void AccountImportDialog::updateOKButton()
 {
     QPushButton* okButton = mUi->buttonBox->button(QDialogButtonBox::Ok);
-    for (int row = 0 ; row < mButtonGroups.count(); ++row) {
-        QButtonGroup *buttonGroup = mButtonGroups.at(row);
+    for (int row = 0 ; row < mPendingAccounts.count(); ++row) {
+        QButtonGroup *buttonGroup = mPendingAccounts.at(row).buttonGroup;
         QAbstractButton *radio = buttonGroup->checkedButton();
         if (!radio || !radio->property("accountId").isValid()) {
             okButton->setEnabled(false);
