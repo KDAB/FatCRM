@@ -73,6 +73,7 @@ void DetailsWidget::initialize()
     QHBoxLayout *hlayout = new QHBoxLayout;
     hlayout->addWidget(mDetails);
     mUi.detailsContainer->setLayout(hlayout);
+    mUi.description->enableFindReplace(true);
 
 }
 
