@@ -47,6 +47,7 @@ public:
      */
     enum ColumnType {
         Name,
+        PostalCode,
         City,
         Country,
         Phone,

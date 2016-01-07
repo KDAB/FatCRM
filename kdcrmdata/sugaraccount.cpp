@@ -213,6 +213,20 @@ QString SugarAccount::countryForGui() const
     return country.trimmed();
 }
 
+QString SugarAccount::cityForGui() const
+{
+    const QString billingCity = d->mBillingAddressCity;
+    const QString city = billingCity.isEmpty() ? d->mShippingAddressCity : billingCity;
+    return city.trimmed();
+}
+
+QString SugarAccount::postalCodeForGui() const
+{
+    const QString billingPostalcode = d->mBillingAddressPostalcode;
+    const QString postalCode = billingPostalcode.isEmpty() ? d->mShippingAddressPostalcode : billingPostalcode;
+    return postalCode.trimmed();
+}
+
 #if 0
 bool SugarAccount::operator==(const SugarAccount &other) const
 {

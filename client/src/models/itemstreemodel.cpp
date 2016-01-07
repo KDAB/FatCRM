@@ -427,8 +427,13 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case AssignedTo:
             return opportunity.assignedUserName();
+        case PostalCode:
+            return AccountRepository::instance()->accountById(opportunity.accountId()).postalCodeForGui();
+        case City:
+            return AccountRepository::instance()->accountById(opportunity.accountId()).cityForGui();
         case Country:
             return AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
+
         default:
             return QVariant();
         }
@@ -470,6 +475,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
     case Opportunity:
         columns << ItemsTreeModel::OpportunityAccountName
                 << ItemsTreeModel::OpportunityName
+                << ItemsTreeModel::PostalCode
+                << ItemsTreeModel::City
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
@@ -499,6 +506,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column name", "Name");
     case Street:
         return i18nc("@title:column street", "Street");
+    case PostalCode:
+        return i18nc("@title:column postalcode", "Postal Code");
     case City:
         return i18nc("@title:column city", "City");
     case Country:
@@ -597,6 +606,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Lead:
         break;
     case Opportunity:
+        columns.removeAll(ItemsTreeModel::PostalCode);
+        columns.removeAll(ItemsTreeModel::City);
         columns.removeAll(ItemsTreeModel::Amount);
         columns.removeAll(ItemsTreeModel::NextStep);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
