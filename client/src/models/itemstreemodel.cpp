@@ -33,7 +33,6 @@
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
 
-#include <KGlobal>
 #include <QIcon>
 #include <KIconLoader>
 #include <KLocalizedString>

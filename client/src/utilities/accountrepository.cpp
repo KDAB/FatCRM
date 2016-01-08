@@ -21,7 +21,7 @@
 */
 
 #include "accountrepository.h"
-#include <KDebug>
+#include "fatcrm_client_debug.h"
 
 AccountRepository *AccountRepository::instance()
 {
@@ -133,7 +133,7 @@ QList<SugarAccount> AccountRepository::accountsByKey(const QString &key) const
 
 void AccountRepository::emitInitialLoadingDone()
 {
-    kDebug();
+    qCDebug(FATCRM_CLIENT_LOG);
     emit initialLoadingDone();
 }
 
