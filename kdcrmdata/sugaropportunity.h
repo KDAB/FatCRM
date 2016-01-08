@@ -168,6 +168,10 @@ public:
       Return Description.
      */
     QString description() const;
+    /**
+      Return the 2 last paragraphs of Description or the description itself (if only 2 or less paragraph).
+     */
+    QString shortDescription() const;
 
     /**
       Set Deleted.

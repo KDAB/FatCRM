@@ -49,6 +49,7 @@ public:
         PostalCode,
         City,
         Country,
+        Description,
         Phone,
         Email,
         CreationDate,

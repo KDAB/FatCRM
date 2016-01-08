@@ -303,6 +303,16 @@ QString SugarOpportunity::description() const
     return d->mDescription;
 }
 
+QString SugarOpportunity::shortDescription() const
+{
+   const QStringList description = d->mDescription.split("\n", QString::SkipEmptyParts);
+   int paragraphs = description.count();
+   if (paragraphs > 2) {
+       return description.at(paragraphs-2) + QLatin1Char('\n') + description.at(paragraphs-1);
+   }
+   return d->mDescription;
+}
+
 void SugarOpportunity::setDeleted(const QString &value)
 {
     d->mEmpty = false;

@@ -32,12 +32,33 @@
 #include "kdcrmdata/sugaropportunity.h"
 
 #include <QDebug>
+#include <QStyledItemDelegate>
 
 using namespace Akonadi;
+
+class OpportunityTreeViewItemDelegate: public QStyledItemDelegate
+{
+public:
+    OpportunityTreeViewItemDelegate(QObject *parent)
+        : QStyledItemDelegate(parent)
+    {
+    }
+
+    // Return a null size for the description column:
+    // (if hidden, because of QTBUG-8376, and if visible, because we prefer truncating over making rows higher)
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+    {
+        if (index.column() == ItemsTreeModel::columnTypes(Opportunity).indexOf(ItemsTreeModel::Description)) {
+            return QSize(0,0);
+        }
+        return QStyledItemDelegate::sizeHint(option, index);
+    }
+};
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
     : Page(parent, SugarOpportunity::mimeType(), Opportunity)
 {
+    treeView()->setItemDelegate(new OpportunityTreeViewItemDelegate(this));
     mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
     setFilter(mOppFilterProxyModel);
 

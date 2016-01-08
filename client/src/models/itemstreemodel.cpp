@@ -405,6 +405,8 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return opportunity.salesStage();
         case Amount:
             return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
+        case Description:
+            return opportunity.shortDescription();
         case CreationDate: {
             const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
@@ -478,6 +480,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
+                << ItemsTreeModel::Description
                 << ItemsTreeModel::CreationDate
                 << ItemsTreeModel::NextStep
                 << ItemsTreeModel::NextStepDate
@@ -558,6 +561,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column sales stage", "Sales Stage");
     case Amount:
         return i18nc("@title:column amount", "Amount");
+    case Description:
+        return i18nc("@title:column description", "Description");
     case NextStep:
         return i18nc("@title:column next step", "Next Step");
     case NextStepDate:
