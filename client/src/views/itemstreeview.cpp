@@ -35,6 +35,7 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
 {
     setRootIsDecorated(false);
     setContextMenuPolicy(Qt::CustomContextMenu);
+    setWordWrap(false);
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), SIGNAL(customContextMenuRequested(QPoint)),
