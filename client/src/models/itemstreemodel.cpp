@@ -38,6 +38,7 @@
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <QMetaEnum>
+#include <accountrepository.h>
 
 using namespace Akonadi;
 
@@ -61,16 +62,12 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
 
     if (mType == Opportunity) {
         // Update accountName and country columns once all accounts are loaded
-        connect(ReferencedData::instance(AccountCountryRef), SIGNAL(initialLoadingDone()),
-                this, SLOT(oppCountryColumnChanged()));
-        connect(ReferencedData::instance(AccountRef), SIGNAL(initialLoadingDone()),
-                this, SLOT(oppAccountNameColumnChanged()));
+        connect(AccountRepository::instance(), SIGNAL(initialLoadingDone()),
+                this, SLOT(slotAccountsLoaded()));
 
         // and update it again later in case of single changes (by the user or when updating from server)
-        connect(ReferencedData::instance(AccountCountryRef), SIGNAL(dataChanged(int)),
-                this, SLOT(slotAccountCountryChanged(int)));
-        connect(ReferencedData::instance(AccountRef), SIGNAL(dataChanged(int)),
-                this, SLOT(slotAccountNameChanged(int)));
+        connect(AccountRepository::instance(), SIGNAL(accountModified(QString, QVector<AccountRepository::Field>)),
+                this, SLOT(slotAccountModified(QString, QVector<AccountRepository::Field>)));
     }
 }
 
@@ -149,45 +146,47 @@ QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
     if (!cc.isEmpty())
         return cc;
     // Otherwise get the country via the account
-    const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(addressee.organization());
+    const QString country = AccountRepository::instance()->accountById(addressee.organization()).countryForGui();
     return country;
 }
 
-void ItemsTreeModel::slotAccountCountryChanged(int row)
+void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields)
 {
+    Q_UNUSED(accountId);
     if (mType == Opportunity) {
-        Q_UNUSED(row);
-        //const QString accountId = ReferencedData::instance(AccountCountryRef)->data(row);
         // We could iterate over all opps to find those which use that account.... but maybe this is just faster:
-        oppCountryColumnChanged();
+        const int rows = rowCount();
+        if (rows == 0)
+            return;
+        QVector<int> columns;
+        if (changedFields.contains(AccountRepository::Country)) {
+            columns.append(d->mColumns.indexOf(Country));
+        }
+        if (changedFields.contains(AccountRepository::Name)) {
+            columns.append(d->mColumns.indexOf(OpportunityAccountName));
+        }
+        if (columns.isEmpty())
+            return;
+        const int firstColumn = *std::min_element(columns.constBegin(), columns.constEnd());
+        const int lastColumn = *std::max_element(columns.constBegin(), columns.constEnd());
+        qDebug() << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
+        emit dataChanged(index(0, firstColumn), index(rows - 1, lastColumn));
     }
 }
 
-void ItemsTreeModel::slotAccountNameChanged(int row)
+// Called when the accounts have just been loaded
+// Normally we have no opps yet, but it can happen if akonadi syncs the folders in a different order than we expected
+// (i.e. due to queued jobs in the resource)
+void ItemsTreeModel::slotAccountsLoaded()
 {
-    if (mType == Opportunity) {
-        Q_UNUSED(row); // same reasoning as in slotAccountCountryChanged(row)
-        oppAccountNameColumnChanged();
-    }
-}
-
-void ItemsTreeModel::oppCountryColumnChanged()
-{
-    const int column = d->mColumns.indexOf(Country);
     const int rows = rowCount();
     if (rows > 0) {
-        //qCDebug(FATCRM_CLIENT_LOG) << "emitting dataChanged for column" << column;
-        emit dataChanged(index(0, column), index(rows - 1, column));
-    }
-}
-
-void ItemsTreeModel::oppAccountNameColumnChanged()
-{
-    const int column = d->mColumns.indexOf(OpportunityAccountName);
-    const int rows = rowCount();
-    if (rows > 0) {
-        //qCDebug(FATCRM_CLIENT_LOG) << "emitting dataChanged for column" << column;
-        emit dataChanged(index(0, column), index(rows- 1, column));
+        const int columnCountry = d->mColumns.indexOf(Country);
+        const int columnAccountName = d->mColumns.indexOf(OpportunityAccountName);
+        const int firstColumn = qMin(columnCountry, columnAccountName);
+        const int lastColumn = qMax(columnCountry, columnAccountName);
+        qDebug() << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
+        emit dataChanged(index(0, firstColumn), index(rows - 1, lastColumn));
     }
 }
 
@@ -428,8 +427,13 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case AssignedTo:
             return opportunity.assignedUserName();
+        case PostalCode:
+            return AccountRepository::instance()->accountById(opportunity.accountId()).postalCodeForGui();
+        case City:
+            return AccountRepository::instance()->accountById(opportunity.accountId()).cityForGui();
         case Country:
-            return ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountId());
+            return AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
+
         default:
             return QVariant();
         }
@@ -471,6 +475,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
     case Opportunity:
         columns << ItemsTreeModel::OpportunityAccountName
                 << ItemsTreeModel::OpportunityName
+                << ItemsTreeModel::PostalCode
+                << ItemsTreeModel::City
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
@@ -500,6 +506,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column name", "Name");
     case Street:
         return i18nc("@title:column street", "Street");
+    case PostalCode:
+        return i18nc("@title:column postalcode", "Postal Code");
     case City:
         return i18nc("@title:column city", "City");
     case Country:
@@ -598,6 +606,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Lead:
         break;
     case Opportunity:
+        columns.removeAll(ItemsTreeModel::PostalCode);
+        columns.removeAll(ItemsTreeModel::City);
         columns.removeAll(ItemsTreeModel::Amount);
         columns.removeAll(ItemsTreeModel::NextStep);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);

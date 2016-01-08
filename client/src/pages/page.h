@@ -48,6 +48,7 @@ class KJob;
 class QAction;
 class QModelIndex;
 class NotesRepository;
+class QPoint;
 
 class Page : public QWidget
 {
@@ -60,6 +61,7 @@ public:
     QString mimeType() const { return mMimeType; }
     DetailsType detailsType() const { return mType; }
     void setCollection(const Akonadi::Collection& collection);
+    Akonadi::Collection collection() const { return mCollection; }
     void setNotesRepository(NotesRepository *repo);
     void setModificationsIgnored(bool b);
     void initialLoadingDone();
@@ -111,11 +113,15 @@ private Q_SLOTS:
     void slotResetSearch();
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
+    void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
     void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const Akonadi::Item &item);
     void slotCreateJobResult(KJob *job);
     void slotModifyJobResult(KJob *job);
     void slotItemSaved(const Akonadi::Item &item);
+    void slotItemContextMenuRequested(const QPoint &pos);
+    void slotOpenUrl();
+    void slotCopyLink();
 
 private:
     virtual QString reportTitle() const = 0;
@@ -158,6 +164,7 @@ private:
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
+    QUrl mCurrentItemUrl;
     NotesRepository *mNotesRepository;
     EnumDefinitions mEnumDefinitions;
     bool mOnline;

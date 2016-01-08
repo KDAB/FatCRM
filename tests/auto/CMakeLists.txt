@@ -17,7 +17,7 @@ macro(add_fatcrm_tests)
     target_link_libraries(${_testname}
       fatcrmprivate
       Qt5::Test
-      ${QT_QTGUI_LIBS}
+      kdcrmdata
     )
   endforeach()
 endmacro()

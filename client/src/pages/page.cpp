@@ -55,6 +55,9 @@
 
 #include "fatcrm_client_debug.h"
 
+#include <QClipboard>
+#include <QDesktopServices>
+#include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>
 
@@ -181,11 +184,13 @@ void Page::setCollection(const Collection &collection)
         mChangeRecorder->setCollectionMonitored(mCollection, true);
         // automatically get the full data when items change
         mChangeRecorder->itemFetchScope().fetchFullPayload(true);
-        // don't get remote id/rev, to avoid errors in the FATCRM-75 case)
+        // don't get remote id/rev, to avoid errors in the FATCRM-75 case
         mChangeRecorder->itemFetchScope().setFetchRemoteIdentification(false);
         mChangeRecorder->setMimeTypeMonitored(mMimeType);
         connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
                 this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
+        connect(mChangeRecorder, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),
+                this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
 
         // if empty, the collection might not have been loaded yet, try synchronizing
         if (mCollection.statistics().count() == 0) {
@@ -218,7 +223,7 @@ void Page::initialLoadingDone()
 void Page::slotCurrentItemChanged(const QModelIndex &index)
 {
     // save previous item if modified
-    if (mDetailsWidget && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
+    if (mShowDetailsAction->isChecked() && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
         if (mCurrentIndex == index) // called by the setCurrentIndex below
             return;
         //qCDebug(FATCRM_CLIENT_LOG) << "going from" << mCurrentIndex << "to" << index;
@@ -232,9 +237,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
     //qCDebug(FATCRM_CLIENT_LOG) << "showing new item" << index;
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     if (item.isValid()) {
-        if (mDetailsWidget != 0) {
-            mDetailsWidget->setItem(item);
-        }
+        mDetailsWidget->setItem(item);
 
         mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
         //qCDebug(FATCRM_CLIENT_LOG) << "mCurrentIndex=" << mCurrentIndex;
@@ -244,7 +247,7 @@ void Page::slotCurrentItemChanged(const QModelIndex &index)
 void Page::slotNewClicked()
 {
     const QMap<QString, QString> data = dataForNewObject();
-    if (mDetailsWidget != 0 && mShowDetailsAction->isChecked()) {
+    if (mShowDetailsAction->isChecked()) {
         if (mDetailsWidget->isModified()) {
             if (askSave()) {
                 mDetailsWidget->saveData();
@@ -265,14 +268,12 @@ void Page::slotNewClicked()
 
 void Page::slotAddItem() // save new item
 {
-    if (mDetailsWidget != 0) {
-        Item item;
-        details()->updateItem(item, mDetailsWidget->data());
+    Item item;
+    details()->updateItem(item, mDetailsWidget->data());
 
-        // job starts automatically
-        ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
-    }
+    // job starts automatically
+    ItemCreateJob *job = new ItemCreateJob(item, mCollection);
+    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
 }
 
 void Page::slotCreateJobResult(KJob *job)
@@ -351,9 +352,7 @@ void Page::slotRemoveItem()
         mUi.removePB->setEnabled(false);
     }
 
-    if (mDetailsWidget != 0) {
-        mDetailsWidget->setItem(Item());
-    }
+    mDetailsWidget->setItem(Item());
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -406,7 +405,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
         emit modelLoaded(mType);
 
         if (mType == Account) {
-            ReferencedData::instance(AccountCountryRef)->emitInitialLoadingDone();
+            AccountRepository::instance()->emitInitialLoadingDone();
         }
     }
     emit ignoreModifications(false);
@@ -443,6 +442,7 @@ void Page::initialize()
 {
     connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
     connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
+    connect(mUi.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotItemContextMenuRequested(QPoint)));
 
     const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
@@ -482,6 +482,29 @@ void Page::initialize()
     showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
 
     connectToDetails(mDetailsWidget->details());
+}
+
+void Page::slotItemContextMenuRequested(const QPoint &pos)
+{
+    mCurrentItemUrl = details()->itemUrl();
+
+    if (!mCurrentItemUrl.isValid())
+        return;
+
+    QMenu contextMenu;
+    contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+    contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+    contextMenu.exec(mUi.treeView->mapToGlobal(pos));
+}
+
+void Page::slotOpenUrl()
+{
+    QDesktopServices::openUrl(mCurrentItemUrl);
+}
+
+void Page::slotCopyLink()
+{
+    QApplication::clipboard()->setText(mCurrentItemUrl.toString());
 }
 
 void Page::setupModel()
@@ -525,20 +548,11 @@ void Page::insertFilterWidget(QWidget *widget)
     mUi.verticalLayout->insertWidget(1, widget);
 }
 
-static QString countryForAccount(const SugarAccount &account)
-{
-    const QString billingCountry = account.billingAddressCountry();
-    const QString country = billingCountry.isEmpty() ? account.shippingAddressCountry() : billingCountry;
-    return country.trimmed();
-}
-
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
     //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
-    const int firstColumn = topLeft.column();
-    const int lastColumn = bottomRight.column();
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
         if (!index.isValid()) {
@@ -548,30 +562,8 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
-        if (index == mCurrentIndex && mDetailsWidget && !mDetailsWidget->isModified()) {
+        if (index == mCurrentIndex && !mDetailsWidget->isModified()) {
             mDetailsWidget->setItem(item); // update details widget
-        }
-        if (mType == Account && item.hasPayload<SugarAccount>()) {
-            const SugarAccount account = item.payload<SugarAccount>();
-            const QString id = account.id();
-            Q_ASSERT(!id.isEmpty());
-            const bool newAccount = !AccountRepository::instance()->hasId(id);
-            if (newAccount) {
-                AccountRepository::instance()->addAccount(account);
-            }
-            if (firstColumn <= ItemsTreeModel::Country && ItemsTreeModel::Country <= lastColumn) {
-                ReferencedData::instance(AccountCountryRef)->setReferencedData(id, countryForAccount(account));
-            }
-            if ((firstColumn <= ItemsTreeModel::Name && ItemsTreeModel::Name <= lastColumn) || newAccount) {
-                ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
-            }
-        } else if (mType == Contact && item.hasPayload<KContacts::Addressee>()) {
-            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
-            const QString id = addressee.custom("FATCRM", "X-ContactId");
-            Q_ASSERT(!id.isEmpty());
-            ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-            ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
 }
@@ -739,24 +731,22 @@ void Page::addAccountsData(int start, int end, bool emitChanges)
 {
     //qCDebug(FATCRM_CLIENT_LOG) << start << end;
     // QElapsedTimer dt; dt.start();
-    QMap<QString, QString> accountRefMap, assignedToRefMap, accountCountryRefMap;
+    QMap<QString, QString> accountRefMap, assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
-            if (account.id().isEmpty()) // it just got created on the client side, we'll wait for the server to assign it an ID
+            const QString accountId = account.id();
+            if (accountId.isEmpty()) // it just got created on the client side, we'll wait for the server to assign it an ID
                 continue;
-            accountRefMap.insert(account.id(), account.name());
+            accountRefMap.insert(accountId, account.name());
             assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
-            accountCountryRefMap.insert(account.id(), countryForAccount(account));
-
-            AccountRepository::instance()->addAccount(account);
+            AccountRepository::instance()->addAccount(account, item.id());
         }
     }
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
-    ReferencedData::instance(AccountCountryRef)->addMap(accountCountryRefMap, emitChanges); // country changes are handled in slotDataChanged
     //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
@@ -768,7 +758,6 @@ void Page::removeAccountsData(int start, int end, bool emitChanges)
         if (item.hasPayload<SugarAccount>()) {
             const SugarAccount account = item.payload<SugarAccount>();
             ReferencedData::instance(AccountRef)->removeReferencedData(account.id(), emitChanges);
-            ReferencedData::instance(AccountCountryRef)->removeReferencedData(account.id(), emitChanges);
 
             AccountRepository::instance()->removeAccount(account);
         }
@@ -909,4 +898,35 @@ KJob *Page::clearTimestamp()
     newAnnotationsAttribute->insert(s_timeStampKey, QString());
     Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
     return modJob;
+}
+
+void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
+{
+    // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
+    //qDebug() << "slotItemChanged" << partIdentifiers;
+    Q_UNUSED(partIdentifiers);
+    if (mType == Account && item.hasPayload<SugarAccount>()) {
+        const SugarAccount account = item.payload<SugarAccount>();
+        const QString id = account.id();
+        Q_ASSERT(!id.isEmpty());
+        const bool newAccount = !AccountRepository::instance()->hasId(id);
+        bool updateNameRef = newAccount;
+        // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
+        // So we wait for the first dataChanged to create new accounts
+        if (newAccount) {
+            AccountRepository::instance()->addAccount(account, item.id());
+        } else {
+            QVector<AccountRepository::Field> changed = AccountRepository::instance()->modifyAccount(account);
+            updateNameRef = changed.contains(AccountRepository::Name);
+        }
+        if (updateNameRef)
+            ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
+    } else if (mType == Contact && item.hasPayload<KContacts::Addressee>()) {
+        const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+        const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
+        const QString id = addressee.custom("FATCRM", "X-ContactId");
+        Q_ASSERT(!id.isEmpty());
+        ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
+        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+    }
 }

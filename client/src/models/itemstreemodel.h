@@ -28,6 +28,9 @@
 #include <AkonadiCore/EntityTreeModel>
 
 namespace KContacts { class Addressee; }
+#include <AkonadiCore/EntityTreeModel>
+
+#include <accountrepository.h>
 
 /**
  * A model for sugar items.
@@ -45,6 +48,7 @@ public:
      */
     enum ColumnType {
         Name,
+        PostalCode,
         City,
         Country,
         Phone,
@@ -112,10 +116,8 @@ public:
     static QString countryForContact(const KContacts::Addressee &addressee);
 
 private Q_SLOTS:
-    void slotAccountCountryChanged(int row);
-    void slotAccountNameChanged(int row);
-    void oppCountryColumnChanged();
-    void oppAccountNameColumnChanged();
+    void slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields);
+    void slotAccountsLoaded();
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;

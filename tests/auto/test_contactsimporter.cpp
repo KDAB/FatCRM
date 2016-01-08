@@ -64,7 +64,7 @@ private Q_SLOTS:
         AccountRepository *repo = AccountRepository::instance();
         repo->clear();
         ac1.setId("id1");
-        repo->addAccount(ac1);
+        repo->addAccount(ac1, 0);
         QCOMPARE(repo->similarAccounts(ac2).count(), expectedSame ? 1 : 0);
     }
 

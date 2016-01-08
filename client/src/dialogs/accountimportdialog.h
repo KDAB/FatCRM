@@ -25,12 +25,17 @@
 
 #include <QDialog>
 #include <QSignalMapper>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/item.h>
 #include "sugaraccount.h"
 
 namespace Ui {
 class AccountImportDialog;
 }
+class QAbstractButton;
 class QGroupBox;
+class QButtonGroup;
+class KJob;
 
 class AccountImportDialog : public QDialog
 {
@@ -40,19 +45,42 @@ public:
     explicit AccountImportDialog(QWidget *parent = 0);
     ~AccountImportDialog();
 
+    // intput
+    void setAccountCollection(const Akonadi::Collection &collection);
     void setImportedAccounts(const QVector<SugarAccount> &accounts);
+
+    // output (valid after exec() returns)
+    QVector<SugarAccount> chosenAccounts() const;
 
 protected:
     void accept() Q_DECL_OVERRIDE;
+    void reject() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotTextChanged(QWidget *lineEdit);
-private:
-    void fillSimilarAccounts(QGroupBox *container, const SugarAccount& newAccount);
+    void slotButtonClicked(QAbstractButton *button);
+    void slotCreateAccountResult(KJob *job);
+    void updateOKButton();
+    void slotAccountAdded(const QString &id, Akonadi::Item::Id akonadiId);
 
-    QVector<SugarAccount> m_accounts;
-    QSignalMapper m_lineEditMapper;
-    Ui::AccountImportDialog *ui;
+private:
+    void fillSimilarAccounts(int row);
+    void accountCreated(int row, const QString &id);
+
+    Akonadi::Collection mAccountCollection;
+
+    struct PendingAccount {
+        QButtonGroup *buttonGroup;
+        QGroupBox *groupBox;
+        QPushButton *createButton;
+        SugarAccount account;
+        Akonadi::Item::Id idBeingCreated;
+    };
+
+    QVector<PendingAccount> mPendingAccounts;
+    QSignalMapper mLineEditMapper;
+    QList<KJob *> mAccountCreationJobs;
+    Ui::AccountImportDialog *mUi;
 };
 
 #endif // ACCOUNTIMPORTDIALOG_H

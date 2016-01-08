@@ -35,6 +35,7 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     mItemsTreeModel(0)
 {
     setRootIsDecorated(false);
+    setContextMenuPolicy(Qt::CustomContextMenu);
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), SIGNAL(customContextMenuRequested(QPoint)),

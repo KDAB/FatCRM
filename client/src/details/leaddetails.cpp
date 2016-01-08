@@ -57,6 +57,11 @@ void LeadDetails::initialize()
             this, SLOT(slotSetBirthDate()));
 }
 
+QUrl LeadDetails::itemUrl() const
+{
+    return QUrl();
+}
+
 void LeadDetails::slotSetBirthDate()
 {
     mUi->birthdate->setText(KDCRMUtils::dateToString(mUi->calendarButton->calendarWidget()->selectedDate()));

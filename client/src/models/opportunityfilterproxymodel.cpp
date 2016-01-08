@@ -32,6 +32,7 @@
 #include <AkonadiCore/EntityTreeModel>
 
 #include <QDate>
+#include <accountrepository.h>
 
 using namespace Akonadi;
 
@@ -112,7 +113,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
     const QStringList countries = d->settings.countries();
     if (!countries.isEmpty()) {
-        const QString country = ReferencedData::instance(AccountCountryRef)->referencedData(opportunity.accountId());
+        const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
         if (!countries.contains(country, Qt::CaseInsensitive))
             return false;
     }

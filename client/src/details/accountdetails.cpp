@@ -50,6 +50,16 @@ QString AccountDetails::idForItem(const Akonadi::Item &item) const
     return QString();
 }
 
+QUrl AccountDetails::itemUrl() const
+{
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Accounts&record=" + id();
+        return QUrl(url);
+    }
+    return QUrl();
+}
+
 void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
@@ -83,9 +93,7 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->industry, KDCRMFields::industry());
     fillComboBox(mUi->account_type, KDCRMFields::accountType());
 
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Accounts&record=" + id();
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url));
-    }
+    const QUrl url = itemUrl();
+    if (url.isValid())
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
 }

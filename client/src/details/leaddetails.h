@@ -38,6 +38,8 @@ public:
 
     ~LeadDetails();
 
+    QUrl itemUrl() const Q_DECL_OVERRIDE;
+
 private Q_SLOTS:
     void slotSetBirthDate();
     void slotClearDate();

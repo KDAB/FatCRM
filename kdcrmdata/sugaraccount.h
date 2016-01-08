@@ -84,6 +84,21 @@ public:
     */
     QString cleanAccountName() const;
 
+    /**
+     * For simplified GUIs: pick the country that is set between the billing address and the shipping address
+     */
+    QString countryForGui() const;
+
+    /**
+     * For simplified GUIs: pick the city that is set between the billing address and the shipping address
+     */
+    QString cityForGui() const;
+
+    /**
+     * For simplified GUIs: pick the postal code that is set between the billing address and the shipping address
+     */
+    QString postalCodeForGui() const;
+
 private:
     /**
       Equality operator.

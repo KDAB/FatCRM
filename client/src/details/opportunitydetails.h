@@ -40,6 +40,7 @@ public:
     ~OpportunityDetails();
 
     void setNotesRepository(NotesRepository *notesRepo) Q_DECL_OVERRIDE { mNotesRepository = notesRepo; }
+    QUrl itemUrl() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotAutoNextStepDate();

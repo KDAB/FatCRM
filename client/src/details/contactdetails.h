@@ -43,6 +43,8 @@ public:
 
     ~ContactDetails();
 
+    QUrl itemUrl() const Q_DECL_OVERRIDE;
+
 private:
     Ui::ContactDetails *mUi;
 

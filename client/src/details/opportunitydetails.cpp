@@ -62,6 +62,16 @@ void OpportunityDetails::initialize()
             this, SLOT(slotSalesStageActivated(QString)));
 }
 
+QUrl OpportunityDetails::itemUrl() const
+{
+    const QString baseUrl = resourceBaseUrl();
+    if (!baseUrl.isEmpty() && !id().isEmpty()) {
+        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id();
+        return QUrl(url);
+    }
+    return QUrl();
+}
+
 void OpportunityDetails::slotAutoNextStepDate()
 {
     mUi->next_call_date->setDate(QDate::currentDate().addDays(14));
@@ -109,15 +119,13 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
 
-    const QString baseUrl = resourceBaseUrl();
-    const QString oppId = id();
-    if (!baseUrl.isEmpty() && !oppId.isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + oppId;
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url));
-    } else {
+    const QUrl url = itemUrl();
+    if (url.isValid())
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
+    else
         mUi->urllabel->clear();
-    }
 
+    const QString oppId = id();
     const int notes = oppId.isEmpty() ? 0 : mNotesRepository->notesForOpportunity(oppId).count() + mNotesRepository->emailsForOpportunity(oppId).count();
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
