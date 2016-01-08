@@ -25,10 +25,10 @@
 
 #include "sugaraccount.h"
 
+#include <Akonadi/Item>
+
 #include <QMap>
 #include <QVector>
-
-#include <akonadi/item.h>
 
 class AccountRepository : public QObject
 {

@@ -24,10 +24,9 @@
 #define ITEMSTREEMODEL_H
 
 #include "enums.h"
+#include "accountrepository.h"
 
 #include <Akonadi/EntityTreeModel>
-
-#include <accountrepository.h>
 
 namespace KABC { class Addressee; }
 

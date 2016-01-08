@@ -21,7 +21,6 @@
 */
 
 #include "itemstreemodel.h"
-
 #include "referenceddata.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -38,7 +37,6 @@
 #include <KIconLoader>
 #include <KLocale>
 #include <QMetaEnum>
-#include <accountrepository.h>
 
 using namespace Akonadi;
 
@@ -66,8 +64,8 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
                 this, SLOT(slotAccountsLoaded()));
 
         // and update it again later in case of single changes (by the user or when updating from server)
-        connect(AccountRepository::instance(), SIGNAL(accountModified(QString, QVector<AccountRepository::Field>)),
-                this, SLOT(slotAccountModified(QString, QVector<AccountRepository::Field>)));
+        connect(AccountRepository::instance(), SIGNAL(accountModified(QString,QVector<AccountRepository::Field>)),
+                this, SLOT(slotAccountModified(QString,QVector<AccountRepository::Field>)));
     }
 }
 
