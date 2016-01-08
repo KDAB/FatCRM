@@ -21,14 +21,6 @@ include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(ECMAddAppIcon)
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-endif()
-#TODO: support a real debugfull, like in KDE
-string(TOLOWER ${CMAKE_BUILD_TYPE} _lower)
-if(${_lower} MATCHES "debugfull")
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-endif()
 
 enable_testing()
 
@@ -96,24 +88,6 @@ macro(assert_min_ver version)
     message(FATAL_ERROR "${msg}")
   endif()
 endmacro()
-
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # using Clang >= 3.3
-  assert_min_ver("3.3")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  # using GCC >= 4.8
-  assert_min_ver("4.8")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-else()
-  add_definitions(-DQ_DECL_OVERRIDE=)
-  add_definitions(-DQ_DECL_FINAL=)
-  add_definitions(-DQ_NULLPTR=0)
-endif()
 
 kde_enable_exceptions()
 
