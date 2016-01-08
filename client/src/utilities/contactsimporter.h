@@ -24,12 +24,12 @@
 #define CONTACTSIMPORTER_H
 
 #include "kdcrmdata/sugaraccount.h"
-
+#include "fatcrmprivate_export.h"
 #include <KContacts/Addressee>
 
 #include <QVector>
 
-class ContactsImporter
+class FATCRMPRIVATE_EXPORT ContactsImporter
 {
 public:
     ContactsImporter();

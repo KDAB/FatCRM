@@ -24,6 +24,7 @@
 #define REFERENCEDDATA_H
 
 #include "enums.h"
+#include "fatcrmprivate_export.h"
 
 #include <QObject>
 
@@ -36,7 +37,7 @@ template <typename K, typename V> class QMap;
  *
  * Used with a ReferencedDataModel on top.
  */
-class ReferencedData : public QObject
+class FATCRMPRIVATE_EXPORT ReferencedData : public QObject
 {
     Q_OBJECT
 

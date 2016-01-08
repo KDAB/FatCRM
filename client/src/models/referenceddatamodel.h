@@ -24,12 +24,12 @@
 #define REFERENCEDDATAMODEL_H
 
 #include "enums.h"
-
+#include "fatcrmprivate_export.h"
 #include <QAbstractListModel>
 class QComboBox;
 
 // List model for filling comboboxes referencing an account/campaign/user/etc.
-class ReferencedDataModel : public QAbstractListModel
+class FATCRMPRIVATE_EXPORT ReferencedDataModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
