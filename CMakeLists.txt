@@ -42,7 +42,7 @@ find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
 find_package(KF5Wallet ${KF5_VERSION} CONFIG REQUIRED)
 find_package(KF5Akonadi "5.1" CONFIG QUIET)
 if (NOT KF5Akonadi_FOUND)
-    find_package(KF5Akonadi "5.0" CONFIG REQUIRED)
+    find_package(KF5Akonadi "4.80" CONFIG REQUIRED)
     add_definitions(-DAKONADI_OLD_API)
 endif()
 
