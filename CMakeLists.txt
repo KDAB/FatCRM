@@ -132,6 +132,7 @@ include_directories(
 add_subdirectory(kdcrmdata)
 add_subdirectory(client)
 add_subdirectory(resources)
+add_subdirectory(images)
 add_subdirectory(tests)
 
 message(STATUS "Building FatCRM ${FATCRM_VERSION_STRING} in ${CMAKE_BUILD_TYPE} mode")

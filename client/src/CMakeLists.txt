@@ -75,6 +75,8 @@ kde4_add_ui_files(app_SRCS
   dialogs/resourceconfigdialog.ui
 )
 
+kde4_add_app_icon(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
+
 qt4_add_resources(app_SRCS
   widgets/widgets.qrc
 )
