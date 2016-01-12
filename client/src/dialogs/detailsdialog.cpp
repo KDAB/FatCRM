@@ -296,4 +296,10 @@ void DetailsDialog::setOnline(bool online)
     }
 }
 
+void DetailsDialog::closeEvent(QCloseEvent *event)
+{
+    emit closing();
+    QWidget::closeEvent(event);
+}
+
 #include "detailsdialog.moc"

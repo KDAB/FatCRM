@@ -43,6 +43,7 @@ public:
     ~DetailsDialog();
 
     void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection);
+    bool isModified() const;
 
 public Q_SLOTS:
     void setItem(const Akonadi::Item &item);
@@ -51,15 +52,16 @@ public Q_SLOTS:
 
 Q_SIGNALS:
     void itemSaved(const Akonadi::Item &item);
+    void closing();
 
 protected:
     void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void reject();
 
 private:
-    bool isModified() const;
     QString title() const;
 
     class Private;

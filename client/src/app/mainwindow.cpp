@@ -448,7 +448,24 @@ void MainWindow::setupResourcesCombo()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    QMainWindow::closeEvent(event);
+    event->ignore();
+
+    Q_FOREACH (Page *page, mPages) {
+        if(!page->queryClose()) {
+            return;
+        }
+        if (page->hasModifications()) {
+            if (QMessageBox::No == QMessageBox::question(this, i18n("Close?"),
+                                                          i18n("The current page has modifications, are you sure you want to exit without saving?"),
+                                                          QMessageBox::Yes|QMessageBox::No))
+            {
+                mUi.tabWidget->setCurrentWidget(page);
+                return;
+            }
+        }
+    }
+
+    event->accept();
 }
 
 void MainWindow::slotResourceError(const AgentInstance &resource, const QString &message)
