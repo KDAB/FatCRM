@@ -82,6 +82,7 @@ void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
     const QString localTime = KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateModified()));
     mUi.date_modified->setText(localTime);
 
+    mUi.description->enableFindReplace(true);
     mUi.description->setPlainText((mDetails->type() != Campaign) ?
                                   data.value(KDCRMFields::description()) :
                                   data.value(KDCRMFields::content()));
