@@ -107,9 +107,9 @@ void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
             kWarning() << "Enum definition not found for" << objectName << "in" << typeToString(mType);
         } else {
             const EnumDefinitions::Enum &def = mEnumDefinitions.at(enumIndex);
-            for (EnumDefinitions::Enum::Map::const_iterator it = def.mEnumValues.constBegin();
+            for (EnumDefinitions::Enum::Vector::const_iterator it = def.mEnumValues.constBegin();
                  it != def.mEnumValues.constEnd(); ++it) {
-                combo->addItem(it.value(), it.key());
+                combo->addItem(it->value, it->key);
             }
         }
     }
