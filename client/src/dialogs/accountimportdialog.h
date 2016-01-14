@@ -23,11 +23,12 @@
 #ifndef ACCOUNTIMPORTDIALOG_H
 #define ACCOUNTIMPORTDIALOG_H
 
+#include "sugaraccount.h"
+
 #include <QDialog>
 #include <QSignalMapper>
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/item.h>
-#include "sugaraccount.h"
 
 namespace Ui {
 class AccountImportDialog;

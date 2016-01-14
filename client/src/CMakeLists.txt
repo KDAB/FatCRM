@@ -76,11 +76,11 @@ ki18n_wrap_ui(app_SRCS
   dialogs/resourceconfigdialog.ui
 )
 
-qt5_add_resources(app_SRCS
-  widgets/widgets.qrc
-)
+#qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
+
 qt5_add_resources(app_SRCS
   icons/icons.qrc
+  widgets/widgets.qrc
 )
 
 # Generate DBus interface in order to find out the config of the sugar resource (for the web link)

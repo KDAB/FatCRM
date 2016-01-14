@@ -182,7 +182,10 @@ void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
                     // In general, name==value except for some like
                     // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"
                     //qDebug() << nameValue.name() << nameValue.value();
-                    definition.mEnumValues.insert(nameValue.name(), nameValue.value());
+                    EnumDefinitions::KeyValue keyValue;
+                    keyValue.key = nameValue.name();
+                    keyValue.value = nameValue.value();
+                    definition.mEnumValues.append(keyValue);
                 }
                 mEnumDefinitions.append(definition);
             }

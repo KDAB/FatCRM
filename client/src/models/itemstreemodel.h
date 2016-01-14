@@ -26,11 +26,10 @@
 #include "enums.h"
 #include "fatcrmprivate_export.h"
 #include <AkonadiCore/EntityTreeModel>
+#include "accountrepository.h"
 
 namespace KContacts { class Addressee; }
-#include <AkonadiCore/EntityTreeModel>
 
-#include <accountrepository.h>
 
 /**
  * A model for sugar items.
@@ -51,6 +50,7 @@ public:
         PostalCode,
         City,
         Country,
+        Description,
         Phone,
         Email,
         CreationDate,

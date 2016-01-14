@@ -26,12 +26,12 @@ QString EnumDefinitions::Enum::toString() const
 {
     QString ret = mEnumName;
     ret += '|';
-    for (Map::const_iterator it = mEnumValues.constBegin(); it != mEnumValues.constEnd(); ++it) {
-        Q_ASSERT(!it.key().contains(':'));
-        Q_ASSERT(!it.key().contains('|'));
-        Q_ASSERT(!it.value().contains(':'));
-        Q_ASSERT(!it.value().contains('|'));
-        ret += it.key() + ':' + it.value() + '|';
+    for (Vector::const_iterator it = mEnumValues.constBegin(); it != mEnumValues.constEnd(); ++it) {
+        Q_ASSERT(!it->key.contains(':'));
+        Q_ASSERT(!it->key.contains('|'));
+        Q_ASSERT(!it->value.contains(':'));
+        Q_ASSERT(!it->value.contains('|'));
+        ret += it->key + ':' + it->value + '|';
     }
     return ret;
 }
@@ -47,9 +47,10 @@ EnumDefinitions::Enum EnumDefinitions::Enum::fromString(const QString &str)
         Q_ASSERT(sep > -1);
         const int end = str.indexOf('|', sep + 1);
         Q_ASSERT(end > -1);
-        const QString key = str.mid(pos, sep - pos);
-        const QString value = str.mid(sep + 1, end - sep - 1);
-        ret.mEnumValues.insert(key, value);
+        KeyValue keyValue;
+        keyValue.key = str.mid(pos, sep - pos);
+        keyValue.value = str.mid(sep + 1, end - sep - 1);
+        ret.mEnumValues.append(keyValue);
         pos = end + 1;
     }
 

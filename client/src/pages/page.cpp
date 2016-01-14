@@ -210,6 +210,30 @@ void Page::setNotesRepository(NotesRepository *repo)
     mDetailsWidget->details()->setNotesRepository(repo);
 }
 
+bool Page::queryClose()
+{
+    foreach (DetailsDialog *dialog, mDetailsDialogs) {
+        if (dialog->isModified()) {
+            if (QMessageBox::Yes == QMessageBox::question(this, i18n("Close?"),
+                                                          i18n("A currently opened dialog has modifications, are you sure you want to exit without saving?"),
+                                                          QMessageBox::Yes|QMessageBox::No))
+            {
+                dialog->close();
+            } else {
+                dialog->raise();
+                dialog->activateWindow();
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+bool Page::hasModifications() const
+{
+    return mDetailsWidget->isModified();
+}
+
 void Page::setModificationsIgnored(bool b)
 {
     mDetailsWidget->setModificationsIgnored(b);
@@ -724,7 +748,16 @@ DetailsDialog *Page::createDetailsDialog()
             dialog, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
             dialog, SLOT(setOnline(bool)));
+    connect(dialog, SIGNAL(closing()),
+            this, SLOT(slotUnregisterDetailsDialog()));
+    mDetailsDialogs.insert(dialog);
     return dialog;
+}
+
+void Page::slotUnregisterDetailsDialog()
+{
+    DetailsDialog *dialog = qobject_cast<DetailsDialog*>(sender());
+    mDetailsDialogs.remove(dialog);
 }
 
 void Page::addAccountsData(int start, int end, bool emitChanges)

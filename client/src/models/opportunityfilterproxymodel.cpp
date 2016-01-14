@@ -21,6 +21,7 @@
 */
 
 #include "opportunityfilterproxymodel.h"
+#include "accountrepository.h"
 #include "clientsettings.h"
 #include "itemstreemodel.h"
 #include "opportunitiespage.h"
@@ -32,7 +33,6 @@
 #include <AkonadiCore/EntityTreeModel>
 
 #include <QDate>
-#include <accountrepository.h>
 
 using namespace Akonadi;
 

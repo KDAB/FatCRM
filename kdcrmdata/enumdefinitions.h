@@ -25,7 +25,7 @@
 
 #include <vector>
 
-#include <QMap>
+#include <QVector>
 #include <QMetaType>
 #include <QString>
 
@@ -43,6 +43,12 @@ class KDCRMDATA_EXPORT EnumDefinitions
 public:
     EnumDefinitions();
 
+    struct KeyValue
+    {
+        QString key; // ID
+        QString value; // display string
+    };
+
     struct KDCRMDATA_EXPORT Enum
     {
         Enum(const QString &name) : mEnumName(name) {}
@@ -50,8 +56,8 @@ public:
         static Enum fromString(const QString &str);
 
         QString mEnumName;
-        typedef QMap<QString, QString> Map;
-        Map mEnumValues; // ID, display string
+        typedef QVector<KeyValue> Vector;
+        Vector mEnumValues; // ID, display string
     };
 
     void append(const Enum &e) { mDefinitions.push_back(e); }

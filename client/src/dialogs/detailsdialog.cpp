@@ -82,6 +82,7 @@ void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
     const QString localTime = KDCRMUtils::formatTimestamp(data.value(KDCRMFields::dateModified()));
     mUi.date_modified->setText(localTime);
 
+    mUi.description->enableFindReplace(true);
     mUi.description->setPlainText((mDetails->type() != Campaign) ?
                                   data.value(KDCRMFields::description()) :
                                   data.value(KDCRMFields::content()));
@@ -294,6 +295,12 @@ void DetailsDialog::setOnline(bool online)
     if (!online) {
         d->mUi.labelOffline->setText(i18n("Warning: FatCRM is currently offline. Changes will only be sent to the server once it's online again."));
     }
+}
+
+void DetailsDialog::closeEvent(QCloseEvent *event)
+{
+    emit closing();
+    QWidget::closeEvent(event);
 }
 
 #include "moc_detailsdialog.cpp"

@@ -65,11 +65,13 @@ public:
     void setNotesRepository(NotesRepository *repo);
     void setModificationsIgnored(bool b);
     void initialLoadingDone();
+    bool queryClose();
 
     QAction *showDetailsAction(const QString &title) const;
     void openDialog(const QString &id);
 
     bool showsDetails() const;
+    bool hasModifications() const;
     void printReport();
     KJob *clearTimestamp();
 
@@ -122,6 +124,7 @@ private Q_SLOTS:
     void slotItemContextMenuRequested(const QPoint &pos);
     void slotOpenUrl();
     void slotCopyLink();
+    void slotUnregisterDetailsDialog();
 
 private:
     virtual QString reportTitle() const = 0;
@@ -160,6 +163,7 @@ private:
     Ui_page mUi;
     QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
+    QSet<DetailsDialog*> mDetailsDialogs;
 
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;

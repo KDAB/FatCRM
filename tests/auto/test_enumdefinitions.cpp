@@ -42,13 +42,16 @@ private Q_SLOTS:
         QTest::newRow("emptyEnums") << (EnumDefinitions() << EnumDefinitions::Enum("e1") << EnumDefinitions::Enum("e2")) << "" << -1;
 
         EnumDefinitions::Enum leadSource("lead_source");
-        leadSource.mEnumValues.insert("key", "value");
+        EnumDefinitions::KeyValue kv1 = {"key", "value"};
+        leadSource.mEnumValues.append(kv1);
         QTest::newRow("oneValue") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
-        leadSource.mEnumValues.insert("key2", "value 2");
+        EnumDefinitions::KeyValue kv2 = {"key2", "value 2"};
+        leadSource.mEnumValues.append(kv2);
         QTest::newRow("twoValues") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
 
         EnumDefinitions::Enum salutation("salutation");
-        salutation.mEnumValues.insert("another", "value");
+        EnumDefinitions::KeyValue kv3 = {"another", "value"};
+        salutation.mEnumValues.append(kv3);
         QTest::newRow("twoEnums") << (EnumDefinitions() << leadSource << salutation) << "salutation" << 1;
     }
 

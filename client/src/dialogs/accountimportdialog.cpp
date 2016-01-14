@@ -24,16 +24,15 @@
 #include "ui_accountimportdialog.h"
 #include "accountrepository.h"
 
+#include <KJobUiDelegate>
+#include <AkonadiCore/ItemCreateJob>
+
 #include <QCheckBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
-
-#include <KJobUiDelegate>
-#include <AkonadiCore/item.h>
-#include <AkonadiCore/itemcreatejob.h>
 
 AccountImportDialog::AccountImportDialog(QWidget *parent) :
     QDialog(parent),
@@ -137,7 +136,7 @@ void AccountImportDialog::setImportedAccounts(const QVector<SugarAccount> &accou
 
         accountLineEdit->setProperty("row", row);
         QButtonGroup *buttonGroup = new QButtonGroup(this);
-        connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton *)));
+        connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton*)));
 
         PendingAccount pendingAccount;
         pendingAccount.buttonGroup = buttonGroup;
@@ -299,4 +298,3 @@ void AccountImportDialog::updateOKButton()
     }
     okButton->setEnabled(true);
 }
-
