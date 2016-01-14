@@ -26,12 +26,23 @@
 #include "opportunityfilterproxymodel.h"
 #include "opportunityfiltersettings.h"
 
+#include <QCalendarWidget>
 #include <QDate>
 #include <QDebug>
+
+enum MaxNextStepDate {
+    NoDate,
+    Today,
+    EndOfThisWeek,
+    EndOfThisMonth,
+    EndOfThisYear,
+    CustomDate
+};
 
 OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel,
                                                  QWidget *parent) :
     QWidget(parent),
+    mCustomMaxNextStepDate(QDate()),
     ui(new Ui::OpportunityFilterWidget),
     m_oppFilterProxyModel(oppFilterProxyModel)
 {
@@ -83,6 +94,10 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
     ui->cbClosed->setChecked(settings.showClosed());
+    if (settings.customMaxDate().isValid()) {
+        ui->cbMaxNextStepDate->insertItem(CustomDate, settings.customMaxDate().toString("MM/d/yyyy"));
+        mCustomMaxNextStepDate = settings.customMaxDate();
+    }
     ui->cbMaxNextStepDate->setCurrentIndex(settings.maxDateIndex());
     ui->modifiedBefore->setDate(settings.modifiedBefore());
     ui->modifiedAfter->setDate(settings.modifiedAfter());
@@ -106,24 +121,33 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
 {
     QDate date = QDate::currentDate();
     switch (ui->cbMaxNextStepDate->currentIndex()) {
-    case 0: // Any
+    case NoDate: // Any
         date = QDate();
         break;
-    case 1: // Today
+    case Today:
         break;
-    case 2: // End of this week, i.e. next Sunday
+    case EndOfThisWeek: // i.e. next Sunday
         // Ex: dayOfWeek = 3 (Wednesday), must add 4 days.
         date = date.addDays(7 - date.dayOfWeek());
         break;
-    case 3: // End of this month
+    case EndOfThisMonth:
         date = QDate(date.year(), date.month(), date.daysInMonth());
         break;
-    case 4: // End of this year
+    case EndOfThisYear:
         date = QDate(date.year(), 12, 31);
+        break;
+    case CustomDate: // User selection
+        date = QDate::fromString(ui->cbMaxNextStepDate->currentText(), "MM/d/yyyy");
         break;
     }
     return date;
 }
+
+int OpportunityFilterWidget::indexForOther() const
+{
+    return mCustomMaxNextStepDate.isValid() ? CustomDate + 1 : CustomDate;
+}
+
 
 void OpportunityFilterWidget::filterChanged()
 {
@@ -149,9 +173,42 @@ void OpportunityFilterWidget::filterChanged()
     filterSettings.setShowOpenClosed(ui->cbOpen->isChecked(), ui->cbClosed->isChecked());
     filterSettings.setModifiedAfter(ui->modifiedAfter->date());
     filterSettings.setModifiedBefore(ui->modifiedBefore->date());
-    //qDebug() << "modified after" << ui->modifiedAfter->date() << "before" << ui->modifiedBefore->date();
+    filterSettings.setCustomMaxDate(mCustomMaxNextStepDate);
+
+    if (ui->cbMaxNextStepDate->currentIndex() == indexForOther()) {
+        QCalendarWidget *calendar = new QCalendarWidget();
+        calendar->setWindowModality(Qt::ApplicationModal);
+        calendar->setWindowFlags(Qt::Popup);
+        calendar->setAttribute(Qt::WA_DeleteOnClose);
+        calendar->setWindowTitle(i18n("Custom Date"));
+        calendar->show();
+        calendar->move(ui->cbMaxNextStepDate->pos().x(), (ui->cbMaxNextStepDate->pos().y() + calendar->rect().height()));
+        connect(calendar, SIGNAL(clicked(QDate)), this, SLOT(slotSetMaxNextStepCustomDate(QDate)));
+        connect(calendar, SIGNAL(destroyed()), this, SLOT(slotResetMaxNextStepDateIndex()));
+    }
     filterSettings.setMaxDate(maxNextStepDate(), ui->cbMaxNextStepDate->currentIndex());
     m_oppFilterProxyModel->setFilter(filterSettings);
     // immediate save
     ClientSettings::self()->setFilterSettings(filterSettings);
+}
+
+void OpportunityFilterWidget::slotResetMaxNextStepDateIndex()
+{
+    // In case the calendar was closed without any date being selected
+    ui->cbMaxNextStepDate->setCurrentIndex(NoDate);
+}
+
+void OpportunityFilterWidget::slotSetMaxNextStepCustomDate(const QDate &date)
+{
+    QCalendarWidget *calendar = qobject_cast<QCalendarWidget*>(sender());
+    if (!calendar)
+        return;
+    disconnect(calendar, SIGNAL(destroyed()), this, SLOT(slotResetMaxNextStepDateIndex()));
+    if (mCustomMaxNextStepDate.isValid())
+        ui->cbMaxNextStepDate->removeItem(CustomDate); // existing custom date will be replaced
+    mCustomMaxNextStepDate = date;
+    ui->cbMaxNextStepDate->insertItem(CustomDate, mCustomMaxNextStepDate.toString("MM/d/yyyy"));
+    ui->cbMaxNextStepDate->setCurrentIndex(CustomDate);
+    calendar->close(); // Qt::WA_DeleteOnClose
+    filterChanged();
 }

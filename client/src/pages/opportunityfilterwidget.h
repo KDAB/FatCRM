@@ -44,10 +44,14 @@ private Q_SLOTS:
     void filterChanged();
     void slotAssigneeSelected();
     void slotCountrySelected();
+    void slotSetMaxNextStepCustomDate(const QDate &date);
+    void slotResetMaxNextStepDateIndex();
 
 private:
     QDate maxNextStepDate() const;
+    int indexForOther() const;
 
+    QDate mCustomMaxNextStepDate;
     Ui::OpportunityFilterWidget *ui;
     OpportunityFilterProxyModel *m_oppFilterProxyModel;
 };

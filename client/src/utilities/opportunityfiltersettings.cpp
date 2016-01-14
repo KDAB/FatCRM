@@ -52,6 +52,11 @@ void OpportunityFilterSettings::setMaxDate(const QDate &maxDate, int comboIndex)
     mMaxDateIndex = comboIndex;
 }
 
+void OpportunityFilterSettings::setCustomMaxDate(const QDate &customMaxDate)
+{
+    mCustomMaxDate = customMaxDate;
+}
+
 void OpportunityFilterSettings::setModifiedAfter(const QDate &modifiedAfter)
 {
     mModifiedAfter = modifiedAfter;
@@ -116,6 +121,7 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/assigneeGroup", mAssigneeGroup);
     settings.setValue(prefix + "/countries", mCountries);
     settings.setValue(prefix + "/countryGroup", mCountryGroup);
+    settings.setValue(prefix + "/customMaxDate", mCustomMaxDate);
     settings.setValue(prefix + "/maxDateIndex", mMaxDateIndex);
     settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
@@ -129,6 +135,7 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     mAssigneeGroup = settings.value(prefix + "/assigneeGroup").toString();
     mCountries = settings.value(prefix + "/countries").toStringList();
     mCountryGroup = settings.value(prefix + "/countryGroup").toString();
+    mCustomMaxDate = settings.value(prefix + "/customMaxDate").toDate();
     mMaxDateIndex = settings.value(prefix + "/maxDateIndex").toInt();
     mModifiedBefore = settings.value(prefix + "/modifiedBefore").toDate();
     mModifiedAfter = settings.value(prefix + "/modifiedAfter").toDate();
