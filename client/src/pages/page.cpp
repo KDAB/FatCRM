@@ -953,8 +953,9 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
         const KABC::Addressee addressee = item.payload<KABC::Addressee>();
         const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
         const QString id = addressee.custom("FATCRM", "X-ContactId");
-        Q_ASSERT(!id.isEmpty());
-        ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        if (!id.isEmpty()) {
+            ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
+            ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        }
     }
 }
