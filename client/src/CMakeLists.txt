@@ -98,6 +98,7 @@ target_link_libraries(fatcrmprivate
   ${KDE4_KDECORE_LIBS}
   ${KDE4_AKONADI_LIBS}
   ${KDEPIMLIBS_KABC_LIBS}
+  ${KDEPIMLIBS_KPIMUTILS_LIBS}
   ${QT_QTGUI_LIBS}
 )
 

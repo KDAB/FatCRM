@@ -33,6 +33,7 @@ ContactsPage::ContactsPage(QWidget *parent)
     : Page(parent, QString(KABC::Addressee::mimeType()), Contact)
 {
     setFilter(new FilterProxyModel(Contact, this));
+    treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
 ContactsPage::~ContactsPage()

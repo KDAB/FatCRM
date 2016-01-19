@@ -60,6 +60,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>
+#include <KPIMUtils/Email>
 
 using namespace Akonadi;
 
@@ -511,13 +512,31 @@ void Page::initialize()
 void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
     mCurrentItemUrl = details()->itemUrl();
+    mSelectedEmails.clear();
+    QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
 
-    if (!mCurrentItemUrl.isValid())
-        return;
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KABC::Addressee>()) {
+            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+            const QString preferredEmail = KPIMUtils::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+
+            if (!preferredEmail.isEmpty())
+                mSelectedEmails.append(preferredEmail);
+        }
+    }
 
     QMenu contextMenu;
-    contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
-    contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+
+    if (mCurrentItemUrl.isValid()) {
+        contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+        contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+    } else if (!mSelectedEmails.isEmpty()) {
+        contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
+    } else {
+        return;
+    }
+
     contextMenu.exec(mUi.treeView->mapToGlobal(pos));
 }
 
@@ -529,6 +548,11 @@ void Page::slotOpenUrl()
 void Page::slotCopyLink()
 {
     QApplication::clipboard()->setText(mCurrentItemUrl.toString());
+}
+
+void Page::slotOpenEmailClient()
+{
+    QDesktopServices::openUrl("mailto:" + mSelectedEmails.join(","));
 }
 
 void Page::setupModel()
