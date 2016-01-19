@@ -461,23 +461,23 @@ QVariant ItemsTreeModel::accountToolTip(const Item &item) const
     QString accountCountry = account.countryForGui();
 
     if (!account.name().isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>").arg(account.name()));
+        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>", account.name()));
 
         if (!accountCountry.isEmpty()) {
-            toolTipOutput.insert(toolTipOutput.length()-4, QString(i18n(" (%1)")).arg(accountCountry));
+            toolTipOutput.insert(toolTipOutput.length()-4, i18n(" (%1)", accountCountry));
         }
 
     } else if (!accountCountry.isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Country</b><br>%1</p>").arg(accountCountry));
+        toolTipOutput.append(i18n("<p><b>Country</b><br>%1</p>", accountCountry));
     }
 
     QDateTime dateModified = KDCRMUtils::dateTimeFromString(account.dateModified());
     if (dateModified.isValid()) {
-        toolTipOutput.append(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>").arg(dateModified.toString(Qt::SystemLocaleShortDate), account.modifiedByName()));
+        toolTipOutput.append(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>", dateModified.toString(Qt::SystemLocaleShortDate), account.modifiedByName()));
     }
 
     if (!accountDescription.isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>").arg(accountDescription));
+        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>", accountDescription));
     }
 
     return toolTipOutput;
@@ -494,22 +494,22 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
     QString toolTipOutput;
 
     if (!opportunity.name().isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>").arg(opportunity.name()));
+        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>", opportunity.name()));
     }
 
     QDateTime dateModified = opportunity.dateModified();
     if (dateModified.isValid()) {
-        toolTipOutput.append(QString(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>")).arg(dateModified.toString(Qt::SystemLocaleShortDate), opportunity.modifiedByName()));
+        toolTipOutput.append(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>", dateModified.toString(Qt::SystemLocaleShortDate), opportunity.modifiedByName()));
     }
 
     if (!opportunity.nextStep().isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Next Step</b><br>%1 (%2)</p>").arg(opportunity.nextStep(), opportunity.nextCallDate().toString(Qt::SystemLocaleShortDate)));
+        toolTipOutput.append(i18n("<p><b>Next Step</b><br>%1 (%2)</p>", opportunity.nextStep(), opportunity.nextCallDate().toString(Qt::SystemLocaleShortDate)));
     }
 
     QString opportunityShortDescription = opportunity.shortDescription();
     opportunityShortDescription.replace("\n", "<br>");
     if (!opportunityShortDescription.isEmpty()) {
-        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>").arg(opportunityShortDescription));
+        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>", opportunityShortDescription));
     }
 
     return toolTipOutput;
