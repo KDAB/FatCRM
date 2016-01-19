@@ -101,6 +101,12 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
         } else if (mType == Opportunity) {
             return opportunityData(item, column, role);
         }
+    } else if (role == Qt::ToolTipRole) {
+        if (mType == Account) {
+            return accountToolTip(item);
+        } else if (mType == Opportunity) {
+            return opportunityToolTip(item);
+        }
     }
 
     return EntityTreeModel::entityData(item, column, role);
@@ -439,6 +445,74 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
     }
     return QVariant();
+}
+
+QVariant ItemsTreeModel::accountToolTip(const Item &item) const
+{
+    if (!item.hasPayload<SugarAccount>()) {
+        return QVariant();
+    }
+
+    const SugarAccount account = item.payload<SugarAccount>();
+    QString accountDescription = account.description();
+    accountDescription.replace("\n", "<br>");
+
+    QString toolTipOutput;
+    QString accountCountry = account.countryForGui();
+
+    if (!account.name().isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>").arg(account.name()));
+
+        if (!accountCountry.isEmpty()) {
+            toolTipOutput.insert(toolTipOutput.length()-4, QString(i18n(" (%1)")).arg(accountCountry));
+        }
+
+    } else if (!accountCountry.isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Country</b><br>%1</p>").arg(accountCountry));
+    }
+
+    QDateTime dateModified = KDCRMUtils::dateTimeFromString(account.dateModified());
+    if (dateModified.isValid()) {
+        toolTipOutput.append(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>").arg(dateModified.toString(Qt::SystemLocaleShortDate), account.modifiedByName()));
+    }
+
+    if (!accountDescription.isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>").arg(accountDescription));
+    }
+
+    return toolTipOutput;
+}
+
+QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
+{
+    if (!item.hasPayload<SugarOpportunity>()) {
+        return QVariant();
+    }
+
+    const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+
+    QString toolTipOutput;
+
+    if (!opportunity.name().isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Name</b><br>%1</p>").arg(opportunity.name()));
+    }
+
+    QDateTime dateModified = opportunity.dateModified();
+    if (dateModified.isValid()) {
+        toolTipOutput.append(QString(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>")).arg(dateModified.toString(Qt::SystemLocaleShortDate), opportunity.modifiedByName()));
+    }
+
+    if (!opportunity.nextStep().isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Next Step</b><br>%1 (%2)</p>").arg(opportunity.nextStep(), opportunity.nextCallDate().toString(Qt::SystemLocaleShortDate)));
+    }
+
+    QString opportunityShortDescription = opportunity.shortDescription();
+    opportunityShortDescription.replace("\n", "<br>");
+    if (!opportunityShortDescription.isEmpty()) {
+        toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>").arg(opportunityShortDescription));
+    }
+
+    return toolTipOutput;
 }
 
 ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
