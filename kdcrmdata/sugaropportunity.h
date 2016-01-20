@@ -172,7 +172,7 @@ public:
       Return the wanted number of paragraphs in the description (or the full
       description if the number of paragraphs is less than the wanted number).
      */
-    QString shortDescription(int wantedParagraphs) const;
+    QString limitedDescription(int wantedParagraphs) const;
 
     /**
       Set Deleted.

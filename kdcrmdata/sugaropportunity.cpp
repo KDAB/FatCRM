@@ -303,29 +303,9 @@ QString SugarOpportunity::description() const
     return d->mDescription;
 }
 
-QString SugarOpportunity::shortDescription(int wantedParagraphs) const
+QString SugarOpportunity::limitedDescription(int wantedParagraphs) const
 {
-    const QStringList description = d->mDescription.split('\n');
-    const int paragraphCount = description.count();
-
-    if (paragraphCount > wantedParagraphs) {
-        int collectedParagraphs = 0;
-        QString output;
-
-        for (int i = 0; collectedParagraphs < wantedParagraphs && i < paragraphCount; ++i) {
-            if (!output.isEmpty()) {
-                output.append('\n');
-            }
-            const QString row = description.at(i);
-
-            if (!row.isEmpty()) {
-                ++collectedParagraphs;
-                output.append(row);
-            }
-        }
-        return output;
-    }
-    return d->mDescription;
+    return KDCRMUtils::limitString(d->mDescription, wantedParagraphs);
 }
 
 void SugarOpportunity::setDeleted(const QString &value)

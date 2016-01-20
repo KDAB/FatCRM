@@ -412,7 +412,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         case Amount:
             return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
         case Description:
-            return opportunity.shortDescription(2);
+            return opportunity.limitedDescription(2);
         case CreationDate: {
             const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
@@ -454,7 +454,7 @@ QVariant ItemsTreeModel::accountToolTip(const Item &item) const
     }
 
     const SugarAccount account = item.payload<SugarAccount>();
-    QString accountDescription = account.description();
+    QString accountDescription = account.limitedDescription(5);
     accountDescription.replace("\n", "<br>");
 
     QString toolTipOutput;
@@ -506,7 +506,7 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
         toolTipOutput.append(i18n("<p><b>Next Step</b><br>%1 (%2)</p>", opportunity.nextStep(), opportunity.nextCallDate().toString(Qt::SystemLocaleShortDate)));
     }
 
-    QString opportunityShortDescription = opportunity.shortDescription(5);
+    QString opportunityShortDescription = opportunity.limitedDescription(5);
     opportunityShortDescription.replace("\n", "<br>");
     if (!opportunityShortDescription.isEmpty()) {
         toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>", opportunityShortDescription));
