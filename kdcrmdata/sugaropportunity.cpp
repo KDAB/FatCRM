@@ -303,14 +303,29 @@ QString SugarOpportunity::description() const
     return d->mDescription;
 }
 
-QString SugarOpportunity::shortDescription() const
+QString SugarOpportunity::shortDescription(int wantedParagraphs) const
 {
-   const QStringList description = d->mDescription.split('\n', QString::SkipEmptyParts);
-   int paragraphs = description.count();
-   if (paragraphs > 2) {
-       return description.at(paragraphs-2) + QLatin1Char('\n') + description.at(paragraphs-1);
-   }
-   return d->mDescription;
+    const QStringList description = d->mDescription.split('\n');
+    const int paragraphCount = description.count();
+
+    if (paragraphCount > wantedParagraphs) {
+        int collectedParagraphs = 0;
+        QString output;
+
+        for (int i = 0; collectedParagraphs < wantedParagraphs && i < paragraphCount; ++i) {
+            if (!output.isEmpty()) {
+                output.append('\n');
+            }
+            const QString row = description.at(i);
+
+            if (!row.isEmpty()) {
+                ++collectedParagraphs;
+                output.append(row);
+            }
+        }
+        return output;
+    }
+    return d->mDescription;
 }
 
 void SugarOpportunity::setDeleted(const QString &value)

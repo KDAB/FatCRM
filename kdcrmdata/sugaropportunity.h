@@ -169,9 +169,10 @@ public:
      */
     QString description() const;
     /**
-      Return the 2 last paragraphs of Description or the description itself (if only 2 or less paragraph).
+      Return the wanted number of paragraphs in the description (or the full
+      description if the number of paragraphs is less than the wanted number).
      */
-    QString shortDescription() const;
+    QString shortDescription(int wantedParagraphs) const;
 
     /**
       Set Deleted.
