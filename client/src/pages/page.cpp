@@ -531,9 +531,13 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
     if (mCurrentItemUrl.isValid()) {
         contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
         contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
-    } else if (!mSelectedEmails.isEmpty()) {
+    }
+
+    if (!mSelectedEmails.isEmpty()) {
         contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
-    } else {
+    }
+
+    if (contextMenu.actions().isEmpty()) {
         return;
     }
 
