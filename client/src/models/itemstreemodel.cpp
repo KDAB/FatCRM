@@ -455,7 +455,7 @@ QVariant ItemsTreeModel::accountToolTip(const Item &item) const
 
     const SugarAccount account = item.payload<SugarAccount>();
     QString accountDescription = account.limitedDescription(5);
-    accountDescription.replace("\n", "<br>");
+    accountDescription.replace('\n', "<br>");
 
     QString toolTipOutput;
     QString accountCountry = account.countryForGui();
@@ -507,7 +507,7 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
     }
 
     QString opportunityShortDescription = opportunity.limitedDescription(5);
-    opportunityShortDescription.replace("\n", "<br>");
+    opportunityShortDescription.replace('\n', "<br>");
     if (!opportunityShortDescription.isEmpty()) {
         toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>", opportunityShortDescription));
     }
