@@ -151,6 +151,7 @@ private:
     void removeOpportunitiesData(int start, int end, bool emitChanges);
 
     DetailsDialog *createDetailsDialog();
+    DetailsDialog *openedDialogForItem(const Akonadi::Item &item);
 
 private:
     QString mMimeType;

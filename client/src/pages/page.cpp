@@ -100,10 +100,15 @@ void Page::openDialog(const QString &id)
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (mDetailsWidget->details()->idForItem(item) == id) {
-            DetailsDialog *dialog = createDetailsDialog();
-            dialog->setItem(item);
-            dialog->show();
-            // cppcheck-suppress memleak as dialog deletes itself
+            DetailsDialog *dialog = openedDialogForItem(item);
+            if (!dialog) {
+                dialog = createDetailsDialog();
+                dialog->setItem(item);
+                dialog->show();
+                // cppcheck-suppress memleak as dialog deletes itself
+            } else {
+                dialog->raise();
+            }
         }
     }
 }
@@ -714,12 +719,17 @@ void Page::slotEnsureDetailsVisible()
 // triggered on double-click and Key_Return
 void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
-    DetailsDialog *dialog = createDetailsDialog();
-    dialog->setItem(item);
-    // show changes made in the dialog
-    connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
-            this, SLOT(slotItemSaved(Akonadi::Item)));
-    dialog->show();
+    DetailsDialog *dialog = openedDialogForItem(item);
+    if (!dialog) {
+        dialog = createDetailsDialog();
+        dialog->setItem(item);
+        // show changes made in the dialog
+        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
+                this, SLOT(slotItemSaved(Akonadi::Item)));
+        dialog->show();
+    } else {
+        dialog->raise();
+    }
 }
 
 void Page::printReport()
@@ -780,6 +790,17 @@ DetailsDialog *Page::createDetailsDialog()
             this, SLOT(slotUnregisterDetailsDialog()));
     mDetailsDialogs.insert(dialog);
     return dialog;
+}
+
+
+DetailsDialog *Page::openedDialogForItem(const Item &item)
+{
+    auto it = std::find_if(mDetailsDialogs.constBegin(), mDetailsDialogs.constEnd(),
+                           [&](DetailsDialog *dialog) { return item.id() == dialog->item().id(); });
+    if (it == mDetailsDialogs.constEnd()) {
+        return nullptr;
+    }
+    return *it;
 }
 
 void Page::slotUnregisterDetailsDialog()
