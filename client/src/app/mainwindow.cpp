@@ -22,12 +22,12 @@
 
 #include "mainwindow.h"
 
-#include "accountimportdialog.h"
 #include "accountrepository.h"
 #include "clientsettings.h"
 #include "collectionmanager.h"
 #include "configurationdialog.h"
 #include "contactsimporter.h"
+#include "contactsimportwizard.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "config-fatcrm-version.h"
@@ -66,7 +66,8 @@ MainWindow::MainWindow()
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
-      mNotesRepository(new NotesRepository(this))
+      mNotesRepository(new NotesRepository(this)),
+      mContactsModel(0)
 {
     mUi.setupUi(this);
     initialize();
@@ -213,9 +214,6 @@ void MainWindow::setupActions()
     connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
-
-    // NOT FINISHED YET
-    mUi.actionImportContacts->setVisible(false);
 
     connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
 
@@ -394,10 +392,12 @@ void MainWindow::createTabs()
     mViewMenu->addAction(page->showDetailsAction(i18n("&Lead Details")));
 #endif
 
-    page = new ContactsPage(this);
-    mPages << page;
-    mUi.tabWidget->addTab(page, i18n("&Contacts"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Contact Details")));
+    mContactsPage = new ContactsPage(this);
+    mPages << mContactsPage;
+    mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
+    mViewMenu->addAction(mContactsPage->showDetailsAction(i18n("&Contact Details")));
+
+    connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new CampaignsPage(this);
@@ -558,13 +558,14 @@ void MainWindow::slotImportContacts()
     if (!csvFile.isEmpty()) {
         ContactsImporter importer;
         if (importer.importFile(csvFile)) {
-            const QVector<SugarAccount> accounts = importer.accounts();
+            const QVector<ContactsSet> contacts = importer.contacts();
             // non modal so that we can use FatCRM to search for accounts/contacts.
-            AccountImportDialog *importDialog = new AccountImportDialog(this);
-            importDialog->setAccountCollection(mAccountPage->collection());
-            importDialog->setImportedAccounts(accounts);
-            importDialog->setAttribute(Qt::WA_DeleteOnClose);
-            importDialog->show();
+            ContactsImportWizard *importWizard = new ContactsImportWizard(this);
+            importWizard->setAccountCollection(mAccountPage->collection());
+            importWizard->setContactsCollection(mContactsPage->collection());
+            importWizard->setImportedContacts(contacts);
+            importWizard->setContactsModel(mContactsModel);
+            importWizard->show();
         } else {
             QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
                                  i18n("Error importing %1", csvFile));
@@ -622,6 +623,11 @@ void MainWindow::slotIgnoreModifications(bool ignore)
 void MainWindow::slotOppModelCreated(ItemsTreeModel *model)
 {
     mReportPage->setOppModel(model);
+}
+
+void MainWindow::slotContactsModelCreated(ItemsTreeModel *model)
+{
+    mContactsModel = model;
 }
 
 void MainWindow::slotOpenObject(DetailsType type, const QString &id)

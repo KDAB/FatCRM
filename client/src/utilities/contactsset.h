@@ -2,9 +2,7 @@
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
   Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-  Authors: David Faure <david.faure@kdab.com>
-           Michel Boyer de la Giroday <michel.giroday@kdab.com>
-           Kevin Krammer <kevin.krammer@kdab.com>
+  Authors: Tobias Koenig <tobias.koenig@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,26 +18,17 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef CONTACTSIMPORTER_H
-#define CONTACTSIMPORTER_H
+#ifndef CONTACTSSET_H
+#define CONTACTSSET_H
 
-#include "contactsset.h"
-#include "kdcrmdata/sugaraccount.h"
+#include "sugaraccount.h"
 
-#include <QVector>
+#include <KABC/Addressee>
 
-class ContactsImporter
+struct ContactsSet
 {
-public:
-    ContactsImporter();
-
-    bool importFile(const QString &fileName);
-
-    QVector<ContactsSet> contacts() const;
-
-private:
-    QVector<ContactsSet> mContacts;
-
+    SugarAccount account;
+    QVector<KABC::Addressee> addressees;
 };
 
-#endif // CONTACTSIMPORTER_H
+#endif

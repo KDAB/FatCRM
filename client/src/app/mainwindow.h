@@ -88,6 +88,8 @@ private:
     NotesRepository *mNotesRepository;
 
     Page *mAccountPage;
+    Page *mContactsPage;
+    ItemsTreeModel *mContactsModel;
 
     QToolBar *mMainToolBar;
     QAction *mResourceSelectorAction;
@@ -121,6 +123,7 @@ private Q_SLOTS:
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
     void slotIgnoreModifications(bool ignore);
     void slotOppModelCreated(ItemsTreeModel *model);
+    void slotContactsModelCreated(ItemsTreeModel *model);
     void slotOpenObject(DetailsType type, const QString &id);
     void slotClearTimestampResult(KJob*);
 

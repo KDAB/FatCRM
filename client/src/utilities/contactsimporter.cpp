@@ -37,6 +37,8 @@ ContactsImporter::ContactsImporter()
 
 bool ContactsImporter::importFile(const QString &fileName)
 {
+    mContacts.clear();
+
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly))
         return false;
@@ -57,7 +59,7 @@ bool ContactsImporter::importFile(const QString &fileName)
     accountColumns.insert(10, KDCRMFields::billingAddressCountry());
 
     const int rows = builder.rowCount();
-    mAccounts.reserve(rows);
+    mContacts.reserve(rows);
     for (int row = 1; row < rows; ++row) { // skip title row
         QMap<QString, QString> accountData;
         QMap<int, QString>::const_iterator it = accountColumns.constBegin();
@@ -68,23 +70,77 @@ bool ContactsImporter::importFile(const QString &fileName)
                 accountData.insert(it.value(), value);
             }
         }
-        SugarAccount account;
-        account.setData(accountData);
-        // Fast-path duplicate filtering, more will happen later
-        if (!mAccounts.isEmpty() && mAccounts.at(0).isSameAccount(account))
-            continue;
-        mAccounts.append(account);
+
+        KABC::Addressee addressee;
+        const QString givenName = builder.data(row, 0).trimmed();
+        if (!givenName.isEmpty())
+            addressee.setGivenName(givenName);
+
+        const QString familyName = builder.data(row, 1).trimmed();
+        if (!familyName.isEmpty())
+            addressee.setFamilyName(familyName);
+
+        const QString prefix = builder.data(row, 2).trimmed();
+        if (!prefix.isEmpty())
+            addressee.insertCustom(QLatin1String("FATCRM"), QLatin1String("X-Salutation"), prefix);
+
+        const QString phoneNumber = builder.data(row, 3).trimmed();
+        if (!phoneNumber.isEmpty())
+            addressee.insertPhoneNumber(KABC::PhoneNumber(phoneNumber, KABC::PhoneNumber::Work));
+
+        const QString emailAddress = builder.data(row, 4).trimmed();
+        if (!emailAddress.isEmpty())
+            addressee.insertEmail(emailAddress, true);
+
+        const QString companyName = builder.data(row, 5).trimmed();
+        if (!companyName.isEmpty())
+            addressee.setOrganization(companyName);
+
+        KABC::Address workAddress(KABC::Address::Work);
+        const QString workStreet = builder.data(row, 6).trimmed();
+        if (!workStreet.isEmpty())
+            workAddress.setStreet(workStreet);
+
+        const QString workCity = builder.data(row, 7).trimmed();
+        if (!workCity.isEmpty())
+            workAddress.setLocality(workCity);
+
+        const QString workZipCode = builder.data(row, 8).trimmed();
+        if (!workZipCode.isEmpty())
+            workAddress.setPostalCode(workZipCode);
+
+        const QString workState = builder.data(row, 9).trimmed();
+        if (!workState.isEmpty())
+            workAddress.setRegion(workState);
+
+        const QString workCountry = builder.data(row, 10).trimmed();
+        if (!workCountry.isEmpty())
+            workAddress.setCountry(workCountry);
+
+        if (!workAddress.isEmpty())
+            addressee.insertAddress(workAddress);
+
+        SugarAccount newAccount;
+        newAccount.setData(accountData);
+
+        auto existingSet = std::find_if(mContacts.begin(), mContacts.end(),
+                                        [&newAccount](const ContactsSet &contactSet) { return contactSet.account.isSameAccount(newAccount); });
+
+        if (existingSet != mContacts.end()) {
+            (*existingSet).addressees.append(addressee);
+        } else {
+            ContactsSet contactsSet;
+            contactsSet.account = newAccount;
+            contactsSet.addressees.append(addressee);
+
+            mContacts.append(contactsSet);
+        }
     }
 
     return true;
 }
 
-QVector<KABC::Addressee> ContactsImporter::contacts() const
+QVector<ContactsSet> ContactsImporter::contacts() const
 {
-    return mAddressees;
-}
-
-QVector<SugarAccount> ContactsImporter::accounts() const
-{
-    return mAccounts;
+    return mContacts;
 }

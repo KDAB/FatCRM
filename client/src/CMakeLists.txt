@@ -34,7 +34,9 @@ set(app_SRCS
   details/contactdetails.cpp
   details/leaddetails.cpp
   details/opportunitydetails.cpp
-  dialogs/accountimportdialog.cpp
+  dialogs/accountimportpage.cpp
+  dialogs/contactsimportpage.cpp
+  dialogs/contactsimportwizard.cpp
   dialogs/configurationdialog.cpp
   dialogs/detailsdialog.cpp
   dialogs/editlistdialog.cpp
@@ -68,8 +70,9 @@ kde4_add_ui_files(app_SRCS
   details/detailswidget.ui
   details/leaddetails.ui
   details/opportunitydetails.ui
-  dialogs/accountimportdialog.ui
+  dialogs/accountimportpage.ui
   dialogs/configurationdialog.ui
+  dialogs/contactsimportpage.ui
   dialogs/detailsdialog.ui
   dialogs/notesdialog.ui
   dialogs/resourceconfigdialog.ui
