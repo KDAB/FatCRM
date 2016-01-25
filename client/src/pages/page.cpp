@@ -736,6 +736,8 @@ void Page::printReport()
 {
     ReportGenerator generator;
     QAbstractItemModel *model = mUi.treeView->model();
+    if (!model)
+        return;
     const int count = model->rowCount();
     if (count > 1000) {
         QMessageBox msgBox;
