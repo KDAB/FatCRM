@@ -31,6 +31,7 @@
 #include "kdcrmdata/enumdefinitions.h"
 
 #include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include <QWidget>
 
@@ -41,13 +42,9 @@ class EntityMimeTypeFilterModel;
 class Item;
 }
 
-class Details;
 class DetailsDialog;
-class DetailsWidget;
 class KJob;
 class KJobProgressTracker;
-class QAction;
-class QModelIndex;
 class NotesRepository;
 class QPoint;
 
@@ -64,15 +61,8 @@ public:
     void setCollection(const Akonadi::Collection& collection);
     Akonadi::Collection collection() const { return mCollection; }
     void setNotesRepository(NotesRepository *repo);
-    void setModificationsIgnored(bool b);
-    void initialLoadingDone();
     bool queryClose();
-
-    QAction *showDetailsAction(const QString &title) const;
     void openDialog(const QString &id);
-
-    bool showsDetails() const;
-    bool hasModifications() const;
     void printReport();
     KJob *clearTimestamp();
 
@@ -80,19 +70,19 @@ Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
     void modelLoaded(DetailsType type);
-    void showDetailsChanged(bool on);
     void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
-    void ignoreModifications(bool ignore); // emitted while loading reference data
     void openObject(DetailsType type, const QString &id);
     void onlineStatusChanged(bool online);
 
 public Q_SLOTS:
-    void showDetails(bool on);
     void slotOnlineStatusChanged(bool online);
     void slotResourceSelectionChanged(const QByteArray &identifier);
 
 protected:
+    virtual QString idForItem(const Akonadi::Item &item) const;
+    virtual QString itemAddress() const;
+
     inline Akonadi::EntityTreeView *treeView()
     {
         return mUi.treeView;
@@ -104,10 +94,7 @@ protected:
     void insertFilterWidget(QWidget *widget);
 
 private Q_SLOTS:
-    void slotCurrentItemChanged(const QModelIndex &index);
     void slotNewClicked();
-    void slotAddItem();
-    void slotModifyItem(const Akonadi::Item &item);
     void slotRemoveItem();
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int start, int end);
@@ -117,11 +104,8 @@ private Q_SLOTS:
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
     void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
-    void slotEnsureDetailsVisible();
     void slotItemDoubleClicked(const Akonadi::Item &item);
-    void slotCreateJobResult(KJob *job);
-    void slotModifyJobResult(KJob *job);
-    void slotItemSaved(const Akonadi::Item &item);
+    void slotItemSaved();
     void slotItemContextMenuRequested(const QPoint &pos);
     void slotOpenUrl();
     void slotCopyLink();
@@ -132,11 +116,8 @@ private Q_SLOTS:
 private:
     virtual QString reportTitle() const = 0;
     QString reportSubTitle(int count) const;
-    Details *details() const; // the one in the embedded details widget
-    void connectToDetails(Details *details);
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
-    bool askSave();
     void readSupportedFields();
     void readEnumDefinitionAttributes();
     void retrieveResourceUrl();
@@ -158,14 +139,11 @@ private:
 private:
     QString mMimeType;
     DetailsType mType;
-    DetailsWidget *mDetailsWidget;
     FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     ItemsTreeModel *mItemsTreeModel;
     Akonadi::Collection mCollection;
-    QModelIndex mCurrentIndex;
     Ui_page mUi;
-    QAction *mShowDetailsAction;
     QByteArray mResourceIdentifier;
     QSet<DetailsDialog*> mDetailsDialogs;
 

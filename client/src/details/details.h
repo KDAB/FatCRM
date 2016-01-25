@@ -49,6 +49,7 @@ public:
     void setData(const QMap<QString, QString> &data, QWidget *createdModifiedContainer);
     const QMap<QString, QString> getData() const;
     void clear();
+    QUrl itemUrlForId(const QString &id) const;
 
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     void setSupportedFields(const QStringList &fields);

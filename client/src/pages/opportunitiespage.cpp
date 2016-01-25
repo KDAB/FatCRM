@@ -25,7 +25,6 @@
 #include "filterproxymodel.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
-#include "detailswidget.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -92,4 +91,18 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     initialData.insert(KDCRMFields::dateClosed(), KDCRMUtils::dateToString(QDate::currentDate().addMonths(12)));
     initialData.insert(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
     return initialData;
+}
+
+QString OpportunitiesPage::idForItem(const Akonadi::Item &item) const
+{
+    if (item.hasPayload<SugarOpportunity>()) {
+        const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+        return opportunity.id();
+    }
+    return QString();
+}
+
+QString OpportunitiesPage::itemAddress() const
+{
+    return QString("?action=DetailView&module=Opportunities&record=");
 }

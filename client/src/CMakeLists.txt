@@ -27,7 +27,6 @@ set(app_SRCS
   models/itemstreemodel.cpp
   models/opportunityfilterproxymodel.cpp
   models/referenceddatamodel.cpp
-  details/detailswidget.cpp
   details/details.cpp
   details/accountdetails.cpp
   details/campaigndetails.cpp
@@ -70,7 +69,6 @@ kde4_add_ui_files(app_SRCS
   details/accountdetails.ui
   details/campaigndetails.ui
   details/contactdetails.ui
-  details/detailswidget.ui
   details/leaddetails.ui
   details/opportunitydetails.ui
   dialogs/accountimportpage.ui

@@ -63,7 +63,6 @@ using namespace Akonadi;
 
 MainWindow::MainWindow()
     : QMainWindow(),
-      mShowDetails(0),
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
@@ -103,9 +102,6 @@ void MainWindow::slotDelayedInit()
                 page, SLOT(slotResourceSelectionChanged(QByteArray)));
         connect(this, SIGNAL(onlineStatusChanged(bool)),
                 page, SLOT(slotOnlineStatusChanged(bool)));
-
-        connect(page, SIGNAL(ignoreModifications(bool)),
-                this, SLOT(slotIgnoreModifications(bool)));
     }
 
     // initialize additional UI
@@ -194,11 +190,6 @@ void MainWindow::createActions()
     mResourceSelectorAction = mMainToolBar->addWidget(mResourceSelector);
     mMainToolBar->addAction(mUi.actionSynchronize);
 
-    mShowDetails = new QCheckBox(i18n("Show Details"));
-    // A checkbox in a toolbar looks weird; and there are menu items for this already
-    //mMainToolBar->addWidget(mShowDetails);
-    //connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
-
     mMainToolBar->addAction(printAction);
 }
 
@@ -227,8 +218,6 @@ void MainWindow::setupActions()
                 this, SLOT(slotShowMessage(QString)));
         connect(page, SIGNAL(modelLoaded(DetailsType)),
                 this, SLOT(slotModelLoaded(DetailsType)));
-        connect(page, SIGNAL(showDetailsChanged(bool)),
-                this, SLOT(slotPageShowDetailsChanged()));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)),
                 this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
         connect(page, SIGNAL(openObject(DetailsType,QString)),
@@ -349,9 +338,6 @@ void MainWindow::slotModelLoaded(DetailsType type)
     case Contact:
         slotShowMessage(i18n("(4/5) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
-        Q_FOREACH (Page *page, mPages) {
-            page->initialLoadingDone(); // select correct item in newly filled combos
-        }
         mNotesRepository->loadNotes();
         break;
     case Lead:
@@ -389,13 +375,11 @@ void MainWindow::createTabs()
     mAccountPage = new AccountsPage(this);
     mPages << mAccountPage;
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
-    mViewMenu->addAction(mAccountPage->showDetailsAction(i18n("&Account Details")));
 
     Page *page = new OpportunitiesPage(this);
     page->setNotesRepository(mNotesRepository);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Opportunity Details")));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
@@ -403,13 +387,11 @@ void MainWindow::createTabs()
     page = new LeadsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Leads"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Lead Details")));
 #endif
 
     mContactsPage = new ContactsPage(this);
     mPages << mContactsPage;
     mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
-    mViewMenu->addAction(mContactsPage->showDetailsAction(i18n("&Contact Details")));
 
     connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
 
@@ -417,16 +399,12 @@ void MainWindow::createTabs()
     page = new CampaignsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Campaigns"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("C&ampaign Details")));
 #endif
-
-    connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
 
     mReportPage = new ReportPage(this);
     mUi.tabWidget->addTab(mReportPage, i18n("&Reports"));
 
     //set Opportunities page as current
-    mShowDetails->setChecked(mPages[ 1 ]->showsDetails());
     mUi.tabWidget->setCurrentIndex(1);
 }
 
@@ -467,15 +445,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     Q_FOREACH (Page *page, mPages) {
         if(!page->queryClose()) {
             return;
-        }
-        if (page->hasModifications()) {
-            if (QMessageBox::No == QMessageBox::question(this, i18n("Close?"),
-                                                          i18n("The current page has modifications, are you sure you want to exit without saving?"),
-                                                          QMessageBox::Yes|QMessageBox::No))
-            {
-                mUi.tabWidget->setCurrentWidget(page);
-                return;
-            }
         }
     }
 
@@ -546,26 +515,6 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
     }
 }
 
-void MainWindow::slotShowDetails(bool on)
-{
-    mPages[ mUi.tabWidget->currentIndex() ]->showDetails(on);
-}
-
-void MainWindow::slotPageShowDetailsChanged()
-{
-    Page *page = currentPage();
-    if (page) {
-        mShowDetails->setChecked(page->showsDetails());
-    }
-}
-
-void MainWindow::slotCurrentTabChanged(int index)
-{
-    if (index < mPages.count()) {
-        mShowDetails->setChecked(mPages[ index ]->showsDetails());
-    }
-}
-
 void MainWindow::slotImportContacts()
 {
     const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), "*.csv");
@@ -612,13 +561,6 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
         mNotesRepository->setEmailsCollection(collection);
     }
 
-}
-
-void MainWindow::slotIgnoreModifications(bool ignore)
-{
-    foreach(Page *page, mPages) {
-        page->setModificationsIgnored(ignore);
-    }
 }
 
 void MainWindow::slotOppModelCreated(ItemsTreeModel *model)

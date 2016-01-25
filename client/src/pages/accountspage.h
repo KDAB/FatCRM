@@ -34,6 +34,8 @@ public:
     ~AccountsPage();
 
 protected:
+    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
+    QString itemAddress() const Q_DECL_OVERRIDE;
     /*reimp*/ QString reportTitle() const;
 
 };

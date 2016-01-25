@@ -44,3 +44,17 @@ QString AccountsPage::reportTitle() const
 {
     return i18n("List of Accounts");
 }
+
+QString AccountsPage::idForItem(const Akonadi::Item &item) const
+{
+    if (item.hasPayload<SugarAccount>()) {
+        const SugarAccount account = item.payload<SugarAccount>();
+        return account.id();
+    }
+    return QString();
+}
+
+QString AccountsPage::itemAddress() const
+{
+    return QString("?action=DetailView&module=Accounts&record=");
+}

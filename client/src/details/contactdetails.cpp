@@ -95,10 +95,9 @@ void ContactDetails::initialize()
 
 QUrl ContactDetails::itemUrl() const
 {
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
-        return QUrl(url);
+    const QString identification = id();
+    if (!identification.isEmpty()) {
+        return itemUrlForId(identification);
     }
     return QUrl();
 }

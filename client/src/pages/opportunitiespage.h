@@ -40,6 +40,8 @@ public:
 
 protected:
     QString reportTitle() const Q_DECL_OVERRIDE;
+    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
+    QString itemAddress() const Q_DECL_OVERRIDE;
     QMap<QString, QString> dataForNewObject() Q_DECL_OVERRIDE;
 
 private:

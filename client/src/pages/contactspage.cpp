@@ -44,3 +44,17 @@ QString ContactsPage::reportTitle() const
 {
     return i18n("List of Contacts");
 }
+
+QString ContactsPage::idForItem(const Akonadi::Item &item) const
+{
+    if (item.hasPayload<KABC::Addressee>()) {
+        KABC::Addressee contact = item.payload<KABC::Addressee>();
+        return contact.custom("FATCRM", "X-ContactId");
+    }
+    return QString();
+}
+
+QString ContactsPage::itemAddress() const
+{
+    return QString("?action=DetailView&module=Contacts&record=");
+}

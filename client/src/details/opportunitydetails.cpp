@@ -76,10 +76,9 @@ void OpportunityDetails::initialize()
 
 QUrl OpportunityDetails::itemUrl() const
 {
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id();
-        return QUrl(url);
+    const QString identification = id();
+    if (!identification.isEmpty()) {
+        return itemUrlForId(identification);
     }
     return QUrl();
 }

@@ -72,7 +72,6 @@ private:
     void updateWindowTitle(bool online);
 
     QList<Page *> mPages;
-    QCheckBox *mShowDetails;
 
     QComboBox *mResourceSelector;
 
@@ -117,14 +116,10 @@ private Q_SLOTS:
     void slotResourceError(const Akonadi::AgentInstance &resource, const QString &message);
     void slotResourceOnline(const Akonadi::AgentInstance &resource, bool online);
     void slotResourceProgress(const Akonadi::AgentInstance &resource);
-    void slotShowDetails(bool on);
-    void slotPageShowDetailsChanged();
-    void slotCurrentTabChanged(int index);
     void slotImportContacts();
     void slotConfigure();
     void slotPrintReport();
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
-    void slotIgnoreModifications(bool ignore);
     void slotOppModelCreated(ItemsTreeModel *model);
     void slotContactsModelCreated(ItemsTreeModel *model);
     void slotOpenObject(DetailsType type, const QString &id);

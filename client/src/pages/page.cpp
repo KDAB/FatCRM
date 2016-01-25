@@ -24,11 +24,11 @@
 
 #include "accountrepository.h"
 #include "clientsettings.h"
+#include "details.h"
 #include "detailsdialog.h"
-#include "detailswidget.h"
 #include "enums.h"
-#include "kjobprogresstracker.h"
 #include "fatcrminputdialog.h"
+#include "kjobprogresstracker.h"
 #include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
@@ -45,13 +45,13 @@
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/CollectionStatistics>
+#include <Akonadi/EntityAnnotationsAttribute>
 #include <Akonadi/EntityMimeTypeFilterModel>
 #include <Akonadi/Item>
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemDeleteJob>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemModifyJob>
-#include <Akonadi/EntityAnnotationsAttribute>
 
 #include <KABC/Address>
 #include <KABC/Addressee>
@@ -88,10 +88,8 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mDetailsWidget(new DetailsWidget(type)),
       mChangeRecorder(0),
       mItemsTreeModel(0),
-      mShowDetailsAction(0),
       mOnline(false),
       mInitialLoadingDone(false),
       mFilterModel(0),
@@ -108,19 +106,13 @@ Page::~Page()
 {
 }
 
-QAction *Page::showDetailsAction(const QString &title) const
-{
-    mShowDetailsAction->setText(title);
-    return mShowDetailsAction;
-}
-
 void Page::openDialog(const QString &id)
 {
     const int count = mItemsTreeModel->rowCount();
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (mDetailsWidget->details()->idForItem(item) == id) {
+        if (idForItem(item) == id) {
             DetailsDialog *dialog = openedDialogForItem(item);
             if (!dialog) {
                 dialog = createDetailsDialog();
@@ -134,20 +126,15 @@ void Page::openDialog(const QString &id)
     }
 }
 
-bool Page::showsDetails() const
+QString Page::idForItem(const Item &item) const
 {
-    return mShowDetailsAction->isChecked();
+    Q_UNUSED(item)
+    return QString();
 }
 
-void Page::showDetails(bool on)
+QString Page::itemAddress() const
 {
-    mUi.detailsWidget->setVisible(on);
-    if (on) {
-        QMetaObject::invokeMethod(this, "slotEnsureDetailsVisible", Qt::QueuedConnection);
-    }
-    ClientSettings::self()->setShowDetails(typeToString(mType), on);
-    mShowDetailsAction->setChecked(on);
-    emit showDetailsChanged(on);
+    return QString();
 }
 
 void Page::setFilter(FilterProxyModel *filter)
@@ -170,7 +157,6 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mChangeRecorder = 0;
     mCollection = Collection();
     mResourceIdentifier = identifier;
-    mCurrentIndex = QModelIndex();
 
     // cleanup from last time (useful when switching resources)
     mFilter->setSourceModel(0);
@@ -234,7 +220,6 @@ void Page::setCollection(const Collection &collection)
 void Page::setNotesRepository(NotesRepository *repo)
 {
     mNotesRepository = repo;
-    mDetailsWidget->details()->setNotesRepository(repo);
 }
 
 bool Page::queryClose()
@@ -256,110 +241,15 @@ bool Page::queryClose()
     return true;
 }
 
-bool Page::hasModifications() const
-{
-    return mDetailsWidget->isModified();
-}
-
-void Page::setModificationsIgnored(bool b)
-{
-    mDetailsWidget->setModificationsIgnored(b);
-}
-
-void Page::initialLoadingDone()
-{
-    mDetailsWidget->initialLoadingDone();
-}
-
-void Page::slotCurrentItemChanged(const QModelIndex &index)
-{
-    // save previous item if modified
-    if (mShowDetailsAction->isChecked() && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
-        if (mCurrentIndex == index) // called by the setCurrentIndex below
-            return;
-        //kDebug() << "going from" << mCurrentIndex << "to" << index;
-        if (askSave()) {
-            //kDebug() << "Saving" << mCurrentIndex;
-            mDetailsWidget->saveData();
-        }
-    }
-
-    // show the new item
-    //kDebug() << "showing new item" << index;
-    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-    if (item.isValid()) {
-        mDetailsWidget->setItem(item);
-
-        mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
-        //kDebug() << "mCurrentIndex=" << mCurrentIndex;
-    }
-}
-
 void Page::slotNewClicked()
 {
     const QMap<QString, QString> data = dataForNewObject();
-    if (mShowDetailsAction->isChecked()) {
-        if (mDetailsWidget->isModified()) {
-            if (askSave()) {
-                mDetailsWidget->saveData();
-            }
-        }
-
-        mDetailsWidget->clearFields();
-        mDetailsWidget->setData(data);
-    } else {
-        DetailsDialog *dialog = createDetailsDialog();
-        Item item;
-        item.setParentCollection(mCollection);
-        dialog->showNewItem(data, mCollection);
-        dialog->show();
-        // cppcheck-suppress memleak as dialog deletes itself
-    }
-}
-
-void Page::slotAddItem() // save new item
-{
+    DetailsDialog *dialog = createDetailsDialog();
     Item item;
-    details()->updateItem(item, mDetailsWidget->data());
-
-    // job starts automatically
-    ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
-}
-
-void Page::slotCreateJobResult(KJob *job)
-{
-    if (job->error()) {
-        emit statusMessage(job->errorString());
-    } else {
-        emit statusMessage("Item successfully created");
-    }
-}
-
-void Page::slotModifyItem(const Akonadi::Item &item) // save modified item (from details widget)
-{
-    // job starts automatically
-    ItemModifyJob *job = new ItemModifyJob(item);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotModifyJobResult(KJob*)));
-}
-
-void Page::slotModifyJobResult(KJob *job) // saving done (from details widget)
-{
-    if (job->error()) {
-        emit statusMessage(job->errorString());
-    } else {
-        ItemModifyJob *imJob = static_cast<ItemModifyJob *>(job);
-        // As documented in ItemModifyJob, store revision of saved item
-        mDetailsWidget->setItemRevision(imJob->item());
-        emit statusMessage("Item successfully saved");
-    }
-}
-
-// Item saved in details dialog
-void Page::slotItemSaved(const Item &item)
-{
-    // This relies on the fact that the dialog is modal: the current index can't change meanwhile
-    mDetailsWidget->setItem(item);
+    item.setParentCollection(mCollection);
+    dialog->showNewItem(data, mCollection);
+    dialog->show();
+    // cppcheck-suppress memleak as dialog deletes itself
 }
 
 QString Page::reportSubTitle(int count) const
@@ -402,8 +292,6 @@ void Page::slotRemoveItem()
     if (!newIndex.isValid()) {
         mUi.removePB->setEnabled(false);
     }
-
-    mDetailsWidget->setItem(Item());
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -416,10 +304,6 @@ void Page::slotVisibleRowCountChanged()
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
     //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
-
-    // inserting rows into comboboxes can change the current index, thus marking the data as modified
-    emit ignoreModifications(true);
-
     const bool emitChanges = mInitialLoadingDone;
 
     switch (mType) {
@@ -459,14 +343,10 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
             AccountRepository::instance()->emitInitialLoadingDone();
         }
     }
-    emit ignoreModifications(false);
 }
 
 void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
 {
-    // inserting rows into comboboxes can change the current index, thus marking the data as modified
-    emit ignoreModifications(true);
-
     switch (mType) {
     case Account:
         removeAccountsData(start, end, mInitialLoadingDone);
@@ -486,7 +366,6 @@ void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
     default: // other objects (like Note) not shown in a Page
         break;
     }
-    emit ignoreModifications(false);
 }
 
 void Page::initialize()
@@ -519,28 +398,20 @@ void Page::initialize()
 
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
     connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
-
-    mShowDetailsAction = new QAction(this);
-    mShowDetailsAction->setCheckable(true);
-    connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
-
-    connect(mDetailsWidget, SIGNAL(modifyItem(Akonadi::Item)), this, SLOT(slotModifyItem(Akonadi::Item)));
-    connect(mDetailsWidget, SIGNAL(createItem()), this, SLOT(slotAddItem()));
-
-    QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
-    detailLayout->setMargin(0);
-    detailLayout->addWidget(mDetailsWidget);
-    showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
-
-    connectToDetails(mDetailsWidget->details());
 }
 
 void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
-    mCurrentItemUrl = details()->itemUrl();
-    mSelectedEmails.clear();
-    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+    const QModelIndex idx = treeView()->selectionModel()->currentIndex();
+    if (idx.isValid()) {
+        const Item item = treeView()->model()->data(idx, EntityTreeModel::ItemRole).value<Item>();
+        const QString id = idForItem(item);
+        mCurrentItemUrl = QUrl(mResourceBaseUrl + itemAddress() + id);
+    }
 
+    mSelectedEmails.clear();
+
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
     Q_FOREACH (const QModelIndex &index, selectedIndexes) {
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KABC::Addressee>()) {
@@ -621,21 +492,7 @@ void Page::setupModel()
     mFilter->setSourceModel(mFilterModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
-    connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this,  SLOT(slotCurrentItemChanged(QModelIndex)));
-
     emit modelCreated(mItemsTreeModel); // give it to the reports page
-}
-
-Details *Page::details() const
-{
-    return mDetailsWidget->details();
-}
-
-void Page::connectToDetails(Details *details)
-{
-    connect(details, SIGNAL(openObject(DetailsType,QString)),
-            this, SIGNAL(openObject(DetailsType,QString)));
 }
 
 void Page::insertFilterWidget(QWidget *widget)
@@ -657,22 +514,7 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
-        if (index == mCurrentIndex && !mDetailsWidget->isModified()) {
-            mDetailsWidget->setItem(item); // update details widget
-        }
     }
-}
-
-bool Page::askSave()
-{
-    QMessageBox msgBox(this);
-    msgBox.setText(i18n("The current item has been modified."));
-    msgBox.setInformativeText(i18n("Do you want to save your changes?"));
-    msgBox.setStandardButtons(QMessageBox::Save |
-                              QMessageBox::Discard);
-    msgBox.setDefaultButton(QMessageBox::Save);
-    const int ret = msgBox.exec();
-    return ret == QMessageBox::Save;
 }
 
 // duplicated in listentriesjob.cpp
@@ -691,8 +533,6 @@ void Page::readSupportedFields()
                 errorShown = true;
                 QMessageBox::warning(this, i18n("Internal error"), i18n("The list of fields for type '%1'' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", typeToString(mType)));
             }
-        } else {
-            mDetailsWidget->details()->setSupportedFields(mSupportedFields);
         }
     }
 }
@@ -702,7 +542,6 @@ void Page::readEnumDefinitionAttributes()
     EnumDefinitionAttribute *enumsAttr = mCollection.attribute<EnumDefinitionAttribute>();
     if (enumsAttr) {
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
-        mDetailsWidget->details()->setEnumDefinitions(mEnumDefinitions);
     } else {
         kWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
         kWarning() << "Collection attributes:";
@@ -741,19 +580,6 @@ void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QS
     }
 }
 
-void Page::slotEnsureDetailsVisible()
-{
-    if (mShowDetailsAction->isChecked()) {
-        QList<int> splitterSizes = mUi.splitter->sizes();
-        if (splitterSizes[ 1 ] == 0) {
-            splitterSizes[ 1 ] = mUi.splitter->height() / 2;
-            mUi.splitter->setSizes(splitterSizes);
-        }
-    } else {
-        mShowDetailsAction->setChecked(true);
-    }
-}
-
 // triggered on double-click and Key_Return
 void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
@@ -761,13 +587,15 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
     if (!dialog) {
         dialog = createDetailsDialog();
         dialog->setItem(item);
-        // show changes made in the dialog
-        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
-                this, SLOT(slotItemSaved(Akonadi::Item)));
         dialog->show();
     } else {
         dialog->raise();
     }
+}
+
+void Page::slotItemSaved()
+{
+    emit statusMessage("Item successfully saved");
 }
 
 void Page::printReport()
@@ -808,15 +636,15 @@ void Page::printReport()
     generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
 }
 
-
 DetailsDialog *Page::createDetailsDialog()
 {
-    Details* details = DetailsWidget::createDetailsForType(mType);
+    Details* details = DetailsDialog::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
-    connectToDetails(details);
+    connect(details, SIGNAL(openObject(DetailsType,QString)),
+            this, SIGNAL(openObject(DetailsType,QString)));
     // Don't set a parent, so that the dialogs can be minimized/restored independently
     DetailsDialog *dialog = new DetailsDialog(details);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -826,12 +654,13 @@ DetailsDialog *Page::createDetailsDialog()
             dialog, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
             dialog, SLOT(setOnline(bool)));
+    connect( dialog, SIGNAL(itemSaved()),
+             this, SLOT(slotItemSaved()));
     connect(dialog, SIGNAL(closing()),
             this, SLOT(slotUnregisterDetailsDialog()));
     mDetailsDialogs.insert(dialog);
     return dialog;
 }
-
 
 DetailsDialog *Page::openedDialogForItem(const Item &item)
 {
@@ -1122,7 +951,6 @@ void Page::retrieveResourceUrl()
     reply.waitForFinished();
     if (reply.isValid()) {
         mResourceBaseUrl = iface.host();
-        mDetailsWidget->details()->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     }
 }
 

@@ -83,10 +83,9 @@ QString AccountDetails::idForItem(const Akonadi::Item &item) const
 
 QUrl AccountDetails::itemUrl() const
 {
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Accounts&record=" + id();
-        return QUrl(url);
+    const QString identification = id();
+    if (!identification.isEmpty()) {
+        return itemUrlForId(identification);
     }
     return QUrl();
 }
