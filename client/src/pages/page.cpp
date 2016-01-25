@@ -60,6 +60,7 @@
 #include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>
+#include <KEmailAddress>
 
 using namespace Akonadi;
 
@@ -99,10 +100,15 @@ void Page::openDialog(const QString &id)
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (mDetailsWidget->details()->idForItem(item) == id) {
-            DetailsDialog *dialog = createDetailsDialog();
-            dialog->setItem(item);
-            dialog->show();
-            // cppcheck-suppress memleak as dialog deletes itself
+            DetailsDialog *dialog = openedDialogForItem(item);
+            if (!dialog) {
+                dialog = createDetailsDialog();
+                dialog->setItem(item);
+                dialog->show();
+                // cppcheck-suppress memleak as dialog deletes itself
+            } else {
+                dialog->raise();
+            }
         }
     }
 }
@@ -511,13 +517,35 @@ void Page::initialize()
 void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
     mCurrentItemUrl = details()->itemUrl();
+    mSelectedEmails.clear();
+    QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
 
-    if (!mCurrentItemUrl.isValid())
-        return;
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+
+            if (!preferredEmail.isEmpty())
+                mSelectedEmails.append(preferredEmail);
+        }
+    }
 
     QMenu contextMenu;
-    contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
-    contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+
+    if (mCurrentItemUrl.isValid()) {
+        contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+        contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+    }
+
+    if (!mSelectedEmails.isEmpty()) {
+        contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
+    }
+
+    if (contextMenu.actions().isEmpty()) {
+        return;
+    }
+
     contextMenu.exec(mUi.treeView->mapToGlobal(pos));
 }
 
@@ -529,6 +557,11 @@ void Page::slotOpenUrl()
 void Page::slotCopyLink()
 {
     QApplication::clipboard()->setText(mCurrentItemUrl.toString());
+}
+
+void Page::slotOpenEmailClient()
+{
+    QDesktopServices::openUrl("mailto:" + mSelectedEmails.join(","));
 }
 
 void Page::setupModel()
@@ -686,12 +719,17 @@ void Page::slotEnsureDetailsVisible()
 // triggered on double-click and Key_Return
 void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
-    DetailsDialog *dialog = createDetailsDialog();
-    dialog->setItem(item);
-    // show changes made in the dialog
-    connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
-            this, SLOT(slotItemSaved(Akonadi::Item)));
-    dialog->show();
+    DetailsDialog *dialog = openedDialogForItem(item);
+    if (!dialog) {
+        dialog = createDetailsDialog();
+        dialog->setItem(item);
+        // show changes made in the dialog
+        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
+                this, SLOT(slotItemSaved(Akonadi::Item)));
+        dialog->show();
+    } else {
+        dialog->raise();
+    }
 }
 
 void Page::printReport()
@@ -752,6 +790,17 @@ DetailsDialog *Page::createDetailsDialog()
             this, SLOT(slotUnregisterDetailsDialog()));
     mDetailsDialogs.insert(dialog);
     return dialog;
+}
+
+
+DetailsDialog *Page::openedDialogForItem(const Item &item)
+{
+    auto it = std::find_if(mDetailsDialogs.constBegin(), mDetailsDialogs.constEnd(),
+                           [&](DetailsDialog *dialog) { return item.id() == dialog->item().id(); });
+    if (it == mDetailsDialogs.constEnd()) {
+        return nullptr;
+    }
+    return *it;
 }
 
 void Page::slotUnregisterDetailsDialog()
@@ -958,8 +1007,9 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
         const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
         const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
         const QString id = addressee.custom("FATCRM", "X-ContactId");
-        Q_ASSERT(!id.isEmpty());
-        ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        if (!id.isEmpty()) {
+            ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
+            ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        }
     }
 }

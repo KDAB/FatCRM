@@ -48,6 +48,8 @@ public:
     void setMaxDate(const QDate &maxDate, int comboIndex);
     QDate maxDate() const { return mMaxDate; }
     int maxDateIndex() const { return mMaxDateIndex; }
+    void setCustomMaxDate(const QDate &customMaxDate);
+    QDate customMaxDate() const { return mCustomMaxDate; }
     void setModifiedAfter(const QDate &modifiedAfter);
     QDate modifiedAfter() const { return mModifiedAfter; }
     void setModifiedBefore(const QDate &modifiedBefore);
@@ -67,6 +69,7 @@ private:
     QString mAssigneeGroup; // user-visible description for <assignee>
     QString mCountryGroup; // user-visible description for <countries>
     QDate mMaxDate;
+    QDate mCustomMaxDate;
     QDate mModifiedBefore, mModifiedAfter;
     int mMaxDateIndex;
     bool mShowOpen;

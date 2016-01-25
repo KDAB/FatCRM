@@ -152,6 +152,11 @@ QString DetailsDialog::title() const
     return QString(); // for stupid compilers
 }
 
+Item DetailsDialog::item() const
+{
+    return d->mItem;
+}
+
 void DetailsDialog::Private::saveResult(KJob *job)
 {
     qCDebug(FATCRM_CLIENT_LOG) << "save result=" << job->error();

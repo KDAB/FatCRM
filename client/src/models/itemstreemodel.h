@@ -125,6 +125,8 @@ private:
     QVariant contactData(const Akonadi::Item &item, int column, int role) const;
     QVariant leadData(const Akonadi::Item &item, int column, int role) const;
     QVariant opportunityData(const Akonadi::Item &item, int column, int role) const;
+    QVariant accountToolTip(const Akonadi::Item &item) const;
+    QVariant opportunityToolTip(const Akonadi::Item &item) const;
     QString columnTitle(ColumnType col) const;
 
 private:

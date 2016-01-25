@@ -124,6 +124,7 @@ private Q_SLOTS:
     void slotItemContextMenuRequested(const QPoint &pos);
     void slotOpenUrl();
     void slotCopyLink();
+    void slotOpenEmailClient();
     void slotUnregisterDetailsDialog();
 
 private:
@@ -150,6 +151,7 @@ private:
     void removeOpportunitiesData(int start, int end, bool emitChanges);
 
     DetailsDialog *createDetailsDialog();
+    DetailsDialog *openedDialogForItem(const Akonadi::Item &item);
 
 private:
     QString mMimeType;
@@ -175,6 +177,8 @@ private:
 
     bool mInitialLoadingDone;
     Akonadi::EntityMimeTypeFilterModel *mFilterModel;
+
+    QStringList mSelectedEmails;
 };
 
 #endif

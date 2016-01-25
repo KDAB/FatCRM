@@ -117,3 +117,28 @@ QString KDCRMUtils::decodeXML(const QString &str)
     // While at it, remove trailing spaces, they can be confusing with e.g. country filtering.
     return decoded.trimmed();
 }
+
+QString KDCRMUtils::limitString(const QString &str, int wantedParagraphs)
+{
+    const QStringList paragraphs = str.split('\n');
+    const int paragraphCount = paragraphs.count();
+
+    if (paragraphCount > wantedParagraphs) {
+        int collectedParagraphs = 0;
+        QString output;
+
+        for (int i = 0; collectedParagraphs < wantedParagraphs && i < paragraphCount; ++i) {
+            if (!output.isEmpty()) {
+                output.append('\n');
+            }
+            const QString row = paragraphs.at(i);
+
+            if (!row.isEmpty()) {
+                ++collectedParagraphs;
+                output.append(row);
+            }
+        }
+        return output;
+    }
+    return str;
+}

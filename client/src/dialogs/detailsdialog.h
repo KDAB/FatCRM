@@ -45,6 +45,8 @@ public:
     void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection);
     bool isModified() const;
 
+    Akonadi::Item item() const;
+
 public Q_SLOTS:
     void setItem(const Akonadi::Item &item);
     void updateItem(const Akonadi::Item &item);

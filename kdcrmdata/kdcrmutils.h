@@ -47,6 +47,10 @@ KDCRMDATA_EXPORT QString formatDateTime(const QDateTime &dt); // locale
 
 KDCRMDATA_EXPORT QString encodeXML(const QString &str);
 KDCRMDATA_EXPORT QString decodeXML(const QString &str);
+
+KDCRMDATA_EXPORT QString limitString(const QString &str, int wantedParagraphs);
+
 }
+
 
 #endif

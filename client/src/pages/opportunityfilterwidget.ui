@@ -44,6 +44,11 @@
        <string>End of this year</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Other...</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="1" column="0">

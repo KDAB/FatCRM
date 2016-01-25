@@ -21,6 +21,7 @@
 */
 
 #include "sugaraccount.h"
+#include "kdcrmutils.h"
 
 #include <KLocalizedString>
 
@@ -464,6 +465,11 @@ void SugarAccount::setDescription(const QString &value)
 QString SugarAccount::description() const
 {
     return d->mDescription;
+}
+
+QString SugarAccount::limitedDescription(int wantedParagraphs) const
+{
+    return KDCRMUtils::limitString(d->mDescription, wantedParagraphs);
 }
 
 void SugarAccount::setDeleted(const QString &value)
