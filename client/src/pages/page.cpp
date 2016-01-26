@@ -236,6 +236,8 @@ bool Page::queryClose()
                 dialog->activateWindow();
                 return false;
             }
+        } else {
+            dialog->close();
         }
     }
     return true;
