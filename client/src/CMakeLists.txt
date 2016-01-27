@@ -47,6 +47,7 @@ set(app_SRCS
   utilities/accountrepository.cpp
   utilities/collectionmanager.cpp
   utilities/contactsimporter.cpp
+  utilities/dbusinvokerinterface.cpp
   utilities/dbuswinidprovider.cpp
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp

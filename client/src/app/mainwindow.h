@@ -126,7 +126,7 @@ private Q_SLOTS:
     void slotContactsModelCreated(ItemsTreeModel *model);
     void slotOpenObject(DetailsType type, const QString &id);
     void slotClearTimestampResult(KJob*);
-
+    void slotImportCsvFile(const QString &filePath);
 
 private:
     Page *currentPage() const;

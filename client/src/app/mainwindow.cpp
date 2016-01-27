@@ -28,6 +28,7 @@
 #include "configurationdialog.h"
 #include "contactsimporter.h"
 #include "contactsimportwizard.h"
+#include "dbusinvokerinterface.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "config-fatcrm-version.h"
@@ -81,7 +82,10 @@ MainWindow::MainWindow()
 
     (void)new DBusWinIdProvider(this);
 
-     ClientSettings::self()->restoreWindowSize("main", this);
+    DBusInvokerInterface *iface = new DBusInvokerInterface(this);
+    connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotImportCsvFile(QString)));
+
+    ClientSettings::self()->restoreWindowSize("main", this);
 }
 
 MainWindow::~MainWindow()
@@ -556,20 +560,7 @@ void MainWindow::slotImportContacts()
 {
     const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), "*.csv");
     if (!csvFile.isEmpty()) {
-        ContactsImporter importer;
-        if (importer.importFile(csvFile)) {
-            const QVector<ContactsSet> contacts = importer.contacts();
-            // non modal so that we can use FatCRM to search for accounts/contacts.
-            ContactsImportWizard *importWizard = new ContactsImportWizard(this);
-            importWizard->setAccountCollection(mAccountPage->collection());
-            importWizard->setContactsCollection(mContactsPage->collection());
-            importWizard->setImportedContacts(contacts);
-            importWizard->setContactsModel(mContactsModel);
-            importWizard->show();
-        } else {
-            QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
-                                 i18n("Error importing %1", csvFile));
-        }
+        slotImportCsvFile(csvFile);
     }
 }
 
@@ -643,6 +634,24 @@ void MainWindow::slotClearTimestampResult(KJob *job)
     mClearTimestampJobs.removeAll(job);
     if (mClearTimestampJobs.isEmpty()) {
         slotSynchronize();
+    }
+}
+
+void MainWindow::slotImportCsvFile(const QString &filePath)
+{
+    ContactsImporter importer;
+    if (importer.importFile(filePath)) {
+        const QVector<ContactsSet> contacts = importer.contacts();
+        // non modal so that we can use FatCRM to search for accounts/contacts.
+        ContactsImportWizard *importWizard = new ContactsImportWizard(this);
+        importWizard->setAccountCollection(mAccountPage->collection());
+        importWizard->setContactsCollection(mContactsPage->collection());
+        importWizard->setImportedContacts(contacts);
+        importWizard->setContactsModel(mContactsModel);
+        importWizard->show();
+    } else {
+        QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
+                             i18n("Error importing %1", filePath));
     }
 }
 

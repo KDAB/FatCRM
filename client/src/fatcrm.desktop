@@ -42,5 +42,7 @@ Exec=fatcrm %i -caption "%c"
 Icon=fatcrm
 Type=Application
 X-DocPath=fatcrm/index.html
+X-DBUS-StartupType=Multi
+X-DBUS-ServiceName=org.kde.fatcrm
 GenericName=Desktop application for SugarCRM
 Terminal=false
