@@ -95,6 +95,9 @@ private:
     QAction *mResourceSelectorAction;
     QList<KJob *> mClearTimestampJobs;
 
+    bool mInitialLoadingDone;
+    QStringList mPendingImportPaths;
+
 private Q_SLOTS:
     void slotDelayedInit();
     void slotAboutApp();
@@ -126,6 +129,7 @@ private Q_SLOTS:
     void slotContactsModelCreated(ItemsTreeModel *model);
     void slotOpenObject(DetailsType type, const QString &id);
     void slotClearTimestampResult(KJob*);
+    void slotTryImportCsvFile(const QString &filePath);
     void slotImportCsvFile(const QString &filePath);
 
 private:
@@ -134,6 +138,8 @@ private:
     void setupResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();
+    void initialLoadingDone();
+    void processPendingImports();
 };
 
 #endif

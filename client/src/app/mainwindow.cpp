@@ -68,7 +68,8 @@ MainWindow::MainWindow()
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
       mNotesRepository(new NotesRepository(this)),
-      mContactsModel(0)
+      mContactsModel(0),
+      mInitialLoadingDone(false)
 {
     mUi.setupUi(this);
     initialize();
@@ -83,7 +84,7 @@ MainWindow::MainWindow()
     (void)new DBusWinIdProvider(this);
 
     DBusInvokerInterface *iface = new DBusInvokerInterface(this);
-    connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotImportCsvFile(QString)));
+    connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
 
     ClientSettings::self()->restoreWindowSize("main", this);
 }
@@ -370,8 +371,17 @@ void MainWindow::slotNotesLoaded(int count)
 void MainWindow::slotEmailsLoaded(int count)
 {
     Q_UNUSED(count);
+    initialLoadingDone();
+}
+
+void MainWindow::initialLoadingDone()
+{
+    mInitialLoadingDone = true;
+
     mNotesRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
+
+    processPendingImports();
 }
 
 void MainWindow::createTabs()
@@ -637,6 +647,14 @@ void MainWindow::slotClearTimestampResult(KJob *job)
     }
 }
 
+void MainWindow::slotTryImportCsvFile(const QString &filePath)
+{
+    if (mInitialLoadingDone)
+        slotImportCsvFile(filePath);
+    else
+        mPendingImportPaths.append(filePath);
+}
+
 void MainWindow::slotImportCsvFile(const QString &filePath)
 {
     ContactsImporter importer;
@@ -692,6 +710,14 @@ Page *MainWindow::pageForType(DetailsType type) const
         }
     }
     return 0;
+}
+
+void MainWindow::processPendingImports()
+{
+    foreach (const QString &filePath, mPendingImportPaths)
+        slotImportCsvFile(filePath);
+
+    mPendingImportPaths.clear();
 }
 
 #include "mainwindow.moc"
