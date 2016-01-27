@@ -50,6 +50,7 @@ public:
     void reject() Q_DECL_OVERRIDE;
 
 private slots:
+    void adaptWindowSize();
     void importItems(const QVector<Akonadi::Item> &items);
     void jobFinished(KJob *job);
 

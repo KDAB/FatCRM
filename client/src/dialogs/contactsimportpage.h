@@ -52,6 +52,7 @@ public:
     MergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
                 const QVector<MatchPair> &possibleMatches, QWidget *parent = Q_NULLPTR);
 
+    bool skipItem() const;
     Akonadi::Item finalItem() const;
 
 private slots:
@@ -100,6 +101,10 @@ public slots:
 
 signals:
     void importedItems(const QVector<Akonadi::Item> &items);
+    void layoutChanged();
+
+private slots:
+    void adjustPageSize();
 
 private:
     void addMergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,

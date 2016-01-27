@@ -34,6 +34,12 @@
 
 namespace {
 
+enum SelectAction
+{
+    CreateNewContact = -1,
+    ExcludeContact = -2
+};
+
 enum ChangedFlags
 {
     IsNormal = 0,
@@ -93,9 +99,13 @@ QString formattedContact(const KABC::Addressee &addressee, bool withAddress = fa
 
     if (!addressee.givenName().isEmpty())
         parts << addressee.givenName();
+    else
+        parts << i18n("<missing first name>");
 
     if (!addressee.familyName().isEmpty())
         parts << addressee.familyName();
+    else
+        parts << i18n("<missing last name>");
 
     if (!addressee.preferredEmail().isEmpty()) {
         if (parts.isEmpty())
@@ -200,7 +210,7 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
         connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
     }
 
-    if (!mImportedAddressee.isEmpty()) {
+    if (!mImportedAddressee.familyName().isEmpty()) {
         QCheckBox *checkBox = new QCheckBox;
         checkBox->setText(mImportedAddressee.familyName());
         importedContactLayout->addWidget(checkBox);
@@ -239,22 +249,29 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
         const KABC::Addressee &possibleMatch = mPossibleMatches.at(i).contact;
         QRadioButton *button = new QRadioButton;
         button->setProperty("__index", i);
-        button->setText(formattedContact(possibleMatch, true));
+        button->setText(i18n("Update %1", formattedContact(possibleMatch, true)));
         mButtonGroup->addButton(button);
         matchingContactsLayout->addWidget(button);
         button->setChecked(i == 0);
-
-        QFrame *hline = new QFrame;
-        hline->setFrameShape(QFrame::HLine);
-        matchingContactsLayout->addWidget(hline);
     }
 
-    QRadioButton *button = new QRadioButton;
-    button->setProperty("__index", -1);
-    button->setText(i18n("Create new contact"));
-    button->setChecked(mPossibleMatches.isEmpty());
-    mButtonGroup->addButton(button);
-    matchingContactsLayout->addWidget(button);
+    {
+        QRadioButton *button = new QRadioButton;
+        button->setProperty("__index", static_cast<int>(CreateNewContact));
+        button->setText(i18n("Create new contact"));
+        button->setChecked(mPossibleMatches.isEmpty());
+        mButtonGroup->addButton(button);
+        matchingContactsLayout->addWidget(button);
+    }
+
+    {
+        QRadioButton *button = new QRadioButton;
+        button->setProperty("__index", static_cast<int>(ExcludeContact));
+        button->setText(i18n("Cancel importing this contact"));
+        mButtonGroup->addButton(button);
+        matchingContactsLayout->addWidget(button);
+    }
+
     matchingContactsLayout->addStretch();
 
     // final contact box content
@@ -267,12 +284,23 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
     updateFinalContact();
 }
 
-Akonadi::Item MergeWidget::finalItem() const
+bool MergeWidget::skipItem() const
 {
-    QAbstractButton *button = mButtonGroup->checkedButton();
+    const QAbstractButton *button = mButtonGroup->checkedButton();
     const int index = button->property("__index").toInt();
 
-    if (index == -1) {
+    return (index == ExcludeContact);
+}
+
+Akonadi::Item MergeWidget::finalItem() const
+{
+    const QAbstractButton *button = mButtonGroup->checkedButton();
+    const int index = button->property("__index").toInt();
+
+    if (index == ExcludeContact) {
+        Q_ASSERT(false); // should never be called
+        return Akonadi::Item();
+    } else if (index == CreateNewContact) {
         Akonadi::Item item;
         item.setMimeType(KABC::Addressee::mimeType());
         item.setPayload(mFinalContact);
@@ -286,7 +314,7 @@ Akonadi::Item MergeWidget::finalItem() const
 
 void MergeWidget::updateFinalContact()
 {
-    QAbstractButton *button = mButtonGroup->checkedButton();
+    const QAbstractButton *button = mButtonGroup->checkedButton();
     const int index = button->property("__index").toInt();
 
     int prefixFlags = IsNormal;
@@ -296,7 +324,9 @@ void MergeWidget::updateFinalContact()
     int phoneNumberFlags = IsNormal;
     int addressFlags = IsNormal;
 
-    if (index == -1) {
+    if (index == ExcludeContact) {
+        // do nothing
+    } else if (index == CreateNewContact) {
         mFinalContact = KABC::Addressee();
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
@@ -385,12 +415,16 @@ void MergeWidget::updateFinalContact()
         }
     }
 
-    mFinalContactLabel->setText(formattedContact(mFinalContact.custom("FATCRM", "X-Salutation"), prefixFlags,
-                                                 mFinalContact.givenName(), givenNameFlags,
-                                                 mFinalContact.familyName(), familyNameFlags,
-                                                 mFinalContact.preferredEmail(), emailAddressFlags,
-                                                 mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number(), phoneNumberFlags,
-                                                 formattedAddress(mFinalContact.address(KABC::Address::Work)), addressFlags));
+    if (index == ExcludeContact) {
+        mFinalContactLabel->setText(QString());
+    } else {
+        mFinalContactLabel->setText(formattedContact(mFinalContact.custom("FATCRM", "X-Salutation"), prefixFlags,
+                                                     mFinalContact.givenName(), givenNameFlags,
+                                                     mFinalContact.familyName(), familyNameFlags,
+                                                     mFinalContact.preferredEmail(), emailAddressFlags,
+                                                     mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number(), phoneNumberFlags,
+                                                     formattedAddress(mFinalContact.address(KABC::Address::Work)), addressFlags));
+    }
 }
 
 
@@ -421,7 +455,8 @@ bool ContactsImportPage::validatePage()
     QVector<Akonadi::Item> items;
 
     foreach (const MergeWidget *mergeWidget, findChildren<MergeWidget*>()) {
-        items << mergeWidget->finalItem();
+        if (!mergeWidget->skipItem())
+            items << mergeWidget->finalItem();
     }
 
     emit importedItems(items);
@@ -454,7 +489,8 @@ void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
                     pair.item = item;
                     matchByEmail.append(pair);
                 } else if (possibleMatch.givenName() == addressee.givenName() &&
-                           possibleMatch.familyName() == addressee.familyName()) {
+                           possibleMatch.familyName() == addressee.familyName() &&
+                           !addressee.givenName().isEmpty() && !addressee.familyName().isEmpty()) {
                     MatchPair pair;
                     pair.contact = possibleMatch;
                     pair.item = item;
@@ -469,6 +505,14 @@ void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
             addMergeWidget(contactsSet.account, addressee, allMatches);
         }
     }
+
+    QMetaObject::invokeMethod(this, "adjustPageSize", Qt::QueuedConnection);
+}
+
+void ContactsImportPage::adjustPageSize()
+{
+    setMinimumWidth(mUi->scrollArea->widget()->width() + 40);
+    emit layoutChanged();
 }
 
 void ContactsImportPage::addMergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,

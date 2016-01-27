@@ -44,6 +44,8 @@ ContactsImportWizard::ContactsImportWizard(QWidget *parent)
             mContactsImportPage, SLOT(setChosenContacts(QVector<ContactsSet>)));
     connect(mContactsImportPage, SIGNAL(importedItems(QVector<Akonadi::Item>)),
             this, SLOT(importItems(QVector<Akonadi::Item>)));
+    connect(mContactsImportPage, SIGNAL(layoutChanged()),
+            this, SLOT(adaptWindowSize()));
 
     setWindowTitle(i18n("Import Contacts"));
 }
@@ -80,8 +82,16 @@ void ContactsImportWizard::reject()
     QWizard::reject();
 }
 
+void ContactsImportWizard::adaptWindowSize()
+{
+    resize(mContactsImportPage->width() + 40, height());
+}
+
 void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
 {
+    if (items.isEmpty())
+        return;
+
     setAttribute(Qt::WA_DeleteOnClose, false);
 
     foreach (const Akonadi::Item &item, items) {

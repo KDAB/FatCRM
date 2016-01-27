@@ -120,6 +120,11 @@ bool ContactsImporter::importFile(const QString &fileName)
         if (!workAddress.isEmpty())
             addressee.insertAddress(workAddress);
 
+        if (accountData.value(KDCRMFields::name()).trimmed().isEmpty()) {
+            const QString identifier = ((!givenName.isEmpty() || !familyName.isEmpty()) ? QString::fromLatin1("%1 %2").arg(givenName, familyName).trimmed() : emailAddress);
+            accountData.insert(KDCRMFields::name(), QString::fromLatin1("%1 (individual)").arg(identifier));
+        }
+
         SugarAccount newAccount;
         newAccount.setData(accountData);
 

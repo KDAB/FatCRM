@@ -25,10 +25,7 @@
         <height>284</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <layout class="QVBoxLayout" name="mainLayout"/>
-       </item>
+      <layout class="QVBoxLayout" name="mainLayout">
       </layout>
      </widget>
     </widget>
