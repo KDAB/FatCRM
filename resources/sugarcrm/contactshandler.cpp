@@ -702,6 +702,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
         itemList << field;
     }
 
+    // add regular sugar fields
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
     ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
     ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
@@ -714,6 +715,30 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
         field.setName(it.key());
         const QString value = KDCRMUtils::encodeXML((*it)->getter(addressee));
         field.setValue(value);
+
+        itemList << field;
+    }
+
+    // add custom sugar fields
+    const QStringList customAddresseeFields = addressee.customs();
+
+    const static QString customFieldPrefix("FATCRM-X-Custom-");
+
+    QStringList customSugarFields;
+    std::copy_if(customAddresseeFields.begin(), customAddresseeFields.end(), std::back_inserter(customSugarFields),
+                 [](const QString &custom) { return custom.startsWith(customFieldPrefix); });
+
+    for (const QString &custom : customSugarFields) {
+        const int pos = custom.indexOf(':');
+        if (pos == -1)
+            continue;
+
+        const QString name = custom.mid(customFieldPrefix.size(), pos - customFieldPrefix.size());
+        const QString value = custom.mid(pos + 1);
+
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(name);
+        field.setValue(KDCRMUtils::encodeXML(value));
 
         itemList << field;
     }
@@ -732,7 +757,8 @@ QString ContactsHandler::orderByForListing() const
 
 QStringList ContactsHandler::supportedSugarFields() const
 {
-    return mAccessors->keys();
+    // get everything, given that KABC::Addressee has support for custom fields
+    return availableFields();
 }
 
 QStringList ContactsHandler::supportedCRMFields() const
@@ -795,7 +821,8 @@ QStringList ContactsHandler::supportedCRMFields() const
 int ContactsHandler::expectedContentsVersion() const
 {
     // version 1 = decodeXML/encodeXML added to solve special chars
-    return 1;
+    // version 2 = support for custom fields added
+    return 2;
 }
 
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -819,17 +846,22 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     homeAddress.setType(KABC::Address::Home);
 
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
-        if (accessIt == mAccessors->constEnd()) {
-            // no accessor for field
+        const QString fieldName = namedValue.name();
+
+        const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(fieldName);
+        if (accessIt == mAccessors->constEnd()) { // no accessor for regular field
+            if (fieldName.endsWith("_c")) {
+                addressee.insertCustom("FATCRM", QString("X-Custom-%1").arg(fieldName), KDCRMUtils::decodeXML(namedValue.value()));
+            }
+
             continue;
         }
 
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
 
-        if (isAddressValue(namedValue.name())) {
+        if (isAddressValue(fieldName)) {
             KABC::Address &address =
-                isPrimaryAddressValue(namedValue.name()) ? workAddress : homeAddress;
+                isPrimaryAddressValue(fieldName) ? workAddress : homeAddress;
             (*accessIt)->setter.aSetter(value, address);
         } else {
             (*accessIt)->setter.vSetter(value, addressee);
