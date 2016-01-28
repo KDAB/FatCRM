@@ -850,7 +850,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
         const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(fieldName);
         if (accessIt == mAccessors->constEnd()) { // no accessor for regular field
-            if (fieldName.endsWith("_c")) {
+            if (fieldName.endsWith(QLatin1String("_c"))) {
                 addressee.insertCustom("FATCRM", QString("X-Custom-%1").arg(fieldName), KDCRMUtils::decodeXML(namedValue.value()));
             }
 
