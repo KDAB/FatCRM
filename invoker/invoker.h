@@ -28,7 +28,7 @@ class Invoker : public QObject
     Q_OBJECT
 
 public:
-    Invoker(const QString &fileName, QObject *parent = Q_NULLPTR);
+    explicit Invoker(const QString &fileName, QObject *parent = Q_NULLPTR);
 
     void run();
 
