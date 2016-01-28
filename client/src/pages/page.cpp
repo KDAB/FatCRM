@@ -22,17 +22,20 @@
 
 #include "page.h"
 
-#include "detailsdialog.h"
 #include "accountrepository.h"
 #include "clientsettings.h"
+#include "detailsdialog.h"
 #include "detailswidget.h"
 #include "enums.h"
+#include "kjobprogresstracker.h"
+#include "fatcrminputdialog.h"
+#include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
 #include "sugarresourcesettings.h"
-#include "rearrangecolumnsproxymodel.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
+#include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -54,6 +57,7 @@
 #include <KABC/Addressee>
 
 #include <KDebug>
+#include <KInputDialog>
 
 #include <QClipboard>
 #include <QDesktopServices>
@@ -61,6 +65,22 @@
 #include <QMessageBox>
 #include <QShortcut>
 #include <KPIMUtils/Email>
+
+namespace {
+
+enum ModifierField
+{
+    CityField,
+    CountryField,
+    NextStepDateField,
+    AssigneeField
+};
+
+static const char s_modifierFieldId[] = "__modifierField";
+
+} // namespace
+
+Q_DECLARE_METATYPE(ModifierField);
 
 using namespace Akonadi;
 
@@ -74,7 +94,8 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mShowDetailsAction(0),
       mOnline(false),
       mInitialLoadingDone(false),
-      mFilterModel(0)
+      mFilterModel(0),
+      mJobProgressTracker(Q_NULLPTR)
 {
     mUi.setupUi(this);
     mUi.splitter->setCollapsible(0, false);
@@ -518,7 +539,7 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
     mCurrentItemUrl = details()->itemUrl();
     mSelectedEmails.clear();
-    QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
 
     Q_FOREACH (const QModelIndex &index, selectedIndexes) {
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
@@ -540,6 +561,23 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 
     if (!mSelectedEmails.isEmpty()) {
         contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
+    }
+
+    if (!selectedIndexes.isEmpty() && (mType == Account || mType == Opportunity || mType == Contact)) {
+        QMenu *changeMenu = contextMenu.addMenu(i18n("Change..."));
+        if (mType == Account || mType == Contact) {
+            QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
+            cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
+
+            QAction *countryAction = changeMenu->addAction(i18n("Country"), this, SLOT(slotChangeFields()));
+            countryAction->setProperty(s_modifierFieldId, QVariant::fromValue(CountryField));
+        } else if (mType == Opportunity) {
+            QAction *dateAction = changeMenu->addAction(i18n("Next Step Date"), this, SLOT(slotChangeFields()));
+            dateAction->setProperty(s_modifierFieldId, QVariant::fromValue(NextStepDateField));
+
+            QAction *assigneeAction = changeMenu->addAction(i18n("Assignee"), this, SLOT(slotChangeFields()));
+            assigneeAction->setProperty(s_modifierFieldId, QVariant::fromValue(AssigneeField));
+        }
     }
 
     if (contextMenu.actions().isEmpty()) {
@@ -809,6 +847,133 @@ void Page::slotUnregisterDetailsDialog()
 {
     DetailsDialog *dialog = qobject_cast<DetailsDialog*>(sender());
     mDetailsDialogs.remove(dialog);
+}
+
+void Page::slotChangeFields()
+{
+    const QAction *action = qobject_cast<QAction*>(sender());
+    if (!action)
+        return;
+
+    const ModifierField field = action->property(s_modifierFieldId).value<ModifierField>();
+
+    QString dialogTitle;
+    QString dialogText;
+    switch (field) {
+    case CityField:
+        dialogTitle = i18n("Change City");
+        dialogText = i18n("Please enter the new city name.");
+        break;
+    case CountryField:
+        dialogTitle = i18n("Change Country");
+        dialogText = i18n("Please enter the new country name.");
+        break;
+    case NextStepDateField:
+        dialogTitle = i18n("Change Next Step Date");
+        dialogText = i18n("Please select the next step date.");
+        break;
+    case AssigneeField:
+        dialogTitle = i18n("Change Assignee");
+        dialogText = i18n("Please select the new assignee.");
+        break;
+    }
+
+    bool ok = false;
+    QString replacementString;
+    QPair<QString, QString> replacementAssignee;
+    QDate replacementDate;
+
+    if (field == NextStepDateField) {
+        replacementDate = FatCRMInputDialog::getDate(dialogTitle, dialogText, QDate::currentDate(), &ok);
+    } else if (field == AssigneeField) {
+        replacementAssignee = FatCRMInputDialog::getAssignedUser(dialogTitle, dialogText, &ok);
+    } else {
+        replacementString = KInputDialog::getText(dialogTitle, dialogText, QString(), &ok);
+    }
+
+    if (!ok)
+        return;
+
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+
+    QVector<Item> modifiedItems;
+    modifiedItems.reserve(selectedIndexes.count());
+
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+
+        if (mType == Account) {
+            SugarAccount account = item.payload<SugarAccount>();
+
+            if (field == CityField) {
+                if (account.shippingAddressCity().isEmpty())
+                    account.setBillingAddressCity(replacementString);
+                else
+                    account.setShippingAddressCity(replacementString);
+            } else if (field == CountryField) {
+                if (account.shippingAddressCountry().isEmpty())
+                    account.setBillingAddressCountry(replacementString);
+                else
+                    account.setShippingAddressCountry(replacementString);
+            }
+
+            item.setPayload(account);
+        } else if (mType == Opportunity) {
+            SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+
+            if (field == NextStepDateField) {
+                opportunity.setNextCallDateRaw(KDCRMUtils::dateToString(replacementDate));
+            } else if (field == AssigneeField) {
+                opportunity.setAssignedUserId(replacementAssignee.first);
+                opportunity.setAssignedUserName(replacementAssignee.second);
+            }
+
+            item.setPayload(opportunity);
+        } else if (mType == Contact) {
+            KABC::Addressee addressee = item.payload<KABC::Addressee>();
+
+            if (field == CityField) {
+                KABC::Address workAddress = addressee.address(KABC::Address::Work | KABC::Address::Pref);
+                workAddress.setLocality(replacementString);
+                addressee.insertAddress(workAddress);
+            } else if (field == CountryField) {
+                KABC::Address workAddress = addressee.address(KABC::Address::Work | KABC::Address::Pref);
+                workAddress.setCountry(replacementString);
+                addressee.insertAddress(workAddress);
+            }
+
+            item.setPayload(addressee);
+        }
+
+        modifiedItems << item;
+    }
+
+    mJobProgressTracker = new KJobProgressTracker(this, this);
+    mJobProgressTracker->setCaption(dialogTitle);
+    mJobProgressTracker->setLabel(i18n("Please wait..."));
+    connect(mJobProgressTracker, SIGNAL(finished()), mJobProgressTracker, SLOT(deleteLater()));
+
+    QString errorMessage;
+    switch (mType) {
+    case Account:
+        errorMessage = i18n("Failed to change account: %1");
+        break;
+    case Opportunity:
+        errorMessage = i18n("Failed to change opportunity: %1");
+        break;
+    case Contact:
+        errorMessage = i18n("Failed to change contact: %1");
+        break;
+    default:
+        break;
+    };
+
+    foreach (const Akonadi::Item &item, modifiedItems) {
+        Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
+        mJobProgressTracker->addJob(job, errorMessage);
+    }
+
+    mJobProgressTracker->start();
 }
 
 void Page::addAccountsData(int start, int end, bool emitChanges)

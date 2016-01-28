@@ -45,6 +45,7 @@ class Details;
 class DetailsDialog;
 class DetailsWidget;
 class KJob;
+class KJobProgressTracker;
 class QAction;
 class QModelIndex;
 class NotesRepository;
@@ -126,6 +127,7 @@ private Q_SLOTS:
     void slotCopyLink();
     void slotOpenEmailClient();
     void slotUnregisterDetailsDialog();
+    void slotChangeFields();
 
 private:
     virtual QString reportTitle() const = 0;
@@ -179,6 +181,8 @@ private:
     Akonadi::EntityMimeTypeFilterModel *mFilterModel;
 
     QStringList mSelectedEmails;
+
+    KJobProgressTracker *mJobProgressTracker;
 };
 
 #endif

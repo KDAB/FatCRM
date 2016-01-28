@@ -114,6 +114,9 @@
       <property name="editTriggers">
        <set>QAbstractItemView::NoEditTriggers</set>
       </property>
+      <property name="selectionMode">
+       <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
      </widget>
      <widget class="QWidget" name="detailsWidget" native="true"/>
     </widget>

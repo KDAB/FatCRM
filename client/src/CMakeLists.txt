@@ -40,6 +40,7 @@ set(app_SRCS
   dialogs/configurationdialog.cpp
   dialogs/detailsdialog.cpp
   dialogs/editlistdialog.cpp
+  dialogs/fatcrminputdialog.cpp
   dialogs/notesdialog.cpp
   dialogs/resourceconfigdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
@@ -51,6 +52,7 @@ set(app_SRCS
   utilities/dbuswinidprovider.cpp
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp
+  utilities/kjobprogresstracker.cpp
   utilities/notesrepository.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp
