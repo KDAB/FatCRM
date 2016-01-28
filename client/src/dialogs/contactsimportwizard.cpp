@@ -22,13 +22,11 @@
 
 #include "accountimportpage.h"
 #include "contactsimportpage.h"
+#include "kjobprogresstracker.h"
 
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemModifyJob>
 #include <KLocale>
-#include <KMessageBox>
-
-#include <QProgressDialog>
 
 ContactsImportWizard::ContactsImportWizard(QWidget *parent)
     : QWizard(parent)
@@ -94,47 +92,25 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
 
     setAttribute(Qt::WA_DeleteOnClose, false);
 
+    KJobProgressTracker *tracker = new KJobProgressTracker(this, this);
+    tracker->setCaption(i18n("Import Contacts"));
+    tracker->setLabel(i18n("Importing contacts, please wait..."));
+    connect(tracker, SIGNAL(finished()), SLOT(deleteLater()));
+
     foreach (const Akonadi::Item &item, items) {
+        const KABC::Addressee contact = item.payload<KABC::Addressee>();
         if (item.isValid()) {
             Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
-            connect(job, SIGNAL(result(KJob*)), SLOT(jobFinished(KJob*)));
-            mPendingJobs << job;
+
+            const QString errorMessage = i18n("Unable to update contact %1: %2", contact.realName());
+            tracker->addJob(job, errorMessage);
         } else {
             Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, mContactsCollection, this);
-            connect(job, SIGNAL(result(KJob*)), SLOT(jobFinished(KJob*)));
-            mPendingJobs << job;
+
+            const QString errorMessage = i18n("Unable to create contact %1: %2", contact.realName());
+            tracker->addJob(job, errorMessage);
         }
     }
 
-    mProgressDialog = new QProgressDialog(this);
-    mProgressDialog->setLabelText(i18n("Importing contacts..."));
-    mProgressDialog->setRange(0, items.count());
-    mProgressDialog->setValue(0);
-}
-
-void ContactsImportWizard::jobFinished(KJob *job)
-{
-    mPendingJobs.remove(mPendingJobs.indexOf(job));
-    mProgressDialog->setValue(mProgressDialog->value() + 1);
-
-    if (job->error()) {
-        QString errorMessage;
-
-        const Akonadi::ItemModifyJob *modifyJob = qobject_cast<Akonadi::ItemModifyJob*>(job);
-        if (modifyJob) {
-            const KABC::Addressee contact = modifyJob->item().payload<KABC::Addressee>();
-            errorMessage = i18n("Unable to update contact %1: %2", contact.realName(), job->errorString());
-        } else {
-            const Akonadi::ItemCreateJob *createJob = qobject_cast<Akonadi::ItemCreateJob*>(job);
-            if (createJob) {
-                const KABC::Addressee contact = createJob->item().payload<KABC::Addressee>();
-                errorMessage = i18n("Unable to create contact %1: %2", contact.realName(), job->errorString());
-            }
-        }
-
-        KMessageBox::error(0, errorMessage);
-    }
-
-    if (mPendingJobs.isEmpty())
-        deleteLater();
+    tracker->start();
 }

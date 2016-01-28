@@ -52,15 +52,12 @@ public:
 private slots:
     void adaptWindowSize();
     void importItems(const QVector<Akonadi::Item> &items);
-    void jobFinished(KJob *job);
 
 private:
     AccountImportPage *mAccountImportPage;
     ContactsImportPage *mContactsImportPage;
 
     Akonadi::Collection mContactsCollection;
-    QVector<KJob*> mPendingJobs;
-    QProgressDialog *mProgressDialog;
 };
 
 #endif
