@@ -40,6 +40,38 @@ ContactDetails::ContactDetails(QWidget *parent)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+
+    mUi->salutation->setObjectName(KDCRMFields::salutation());
+    mUi->first_name->setObjectName(KDCRMFields::firstName());
+    mUi->last_name->setObjectName(KDCRMFields::lastName());
+    mUi->title->setObjectName(KDCRMFields::title());
+    mUi->department->setObjectName(KDCRMFields::department());
+    mUi->account_id->setObjectName(KDCRMFields::accountId());
+    mUi->lead_source->setObjectName(KDCRMFields::leadSource());
+    mUi->reports_to_id->setObjectName(KDCRMFields::reportsToId());
+    mUi->email1->setObjectName(KDCRMFields::email1());
+    mUi->email2->setObjectName(KDCRMFields::email2());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->phone_work->setObjectName(KDCRMFields::phoneWork());
+    mUi->phone_mobile->setObjectName(KDCRMFields::phoneMobile());
+    mUi->phone_home->setObjectName(KDCRMFields::phoneHome());
+    mUi->phone_fax->setObjectName(KDCRMFields::phoneFax());
+    mUi->phone_other->setObjectName(KDCRMFields::phoneOther());
+    mUi->do_not_call->setObjectName(KDCRMFields::doNotCall());
+    mUi->birthdate->setObjectName(KDCRMFields::birthdate());
+    mUi->assistant->setObjectName(KDCRMFields::assistant());
+    mUi->phoneAssistant->setObjectName(KDCRMFields::phoneAssistant());
+    mUi->primaryAddressStreet->setObjectName(KDCRMFields::primaryAddressStreet());
+    mUi->primaryAddressCity->setObjectName(KDCRMFields::primaryAddressCity());
+    mUi->primaryAddressState->setObjectName(KDCRMFields::primaryAddressState());
+    mUi->primaryAddressPostalcode->setObjectName(KDCRMFields::primaryAddressPostalcode());
+    mUi->primaryAddressCountry->setObjectName(KDCRMFields::primaryAddressCountry());
+    mUi->altAddressStreet->setObjectName(KDCRMFields::altAddressStreet());
+    mUi->altAddressCity->setObjectName(KDCRMFields::altAddressCity());
+    mUi->altAddressState->setObjectName(KDCRMFields::altAddressState());
+    mUi->altAddressPostalcode->setObjectName(KDCRMFields::altAddressPostalcode());
+    mUi->altAddressCountry->setObjectName(KDCRMFields::altAddressCountry());
+
     initialize();
 }
 

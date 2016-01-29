@@ -547,119 +547,119 @@ ContactsHandler::ContactsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Contacts"), session),
       mAccessors(new ContactAccessorHash)
 {
-    mAccessors->insert(QLatin1String("first_name"),
+    mAccessors->insert(KDCRMFields::firstName(),
                        new ContactAccessorPair(getFirstName, setFirstName,
                                         i18nc("@item:intable", "First Name")));
-    mAccessors->insert(QLatin1String("last_name"),
+    mAccessors->insert(KDCRMFields::lastName(),
                        new ContactAccessorPair(getLastName, setLastName,
                                         i18nc("@item:intable", "Last Name")));
-    mAccessors->insert(QLatin1String("email1"),
+    mAccessors->insert(KDCRMFields::email1(),
                        new ContactAccessorPair(getEmail1, setEmail1,
                                         i18nc("@item:intable", "Primary Email")));
-    mAccessors->insert(QLatin1String("email2"),
+    mAccessors->insert(KDCRMFields::email2(),
                        new ContactAccessorPair(getEmail2, setEmail2,
                                         i18nc("@item:intable", "Other Email")));
-    mAccessors->insert(QLatin1String("title"),
+    mAccessors->insert(KDCRMFields::title(),
                        new ContactAccessorPair(getTitle, setTitle,
                                         i18nc("@item:intable job title", "Title")));
-    mAccessors->insert(QLatin1String("department"),
+    mAccessors->insert(KDCRMFields::department(),
                        new ContactAccessorPair(getDepartment, setDepartment,
                                         i18nc("@item:intable", "Department")));
-    mAccessors->insert(QLatin1String("account_name"),
+    mAccessors->insert(KDCRMFields::accountName(),
                        new ContactAccessorPair(getAccountName, setAccountName,
                                         i18nc("@item:intable", "Account Name")));
-    mAccessors->insert(QLatin1String("account_id"),
+    mAccessors->insert(KDCRMFields::accountId(),
                        new ContactAccessorPair(getAccountId, setAccountId, QString()));
-    mAccessors->insert(QLatin1String("phone_home"),
+    mAccessors->insert(KDCRMFields::phoneHome(),
                        new ContactAccessorPair(getHomePhone, setHomePhone,
                                         i18nc("@item:intable", "Phone (Home)")));
-    mAccessors->insert(QLatin1String("phone_work"),
+    mAccessors->insert(KDCRMFields::phoneWork(),
                        new ContactAccessorPair(getWorkPhone, setWorkPhone,
                                         i18nc("@item:intable", "Phone (Office)")));
-    mAccessors->insert(QLatin1String("phone_mobile"),
+    mAccessors->insert(KDCRMFields::phoneMobile(),
                        new ContactAccessorPair(getMobilePhone, setMobilePhone,
                                         i18nc("@item:intable", "Phone (Mobile)")));
-    mAccessors->insert(QLatin1String("phone_other"),
+    mAccessors->insert(KDCRMFields::phoneOther(),
                        new ContactAccessorPair(getOtherPhone, setOtherPhone,
                                         i18nc("@item:intable", "Phone (Other)")));
-    mAccessors->insert(QLatin1String("phone_fax"),
+    mAccessors->insert(KDCRMFields::phoneFax(),
                        new ContactAccessorPair(getFaxPhone, setFaxPhone,
                                         i18nc("@item:intable", "Fax")));
-    mAccessors->insert(QLatin1String("primary_address_street"),
+    mAccessors->insert(KDCRMFields::primaryAddressStreet(),
                        new ContactAccessorPair(getPrimaryStreet, setPrimaryStreet, QString()));
-    mAccessors->insert(QLatin1String("primary_address_city"),
+    mAccessors->insert(KDCRMFields::primaryAddressCity(),
                        new ContactAccessorPair(getPrimaryCity, setPrimaryCity, QString()));
-    mAccessors->insert(QLatin1String("primary_address_state"),
+    mAccessors->insert(KDCRMFields::primaryAddressState(),
                        new ContactAccessorPair(getPrimaryState, setPrimaryState, QString()));
-    mAccessors->insert(QLatin1String("primary_address_postalcode"),
+    mAccessors->insert(KDCRMFields::primaryAddressPostalcode(),
                        new ContactAccessorPair(getPrimaryPostalcode, setPrimaryPostalcode, QString()));
-    mAccessors->insert(QLatin1String("primary_address_country"),
+    mAccessors->insert(KDCRMFields::primaryAddressCountry(),
                        new ContactAccessorPair(getPrimaryCountry, setPrimaryCountry, QString()));
-    mAccessors->insert(QLatin1String("alt_address_street"),
+    mAccessors->insert(KDCRMFields::altAddressStreet(),
                        new ContactAccessorPair(getOtherStreet, setOtherStreet, QString()));
-    mAccessors->insert(QLatin1String("alt_address_city"),
+    mAccessors->insert(KDCRMFields::altAddressCity(),
                        new ContactAccessorPair(getOtherCity, setOtherCity, QString()));
-    mAccessors->insert(QLatin1String("alt_address_state"),
+    mAccessors->insert(KDCRMFields::altAddressState(),
                        new ContactAccessorPair(getOtherState, setOtherState, QString()));
-    mAccessors->insert(QLatin1String("alt_address_postalcode"),
+    mAccessors->insert(KDCRMFields::altAddressPostalcode(),
                        new ContactAccessorPair(getOtherPostalcode, setOtherPostalcode, QString()));
-    mAccessors->insert(QLatin1String("alt_address_country"),
+    mAccessors->insert(KDCRMFields::altAddressCountry(),
                        new ContactAccessorPair(getOtherCountry, setOtherCountry, QString()));
-    mAccessors->insert(QLatin1String("birthdate"),
+    mAccessors->insert(KDCRMFields::birthdate(),
                        new ContactAccessorPair(getBirthday, setBirthday,
                                         i18nc("@item:intable", "Birthdate")));
-    mAccessors->insert(QLatin1String("description"),
+    mAccessors->insert(KDCRMFields::description(),
                        new ContactAccessorPair(getNote, setNote,
                                         i18nc("@item:intable", "Description")));
-    mAccessors->insert(QLatin1String("assistant"),
+    mAccessors->insert(KDCRMFields::assistant(),
                        new ContactAccessorPair(getAssistantName, setAssistantName,
                                         i18nc("@item:intable", "Assistant")));
-    mAccessors->insert(QLatin1String("assistant_phone"),
+    mAccessors->insert(KDCRMFields::phoneAssistant(),
                        new ContactAccessorPair(getAssistantPhone, setAssistantPhone,
                                         i18nc("@item:intable", "Assistant Phone")));
-    mAccessors->insert(QLatin1String("lead_source"),
+    mAccessors->insert(KDCRMFields::leadSource(),
                        new ContactAccessorPair(getLeadSourceName, setLeadSourceName,
                                         i18nc("@item:intable", "Lead Source")));
-    mAccessors->insert(QLatin1String("campaign_name"),
+    mAccessors->insert(KDCRMFields::campaignName(),
                        new ContactAccessorPair(getCampaignName, setCampaignName,
                                         i18nc("@item:intable", "Campaign")));
-    mAccessors->insert(QLatin1String("campaign_id"),
+    mAccessors->insert(KDCRMFields::campaignId(),
                        new ContactAccessorPair(getCampaignId, setCampaignId, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_name"),
+    mAccessors->insert(KDCRMFields::assignedUserName(),
                        new ContactAccessorPair(getAssignedUserName, setAssignedUserName, QString()));
-    mAccessors->insert(QLatin1String("assigned_user_id"),
+    mAccessors->insert(KDCRMFields::assignedUserId(),
                        new ContactAccessorPair(getAssignedUserId, setAssignedUserId, QString()));
-    mAccessors->insert(QLatin1String("report_to_name"),
+    mAccessors->insert(KDCRMFields::reportsTo(),
                        new ContactAccessorPair(getReportsToUserName, setReportsToUserName,
                                         i18nc("@item:intable", "Reports To")));
-    mAccessors->insert(QLatin1String("reports_to_id"),
+    mAccessors->insert(KDCRMFields::reportsToId(),
                        new ContactAccessorPair(getReportsToUserId, setReportsToUserId, QString()));
-    mAccessors->insert(QLatin1String("modified_by_name"),
+    mAccessors->insert(KDCRMFields::modifiedByName(),
                        new ContactAccessorPair(getModifiedByName, setModifiedByName, QString()));
-    mAccessors->insert(QLatin1String("date_modified"),
+    mAccessors->insert(KDCRMFields::dateModified(),
                        new ContactAccessorPair(getDateModified, setDateModified, QString()));
-    mAccessors->insert(QLatin1String("modified_user_id"),
+    mAccessors->insert(KDCRMFields::modifiedUserId(),
                        new ContactAccessorPair(getModifiedUserId, setModifiedUserId, QString()));
-    mAccessors->insert(QLatin1String("date_entered"),
+    mAccessors->insert(KDCRMFields::dateEntered(),
                        new ContactAccessorPair(getDateCreated, setDateCreated, QString()));
-    mAccessors->insert(QLatin1String("id"),
+    mAccessors->insert(KDCRMFields::id(),
                        new ContactAccessorPair(0, setContactId, QString()));
-    mAccessors->insert(QLatin1String("created_by_name"),
+    mAccessors->insert(KDCRMFields::createdByName(),
                        new ContactAccessorPair(getCreatedByName, setCreatedByName, QString()));
-    mAccessors->insert(QLatin1String("created_by"),
+    mAccessors->insert(KDCRMFields::createdBy(),
                        new ContactAccessorPair(getCreatedById, setCreatedById, QString()));
-    mAccessors->insert(QLatin1String("salutation"),
+    mAccessors->insert(KDCRMFields::salutation(),
                        new ContactAccessorPair(getSalutation, setSalutation,
                                         i18nc("@item:intable", "Salutation")));
-    mAccessors->insert(QLatin1String("opportunity_role_fields"),
+    mAccessors->insert(KDCRMFields::opportunityRoleFields(),
                        new ContactAccessorPair(getOpportunityRoleFields, setOpportunityRoleFields, QString()));
-    mAccessors->insert(QLatin1String("c_accept_status_fields"),
+    mAccessors->insert(KDCRMFields::cAcceptStatusFields(),
                        new ContactAccessorPair(getCAcceptStatusFields, setCAcceptStatusFields, QString()));
-    mAccessors->insert(QLatin1String("m_accept_status_fields"),
+    mAccessors->insert(KDCRMFields::mAcceptStatusFields(),
                        new ContactAccessorPair(getMAcceptStatusFields, setMAcceptStatusFields, QString()));
-    mAccessors->insert(QLatin1String("deleted"),
+    mAccessors->insert(KDCRMFields::deleted(),
                        new ContactAccessorPair(getDeleted, setDeleted, QString()));
-    mAccessors->insert(QLatin1String("do_not_call"),
+    mAccessors->insert(KDCRMFields::doNotCall(),
                        new ContactAccessorPair(getDoNotCall, setDoNotCall, QString()));
 }
 
@@ -712,7 +712,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
             continue;
         }
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         const QString value = KDCRMUtils::encodeXML((*it)->getter(addressee));
         field.setValue(value);
 
@@ -737,7 +737,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
         const QString value = custom.mid(pos + 1);
 
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(name);
+        field.setName(customSugarFieldFromCrmField(name));
         field.setValue(KDCRMUtils::encodeXML(value));
 
         itemList << field;
@@ -822,7 +822,8 @@ int ContactsHandler::expectedContentsVersion() const
 {
     // version 1 = decodeXML/encodeXML added to solve special chars
     // version 2 = support for custom fields added
-    return 2;
+    // version 3 = changed custom fields storage names
+    return 3;
 }
 
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -846,22 +847,21 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     homeAddress.setType(KABC::Address::Home);
 
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const QString fieldName = namedValue.name();
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
 
-        const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(fieldName);
+        const ContactAccessorHash::const_iterator accessIt = mAccessors->constFind(crmFieldName);
         if (accessIt == mAccessors->constEnd()) { // no accessor for regular field
-            if (fieldName.endsWith(QLatin1String("_c"))) {
-                addressee.insertCustom("FATCRM", QString("X-Custom-%1").arg(fieldName), KDCRMUtils::decodeXML(namedValue.value()));
-            }
+            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
+            addressee.insertCustom("FATCRM", QString("X-Custom-%1").arg(customCrmFieldName), KDCRMUtils::decodeXML(namedValue.value()));
 
             continue;
         }
 
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
 
-        if (isAddressValue(fieldName)) {
+        if (isAddressValue(crmFieldName)) {
             KABC::Address &address =
-                isPrimaryAddressValue(fieldName) ? workAddress : homeAddress;
+                isPrimaryAddressValue(crmFieldName) ? workAddress : homeAddress;
             (*accessIt)->setter.aSetter(value, address);
         } else {
             (*accessIt)->setter.vSetter(value, addressee);
