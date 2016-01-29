@@ -609,6 +609,26 @@ public:
      */
     static QString mimeType();
 
+    typedef QString(SugarLead::*valueGetter)() const;
+    typedef void (SugarLead::*valueSetter)(const QString &);
+
+    class LeadAccessorPair
+    {
+    public:
+        LeadAccessorPair(valueGetter get, valueSetter set, const QString &name)
+            : getter(get), setter(set), diffName(name)
+        {}
+
+    public:
+        valueGetter getter;
+        valueSetter setter;
+        QString diffName;
+    };
+
+    typedef QHash<QString, LeadAccessorPair> AccessorHash;
+
+    static AccessorHash accessorHash();
+
 private:
     class Private;
     QSharedDataPointer<Private> d;

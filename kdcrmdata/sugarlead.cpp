@@ -23,6 +23,9 @@
 #include "sugarlead.h"
 #include "kdcrmfields.h"
 
+#include <KLocalizedString>
+
+#include <QHash>
 #include <QMap>
 #include <QSharedData>
 #include <QString>
@@ -771,131 +774,202 @@ QString SugarLead::portalApp() const
 void SugarLead::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
-    d->mId = data.value("id");
-    d->mDateEntered = data.value(KDCRMFields::dateEntered());
-    d->mDateModified = data.value(KDCRMFields::dateModified());
-    d->mModifiedUserId = data.value(KDCRMFields::modifiedUserId());
-    d->mModifiedByName = data.value(KDCRMFields::modifiedByName());
-    d->mCreatedBy = data.value(KDCRMFields::createdBy());
-    d->mCreatedByName = data.value(KDCRMFields::createdByName());
-    d->mDescription = data.value(KDCRMFields::description());
-    d->mDeleted = data.value(KDCRMFields::deleted());
-    d->mAssignedUserId = data.value(KDCRMFields::assignedUserId());
-    d->mAssignedUserName = data.value(KDCRMFields::assignedUserName());
-    d->mSalutation = data.value(KDCRMFields::salutation());
-    d->mFirstName = data.value(KDCRMFields::firstName());
-    d->mLastName = data.value(KDCRMFields::lastName());
-    d->mTitle = data.value(KDCRMFields::title());
-    d->mDepartment = data.value(KDCRMFields::department());
-    d->mDoNotCall = data.value(KDCRMFields::doNotCall());
-    d->mPhoneHome = data.value(KDCRMFields::phoneHome());
-    d->mPhoneMobile = data.value(KDCRMFields::phoneMobile());
-    d->mPhoneWork = data.value(KDCRMFields::phoneWork());
-    d->mPhoneOther = data.value(KDCRMFields::phoneOther());
-    d->mPhoneFax = data.value(KDCRMFields::phoneFax());
-    d->mEmail1 = data.value(KDCRMFields::email1());
-    d->mEmail2 = data.value(KDCRMFields::email2());
-    d->mPrimaryAddressStreet = data.value(KDCRMFields::primaryAddressStreet());
-    d->mPrimaryAddressCity = data.value(KDCRMFields::primaryAddressCity());
-    d->mPrimaryAddressState = data.value(KDCRMFields::primaryAddressState());
-    d->mPrimaryAddressPostalcode = data.value(KDCRMFields::primaryAddressPostalcode());
-    d->mPrimaryAddressCountry = data.value(KDCRMFields::primaryAddressCountry());
-    d->mAltAddressStreet = data.value(KDCRMFields::altAddressStreet());
-    d->mAltAddressCity = data.value(KDCRMFields::altAddressCity());
-    d->mAltAddressState = data.value(KDCRMFields::altAddressState());
-    d->mAltAddressPostalcode = data.value(KDCRMFields::altAddressPostalcode());
-    d->mAltAddressCountry = data.value(KDCRMFields::altAddressCountry());
-    d->mAssistant = data.value(KDCRMFields::assistant());
-    d->mAssistantPhone = data.value("assistantPhone");
-    d->mConverted = data.value("converted");
-    d->mReferedBy = data.value("referedBy");
-    d->mLeadSource = data.value(KDCRMFields::leadSource());
-    d->mLeadSourceDescription = data.value("leadSourceDescription");
-    d->mStatus = data.value(KDCRMFields::status());
-    d->mStatusDescription = data.value("statusDescription");
-    d->mReportsToId = data.value(KDCRMFields::reportsToId());
-    d->mReportToName = data.value("reportToName");
-    d->mAccountName = data.value(KDCRMFields::accountName());
-    d->mAccountDescription = data.value("accountDescription");
-    d->mContactId = data.value(KDCRMFields::contactId());
-    d->mAccountId = data.value(KDCRMFields::accountId());
-    d->mOpportunityId = data.value("opportunityId");
-    d->mOpportunityName = data.value("opportunityName");
-    d->mOpportunityAmount = data.value("opportunityAmount");
-    d->mCampaignId = data.value(KDCRMFields::campaignId());
-    d->mCampaignName = data.value(KDCRMFields::campaignName());
-    d->mCAcceptStatusFields = data.value(KDCRMFields::cAcceptStatusFields());
-    d->mMAcceptStatusFields = data.value(KDCRMFields::mAcceptStatusFields());
-    d->mBirthdate = data.value(KDCRMFields::birthdate());
-    d->mPortalName = data.value("portalName");
-    d->mPortalApp = data.value("portalApp");
+
+    const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
+    QMap<QString, QString>::const_iterator it = data.constBegin();
+    for ( ; it != data.constEnd() ; ++it) {
+        const SugarLead::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+        if (accessIt != accessors.constEnd()) {
+            (this->*(accessIt.value().setter))(it.value());
+        } else {
+            //TODO: add custom field support
+            // d->mCustomFields.insert(it.key(), it.value());
+        }
+    }
 }
 
 QMap<QString, QString> SugarLead::data()
 {
     QMap<QString, QString> data;
-    data["id"] = d->mId;
-    data[KDCRMFields::dateEntered()] = d->mDateEntered;
-    data[KDCRMFields::dateModified()] = d->mDateModified;
-    data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
-    data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
-    data[KDCRMFields::createdBy()] = d->mCreatedBy;
-    data[KDCRMFields::createdByName()] = d->mCreatedByName;
-    data[KDCRMFields::description()] = d->mDescription;
-    data[KDCRMFields::deleted()] = d->mDeleted;
-    data[KDCRMFields::assignedUserId()] = d->mAssignedUserId;
-    data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
-    data[KDCRMFields::salutation()] = d->mSalutation;
-    data[KDCRMFields::firstName()] = d->mFirstName;
-    data[KDCRMFields::lastName()] = d->mLastName;
-    data[KDCRMFields::title()] = d->mTitle;
-    data[KDCRMFields::department()] = d->mDepartment;
-    data[KDCRMFields::doNotCall()] = d->mDoNotCall;
-    data[KDCRMFields::phoneHome()] = d->mPhoneHome;
-    data[KDCRMFields::phoneMobile()] = d->mPhoneMobile;
-    data[KDCRMFields::phoneWork()] = d->mPhoneWork;
-    data[KDCRMFields::phoneOther()] = d->mPhoneOther;
-    data[KDCRMFields::phoneFax()] = d->mPhoneFax;
-    data[KDCRMFields::email1()] = d->mEmail1;
-    data[KDCRMFields::email2()] = d->mEmail2;
-    data.insert(KDCRMFields::primaryAddressStreet(), d->mPrimaryAddressStreet);
-    data.insert(KDCRMFields::primaryAddressCity(), d->mPrimaryAddressCity);
-    data.insert(KDCRMFields::primaryAddressState(), d->mPrimaryAddressState);
-    data.insert(KDCRMFields::primaryAddressPostalcode(), d->mPrimaryAddressPostalcode);
-    data.insert(KDCRMFields::primaryAddressCountry(), d->mPrimaryAddressCountry);
-    data.insert(KDCRMFields::altAddressStreet(), d->mAltAddressStreet);
-    data.insert(KDCRMFields::altAddressCity(), d->mAltAddressCity);
-    data.insert(KDCRMFields::altAddressState(), d->mAltAddressState);
-    data.insert(KDCRMFields::altAddressPostalcode(), d->mAltAddressPostalcode);
-    data.insert(KDCRMFields::altAddressCountry(), d->mAltAddressCountry);
-    data[KDCRMFields::assistant()] = d->mAssistant;
-    data["assistantPhone"] = d->mAssistantPhone;
-    data["converted"] = d->mConverted;
-    data["referedBy"] = d->mReferedBy;
-    data[KDCRMFields::leadSource()] = d->mLeadSource;
-    data["leadSourceDescription"] = d->mLeadSourceDescription;
-    data[KDCRMFields::status()] = d->mStatus;
-    data["statusDescription"] = d->mStatusDescription;
-    data[KDCRMFields::reportsToId()] = d->mReportsToId;
-    data["reportToName"] = d->mReportToName;
-    data[KDCRMFields::accountName()] = d->mAccountName;
-    data["accountDescription"] = d->mAccountDescription;
-    data[KDCRMFields::contactId()] = d->mContactId;
-    data[KDCRMFields::accountId()] = d->mAccountId;
-    data["opportunityId"] = d->mOpportunityId;
-    data["opportunityName"] = d->mOpportunityName;
-    data["opportunityAmount"] = d->mOpportunityAmount;
-    data[KDCRMFields::campaignId()] = d->mCampaignId;
-    data[KDCRMFields::campaignName()] = d->mCampaignName;
-    data[KDCRMFields::cAcceptStatusFields()] = d->mCAcceptStatusFields;
-    data[KDCRMFields::mAcceptStatusFields()] = d->mMAcceptStatusFields;
-    data[KDCRMFields::birthdate()] = d->mBirthdate;
-    data["portalName"] = d->mPortalName;
-    data["portalApp"] = d->mPortalApp;
+
+    const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
+    SugarLead::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
+    for (; it != endIt; ++it) {
+        const SugarLead::valueGetter getter = (*it).getter;
+        data.insert(it.key(), (this->*getter)());
+    }
+
+/*TODO: add custom field support
+    // plus custom fields
+    QMap<QString, QString>::const_iterator cit = d->mCustomFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = d->mCustomFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        data.insert(cit.key(), cit.value());
+    }
+*/
+
     return data;
 }
 
 QString SugarLead::mimeType()
 {
     return QLatin1String("application/x-vnd.kdab.crm.lead");
+}
+
+Q_GLOBAL_STATIC(SugarLead::AccessorHash, s_accessors)
+
+SugarLead::AccessorHash SugarLead::accessorHash()
+{
+    AccessorHash &accessors = *s_accessors();
+    if (accessors.isEmpty()) {
+        accessors.insert(KDCRMFields::id(),
+                         LeadAccessorPair(&SugarLead::id, &SugarLead::setId, QString()));
+        accessors.insert(KDCRMFields::dateEntered(),
+                         LeadAccessorPair(&SugarLead::dateEntered, &SugarLead::setDateEntered, QString()));
+        accessors.insert(KDCRMFields::dateModified(),
+                         LeadAccessorPair(&SugarLead::dateModified, &SugarLead::setDateModified, QString()));
+        accessors.insert(KDCRMFields::modifiedUserId(),
+                         LeadAccessorPair(&SugarLead::modifiedUserId, &SugarLead::setModifiedUserId, QString()));
+        accessors.insert(KDCRMFields::modifiedByName(),
+                         LeadAccessorPair(&SugarLead::modifiedByName, &SugarLead::setModifiedByName, QString()));
+        accessors.insert(KDCRMFields::createdBy(),
+                         LeadAccessorPair(&SugarLead::createdBy, &SugarLead::setCreatedBy, QString()));
+        accessors.insert(KDCRMFields::createdByName(),
+                         LeadAccessorPair(&SugarLead::createdByName, &SugarLead::setCreatedByName, QString()));
+        accessors.insert(KDCRMFields::description(),
+                         LeadAccessorPair(&SugarLead::description, &SugarLead::setDescription,
+                                          i18nc("@item:intable", "Description")));
+        accessors.insert(KDCRMFields::deleted(),
+                         LeadAccessorPair(&SugarLead::deleted, &SugarLead::setDeleted, QString()));
+        accessors.insert(KDCRMFields::assignedUserId(),
+                         LeadAccessorPair(&SugarLead::assignedUserId, &SugarLead::setAssignedUserId, QString()));
+        accessors.insert(KDCRMFields::assignedUserName(),
+                         LeadAccessorPair(&SugarLead::assignedUserName, &SugarLead::setAssignedUserName,
+                                          i18nc("@item:intable", "Assigned To")));
+        accessors.insert(KDCRMFields::salutation(),
+                         LeadAccessorPair(&SugarLead::salutation, &SugarLead::setSalutation,
+                                          i18nc("@item:intable", "Salutation")));
+        accessors.insert(KDCRMFields::firstName(),
+                         LeadAccessorPair(&SugarLead::firstName, &SugarLead::setFirstName,
+                                          i18nc("@item:intable", "First Name")));
+        accessors.insert(KDCRMFields::lastName(),
+                         LeadAccessorPair(&SugarLead::lastName, &SugarLead::setLastName,
+                                          i18nc("@item:intable", "Last Name")));
+        accessors.insert(KDCRMFields::title(),
+                         LeadAccessorPair(&SugarLead::title, &SugarLead::setTitle,
+                                          i18nc("@item:intable job title", "Title")));
+        accessors.insert(KDCRMFields::department(),
+                         LeadAccessorPair(&SugarLead::department, &SugarLead::setDepartment,
+                                          i18nc("@item:intable", "Department")));
+        accessors.insert(KDCRMFields::doNotCall(),
+                         LeadAccessorPair(&SugarLead::doNotCall, &SugarLead::setDoNotCall, QString()));
+        accessors.insert(KDCRMFields::phoneHome(),
+                         LeadAccessorPair(&SugarLead::phoneHome, &SugarLead::setPhoneHome,
+                                          i18nc("@item:intable", "Phone (Home)")));
+        accessors.insert(KDCRMFields::phoneMobile(),
+                         LeadAccessorPair(&SugarLead::phoneMobile, &SugarLead::setPhoneMobile,
+                                          i18nc("@item:intable", "Phone (Mobile)")));
+        accessors.insert(KDCRMFields::phoneWork(),
+                         LeadAccessorPair(&SugarLead::phoneWork, &SugarLead::setPhoneWork,
+                                          i18nc("@item:intable", "Phone (Office)")));
+        accessors.insert(KDCRMFields::phoneOther(),
+                         LeadAccessorPair(&SugarLead::phoneOther, &SugarLead::setPhoneOther,
+                                          i18nc("@item:intable", "Phone (Other)")));
+        accessors.insert(KDCRMFields::phoneFax(),
+                         LeadAccessorPair(&SugarLead::phoneFax, &SugarLead::setPhoneFax,
+                                          i18nc("@item:intable", "Fax")));
+        accessors.insert(KDCRMFields::email1(),
+                         LeadAccessorPair(&SugarLead::email1, &SugarLead::setEmail1,
+                                          i18nc("@item:intable", "Primary Email")));
+        accessors.insert(KDCRMFields::email2(),
+                         LeadAccessorPair(&SugarLead::email2, &SugarLead::setEmail2,
+                                          i18nc("@item:intable", "Other Email")));
+        accessors.insert(KDCRMFields::primaryAddressStreet(),
+                         LeadAccessorPair(&SugarLead::primaryAddressStreet, &SugarLead::setPrimaryAddressStreet, QString()));
+        accessors.insert(KDCRMFields::primaryAddressCity(),
+                         LeadAccessorPair(&SugarLead::primaryAddressCity, &SugarLead::setPrimaryAddressCity, QString()));
+        accessors.insert(KDCRMFields::primaryAddressState(),
+                         LeadAccessorPair(&SugarLead::primaryAddressState, &SugarLead::setPrimaryAddressState, QString()));
+        accessors.insert(KDCRMFields::primaryAddressPostalcode(),
+                         LeadAccessorPair(&SugarLead::primaryAddressPostalcode, &SugarLead::setPrimaryAddressPostalcode, QString()));
+        accessors.insert(KDCRMFields::primaryAddressCountry(),
+                         LeadAccessorPair(&SugarLead::primaryAddressCountry, &SugarLead::setPrimaryAddressCountry, QString()));
+        accessors.insert(KDCRMFields::altAddressStreet(),
+                         LeadAccessorPair(&SugarLead::altAddressStreet, &SugarLead::setAltAddressStreet, QString()));
+        accessors.insert(KDCRMFields::altAddressCity(),
+                         LeadAccessorPair(&SugarLead::altAddressCity, &SugarLead::setAltAddressCity, QString()));
+        accessors.insert(KDCRMFields::altAddressState(),
+                         LeadAccessorPair(&SugarLead::altAddressState, &SugarLead::setAltAddressState, QString()));
+        accessors.insert(KDCRMFields::altAddressPostalcode(),
+                         LeadAccessorPair(&SugarLead::altAddressPostalcode, &SugarLead::setAltAddressPostalcode, QString()));
+        accessors.insert(KDCRMFields::altAddressCountry(),
+                         LeadAccessorPair(&SugarLead::altAddressCountry, &SugarLead::setAltAddressCountry, QString()));
+        accessors.insert(KDCRMFields::assistant(),
+                         LeadAccessorPair(&SugarLead::assistant, &SugarLead::setAssistant,
+                                          i18nc("@item:intable", "Assistant")));
+        accessors.insert(KDCRMFields::phoneAssistant(),
+                         LeadAccessorPair(&SugarLead::assistantPhone, &SugarLead::setAssistantPhone,
+                                          i18nc("@item:intable", "Assistant Phone")));
+        accessors.insert(KDCRMFields::converted(),
+                         LeadAccessorPair(&SugarLead::converted, &SugarLead::setConverted, QString()));
+        accessors.insert(KDCRMFields::referedBy(),
+                         LeadAccessorPair(&SugarLead::referedBy, &SugarLead::setReferedBy,
+                                          i18nc("@item:intable", "Referred By")));
+        accessors.insert(KDCRMFields::leadSource(),
+                         LeadAccessorPair(&SugarLead::leadSource, &SugarLead::setLeadSource,
+                                          i18nc("@item:intable", "Lead Source")));
+        accessors.insert(KDCRMFields::leadSourceDescription(),
+                         LeadAccessorPair(&SugarLead::leadSourceDescription, &SugarLead::setLeadSourceDescription,
+                                          i18nc("@item:intable", "Lead Source Description")));
+        accessors.insert(KDCRMFields::status(),
+                         LeadAccessorPair(&SugarLead::status, &SugarLead::setStatus,
+                                          i18nc("@item:intable", "Status")));
+        accessors.insert(KDCRMFields::statusDescription(),
+                         LeadAccessorPair(&SugarLead::statusDescription, &SugarLead::setStatusDescription,
+                                          i18nc("@item:intable", "Status Description")));
+        accessors.insert(KDCRMFields::reportsToId(),
+                         LeadAccessorPair(&SugarLead::reportsToId, &SugarLead::setReportsToId, QString()));
+        accessors.insert(KDCRMFields::reportsTo(),
+                         LeadAccessorPair(&SugarLead::reportToName, &SugarLead::setReportToName,
+                                          i18nc("@item:intable", "Reports To")));
+        accessors.insert(KDCRMFields::accountName(),
+                         LeadAccessorPair(&SugarLead::accountName, &SugarLead::setAccountName,
+                                          i18nc("@item:intable", "Account")));
+        accessors.insert(KDCRMFields::accountDescription(),
+                         LeadAccessorPair(&SugarLead::accountDescription, &SugarLead::setAccountDescription,
+                                          i18nc("@item:intable", "Account Description")));
+        accessors.insert(KDCRMFields::contactId(),
+                         LeadAccessorPair(&SugarLead::contactId, &SugarLead::setContactId, QString()));
+        accessors.insert(KDCRMFields::accountId(),
+                         LeadAccessorPair(&SugarLead::accountId, &SugarLead::setAccountId, QString()));
+        accessors.insert(KDCRMFields::opportunityId(),
+                         LeadAccessorPair(&SugarLead::opportunityId, &SugarLead::setOpportunityId, QString()));
+        accessors.insert(KDCRMFields::opportunityName(),
+                         LeadAccessorPair(&SugarLead::opportunityName, &SugarLead::setOpportunityName,
+                                          i18nc("@item:intable", "Opportunity")));
+        accessors.insert(KDCRMFields::opportunityAmount(),
+                         LeadAccessorPair(&SugarLead::opportunityAmount, &SugarLead::setOpportunityAmount,
+                                          i18nc("@item:intable", "Opportunity Amount")));
+        accessors.insert(KDCRMFields::campaignId(),
+                         LeadAccessorPair(&SugarLead::campaignId, &SugarLead::setCampaignId, QString()));
+        accessors.insert(KDCRMFields::campaignName(),
+                         LeadAccessorPair(&SugarLead::campaignName, &SugarLead::setCampaignName,
+                                          i18nc("@item:intable", "Campaign")));
+        accessors.insert(KDCRMFields::cAcceptStatusFields(),
+                         LeadAccessorPair(&SugarLead::cAcceptStatusFields, &SugarLead::setCAcceptStatusFields, QString()));
+        accessors.insert(KDCRMFields::mAcceptStatusFields(),
+                         LeadAccessorPair(&SugarLead::mAcceptStatusFields, &SugarLead::setMAcceptStatusFields, QString()));
+        accessors.insert(KDCRMFields::birthdate(),
+                         LeadAccessorPair(&SugarLead::birthdate, &SugarLead::setBirthdate,
+                                          i18nc("@item:intable", "Birthdate")));
+        accessors.insert(KDCRMFields::portalName(),
+                         LeadAccessorPair(&SugarLead::portalName, &SugarLead::setPortalName,
+                                          i18nc("@item:intable", "Portal")));
+        accessors.insert(KDCRMFields::portalApp(),
+                         LeadAccessorPair(&SugarLead::portalApp, &SugarLead::setPortalApp,
+                                          i18nc("@item:intable", "Portal Application")));
+    }
+
+    return accessors;
 }
