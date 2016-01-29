@@ -508,49 +508,49 @@ KDCRMFields::deleted() = "0"
 "parent_type" = "Opportunities"
 "parent_id" = "75443306-18e2-634a-ed06-54f5a41ccd00"
 */
-        accessors.insert(QLatin1String("id"),
+        accessors.insert(KDCRMFields::id(),
                          EmailAccessorPair(&SugarEmail::id, &SugarEmail::setId, QString()));
-        accessors.insert(QLatin1String("name"),
+        accessors.insert(KDCRMFields::name(),
                          EmailAccessorPair(&SugarEmail::name, &SugarEmail::setName,
                                           i18nc("@item:intable email name", "Name")));
-        accessors.insert(QLatin1String("date_entered"),
+        accessors.insert(KDCRMFields::dateEntered(),
                          EmailAccessorPair(&SugarEmail::dateEntered, &SugarEmail::setDateEntered, QString()));
-        accessors.insert(QLatin1String("date_modified"),
+        accessors.insert(KDCRMFields::dateModified(),
                          EmailAccessorPair(&SugarEmail::dateModified, &SugarEmail::setDateModified, QString()));
-        accessors.insert(QLatin1String("modified_user_id"),
+        accessors.insert(KDCRMFields::modifiedUserId(),
                          EmailAccessorPair(&SugarEmail::modifiedUserId, &SugarEmail::setModifiedUserId, QString()));
-        accessors.insert(QLatin1String("modified_by_name"),
+        accessors.insert(KDCRMFields::modifiedByName(),
                          EmailAccessorPair(&SugarEmail::modifiedByName, &SugarEmail::setModifiedByName, QString()));
-        accessors.insert(QLatin1String("created_by"),
+        accessors.insert(KDCRMFields::createdBy(),
                          EmailAccessorPair(&SugarEmail::createdBy, &SugarEmail::setCreatedBy, QString()));
-        accessors.insert(QLatin1String("created_by_name"),
+        accessors.insert(KDCRMFields::createdByName(),
                          EmailAccessorPair(&SugarEmail::createdByName, &SugarEmail::setCreatedByName, QString()));
-        accessors.insert(QLatin1String("deleted"),
+        accessors.insert(KDCRMFields::deleted(),
                          EmailAccessorPair(&SugarEmail::deleted, &SugarEmail::setDeleted, QString()));
-        accessors.insert(QLatin1String("assigned_user_id"),
+        accessors.insert(KDCRMFields::assignedUserId(),
                          EmailAccessorPair(&SugarEmail::assignedUserId, &SugarEmail::setAssignedUserId, QString()));
-        accessors.insert(QLatin1String("assigned_user_name"),
+        accessors.insert(KDCRMFields::assignedUserName(),
                          EmailAccessorPair(&SugarEmail::assignedUserName, &SugarEmail::setAssignedUserName,
                                           i18nc("@item:intable", "Assigned To")));
 
-        accessors.insert(QLatin1String("date_sent"),
+        accessors.insert(KDCRMFields::dateSent(),
                          EmailAccessorPair(&SugarEmail::dateSent, &SugarEmail::setDateSent, QString()));
-        accessors.insert(QLatin1String("message_id"),
+        accessors.insert(KDCRMFields::messageId(),
                          EmailAccessorPair(&SugarEmail::messageId, &SugarEmail::setMessageId, QString()));
-        accessors.insert(QLatin1String("parent_type"),
+        accessors.insert(KDCRMFields::parentType(),
                          EmailAccessorPair(&SugarEmail::parentType, &SugarEmail::setParentType, QString()));
-        accessors.insert(QLatin1String("parent_id"),
+        accessors.insert(KDCRMFields::parentId(),
                          EmailAccessorPair(&SugarEmail::parentId, &SugarEmail::setParentId, QString()));
-        accessors.insert(QLatin1String("from_addr_name"),
+        accessors.insert(KDCRMFields::fromAddrName(),
                          EmailAccessorPair(&SugarEmail::fromAddrName, &SugarEmail::setFromAddrName, QString()));
-        accessors.insert(QLatin1String("to_addrs_names"),
+        accessors.insert(KDCRMFields::toAddrsNames(),
                          EmailAccessorPair(&SugarEmail::toAddrNames, &SugarEmail::setToAddrNames, QString()));
-        accessors.insert(QLatin1String("cc_addrs_names"),
+        accessors.insert(KDCRMFields::ccAddrsNames(),
                          EmailAccessorPair(&SugarEmail::ccAddrNames, &SugarEmail::setCcAddrNames, QString()));
 
         // This field doesn't come from Emails but from EmailText, so it's set externally.
         // We add an accessor for SugarEmailIO though.
-        accessors.insert(QLatin1String("description"),
+        accessors.insert(KDCRMFields::description(),
                          EmailAccessorPair(&SugarEmail::description, &SugarEmail::setDescription, QString()));
 
     }

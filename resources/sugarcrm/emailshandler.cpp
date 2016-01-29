@@ -163,7 +163,7 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
         }
         const SugarEmail::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((email.*getter)()));
 
         itemList << field;
@@ -193,7 +193,8 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
     SugarEmail email;
     email.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const SugarEmail::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const SugarEmail::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
         if (accessIt == mAccessors.constEnd()) {
             // no accessor for field
             continue;
