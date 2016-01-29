@@ -69,6 +69,7 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString nextStep();
     KDCRMDATA_EXPORT QString salesStage();
     KDCRMDATA_EXPORT QString probability();
+    KDCRMDATA_EXPORT QString nextCallDate();
     KDCRMDATA_EXPORT QString billingAddressStreet();
     KDCRMDATA_EXPORT QString billingAddressCity();
     KDCRMDATA_EXPORT QString billingAddressState();

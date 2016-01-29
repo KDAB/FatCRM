@@ -77,14 +77,11 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
         if (accessIt != accessors.constEnd()) {
             (opportunity.*(accessIt.value().setter))(value);
         } else {
-            if (key.endsWith(QLatin1String("_c"))) {
-                opportunity.setCustomField(key, value);
-            } else if (key == "nextCallDate" || key == "next_call_date") {
+            if (key == "nextCallDate") {
                 // compat code, fixing previous mistake
-                opportunity.setCustomField("next_call_date_c", value);
+                opportunity.setCustomField(KDCRMFields::nextCallDate(), value);
             } else {
-                qDebug() << "Unexpected XML field in opportunity" << key;
-                xml.skipCurrentElement();
+                opportunity.setCustomField(key, value);
             }
         }
     }

@@ -44,6 +44,19 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);
     mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
+
+    mUi->name->setObjectName(KDCRMFields::name());
+    mUi->account_id->setObjectName(KDCRMFields::accountId());
+    mUi->opportunity_type->setObjectName(KDCRMFields::opportunityType());
+    mUi->lead_source->setObjectName(KDCRMFields::leadSource());
+    mUi->date_closed->setObjectName(KDCRMFields::dateClosed());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->amount->setObjectName(KDCRMFields::amount());
+    mUi->next_step->setObjectName(KDCRMFields::nextStep());
+    mUi->next_call_date->setObjectName(KDCRMFields::nextCallDate());
+    mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
+    mUi->probability->setObjectName(KDCRMFields::probability());
+
     initialize();
 }
 

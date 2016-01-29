@@ -92,7 +92,7 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
         }
         const SugarOpportunity::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
 
         itemList << field;
@@ -104,7 +104,7 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     const QMap<QString, QString>::const_iterator end = customFields.constEnd();
     for ( ; cit != end ; ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(cit.key());
+        field.setName(customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
         itemList << field;
     }
@@ -119,7 +119,8 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 int OpportunitiesHandler::expectedContentsVersion() const
 {
     // version 1 = account_name is resolved to account_id upon loading
-    return 1;
+    // version 2 = changed custom fields storage names
+    return 2;
 }
 
 QString OpportunitiesHandler::orderByForListing() const
@@ -154,10 +155,12 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     SugarOpportunity opportunity;
     opportunity.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
         if (accessIt == mAccessors.constEnd()) {
-            opportunity.setCustomField(namedValue.name(), value);
+            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
+            opportunity.setCustomField(customCrmFieldName, value);
             continue;
         }
 

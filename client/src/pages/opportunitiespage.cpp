@@ -90,6 +90,6 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     initialData.insert(KDCRMFields::salesStage(), "Prospecting");
     initialData.insert(KDCRMFields::probability(), "10");
     initialData.insert(KDCRMFields::dateClosed(), KDCRMUtils::dateToString(QDate::currentDate().addMonths(12)));
-    initialData.insert("next_call_date_c", KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
+    initialData.insert(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
     return initialData;
 }

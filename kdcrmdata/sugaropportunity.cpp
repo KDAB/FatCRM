@@ -508,12 +508,12 @@ QString SugarOpportunity::probability() const
 
 void SugarOpportunity::setNextCallDate(const QDate &date)
 {
-    setCustomField("next_call_date_c", KDCRMUtils::dateToString(date));
+    setCustomField(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(date));
 }
 
 QDate SugarOpportunity::nextCallDate() const
 {
-    return KDCRMUtils::dateFromString(d->mCustomFields.value("next_call_date_c"));
+    return KDCRMUtils::dateFromString(d->mCustomFields.value(KDCRMFields::nextCallDate()));
 }
 
 void SugarOpportunity::setCustomField(const QString &name, const QString &value)
@@ -587,74 +587,74 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
 {
     AccessorHash &accessors = *s_accessors();
     if (accessors.isEmpty()) {
-        accessors.insert(QLatin1String("id"),
+        accessors.insert(KDCRMFields::id(),
                            OpportunityAccessorPair(&SugarOpportunity::id, &SugarOpportunity::setId, QString()));
-        accessors.insert(QLatin1String("name"),
+        accessors.insert(KDCRMFields::name(),
                            OpportunityAccessorPair(&SugarOpportunity::name, &SugarOpportunity::setName,
                                             i18nc("@item:intable", "Name")));
-        accessors.insert(QLatin1String("date_entered"),
+        accessors.insert(KDCRMFields::dateEntered(),
                            OpportunityAccessorPair(&SugarOpportunity::dateEntered, &SugarOpportunity::setDateEntered, QString()));
-        accessors.insert(QLatin1String("date_modified"),
+        accessors.insert(KDCRMFields::dateModified(),
                            OpportunityAccessorPair(&SugarOpportunity::dateModifiedRaw, &SugarOpportunity::setDateModifiedRaw, QString()));
-        accessors.insert(QLatin1String("modified_user_id"),
+        accessors.insert(KDCRMFields::modifiedUserId(),
                            OpportunityAccessorPair(&SugarOpportunity::modifiedUserId, &SugarOpportunity::setModifiedUserId, QString()));
-        accessors.insert(QLatin1String("modified_by_name"),
+        accessors.insert(KDCRMFields::modifiedByName(),
                            OpportunityAccessorPair(&SugarOpportunity::modifiedByName, &SugarOpportunity::setModifiedByName, QString()));
-        accessors.insert(QLatin1String("created_by"),
+        accessors.insert(KDCRMFields::createdBy(),
                            OpportunityAccessorPair(&SugarOpportunity::createdBy, &SugarOpportunity::setCreatedBy, QString()));
-        accessors.insert(QLatin1String("created_by_name"),
+        accessors.insert(KDCRMFields::createdByName(),
                            OpportunityAccessorPair(&SugarOpportunity::createdByName, &SugarOpportunity::setCreatedByName,
                                             i18nc("@item:intable", "Created By")));
-        accessors.insert(QLatin1String("description"),
+        accessors.insert(KDCRMFields::description(),
                            OpportunityAccessorPair(&SugarOpportunity::description, &SugarOpportunity::setDescription,
                                             i18nc("@item:intable", "Description")));
-        accessors.insert(QLatin1String("deleted"),
+        accessors.insert(KDCRMFields::deleted(),
                            OpportunityAccessorPair(&SugarOpportunity::deleted, &SugarOpportunity::setDeleted, QString()));
-        accessors.insert(QLatin1String("assigned_user_id"),
+        accessors.insert(KDCRMFields::assignedUserId(),
                            OpportunityAccessorPair(&SugarOpportunity::assignedUserId, &SugarOpportunity::setAssignedUserId, QString()));
-        accessors.insert(QLatin1String("assigned_user_name"),
+        accessors.insert(KDCRMFields::assignedUserName(),
                            OpportunityAccessorPair(&SugarOpportunity::assignedUserName, &SugarOpportunity::setAssignedUserName,
                                             i18nc("@item:intable", "Assigned To")));
-        accessors.insert(QLatin1String("opportunity_type"),
+        accessors.insert(KDCRMFields::opportunityType(),
                            OpportunityAccessorPair(&SugarOpportunity::opportunityType, &SugarOpportunity::setOpportunityType,
                                             i18nc("@item:intable", "Type")));
-        accessors.insert(QLatin1String("account_name"),
+        accessors.insert(KDCRMFields::accountName(),
                            OpportunityAccessorPair(&SugarOpportunity::tempAccountName, &SugarOpportunity::setTempAccountName,
                                             i18nc("@item:intable", "Account")));
         // ### I wish this one was available, but SuiteCRM doesn't return it!
         // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)
-        accessors.insert(QLatin1String("account_id"),
+        accessors.insert(KDCRMFields::accountId(),
                            OpportunityAccessorPair(&SugarOpportunity::accountId, &SugarOpportunity::setAccountId, QString()));
-        accessors.insert(QLatin1String("campaign_id"),
+        accessors.insert(KDCRMFields::campaignId(),
                            OpportunityAccessorPair(&SugarOpportunity::campaignId, &SugarOpportunity::setCampaignId, QString()));
-        accessors.insert(QLatin1String("campaign_name"),
+        accessors.insert(KDCRMFields::campaignName(),
                            OpportunityAccessorPair(&SugarOpportunity::campaignName, &SugarOpportunity::setCampaignName,
                                             i18nc("@item:intable", "Campaign")));
-        accessors.insert(QLatin1String("lead_source"),
+        accessors.insert(KDCRMFields::leadSource(),
                            OpportunityAccessorPair(&SugarOpportunity::leadSource, &SugarOpportunity::setLeadSource,
                                             i18nc("@item:intable", "Lead Source")));
-        accessors.insert(QLatin1String("amount"),
+        accessors.insert(KDCRMFields::amount(),
                            OpportunityAccessorPair(&SugarOpportunity::amount, &SugarOpportunity::setAmount,
                                             i18nc("@item:intable", "Amount")));
-        accessors.insert(QLatin1String("amount_usdollar"),
+        accessors.insert(KDCRMFields::amountUsDollar(),
                            OpportunityAccessorPair(&SugarOpportunity::amountUsDollar, &SugarOpportunity::setAmountUsDollar,
                                             i18nc("@item:intable", "Amount in USD")));
-        accessors.insert(QLatin1String("currency_id"),
+        accessors.insert(KDCRMFields::currencyId(),
                            OpportunityAccessorPair(&SugarOpportunity::currencyId, &SugarOpportunity::setCurrencyId, QString()));
-        accessors.insert(QLatin1String("currency_name"),
+        accessors.insert(KDCRMFields::currencyName(),
                            OpportunityAccessorPair(&SugarOpportunity::currencyName, &SugarOpportunity::setCurrencyName,
                                             i18nc("@item:intable", "Currency")));
-        accessors.insert(QLatin1String("currency_symbol"),
+        accessors.insert(KDCRMFields::currencySymbol(),
                            OpportunityAccessorPair(&SugarOpportunity::currencySymbol, &SugarOpportunity::setCurrencySymbol, QString()));
-        accessors.insert(QLatin1String("date_closed"),
+        accessors.insert(KDCRMFields::dateClosed(),
                            OpportunityAccessorPair(&SugarOpportunity::dateClosed, &SugarOpportunity::setDateClosed, QString()));
-        accessors.insert(QLatin1String("next_step"),
+        accessors.insert(KDCRMFields::nextStep(),
                            OpportunityAccessorPair(&SugarOpportunity::nextStep, &SugarOpportunity::setNextStep,
                                             i18nc("@item:intable", "Next Step")));
-        accessors.insert(QLatin1String("sales_stage"),
+        accessors.insert(KDCRMFields::salesStage(),
                            OpportunityAccessorPair(&SugarOpportunity::salesStage, &SugarOpportunity::setSalesStage,
                                             i18nc("@item:intable", "Sales Stage")));
-        accessors.insert(QLatin1String("probability"),
+        accessors.insert(KDCRMFields::probability(),
                            OpportunityAccessorPair(&SugarOpportunity::probability, &SugarOpportunity::setProbability,
                                             i18nc("@item:intable", "Probability (percent)")));
     }
