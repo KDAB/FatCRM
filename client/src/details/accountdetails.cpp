@@ -33,6 +33,37 @@ AccountDetails::AccountDetails(QWidget *parent)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+
+    mUi->name->setObjectName(KDCRMFields::name());
+    mUi->website->setObjectName(KDCRMFields::website());
+    mUi->ticker_symbol->setObjectName(KDCRMFields::tickerSymbol());
+    mUi->parent_id->setObjectName(KDCRMFields::parentId());
+    mUi->ownership->setObjectName(KDCRMFields::ownership());
+    mUi->industry->setObjectName(KDCRMFields::industry());
+    mUi->account_type->setObjectName(KDCRMFields::accountType());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->phone_office->setObjectName(KDCRMFields::accountPhoneWork());
+    mUi->phone_fax->setObjectName(KDCRMFields::phoneFax());
+    mUi->phone_alternate->setObjectName(KDCRMFields::accountPhoneOther());
+    mUi->employees->setObjectName(KDCRMFields::employees());
+    mUi->rating->setObjectName(KDCRMFields::rating());
+    mUi->sic_code->setObjectName(KDCRMFields::sicCode());
+    mUi->annual_revenue->setObjectName(KDCRMFields::annualRevenue());
+    mUi->email1->setObjectName(KDCRMFields::email1());
+    mUi->visma_id_c->setObjectName(KDCRMFields::vismaId());
+    mUi->accounting_c->setObjectName(KDCRMFields::accounting());
+    mUi->vat_no_c->setObjectName(KDCRMFields::vatNo());
+    mUi->billing_address_street->setObjectName(KDCRMFields::billingAddressStreet());
+    mUi->billing_address_city->setObjectName(KDCRMFields::billingAddressCity());
+    mUi->billing_address_state->setObjectName(KDCRMFields::billingAddressState());
+    mUi->billing_address_postalcode->setObjectName(KDCRMFields::billingAddressPostalcode());
+    mUi->billing_address_country->setObjectName(KDCRMFields::billingAddressCountry());
+    mUi->shipping_address_street->setObjectName(KDCRMFields::shippingAddressStreet());
+    mUi->shipping_address_city->setObjectName(KDCRMFields::shippingAddressCity());
+    mUi->shipping_address_state->setObjectName(KDCRMFields::shippingAddressState());
+    mUi->shipping_address_postalcode->setObjectName(KDCRMFields::shippingAddressPostalcode());
+    mUi->shipping_address_country->setObjectName(KDCRMFields::shippingAddressCountry());
+
     initialize();
 }
 
