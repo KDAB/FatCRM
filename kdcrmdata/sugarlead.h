@@ -63,22 +63,6 @@ public:
     SugarLead &operator=(const SugarLead &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarLead are equal,
-              otherwise false
-    */
-    bool operator==(const SugarLead &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarLead are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarLead &) const;
-
-    /**
       Return, if the SugarLead entry is empty.
      */
     bool isEmpty() const;
