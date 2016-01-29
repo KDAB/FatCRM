@@ -456,44 +456,44 @@ embed_flag  --> skipped, what is that?
 description
 contact_name
 */
-        accessors.insert(QLatin1String("id"),
+        accessors.insert(KDCRMFields::id(),
                          NoteAccessorPair(&SugarNote::id, &SugarNote::setId, QString()));
-        accessors.insert(QLatin1String("name"),
+        accessors.insert(KDCRMFields::name(),
                          NoteAccessorPair(&SugarNote::name, &SugarNote::setName,
                                           i18nc("@item:intable note name", "Name")));
-        accessors.insert(QLatin1String("date_entered"),
+        accessors.insert(KDCRMFields::dateEntered(),
                          NoteAccessorPair(&SugarNote::dateEntered, &SugarNote::setDateEntered, QString()));
-        accessors.insert(QLatin1String("date_modified"),
+        accessors.insert(KDCRMFields::dateModified(),
                          NoteAccessorPair(&SugarNote::dateModified, &SugarNote::setDateModified, QString()));
-        accessors.insert(QLatin1String("modified_user_id"),
+        accessors.insert(KDCRMFields::modifiedUserId(),
                          NoteAccessorPair(&SugarNote::modifiedUserId, &SugarNote::setModifiedUserId, QString()));
-        accessors.insert(QLatin1String("modified_by_name"),
+        accessors.insert(KDCRMFields::modifiedByName(),
                          NoteAccessorPair(&SugarNote::modifiedByName, &SugarNote::setModifiedByName, QString()));
-        accessors.insert(QLatin1String("created_by"),
+        accessors.insert(KDCRMFields::createdBy(),
                          NoteAccessorPair(&SugarNote::createdBy, &SugarNote::setCreatedBy, QString()));
-        accessors.insert(QLatin1String("created_by_name"),
+        accessors.insert(KDCRMFields::createdByName(),
                          NoteAccessorPair(&SugarNote::createdByName, &SugarNote::setCreatedByName, QString()));
-        accessors.insert(QLatin1String("deleted"),
+        accessors.insert(KDCRMFields::deleted(),
                          NoteAccessorPair(&SugarNote::deleted, &SugarNote::setDeleted, QString()));
-        accessors.insert(QLatin1String("assigned_user_id"),
+        accessors.insert(KDCRMFields::assignedUserId(),
                          NoteAccessorPair(&SugarNote::assignedUserId, &SugarNote::setAssignedUserId, QString()));
-        accessors.insert(QLatin1String("assigned_user_name"),
+        accessors.insert(KDCRMFields::assignedUserName(),
                          NoteAccessorPair(&SugarNote::assignedUserName, &SugarNote::setAssignedUserName,
                                           i18nc("@item:intable", "Assigned To")));
 
-        accessors.insert(QLatin1String("file_mime_type"),
+        accessors.insert(KDCRMFields::fileMimeType(),
                          NoteAccessorPair(&SugarNote::fileMimeType, &SugarNote::setFileMimeType, QString()));
-        accessors.insert(QLatin1String("filename"),
+        accessors.insert(KDCRMFields::fileName(),
                          NoteAccessorPair(&SugarNote::fileName, &SugarNote::setFileName, QString()));
-        accessors.insert(QLatin1String("parent_type"),
+        accessors.insert(KDCRMFields::parentType(),
                          NoteAccessorPair(&SugarNote::parentType, &SugarNote::setParentType, QString()));
-        accessors.insert(QLatin1String("parent_id"),
+        accessors.insert(KDCRMFields::parentId(),
                          NoteAccessorPair(&SugarNote::parentId, &SugarNote::setParentId, QString()));
-        accessors.insert(QLatin1String("contact_id"),
+        accessors.insert(KDCRMFields::contactId(),
                          NoteAccessorPair(&SugarNote::contactId, &SugarNote::setContactId, QString()));
-        accessors.insert(QLatin1String("contact_name"),
+        accessors.insert(KDCRMFields::contactName(),
                          NoteAccessorPair(&SugarNote::contactName, &SugarNote::setContactName, QString()));
-        accessors.insert(QLatin1String("description"),
+        accessors.insert(KDCRMFields::description(),
                          NoteAccessorPair(&SugarNote::description, &SugarNote::setDescription,
                                           i18nc("@item:intable", "Description")));
     }
