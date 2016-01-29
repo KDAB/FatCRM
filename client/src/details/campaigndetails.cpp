@@ -35,6 +35,18 @@ CampaignDetails::CampaignDetails(QWidget *parent)
 
 {
     mUi->setupUi(this);
+
+    mUi->name->setObjectName(KDCRMFields::name());
+    mUi->status->setObjectName(KDCRMFields::status());
+    mUi->startDate->setObjectName(KDCRMFields::startDate());
+    mUi->endDate->setObjectName(KDCRMFields::endDate());
+    mUi->campaign_type->setObjectName(KDCRMFields::campaignType());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->impressions->setObjectName(KDCRMFields::impressions());
+    mUi->expectedCost->setObjectName(KDCRMFields::expectedCost());
+    mUi->actualCost->setObjectName(KDCRMFields::actualCost());
+    mUi->objective->setObjectName(KDCRMFields::objective());
+
     initialize();
 }
 

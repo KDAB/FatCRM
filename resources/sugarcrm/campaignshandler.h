@@ -24,17 +24,12 @@
 #define CAMPAIGNSHANDLER_H
 
 #include "modulehandler.h"
-
-class CampaignAccessorPair;
-
-template <typename U, typename V> class QHash;
+#include "kdcrmdata/sugarcampaign.h"
 
 class CampaignsHandler : public ModuleHandler
 {
 public:
     explicit CampaignsHandler(SugarSession *session);
-
-    ~CampaignsHandler();
 
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
@@ -47,10 +42,8 @@ public:
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
-
 private:
-    typedef QHash<QString, CampaignAccessorPair *> CampaignAccessorHash;
-    CampaignAccessorHash *mAccessors;
+    SugarCampaign::AccessorHash mAccessors;
 };
 
 #endif /* CAMPAIGNSHANDLER_H */
