@@ -110,6 +110,11 @@ protected:
 
     virtual Akonadi::Collection handlerCollection() const = 0;
 
+    QString sugarFieldToCrmField(const QString &sugarFieldName) const;
+    virtual QString customSugarFieldToCrmField(const QString &sugarFieldName) const;
+    QString sugarFieldFromCrmField(const QString &crmFieldName) const;
+    virtual QString customSugarFieldFromCrmField(const QString &crmFieldName) const;
+
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;
 
@@ -118,6 +123,8 @@ private Q_SLOTS:
     void slotCollectionsReceived(const Akonadi::Collection::List &collections);
 
 private:
+    const QMap<QString, QString>& fieldNamesMapping() const;
+
     mutable QStringList mAvailableFields;
 
     EnumDefinitions mEnumDefinitions;
