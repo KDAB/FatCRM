@@ -63,22 +63,6 @@ public:
     SugarCampaign &operator=(const SugarCampaign &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarCampaign are equal,
-              otherwise false
-    */
-    bool operator==(const SugarCampaign &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarCampaign are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarCampaign &) const;
-
-    /**
       Return, if the SugarCampaign entry is empty.
      */
     bool isEmpty() const;

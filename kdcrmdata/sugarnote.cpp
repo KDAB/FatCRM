@@ -34,33 +34,6 @@ public:
     Private()
         : mEmpty(true)
     {
-
-    }
-
-    Private(const Private &other)
-        : QSharedData(other)
-    {
-        mEmpty = other.mEmpty;
-
-        mId = other.mId;
-        mName = other.mName;
-        mDateEntered = other.mDateEntered;
-        mDateModified = other.mDateModified;
-        mModifiedUserId = other.mModifiedUserId;
-        mModifiedByName = other.mModifiedByName;
-        mCreatedBy = other.mCreatedBy;
-        mCreatedByName = other.mCreatedByName;
-        mDeleted = other.mDeleted;
-        mAssignedUserId = other.mAssignedUserId;
-        mAssignedUserName = other.mAssignedUserName;
-
-        mFileMimeType = other.mFileMimeType;
-        mFileName = other.mFileName;
-        mParentType = other.mParentType;
-        mParentId = other.mParentId;
-        mContactId = other.mContactId;
-        mContactName = other.mContactName;
-        mDescription = other.mDescription;
     }
 
     bool mEmpty;
@@ -108,70 +81,6 @@ SugarNote &SugarNote::operator=(const SugarNote &other)
     }
 
     return *this;
-}
-
-bool SugarNote::operator==(const SugarNote &other) const
-{
-    if (d->mId != other.d->mId) {
-        return false;
-    }
-    if (d->mName != other.d->mName) {
-        return false;
-    }
-    if (d->mDateEntered != other.d->mDateEntered) {
-        return false;
-    }
-    if (d->mDateModified != other.d->mDateModified) {
-        return false;
-    }
-    if (d->mModifiedUserId != other.d->mModifiedUserId) {
-        return false;
-    }
-    if (d->mModifiedByName != other.d->mModifiedByName) {
-        return false;
-    }
-    if (d->mCreatedBy != other.d->mCreatedBy) {
-        return false;
-    }
-    if (d->mCreatedByName != other.d->mCreatedByName) {
-        return false;
-    }
-    if (d->mDeleted != other.d->mDeleted) {
-        return false;
-    }
-    if (d->mAssignedUserId != other.d->mAssignedUserId) {
-        return false;
-    }
-    if (d->mAssignedUserName != other.d->mAssignedUserName) {
-        return false;
-    }
-    if (d->mFileMimeType != other.d->mFileMimeType) {
-        return false;
-    }
-    if (d->mFileName != other.d->mFileName) {
-        return false;
-    }
-    if (d->mParentType != other.d->mParentType) {
-        return false;
-    }
-    if (d->mParentId != other.d->mParentId) {
-        return false;
-    }
-    if (d->mContactId != other.d->mContactId) {
-        return false;
-    }
-    if (d->mContactName != other.d->mContactName) {
-        return false;
-    }
-    if (d->mDescription != other.d->mDescription) {
-        return false;
-    }
-    return true;
-}
-
-bool SugarNote::operator!=(const SugarNote &a) const
-{
-    return !(a == *this);
 }
 
 bool SugarNote::isEmpty() const

@@ -63,22 +63,6 @@ public:
     SugarEmail &operator=(const SugarEmail &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarEmail are equal,
-              otherwise false
-    */
-    bool operator==(const SugarEmail &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarEmail are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarEmail &) const;
-
-    /**
       Return, if the SugarEmail entry is empty.
      */
     bool isEmpty() const;

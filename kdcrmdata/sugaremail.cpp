@@ -34,38 +34,9 @@ public:
     Private()
         : mEmpty(true)
     {
-
-    }
-
-    Private(const Private &other)
-        : QSharedData(other)
-    {
-        mEmpty = other.mEmpty;
-
-        mId = other.mId;
-        mName = other.mName;
-        mDateEntered = other.mDateEntered;
-        mDateModified = other.mDateModified;
-        mModifiedUserId = other.mModifiedUserId;
-        mModifiedByName = other.mModifiedByName;
-        mCreatedBy = other.mCreatedBy;
-        mCreatedByName = other.mCreatedByName;
-        mDeleted = other.mDeleted;
-        mAssignedUserId = other.mAssignedUserId;
-        mAssignedUserName = other.mAssignedUserName;
-
-        mDateSent = other.mDateSent;
-        mMessageId = other.mMessageId;
-        mParentType = other.mParentType;
-        mParentId = other.mParentId;
-        mFromAddrName = other.mFromAddrName;
-        mToAddrNAmes = other.mToAddrNAmes;
-        mCcAddrNames = other.mCcAddrNames;
-        mDescription = other.mDescription;
     }
 
     bool mEmpty;
-
 
     QString mId;
     QString mName;
@@ -111,73 +82,6 @@ SugarEmail &SugarEmail::operator=(const SugarEmail &other)
     }
 
     return *this;
-}
-
-bool SugarEmail::operator==(const SugarEmail &other) const
-{
-    if (d->mId != other.d->mId) {
-        return false;
-    }
-    if (d->mName != other.d->mName) {
-        return false;
-    }
-    if (d->mDateEntered != other.d->mDateEntered) {
-        return false;
-    }
-    if (d->mDateModified != other.d->mDateModified) {
-        return false;
-    }
-    if (d->mModifiedUserId != other.d->mModifiedUserId) {
-        return false;
-    }
-    if (d->mModifiedByName != other.d->mModifiedByName) {
-        return false;
-    }
-    if (d->mCreatedBy != other.d->mCreatedBy) {
-        return false;
-    }
-    if (d->mCreatedByName != other.d->mCreatedByName) {
-        return false;
-    }
-    if (d->mDeleted != other.d->mDeleted) {
-        return false;
-    }
-    if (d->mAssignedUserId != other.d->mAssignedUserId) {
-        return false;
-    }
-    if (d->mAssignedUserName != other.d->mAssignedUserName) {
-        return false;
-    }
-    if (d->mDateSent != other.d->mDateSent) {
-        return false;
-    }
-    if (d->mMessageId != other.d->mMessageId) {
-        return false;
-    }
-    if (d->mParentType != other.d->mParentType) {
-        return false;
-    }
-    if (d->mParentId != other.d->mParentId) {
-        return false;
-    }
-    if (d->mFromAddrName != other.d->mFromAddrName) {
-        return false;
-    }
-    if (d->mToAddrNAmes != other.d->mToAddrNAmes) {
-        return false;
-    }
-    if (d->mCcAddrNames != other.d->mCcAddrNames) {
-        return false;
-    }
-    if (d->mDescription != other.d->mDescription) {
-        return false;
-    }
-    return true;
-}
-
-bool SugarEmail::operator!=(const SugarEmail &a) const
-{
-    return !(a == *this);
 }
 
 bool SugarEmail::isEmpty() const
