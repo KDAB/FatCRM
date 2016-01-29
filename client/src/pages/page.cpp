@@ -922,7 +922,7 @@ void Page::slotChangeFields()
             SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
             if (field == NextStepDateField) {
-                opportunity.setNextCallDateRaw(KDCRMUtils::dateToString(replacementDate));
+                opportunity.setNextCallDate(replacementDate);
             } else if (field == AssigneeField) {
                 opportunity.setAssignedUserId(replacementAssignee.first);
                 opportunity.setAssignedUserName(replacementAssignee.second);

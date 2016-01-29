@@ -98,6 +98,17 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
         itemList << field;
     }
 
+    // plus custom fields
+    const QMap<QString, QString> customFields = opp.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(cit.key());
+        field.setValue(KDCRMUtils::encodeXML(cit.value()));
+        itemList << field;
+    }
+
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
     soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
@@ -118,17 +129,12 @@ QString OpportunitiesHandler::orderByForListing() const
 
 QStringList OpportunitiesHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return availableFields();
 }
 
 QStringList OpportunitiesHandler::supportedCRMFields() const
 {
-    // SugarAccountIO uses the Sugar field names, so it matches
-    // One exception: custom fields.
-    // TODO: support them generically like in Accounts.
-    QStringList lst = mAccessors.keys();
-    lst.replaceInStrings("next_call_date_c", KDCRMFields::nextCallDate());
-    return lst;
+    return availableFields();
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -148,15 +154,14 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     SugarOpportunity opportunity;
     opportunity.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        //qDebug() << namedValue.name() << "=" << namedValue.value();
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
         const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
         if (accessIt == mAccessors.constEnd()) {
-            qDebug() << "skipping field" << namedValue.name();
-            // no accessor for field
+            opportunity.setCustomField(namedValue.name(), value);
             continue;
         }
 
-        (opportunity.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
+        (opportunity.*(accessIt.value().setter))(value);
     }
 
     if (opportunity.accountId().isEmpty()) {

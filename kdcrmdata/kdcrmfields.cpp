@@ -207,11 +207,6 @@ QString KDCRMFields::probability()
     return QLatin1String("probability");
 }
 
-QString KDCRMFields::nextCallDate()
-{
-    return QLatin1String("next_call_date");
-}
-
 QString KDCRMFields::billingAddressStreet()
 {
     return QLatin1String("billing_address_street");
