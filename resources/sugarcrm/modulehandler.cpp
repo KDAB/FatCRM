@@ -255,6 +255,23 @@ QString ModuleHandler::customSugarFieldToCrmField(const QString &sugarFieldName)
     return sugarFieldName;
 }
 
+QStringList ModuleHandler::sugarFieldsToCrmFields(const QStringList &sugarFieldNames) const
+{
+    QStringList crmFieldNames;
+
+    foreach (const QString &sugarFieldName, sugarFieldNames) {
+        QString crmFieldName = sugarFieldToCrmField(sugarFieldName);
+        if (crmFieldName.isEmpty()) {
+            crmFieldName = customSugarFieldToCrmField(sugarFieldName);
+        }
+
+        if (!crmFieldName.isEmpty())
+            crmFieldNames.append(crmFieldName);
+    }
+
+    return crmFieldNames;
+}
+
 QString ModuleHandler::sugarFieldFromCrmField(const QString &crmFieldName) const
 {
     const QMap<QString, QString> &map = fieldNamesMapping();
@@ -264,6 +281,23 @@ QString ModuleHandler::sugarFieldFromCrmField(const QString &crmFieldName) const
 QString ModuleHandler::customSugarFieldFromCrmField(const QString &crmFieldName) const
 {
     return crmFieldName + QLatin1String("_c");
+}
+
+QStringList ModuleHandler::sugarFieldsFromCrmFields(const QStringList &crmFieldNames) const
+{
+    QStringList sugarFieldNames;
+
+    foreach (const QString &crmFieldName, crmFieldNames) {
+        QString sugarFieldName = sugarFieldFromCrmField(crmFieldName);
+        if (sugarFieldName.isEmpty()) {
+            sugarFieldName = customSugarFieldFromCrmField(crmFieldName);
+        }
+
+        if (!sugarFieldName.isEmpty())
+            sugarFieldNames.append(sugarFieldName);
+    }
+
+    return sugarFieldNames;
 }
 
 const QMap<QString, QString>& ModuleHandler::fieldNamesMapping() const

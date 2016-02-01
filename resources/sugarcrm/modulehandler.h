@@ -112,8 +112,10 @@ protected:
 
     QString sugarFieldToCrmField(const QString &sugarFieldName) const;
     virtual QString customSugarFieldToCrmField(const QString &sugarFieldName) const;
+    QStringList sugarFieldsToCrmFields(const QStringList &sugarFieldNames) const;
     QString sugarFieldFromCrmField(const QString &crmFieldName) const;
     virtual QString customSugarFieldFromCrmField(const QString &crmFieldName) const;
+    QStringList sugarFieldsFromCrmFields(const QStringList &crmFieldNames) const;
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;
