@@ -23,6 +23,7 @@
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
 
+#include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 
 #include <KCalCore/Todo>
@@ -272,43 +273,43 @@ TasksHandler::TasksHandler( SugarSession *session )
     : ModuleHandler( QLatin1String( "Tasks" ), session ),
       mAccessors( new AccessorHash )
 {
-    mAccessors->insert( QLatin1String( "id" ),
+    mAccessors->insert( KDCRMFields::id(),
                         new TaskAccessorPair( getId, setId, QString() ) );
-    mAccessors->insert( QLatin1String( "name" ),
+    mAccessors->insert( KDCRMFields::name(),
                         new TaskAccessorPair( getSummary, setSummary, i18nc( "@item:intable TODO title", "Title" ) ) );
-    mAccessors->insert( QLatin1String( "date_entered" ),
+    mAccessors->insert( KDCRMFields::dateEntered(),
                         new TaskAccessorPair( getDateEntered, setDateEntered, i18nc( "@item:intable", "Creation Date" ) ) );
-    mAccessors->insert( QLatin1String( "date_modified" ),
+    mAccessors->insert( KDCRMFields::dateModified(),
                         new TaskAccessorPair( getDateModified, setDateModified, i18nc( "@item:intable", "Modification Date" ) ) );
-    mAccessors->insert( QLatin1String( "modified_user_id" ),
+    mAccessors->insert( KDCRMFields::modifiedUserId(),
                         new TaskAccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
-    mAccessors->insert( QLatin1String( "created_by" ),
+    mAccessors->insert( KDCRMFields::createdBy(),
                         new TaskAccessorPair( getCreatedBy, setCreatedBy, QString() ) );
-    mAccessors->insert( QLatin1String( "description" ),
+    mAccessors->insert( KDCRMFields::description(),
                         new TaskAccessorPair( getDescription, setDescription, i18nc( "@item:intable", "Description" ) ) );
-    mAccessors->insert( QLatin1String( "deleted" ),
+    mAccessors->insert( KDCRMFields::deleted(),
                         new TaskAccessorPair( getDeleted, setDeleted, QString() ) );
-    mAccessors->insert( QLatin1String( "assigned_user_id" ),
+    mAccessors->insert( KDCRMFields::assignedUserId(),
                         new TaskAccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
-    mAccessors->insert( QLatin1String( "assigned_user_name" ),
+    mAccessors->insert( KDCRMFields::assignedUserName(),
                         new TaskAccessorPair( getAssignedUserName, setAssignedUserName, QString() ) );
-    mAccessors->insert( QLatin1String( "status" ),
+    mAccessors->insert( KDCRMFields::status(),
                         new TaskAccessorPair( getStatus, setStatus, i18nc( "@item:intable", "Status" ) ) );
-    mAccessors->insert( QLatin1String( "date_due_flag" ),
+    mAccessors->insert( KDCRMFields::dateDueFlag(),
                         new TaskAccessorPair( getDateDueFlag, setDateDueFlag, QString() ) );
-    mAccessors->insert( QLatin1String( "date_due" ),
+    mAccessors->insert( KDCRMFields::dateDue(),
                         new TaskAccessorPair( getDateDue, setDateDue, i18nc( "@item:intable", "Due Date" ) ) );
-    mAccessors->insert( QLatin1String( "date_start_flag" ),
+    mAccessors->insert( KDCRMFields::dateStartFlag(),
                         new TaskAccessorPair( getDateStartFlag, setDateStartFlag, QString() ) );
-    mAccessors->insert( QLatin1String( "date_start" ),
+    mAccessors->insert( KDCRMFields::dateStart(),
                         new TaskAccessorPair( getDateStart, setDateStart, i18nc( "@item:intable", "Start Date" ) ) );
-    mAccessors->insert( QLatin1String( "parent_type" ),
+    mAccessors->insert( KDCRMFields::parentType(),
                         new TaskAccessorPair( getParentType, setParentType, QString() ) );
-    mAccessors->insert( QLatin1String( "parent_id" ),
+    mAccessors->insert( KDCRMFields::parentId(),
                         new TaskAccessorPair( getParentId, setParentId, QString() ) );
-    mAccessors->insert( QLatin1String( "contact_id" ),
+    mAccessors->insert( KDCRMFields::contactId(),
                         new TaskAccessorPair( getContactId, setContactId, QString() ) );
-    mAccessors->insert( QLatin1String( "priority" ),
+    mAccessors->insert( KDCRMFields::priority(),
                         new TaskAccessorPair( getPriority, setPriority, i18nc( "@item:intable", "Priority" ) ) );
 }
 
@@ -337,13 +338,12 @@ QString TasksHandler::orderByForListing() const
 
 QStringList TasksHandler::supportedSugarFields() const
 {
-    return mAccessors->keys();
+    return sugarFieldsFromCrmFields(mAccessors->keys());
 }
 
 QStringList TasksHandler::supportedCRMFields() const
 {
-    // No GUI, so this doesn't matter
-    return supportedSugarFields();
+    return mAccessors->keys();
 }
 
 bool TasksHandler::setEntry( const Akonadi::Item &item )
@@ -375,7 +375,7 @@ bool TasksHandler::setEntry( const Akonadi::Item &item )
             continue;
         }
         TNS__Name_value field;
-        field.setName( it.key() );
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((*it)->getter(*todo)));
 
         itemList << field;
@@ -406,7 +406,8 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
     todo->setUid( entry.id() );
 
     Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
-        const AccessorHash::const_iterator accessIt = mAccessors->constFind( namedValue.name() );
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const AccessorHash::const_iterator accessIt = mAccessors->constFind(crmFieldName);
         if ( accessIt == mAccessors->constEnd() ) {
             // no accessor for field
             continue;
