@@ -69,13 +69,12 @@ QString EmailsHandler::orderByForListing() const
 
 QStringList EmailsHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 QStringList EmailsHandler::supportedCRMFields() const
 {
-    // No GUI, so this doesn't matter
-    return supportedSugarFields();
+    return mAccessors.keys();
 }
 
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)

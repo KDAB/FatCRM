@@ -59,7 +59,7 @@ QString LeadsHandler::orderByForListing() const
 
 QStringList LeadsHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 bool LeadsHandler::setEntry(const Akonadi::Item &item)

@@ -69,13 +69,12 @@ QString NotesHandler::orderByForListing() const
 
 QStringList NotesHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 QStringList NotesHandler::supportedCRMFields() const
 {
-    // No GUI, so this doesn't matter
-    return supportedSugarFields();
+    return mAccessors.keys();
 }
 
 bool NotesHandler::setEntry(const Akonadi::Item &item)

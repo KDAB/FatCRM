@@ -58,7 +58,7 @@ QString CampaignsHandler::orderByForListing() const
 
 QStringList CampaignsHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)

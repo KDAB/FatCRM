@@ -82,8 +82,7 @@ QStringList AccountsHandler::supportedSugarFields() const
 
 QStringList AccountsHandler::supportedCRMFields() const
 {
-    // SugarAccountIO uses the Sugar field names, so it matches
-    return availableFields();
+    return sugarFieldsToCrmFields(availableFields());
 }
 
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
