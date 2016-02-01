@@ -120,7 +120,8 @@ int OpportunitiesHandler::expectedContentsVersion() const
 {
     // version 1 = account_name is resolved to account_id upon loading
     // version 2 = changed custom fields storage names
-    return 2;
+    // version 3 = fix list of supported crm fields
+    return 3;
 }
 
 QString OpportunitiesHandler::orderByForListing() const
@@ -135,7 +136,7 @@ QStringList OpportunitiesHandler::supportedSugarFields() const
 
 QStringList OpportunitiesHandler::supportedCRMFields() const
 {
-    return availableFields();
+    return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::accountId();
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
