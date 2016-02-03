@@ -97,7 +97,6 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mJobProgressTracker(Q_NULLPTR)
 {
     mUi.setupUi(this);
-    mUi.splitter->setCollapsible(0, false);
     mUi.treeView->setViewName(typeToString(type));
     mUi.treeView->setAlternatingRowColors(true);
     initialize();
@@ -494,7 +493,7 @@ void Page::setupModel()
 
 void Page::insertFilterWidget(QWidget *widget)
 {
-    mUi.verticalLayout->insertWidget(1, widget);
+    mUi.verticalLayout->insertWidget(0, widget);
 }
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
