@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -20,42 +20,23 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LEADDETAILS_H
-#define LEADDETAILS_H
+#ifndef LEADDATAEXTRACTOR_H
+#define LEADDATAEXTRACTOR_H
 
-#include "details.h"
+#include "itemdataextractor.h"
 
-namespace Ui
-{
-class LeadDetails;
-}
-
-class LeadDataExtractor;
-
-class LeadDetails : public Details
+class LeadDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    explicit LeadDetails(QWidget *parent = 0);
 
-    ~LeadDetails();
+    explicit LeadDataExtractor(QObject *parent = 0);
 
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    ~LeadDataExtractor();
 
-private Q_SLOTS:
-    void slotSetBirthDate();
-    void slotClearDate();
-
-private:
-    Ui::LeadDetails *mUi;
-
-private:
-    void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    LeadDataExtractor *mDataExtractor;
+protected:
+    QString itemAddress() const Q_DECL_OVERRIDE;
+    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
 };
 
-#endif /* LEADDETAILS_H */
-
+#endif // LEADDATAEXTRACTOR_H

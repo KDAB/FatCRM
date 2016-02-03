@@ -44,15 +44,21 @@ set(app_SRCS
   dialogs/resourceconfigdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
+  utilities/accountdataextractor.cpp
   utilities/accountrepository.cpp
+  utilities/campaigndataextractor.cpp
   utilities/collectionmanager.cpp
+  utilities/contactdataextractor.cpp
   utilities/contactsimporter.cpp
   utilities/dbusinvokerinterface.cpp
   utilities/dbuswinidprovider.cpp
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp
+  utilities/itemdataextractor.cpp
   utilities/kjobprogresstracker.cpp
+  utilities/leaddataextractor.cpp
   utilities/notesrepository.cpp
+  utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp
   utilities/referenceddata.cpp

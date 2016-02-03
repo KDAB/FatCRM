@@ -28,6 +28,7 @@
 #include "detailsdialog.h"
 #include "enums.h"
 #include "fatcrminputdialog.h"
+#include "itemdataextractor.h"
 #include "kjobprogresstracker.h"
 #include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
@@ -112,7 +113,8 @@ void Page::openDialog(const QString &id)
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (idForItem(item) == id) {
+        // we dont check for itemDataExtractor == 0 because we know it is an AccountDataExtractor
+        if (itemDataExtractor()->idForItem(item) == id) {
             DetailsDialog *dialog = openedDialogForItem(item);
             if (!dialog) {
                 dialog = createDetailsDialog();
@@ -124,17 +126,6 @@ void Page::openDialog(const QString &id)
             }
         }
     }
-}
-
-QString Page::idForItem(const Item &item) const
-{
-    Q_UNUSED(item)
-    return QString();
-}
-
-QString Page::itemAddress() const
-{
-    return QString();
 }
 
 void Page::setFilter(FilterProxyModel *filter)
@@ -407,8 +398,12 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
     const QModelIndex idx = treeView()->selectionModel()->currentIndex();
     if (idx.isValid()) {
         const Item item = treeView()->model()->data(idx, EntityTreeModel::ItemRole).value<Item>();
-        const QString id = idForItem(item);
-        mCurrentItemUrl = QUrl(mResourceBaseUrl + itemAddress() + id);
+        ItemDataExtractor *dataExtractor = itemDataExtractor();
+        if (!dataExtractor) {
+            mCurrentItemUrl = QUrl();
+            return;
+        }
+        mCurrentItemUrl = dataExtractor->itemUrl(mResourceBaseUrl, item);
     }
 
     mSelectedEmails.clear();
@@ -1008,4 +1003,9 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
             ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
     }
+}
+
+QString Page::reportTitle() const
+{
+    return QString();
 }

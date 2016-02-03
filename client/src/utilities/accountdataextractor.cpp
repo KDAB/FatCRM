@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -20,42 +20,31 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LEADDETAILS_H
-#define LEADDETAILS_H
+#include "accountdataextractor.h"
 
-#include "details.h"
+#include "kdcrmdata/sugaraccount.h"
 
-namespace Ui
+AccountDataExtractor::AccountDataExtractor(QObject *parent)
+    : ItemDataExtractor(parent)
 {
-class LeadDetails;
+
 }
 
-class LeadDataExtractor;
-
-class LeadDetails : public Details
+AccountDataExtractor::~AccountDataExtractor()
 {
-    Q_OBJECT
-public:
-    explicit LeadDetails(QWidget *parent = 0);
 
-    ~LeadDetails();
+}
 
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+QString AccountDataExtractor::itemAddress() const
+{
+    return QString("?action=DetailView&module=Accounts&record=");
+}
 
-private Q_SLOTS:
-    void slotSetBirthDate();
-    void slotClearDate();
-
-private:
-    Ui::LeadDetails *mUi;
-
-private:
-    void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    LeadDataExtractor *mDataExtractor;
-};
-
-#endif /* LEADDETAILS_H */
-
+QString AccountDataExtractor::idForItem(const Akonadi::Item &item) const
+{
+    if (item.hasPayload<SugarAccount>()) {
+        const SugarAccount account = item.payload<SugarAccount>();
+        return account.id();
+    }
+    return QString();
+}

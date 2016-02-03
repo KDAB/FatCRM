@@ -23,6 +23,7 @@
 #include "leaddetails.h"
 
 #include "editcalendarbutton.h"
+#include "leaddataextractor.h"
 #include "ui_leaddetails.h"
 #include "referenceddatamodel.h"
 #include "kdcrmutils.h"
@@ -31,7 +32,7 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 LeadDetails::LeadDetails(QWidget *parent)
-    : Details(Lead, parent), mUi(new Ui::LeadDetails)
+    : Details(Lead, parent), mUi(new Ui::LeadDetails), mDataExtractor(new LeadDataExtractor(this))
 
 {
     mUi->setupUi(this);
@@ -78,6 +79,11 @@ LeadDetails::~LeadDetails()
     delete mUi;
 }
 
+ItemDataExtractor *LeadDetails::itemDataExtractor() const
+{
+    return mDataExtractor;
+}
+
 void LeadDetails::initialize()
 {
     //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
@@ -88,11 +94,6 @@ void LeadDetails::initialize()
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthDate()));
-}
-
-QUrl LeadDetails::itemUrl() const
-{
-    return QUrl();
 }
 
 void LeadDetails::slotSetBirthDate()

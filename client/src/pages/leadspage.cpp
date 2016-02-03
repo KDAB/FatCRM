@@ -21,8 +21,10 @@
 */
 
 #include "leadspage.h"
-#include "itemstreemodel.h"
+
 #include "filterproxymodel.h"
+#include "itemstreemodel.h"
+#include "leaddataextractor.h"
 
 #include "kdcrmdata/sugarlead.h"
 
@@ -31,7 +33,7 @@
 using namespace Akonadi;
 
 LeadsPage::LeadsPage(QWidget *parent)
-    : Page(parent, QString(SugarLead::mimeType()), Lead)
+    : Page(parent, QString(SugarLead::mimeType()), Lead), mDataExtractor(new LeadDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Lead, this));
 }
@@ -45,3 +47,7 @@ QString LeadsPage::reportTitle() const
     return i18n("List of Leads");
 }
 
+ItemDataExtractor *LeadsPage::itemDataExtractor() const
+{
+    return mDataExtractor;
+}

@@ -27,6 +27,7 @@
 
 class OpportunityFilterWidget;
 class OpportunityFilterProxyModel;
+class OpportunityDataExtractor;
 
 class OpportunitiesPage : public Page
 {
@@ -39,14 +40,14 @@ public:
     void setupModel() Q_DECL_OVERRIDE;
 
 protected:
-    QString reportTitle() const Q_DECL_OVERRIDE;
-    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    QString itemAddress() const Q_DECL_OVERRIDE;
     QMap<QString, QString> dataForNewObject() Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    QString reportTitle() const Q_DECL_OVERRIDE;
 
 private:
     OpportunityFilterWidget *mFilterUiWidget;
     OpportunityFilterProxyModel *mOppFilterProxyModel;
+    OpportunityDataExtractor *mDataExtractor;
 };
 
 #endif /* OPPORTUNITIESPAGE_H */

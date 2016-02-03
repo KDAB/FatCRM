@@ -21,12 +21,14 @@
 */
 
 #include "details.h"
+
 #include "clientsettings.h"
 #include "kdcrmfields.h"
 #include "kdcrmutils.h"
 #include "qdateeditex.h"
 #include "referenceddatamodel.h"
 #include "referenceddata.h"
+#include "itemdataextractor.h"
 
 #include <KLocalizedString>
 
@@ -400,13 +402,6 @@ void Details::assignToMe()
     }
 }
 
-QString Details::idForItem(const Item &item) const
-{
-    // just because I'm lazy; should be implemented in all subclasses instead.
-    Q_UNUSED(item);
-    return QString();
-}
-
 QString Details::name() const
 {
     if (mType == Contact) {
@@ -418,29 +413,4 @@ QString Details::name() const
 QString Details::id() const
 {
     return property("id").toString();
-}
-
-QUrl Details::itemUrlForId(const QString &id) const
-{
-    QString destination;
-    switch (mType) {
-    case Account:
-        destination = "Accounts";
-        break;
-    case Contact:
-        destination = "Contacts";
-        break;
-    case Opportunity:
-        destination = "Opportunities";
-        break;
-    default: // no URL for other objects
-        return QUrl();
-        break;
-    }
-
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty()) {
-        return QUrl(QString(baseUrl + "?action=DetailView&module=%1&record=%2").arg(destination).arg(id));
-    }
-    return QUrl();
 }

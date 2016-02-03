@@ -25,6 +25,8 @@
 
 #include "page.h"
 
+class ContactDataExtractor;
+
 class ContactsPage : public Page
 {
     Q_OBJECT
@@ -34,9 +36,11 @@ public:
     ~ContactsPage();
 
 protected:
-    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    QString itemAddress() const Q_DECL_OVERRIDE;
-    /*reimp*/ QString reportTitle() const;
+    QString reportTitle() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+
+private:
+    ContactDataExtractor *mDataExtractor;
 };
 
 #endif /* CONTACTSPAGE_H */

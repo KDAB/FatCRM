@@ -22,6 +22,7 @@
 
 #include "accountdetails.h"
 
+#include "accountdataextractor.h"
 #include "ui_accountdetails.h"
 #include "referenceddatamodel.h"
 
@@ -29,7 +30,7 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 AccountDetails::AccountDetails(QWidget *parent)
-    : Details(Account, parent), mUi(new Ui::AccountDetails)
+    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this))
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -72,22 +73,9 @@ AccountDetails::~AccountDetails()
     delete mUi;
 }
 
-QString AccountDetails::idForItem(const Akonadi::Item &item) const
+ItemDataExtractor *AccountDetails::itemDataExtractor() const
 {
-    if (item.hasPayload<SugarAccount>()) {
-        const SugarAccount account = item.payload<SugarAccount>();
-        return account.id();
-    }
-    return QString();
-}
-
-QUrl AccountDetails::itemUrl() const
-{
-    const QString identification = id();
-    if (!identification.isEmpty()) {
-        return itemUrlForId(identification);
-    }
-    return QUrl();
+    return mDataExtractor;
 }
 
 void AccountDetails::initialize()
@@ -122,8 +110,7 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
 {
     fillComboBox(mUi->industry, KDCRMFields::industry());
     fillComboBox(mUi->account_type, KDCRMFields::accountType());
-
-    const QUrl url = itemUrl();
+    const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
 }

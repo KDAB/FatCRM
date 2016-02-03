@@ -25,6 +25,8 @@
 
 #include "page.h"
 
+class CampaignDataExtractor;
+
 class CampaignsPage : public Page
 {
     Q_OBJECT
@@ -34,7 +36,12 @@ public:
     ~CampaignsPage();
 
 protected:
-    /*reimp*/ QString reportTitle() const;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    QString reportTitle() const Q_DECL_OVERRIDE;
+
+private:
+    CampaignDataExtractor *mDataExtractor;
+
 };
 
 #endif /* CAMPAIGNSPAGE_H */

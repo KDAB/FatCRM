@@ -22,6 +22,7 @@
 
 #include "campaignspage.h"
 
+#include "campaigndataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
@@ -30,7 +31,7 @@
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)
-    : Page(parent, QString(SugarCampaign::mimeType()), Campaign)
+    : Page(parent, QString(SugarCampaign::mimeType()), Campaign), mDataExtractor(new CampaignDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Campaign, this));
 }
@@ -42,4 +43,9 @@ CampaignsPage::~CampaignsPage()
 QString CampaignsPage::reportTitle() const
 {
     return i18n("List of Campaigns");
+}
+
+ItemDataExtractor *CampaignsPage::itemDataExtractor() const
+{
+    return mDataExtractor;
 }

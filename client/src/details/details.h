@@ -32,6 +32,7 @@
 
 class QComboBox;
 class NotesRepository;
+class ItemDataExtractor;
 
 class Details : public QWidget
 {
@@ -44,17 +45,16 @@ public:
 
     virtual QMap<QString, QString> data(const Akonadi::Item &item) const = 0;
     virtual void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const = 0;
-    virtual QUrl itemUrl() const = 0;
 
     void setData(const QMap<QString, QString> &data, QWidget *createdModifiedContainer);
     const QMap<QString, QString> getData() const;
     void clear();
-    QUrl itemUrlForId(const QString &id) const;
 
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     void setSupportedFields(const QStringList &fields);
     void setEnumDefinitions(const EnumDefinitions &enums);
     virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
+    virtual ItemDataExtractor *itemDataExtractor() const = 0;
 
     DetailsType type() const
     {
@@ -64,8 +64,6 @@ public:
     QString name() const;
     QString currentAccountId() const;
     void assignToMe();
-
-    virtual QString idForItem(const Akonadi::Item &item) const;
 
 Q_SIGNALS:
     void modified();

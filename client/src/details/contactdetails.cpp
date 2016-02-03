@@ -23,6 +23,7 @@
 #include "contactdetails.h"
 
 #include "accountrepository.h"
+#include "contactdataextractor.h"
 #include "editcalendarbutton.h"
 #include "referenceddatamodel.h"
 #include "ui_contactdetails.h"
@@ -36,7 +37,7 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails)
+    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -93,13 +94,9 @@ void ContactDetails::initialize()
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
 }
 
-QUrl ContactDetails::itemUrl() const
+ItemDataExtractor *ContactDetails::itemDataExtractor() const
 {
-    const QString identification = id();
-    if (!identification.isEmpty()) {
-        return itemUrlForId(identification);
-    }
-    return QUrl();
+    return mDataExtractor;
 }
 
 void ContactDetails::slotSetBirthday()
@@ -332,7 +329,7 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
 
-    const QUrl url = itemUrl();
+    const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
 }

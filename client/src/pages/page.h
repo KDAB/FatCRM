@@ -43,6 +43,7 @@ class Item;
 }
 
 class DetailsDialog;
+class ItemDataExtractor;
 class KJob;
 class KJobProgressTracker;
 class NotesRepository;
@@ -80,8 +81,7 @@ public Q_SLOTS:
     void slotResourceSelectionChanged(const QByteArray &identifier);
 
 protected:
-    virtual QString idForItem(const Akonadi::Item &item) const;
-    virtual QString itemAddress() const;
+    virtual ItemDataExtractor *itemDataExtractor() const = 0;
 
     inline Akonadi::EntityTreeView *treeView()
     {

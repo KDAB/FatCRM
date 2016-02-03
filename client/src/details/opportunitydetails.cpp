@@ -25,6 +25,7 @@
 #include "ui_opportunitydetails.h"
 #include "notesdialog.h"
 #include "notesrepository.h"
+#include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -36,7 +37,7 @@
 #include <QCalendarWidget>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
+    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
 {
     mUi->setupUi(this);
 
@@ -74,13 +75,9 @@ void OpportunityDetails::initialize()
             this, SLOT(slotSalesStageActivated(QString)));
 }
 
-QUrl OpportunityDetails::itemUrl() const
+ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
 {
-    const QString identification = id();
-    if (!identification.isEmpty()) {
-        return itemUrlForId(identification);
-    }
-    return QUrl();
+    return mDataExtractor;
 }
 
 void OpportunityDetails::slotAutoNextStepDate()
@@ -130,7 +127,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
 
-    const QUrl url = itemUrl();
+    const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
     else

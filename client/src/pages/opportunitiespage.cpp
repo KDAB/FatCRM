@@ -23,6 +23,7 @@
 #include "opportunitiespage.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "opportunitydataextractor.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
 
@@ -55,7 +56,7 @@ public:
 };
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
-    : Page(parent, SugarOpportunity::mimeType(), Opportunity)
+    : Page(parent, SugarOpportunity::mimeType(), Opportunity), mDataExtractor(new OpportunityDataExtractor(this))
 {
     treeView()->setItemDelegate(new OpportunityTreeViewItemDelegate(this));
     mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
@@ -78,11 +79,6 @@ void OpportunitiesPage::setupModel()
     treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }
 
-QString OpportunitiesPage::reportTitle() const
-{
-    return i18n("List of Opportunities");
-}
-
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 {
     QMap<QString, QString> initialData;
@@ -93,16 +89,12 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     return initialData;
 }
 
-QString OpportunitiesPage::idForItem(const Akonadi::Item &item) const
+QString OpportunitiesPage::reportTitle() const
 {
-    if (item.hasPayload<SugarOpportunity>()) {
-        const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-        return opportunity.id();
-    }
-    return QString();
+    return i18n("List of Opportunities");
 }
 
-QString OpportunitiesPage::itemAddress() const
+ItemDataExtractor *OpportunitiesPage::itemDataExtractor() const
 {
-    return QString("?action=DetailView&module=Opportunities&record=");
+    return mDataExtractor;
 }

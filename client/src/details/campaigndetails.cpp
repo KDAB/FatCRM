@@ -22,6 +22,7 @@
 
 #include "campaigndetails.h"
 
+#include "campaigndataextractor.h"
 #include "editcalendarbutton.h"
 #include "ui_campaigndetails.h"
 #include "referenceddatamodel.h"
@@ -31,7 +32,7 @@
 #include "kdcrmdata/sugarcampaign.h"
 
 CampaignDetails::CampaignDetails(QWidget *parent)
-    : Details(Campaign, parent), mUi(new Ui::CampaignDetails)
+    : Details(Campaign, parent), mUi(new Ui::CampaignDetails), mDataExtractor(new CampaignDataExtractor(this))
 
 {
     mUi->setupUi(this);
@@ -55,6 +56,11 @@ CampaignDetails::~CampaignDetails()
     delete mUi;
 }
 
+ItemDataExtractor *CampaignDetails::itemDataExtractor() const
+{
+    return mDataExtractor;
+}
+
 void CampaignDetails::initialize()
 {
     connect(mUi->clearStartDateButton, SIGNAL(clicked()), this, SLOT(slotClearStartDate()));
@@ -65,11 +71,6 @@ void CampaignDetails::initialize()
             this, SLOT(slotSetEndDate()));
 
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
-}
-
-QUrl CampaignDetails::itemUrl() const
-{
-    return QUrl();
 }
 
 void CampaignDetails::slotSetStartDate()
