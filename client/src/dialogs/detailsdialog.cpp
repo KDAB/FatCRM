@@ -108,6 +108,13 @@ QMap<QString, QString> DetailsDialog::Private::data() const
 
 void DetailsDialog::Private::saveClicked()
 {
+    if (mDetails->type() == Opportunity) {
+        if (mDetails->currentAccountId().isEmpty()) {
+            QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
+            return;
+        }
+    }
+
     Item item = mItem;
     mDetails->updateItem(item, data());
 

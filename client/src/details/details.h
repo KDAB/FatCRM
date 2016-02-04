@@ -62,6 +62,7 @@ public:
     }
 
     QString name() const;
+    QString currentAccountId() const;
     void assignToMe();
 
     virtual QString idForItem(const Akonadi::Item &item) const;
@@ -79,7 +80,6 @@ protected:
     virtual void setDataInternal(const QMap<QString, QString> &) const {}
     QString id() const;
 
-    QString currentAccountId() const;
 
 private Q_SLOTS:
     void doConnects();
