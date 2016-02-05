@@ -573,11 +573,15 @@ void Page::slotReloadCollection()
 
 void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
+    kDebug() << collection << attributeNames;
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
 
-        if (attributeNames.contains(s_supportedFieldsKey)) {
+        if (attributeNames.contains(s_supportedFieldsKey)) { // is this correct?
             readSupportedFields();
+        }
+        if (attributeNames.contains("CRM-enumdefinitions")) { // EnumDefinitionAttribute::type()
+            readEnumDefinitionAttributes();
         }
     }
 }
