@@ -87,6 +87,7 @@ Akonadi::Collection ModuleHandler::collection()
 
 void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 {
+    mCollection = collection;
     Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection, this);
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
 }
@@ -169,7 +170,7 @@ bool ModuleHandler::hasEnumDefinitions()
     return mHasEnumDefinitions;
 }
 
-void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
+bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__Field_list &fields)
 {
     if (!mParsedEnumDefinitions) {
         mParsedEnumDefinitions = true;
@@ -197,14 +198,14 @@ void ModuleHandler::parseFieldList(const TNS__Field_list &fields)
         // Opportunities: opportunity_type, lead_source, sales_stage
         // Emails: type, status
         // Notes: <none>
-        Akonadi::Collection coll = collection();
-        EnumDefinitionAttribute *attr = coll.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
+        EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
         const QString serialized = mEnumDefinitions.toString();
         if (attr->value() != serialized) {
             attr->setValue(serialized);
-            modifyCollection(coll);
+            return true;
         }
     }
+    return false; // no change
 }
 
 Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection, QString *lastTimestamp)

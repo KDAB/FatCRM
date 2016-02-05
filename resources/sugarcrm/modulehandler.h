@@ -91,7 +91,7 @@ public:
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;
 
-    void parseFieldList(const KDSoapGenerated::TNS__Field_list &fields);
+    bool parseFieldList(Akonadi::Collection &collection, const KDSoapGenerated::TNS__Field_list &fields);
 
     Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
             const Akonadi::Collection &parentCollection, QString *lastTimestamp);
