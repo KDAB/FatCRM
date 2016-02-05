@@ -29,6 +29,7 @@ namespace Ui
 {
 class OpportunityDetails;
 }
+
 class NotesRepository;
 class OpportunityDataExtractor;
 
@@ -46,6 +47,8 @@ public:
 private Q_SLOTS:
     void slotAutoNextStepDate();
     void slotSalesStageActivated(const QString &stage);
+    void slotSelectAccount();
+    void slotAccountSelected(const QString &accountId);
 
     void on_viewNotesButton_clicked();
     void on_buttonOpenAccount_clicked();

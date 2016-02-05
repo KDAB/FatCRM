@@ -42,6 +42,7 @@ set(app_SRCS
   dialogs/fatcrminputdialog.cpp
   dialogs/notesdialog.cpp
   dialogs/resourceconfigdialog.cpp
+  dialogs/selectitemdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
   utilities/accountdataextractor.cpp
@@ -57,6 +58,7 @@ set(app_SRCS
   utilities/itemdataextractor.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp
+  utilities/modelrepository.cpp
   utilities/notesrepository.cpp
   utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
@@ -83,6 +85,7 @@ kde4_add_ui_files(app_SRCS
   dialogs/detailsdialog.ui
   dialogs/notesdialog.ui
   dialogs/resourceconfigdialog.ui
+  dialogs/selectitemdialog.ui
 )
 
 kde4_add_app_icon(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")

@@ -25,7 +25,9 @@
 #include "accountrepository.h"
 #include "contactdataextractor.h"
 #include "editcalendarbutton.h"
+#include "modelrepository.h"
 #include "referenceddatamodel.h"
+#include "selectitemdialog.h"
 #include "ui_contactdetails.h"
 
 #include "kdcrmutils.h"
@@ -92,6 +94,7 @@ void ContactDetails::initialize()
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthday()));
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
+    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
 }
 
 ItemDataExtractor *ContactDetails::itemDataExtractor() const
@@ -338,4 +341,21 @@ void ContactDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
     emit openObject(Account, accountId);
+}
+
+void ContactDetails::slotSelectAccount()
+{
+    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    dlg->setModel(ModelRepository::instance()->model(Account));
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    dlg->show();
+}
+
+void ContactDetails::slotAccountSelected(const QString &accountId)
+{
+    const int idx = mUi->account_id->findData(accountId);
+    if (idx > -1) {
+        mUi->account_id->setCurrentIndex(idx);
+    }
 }

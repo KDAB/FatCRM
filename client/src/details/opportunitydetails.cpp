@@ -23,10 +23,13 @@
 #include "opportunitydetails.h"
 
 #include "ui_opportunitydetails.h"
+#include "enums.h"
+#include "modelrepository.h"
 #include "notesdialog.h"
 #include "notesrepository.h"
 #include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
+#include "selectitemdialog.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -70,6 +73,7 @@ void OpportunityDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
+    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
@@ -163,4 +167,21 @@ void OpportunityDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
     emit openObject(Account, accountId);
+}
+
+void OpportunityDetails::slotSelectAccount()
+{
+    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    dlg->setModel(ModelRepository::instance()->model(Account));
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    dlg->show();
+}
+
+void OpportunityDetails::slotAccountSelected(const QString &accountId)
+{
+    const int idx = mUi->account_id->findData(accountId);
+    if (idx > -1) {
+        mUi->account_id->setCurrentIndex(idx);
+    }
 }

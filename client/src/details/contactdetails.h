@@ -63,6 +63,8 @@ private Q_SLOTS:
     void slotClearDate();
     void slotAccountActivated();
     void on_buttonOpenAccount_clicked();
+    void slotSelectAccount();
+    void slotAccountSelected(const QString &accountId);
 
 private:
     ContactDataExtractor *mDataExtractor;

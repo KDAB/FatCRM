@@ -30,6 +30,7 @@
 #include "fatcrminputdialog.h"
 #include "itemdataextractor.h"
 #include "kjobprogresstracker.h"
+#include "modelrepository.h"
 #include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
@@ -487,6 +488,8 @@ void Page::setupModel()
 
     mFilter->setSourceModel(mFilterModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
+
+    ModelRepository::instance()->setModel(mType, treeView()->model());
 
     emit modelCreated(mItemsTreeModel); // give it to the reports page
 }

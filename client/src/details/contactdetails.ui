@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>837</width>
-    <height>444</height>
+    <height>480</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -81,6 +81,13 @@
        <layout class="QHBoxLayout" name="accountLayout">
         <item>
          <widget class="QComboBox" name="account_id"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonSelectAccount">
+          <property name="text">
+           <string>Select Account...</string>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QToolButton" name="buttonOpenAccount">
