@@ -28,6 +28,7 @@
 #include <QVector>
 #include <QMetaType>
 #include <QString>
+#include <QDebug>
 
 /**
  * @brief The EnumDefinitions class lists enum definitions for one type of item.
@@ -74,6 +75,9 @@ public:
 private:
     std::vector<Enum> mDefinitions;
 };
+
+KDCRMDATA_EXPORT QDebug operator<<(QDebug stream, const EnumDefinitions::Enum &oneEnum);
+KDCRMDATA_EXPORT QDebug operator<<(QDebug stream, const EnumDefinitions::KeyValue &keyValue);
 
 Q_DECLARE_METATYPE(EnumDefinitions)
 

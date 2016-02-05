@@ -95,3 +95,16 @@ EnumDefinitions EnumDefinitions::fromString(const QString &str)
 
     return ret;
 }
+
+
+QDebug operator<<(QDebug stream, const EnumDefinitions::Enum &oneEnum)
+{
+    stream << oneEnum.mEnumName << '[' << oneEnum.mEnumValues << ']';
+    return stream;
+}
+
+QDebug operator<<(QDebug stream, const EnumDefinitions::KeyValue &keyValue)
+{
+    stream << keyValue.key << keyValue.value;
+    return stream;
+}
