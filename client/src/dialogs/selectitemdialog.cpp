@@ -19,14 +19,9 @@
 */
 
 #include "selectitemdialog.h"
-#include "ui_selectitemdialog.h"
 
-#include "accountdataextractor.h"
-#include "campaigndataextractor.h"
-#include "contactdataextractor.h"
 #include "itemdataextractor.h"
-#include "leaddataextractor.h"
-#include "opportunitydataextractor.h"
+#include "ui_selectitemdialog.h"
 
 #include <QSortFilterProxyModel>
 
@@ -40,25 +35,7 @@ SelectItemDialog::SelectItemDialog(DetailsType type, QWidget *parent) :
    mUi->treeView->setSortingEnabled(true);
    connect(mUi->treeView, SIGNAL(clicked(Akonadi::Item)), this, SLOT(slotItemSelected(Akonadi::Item)));
 
-   switch(type) {
-   case Account:
-       mDataExtractor = new AccountDataExtractor(this);
-       break;
-   case Opportunity:
-       mDataExtractor = new OpportunityDataExtractor(this);
-       break;
-   case Lead:
-       mDataExtractor = new LeadDataExtractor(this);
-       break;
-   case Contact:
-       mDataExtractor = new ContactDataExtractor(this);
-       break;
-   case Campaign:
-       mDataExtractor = new CampaignDataExtractor(this);
-       break;
-   default:
-       mDataExtractor = nullptr;
-   }
+   mDataExtractor = ItemDataExtractor::createDataExtractor(type, this);
 }
 
 SelectItemDialog::~SelectItemDialog()
