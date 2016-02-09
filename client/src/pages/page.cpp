@@ -277,13 +277,8 @@ void Page::slotRemoveItem()
 
     if (item.isValid()) {
         // job starts automatically
-        // TODO connect to result() signal for error handling
-        ItemDeleteJob *job = new ItemDeleteJob(item);
-        Q_UNUSED(job);
-    }
-    const QModelIndex newIndex = mUi.treeView->selectionModel()->currentIndex();
-    if (!newIndex.isValid()) {
-        mUi.removePB->setEnabled(false);
+        ItemDeleteJob *job = new ItemDeleteJob(item, this);
+        connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDeleteJobResult(KJob*)));
     }
 }
 
@@ -373,9 +368,6 @@ void Page::initialize()
     }
     mUi.reloadPB->setEnabled(false);
 
-    // Removing doesn't work right now, and is a rather dangerous operation anyway :-)
-    mUi.removePB->hide();
-
     // Reloading is already available in the toolbar (and using F5 for just one collection)
     // so unclutter the GUI a bit
     mUi.reloadPB->hide();
@@ -384,8 +376,6 @@ void Page::initialize()
             this, SLOT(slotResetSearch()));
     connect(mUi.newPB, SIGNAL(clicked()),
             this, SLOT(slotNewClicked()));
-    connect(mUi.removePB, SIGNAL(clicked()),
-            this, SLOT(slotRemoveItem()));
     connect(mUi.reloadPB, SIGNAL(clicked()),
             this, SLOT(slotReloadCollection()));
 
@@ -421,6 +411,8 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
     }
 
     QMenu contextMenu;
+
+    contextMenu.addAction(i18n("Remove..."), this, SLOT(slotRemoveItem()));
 
     if (mCurrentItemUrl.isValid()) {
         contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
@@ -1010,4 +1002,13 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
 QString Page::reportTitle() const
 {
     return QString();
+}
+
+void Page::slotDeleteJobResult(KJob *job)
+{
+    if (job->error() != 0) {
+        const QString error = i18n("Item could not be deleted! Job error: %1").arg(job->errorText());
+        kWarning() << error;
+        emit statusMessage(error);
+    }
 }

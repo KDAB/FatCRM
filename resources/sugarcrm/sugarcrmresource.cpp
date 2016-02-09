@@ -272,7 +272,7 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
 
     status(Running);
 
-#if 1
+#if 0
     const QString message = "disabled for safety reasons";
     status(Broken, message);
     error(message);

@@ -112,6 +112,7 @@ private Q_SLOTS:
     void slotOpenEmailClient();
     void slotUnregisterDetailsDialog();
     void slotChangeFields();
+    void slotDeleteJobResult(KJob *job);
 
 private:
     virtual QString reportTitle() const = 0;
