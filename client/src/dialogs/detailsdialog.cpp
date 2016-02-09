@@ -40,6 +40,8 @@
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemModifyJob>
 
+#include <kpimutils/email.h>
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
@@ -101,6 +103,18 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     currentData[KDCRMFields::description()] = mUi.description->toPlainText();
     if (mDetails->type() == Campaign) {
         currentData[KDCRMFields::content()] = mUi.description->toPlainText();
+    }
+    // Turn "First Name <email@example.com> into "email@example.com so that SugarCRM doesn't reject it.
+    if (mDetails->type() == Contact) {
+        QString email = currentData.value(KDCRMFields::email1());
+        if (!email.isEmpty()) {
+            currentData.insert(KDCRMFields::email1(), KPIMUtils::extractEmailAddress(email));
+        }
+
+        email = currentData.value(KDCRMFields::email2());
+        if (!email.isEmpty()) {
+            currentData.insert(KDCRMFields::email2(), KPIMUtils::extractEmailAddress(email));
+        }
     }
 
     return currentData;
