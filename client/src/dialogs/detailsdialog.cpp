@@ -40,7 +40,7 @@
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemModifyJob>
 
-#include <kpimutils/email.h>
+#include <KPIMUtils/Email>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
