@@ -113,7 +113,7 @@ void Page::openDialog(const QString &id)
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        // we dont check for itemDataExtractor == 0 because we know it is an AccountDataExtractor
+        // we do not check for itemDataExtractor == 0 because we know it is an AccountDataExtractor
         if (itemDataExtractor()->idForItem(item) == id) {
             DetailsDialog *dialog = openedDialogForItem(item);
             if (!dialog) {
