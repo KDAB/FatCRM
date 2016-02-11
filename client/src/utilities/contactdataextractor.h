@@ -29,7 +29,7 @@ class ContactDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    ContactDataExtractor(QObject *parent = 0);
+    explicit ContactDataExtractor(QObject *parent = 0);
 
     ~ContactDataExtractor();
 
