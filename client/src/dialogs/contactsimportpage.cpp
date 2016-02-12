@@ -367,7 +367,7 @@ void MergeWidget::updateFinalContact()
             mFinalContact.insertPhoneNumber(mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work));
         }
 
-        KABC::Address address(KABC::Address::Work);
+        KABC::Address address(KABC::Address::Work | KABC::Address::Pref);
         if (!mAccount.shippingAddressStreet().isEmpty()) {
             address.setStreet(mAccount.shippingAddressStreet());
             address.setLocality(mAccount.shippingAddressCity());
@@ -383,7 +383,7 @@ void MergeWidget::updateFinalContact()
         }
 
         addressFlags = IsNew;
-        mFinalContact.removeAddress(mFinalContact.address(KABC::Address::Work));
+        mFinalContact.removeAddress(mFinalContact.address(KABC::Address::Work|KABC::Address::Pref));
         mFinalContact.insertAddress(address);
 
         mFinalContact.insertCustom("FATCRM", "X-AccountId", mAccount.id());
@@ -444,7 +444,7 @@ void MergeWidget::updateFinalContact()
                                                      mFinalContact.title(), jobTitleFlags,
                                                      mFinalContact.preferredEmail(), emailAddressFlags,
                                                      mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number(), phoneNumberFlags,
-                                                     formattedAddress(mFinalContact.address(KABC::Address::Work)), addressFlags));
+                                                     formattedAddress(mFinalContact.address(KABC::Address::Work|KABC::Address::Pref)), addressFlags));
     }
 }
 

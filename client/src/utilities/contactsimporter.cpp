@@ -99,7 +99,7 @@ bool ContactsImporter::importFile(const QString &fileName)
         if (!companyName.isEmpty())
             addressee.setOrganization(companyName);
 
-        KABC::Address workAddress(KABC::Address::Work);
+        KABC::Address workAddress(KABC::Address::Work|KABC::Address::Pref);
         const QString workStreet = builder.data(row, 6).trimmed();
         if (!workStreet.isEmpty())
             workAddress.setStreet(workStreet);
