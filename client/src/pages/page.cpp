@@ -265,7 +265,7 @@ void Page::slotRemoveItem()
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(i18n("Delete record"));
-    msgBox.setText(QString("The selected item will be removed permanentely!"));
+    msgBox.setText(QString("The selected item will be deleted permanently!"));
     msgBox.setInformativeText(i18n("Are you sure you want to delete it?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
@@ -412,7 +412,7 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 
     QMenu contextMenu;
 
-    contextMenu.addAction(i18n("Remove..."), this, SLOT(slotRemoveItem()));
+    contextMenu.addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
 
     if (mCurrentItemUrl.isValid()) {
         contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
