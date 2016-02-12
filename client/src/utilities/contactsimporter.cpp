@@ -57,6 +57,9 @@ bool ContactsImporter::importFile(const QString &fileName)
     accountColumns.insert(8, KDCRMFields::billingAddressPostalcode());
     accountColumns.insert(9, KDCRMFields::billingAddressState());
     accountColumns.insert(10, KDCRMFields::billingAddressCountry());
+    accountColumns.insert(11, KDCRMFields::vatNo());
+    accountColumns.insert(12, KDCRMFields::website());
+    accountColumns.insert(13, KDCRMFields::description());
 
     const int rows = builder.rowCount();
     mContacts.reserve(rows);

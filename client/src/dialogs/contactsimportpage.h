@@ -37,6 +37,7 @@ class ItemsTreeModel;
 class QButtonGroup;
 class QCheckBox;
 class QLabel;
+class QVBoxLayout;
 
 struct MatchPair
 {
@@ -59,6 +60,8 @@ private slots:
     void updateFinalContact();
 
 private:
+    QCheckBox *addFieldCheckBox(const QString &str);
+
     SugarAccount mAccount;
     KABC::Addressee mImportedAddressee;
     QVector<MatchPair> mPossibleMatches;
@@ -79,6 +82,7 @@ private:
 
     QButtonGroup *mButtonGroup;
 
+    QVBoxLayout *mImportedContactLayout;
     QLabel *mFinalContactLabel;
 };
 

@@ -159,6 +159,17 @@ MergeWidget::UpdateCheckBoxes::UpdateCheckBoxes()
 {
 }
 
+QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
+{
+    QCheckBox *checkBox = new QCheckBox;
+    checkBox->setText(str);
+    mImportedContactLayout->addWidget(checkBox);
+    checkBox->setChecked(true);
+    connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+
+    return checkBox;
+}
+
 MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
                          const QVector<MatchPair> &possibleMatches, QWidget *parent)
     : QWidget(parent)
@@ -184,60 +195,36 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
     finalContactBox->setTitle(i18n("Final Contact"));
 
     // imported contact box content
-    QVBoxLayout *importedContactLayout = new QVBoxLayout(importedContactBox);
+    mImportedContactLayout = new QVBoxLayout(importedContactBox);
     mImportedContactLabel = new QLabel;
     mImportedContactLabel->setWordWrap(true);
-    importedContactLayout->addWidget(mImportedContactLabel);
+    mImportedContactLayout->addWidget(mImportedContactLabel);
 
     mImportedAddressee.insertCustom("FATCRM", "X-AccountId", mAccount.id());
     mImportedContactLabel->setText(formattedContact(mImportedAddressee, true));
 
     if (!mImportedAddressee.custom("FATCRM", "X-Salutation").isEmpty()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setText(mImportedAddressee.custom("FATCRM", "X-Salutation"));
-        importedContactLayout->addWidget(checkBox);
-        mUpdateCheckBoxes.prefix = checkBox;
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+        mUpdateCheckBoxes.prefix = addFieldCheckBox(mImportedAddressee.custom("FATCRM", "X-Salutation"));
     }
 
     if (!mImportedAddressee.givenName().isEmpty()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setText(mImportedAddressee.givenName());
-        importedContactLayout->addWidget(checkBox);
-        mUpdateCheckBoxes.givenName = checkBox;
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+        mUpdateCheckBoxes.givenName = addFieldCheckBox(mImportedAddressee.givenName());
     }
 
     if (!mImportedAddressee.familyName().isEmpty()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setText(mImportedAddressee.familyName());
-        importedContactLayout->addWidget(checkBox);
-        mUpdateCheckBoxes.familyName = checkBox;
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+        mUpdateCheckBoxes.familyName = addFieldCheckBox(mImportedAddressee.familyName());
     }
 
     if (!mImportedAddressee.preferredEmail().isEmpty()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setText(mImportedAddressee.preferredEmail());
-        importedContactLayout->addWidget(checkBox);
-        mUpdateCheckBoxes.emailAddress = checkBox;
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+        mUpdateCheckBoxes.emailAddress = addFieldCheckBox(mImportedAddressee.preferredEmail());
     }
 
     if (!mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number().isEmpty()) {
-        QCheckBox *checkBox = new QCheckBox;
-        checkBox->setText(mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number());
-        importedContactLayout->addWidget(checkBox);
-        mUpdateCheckBoxes.phoneNumber = checkBox;
-        checkBox->setChecked(true);
-        connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+        const QString str = mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number();
+        mUpdateCheckBoxes.phoneNumber = addFieldCheckBox(str);
     }
 
-    importedContactLayout->addStretch();
+    mImportedContactLayout->addStretch();
 
     // matching contacts box content
     QVBoxLayout *matchingContactsLayout = new QVBoxLayout(matchingContactsBox);
