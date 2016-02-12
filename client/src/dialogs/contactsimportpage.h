@@ -77,6 +77,7 @@ private:
         QCheckBox *familyName;
         QCheckBox *emailAddress;
         QCheckBox *phoneNumber;
+        QCheckBox *jobTitle;
     };
     UpdateCheckBoxes mUpdateCheckBoxes;
 

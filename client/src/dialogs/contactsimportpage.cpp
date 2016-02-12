@@ -60,11 +60,14 @@ QString markupString(const QString &text, int flags)
 QString formattedContact(const QString &prefix, int prefixFlags,
                          const QString &givenName, int givenNameFlags,
                          const QString &familyName, int familyNameFlags,
+                         const QString &jobTitle, int jobTitleFlags,
                          const QString &emailAddress, int emailAddressFlags,
                          const QString &phoneNumber, int phoneNumberFlags,
                          const QString &address, int addressFlags)
 {
     QStringList parts;
+
+    // First line
 
     if (!prefix.isEmpty())
         parts << markupString(prefix, prefixFlags);
@@ -77,6 +80,14 @@ QString formattedContact(const QString &prefix, int prefixFlags,
 
     if (!emailAddress.isEmpty())
         parts << markupString(QString::fromLatin1("&lt;%1&gt;").arg(emailAddress), emailAddressFlags);
+
+    // Other lines below
+
+    if (!jobTitle.isEmpty()) {
+        if (!parts.isEmpty())
+            parts << "<br/>";
+        parts << markupString(jobTitle, jobTitleFlags);
+    }
 
     if (!phoneNumber.isEmpty()) {
         if (!parts.isEmpty())
@@ -93,6 +104,7 @@ QString formattedContact(const QString &prefix, int prefixFlags,
     return parts.join(" ");
 }
 
+// For one-line descriptions
 QString formattedContact(const KABC::Addressee &addressee, bool withAddress = false)
 {
     QStringList parts;
@@ -155,14 +167,16 @@ MergeWidget::UpdateCheckBoxes::UpdateCheckBoxes()
     , givenName(Q_NULLPTR)
     , familyName(Q_NULLPTR)
     , emailAddress(Q_NULLPTR)
-    , phoneNumber(Q_NULLPTR)
+    , phoneNumber(Q_NULLPTR),
+      jobTitle(Q_NULLPTR)
 {
 }
 
 QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
 {
     QCheckBox *checkBox = new QCheckBox;
-    checkBox->setText(str);
+    QString text(str);
+    checkBox->setText(text.replace('&', "&&"));
     mImportedContactLayout->addWidget(checkBox);
     checkBox->setChecked(true);
     connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
@@ -213,6 +227,10 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
 
     if (!mImportedAddressee.familyName().isEmpty()) {
         mUpdateCheckBoxes.familyName = addFieldCheckBox(mImportedAddressee.familyName());
+    }
+
+    if (!mImportedAddressee.title().isEmpty()) {
+        mUpdateCheckBoxes.jobTitle = addFieldCheckBox(mImportedAddressee.title());
     }
 
     if (!mImportedAddressee.preferredEmail().isEmpty()) {
@@ -310,6 +328,7 @@ void MergeWidget::updateFinalContact()
     int emailAddressFlags = IsNormal;
     int phoneNumberFlags = IsNormal;
     int addressFlags = IsNormal;
+    int jobTitleFlags = IsNormal;
 
     if (index == ExcludeContact) {
         // do nothing
@@ -329,6 +348,11 @@ void MergeWidget::updateFinalContact()
         if (mUpdateCheckBoxes.familyName && mUpdateCheckBoxes.familyName->isChecked()) {
             familyNameFlags = IsNew;
             mFinalContact.setFamilyName(mImportedAddressee.familyName());
+        }
+
+        if (mUpdateCheckBoxes.jobTitle && mUpdateCheckBoxes.jobTitle->isChecked()) {
+            jobTitleFlags = IsNew;
+            mFinalContact.setTitle(mImportedAddressee.title());
         }
 
         if (mUpdateCheckBoxes.emailAddress && mUpdateCheckBoxes.emailAddress->isChecked()) {
@@ -385,6 +409,13 @@ void MergeWidget::updateFinalContact()
             }
         }
 
+        if (mUpdateCheckBoxes.jobTitle && mUpdateCheckBoxes.jobTitle->isChecked()) {
+            if (mFinalContact.title() != mImportedAddressee.title()) {
+                jobTitleFlags = (mFinalContact.title().isEmpty() ? IsNew : IsModified);
+                mFinalContact.setTitle(mImportedAddressee.title());
+            }
+        }
+
         if (mUpdateCheckBoxes.emailAddress && mUpdateCheckBoxes.emailAddress->isChecked()) {
             if (mFinalContact.preferredEmail() != mImportedAddressee.preferredEmail()) {
                 emailAddressFlags = (mFinalContact.preferredEmail().isEmpty() ? IsNew : IsModified);
@@ -408,6 +439,7 @@ void MergeWidget::updateFinalContact()
         mFinalContactLabel->setText(formattedContact(mFinalContact.custom("FATCRM", "X-Salutation"), prefixFlags,
                                                      mFinalContact.givenName(), givenNameFlags,
                                                      mFinalContact.familyName(), familyNameFlags,
+                                                     mFinalContact.title(), jobTitleFlags,
                                                      mFinalContact.preferredEmail(), emailAddressFlags,
                                                      mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number(), phoneNumberFlags,
                                                      formattedAddress(mFinalContact.address(KABC::Address::Work)), addressFlags));
