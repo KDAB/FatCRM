@@ -139,7 +139,9 @@ QString formattedContact(const KABC::Addressee &addressee, bool withAddress = fa
         if (!account.countryForGui().isEmpty())
             addressParts << account.countryForGui();
 
-        parts << addressParts.join(", ");
+        if (!addressParts.isEmpty()) {
+            parts << QString::fromLatin1("(%1)").arg(addressParts.join(", "));
+        }
     }
 
     return parts.join(" ");
