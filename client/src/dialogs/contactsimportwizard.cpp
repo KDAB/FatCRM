@@ -26,7 +26,7 @@
 
 #include <AkonadiCore/ItemCreateJob>
 #include <AkonadiCore/ItemModifyJob>
-#include <KLocale>
+#include <KLocalizedString>
 
 ContactsImportWizard::ContactsImportWizard(QWidget *parent)
     : QWizard(parent)

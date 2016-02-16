@@ -23,7 +23,7 @@
 #include "kdcrmutils.h"
 
 #include <KGlobal>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QDateTime>
 

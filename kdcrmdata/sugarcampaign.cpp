@@ -23,7 +23,7 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 #include <QMap>

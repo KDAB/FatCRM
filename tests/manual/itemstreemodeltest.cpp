@@ -29,7 +29,7 @@
 
 #include <KAboutData>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/CollectionFetchJob>
