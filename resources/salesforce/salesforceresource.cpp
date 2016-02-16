@@ -21,7 +21,7 @@
 */
 
 #include "salesforceresource.h"
-
+#include "salesforceresource_debug.h"
 #include "salesforcecontactshandler.h"
 #include "moduledebuginterface.h"
 #include "resourcedebuginterface.h"
@@ -356,13 +356,13 @@ void SalesforceResource::retrieveCollections()
         const TNS__DescribeGlobalResponse callResult = mSoap->describeGlobal();
         const QString error = mSoap->lastError();
         const TNS__DescribeGlobalResult result = callResult.result();
-        qDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
                  << "encoding=" << result.encoding()
                  << "error=" << error;
         const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
-        qDebug() << sobjects.count() << "SObjects";
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << sobjects.count() << "SObjects";
         Q_FOREACH (const TNS__DescribeGlobalSObjectResult &object, sobjects) {
-            qDebug() << "name=" << object.name() << "label=" << object.label()
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "name=" << object.name() << "label=" << object.label()
                      << "keyPrefix=" << object.keyPrefix();
         }
 
@@ -432,7 +432,7 @@ void SalesforceResource::retrieveItems(const Akonadi::Collection &collection)
             TNS__QueryLocator locator;
             moduleIt.value()->listEntries(locator, mSoap);
         } else {
-            qDebug() << "No module handler for collection" << collection;
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "No module handler for collection" << collection;
             itemsRetrieved(Item::List());
         }
     }
@@ -465,7 +465,7 @@ void SalesforceResource::loginDone(const TNS__LoginResponse &callResult)
         message = i18nc("@info:status", "Login failed: server returned an invalid session identifier");
     } else {
         mSessionId = sessionId;
-        qDebug() << "Login succeeded: sessionId=" << mSessionId;
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Login succeeded: sessionId=" << mSessionId;
     }
 
     if (message.isEmpty()) {
@@ -493,7 +493,7 @@ void SalesforceResource::loginError(const KDSoapMessage &fault)
     mSessionId = QString();
 
     const QString message = fault.faultAsString();
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
     status(Broken, message);
     error(message);
@@ -502,7 +502,7 @@ void SalesforceResource::loginError(const KDSoapMessage &fault)
 void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
 {
     const Collection collection = currentCollection();
-    qDebug() << "got Query result for module" << collection.remoteId();
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "got Query result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -511,7 +511,7 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
     if (moduleIt != mModuleHandlers->constEnd()) {
         const TNS__QueryResult queryResult = callResult.result();
-        qDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if (queryResult.size() > 0) {
             itemsRetrieved(moduleIt.value()->itemsFromListEntriesResponse(queryResult, collection));
 
@@ -526,14 +526,14 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
             itemsRetrievalDone();
         }
     } else {
-        qCritical() << "no handler for this module?";
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResult)
 {
     const Collection collection = currentCollection();
-    qDebug() << "got QueryMore result for module" << collection.remoteId();
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "got QueryMore result for module" << collection.remoteId();
 
     Item::List items;
 
@@ -542,7 +542,7 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
     if (moduleIt != mModuleHandlers->constEnd()) {
         const TNS__QueryResult queryResult = callResult.result();
-        qDebug() << "result.size=" << queryResult.size() << "done=" << queryResult.done();
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "result.size=" << queryResult.size() << "done=" << queryResult.done();
         if (queryResult.size() > 0) {
             itemsRetrieved(moduleIt.value()->itemsFromListEntriesResponse(queryResult, collection));
 
@@ -557,14 +557,14 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
             itemsRetrievalDone();
         }
     } else {
-        qCritical() << "no handler for this module?";
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "no handler for this module?";
     }
 }
 
 void SalesforceResource::getEntryListError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
     status(Broken, message);
     error(message);
@@ -577,11 +577,11 @@ void SalesforceResource::setEntryDone(const TNS__UpsertResponse &callResult)
 
     const QList<TNS__UpsertResult> upsertResults = callResult.result();
     if (upsertResults.isEmpty()) {
-        qCritical() << "UpsertResponse does not contain any results";
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "UpsertResponse does not contain any results";
         message = i18nc("@info:status", "Server did not respond as expected: result set is empty");
     } else {
         if (upsertResults.count() > 1) {
-            qCritical() << "Expecting one upsert result in response but got"
+            qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "Expecting one upsert result in response but got"
                      << upsertResults.count() << ". Will just take first one";
         }
 
@@ -606,12 +606,12 @@ void SalesforceResource::setEntryDone(const TNS__UpsertResponse &callResult)
     }
 
     if (!message.isEmpty()) {
-        qCritical() << message;
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
     } else {
-        qDebug() << "itemAdded/itemChanged done, comitting pending item (id="
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "itemAdded/itemChanged done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
         status(Idle);
@@ -625,7 +625,7 @@ void SalesforceResource::setEntryError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
 
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
     status(Broken, message);
     error(message);
     cancelTask(message);
@@ -639,11 +639,11 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
 
     const QList<TNS__DeleteResult> deleteResults = callResult.result();
     if (deleteResults.isEmpty()) {
-        qCritical() << "deleteResponse does not contain any results";
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "deleteResponse does not contain any results";
         message = i18nc("@info:status", "Server did not respond as expected: result set is empty");
     } else {
         if (deleteResults.count() > 1) {
-            qCritical() << "Expecting one delete result in response but got"
+            qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "Expecting one delete result in response but got"
                      << deleteResults.count() << ". Will just take first one";
         }
 
@@ -660,12 +660,12 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
     }
 
     if (!message.isEmpty()) {
-        qCritical() << message;
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
     } else {
-        qDebug() << "itemRemoved done, comitting pending item (id="
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "itemRemoved done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
         status(Idle);
@@ -678,7 +678,7 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
 void SalesforceResource::deleteEntryError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
     status(Broken, message);
     error(message);
@@ -702,14 +702,14 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
     collections << mTopLevelCollection;
 
     const TNS__DescribeGlobalResult result = callResult.result();
-    qDebug() << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "describeGlobal: maxBatchSize=" << result.maxBatchSize()
              << "encoding=" << result.encoding();
     const QList<TNS__DescribeGlobalSObjectResult> sobjects = result.sobjects();
-    qDebug() << sobjects.count() << "SObjects";
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << sobjects.count() << "SObjects";
 
     QStringList unknownModules;
     Q_FOREACH (const TNS__DescribeGlobalSObjectResult &object, sobjects) {
-//         qDebug() << "name=" << object.name() << "label=" << object.label()
+//         qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "name=" << object.name() << "label=" << object.label()
 //                  << "keyPrefix=" << object.keyPrefix();
 
         // assume for now that each "sobject" describes a module
@@ -731,7 +731,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
                 handler = new SalesforceContactsHandler;
                 unknownModules << module;
             } else {
-                //qDebug() << "No module handler for" << module;
+                //qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "No module handler for" << module;
                 continue;
             }
             mModuleHandlers->insert(module, handler);
@@ -743,7 +743,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
         }
     }
 
-    qDebug() << collections.count() << "collections"
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << collections.count() << "collections"
              << unknownModules.count() << "new modules";
 
     if (!unknownModules.isEmpty()) {
@@ -762,7 +762,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
 void SalesforceResource::describeGlobalError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
     status(Broken, message);
     error(message);
@@ -771,7 +771,7 @@ void SalesforceResource::describeGlobalError(const KDSoapMessage &fault)
 
 void SalesforceResource::describeSObjects(const QStringList &objects)
 {
-    qDebug() << "Getting descriptions for new modules:" << objects;
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Getting descriptions for new modules:" << objects;
 
     TNS__DescribeSObjects param;
     param.setSObjectType(objects);
@@ -785,7 +785,7 @@ void SalesforceResource::describeSObjectsDone(const TNS__DescribeSObjectsRespons
 
     const QList<TNS__DescribeSObjectResult> resultList = callResult.result();
     Q_FOREACH (const TNS__DescribeSObjectResult &result, resultList) {
-        qDebug() << "describeSObject result: name=" << result.name();
+        qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "describeSObject result: name=" << result.name();
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(result.name());
         if (moduleIt != mModuleHandlers->constEnd()) {
             moduleIt.value()->setDescriptionResult(result);
@@ -804,7 +804,7 @@ void SalesforceResource::describeSObjectsDone(const TNS__DescribeSObjectsRespons
 void SalesforceResource::describeSObjectsError(const KDSoapMessage &fault)
 {
     const QString message = fault.faultAsString();
-    qCritical() << message;
+    qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
     status(Broken, message);
     error(message);

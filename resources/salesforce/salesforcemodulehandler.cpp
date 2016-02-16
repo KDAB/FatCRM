@@ -22,6 +22,7 @@
 
 #include "salesforcemodulehandler.h"
 #include "salesforcesoap.h"
+#include "salesforceresource_debug.h"
 using namespace KDSoapGenerated;
 
 SalesforceModuleHandler::SalesforceModuleHandler(const QString &moduleName)
@@ -52,6 +53,6 @@ void SalesforceModuleHandler::setDescriptionResult(const TNS__DescribeSObjectRes
         mAvailableFields << field.name();
     }
 
-    qDebug() << "Module" << moduleName() << "has" << mAvailableFields.count() << "fields:"
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Module" << moduleName() << "has" << mAvailableFields.count() << "fields:"
              << mAvailableFields;
 }

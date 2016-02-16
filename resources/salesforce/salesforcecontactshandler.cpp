@@ -21,6 +21,7 @@
 */
 
 #include "salesforcecontactshandler.h"
+#include "salesforceresource_debug.h"
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
@@ -179,7 +180,7 @@ void SalesforceContactsHandler::setDescriptionResult(const TNS__DescribeSObjectR
         it->isAvailable = fields.contains(it.key());
 
         if (!it->isAvailable) {
-            qDebug() << "Disabling accessor pair for" << it.key()
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Disabling accessor pair for" << it.key()
                      << "because it is not part of the server's available fields";
         }
     }
@@ -218,7 +219,7 @@ void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, Sf
 bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
 {
     if (!item.hasPayload<KContacts::Addressee>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
     }
@@ -247,7 +248,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         if (it->isAvailable) {
             const QString value = it->getter(addressee);
             valueList << KDSoapValue(it.key(), value);
-            qDebug() << "Upsert: name=" << it.key() << "value=" << value;
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Upsert: name=" << it.key() << "value=" << value;
         }
     }
 
@@ -269,8 +270,8 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
     Q_FOREACH (const ENS__SObject &entry, queryResult.records()) {
         const QList<KDSoapValue> valueList = entry.any();
         if (valueList.isEmpty()) {
-            qWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
-            qDebug() << "fieldsToNull:" << entry.fieldsToNull();
+            qCWarning(FATCRM_SALESFORCERESOURCE_LOG) << "Contacts entry for id=" << entry.id().value() << "has no values";
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "fieldsToNull:" << entry.fieldsToNull();
             continue;
         }
 
@@ -291,7 +292,7 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
                     accessorIt->setter(it->value().value<QString>(), addressee);
                 }
             } else {
-                qWarning() << "Contacts entry for id=" << entry.id().value()
+                qCWarning(FATCRM_SALESFORCERESOURCE_LOG) << "Contacts entry for id=" << entry.id().value()
                            << "has unknown value named" << it->name();
             }
         }
@@ -300,6 +301,6 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
         items << item;
     }
 
-    qDebug() << "Query result had" << items.count() << "valid contact items";
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Query result had" << items.count() << "valid contact items";
     return items;
 }
