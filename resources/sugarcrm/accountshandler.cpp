@@ -88,7 +88,7 @@ QStringList AccountsHandler::supportedCRMFields() const
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarAccount>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
         return false;
     }
@@ -308,6 +308,6 @@ void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
 void AccountsHandler::slotUpdateJobResult(KJob *job)
 {
     if (job->error()) {
-        qCritical() << job->errorString();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }

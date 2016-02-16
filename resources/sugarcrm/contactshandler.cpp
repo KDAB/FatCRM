@@ -685,7 +685,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 bool ContactsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<KContacts::Addressee>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
     }

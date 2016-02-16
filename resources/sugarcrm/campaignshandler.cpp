@@ -64,7 +64,7 @@ QStringList CampaignsHandler::supportedSugarFields() const
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarCampaign>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Campaign payload";
         return false;
     }

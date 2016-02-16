@@ -705,7 +705,7 @@ void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
     if (handler) {
         updateItem(item, handler);
     } else {
-        qCritical() << "No module handler for collection" << collection.remoteId();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection.remoteId();
     }
 }
 

@@ -65,7 +65,7 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
 bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
         return false;
     }
@@ -288,7 +288,7 @@ void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, c
 void OpportunitiesHandler::slotUpdateJobResult(KJob *job)
 {
     if (job->error()) {
-        qCritical() << job->errorString();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }
 

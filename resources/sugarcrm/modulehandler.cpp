@@ -155,7 +155,7 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
 bool ModuleHandler::getEntry(const Akonadi::Item &item)
 {
     if (item.remoteId().isEmpty()) {
-        qCritical() << "Item remoteId is empty. id=" << item.id();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "Item remoteId is empty. id=" << item.id();
         return false;
     }
 

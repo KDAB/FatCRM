@@ -80,7 +80,7 @@ QStringList NotesHandler::supportedCRMFields() const
 bool NotesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarNote>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Note payload";
         return false;
     }

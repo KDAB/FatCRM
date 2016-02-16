@@ -135,7 +135,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
 bool EmailsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarEmail>()) {
-        qCritical() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Email payload";
         return false;
     }
