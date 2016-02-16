@@ -20,7 +20,7 @@
 
 #include "invoker.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KToolInvocation>
 
 #include <QDBusConnection>

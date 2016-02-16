@@ -20,7 +20,7 @@
 
 #include "dbusinvokerinterface.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QDBusConnection>
 
