@@ -59,7 +59,7 @@
 #include <KContacts/Addressee>
 
 #include "fatcrm_client_debug.h"
-#include <KInputDialog>
+#include <QInputDialog>
 
 #include <QClipboard>
 #include <QDesktopServices>
@@ -711,7 +711,7 @@ void Page::slotChangeFields()
     } else if (field == AssigneeField) {
         replacementAssignee = FatCRMInputDialog::getAssignedUser(dialogTitle, dialogText, &ok);
     } else {
-        replacementString = KInputDialog::getText(dialogTitle, dialogText, QString(), &ok);
+        replacementString = QInputDialog::getText(this, dialogTitle, dialogText, QLineEdit::Normal, QString(), &ok);
     }
 
     if (!ok)
