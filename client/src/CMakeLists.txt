@@ -108,7 +108,6 @@ add_library(fatcrmprivate ${app_SRCS})
 generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiWidgets
   KF5::Contacts
 )
