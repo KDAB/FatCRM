@@ -31,7 +31,6 @@
 class AccountImportPage;
 class ContactsImportPage;
 class ItemsTreeModel;
-class QProgressDialog;
 
 class ContactsImportWizard : public QWizard
 {

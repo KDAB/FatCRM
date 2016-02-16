@@ -35,7 +35,6 @@
 #include <QMainWindow>
 
 class QAction;
-class QCheckBox;
 class QComboBox;
 class QProgressBar;
 class QTimer;
