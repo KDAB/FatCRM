@@ -48,8 +48,6 @@
 #include <AkonadiCore/ServerManager>
 using namespace Akonadi;
 
-#include <kdeversion.h>
-
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -110,12 +108,8 @@ void MainWindow::slotDelayedInit()
 
     setupResourcesCombo();
 
-#if KDE_IS_VERSION(4, 14, 10) // technically it's about the kdepimlibs version, but there's no define for that
-    mResourceDialog = new ResourceConfigDialog(this);
-#else
     // no parent so it can have its own Akonadi-not-started overlay (bug in Akonadi::ErrorOverlay, fixed in f5f76cc, kdepimlibs >= 4.14.10)
     mResourceDialog = new ResourceConfigDialog;
-#endif
 
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
             this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
