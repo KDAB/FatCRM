@@ -139,7 +139,7 @@ void ConflictHandler::Private::duplicateLocalItemResult(KJob *job)
     const Item item = createJob->item();
 
     if (createJob->error() != 0) {
-        qWarning() << "Duplicating local item" << item.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Duplicating local item" << item.id()
                    << ", collection" << item.parentCollection().name()
                    << "for conflict resolution failed on local create: "
                    << "error=" << createJob->error() << "message=" << createJob->errorText();

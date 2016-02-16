@@ -145,7 +145,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Opportunities entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Opportunities entry for id=" << entry.id() << "has no values";
         return item;
     }
 
@@ -173,7 +173,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
         SugarAccountCache *cache = SugarAccountCache::instance();
         opportunity.setAccountId(cache->accountIdForName(opportunity.tempAccountName()));
         if (opportunity.accountId().isEmpty()) {
-            qWarning() << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
             cache->addPendingAccountName(opportunity.tempAccountName());
        }
     }

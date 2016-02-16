@@ -70,7 +70,7 @@ int ResourceDebugInterface::getCount(const QString &module) const
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
-        qWarning() << "No session! Need to login first.";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
     }
 
     // for notes and emails, use this:

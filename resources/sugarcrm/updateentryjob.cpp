@@ -84,7 +84,7 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
 
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     if (entries.count() != 1) {
-        qWarning() << "Got" << entries.count() << "entries";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << entries.count() << "entries";
         Q_ASSERT(entries.count() == 1);
     }
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
@@ -93,13 +93,13 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
              << "local="  << mItem.remoteRevision();
     bool hasConflict = false;
     if (mItem.remoteRevision().isEmpty()) {
-        qWarning() << "local item (id=" << mItem.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "local item (id=" << mItem.id()
                    << ", remoteId=" << mItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
         hasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if (remoteItem.remoteRevision().isEmpty()) {
-        qWarning() << "remote item (id=" << remoteItem.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
@@ -130,7 +130,7 @@ void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
     }
 
     if (!q->handleLoginError(fault)) {
-        qWarning() << "Update Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -158,7 +158,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void UpdateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << "Update Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -190,7 +190,7 @@ void UpdateEntryJob::Private::getRevisionError(const KDSoapMessage &fault)
         return;
     }
 
-    qWarning() << "Error when getting remote revision:" << fault.faultAsString();
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Error when getting remote revision:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();

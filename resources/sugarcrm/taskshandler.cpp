@@ -18,7 +18,7 @@
 **********************************************************************/
 
 #include "taskshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
@@ -394,7 +394,7 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
 
     const QList<TNS__Name_value> valueList = entry.name_value_list().items();
     if ( valueList.isEmpty() ) {
-        qWarning() << "Tasks entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Tasks entry for id=" << entry.id() << "has no values";
         return item;
     }
 

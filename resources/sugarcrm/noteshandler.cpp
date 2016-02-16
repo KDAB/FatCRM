@@ -21,7 +21,7 @@
 */
 
 #include "noteshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
@@ -126,7 +126,7 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Notes entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Notes entry for id=" << entry.id() << "has no values";
         return item;
     }
 

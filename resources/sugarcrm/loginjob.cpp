@@ -28,7 +28,7 @@ LoginJob::LoginJob(SugarSession *session, QObject *parent)
     : SugarJob(session, parent)
 {
     if (!sessionId().isEmpty()) {
-        qWarning() << "Creating Login job when there is a valid session ID. Will not change anything";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Creating Login job when there is a valid session ID. Will not change anything";
     }
 }
 

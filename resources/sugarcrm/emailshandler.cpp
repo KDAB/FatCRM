@@ -21,7 +21,7 @@
 */
 
 #include "emailshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
@@ -118,11 +118,11 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             }
         }
         if (email_id.isEmpty()) {
-            qWarning() << "No email_id found in entry";
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No email_id found in entry";
         } else {
             const int pos = itemIndexById.value(email_id, -1);
             if (pos == -1) {
-                qWarning() << "Email not found:" << email_id;
+                qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Email not found:" << email_id;
             } else {
                 SugarEmail email = items[pos].payload<SugarEmail>();
                 email.setDescription(description);
@@ -181,7 +181,7 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Emails entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Emails entry for id=" << entry.id() << "has no values";
         return item;
     }
 

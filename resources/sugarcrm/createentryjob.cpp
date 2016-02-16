@@ -87,7 +87,7 @@ void CreateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
     Q_ASSERT(mStage == CreateEntry);
 
     if (!q->handleLoginError(fault)) {
-        qWarning() << "Create Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Create Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -120,7 +120,7 @@ void CreateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
 {
     Q_ASSERT(mStage == GetEntry);
 
-    qWarning() << "Error when getting remote version:" << fault.faultAsString();
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Error when getting remote version:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();

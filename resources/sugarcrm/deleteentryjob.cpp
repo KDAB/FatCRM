@@ -70,7 +70,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void DeleteEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << "Delete Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Delete Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());

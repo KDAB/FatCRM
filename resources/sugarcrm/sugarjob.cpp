@@ -216,7 +216,7 @@ bool SugarJob::handleLoginError(const KDSoapMessage &fault)
 {
     // TODO check for error indicating that new login is required, e.g. network error.
     // No point in re-login on a real fault sent by the server.
-    qWarning() << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
     Q_UNUSED(fault);
     if (d->mTryRelogin) {
         QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);

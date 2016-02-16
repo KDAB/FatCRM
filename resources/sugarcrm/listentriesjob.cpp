@@ -97,7 +97,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
 void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << q << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -176,7 +176,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << q << "List Entries Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());

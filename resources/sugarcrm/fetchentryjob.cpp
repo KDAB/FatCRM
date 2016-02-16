@@ -80,7 +80,7 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_
 void FetchEntryJob::Private::getEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << "Fetch Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Fetch Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());

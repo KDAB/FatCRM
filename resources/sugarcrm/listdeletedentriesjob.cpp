@@ -111,7 +111,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
 void ListDeletedEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << q << "List Entries Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -160,7 +160,7 @@ void ListDeletedEntriesJob::Private::updateAnnotationAttribute()
 void ListDeletedEntriesJob::Private::slotDeleteJobResult(KJob *job)
 {
     if (job->error()) {
-        qWarning() << job->errorString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
         q->setError(job->error());
         q->setErrorText(job->errorText());
     } else {

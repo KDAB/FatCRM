@@ -131,7 +131,7 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
-        qWarning() << "No session! Need to login first.";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
     }
 
     const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
@@ -452,7 +452,7 @@ Sugarsoap *ModuleHandler::soap() const
 void ModuleHandler::slotCollectionModifyResult(KJob *job)
 {
     if (job->error()) {
-        qWarning() << job->errorString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }
 

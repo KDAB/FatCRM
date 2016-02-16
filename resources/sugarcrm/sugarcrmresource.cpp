@@ -222,7 +222,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
     } else {
         const QString message = i18nc("@info:status", "Cannot add items to folder %1",
                                       collection.name());
-        qWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
         error(message);
@@ -238,7 +238,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
         if (!handler->needBackendChange(item, parts)) {
-            qWarning() << "Handler for module" << handler->moduleName()
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Handler for module" << handler->moduleName()
                        << "indicates that backend change for item id=" << item.id()
                        << ", remoteId=" << item.remoteId()
                        << "is not required for given modified parts: " << parts;
@@ -251,7 +251,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     } else {
         const QString message = i18nc("@info:status", "Cannot modify items in folder %1",
                                       collection.name());
-        qWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
         error(message);
@@ -384,7 +384,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 
     if (job->error() != 0) {
         QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         if (Settings::host().isEmpty()) {
             message = i18nc("@info:status", "No server configured");
@@ -395,7 +395,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
                             Settings::user(), Settings::host(), message);
         }
 
-        qWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
@@ -418,7 +418,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -498,7 +498,7 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job;
     if (job->error() != 0) {
         const QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -562,7 +562,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
 void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
 {
     if (job->error()) {
-        qWarning() << job->errorString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
     mCurrentJob = 0;
 
@@ -586,7 +586,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -615,7 +615,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -640,7 +640,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        qWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -669,7 +669,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
     if (job->error() != 0) {
         if (job->error() != UpdateEntryJob::ConflictError) {
             const QString message = job->errorText();
-            qWarning() << "error=" << job->error() << ":" << message;
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
             status(Broken, message);
             error(message);

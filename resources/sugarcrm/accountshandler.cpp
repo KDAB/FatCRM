@@ -21,7 +21,7 @@
 */
 
 #include "accountshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugaraccountcache.h"
 #include "sugarsession.h"
@@ -153,7 +153,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Accounts entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Accounts entry for id=" << entry.id() << "has no values";
         return item;
     }
 

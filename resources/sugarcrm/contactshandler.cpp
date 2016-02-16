@@ -21,7 +21,7 @@
 */
 
 #include "contactshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -832,7 +832,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Contacts entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Contacts entry for id=" << entry.id() << "has no values";
         return item;
     }
 

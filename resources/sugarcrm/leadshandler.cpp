@@ -22,6 +22,7 @@
 
 #include "leadshandler.h"
 #include "sugarsession.h"
+#include "sugarcrmresource_debug.h"
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
 
@@ -111,7 +112,7 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Leads entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Leads entry for id=" << entry.id() << "has no values";
         return item;
     }
 

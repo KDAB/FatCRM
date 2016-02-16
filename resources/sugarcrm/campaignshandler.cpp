@@ -21,7 +21,7 @@
 */
 
 #include "campaignshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
@@ -110,7 +110,7 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        qWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Campaigns entry for id=" << entry.id() << "has no values";
         return item;
     }
 

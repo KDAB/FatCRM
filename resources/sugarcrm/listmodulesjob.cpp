@@ -65,7 +65,7 @@ void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module
 void ListModulesJob::Private::listModulesError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        qWarning() << "List Modules Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "List Modules Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
