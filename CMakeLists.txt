@@ -20,7 +20,7 @@ include(KDEInstallDirs)
 include(KDECMakeSettings)
 include(KDECompilerSettings)
 include(ECMAddAppIcon)
-
+include(ECMQtDeclareLoggingCategory)
 
 enable_testing()
 

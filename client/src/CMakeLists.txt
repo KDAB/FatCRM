@@ -69,6 +69,7 @@ set(app_SRCS
   widgets/betterplaintextedit.cpp
   widgets/qdateeditex.cpp
 )
+ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
 
 ki18n_wrap_ui(app_SRCS
   app/mainwindow.ui
