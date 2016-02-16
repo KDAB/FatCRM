@@ -9,6 +9,8 @@ set(salesforceresource_SRCS
   salesforceresource.cpp
 )
 
+ecm_qt_declare_logging_category(salesforceresource_SRCS HEADER salesforceresource_debug.h IDENTIFIER FATCRM_SALESFORCERESOURCE_LOG CATEGORY_NAME log_fatcrm_salesforceresource)
+
 ki18n_wrap_ui(salesforceresource_SRCS
   salesforceconfigdialog.ui
 )

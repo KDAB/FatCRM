@@ -34,6 +34,8 @@ set(sugarcrmresource_SRCS
   conflictresolvedialog.cpp
 )
 
+ecm_qt_declare_logging_category(sugarcrmresource_SRCS HEADER sugarcrmresource_debug.h IDENTIFIER FATCRM_SUGARCRMRESOURCE_LOG CATEGORY_NAME log_fatcrm_sugarcrmresource)
+
 ki18n_wrap_ui(sugarcrmresource_SRCS
   sugarconfigdialog.ui
 )
