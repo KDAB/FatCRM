@@ -28,8 +28,8 @@
 
 #include <KColorScheme>
 #include <KLocalizedString>
-#include <KPushButton>
 #include <QTextBrowser>
+#include <QPushButton>
 
 #include <QVBoxLayout>
 
