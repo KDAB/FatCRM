@@ -31,7 +31,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 
 #include <QStringList>
 
@@ -62,7 +62,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    qDebug() << "Entry" << mItem.remoteId() << "deleted from module"
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();
 }

@@ -30,7 +30,7 @@ using namespace KDSoapGenerated;
 
 #include <AkonadiCore/Item>
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 #include <KLocalizedString>
 
 #include <QStringList>
@@ -70,7 +70,7 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_
     item.setId(mItem.id());
     item.setRevision(mItem.revision());
     mItem = item;
-    qDebug() << "Fetched" << mHandler->moduleName()
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fetched" << mHandler->moduleName()
              << "Entry" << mItem.remoteId()
              << "with revision" << mItem.remoteRevision();
 

@@ -22,7 +22,7 @@
 
 #include "loginjob.h"
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 
 LoginJob::LoginJob(SugarSession *session, QObject *parent)
     : SugarJob(session, parent)

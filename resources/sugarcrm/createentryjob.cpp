@@ -21,7 +21,7 @@
 */
 
 #include "createentryjob.h"
-
+#include "sugarcrmresource_debug.h"
 #include "modulehandler.h"
 #include "sugarsoap.h"
 
@@ -30,7 +30,6 @@ using namespace KDSoapGenerated;
 
 #include <AkonadiCore/Item>
 
-#include <QDebug>
 #include <KLocalizedString>
 
 #include <QStringList>
@@ -72,7 +71,7 @@ void CreateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    qDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 
     mStage = Private::GetEntry;
@@ -112,7 +111,7 @@ void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     item.setId(mItem.id());
     item.setRevision(mItem.revision());
     mItem = item;
-    qDebug() << "Got entry with revision" << mItem.remoteRevision();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got entry with revision" << mItem.remoteRevision();
 
     q->emitResult();
 }

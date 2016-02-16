@@ -30,7 +30,7 @@ using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 //#include <QCryptographicHash>
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 #include <KLocalizedString>
 
 #include <QNetworkReply>
@@ -63,7 +63,7 @@ public: // slots
 
 void SugarJob::Private::startLogin()
 {
-    qDebug() << q;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q;
     mTryRelogin = false;
 
     Sugarsoap *soap = mSession->soap();
@@ -99,7 +99,7 @@ void SugarJob::Private::startLogin()
 
 void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
-    qDebug() << q << "error=" << callResult.error().number();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "error=" << callResult.error().number();
     const QString sessionId = callResult.id();
 
     QString message;
@@ -108,7 +108,7 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
     } else if (sessionId == QLatin1String("-1")) {
         message = i18nc("@info:status", "server returned an invalid session identifier");
     } else {
-        qDebug() << q << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
         mSession->setSessionId(sessionId);
         q->setError(0);
         q->setErrorText(QString());
@@ -127,7 +127,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
     mSession->setSessionId(QString());
 
     const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
-    qDebug() << q << "faultcode=" << faultcode;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "faultcode=" << faultcode;
     if (faultcode == QNetworkReply::UnknownNetworkError ||
             faultcode == QNetworkReply::HostNotFoundError) {
         q->setError(SugarJob::CouldNotConnectError);
@@ -141,7 +141,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
 
 void SugarJob::Private::slotPasswordAvailable()
 {
-    qDebug();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     startLogin();
 }
 
@@ -152,12 +152,12 @@ SugarJob::SugarJob(SugarSession *session, QObject *parent)
             this, SLOT(loginDone(KDSoapGenerated::TNS__Set_entry_result)));
     connect(session->soap(), SIGNAL(loginError(KDSoapMessage)),
             this, SLOT(loginError(KDSoapMessage)));
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 SugarJob::~SugarJob()
 {
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
     delete d;
 }
 
@@ -198,13 +198,13 @@ bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
     if (errorValue.number() == QLatin1String("10")) {
         // Invalid login error, meaning we need to log in again
         if (d->mTryRelogin) {
-            qDebug() << "Got error 10, probably a session timeout, let's login again";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
             QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
             // We'll retry the operation in loginDone()
             return true;
         }
     }
-    qDebug() << errorValue.number() << errorValue.description();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << errorValue.number() << errorValue.description();
     setError(SugarJob::SoapError);
     setErrorText(errorValue.description());
     emitResult();

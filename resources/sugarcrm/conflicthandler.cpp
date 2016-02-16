@@ -22,7 +22,7 @@
 
 #include "conflicthandler.h"
 #include "conflictresolvedialog.h"
-
+#include "sugarcrmresource_debug.h"
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
 #include <AkonadiCore/ItemCreateJob>
@@ -121,7 +121,7 @@ void ConflictHandler::Private::resolve()
 
 void ConflictHandler::Private::createDuplicate(const Item &item)
 {
-    qDebug() << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
     Item duplicate(item);
     duplicate.setId(-1);
     duplicate.setRemoteId(QString());
@@ -144,7 +144,7 @@ void ConflictHandler::Private::duplicateLocalItemResult(KJob *job)
                    << "for conflict resolution failed on local create: "
                    << "error=" << createJob->error() << "message=" << createJob->errorText();
     } else {
-        qDebug() << "Duplicating local item" << item.id()
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Duplicating local item" << item.id()
                  << ", collection" << item.parentCollection().name()
                  << "for conflict resolution succeeded:";
     }

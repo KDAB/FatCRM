@@ -38,7 +38,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/EntityAnnotationsAttribute>
 using namespace Akonadi;
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 
 #include <QStringList>
 
@@ -78,21 +78,21 @@ public: // slots
 
 void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    //qDebug() << q << "error" << callResult.error().number();
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "error" << callResult.error().number();
     if (q->handleError(callResult.error())) {
         return;
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
-        qDebug() << "List Entries for" << mHandler->moduleName()
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "deletes";
         mPendingDeletedItems += items;
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
     } else {
         if (!mPendingDeletedItems.isEmpty()) {
-            qDebug() << "Resolving" << mPendingDeletedItems.count() << "deleted items";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Resolving" << mPendingDeletedItems.count() << "deleted items";
             // workaround for RID REMOVE not working in akonadiserver. Our deleted items need an ID.
             Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mPendingDeletedItems, q);
             job->setCollection(mCollection);
@@ -102,7 +102,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
             connect(job, SIGNAL(result(KJob*)),
                     q, SLOT(slotResolvedDeletedItems(KJob*)));
         } else {
-            qDebug() << "found 0 deleted items";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "found 0 deleted items";
             q->emitResult();
         }
     }
@@ -178,13 +178,13 @@ ListDeletedEntriesJob::ListDeletedEntriesJob(const Akonadi::Collection &collecti
     connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 ListDeletedEntriesJob::~ListDeletedEntriesJob()
 {
     delete d;
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 Collection ListDeletedEntriesJob::collection() const

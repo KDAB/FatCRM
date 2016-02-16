@@ -35,7 +35,7 @@ using namespace KDSoapGenerated;
 #include <AkonadiCore/Collection>
 
 #include <KLocalizedString>
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     : ModuleHandler(QStringLiteral("Opportunities"), session),
@@ -263,7 +263,7 @@ protected:
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
         if (opp.tempAccountName() == mAccountName) {
-            qDebug() << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
             opp.setAccountId(mAccountId);
             item.setPayload(opp);
             return true;
@@ -277,7 +277,7 @@ private:
 
 void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
 {
-    qDebug() << "Fixing opp to set account_id:" << accountName << accountId;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fixing opp to set account_id:" << accountName << accountId;
     OppAccountModifyJob *job = new OppAccountModifyJob(collection(), this);
     job->setAccountName(accountName);
     job->setAccountId(accountId);

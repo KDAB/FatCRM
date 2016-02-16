@@ -30,7 +30,7 @@ using namespace KDSoapGenerated;
 
 #include <AkonadiCore/Item>
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 #include <KLocalizedString>
 
 #include <QStringList>
@@ -89,7 +89,7 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     }
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
-    qDebug() << "remote=" << remoteItem.remoteRevision()
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
     bool hasConflict = false;
     if (mItem.remoteRevision().isEmpty()) {
@@ -144,7 +144,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    qDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 
     mStage = Private::GetRevision;
@@ -178,7 +178,7 @@ void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Get_en
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
     mItem.setRemoteRevision(remoteItem.remoteRevision());
-    qDebug() << "Got remote revision" << mItem.remoteRevision();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got remote revision" << mItem.remoteRevision();
 
     q->emitResult();
 }

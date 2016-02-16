@@ -21,6 +21,7 @@
 */
 
 #include "sugarcrmresource.h"
+#include "sugarcrmresource_debug.h"
 
 #include "accountshandler.h"
 #include "campaignshandler.h"
@@ -170,7 +171,7 @@ void SugarCRMResource::doSetOnline(bool online)
     // akonadiserver calls setOnline() multiple times with the same value...
     // let's only react to real changes here
     if (online != mOnline) {
-        qDebug() << online;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << online;
         mOnline = online;
         if (online) {
             if (Settings::host().isEmpty()) {
@@ -318,7 +319,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         const QString message = job->isUpdateJob()
                 ? i18nc("@info:status", "Updating contents of folder %1", collection.name())
                 : i18nc("@info:status", "Retrieving contents of folder %1", collection.name());
-        qDebug() << message;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
 
         connect(job, SIGNAL(totalItems(int)),
@@ -330,8 +331,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
-        qDebug() << "No module handler for collection" << collection;
-        qDebug() << mModuleHandlers->keys();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << mModuleHandlers->keys();
         itemsRetrieved(Item::List());
     }
 }
@@ -348,7 +349,7 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
     if (handler) {
         const QString message = i18nc("@info:status", "Retrieving entry from folder %1",
                                       collection.name());
-        qDebug() << message;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
 
         FetchEntryJob *job = new FetchEntryJob(item, mSession, this);
@@ -359,14 +360,14 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         job->start();
         return true;
     } else {
-        qDebug() << "No module handler for collection" << collection;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
         return false;
     }
 }
 
 void SugarCRMResource::startExplicitLogin()
 {
-    qDebug();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     Q_ASSERT(!mLoginJob); // didn't we kill it in doSetOnline(false) already?
     mLoginJob = new LoginJob(mSession, this);
     connect(mLoginJob, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
@@ -494,7 +495,7 @@ void SugarCRMResource::listEntriesResult(KJob *job)
         return;
     }
 
-    qDebug() << job;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job;
     if (job->error() != 0) {
         const QString message = job->errorText();
         qWarning() << "error=" << job->error() << ":" << message;
@@ -553,7 +554,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
     mCurrentJob = ldeJob;
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
     const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
-    qDebug() << message;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
     status(Running, message);
     ldeJob->start();
 }
@@ -744,7 +745,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             } else if (module == QLatin1String("Emails")) {
                 handler = new EmailsHandler(mSession);
             } else {
-                //qDebug() << "No module handler for" << module;
+                //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for" << module;
                 continue;
             }
 
@@ -768,10 +769,10 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
-    qDebug() << "job->error()=" << job->error();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error();
     switch (job->error()) {
     case SugarJob::LoginError:
-        qDebug() << "LoginError! Going to Broken state";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "LoginError! Going to Broken state";
         setOnline( false );
         emit status( Broken, job->errorText() );
         // if this is any other job than an explicit login, defer to next attempt
@@ -782,9 +783,9 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         }
         return true;
     case SugarJob::CouldNotConnectError: // transient error, try again later
-        qDebug() << job->errorString();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
         emit status( Idle, i18n( "Server is not available." ) );
-        qDebug() << "deferring task";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;
@@ -792,7 +793,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         if (job->errorString() == "You do not have access") // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
             return false;
         emit status( Idle, job->errorString() );
-        qDebug() << "deferring task";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;

@@ -38,7 +38,7 @@ using namespace KDSoapGenerated;
 
 using namespace Akonadi;
 
-#include <QDebug>
+#include "sugarcrmresource_debug.h"
 
 #include <QStringList>
 
@@ -84,7 +84,7 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
     }
 
     const int count = callResult.result_count();
-    qDebug() << q << "About to list" << count << "entries";
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "About to list" << count << "entries";
     emit q->totalItems( count );
     if (count == 0) {
         q->emitResult();
@@ -114,7 +114,7 @@ static const char s_contentsVersionKey[] = "contentsVersion";
 
 void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
 {
-    qDebug() << q << "stage" << mStage << "error" << callResult.error().number();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "stage" << mStage << "error" << callResult.error().number();
     if (q->handleError(callResult.error())) {
         return;
     }
@@ -126,7 +126,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
 
         if (mHandler->needsExtraInformation())
             mHandler->getExtraInformation(items);
-        qDebug() << "List Entries for" << mHandler->moduleName()
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "items.";
 
         if (mListScope.isUpdateScope()) {
@@ -139,7 +139,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
     } else {
-        qDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
         // Store timestamp into DB, to persist it across restarts
         // Add one second, so we don't get the same stuff all over again every time
@@ -198,13 +198,13 @@ ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSessi
             this,  SLOT(listEntriesError(KDSoapMessage)));
 
     d->mStage = Private::GetCount;
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 ListEntriesJob::~ListEntriesJob()
 {
     delete d;
-    //qDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 Collection ListEntriesJob::collection() const
@@ -264,7 +264,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
         const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();
         const int expected = handler->expectedContentsVersion();
         if (contentsVersion != expected) {
-            qDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
             return QString();
         }
 
@@ -272,7 +272,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
 
         // If we don't have enum definitions, go back a little to get some update
         if (!handler->hasEnumDefinitions()) {
-            qDebug() << handler->moduleName() << "no enum definitions, going back a bit to get something";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << handler->moduleName() << "no enum definitions, going back a bit to get something";
             KDCRMUtils::decrementTimeStamp(timeStamp);
         }
         return timeStamp;

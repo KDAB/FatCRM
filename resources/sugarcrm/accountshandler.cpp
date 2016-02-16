@@ -302,7 +302,7 @@ void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
         const SugarAccount account = item.payload<SugarAccount>();
         cache->addAccount(account.name(), account.id());
     }
-    //qDebug() << "Added" << items.count() << "items into cache for" << moduleName();
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Added" << items.count() << "items into cache for" << moduleName();
 }
 
 void AccountsHandler::slotUpdateJobResult(KJob *job)
