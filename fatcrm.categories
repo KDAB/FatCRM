@@ -1,1 +1,3 @@
 log_fatcrm_client fatcrm (client)
+log_fatcrm_sugarcrmresource fatcrm (sugar crm resource)
+log_fatcrm_salesforceresource fatcrm (sales force resource)
