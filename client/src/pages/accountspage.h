@@ -25,6 +25,8 @@
 
 #include "page.h"
 
+class AccountDataExtractor;
+
 class AccountsPage : public Page
 {
     Q_OBJECT
@@ -34,7 +36,11 @@ public:
     ~AccountsPage();
 
 protected:
-    /*reimp*/ QString reportTitle() const;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    QString reportTitle() const Q_DECL_OVERRIDE;
+
+private:
+    AccountDataExtractor *mDataExtractor;
 
 };
 #endif /* ACCOUNTSPAGE_H */

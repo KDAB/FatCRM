@@ -69,13 +69,12 @@ QString NotesHandler::orderByForListing() const
 
 QStringList NotesHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 QStringList NotesHandler::supportedCRMFields() const
 {
-    // No GUI, so this doesn't matter
-    return supportedSugarFields();
+    return mAccessors.keys();
 }
 
 bool NotesHandler::setEntry(const Akonadi::Item &item)
@@ -108,7 +107,7 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
         }
         const SugarNote::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((note.*getter)()));
 
         itemList << field;
@@ -138,7 +137,8 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
     SugarNote note;
     note.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const SugarNote::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const SugarNote::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
         if (accessIt == mAccessors.constEnd()) {
             // no accessor for field
             continue;

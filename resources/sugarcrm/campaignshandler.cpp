@@ -23,7 +23,6 @@
 #include "campaignshandler.h"
 
 #include "kdcrmdata/kdcrmutils.h"
-#include "kdcrmdata/sugarcampaign.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
@@ -33,27 +32,9 @@ using namespace KDSoapGenerated;
 
 #include <KLocalizedString>
 
-#include <QHash>
-
-typedef QString(SugarCampaign::*valueGetter)() const;
-typedef void (SugarCampaign::*valueSetter)(const QString &);
-
-class CampaignAccessorPair
-{
-public:
-    CampaignAccessorPair(valueGetter get, valueSetter set, const QString &name)
-        : getter(get), setter(set), diffName(name)
-    {}
-
-public:
-    valueGetter getter;
-    valueSetter setter;
-    const QString diffName;
-};
-
 CampaignsHandler::CampaignsHandler(SugarSession *session)
     : ModuleHandler(QStringLiteral("Campaigns"), session),
-      mAccessors(new CampaignAccessorHash)
+      mAccessors(new SugarCampaign::AccessorHash)
 {
     mAccessors->insert(QStringLiteral("id"),
                        new CampaignAccessorPair(&SugarCampaign::id, &SugarCampaign::setId, QString()));
@@ -132,8 +113,6 @@ CampaignsHandler::CampaignsHandler(SugarSession *session)
 
 CampaignsHandler::~CampaignsHandler()
 {
-    qDeleteAll(*mAccessors);
-    delete mAccessors;
 }
 
 Akonadi::Collection CampaignsHandler::handlerCollection() const
@@ -156,7 +135,7 @@ QString CampaignsHandler::orderByForListing() const
 
 QStringList CampaignsHandler::supportedSugarFields() const
 {
-    return mAccessors->keys();
+    return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)
@@ -180,16 +159,16 @@ bool CampaignsHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarCampaign campaign = item.payload<SugarCampaign>();
-    CampaignAccessorHash::const_iterator it    = mAccessors->constBegin();
-    CampaignAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
-        const valueGetter getter = (*it)->getter;
+        const SugarCampaign::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((campaign.*getter)()));
 
         itemList << field;
@@ -219,13 +198,14 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
     SugarCampaign campaign;
     campaign.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const CampaignAccessorHash::const_iterator accessIt = mAccessors->constFind(namedValue.name());
-        if (accessIt == mAccessors->constEnd()) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const SugarCampaign::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
+        if (accessIt == mAccessors.constEnd()) {
             // no accessor for field
             continue;
         }
 
-        (campaign.*(accessIt.value()->setter))(KDCRMUtils::decodeXML(namedValue.value()));
+        (campaign.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarCampaign>(campaign);
     item.setRemoteRevision(campaign.dateModified());
@@ -250,22 +230,22 @@ void CampaignsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         i18nc("@title:column", "Serverside Campaign: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    CampaignAccessorHash::const_iterator it    = mAccessors->constBegin();
-    CampaignAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
         }
 
-        const QString diffName = (*it)->diffName;
+        const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // TODO some fields like currency_id should be handled as special fields instead
             // i.e. currency string, dates formatted with KLocale
             continue;
         }
 
-        const valueGetter getter = (*it)->getter;
+        const SugarCampaign::valueGetter getter = (*it).getter;
         const QString leftValue = (leftCampaign.*getter)();
         const QString rightValue = (rightCampaign.*getter)();
 

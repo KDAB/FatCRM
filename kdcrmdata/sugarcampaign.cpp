@@ -23,6 +23,9 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
+#include <KLocale>
+
+#include <QHash>
 #include <QMap>
 #include <QSharedData>
 #include <QString>
@@ -33,42 +36,6 @@ public:
     Private()
         : mEmpty(true)
     {
-
-    }
-
-    Private(const Private &other)
-        : QSharedData(other)
-    {
-        mEmpty = other.mEmpty;
-
-        mId = other.mId;
-        mName = other.mName;
-        mDateEntered = other.mDateEntered;
-        mDateModified = other.mDateModified;
-        mModifiedUserId = other.mModifiedUserId;
-        mModifiedByName = other.mModifiedByName;
-        mCreatedBy = other.mCreatedBy;
-        mCreatedByName = other.mCreatedByName;
-        mDeleted = other.mDeleted;
-        mAssignedUserId = other.mAssignedUserId;
-        mAssignedUserName = other.mAssignedUserName;
-        mTrackerKey = other.mTrackerKey;
-        mTrackerCount = other.mTrackerCount;
-        mReferUrl = other.mReferUrl;
-        mTrackerText = other.mTrackerText;
-        mStartDate = other.mStartDate;
-        mEndDate = other.mEndDate;
-        mStatus = other.mStatus;
-        mImpressions = other.mImpressions;
-        mCurrencyId = other.mCurrencyId;
-        mBudget = other.mBudget;
-        mExpectedCost = other.mExpectedCost;
-        mActualCost = other.mActualCost;
-        mExpectedRevenue = other.mExpectedRevenue;
-        mCampaignType = other.mCampaignType;
-        mObjective = other.mObjective;
-        mContent = other.mContent;
-        mFrequency = other.mFrequency;
     }
 
     bool mEmpty;
@@ -124,101 +91,6 @@ SugarCampaign &SugarCampaign::operator=(const SugarCampaign &other)
     }
 
     return *this;
-}
-
-bool SugarCampaign::operator==(const SugarCampaign &other) const
-{
-    if (d->mId != other.d->mId) {
-        return false;
-    }
-    if (d->mName != other.d->mName) {
-        return false;
-    }
-    if (d->mDateEntered != other.d->mDateEntered) {
-        return false;
-    }
-    if (d->mDateModified != other.d->mDateModified) {
-        return false;
-    }
-    if (d->mModifiedUserId != other.d->mModifiedUserId) {
-        return false;
-    }
-    if (d->mModifiedByName != other.d->mModifiedByName) {
-        return false;
-    }
-    if (d->mCreatedBy != other.d->mCreatedBy) {
-        return false;
-    }
-    if (d->mCreatedByName != other.d->mCreatedByName) {
-        return false;
-    }
-    if (d->mDeleted != other.d->mDeleted) {
-        return false;
-    }
-    if (d->mAssignedUserId != other.d->mAssignedUserId) {
-        return false;
-    }
-    if (d->mAssignedUserName != other.d->mAssignedUserName) {
-        return false;
-    }
-    if (d->mTrackerKey != other.d->mTrackerKey) {
-        return false;
-    }
-    if (d->mTrackerCount != other.d->mTrackerCount) {
-        return false;
-    }
-    if (d->mReferUrl != other.d->mReferUrl) {
-        return false;
-    }
-    if (d->mTrackerText != other.d->mTrackerText) {
-        return false;
-    }
-    if (d->mStartDate != other.d->mStartDate) {
-        return false;
-    }
-    if (d->mEndDate != other.d->mEndDate) {
-        return false;
-    }
-    if (d->mStatus != other.d->mStatus) {
-        return false;
-    }
-    if (d->mImpressions != other.d->mImpressions) {
-        return false;
-    }
-    if (d->mCurrencyId != other.d->mCurrencyId) {
-        return false;
-    }
-    if (d->mBudget != other.d->mBudget) {
-        return false;
-    }
-    if (d->mExpectedCost != other.d->mExpectedCost) {
-        return false;
-    }
-    if (d->mActualCost != other.d->mActualCost) {
-        return false;
-    }
-    if (d->mExpectedRevenue != other.d->mExpectedRevenue) {
-        return false;
-    }
-    if (d->mCampaignType != other.d->mCampaignType) {
-        return false;
-    }
-    if (d->mObjective != other.d->mObjective) {
-        return false;
-    }
-    if (d->mContent != other.d->mContent) {
-        return false;
-    }
-    if (d->mFrequency != other.d->mFrequency) {
-        return false;
-    }
-
-    return true;
-}
-
-bool SugarCampaign::operator!=(const SugarCampaign &a) const
-{
-    return !(a == *this);
 }
 
 bool SugarCampaign::isEmpty() const
@@ -542,72 +414,129 @@ QString SugarCampaign::frequency() const
 void SugarCampaign::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
-    d->mId = data.value("id");
-    d->mName = data.value("name");
-    d->mDateEntered = data.value(KDCRMFields::dateEntered());
-    d->mDateModified = data.value(KDCRMFields::dateModified());
-    d->mModifiedUserId = data.value(KDCRMFields::modifiedUserId());
-    d->mModifiedByName = data.value(KDCRMFields::modifiedUserId());
-    d->mCreatedBy = data.value(KDCRMFields::createdBy());
-    d->mCreatedByName = data.value(KDCRMFields::createdByName());
-    d->mDeleted = data.value(KDCRMFields::deleted());
-    d->mAssignedUserId = data.value(KDCRMFields::assignedUserId());
-    d->mAssignedUserName = data.value(KDCRMFields::assignedUserName());
-    d->mTrackerKey = data.value("trackerKey");
-    d->mTrackerCount = data.value("trackerCount");
-    d->mReferUrl = data.value("referUrl");
-    d->mTrackerText = data.value("trackerText");
-    d->mStartDate = data.value("startDate");
-    d->mEndDate = data.value("endDate");
-    d->mStatus = data.value(KDCRMFields::status());
-    d->mImpressions = data.value("impressions");
-    d->mCurrencyId = data.value(KDCRMFields::currencyId());
-    d->mBudget = data.value("budget");
-    d->mExpectedCost = data.value("expectedCost");
-    d->mActualCost = data.value("actualCost");
-    d->mExpectedRevenue = data.value("expectedRevenue");
-    d->mCampaignType = data.value(KDCRMFields::campaignType());
-    d->mObjective = data.value("objective");
-    d->mContent = data.value(KDCRMFields::content());
-    d->mFrequency = data.value("frequency");
 
+    const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
+    QMap<QString, QString>::const_iterator it = data.constBegin();
+    for ( ; it != data.constEnd() ; ++it) {
+        const SugarCampaign::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+        if (accessIt != accessors.constEnd()) {
+            (this->*(accessIt.value().setter))(it.value());
+        } else {
+            //TODO: add custom field support
+            // d->mCustomFields.insert(it.key(), it.value());
+        }
+    }
 }
 
 QMap<QString, QString> SugarCampaign::data()
 {
     QMap<QString, QString> data;
-    data["id"] = d->mId;
-    data["name"] = d->mName;
-    data[KDCRMFields::dateEntered()] = d->mDateEntered;
-    data[KDCRMFields::dateModified()] = d->mDateModified;
-    data[KDCRMFields::modifiedUserId()] = d->mModifiedUserId;
-    data[KDCRMFields::modifiedByName()] = d->mModifiedByName;
-    data[KDCRMFields::createdBy()] = d->mCreatedBy;
-    data[KDCRMFields::createdByName()] = d->mCreatedByName;
-    data[KDCRMFields::deleted()] = d->mDeleted;
-    data[KDCRMFields::assignedUserId()] = d->mAssignedUserId;
-    data[KDCRMFields::assignedUserName()] = d->mAssignedUserName;
-    data["trackerKey"] = d->mTrackerKey;
-    data["trackerCount"] = d->mTrackerCount;
-    data["referUrl"] = d->mReferUrl;
-    data["trackerText"] = d->mTrackerText;
-    data["startDate"] = d->mStartDate;
-    data["endDate"] = d->mEndDate;
-    data[KDCRMFields::status()] = d->mStatus;
-    data["impressions"] = d->mImpressions;
-    data[KDCRMFields::currencyId()] = d->mCurrencyId;
-    data["budget"] = d->mBudget;
-    data["expectedCost"] = d->mExpectedCost;
-    data["actualCost"] = d->mActualCost;
-    data["expectedRevenue"] = d->mExpectedRevenue;
-    data[KDCRMFields::campaignType()] = d->mCampaignType;
-    data["objective"] = d->mObjective;
-    data[KDCRMFields::content()] = d->mContent;
-    data["frequency"] = d->mFrequency;
+
+    const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
+    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
+    for (; it != endIt; ++it) {
+        const SugarCampaign::valueGetter getter = (*it).getter;
+        data.insert(it.key(), (this->*getter)());
+    }
+
+/*TODO: add custom field support
+    // plus custom fields
+    QMap<QString, QString>::const_iterator cit = d->mCustomFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = d->mCustomFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        data.insert(cit.key(), cit.value());
+    }
+*/
+
     return data;
 }
 
 QString SugarCampaign::mimeType()
 {
     return QStringLiteral("application/x-vnd.kdab.crm.campaign");
+}
+
+Q_GLOBAL_STATIC(SugarCampaign::AccessorHash, s_accessors)
+
+SugarCampaign::AccessorHash SugarCampaign::accessorHash()
+{
+    AccessorHash &accessors = *s_accessors();
+    if (accessors.isEmpty()) {
+        accessors.insert(KDCRMFields::id(),
+                         CampaignAccessorPair(&SugarCampaign::id, &SugarCampaign::setId, QString()));
+        accessors.insert(KDCRMFields::name(),
+                         CampaignAccessorPair(&SugarCampaign::name, &SugarCampaign::setName,
+                                              i18nc("@item:intable campaign name", "Name")));
+        accessors.insert(KDCRMFields::dateEntered(),
+                         CampaignAccessorPair(&SugarCampaign::dateEntered, &SugarCampaign::setDateEntered, QString()));
+        accessors.insert(KDCRMFields::dateModified(),
+                         CampaignAccessorPair(&SugarCampaign::dateModified, &SugarCampaign::setDateModified, QString()));
+        accessors.insert(KDCRMFields::modifiedUserId(),
+                         CampaignAccessorPair(&SugarCampaign::modifiedUserId, &SugarCampaign::setModifiedUserId, QString()));
+        accessors.insert(KDCRMFields::modifiedByName(),
+                         CampaignAccessorPair(&SugarCampaign::modifiedByName, &SugarCampaign::setModifiedByName, QString()));
+        accessors.insert(KDCRMFields::createdBy(),
+                         CampaignAccessorPair(&SugarCampaign::createdBy, &SugarCampaign::setCreatedBy, QString()));
+        accessors.insert(KDCRMFields::createdByName(),
+                         CampaignAccessorPair(&SugarCampaign::createdByName, &SugarCampaign::setCreatedByName, QString()));
+        accessors.insert(KDCRMFields::deleted(),
+                         CampaignAccessorPair(&SugarCampaign::deleted, &SugarCampaign::setDeleted, QString()));
+        accessors.insert(KDCRMFields::assignedUserId(),
+                         CampaignAccessorPair(&SugarCampaign::assignedUserId, &SugarCampaign::setAssignedUserId, QString()));
+        accessors.insert(KDCRMFields::assignedUserName(),
+                         CampaignAccessorPair(&SugarCampaign::assignedUserName, &SugarCampaign::setAssignedUserName,
+                                              i18nc("@item:intable", "Assigned To")));
+        accessors.insert(KDCRMFields::trackerKey(),
+                         CampaignAccessorPair(&SugarCampaign::trackerKey, &SugarCampaign::setTrackerKey, QString()));
+        accessors.insert(KDCRMFields::trackerCount(),
+                         CampaignAccessorPair(&SugarCampaign::trackerCount, &SugarCampaign::setTrackerCount, QString()));
+        accessors.insert(KDCRMFields::referUrl(),
+                         CampaignAccessorPair(&SugarCampaign::referUrl, &SugarCampaign::setReferUrl,
+                                              i18nc("@item:intable", "Referer URL")));
+        accessors.insert(KDCRMFields::trackerText(),
+                         CampaignAccessorPair(&SugarCampaign::trackerText, &SugarCampaign::setTrackerText,
+                                              i18nc("@item:intable", "Tracker")));
+        accessors.insert(KDCRMFields::startDate(),
+                         CampaignAccessorPair(&SugarCampaign::startDate, &SugarCampaign::setStartDate,
+                                              i18nc("@item:intable", "Start Date")));
+        accessors.insert(KDCRMFields::endDate(),
+                         CampaignAccessorPair(&SugarCampaign::endDate, &SugarCampaign::setEndDate,
+                                              i18nc("@item:intable", "End Date")));
+        accessors.insert(KDCRMFields::status(),
+                         CampaignAccessorPair(&SugarCampaign::status, &SugarCampaign::setStatus,
+                                              i18nc("@item:intable", "Status")));
+        accessors.insert(KDCRMFields::impressions(),
+                         CampaignAccessorPair(&SugarCampaign::impressions, &SugarCampaign::setImpressions,
+                                              i18nc("@item:intable", "Impressions")));
+        accessors.insert(KDCRMFields::currencyId(),
+                         CampaignAccessorPair(&SugarCampaign::currencyId, &SugarCampaign::setCurrencyId,
+                                             i18nc("@item:intable", "Currency")));
+        accessors.insert(KDCRMFields::budget(),
+                         CampaignAccessorPair(&SugarCampaign::budget, &SugarCampaign::setBudget,
+                                              i18nc("@item:intable", "Budget")));
+        accessors.insert(KDCRMFields::expectedCost(),
+                         CampaignAccessorPair(&SugarCampaign::expectedCost, &SugarCampaign::setExpectedCost,
+                                              i18nc("@item:intable", "Expected Costs")));
+        accessors.insert(KDCRMFields::actualCost(),
+                         CampaignAccessorPair(&SugarCampaign::actualCost, &SugarCampaign::setActualCost,
+                                              i18nc("@item:intable", "Actual Costs")));
+        accessors.insert(KDCRMFields::expectedRevenue(),
+                         CampaignAccessorPair(&SugarCampaign::expectedRevenue, &SugarCampaign::setExpectedRevenue,
+                                              i18nc("@item:intable", "Expected Revenue")));
+        accessors.insert(KDCRMFields::campaignType(),
+                         CampaignAccessorPair(&SugarCampaign::campaignType, &SugarCampaign::setCampaignType,
+                                              i18nc("@item:intable", "Type")));
+        accessors.insert(KDCRMFields::objective(),
+                         CampaignAccessorPair(&SugarCampaign::objective, &SugarCampaign::setObjective,
+                                              i18nc("@item:intable", "Objective")));
+        accessors.insert(KDCRMFields::content(),
+                         CampaignAccessorPair(&SugarCampaign::content, &SugarCampaign::setContent,
+                                              i18nc("@item:intable", "Content")));
+        accessors.insert(KDCRMFields::frequency(),
+                         CampaignAccessorPair(&SugarCampaign::frequency, &SugarCampaign::setFrequency,
+                                              i18nc("@item:intable", "Frequency")));
+    }
+
+    return accessors;
 }

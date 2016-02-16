@@ -23,6 +23,7 @@
 #include "leaddetails.h"
 
 #include "editcalendarbutton.h"
+#include "leaddataextractor.h"
 #include "ui_leaddetails.h"
 #include "referenceddatamodel.h"
 #include "kdcrmutils.h"
@@ -33,16 +34,56 @@
 #include <QDialog>
 
 LeadDetails::LeadDetails(QWidget *parent)
-    : Details(Lead, parent), mUi(new Ui::LeadDetails)
+    : Details(Lead, parent), mUi(new Ui::LeadDetails), mDataExtractor(new LeadDataExtractor(this))
 
 {
     mUi->setupUi(this);
+
+    mUi->status->setObjectName(KDCRMFields::status());
+    mUi->statusDescription->setObjectName(KDCRMFields::statusDescription());
+    mUi->opportunityAmount->setObjectName(KDCRMFields::opportunityAmount());
+    mUi->phone_work->setObjectName(KDCRMFields::phoneWork());
+    mUi->phone_mobile->setObjectName(KDCRMFields::phoneMobile());
+    mUi->phone_home->setObjectName(KDCRMFields::phoneHome());
+    mUi->phone_other->setObjectName(KDCRMFields::phoneOther());
+    mUi->phone_fax->setObjectName(KDCRMFields::phoneFax());
+    mUi->do_not_call->setObjectName(KDCRMFields::doNotCall());
+    mUi->email1->setObjectName(KDCRMFields::email1());
+    mUi->email2->setObjectName(KDCRMFields::email2());
+    mUi->primaryAddressStreet->setObjectName(KDCRMFields::primaryAddressStreet());
+    mUi->primaryAddressCity->setObjectName(KDCRMFields::primaryAddressCity());
+    mUi->primaryAddressState->setObjectName(KDCRMFields::primaryAddressState());
+    mUi->primaryAddressPostalcode->setObjectName(KDCRMFields::primaryAddressPostalcode());
+    mUi->primaryAddressCountry->setObjectName(KDCRMFields::primaryAddressCountry());
+    mUi->altAddressStreet->setObjectName(KDCRMFields::altAddressStreet());
+    mUi->altAddressCity->setObjectName(KDCRMFields::altAddressCity());
+    mUi->altAddressState->setObjectName(KDCRMFields::altAddressState());
+    mUi->altAddressPostalcode->setObjectName(KDCRMFields::altAddressPostalcode());
+    mUi->altAddressCountry->setObjectName(KDCRMFields::altAddressCountry());
+    mUi->lead_source->setObjectName(KDCRMFields::leadSource());
+    mUi->leadSourceDescription->setObjectName(KDCRMFields::leadSourceDescription());
+    mUi->campaign_id->setObjectName(KDCRMFields::campaignId());
+    mUi->referredBy->setObjectName(KDCRMFields::referedBy());
+    mUi->salutation->setObjectName(KDCRMFields::salutation());
+    mUi->first_name->setObjectName(KDCRMFields::firstName());
+    mUi->last_name->setObjectName(KDCRMFields::lastName());
+    mUi->birthdate->setObjectName(KDCRMFields::birthdate());
+    mUi->account_id->setObjectName(KDCRMFields::accountId());
+    mUi->title->setObjectName(KDCRMFields::title());
+    mUi->department->setObjectName(KDCRMFields::department());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+
     initialize();
 }
 
 LeadDetails::~LeadDetails()
 {
     delete mUi;
+}
+
+ItemDataExtractor *LeadDetails::itemDataExtractor() const
+{
+    return mDataExtractor;
 }
 
 void LeadDetails::initialize()
@@ -55,11 +96,6 @@ void LeadDetails::initialize()
     connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthDate()));
-}
-
-QUrl LeadDetails::itemUrl() const
-{
-    return QUrl();
 }
 
 void LeadDetails::slotSetBirthDate()

@@ -23,9 +23,9 @@
 #include "opportunitiespage.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "opportunitydataextractor.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
-#include "detailswidget.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -56,7 +56,7 @@ public:
 };
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
-    : Page(parent, SugarOpportunity::mimeType(), Opportunity)
+    : Page(parent, SugarOpportunity::mimeType(), Opportunity), mDataExtractor(new OpportunityDataExtractor(this))
 {
     treeView()->setItemDelegate(new OpportunityTreeViewItemDelegate(this));
     mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
@@ -79,11 +79,6 @@ void OpportunitiesPage::setupModel()
     treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }
 
-QString OpportunitiesPage::reportTitle() const
-{
-    return i18n("List of Opportunities");
-}
-
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 {
     QMap<QString, QString> initialData;
@@ -92,4 +87,14 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     initialData.insert(KDCRMFields::dateClosed(), KDCRMUtils::dateToString(QDate::currentDate().addMonths(12)));
     initialData.insert(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
     return initialData;
+}
+
+QString OpportunitiesPage::reportTitle() const
+{
+    return i18n("List of Opportunities");
+}
+
+ItemDataExtractor *OpportunitiesPage::itemDataExtractor() const
+{
+    return mDataExtractor;
 }

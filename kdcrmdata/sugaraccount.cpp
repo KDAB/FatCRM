@@ -21,6 +21,7 @@
 */
 
 #include "sugaraccount.h"
+#include "kdcrmfields.h"
 #include "kdcrmutils.h"
 
 #include <KLocalizedString>
@@ -227,136 +228,6 @@ QString SugarAccount::postalCodeForGui() const
     const QString postalCode = billingPostalcode.isEmpty() ? d->mShippingAddressPostalcode : billingPostalcode;
     return postalCode.trimmed();
 }
-
-#if 0
-bool SugarAccount::operator==(const SugarAccount &other) const
-{
-    if (d->mId != other.d->mId) {
-        return false;
-    }
-    if (d->mName !=  other.d->mName) {
-        return false;
-    }
-    if (d->mDateEntered != other.d->mDateEntered) {
-        return false;
-    }
-    if (d->mDateModified != other.d->mDateModified) {
-        return false;
-    }
-    if (d->mModifiedUserId != other.d->mModifiedUserId) {
-        return false;
-    }
-    if (d->mModifiedByName != other.d->mModifiedByName) {
-        return false;
-    }
-    if (d->mCreatedBy != other.d->mCreatedBy) {
-        return false;
-    }
-    if (d->mCreatedByName != other.d->mCreatedByName) {
-        return false;
-    }
-    if (d->mDescription != other.d->mDescription) {
-        return false;
-    }
-    if (d->mDeleted != other.d->mDeleted) {
-        return false;
-    }
-    if (d->mAssignedUserId != other.d->mAssignedUserId) {
-        return false;
-    }
-    if (d->mAssignedUserName != other.d->mAssignedUserName) {
-        return false;
-    }
-    if (d->mAccountType != other.d->mAccountType) {
-        return false;
-    }
-    if (d->mIndustry != other.d->mIndustry) {
-        return false;
-    }
-    if (d->mAnnualRevenue != other.d->mAnnualRevenue) {
-        return false;
-    }
-    if (d->mPhoneFax != other.d->mPhoneFax) {
-        return false;
-    }
-    if (d->mBillingAddressStreet != other.d->mBillingAddressStreet) {
-        return false;
-    }
-    if (d->mBillingAddressCity != other.d->mBillingAddressCity) {
-        return false;
-    }
-    if (d->mBillingAddressState != other.d->mBillingAddressState) {
-        return false;
-    }
-    if (d->mBillingAddressPostalcode != other.d->mBillingAddressPostalcode) {
-        return false;
-    }
-    if (d->mBillingAddressCountry != other.d->mBillingAddressCountry) {
-        return false;
-    }
-    if (d->mRating != other.d->mRating) {
-        return false;
-    }
-    if (d->mPhoneOffice != other.d->mPhoneOffice) {
-        return false;
-    }
-    if (d->mPhoneAlternate != other.d->mPhoneAlternate) {
-        return false;
-    }
-    if (d->mWebsite != other.d->mWebsite) {
-        return false;
-    }
-    if (d->mOwnership != other.d->mOwnership) {
-        return false;
-    }
-    if (d->mEmployees != other.d->mEmployees) {
-        return false;
-    }
-    if (d->mTickerSymbol != other.d->mTickerSymbol) {
-        return false;
-    }
-    if (d->mShippingAddressStreet != other.d->mShippingAddressStreet) {
-        return false;
-    }
-    if (d->mShippingAddressCity != other.d->mShippingAddressCity) {
-        return false;
-    }
-    if (d->mShippingAddressState != other.d->mShippingAddressState) {
-        return false;
-    }
-    if (d->mShippingAddressPostalcode != other.d->mShippingAddressPostalcode) {
-        return false;
-    }
-    if (d->mShippingAddressCountry != other.d->mShippingAddressCountry) {
-        return false;
-    }
-    if (d->mEmail1 != other.d->mEmail1) {
-        return false;
-    }
-    if (d->mParentId != other.d->mParentId) {
-        return false;
-    }
-    if (d->mParentName != other.d->mParentName) {
-        return false;
-    }
-    if (d->mSicCode != other.d->mSicCode) {
-        return false;
-    }
-    if (d->mCampaignId != other.d->mCampaignId) {
-        return false;
-    }
-    if (d->mCampaignName != other.d->mCampaignName) {
-        return false;
-    }
-
-    return true;
-}
-
-bool SugarAccount::operator!=(const SugarAccount &a) const
-{
-    return !(a == *this);
-}
-#endif
 
 bool SugarAccount::isEmpty() const
 {
@@ -872,102 +743,103 @@ SugarAccount::AccessorHash SugarAccount::accessorHash()
 {
     AccessorHash &accessors = *s_accessors();
     if (accessors.isEmpty()) {
-        accessors.insert(QLatin1String("id"),
+        accessors.insert(KDCRMFields::id(),
                           AccountAccessorPair(&SugarAccount::id, &SugarAccount::setId, QString()));
-        accessors.insert(QLatin1String("name"),
+        accessors.insert(KDCRMFields::name(),
                           AccountAccessorPair(&SugarAccount::name, &SugarAccount::setName,
                                             i18nc("@item:intable account name", "Name")));
-        accessors.insert(QLatin1String("date_entered"),
+        accessors.insert(KDCRMFields::dateEntered(),
                           AccountAccessorPair(&SugarAccount::dateEntered, &SugarAccount::setDateEntered, QString()));
-        accessors.insert(QLatin1String("date_modified"),
+        accessors.insert(KDCRMFields::dateModified(),
                           AccountAccessorPair(&SugarAccount::dateModified, &SugarAccount::setDateModified, QString()));
-        accessors.insert(QLatin1String("modified_user_id"),
+        accessors.insert(KDCRMFields::modifiedUserId(),
                           AccountAccessorPair(&SugarAccount::modifiedUserId, &SugarAccount::setModifiedUserId, QString()));
-        accessors.insert(QLatin1String("modified_by_name"),
+        accessors.insert(KDCRMFields::modifiedByName(),
                           AccountAccessorPair(&SugarAccount::modifiedByName, &SugarAccount::setModifiedByName, QString()));
-        accessors.insert(QLatin1String("created_by"),
+        accessors.insert(KDCRMFields::createdBy(),
                           AccountAccessorPair(&SugarAccount::createdBy, &SugarAccount::setCreatedBy, QString()));
-        accessors.insert(QLatin1String("created_by_name"),
+        accessors.insert(KDCRMFields::createdByName(),
                           AccountAccessorPair(&SugarAccount::createdByName, &SugarAccount::setCreatedByName, QString()));
-        accessors.insert(QLatin1String("description"),
+        accessors.insert(KDCRMFields::description(),
                           AccountAccessorPair(&SugarAccount::description, &SugarAccount::setDescription,
                                             i18nc("@item:intable", "Description")));
-        accessors.insert(QLatin1String("deleted"),
+        accessors.insert(KDCRMFields::deleted(),
                           AccountAccessorPair(&SugarAccount::deleted, &SugarAccount::setDeleted, QString()));
-        accessors.insert(QLatin1String("assigned_user_id"),
+        accessors.insert(KDCRMFields::assignedUserId(),
                           AccountAccessorPair(&SugarAccount::assignedUserId, &SugarAccount::setAssignedUserId, QString()));
-        accessors.insert(QLatin1String("assigned_user_name"),
+        accessors.insert(KDCRMFields::assignedUserName(),
                           AccountAccessorPair(&SugarAccount::assignedUserName, &SugarAccount::setAssignedUserName,
                                             i18nc("@item:intable", "Assigned To")));
-        accessors.insert(QLatin1String("account_type"),
+        accessors.insert(KDCRMFields::accountType(),
                           AccountAccessorPair(&SugarAccount::accountType, &SugarAccount::setAccountType,
                                             i18nc("@item:intable", "Type")));
-        accessors.insert(QLatin1String("industry"),
+        accessors.insert(KDCRMFields::industry(),
                           AccountAccessorPair(&SugarAccount::industry, &SugarAccount::setIndustry,
                                             i18nc("@item:intable", "Industry")));
-        accessors.insert(QLatin1String("annual_revenue"),
+        accessors.insert(KDCRMFields::annualRevenue(),
                           AccountAccessorPair(&SugarAccount::annualRevenue, &SugarAccount::setAnnualRevenue,
                                             i18nc("@item:intable", "Annual Revenue")));
-        accessors.insert(QLatin1String("phone_fax"),
+        accessors.insert(KDCRMFields::phoneFax(),
                           AccountAccessorPair(&SugarAccount::phoneFax, &SugarAccount::setPhoneFax,
                                             i18nc("@item:intable", "Fax")));
-        accessors.insert(QLatin1String("billing_address_street"),
+        accessors.insert(KDCRMFields::billingAddressStreet(),
                           AccountAccessorPair(&SugarAccount::billingAddressStreet, &SugarAccount::setBillingAddressStreet, QString()));
-        accessors.insert(QLatin1String("billing_address_city"),
+        accessors.insert(KDCRMFields::billingAddressCity(),
                           AccountAccessorPair(&SugarAccount::billingAddressCity, &SugarAccount::setBillingAddressCity, QString()));
-        accessors.insert(QLatin1String("billing_address_state"),
+        accessors.insert(KDCRMFields::billingAddressState(),
                           AccountAccessorPair(&SugarAccount::billingAddressState, &SugarAccount::setBillingAddressState, QString()));
-        accessors.insert(QLatin1String("billing_address_postalcode"),
+        accessors.insert(KDCRMFields::billingAddressPostalcode(),
                           AccountAccessorPair(&SugarAccount::billingAddressPostalcode, &SugarAccount::setBillingAddressPostalcode, QString()));
-        accessors.insert(QLatin1String("billing_address_country"),
+        accessors.insert(KDCRMFields::billingAddressCountry(),
                           AccountAccessorPair(&SugarAccount::billingAddressCountry, &SugarAccount::setBillingAddressCountry, QString()));
-        accessors.insert(QLatin1String("rating"),
+        accessors.insert(KDCRMFields::rating(),
                           AccountAccessorPair(&SugarAccount::rating, &SugarAccount::setRating,
                                             i18nc("@item:intable", "Rating")));
-        accessors.insert(QLatin1String("phone_office"),
+        accessors.insert(KDCRMFields::accountPhoneWork(),
                           AccountAccessorPair(&SugarAccount::phoneOffice, &SugarAccount::setPhoneOffice,
                                             i18nc("@item:intable", "Phone (Office)")));
-        accessors.insert(QLatin1String("phone_alternate"),
+        accessors.insert(KDCRMFields::accountPhoneOther(),
                           AccountAccessorPair(&SugarAccount::phoneAlternate, &SugarAccount::setPhoneAlternate,
                                             i18nc("@item:intable", "Phone (Other)")));
-        accessors.insert(QLatin1String("website"),
+        accessors.insert(KDCRMFields::website(),
                           AccountAccessorPair(&SugarAccount::website, &SugarAccount::setWebsite,
                                             i18nc("@item:intable", "Website")));
-        accessors.insert(QLatin1String("ownership"),
+        accessors.insert(KDCRMFields::ownership(),
                           AccountAccessorPair(&SugarAccount::ownership, &SugarAccount::setOwnership,
                                             i18nc("@item:intable", "Ownership")));
-        accessors.insert(QLatin1String("employees"),
+        accessors.insert(KDCRMFields::employees(),
                           AccountAccessorPair(&SugarAccount::employees, &SugarAccount::setEmployees,
                                             i18nc("@item:intable", "Employees")));
-        accessors.insert(QLatin1String("ticker_symbol"),
+        accessors.insert(KDCRMFields::tickerSymbol(),
                           AccountAccessorPair(&SugarAccount::tickerSymbol, &SugarAccount::setTickerSymbol,
                                             i18nc("@item:intable", "Ticker Symbol")));
-        accessors.insert(QLatin1String("shipping_address_street"),
+        accessors.insert(KDCRMFields::shippingAddressStreet(),
                           AccountAccessorPair(&SugarAccount::shippingAddressStreet, &SugarAccount::setShippingAddressStreet, QString()));
-        accessors.insert(QLatin1String("shipping_address_city"),
+        accessors.insert(KDCRMFields::shippingAddressCity(),
                           AccountAccessorPair(&SugarAccount::shippingAddressCity, &SugarAccount::setShippingAddressCity, QString()));
-        accessors.insert(QLatin1String("shipping_address_state"),
+        accessors.insert(KDCRMFields::shippingAddressState(),
                           AccountAccessorPair(&SugarAccount::shippingAddressState, &SugarAccount::setShippingAddressState, QString()));
-        accessors.insert(QLatin1String("shipping_address_postalcode"),
+        accessors.insert(KDCRMFields::shippingAddressPostalcode(),
                           AccountAccessorPair(&SugarAccount::shippingAddressPostalcode, &SugarAccount::setShippingAddressPostalcode, QString()));
-        accessors.insert(QLatin1String("shipping_address_country"),
+        accessors.insert(KDCRMFields::shippingAddressCountry(),
                           AccountAccessorPair(&SugarAccount::shippingAddressCountry, &SugarAccount::setShippingAddressCountry, QString()));
-        accessors.insert(QLatin1String("email1"),
+        accessors.insert(KDCRMFields::email1(),
                           AccountAccessorPair(&SugarAccount::email1, &SugarAccount::setEmail1,
                                             i18nc("@item:intable", "Primary Email")));
-        accessors.insert(QLatin1String("parent_id"),
+        accessors.insert(KDCRMFields::parentId(),
                           AccountAccessorPair(&SugarAccount::parentId, &SugarAccount::setParentId, QString()));
-        accessors.insert(QLatin1String("parent_name"),
+        accessors.insert(KDCRMFields::parentName(),
                           AccountAccessorPair(&SugarAccount::parentName, &SugarAccount::setParentName,
                                             i18nc("@item:intable", "Member Of")));
-        accessors.insert(QLatin1String("sic_code"),
+        accessors.insert(KDCRMFields::sicCode(),
                           AccountAccessorPair(&SugarAccount::sicCode, &SugarAccount::setSicCode,
                                             i18nc("@item:intable", "SIC Code")));
-        accessors.insert(QLatin1String("campaign_id"),
+        accessors.insert(KDCRMFields::campaignId(),
                           AccountAccessorPair(&SugarAccount::campaignId, &SugarAccount::setCampaignId, QString()));
-        accessors.insert(QLatin1String("campaign_name"),
+        accessors.insert(KDCRMFields::campaignName(),
                           AccountAccessorPair(&SugarAccount::campaignName, &SugarAccount::setCampaignName,
                                             i18nc("@item:intable", "Campaign")));
     }
+
     return accessors;
 }

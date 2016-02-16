@@ -23,9 +23,9 @@
 #ifndef CONTACTSIMPORTER_H
 #define CONTACTSIMPORTER_H
 
+#include "contactsset.h"
 #include "kdcrmdata/sugaraccount.h"
 #include "fatcrmprivate_export.h"
-#include <KContacts/Addressee>
 
 #include <QVector>
 
@@ -36,13 +36,10 @@ public:
 
     bool importFile(const QString &fileName);
 
-    QVector<KContacts::Addressee> contacts() const;
-    QVector<SugarAccount> accounts() const;
+    QVector<ContactsSet> contacts() const;
 
 private:
-    QVector<KContacts::Addressee> mAddressees;
-    QVector<SugarAccount> mAccounts;
-
+    QVector<ContactsSet> mContacts;
 };
 
 #endif // CONTACTSIMPORTER_H

@@ -63,22 +63,6 @@ public:
     SugarNote &operator=(const SugarNote &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarNote are equal,
-              otherwise false
-    */
-    bool operator==(const SugarNote &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarNote are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarNote &) const;
-
-    /**
       Return, if the SugarNote entry is empty.
      */
     bool isEmpty() const;

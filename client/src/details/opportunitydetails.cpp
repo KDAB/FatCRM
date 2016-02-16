@@ -23,9 +23,13 @@
 #include "opportunitydetails.h"
 
 #include "ui_opportunitydetails.h"
+#include "enums.h"
+#include "modelrepository.h"
 #include "notesdialog.h"
 #include "notesrepository.h"
+#include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
+#include "selectitemdialog.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -37,7 +41,7 @@
 #include <QCalendarWidget>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails)
+    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
 {
     mUi->setupUi(this);
 
@@ -45,6 +49,19 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);
     mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
+
+    mUi->name->setObjectName(KDCRMFields::name());
+    mUi->account_id->setObjectName(KDCRMFields::accountId());
+    mUi->opportunity_type->setObjectName(KDCRMFields::opportunityType());
+    mUi->lead_source->setObjectName(KDCRMFields::leadSource());
+    mUi->date_closed->setObjectName(KDCRMFields::dateClosed());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->amount->setObjectName(KDCRMFields::amount());
+    mUi->next_step->setObjectName(KDCRMFields::nextStep());
+    mUi->next_call_date->setObjectName(KDCRMFields::nextCallDate());
+    mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
+    mUi->probability->setObjectName(KDCRMFields::probability());
+
     initialize();
 }
 
@@ -57,19 +74,15 @@ void OpportunityDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
+    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
 }
 
-QUrl OpportunityDetails::itemUrl() const
+ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
 {
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Opportunities&record=" + id();
-        return QUrl(url);
-    }
-    return QUrl();
+    return mDataExtractor;
 }
 
 void OpportunityDetails::slotAutoNextStepDate()
@@ -119,7 +132,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
 
-    const QUrl url = itemUrl();
+    const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
     else
@@ -155,4 +168,21 @@ void OpportunityDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
     emit openObject(Account, accountId);
+}
+
+void OpportunityDetails::slotSelectAccount()
+{
+    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    dlg->setModel(ModelRepository::instance()->model(Account));
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    dlg->show();
+}
+
+void OpportunityDetails::slotAccountSelected(const QString &accountId)
+{
+    const int idx = mUi->account_id->findData(accountId);
+    if (idx > -1) {
+        mUi->account_id->setCurrentIndex(idx);
+    }
 }

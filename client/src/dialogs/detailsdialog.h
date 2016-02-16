@@ -23,7 +23,9 @@
 #ifndef DETAILSDIALOG_H
 #define DETAILSDIALOG_H
 
-#include <QDialog>
+#include <QWidget>
+
+#include "enums.h"
 
 namespace Akonadi
 {
@@ -44,6 +46,9 @@ public:
 
     void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection);
     bool isModified() const;
+    Details *details();
+
+    static Details *createDetailsForType(DetailsType type);
 
     Akonadi::Item item() const;
 
@@ -53,7 +58,7 @@ public Q_SLOTS:
     void setOnline(bool online);
 
 Q_SIGNALS:
-    void itemSaved(const Akonadi::Item &item);
+    void itemSaved();
     void closing();
 
 protected:

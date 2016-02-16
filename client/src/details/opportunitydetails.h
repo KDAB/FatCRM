@@ -29,7 +29,9 @@ namespace Ui
 {
 class OpportunityDetails;
 }
+
 class NotesRepository;
+class OpportunityDataExtractor;
 
 class OpportunityDetails : public Details
 {
@@ -40,11 +42,13 @@ public:
     ~OpportunityDetails();
 
     void setNotesRepository(NotesRepository *notesRepo) Q_DECL_OVERRIDE { mNotesRepository = notesRepo; }
-    QUrl itemUrl() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotAutoNextStepDate();
     void slotSalesStageActivated(const QString &stage);
+    void slotSelectAccount();
+    void slotAccountSelected(const QString &accountId);
 
     void on_viewNotesButton_clicked();
     void on_buttonOpenAccount_clicked();
@@ -58,6 +62,7 @@ private:
 private:
     Ui::OpportunityDetails *mUi;
     NotesRepository *mNotesRepository;
+    OpportunityDataExtractor *mDataExtractor;
 };
 
 #endif /* OPPORTUNITYDETAILS_H */

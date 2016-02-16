@@ -417,3 +417,242 @@ QString KDCRMFields::opportunityRoleFields()
     return QStringLiteral("opportunityRoleFields");
 }
 
+QString KDCRMFields::accountDescription()
+{
+    return QLatin1String("account_description");
+}
+
+QString KDCRMFields::accounting()
+{
+    return QLatin1String("accounting");
+}
+
+QString KDCRMFields::accountPhoneOther()
+{
+    return QLatin1String("phone_alternate");
+}
+
+QString KDCRMFields::accountPhoneWork()
+{
+    return QLatin1String("phone_office");
+}
+
+QString KDCRMFields::actualCost()
+{
+    return QLatin1String("actual_cost");
+}
+
+QString KDCRMFields::annualRevenue()
+{
+    return QLatin1String("annual_revenue");
+}
+
+QString KDCRMFields::budget()
+{
+    return QLatin1String("budget");
+}
+
+QString KDCRMFields::ccAddrsNames()
+{
+    return QLatin1String("cc_addrs_names");
+}
+
+QString KDCRMFields::contactName()
+{
+    return QLatin1String("contact_name");
+}
+
+QString KDCRMFields::converted()
+{
+    return QLatin1String("converted");
+}
+
+QString KDCRMFields::dateDue()
+{
+    return QLatin1String("date_due");
+}
+
+QString KDCRMFields::dateDueFlag()
+{
+    return QLatin1String("date_due_flag");
+}
+
+QString KDCRMFields::dateSent()
+{
+    return QLatin1String("date_sent");
+}
+
+QString KDCRMFields::dateStart()
+{
+    return QLatin1String("date_start");
+}
+
+QString KDCRMFields::dateStartFlag()
+{
+    return QLatin1String("date_start_flag");
+}
+
+QString KDCRMFields::employees()
+{
+    return QLatin1String("employees");
+}
+
+QString KDCRMFields::endDate()
+{
+    return QLatin1String("end_date");
+}
+
+QString KDCRMFields::expectedCost()
+{
+    return QLatin1String("expected_cost");
+}
+
+QString KDCRMFields::expectedRevenue()
+{
+    return QLatin1String("expected_revenue");
+}
+
+QString KDCRMFields::fileMimeType()
+{
+    return QLatin1String("file_mime_type");
+}
+
+QString KDCRMFields::fileName()
+{
+    return QLatin1String("filename");
+}
+
+QString KDCRMFields::frequency()
+{
+    return QLatin1String("frequency");
+}
+
+QString KDCRMFields::fromAddrName()
+{
+    return QLatin1String("from_addr_name");
+}
+
+QString KDCRMFields::impressions()
+{
+    return QLatin1String("impressions");
+}
+
+QString KDCRMFields::leadSourceDescription()
+{
+    return QLatin1String("lead_source_description");
+}
+
+QString KDCRMFields::messageId()
+{
+    return QLatin1String("message_id");
+}
+
+QString KDCRMFields::objective()
+{
+    return QLatin1String("objective");
+}
+
+QString KDCRMFields::opportunityAmount()
+{
+    return QLatin1String("opportunity_amount");
+}
+
+QString KDCRMFields::opportunityId()
+{
+    return QLatin1String("opportunity_id");
+}
+
+QString KDCRMFields::opportunityName()
+{
+    return QLatin1String("opportunity_name");
+}
+
+QString KDCRMFields::ownership()
+{
+    return QLatin1String("ownership");
+}
+
+QString KDCRMFields::parentType()
+{
+    return QLatin1String("parent_type");
+}
+
+QString KDCRMFields::portalApp()
+{
+    return QLatin1String("portal_app");
+}
+
+QString KDCRMFields::portalName()
+{
+    return QLatin1String("portal_name");
+}
+
+QString KDCRMFields::priority()
+{
+    return QLatin1String("priority");
+}
+
+QString KDCRMFields::rating()
+{
+    return QLatin1String("rating");
+}
+
+QString KDCRMFields::referedBy()
+{
+    return QLatin1String("refered_by");
+}
+
+QString KDCRMFields::referUrl()
+{
+    return QLatin1String("refer_url");
+}
+
+QString KDCRMFields::sicCode()
+{
+    return QLatin1String("sic_code");
+}
+
+QString KDCRMFields::startDate()
+{
+    return QLatin1String("start_date");
+}
+
+QString KDCRMFields::statusDescription()
+{
+    return QLatin1String("status_description");
+}
+
+QString KDCRMFields::trackerCount()
+{
+    return QLatin1String("tracker_count");
+}
+
+QString KDCRMFields::trackerKey()
+{
+    return QLatin1String("tracker_key");
+}
+
+QString KDCRMFields::trackerText()
+{
+    return QLatin1String("tracker_text");
+}
+
+QString KDCRMFields::toAddrsNames()
+{
+    return QLatin1String("to_addrs_names");
+}
+
+QString KDCRMFields::vatNo()
+{
+    return QLatin1String("vat_no");
+}
+
+QString KDCRMFields::vismaId()
+{
+    return QLatin1String("visma_id");
+}
+
+QString KDCRMFields::website()
+{
+    return QLatin1String("website");
+}

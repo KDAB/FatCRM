@@ -92,9 +92,20 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
         }
         const SugarOpportunity::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
 
+        itemList << field;
+    }
+
+    // plus custom fields
+    const QMap<QString, QString> customFields = opp.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(customSugarFieldFromCrmField(cit.key()));
+        field.setValue(KDCRMUtils::encodeXML(cit.value()));
         itemList << field;
     }
 
@@ -108,7 +119,9 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 int OpportunitiesHandler::expectedContentsVersion() const
 {
     // version 1 = account_name is resolved to account_id upon loading
-    return 1;
+    // version 2 = changed custom fields storage names
+    // version 3 = fix list of supported crm fields
+    return 3;
 }
 
 QString OpportunitiesHandler::orderByForListing() const
@@ -118,17 +131,12 @@ QString OpportunitiesHandler::orderByForListing() const
 
 QStringList OpportunitiesHandler::supportedSugarFields() const
 {
-    return mAccessors.keys();
+    return availableFields();
 }
 
 QStringList OpportunitiesHandler::supportedCRMFields() const
 {
-    // SugarAccountIO uses the Sugar field names, so it matches
-    // One exception: custom fields.
-    // TODO: support them generically like in Accounts.
-    QStringList lst = mAccessors.keys();
-    lst.replaceInStrings("next_call_date_c", KDCRMFields::nextCallDate());
-    return lst;
+    return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::accountId();
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -148,15 +156,16 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     SugarOpportunity opportunity;
     opportunity.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        //qDebug() << namedValue.name() << "=" << namedValue.value();
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
         if (accessIt == mAccessors.constEnd()) {
-            qDebug() << "skipping field" << namedValue.name();
-            // no accessor for field
+            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
+            opportunity.setCustomField(customCrmFieldName, value);
             continue;
         }
 
-        (opportunity.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
+        (opportunity.*(accessIt.value().setter))(value);
     }
 
     if (opportunity.accountId().isEmpty()) {

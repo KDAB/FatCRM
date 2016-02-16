@@ -22,6 +22,7 @@
 
 #include "campaigndetails.h"
 
+#include "campaigndataextractor.h"
 #include "editcalendarbutton.h"
 #include "ui_campaigndetails.h"
 #include "referenceddatamodel.h"
@@ -33,16 +34,33 @@
 #include <QDialog>
 
 CampaignDetails::CampaignDetails(QWidget *parent)
-    : Details(Campaign, parent), mUi(new Ui::CampaignDetails)
+    : Details(Campaign, parent), mUi(new Ui::CampaignDetails), mDataExtractor(new CampaignDataExtractor(this))
 
 {
     mUi->setupUi(this);
+
+    mUi->name->setObjectName(KDCRMFields::name());
+    mUi->status->setObjectName(KDCRMFields::status());
+    mUi->startDate->setObjectName(KDCRMFields::startDate());
+    mUi->endDate->setObjectName(KDCRMFields::endDate());
+    mUi->campaign_type->setObjectName(KDCRMFields::campaignType());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->impressions->setObjectName(KDCRMFields::impressions());
+    mUi->expectedCost->setObjectName(KDCRMFields::expectedCost());
+    mUi->actualCost->setObjectName(KDCRMFields::actualCost());
+    mUi->objective->setObjectName(KDCRMFields::objective());
+
     initialize();
 }
 
 CampaignDetails::~CampaignDetails()
 {
     delete mUi;
+}
+
+ItemDataExtractor *CampaignDetails::itemDataExtractor() const
+{
+    return mDataExtractor;
 }
 
 void CampaignDetails::initialize()
@@ -55,11 +73,6 @@ void CampaignDetails::initialize()
             this, SLOT(slotSetEndDate()));
 
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
-}
-
-QUrl CampaignDetails::itemUrl() const
-{
-    return QUrl();
 }
 
 void CampaignDetails::slotSetStartDate()

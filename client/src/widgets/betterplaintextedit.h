@@ -44,6 +44,9 @@ signals:
 private Q_SLOTS:
     void slotDocumentSizeChanged();
 
+private:
+    QSize widgetSizeForTextSize(const QSize &size) const;
+
 };
 
 #endif // BETTERPLAINTEXTEDIT_H

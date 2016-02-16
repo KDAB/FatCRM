@@ -28,28 +28,40 @@ set(app_SRCS
   models/itemstreemodel.cpp
   models/opportunityfilterproxymodel.cpp
   models/referenceddatamodel.cpp
-  details/detailswidget.cpp
   details/details.cpp
   details/accountdetails.cpp
   details/campaigndetails.cpp
   details/contactdetails.cpp
   details/leaddetails.cpp
   details/opportunitydetails.cpp
-  dialogs/accountimportdialog.cpp
+  dialogs/accountimportpage.cpp
+  dialogs/contactsimportpage.cpp
+  dialogs/contactsimportwizard.cpp
   dialogs/configurationdialog.cpp
   dialogs/detailsdialog.cpp
   dialogs/editlistdialog.cpp
+  dialogs/fatcrminputdialog.cpp
   dialogs/notesdialog.cpp
   dialogs/resourceconfigdialog.cpp
+  dialogs/selectitemdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
+  utilities/accountdataextractor.cpp
   utilities/accountrepository.cpp
+  utilities/campaigndataextractor.cpp
   utilities/collectionmanager.cpp
+  utilities/contactdataextractor.cpp
   utilities/contactsimporter.cpp
+  utilities/dbusinvokerinterface.cpp
   utilities/dbuswinidprovider.cpp
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp
+  utilities/itemdataextractor.cpp
+  utilities/kjobprogresstracker.cpp
+  utilities/leaddataextractor.cpp
+  utilities/modelrepository.cpp
   utilities/notesrepository.cpp
+  utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp
   utilities/referenceddata.cpp
@@ -66,14 +78,15 @@ ki18n_wrap_ui(app_SRCS
   details/accountdetails.ui
   details/campaigndetails.ui
   details/contactdetails.ui
-  details/detailswidget.ui
   details/leaddetails.ui
   details/opportunitydetails.ui
-  dialogs/accountimportdialog.ui
+  dialogs/accountimportpage.ui
   dialogs/configurationdialog.ui
+  dialogs/contactsimportpage.ui
   dialogs/detailsdialog.ui
   dialogs/notesdialog.ui
   dialogs/resourceconfigdialog.ui
+  dialogs/selectitemdialog.ui
 )
 
 #qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")

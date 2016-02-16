@@ -113,6 +113,55 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString cAcceptStatusFields();
     KDCRMDATA_EXPORT QString mAcceptStatusFields();
     KDCRMDATA_EXPORT QString opportunityRoleFields();
+
+    KDCRMDATA_EXPORT QString accountDescription();
+    KDCRMDATA_EXPORT QString accounting();
+    KDCRMDATA_EXPORT QString accountPhoneOther();
+    KDCRMDATA_EXPORT QString accountPhoneWork();
+    KDCRMDATA_EXPORT QString actualCost();
+    KDCRMDATA_EXPORT QString annualRevenue();
+    KDCRMDATA_EXPORT QString budget();
+    KDCRMDATA_EXPORT QString ccAddrsNames();
+    KDCRMDATA_EXPORT QString contactName();
+    KDCRMDATA_EXPORT QString converted();
+    KDCRMDATA_EXPORT QString dateDue();
+    KDCRMDATA_EXPORT QString dateDueFlag();
+    KDCRMDATA_EXPORT QString dateSent();
+    KDCRMDATA_EXPORT QString dateStart();
+    KDCRMDATA_EXPORT QString dateStartFlag();
+    KDCRMDATA_EXPORT QString employees();
+    KDCRMDATA_EXPORT QString endDate();
+    KDCRMDATA_EXPORT QString expectedCost();
+    KDCRMDATA_EXPORT QString expectedRevenue();
+    KDCRMDATA_EXPORT QString fileMimeType();
+    KDCRMDATA_EXPORT QString fileName();
+    KDCRMDATA_EXPORT QString frequency();
+    KDCRMDATA_EXPORT QString fromAddrName();
+    KDCRMDATA_EXPORT QString impressions();
+    KDCRMDATA_EXPORT QString leadSourceDescription();
+    KDCRMDATA_EXPORT QString messageId();
+    KDCRMDATA_EXPORT QString objective();
+    KDCRMDATA_EXPORT QString opportunityAmount();
+    KDCRMDATA_EXPORT QString opportunityId();
+    KDCRMDATA_EXPORT QString opportunityName();
+    KDCRMDATA_EXPORT QString ownership();
+    KDCRMDATA_EXPORT QString parentType();
+    KDCRMDATA_EXPORT QString portalApp();
+    KDCRMDATA_EXPORT QString portalName();
+    KDCRMDATA_EXPORT QString priority();
+    KDCRMDATA_EXPORT QString rating();
+    KDCRMDATA_EXPORT QString referedBy();
+    KDCRMDATA_EXPORT QString referUrl();
+    KDCRMDATA_EXPORT QString sicCode();
+    KDCRMDATA_EXPORT QString startDate();
+    KDCRMDATA_EXPORT QString statusDescription();
+    KDCRMDATA_EXPORT QString trackerCount();
+    KDCRMDATA_EXPORT QString trackerKey();
+    KDCRMDATA_EXPORT QString trackerText();
+    KDCRMDATA_EXPORT QString toAddrsNames();
+    KDCRMDATA_EXPORT QString vatNo();
+    KDCRMDATA_EXPORT QString vismaId();
+    KDCRMDATA_EXPORT QString website();
 }
 
 #endif // KDCRMFIELDS_H

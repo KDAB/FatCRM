@@ -63,22 +63,6 @@ public:
     SugarCampaign &operator=(const SugarCampaign &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarCampaign are equal,
-              otherwise false
-    */
-    bool operator==(const SugarCampaign &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarCampaign are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarCampaign &) const;
-
-    /**
       Return, if the SugarCampaign entry is empty.
      */
     bool isEmpty() const;
@@ -354,6 +338,26 @@ public:
        Return the Mime type
      */
     static QString mimeType();
+
+    typedef QString(SugarCampaign::*valueGetter)() const;
+    typedef void (SugarCampaign::*valueSetter)(const QString &);
+
+    class CampaignAccessorPair
+    {
+    public:
+        CampaignAccessorPair(valueGetter get, valueSetter set, const QString &name)
+            : getter(get), setter(set), diffName(name)
+        {}
+
+    public:
+        valueGetter getter;
+        valueSetter setter;
+        QString diffName;
+    };
+
+    typedef QHash<QString, CampaignAccessorPair> AccessorHash;
+
+    static AccessorHash accessorHash();
 
 private:
     class Private;

@@ -35,6 +35,8 @@ namespace Ui
 class ContactDetails;
 }
 
+class ContactDataExtractor;
+
 class ContactDetails : public Details
 {
     Q_OBJECT
@@ -43,7 +45,7 @@ public:
 
     ~ContactDetails();
 
-    QUrl itemUrl() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private:
     Ui::ContactDetails *mUi;
@@ -61,6 +63,11 @@ private Q_SLOTS:
     void slotClearDate();
     void slotAccountActivated();
     void on_buttonOpenAccount_clicked();
+    void slotSelectAccount();
+    void slotAccountSelected(const QString &accountId);
+
+private:
+    ContactDataExtractor *mDataExtractor;
 };
 
 #endif /* CONTACTDETAILS_H */

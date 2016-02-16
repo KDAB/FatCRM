@@ -71,17 +71,17 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
     Q_ASSERT(xml.isStartElement() && xml.name() == "sugarOpportunity");
 
     while (xml.readNextStartElement()) {
-
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = accessors.constFind(xml.name().toString());
+        const QString key = xml.name().toString();
+        const QString value = xml.readElementText();
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = accessors.constFind(key);
         if (accessIt != accessors.constEnd()) {
-            (opportunity.*(accessIt.value().setter))(xml.readElementText());
+            (opportunity.*(accessIt.value().setter))(value);
         } else {
-            // compat code, fixing previous mistake
-            if (xml.name() == "nextCallDate") {
-                opportunity.setNextCallDateRaw(xml.readElementText());
+            if (key == "nextCallDate") {
+                // compat code, fixing previous mistake
+                opportunity.setCustomField(KDCRMFields::nextCallDate(), value);
             } else {
-                qDebug() << "Unexpected XML field in opportunity" << xml.name();
-                xml.skipCurrentElement();
+                opportunity.setCustomField(key, value);
             }
         }
     }
@@ -106,6 +106,14 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     for (; it != endIt; ++it) {
         const SugarOpportunity::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (opportunity.*getter)());
+    }
+
+    // plus custom fields
+    QMap<QString, QString> customFields = opportunity.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        writer.writeTextElement(cit.key(), cit.value());
     }
 
     writer.writeEndDocument();

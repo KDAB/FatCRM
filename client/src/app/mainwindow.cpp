@@ -22,12 +22,13 @@
 
 #include "mainwindow.h"
 
-#include "accountimportdialog.h"
 #include "accountrepository.h"
 #include "clientsettings.h"
 #include "collectionmanager.h"
 #include "configurationdialog.h"
 #include "contactsimporter.h"
+#include "contactsimportwizard.h"
+#include "dbusinvokerinterface.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "config-fatcrm-version.h"
@@ -64,11 +65,12 @@ using namespace Akonadi;
 
 MainWindow::MainWindow()
     : QMainWindow(),
-      mShowDetails(0),
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
-      mNotesRepository(new NotesRepository(this))
+      mNotesRepository(new NotesRepository(this)),
+      mContactsModel(0),
+      mInitialLoadingDone(false)
 {
     mUi.setupUi(this);
     initialize();
@@ -82,7 +84,10 @@ MainWindow::MainWindow()
 
     (void)new DBusWinIdProvider(this);
 
-     ClientSettings::self()->restoreWindowSize("main", this);
+    DBusInvokerInterface *iface = new DBusInvokerInterface(this);
+    connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
+
+    ClientSettings::self()->restoreWindowSize("main", this);
 }
 
 MainWindow::~MainWindow()
@@ -99,9 +104,6 @@ void MainWindow::slotDelayedInit()
                 page, SLOT(slotResourceSelectionChanged(QByteArray)));
         connect(this, SIGNAL(onlineStatusChanged(bool)),
                 page, SLOT(slotOnlineStatusChanged(bool)));
-
-        connect(page, SIGNAL(ignoreModifications(bool)),
-                this, SLOT(slotIgnoreModifications(bool)));
     }
 
     // initialize additional UI
@@ -190,11 +192,6 @@ void MainWindow::createActions()
     mResourceSelectorAction = mMainToolBar->addWidget(mResourceSelector);
     mMainToolBar->addAction(mUi.actionSynchronize);
 
-    mShowDetails = new QCheckBox(i18n("Show Details"));
-    // A checkbox in a toolbar looks weird; and there are menu items for this already
-    //mMainToolBar->addWidget(mShowDetails);
-    //connect(mShowDetails, SIGNAL(toggled(bool)), SLOT(slotShowDetails(bool)));
-
     mMainToolBar->addAction(printAction);
 }
 
@@ -216,9 +213,6 @@ void MainWindow::setupActions()
 
     connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
 
-    // NOT FINISHED YET
-    mUi.actionImportContacts->setVisible(false);
-
     connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
 
     Q_FOREACH (const Page *page, mPages) {
@@ -226,8 +220,6 @@ void MainWindow::setupActions()
                 this, SLOT(slotShowMessage(QString)));
         connect(page, SIGNAL(modelLoaded(DetailsType)),
                 this, SLOT(slotModelLoaded(DetailsType)));
-        connect(page, SIGNAL(showDetailsChanged(bool)),
-                this, SLOT(slotPageShowDetailsChanged()));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)),
                 this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
         connect(page, SIGNAL(openObject(DetailsType,QString)),
@@ -348,9 +340,6 @@ void MainWindow::slotModelLoaded(DetailsType type)
     case Contact:
         slotShowMessage(i18n("(4/5) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
-        Q_FOREACH (Page *page, mPages) {
-            page->initialLoadingDone(); // select correct item in newly filled combos
-        }
         mNotesRepository->loadNotes();
         break;
     case Lead:
@@ -370,8 +359,17 @@ void MainWindow::slotNotesLoaded(int count)
 void MainWindow::slotEmailsLoaded(int count)
 {
     Q_UNUSED(count);
+    initialLoadingDone();
+}
+
+void MainWindow::initialLoadingDone()
+{
+    mInitialLoadingDone = true;
+
     mNotesRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
+
+    processPendingImports();
 }
 
 void MainWindow::createTabs()
@@ -379,13 +377,11 @@ void MainWindow::createTabs()
     mAccountPage = new AccountsPage(this);
     mPages << mAccountPage;
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
-    mViewMenu->addAction(mAccountPage->showDetailsAction(i18n("&Account Details")));
 
     Page *page = new OpportunitiesPage(this);
     page->setNotesRepository(mNotesRepository);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Opportunity Details")));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
@@ -393,28 +389,24 @@ void MainWindow::createTabs()
     page = new LeadsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Leads"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Lead Details")));
 #endif
 
-    page = new ContactsPage(this);
-    mPages << page;
-    mUi.tabWidget->addTab(page, i18n("&Contacts"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("&Contact Details")));
+    mContactsPage = new ContactsPage(this);
+    mPages << mContactsPage;
+    mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
+
+    connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new CampaignsPage(this);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Campaigns"));
-    mViewMenu->addAction(page->showDetailsAction(i18n("C&ampaign Details")));
 #endif
-
-    connect(mUi.tabWidget, SIGNAL(currentChanged(int)), SLOT(slotCurrentTabChanged(int)));
 
     mReportPage = new ReportPage(this);
     mUi.tabWidget->addTab(mReportPage, i18n("&Reports"));
 
     //set Opportunities page as current
-    mShowDetails->setChecked(mPages[ 1 ]->showsDetails());
     mUi.tabWidget->setCurrentIndex(1);
 }
 
@@ -455,15 +447,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     Q_FOREACH (Page *page, mPages) {
         if(!page->queryClose()) {
             return;
-        }
-        if (page->hasModifications()) {
-            if (QMessageBox::No == QMessageBox::question(this, i18n("Close?"),
-                                                          i18n("The current page has modifications, are you sure you want to exit without saving?"),
-                                                          QMessageBox::Yes|QMessageBox::No))
-            {
-                mUi.tabWidget->setCurrentWidget(page);
-                return;
-            }
         }
     }
 
@@ -534,43 +517,11 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
     }
 }
 
-void MainWindow::slotShowDetails(bool on)
-{
-    mPages[ mUi.tabWidget->currentIndex() ]->showDetails(on);
-}
-
-void MainWindow::slotPageShowDetailsChanged()
-{
-    Page *page = currentPage();
-    if (page) {
-        mShowDetails->setChecked(page->showsDetails());
-    }
-}
-
-void MainWindow::slotCurrentTabChanged(int index)
-{
-    if (index < mPages.count()) {
-        mShowDetails->setChecked(mPages[ index ]->showsDetails());
-    }
-}
-
 void MainWindow::slotImportContacts()
 {
     const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), "*.csv");
     if (!csvFile.isEmpty()) {
-        ContactsImporter importer;
-        if (importer.importFile(csvFile)) {
-            const QVector<SugarAccount> accounts = importer.accounts();
-            // non modal so that we can use FatCRM to search for accounts/contacts.
-            AccountImportDialog *importDialog = new AccountImportDialog(this);
-            importDialog->setAccountCollection(mAccountPage->collection());
-            importDialog->setImportedAccounts(accounts);
-            importDialog->setAttribute(Qt::WA_DeleteOnClose);
-            importDialog->show();
-        } else {
-            QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
-                                 i18n("Error importing %1", csvFile));
-        }
+        slotImportCsvFile(csvFile);
     }
 }
 
@@ -614,16 +565,14 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
 
 }
 
-void MainWindow::slotIgnoreModifications(bool ignore)
-{
-    foreach(Page *page, mPages) {
-        page->setModificationsIgnored(ignore);
-    }
-}
-
 void MainWindow::slotOppModelCreated(ItemsTreeModel *model)
 {
     mReportPage->setOppModel(model);
+}
+
+void MainWindow::slotContactsModelCreated(ItemsTreeModel *model)
+{
+    mContactsModel = model;
 }
 
 void MainWindow::slotOpenObject(DetailsType type, const QString &id)
@@ -639,6 +588,32 @@ void MainWindow::slotClearTimestampResult(KJob *job)
     mClearTimestampJobs.removeAll(job);
     if (mClearTimestampJobs.isEmpty()) {
         slotSynchronize();
+    }
+}
+
+void MainWindow::slotTryImportCsvFile(const QString &filePath)
+{
+    if (mInitialLoadingDone)
+        slotImportCsvFile(filePath);
+    else
+        mPendingImportPaths.append(filePath);
+}
+
+void MainWindow::slotImportCsvFile(const QString &filePath)
+{
+    ContactsImporter importer;
+    if (importer.importFile(filePath)) {
+        const QVector<ContactsSet> contacts = importer.contacts();
+        // non modal so that we can use FatCRM to search for accounts/contacts.
+        ContactsImportWizard *importWizard = new ContactsImportWizard(this);
+        importWizard->setAccountCollection(mAccountPage->collection());
+        importWizard->setContactsCollection(mContactsPage->collection());
+        importWizard->setImportedContacts(contacts);
+        importWizard->setContactsModel(mContactsModel);
+        importWizard->show();
+    } else {
+        QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
+                             i18n("Error importing %1", filePath));
     }
 }
 
@@ -679,5 +654,13 @@ Page *MainWindow::pageForType(DetailsType type) const
         }
     }
     return 0;
+}
+
+void MainWindow::processPendingImports()
+{
+    foreach (const QString &filePath, mPendingImportPaths)
+        slotImportCsvFile(filePath);
+
+    mPendingImportPaths.clear();
 }
 

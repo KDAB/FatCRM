@@ -21,6 +21,7 @@
 */
 
 #include "contactspage.h"
+#include "contactdataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
@@ -30,7 +31,7 @@
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, QString(KContacts::Addressee::mimeType()), Contact)
+    : Page(parent, QString(KContacts::Addressee::mimeType()), Contact), mDataExtractor(new ContactDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Contact, this));
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -43,4 +44,9 @@ ContactsPage::~ContactsPage()
 QString ContactsPage::reportTitle() const
 {
     return i18n("List of Contacts");
+}
+
+ItemDataExtractor *ContactsPage::itemDataExtractor() const
+{
+    return mDataExtractor;
 }

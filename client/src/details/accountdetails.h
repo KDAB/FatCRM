@@ -30,6 +30,8 @@ namespace Ui
 class AccountDetails;
 }
 
+class AccountDataExtractor;
+
 class AccountDetails : public Details
 {
     Q_OBJECT
@@ -38,8 +40,7 @@ public:
 
     ~AccountDetails();
 
-    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    QUrl itemUrl() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private:
     Ui::AccountDetails *mUi;
@@ -49,6 +50,7 @@ private:
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    AccountDataExtractor *mDataExtractor;
 };
 
 #endif /* ACCOUNTDETAILS_H */

@@ -35,38 +35,9 @@ public:
     Private()
         : mEmpty(true)
     {
-
-    }
-
-    Private(const Private &other)
-        : QSharedData(other)
-    {
-        mEmpty = other.mEmpty;
-
-        mId = other.mId;
-        mName = other.mName;
-        mDateEntered = other.mDateEntered;
-        mDateModified = other.mDateModified;
-        mModifiedUserId = other.mModifiedUserId;
-        mModifiedByName = other.mModifiedByName;
-        mCreatedBy = other.mCreatedBy;
-        mCreatedByName = other.mCreatedByName;
-        mDeleted = other.mDeleted;
-        mAssignedUserId = other.mAssignedUserId;
-        mAssignedUserName = other.mAssignedUserName;
-
-        mDateSent = other.mDateSent;
-        mMessageId = other.mMessageId;
-        mParentType = other.mParentType;
-        mParentId = other.mParentId;
-        mFromAddrName = other.mFromAddrName;
-        mToAddrNAmes = other.mToAddrNAmes;
-        mCcAddrNames = other.mCcAddrNames;
-        mDescription = other.mDescription;
     }
 
     bool mEmpty;
-
 
     QString mId;
     QString mName;
@@ -112,73 +83,6 @@ SugarEmail &SugarEmail::operator=(const SugarEmail &other)
     }
 
     return *this;
-}
-
-bool SugarEmail::operator==(const SugarEmail &other) const
-{
-    if (d->mId != other.d->mId) {
-        return false;
-    }
-    if (d->mName != other.d->mName) {
-        return false;
-    }
-    if (d->mDateEntered != other.d->mDateEntered) {
-        return false;
-    }
-    if (d->mDateModified != other.d->mDateModified) {
-        return false;
-    }
-    if (d->mModifiedUserId != other.d->mModifiedUserId) {
-        return false;
-    }
-    if (d->mModifiedByName != other.d->mModifiedByName) {
-        return false;
-    }
-    if (d->mCreatedBy != other.d->mCreatedBy) {
-        return false;
-    }
-    if (d->mCreatedByName != other.d->mCreatedByName) {
-        return false;
-    }
-    if (d->mDeleted != other.d->mDeleted) {
-        return false;
-    }
-    if (d->mAssignedUserId != other.d->mAssignedUserId) {
-        return false;
-    }
-    if (d->mAssignedUserName != other.d->mAssignedUserName) {
-        return false;
-    }
-    if (d->mDateSent != other.d->mDateSent) {
-        return false;
-    }
-    if (d->mMessageId != other.d->mMessageId) {
-        return false;
-    }
-    if (d->mParentType != other.d->mParentType) {
-        return false;
-    }
-    if (d->mParentId != other.d->mParentId) {
-        return false;
-    }
-    if (d->mFromAddrName != other.d->mFromAddrName) {
-        return false;
-    }
-    if (d->mToAddrNAmes != other.d->mToAddrNAmes) {
-        return false;
-    }
-    if (d->mCcAddrNames != other.d->mCcAddrNames) {
-        return false;
-    }
-    if (d->mDescription != other.d->mDescription) {
-        return false;
-    }
-    return true;
-}
-
-bool SugarEmail::operator!=(const SugarEmail &a) const
-{
-    return !(a == *this);
 }
 
 bool SugarEmail::isEmpty() const
@@ -509,49 +413,49 @@ KDCRMFields::deleted() = "0"
 "parent_type" = "Opportunities"
 "parent_id" = "75443306-18e2-634a-ed06-54f5a41ccd00"
 */
-        accessors.insert(QStringLiteral("id"),
+        accessors.insert(KDCRMFields::id(),
                          EmailAccessorPair(&SugarEmail::id, &SugarEmail::setId, QString()));
-        accessors.insert(QStringLiteral("name"),
+        accessors.insert(KDCRMFields::name(),
                          EmailAccessorPair(&SugarEmail::name, &SugarEmail::setName,
                                           i18nc("@item:intable email name", "Name")));
-        accessors.insert(QStringLiteral("date_entered"),
+        accessors.insert(KDCRMFields::dateEntered(),
                          EmailAccessorPair(&SugarEmail::dateEntered, &SugarEmail::setDateEntered, QString()));
-        accessors.insert(QStringLiteral("date_modified"),
+        accessors.insert(KDCRMFields::dateModified(),
                          EmailAccessorPair(&SugarEmail::dateModified, &SugarEmail::setDateModified, QString()));
-        accessors.insert(QStringLiteral("modified_user_id"),
+        accessors.insert(KDCRMFields::modifiedUserId(),
                          EmailAccessorPair(&SugarEmail::modifiedUserId, &SugarEmail::setModifiedUserId, QString()));
-        accessors.insert(QStringLiteral("modified_by_name"),
+        accessors.insert(KDCRMFields::modifiedByName(),
                          EmailAccessorPair(&SugarEmail::modifiedByName, &SugarEmail::setModifiedByName, QString()));
-        accessors.insert(QStringLiteral("created_by"),
+        accessors.insert(KDCRMFields::createdBy(),
                          EmailAccessorPair(&SugarEmail::createdBy, &SugarEmail::setCreatedBy, QString()));
-        accessors.insert(QStringLiteral("created_by_name"),
+        accessors.insert(KDCRMFields::createdByName(),
                          EmailAccessorPair(&SugarEmail::createdByName, &SugarEmail::setCreatedByName, QString()));
-        accessors.insert(QStringLiteral("deleted"),
+        accessors.insert(KDCRMFields::deleted(),
                          EmailAccessorPair(&SugarEmail::deleted, &SugarEmail::setDeleted, QString()));
-        accessors.insert(QStringLiteral("assigned_user_id"),
+        accessors.insert(KDCRMFields::assignedUserId(),
                          EmailAccessorPair(&SugarEmail::assignedUserId, &SugarEmail::setAssignedUserId, QString()));
-        accessors.insert(QStringLiteral("assigned_user_name"),
+        accessors.insert(KDCRMFields::assignedUserName(),
                          EmailAccessorPair(&SugarEmail::assignedUserName, &SugarEmail::setAssignedUserName,
                                           i18nc("@item:intable", "Assigned To")));
 
-        accessors.insert(QStringLiteral("date_sent"),
+        accessors.insert(KDCRMFields::dateSent(),
                          EmailAccessorPair(&SugarEmail::dateSent, &SugarEmail::setDateSent, QString()));
-        accessors.insert(QStringLiteral("message_id"),
+        accessors.insert(KDCRMFields::messageId(),
                          EmailAccessorPair(&SugarEmail::messageId, &SugarEmail::setMessageId, QString()));
-        accessors.insert(QStringLiteral("parent_type"),
+        accessors.insert(KDCRMFields::parentType(),
                          EmailAccessorPair(&SugarEmail::parentType, &SugarEmail::setParentType, QString()));
-        accessors.insert(QStringLiteral("parent_id"),
+        accessors.insert(KDCRMFields::parentId(),
                          EmailAccessorPair(&SugarEmail::parentId, &SugarEmail::setParentId, QString()));
-        accessors.insert(QStringLiteral("from_addr_name"),
+        accessors.insert(KDCRMFields::fromAddrName(),
                          EmailAccessorPair(&SugarEmail::fromAddrName, &SugarEmail::setFromAddrName, QString()));
-        accessors.insert(QStringLiteral("to_addrs_names"),
+        accessors.insert(KDCRMFields::toAddrsNames(),
                          EmailAccessorPair(&SugarEmail::toAddrNames, &SugarEmail::setToAddrNames, QString()));
-        accessors.insert(QStringLiteral("cc_addrs_names"),
+        accessors.insert(KDCRMFields::ccAddrsNames(),
                          EmailAccessorPair(&SugarEmail::ccAddrNames, &SugarEmail::setCcAddrNames, QString()));
 
         // This field doesn't come from Emails but from EmailText, so it's set externally.
         // We add an accessor for SugarEmailIO though.
-        accessors.insert(QStringLiteral("description"),
+        accessors.insert(KDCRMFields::description(),
                          EmailAccessorPair(&SugarEmail::description, &SugarEmail::setDescription, QString()));
 
     }

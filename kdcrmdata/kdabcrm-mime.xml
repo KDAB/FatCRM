@@ -31,4 +31,9 @@ Notes:
     <sub-class-of type="text/xml"/>
     <comment>CRM Opportunity</comment>
   </mime-type>
+  <mime-type type="application/x-vnd.kdab.crm.contacts_csv">
+    <sub-class-of type="text/csv"/>
+    <comment>CRM Contacts CSV</comment>
+    <glob pattern="*.sugarcsv"/>
+  </mime-type>
 </mime-info>

@@ -91,7 +91,7 @@ public:
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
                                         const Akonadi::Collection &parentCollection) = 0;
 
-    void parseFieldList(const KDSoapGenerated::TNS__Field_list &fields);
+    bool parseFieldList(Akonadi::Collection &collection, const KDSoapGenerated::TNS__Field_list &fields);
 
     Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
             const Akonadi::Collection &parentCollection, QString *lastTimestamp);
@@ -110,6 +110,13 @@ protected:
 
     virtual Akonadi::Collection handlerCollection() const = 0;
 
+    QString sugarFieldToCrmField(const QString &sugarFieldName) const;
+    virtual QString customSugarFieldToCrmField(const QString &sugarFieldName) const;
+    QStringList sugarFieldsToCrmFields(const QStringList &sugarFieldNames) const;
+    QString sugarFieldFromCrmField(const QString &crmFieldName) const;
+    virtual QString customSugarFieldFromCrmField(const QString &crmFieldName) const;
+    QStringList sugarFieldsFromCrmFields(const QStringList &crmFieldNames) const;
+
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap() const;
 
@@ -118,6 +125,8 @@ private Q_SLOTS:
     void slotCollectionsReceived(const Akonadi::Collection::List &collections);
 
 private:
+    const QMap<QString, QString>& fieldNamesMapping() const;
+
     mutable QStringList mAvailableFields;
 
     EnumDefinitions mEnumDefinitions;

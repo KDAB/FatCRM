@@ -21,12 +21,14 @@
 */
 
 #include "details.h"
+
 #include "clientsettings.h"
 #include "kdcrmfields.h"
 #include "kdcrmutils.h"
 #include "qdateeditex.h"
 #include "referenceddatamodel.h"
 #include "referenceddata.h"
+#include "itemdataextractor.h"
 
 #include <KLocalizedString>
 
@@ -400,13 +402,6 @@ void Details::assignToMe()
             }
         }
     }
-}
-
-QString Details::idForItem(const Item &item) const
-{
-    // just because I'm lazy; should be implemented in all subclasses instead.
-    Q_UNUSED(item);
-    return QString();
 }
 
 QString Details::name() const

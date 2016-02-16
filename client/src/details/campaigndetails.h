@@ -30,6 +30,8 @@ namespace Ui
 class CampaignDetails;
 }
 
+class CampaignDataExtractor;
+
 class CampaignDetails : public Details
 {
     Q_OBJECT
@@ -38,10 +40,13 @@ public:
 
     ~CampaignDetails();
 
-    QUrl itemUrl() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
-private:
-    Ui::CampaignDetails *mUi;
+private Q_SLOTS:
+    void slotSetStartDate();
+    void slotSetEndDate();
+    void slotClearStartDate();
+    void slotClearEndDate();
 
 private:
     void initialize();
@@ -49,11 +54,8 @@ private:
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &) const Q_DECL_OVERRIDE;
 
-private Q_SLOTS:
-    void slotSetStartDate();
-    void slotSetEndDate();
-    void slotClearStartDate();
-    void slotClearEndDate();
+    Ui::CampaignDetails *mUi;
+    CampaignDataExtractor *mDataExtractor;
 };
 
 #endif /* CAMPAIGNDETAILS_H */

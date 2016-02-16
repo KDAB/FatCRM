@@ -63,22 +63,6 @@ public:
     SugarOpportunity &operator=(const SugarOpportunity &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarOpportunity are equal,
-              otherwise false
-    */
-    bool operator==(const SugarOpportunity &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if this and the given SugarOpportunity are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarOpportunity &) const;
-
-    /**
       Return, if the SugarOpportunity entry is empty.
      */
     bool isEmpty() const;
@@ -339,12 +323,17 @@ public:
     QString probability() const;
 
     /**
+      Set the next call date.
+     */
+    void setNextCallDate(const QDate &date);
+    /**
       Return next call date.
      */
     QDate nextCallDate() const;
 
-    void setNextCallDateRaw(const QString &str);
-    QString nextCallDateRaw() const;
+    // Unknown fields (missing in this code) and custom fields (added by Sugar configuration)
+    void setCustomField(const QString &name, const QString &value);
+    QMap<QString, QString> customFields() const;
 
     /**
       Convenience: Set the data for this opportunity

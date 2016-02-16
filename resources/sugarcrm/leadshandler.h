@@ -24,17 +24,12 @@
 #define LEADSHANDLER_H
 
 #include "modulehandler.h"
-
-class LeadAccessorPair;
-
-template <typename U, typename V> class QHash;
+#include "kdcrmdata/sugarlead.h"
 
 class LeadsHandler : public ModuleHandler
 {
 public:
     explicit LeadsHandler(SugarSession *session);
-
-    ~LeadsHandler();
 
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 
@@ -55,15 +50,14 @@ private:
     }
     inline bool isAltAddressValue(const QString &value) const
     {
-        return value.startsWith(QStringLiteral("alt_address_"));
+        return value.startsWith(QString("altAddress"));
     }
     inline bool isPrimaryAddressValue(const QString &value) const
     {
-        return value.startsWith(QStringLiteral("primary_address_"));
+        return value.startsWith(QString("primaryAddress"));
     }
 
-    typedef QHash<QString, LeadAccessorPair *> LeadsAccessorHash;
-    LeadsAccessorHash *mAccessors;
+    SugarLead::AccessorHash mAccessors;
 };
 
 #endif /* LEADSHANDLER_H */

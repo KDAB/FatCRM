@@ -35,11 +35,11 @@ BetterPlainTextEdit::BetterPlainTextEdit(QWidget *parent) :
             this, SLOT(slotDocumentSizeChanged()));
 }
 
-QSize BetterPlainTextEdit::minimumSizeHint() const
+QSize BetterPlainTextEdit::widgetSizeForTextSize(const QSize &size) const
 {
     QFontMetrics fm(document()->defaultFont());
     const int lineHeight = fm.height();
-    QSize ds = document()->documentLayout()->documentSize().toSize();
+    QSize ds(size);
     ds.rheight() *= lineHeight;
 
     // Taken from QAbstractScrollArea::minimumSizeHint() in Qt4
@@ -54,12 +54,20 @@ QSize BetterPlainTextEdit::minimumSizeHint() const
     }
 
     return QSize(ds.width() + vsbExt + extra,
-                 ds.height() + hsbExt + extra);;
+                 ds.height() + hsbExt + extra);
+}
+
+QSize BetterPlainTextEdit::minimumSizeHint() const
+{
+    QSize ds = document()->documentLayout()->documentSize().toSize();
+    ds.setWidth(50);
+    return widgetSizeForTextSize(ds);
 }
 
 QSize BetterPlainTextEdit::sizeHint() const
 {
-    return minimumSizeHint();
+    QSize ds = document()->documentLayout()->documentSize().toSize();
+    return widgetSizeForTextSize(ds);
 }
 
 void BetterPlainTextEdit::slotDocumentSizeChanged()

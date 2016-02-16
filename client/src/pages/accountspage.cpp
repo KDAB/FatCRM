@@ -21,6 +21,7 @@
 */
 
 #include "accountspage.h"
+#include "accountdataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 
@@ -31,7 +32,7 @@
 using namespace Akonadi;
 
 AccountsPage::AccountsPage(QWidget *parent)
-    : Page(parent, QString(SugarAccount::mimeType()), Account)
+    : Page(parent, QString(SugarAccount::mimeType()), Account), mDataExtractor(new AccountDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Account, this));
 }
@@ -43,4 +44,9 @@ AccountsPage::~AccountsPage()
 QString AccountsPage::reportTitle() const
 {
     return i18n("List of Accounts");
+}
+
+ItemDataExtractor *AccountsPage::itemDataExtractor() const
+{
+    return mDataExtractor;
 }

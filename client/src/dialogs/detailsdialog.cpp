@@ -24,8 +24,13 @@
 
 #include "details.h"
 #include "ui_detailsdialog.h"
-#include "referenceddatamodel.h"
+#include "accountdetails.h"
+#include "campaigndetails.h"
 #include "clientsettings.h"
+#include "contactdetails.h"
+#include "leaddetails.h"
+#include "opportunitydetails.h"
+#include "referenceddatamodel.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -34,6 +39,8 @@
 #include <AkonadiCore/Item>
 #include <AkonadiCore/ItemCreateJob>
 #include <AkonadiCore/ItemModifyJob>
+
+#include <KPIMUtils/Email>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -97,12 +104,31 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     if (mDetails->type() == Campaign) {
         currentData[KDCRMFields::content()] = mUi.description->toPlainText();
     }
+    // Turn "First Name <email@example.com> into "email@example.com so that SugarCRM doesn't reject it.
+    if (mDetails->type() == Contact) {
+        QString email = currentData.value(KDCRMFields::email1());
+        if (!email.isEmpty()) {
+            currentData.insert(KDCRMFields::email1(), KPIMUtils::extractEmailAddress(email));
+        }
+
+        email = currentData.value(KDCRMFields::email2());
+        if (!email.isEmpty()) {
+            currentData.insert(KDCRMFields::email2(), KPIMUtils::extractEmailAddress(email));
+        }
+    }
 
     return currentData;
 }
 
 void DetailsDialog::Private::saveClicked()
 {
+    if (mDetails->type() == Opportunity) {
+        if (mDetails->currentAccountId().isEmpty()) {
+            QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
+            return;
+        }
+    }
+
     Item item = mItem;
     mDetails->updateItem(item, data());
 
@@ -115,7 +141,6 @@ void DetailsDialog::Private::saveClicked()
         Q_ASSERT(mCollection.isValid());
         job = new ItemCreateJob(item, mCollection, q);
     }
-
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
 
@@ -166,14 +191,7 @@ void DetailsDialog::Private::saveResult(KJob *job)
         mUi.labelOffline->show();
         return;
     }
-    ItemModifyJob *modifyJob = qobject_cast<ItemModifyJob *>(job);
-    if (modifyJob) {
-        emit q->itemSaved(modifyJob->item());
-    } else {
-        ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
-        Q_ASSERT(createJob);
-        emit q->itemSaved(createJob->item());
-    }
+    emit q->itemSaved();
     q->close(); // was accept();
 }
 
@@ -306,6 +324,24 @@ void DetailsDialog::closeEvent(QCloseEvent *event)
 {
     emit closing();
     QWidget::closeEvent(event);
+}
+
+Details *DetailsDialog::createDetailsForType(DetailsType type)
+{
+    switch (type) {
+    case Account: return new AccountDetails;
+    case Opportunity: return new OpportunityDetails;
+    case Contact: return new ContactDetails;
+    case Lead: return new LeadDetails;
+    case Campaign: return new CampaignDetails;
+    }
+
+    return 0;
+}
+
+Details *DetailsDialog::details()
+{
+    return d->mDetails;
 }
 
 #include "moc_detailsdialog.cpp"

@@ -89,8 +89,8 @@ private Q_SLOTS:
         QTemporaryFile file;
         writeTempFile(file, csv.toUtf8());
         QVERIFY(importer.importFile(file.fileName()));
-        const QVector<SugarAccount> accounts = importer.accounts();
-        QCOMPARE(extractAccountNames(accounts), accountNames);
+        const QVector<ContactsSet> contacts = importer.contacts();
+        QCOMPARE(extractAccountNames(contacts), accountNames);
     }
 
     void testImportingAccounts()
@@ -100,9 +100,9 @@ private Q_SLOTS:
         writeTempFile(file,
         "David,Faure,Mr,12345,david.faure@kdab.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345");
         QVERIFY(importer.importFile(file.fileName()));
-        const QVector<SugarAccount> accounts = importer.accounts();
-        QCOMPARE(accounts.size(), 1);
-        const SugarAccount account = accounts.at(0);
+        const QVector<ContactsSet> contacts = importer.contacts();
+        QCOMPARE(contacts.size(), 1);
+        const SugarAccount account = contacts.at(0).account;
         QCOMPARE(account.name(), QString("KDAB"));
         QCOMPARE(account.billingAddressStreet(), QString::fromUtf8("32, street name"));
         QCOMPARE(account.billingAddressCity(), QString::fromUtf8("Vedène"));
@@ -120,11 +120,11 @@ private:
         QVERIFY(file.seek(0));
     }
 
-    static QStringList extractAccountNames(const QVector<SugarAccount> &accounts)
+    static QStringList extractAccountNames(const QVector<ContactsSet> &contacts)
     {
         QStringList ret;
-        foreach(const SugarAccount &account, accounts) {
-            ret << account.name();
+        foreach(const ContactsSet &contactsSet, contacts) {
+            ret << contactsSet.account.name();
         }
         return ret;
     }

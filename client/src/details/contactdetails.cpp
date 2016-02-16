@@ -23,8 +23,11 @@
 #include "contactdetails.h"
 
 #include "accountrepository.h"
+#include "contactdataextractor.h"
 #include "editcalendarbutton.h"
+#include "modelrepository.h"
 #include "referenceddatamodel.h"
+#include "selectitemdialog.h"
 #include "ui_contactdetails.h"
 
 #include "kdcrmutils.h"
@@ -36,10 +39,42 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails)
+    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
+
+    mUi->salutation->setObjectName(KDCRMFields::salutation());
+    mUi->first_name->setObjectName(KDCRMFields::firstName());
+    mUi->last_name->setObjectName(KDCRMFields::lastName());
+    mUi->title->setObjectName(KDCRMFields::title());
+    mUi->department->setObjectName(KDCRMFields::department());
+    mUi->account_id->setObjectName(KDCRMFields::accountId());
+    mUi->lead_source->setObjectName(KDCRMFields::leadSource());
+    mUi->reports_to_id->setObjectName(KDCRMFields::reportsToId());
+    mUi->email1->setObjectName(KDCRMFields::email1());
+    mUi->email2->setObjectName(KDCRMFields::email2());
+    mUi->assigned_user_id->setObjectName(KDCRMFields::assignedUserId());
+    mUi->phone_work->setObjectName(KDCRMFields::phoneWork());
+    mUi->phone_mobile->setObjectName(KDCRMFields::phoneMobile());
+    mUi->phone_home->setObjectName(KDCRMFields::phoneHome());
+    mUi->phone_fax->setObjectName(KDCRMFields::phoneFax());
+    mUi->phone_other->setObjectName(KDCRMFields::phoneOther());
+    mUi->do_not_call->setObjectName(KDCRMFields::doNotCall());
+    mUi->birthdate->setObjectName(KDCRMFields::birthdate());
+    mUi->assistant->setObjectName(KDCRMFields::assistant());
+    mUi->phoneAssistant->setObjectName(KDCRMFields::phoneAssistant());
+    mUi->primaryAddressStreet->setObjectName(KDCRMFields::primaryAddressStreet());
+    mUi->primaryAddressCity->setObjectName(KDCRMFields::primaryAddressCity());
+    mUi->primaryAddressState->setObjectName(KDCRMFields::primaryAddressState());
+    mUi->primaryAddressPostalcode->setObjectName(KDCRMFields::primaryAddressPostalcode());
+    mUi->primaryAddressCountry->setObjectName(KDCRMFields::primaryAddressCountry());
+    mUi->altAddressStreet->setObjectName(KDCRMFields::altAddressStreet());
+    mUi->altAddressCity->setObjectName(KDCRMFields::altAddressCity());
+    mUi->altAddressState->setObjectName(KDCRMFields::altAddressState());
+    mUi->altAddressPostalcode->setObjectName(KDCRMFields::altAddressPostalcode());
+    mUi->altAddressCountry->setObjectName(KDCRMFields::altAddressCountry());
+
     initialize();
 }
 
@@ -59,16 +94,12 @@ void ContactDetails::initialize()
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthday()));
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
+    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
 }
 
-QUrl ContactDetails::itemUrl() const
+ItemDataExtractor *ContactDetails::itemDataExtractor() const
 {
-    const QString baseUrl = resourceBaseUrl();
-    if (!baseUrl.isEmpty() && !id().isEmpty()) {
-        const QString url = baseUrl + "?action=DetailView&module=Contacts&record=" + id();
-        return QUrl(url);
-    }
-    return QUrl();
+    return mDataExtractor;
 }
 
 void ContactDetails::slotSetBirthday()
@@ -301,7 +332,7 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
 
-    const QUrl url = itemUrl();
+    const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
 }
@@ -310,4 +341,21 @@ void ContactDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
     emit openObject(Account, accountId);
+}
+
+void ContactDetails::slotSelectAccount()
+{
+    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    dlg->setModel(ModelRepository::instance()->model(Account));
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    dlg->show();
+}
+
+void ContactDetails::slotAccountSelected(const QString &accountId)
+{
+    const int idx = mUi->account_id->findData(accountId);
+    if (idx > -1) {
+        mUi->account_id->setCurrentIndex(idx);
+    }
 }

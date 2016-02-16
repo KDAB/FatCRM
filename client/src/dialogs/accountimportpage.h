@@ -20,48 +20,52 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ACCOUNTIMPORTDIALOG_H
-#define ACCOUNTIMPORTDIALOG_H
+#ifndef ACCOUNTIMPORTPAGE_H
+#define ACCOUNTIMPORTPAGE_H
 
-#include "sugaraccount.h"
+#include "contactsset.h"
 
-#include <QDialog>
-#include <QSignalMapper>
 #include <AkonadiCore/Collection>
-#include <AkonadiCore/item.h>
+#include <AkonadiCore/Item>
+
+#include <QWizardPage>
+#include <QSignalMapper>
 
 namespace Ui {
-class AccountImportDialog;
+class AccountImportPage;
 }
 class QAbstractButton;
 class QGroupBox;
 class QButtonGroup;
 class KJob;
 
-class AccountImportDialog : public QDialog
+class AccountImportPage : public QWizardPage
 {
     Q_OBJECT
 
 public:
-    explicit AccountImportDialog(QWidget *parent = 0);
-    ~AccountImportDialog();
+    explicit AccountImportPage(QWidget *parent = 0);
+    ~AccountImportPage();
 
     // intput
     void setAccountCollection(const Akonadi::Collection &collection);
-    void setImportedAccounts(const QVector<SugarAccount> &accounts);
+    void setImportedContacts(const QVector<ContactsSet> &contacts);
 
     // output (valid after exec() returns)
-    QVector<SugarAccount> chosenAccounts() const;
+    QVector<ContactsSet> chosenContacts() const;
 
-protected:
-    void accept() Q_DECL_OVERRIDE;
-    void reject() Q_DECL_OVERRIDE;
+    void cleanup();
+
+    bool isComplete() const Q_DECL_OVERRIDE;
+    bool validatePage() Q_DECL_OVERRIDE;
+
+signals:
+    void chosenContactsAvailable(const QVector<ContactsSet> &contacts);
 
 private Q_SLOTS:
     void slotTextChanged(QWidget *lineEdit);
     void slotButtonClicked(QAbstractButton *button);
     void slotCreateAccountResult(KJob *job);
-    void updateOKButton();
     void slotAccountAdded(const QString &id, Akonadi::Item::Id akonadiId);
 
 private:
@@ -74,14 +78,14 @@ private:
         QButtonGroup *buttonGroup;
         QGroupBox *groupBox;
         QPushButton *createButton;
-        SugarAccount account;
+        ContactsSet contactsSet;
         Akonadi::Item::Id idBeingCreated;
     };
 
     QVector<PendingAccount> mPendingAccounts;
     QSignalMapper mLineEditMapper;
     QList<KJob *> mAccountCreationJobs;
-    Ui::AccountImportDialog *mUi;
+    Ui::AccountImportPage *mUi;
 };
 
-#endif // ACCOUNTIMPORTDIALOG_H
+#endif // ACCOUNTIMPORTPAGE_H

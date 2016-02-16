@@ -119,7 +119,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         return;
     }
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
-        mHandler->parseFieldList(callResult.field_list());
+        mCollectionAttributesChanged = mHandler->parseFieldList(mCollection, callResult.field_list());
 
         Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
@@ -168,7 +168,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             changed = true;
         }
 
-        mCollectionAttributesChanged = changed;
+        mCollectionAttributesChanged = mCollectionAttributesChanged || changed;
         q->emitResult();
     }
 }

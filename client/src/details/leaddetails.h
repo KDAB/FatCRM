@@ -30,6 +30,8 @@ namespace Ui
 class LeadDetails;
 }
 
+class LeadDataExtractor;
+
 class LeadDetails : public Details
 {
     Q_OBJECT
@@ -38,7 +40,7 @@ public:
 
     ~LeadDetails();
 
-    QUrl itemUrl() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotSetBirthDate();
@@ -52,6 +54,7 @@ private:
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    LeadDataExtractor *mDataExtractor;
 };
 
 #endif /* LEADDETAILS_H */

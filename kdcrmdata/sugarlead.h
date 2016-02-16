@@ -63,22 +63,6 @@ public:
     SugarLead &operator=(const SugarLead &);
 
     /**
-      Equality operator.
-
-      return true if this and the given SugarLead are equal,
-              otherwise false
-    */
-    bool operator==(const SugarLead &) const;
-
-    /**
-      Not-equal operator.
-
-      return true if  this and the given SugarLead are not equal,
-              otherwise false
-    */
-    bool operator!=(const SugarLead &) const;
-
-    /**
       Return, if the SugarLead entry is empty.
      */
     bool isEmpty() const;
@@ -624,6 +608,26 @@ public:
        Return the Mime type
      */
     static QString mimeType();
+
+    typedef QString(SugarLead::*valueGetter)() const;
+    typedef void (SugarLead::*valueSetter)(const QString &);
+
+    class LeadAccessorPair
+    {
+    public:
+        LeadAccessorPair(valueGetter get, valueSetter set, const QString &name)
+            : getter(get), setter(set), diffName(name)
+        {}
+
+    public:
+        valueGetter getter;
+        valueSetter setter;
+        QString diffName;
+    };
+
+    typedef QHash<QString, LeadAccessorPair> AccessorHash;
+
+    static AccessorHash accessorHash();
 
 private:
     class Private;

@@ -22,17 +22,22 @@
 
 #include "page.h"
 
-#include "detailsdialog.h"
 #include "accountrepository.h"
 #include "clientsettings.h"
-#include "detailswidget.h"
+#include "details.h"
+#include "detailsdialog.h"
 #include "enums.h"
+#include "fatcrminputdialog.h"
+#include "itemdataextractor.h"
+#include "kjobprogresstracker.h"
+#include "modelrepository.h"
+#include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
 #include "sugarresourcesettings.h"
-#include "rearrangecolumnsproxymodel.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
+#include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -54,6 +59,7 @@
 #include <KContacts/Addressee>
 
 #include "fatcrm_client_debug.h"
+#include <KInputDialog>
 
 #include <QClipboard>
 #include <QDesktopServices>
@@ -62,22 +68,36 @@
 #include <QShortcut>
 #include <KEmailAddress>
 
+namespace {
+
+enum ModifierField
+{
+    CityField,
+    CountryField,
+    NextStepDateField,
+    AssigneeField
+};
+
+static const char s_modifierFieldId[] = "__modifierField";
+
+} // namespace
+
+Q_DECLARE_METATYPE(ModifierField);
+
 using namespace Akonadi;
 
 Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mDetailsWidget(new DetailsWidget(type)),
       mChangeRecorder(0),
       mItemsTreeModel(0),
-      mShowDetailsAction(0),
       mOnline(false),
       mInitialLoadingDone(false),
-      mFilterModel(0)
+      mFilterModel(0),
+      mJobProgressTracker(Q_NULLPTR)
 {
     mUi.setupUi(this);
-    mUi.splitter->setCollapsible(0, false);
     mUi.treeView->setViewName(typeToString(type));
     mUi.treeView->setAlternatingRowColors(true);
     initialize();
@@ -87,19 +107,14 @@ Page::~Page()
 {
 }
 
-QAction *Page::showDetailsAction(const QString &title) const
-{
-    mShowDetailsAction->setText(title);
-    return mShowDetailsAction;
-}
-
 void Page::openDialog(const QString &id)
 {
     const int count = mItemsTreeModel->rowCount();
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (mDetailsWidget->details()->idForItem(item) == id) {
+        // we do not check for itemDataExtractor == 0 because we know it is an AccountDataExtractor
+        if (itemDataExtractor()->idForItem(item) == id) {
             DetailsDialog *dialog = openedDialogForItem(item);
             if (!dialog) {
                 dialog = createDetailsDialog();
@@ -111,22 +126,6 @@ void Page::openDialog(const QString &id)
             }
         }
     }
-}
-
-bool Page::showsDetails() const
-{
-    return mShowDetailsAction->isChecked();
-}
-
-void Page::showDetails(bool on)
-{
-    mUi.detailsWidget->setVisible(on);
-    if (on) {
-        QMetaObject::invokeMethod(this, "slotEnsureDetailsVisible", Qt::QueuedConnection);
-    }
-    ClientSettings::self()->setShowDetails(typeToString(mType), on);
-    mShowDetailsAction->setChecked(on);
-    emit showDetailsChanged(on);
 }
 
 void Page::setFilter(FilterProxyModel *filter)
@@ -149,7 +148,6 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mChangeRecorder = 0;
     mCollection = Collection();
     mResourceIdentifier = identifier;
-    mCurrentIndex = QModelIndex();
 
     // cleanup from last time (useful when switching resources)
     mFilter->setSourceModel(0);
@@ -213,7 +211,6 @@ void Page::setCollection(const Collection &collection)
 void Page::setNotesRepository(NotesRepository *repo)
 {
     mNotesRepository = repo;
-    mDetailsWidget->details()->setNotesRepository(repo);
 }
 
 bool Page::queryClose()
@@ -230,115 +227,22 @@ bool Page::queryClose()
                 dialog->activateWindow();
                 return false;
             }
+        } else {
+            dialog->close();
         }
     }
     return true;
 }
 
-bool Page::hasModifications() const
-{
-    return mDetailsWidget->isModified();
-}
-
-void Page::setModificationsIgnored(bool b)
-{
-    mDetailsWidget->setModificationsIgnored(b);
-}
-
-void Page::initialLoadingDone()
-{
-    mDetailsWidget->initialLoadingDone();
-}
-
-void Page::slotCurrentItemChanged(const QModelIndex &index)
-{
-    // save previous item if modified
-    if (mShowDetailsAction->isChecked() && mDetailsWidget->isModified() && mCurrentIndex.isValid()) {
-        if (mCurrentIndex == index) // called by the setCurrentIndex below
-            return;
-        //qCDebug(FATCRM_CLIENT_LOG) << "going from" << mCurrentIndex << "to" << index;
-        if (askSave()) {
-            //qCDebug(FATCRM_CLIENT_LOG) << "Saving" << mCurrentIndex;
-            mDetailsWidget->saveData();
-        }
-    }
-
-    // show the new item
-    //qCDebug(FATCRM_CLIENT_LOG) << "showing new item" << index;
-    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-    if (item.isValid()) {
-        mDetailsWidget->setItem(item);
-
-        mCurrentIndex = mUi.treeView->selectionModel()->currentIndex();
-        //qCDebug(FATCRM_CLIENT_LOG) << "mCurrentIndex=" << mCurrentIndex;
-    }
-}
-
 void Page::slotNewClicked()
 {
     const QMap<QString, QString> data = dataForNewObject();
-    if (mShowDetailsAction->isChecked()) {
-        if (mDetailsWidget->isModified()) {
-            if (askSave()) {
-                mDetailsWidget->saveData();
-            }
-        }
-
-        mDetailsWidget->clearFields();
-        mDetailsWidget->setData(data);
-    } else {
-        DetailsDialog *dialog = createDetailsDialog();
-        Item item;
-        item.setParentCollection(mCollection);
-        dialog->showNewItem(data, mCollection);
-        dialog->show();
-        // cppcheck-suppress memleak as dialog deletes itself
-    }
-}
-
-void Page::slotAddItem() // save new item
-{
+    DetailsDialog *dialog = createDetailsDialog();
     Item item;
-    details()->updateItem(item, mDetailsWidget->data());
-
-    // job starts automatically
-    ItemCreateJob *job = new ItemCreateJob(item, mCollection);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateJobResult(KJob*)));
-}
-
-void Page::slotCreateJobResult(KJob *job)
-{
-    if (job->error()) {
-        emit statusMessage(job->errorString());
-    } else {
-        emit statusMessage("Item successfully created");
-    }
-}
-
-void Page::slotModifyItem(const Akonadi::Item &item) // save modified item (from details widget)
-{
-    // job starts automatically
-    ItemModifyJob *job = new ItemModifyJob(item);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotModifyJobResult(KJob*)));
-}
-
-void Page::slotModifyJobResult(KJob *job) // saving done (from details widget)
-{
-    if (job->error()) {
-        emit statusMessage(job->errorString());
-    } else {
-        ItemModifyJob *imJob = static_cast<ItemModifyJob *>(job);
-        // As documented in ItemModifyJob, store revision of saved item
-        mDetailsWidget->setItemRevision(imJob->item());
-        emit statusMessage("Item successfully saved");
-    }
-}
-
-// Item saved in details dialog
-void Page::slotItemSaved(const Item &item)
-{
-    // This relies on the fact that the dialog is modal: the current index can't change meanwhile
-    mDetailsWidget->setItem(item);
+    item.setParentCollection(mCollection);
+    dialog->showNewItem(data, mCollection);
+    dialog->show();
+    // cppcheck-suppress memleak as dialog deletes itself
 }
 
 QString Page::reportSubTitle(int count) const
@@ -361,7 +265,7 @@ void Page::slotRemoveItem()
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(i18n("Delete record"));
-    msgBox.setText(QString("The selected item will be removed permanentely!"));
+    msgBox.setText(QString("The selected item will be deleted permanently!"));
     msgBox.setInformativeText(i18n("Are you sure you want to delete it?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
@@ -373,16 +277,9 @@ void Page::slotRemoveItem()
 
     if (item.isValid()) {
         // job starts automatically
-        // TODO connect to result() signal for error handling
-        ItemDeleteJob *job = new ItemDeleteJob(item);
-        Q_UNUSED(job);
+        ItemDeleteJob *job = new ItemDeleteJob(item, this);
+        connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDeleteJobResult(KJob*)));
     }
-    const QModelIndex newIndex = mUi.treeView->selectionModel()->currentIndex();
-    if (!newIndex.isValid()) {
-        mUi.removePB->setEnabled(false);
-    }
-
-    mDetailsWidget->setItem(Item());
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -394,11 +291,6 @@ void Page::slotVisibleRowCountChanged()
 
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << ": rows inserted from" << start << "to" << end;
-
-    // inserting rows into comboboxes can change the current index, thus marking the data as modified
-    emit ignoreModifications(true);
-
     const bool emitChanges = mInitialLoadingDone;
 
     switch (mType) {
@@ -438,14 +330,10 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
             AccountRepository::instance()->emitInitialLoadingDone();
         }
     }
-    emit ignoreModifications(false);
 }
 
 void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
 {
-    // inserting rows into comboboxes can change the current index, thus marking the data as modified
-    emit ignoreModifications(true);
-
     switch (mType) {
     case Account:
         removeAccountsData(start, end, mInitialLoadingDone);
@@ -465,7 +353,6 @@ void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
     default: // other objects (like Note) not shown in a Page
         break;
     }
-    emit ignoreModifications(false);
 }
 
 void Page::initialize()
@@ -480,9 +367,6 @@ void Page::initialize()
     }
     mUi.reloadPB->setEnabled(false);
 
-    // Removing doesn't work right now, and is a rather dangerous operation anyway :-)
-    mUi.removePB->hide();
-
     // Reloading is already available in the toolbar (and using F5 for just one collection)
     // so unclutter the GUI a bit
     mUi.reloadPB->hide();
@@ -491,35 +375,29 @@ void Page::initialize()
             this, SLOT(slotResetSearch()));
     connect(mUi.newPB, SIGNAL(clicked()),
             this, SLOT(slotNewClicked()));
-    connect(mUi.removePB, SIGNAL(clicked()),
-            this, SLOT(slotRemoveItem()));
     connect(mUi.reloadPB, SIGNAL(clicked()),
             this, SLOT(slotReloadCollection()));
 
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
     connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
-
-    mShowDetailsAction = new QAction(this);
-    mShowDetailsAction->setCheckable(true);
-    connect(mShowDetailsAction, SIGNAL(toggled(bool)), this, SLOT(showDetails(bool)));
-
-    connect(mDetailsWidget, SIGNAL(modifyItem(Akonadi::Item)), this, SLOT(slotModifyItem(Akonadi::Item)));
-    connect(mDetailsWidget, SIGNAL(createItem()), this, SLOT(slotAddItem()));
-
-    QVBoxLayout *detailLayout = new QVBoxLayout(mUi.detailsWidget);
-    detailLayout->setMargin(0);
-    detailLayout->addWidget(mDetailsWidget);
-    showDetails(ClientSettings::self()->showDetails(typeToString(mType)));
-
-    connectToDetails(mDetailsWidget->details());
 }
 
 void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
-    mCurrentItemUrl = details()->itemUrl();
-    mSelectedEmails.clear();
-    QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+    const QModelIndex idx = treeView()->selectionModel()->currentIndex();
+    if (idx.isValid()) {
+        const Item item = treeView()->model()->data(idx, EntityTreeModel::ItemRole).value<Item>();
+        ItemDataExtractor *dataExtractor = itemDataExtractor();
+        if (!dataExtractor) {
+            mCurrentItemUrl = QUrl();
+            return;
+        }
+        mCurrentItemUrl = dataExtractor->itemUrl(mResourceBaseUrl, item);
+    }
 
+    mSelectedEmails.clear();
+
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
     Q_FOREACH (const QModelIndex &index, selectedIndexes) {
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KContacts::Addressee>()) {
@@ -533,6 +411,8 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 
     QMenu contextMenu;
 
+    contextMenu.addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
+
     if (mCurrentItemUrl.isValid()) {
         contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
         contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
@@ -540,6 +420,23 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 
     if (!mSelectedEmails.isEmpty()) {
         contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
+    }
+
+    if (!selectedIndexes.isEmpty() && (mType == Account || mType == Opportunity || mType == Contact)) {
+        QMenu *changeMenu = contextMenu.addMenu(i18n("Change..."));
+        if (mType == Account || mType == Contact) {
+            QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
+            cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
+
+            QAction *countryAction = changeMenu->addAction(i18n("Country"), this, SLOT(slotChangeFields()));
+            countryAction->setProperty(s_modifierFieldId, QVariant::fromValue(CountryField));
+        } else if (mType == Opportunity) {
+            QAction *dateAction = changeMenu->addAction(i18n("Next Step Date"), this, SLOT(slotChangeFields()));
+            dateAction->setProperty(s_modifierFieldId, QVariant::fromValue(NextStepDateField));
+
+            QAction *assigneeAction = changeMenu->addAction(i18n("Assignee"), this, SLOT(slotChangeFields()));
+            assigneeAction->setProperty(s_modifierFieldId, QVariant::fromValue(AssigneeField));
+        }
     }
 
     if (contextMenu.actions().isEmpty()) {
@@ -583,26 +480,14 @@ void Page::setupModel()
     mFilter->setSourceModel(mFilterModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
-    connect(mUi.treeView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this,  SLOT(slotCurrentItemChanged(QModelIndex)));
+    ModelRepository::instance()->setModel(mType, treeView()->model());
 
     emit modelCreated(mItemsTreeModel); // give it to the reports page
 }
 
-Details *Page::details() const
-{
-    return mDetailsWidget->details();
-}
-
-void Page::connectToDetails(Details *details)
-{
-    connect(details, SIGNAL(openObject(DetailsType,QString)),
-            this, SIGNAL(openObject(DetailsType,QString)));
-}
-
 void Page::insertFilterWidget(QWidget *widget)
 {
-    mUi.verticalLayout->insertWidget(1, widget);
+    mUi.verticalLayout->insertWidget(0, widget);
 }
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
@@ -619,22 +504,7 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         Q_ASSERT(item.isValid());
         emit modelItemChanged(item); // update details dialog
-        if (index == mCurrentIndex && !mDetailsWidget->isModified()) {
-            mDetailsWidget->setItem(item); // update details widget
-        }
     }
-}
-
-bool Page::askSave()
-{
-    QMessageBox msgBox(this);
-    msgBox.setText(i18n("The current item has been modified."));
-    msgBox.setInformativeText(i18n("Do you want to save your changes?"));
-    msgBox.setStandardButtons(QMessageBox::Save |
-                              QMessageBox::Discard);
-    msgBox.setDefaultButton(QMessageBox::Save);
-    const int ret = msgBox.exec();
-    return ret == QMessageBox::Save;
 }
 
 // duplicated in listentriesjob.cpp
@@ -653,8 +523,6 @@ void Page::readSupportedFields()
                 errorShown = true;
                 QMessageBox::warning(this, i18n("Internal error"), i18n("The list of fields for type '%1'' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", typeToString(mType)));
             }
-        } else {
-            mDetailsWidget->details()->setSupportedFields(mSupportedFields);
         }
     }
 }
@@ -664,7 +532,6 @@ void Page::readEnumDefinitionAttributes()
     EnumDefinitionAttribute *enumsAttr = mCollection.attribute<EnumDefinitionAttribute>();
     if (enumsAttr) {
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
-        mDetailsWidget->details()->setEnumDefinitions(mEnumDefinitions);
     } else {
         qCWarning(FATCRM_CLIENT_LOG) << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
         qCWarning(FATCRM_CLIENT_LOG) << "Collection attributes:";
@@ -694,25 +561,16 @@ void Page::slotReloadCollection()
 
 void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
+    qDebug() << collection.id() << attributeNames;
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
 
-        if (attributeNames.contains(s_supportedFieldsKey)) {
+        if (attributeNames.contains("entityannotations")) {
             readSupportedFields();
         }
-    }
-}
-
-void Page::slotEnsureDetailsVisible()
-{
-    if (mShowDetailsAction->isChecked()) {
-        QList<int> splitterSizes = mUi.splitter->sizes();
-        if (splitterSizes[ 1 ] == 0) {
-            splitterSizes[ 1 ] = mUi.splitter->height() / 2;
-            mUi.splitter->setSizes(splitterSizes);
+        if (attributeNames.contains("CRM-enumdefinitions")) { // EnumDefinitionAttribute::type()
+            readEnumDefinitionAttributes();
         }
-    } else {
-        mShowDetailsAction->setChecked(true);
     }
 }
 
@@ -723,13 +581,15 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
     if (!dialog) {
         dialog = createDetailsDialog();
         dialog->setItem(item);
-        // show changes made in the dialog
-        connect(dialog, SIGNAL(itemSaved(Akonadi::Item)),
-                this, SLOT(slotItemSaved(Akonadi::Item)));
         dialog->show();
     } else {
         dialog->raise();
     }
+}
+
+void Page::slotItemSaved()
+{
+    emit statusMessage("Item successfully saved");
 }
 
 void Page::printReport()
@@ -770,15 +630,15 @@ void Page::printReport()
     generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
 }
 
-
 DetailsDialog *Page::createDetailsDialog()
 {
-    Details* details = DetailsWidget::createDetailsForType(mType);
+    Details* details = DetailsDialog::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setNotesRepository(mNotesRepository);
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
-    connectToDetails(details);
+    connect(details, SIGNAL(openObject(DetailsType,QString)),
+            this, SIGNAL(openObject(DetailsType,QString)));
     // Don't set a parent, so that the dialogs can be minimized/restored independently
     DetailsDialog *dialog = new DetailsDialog(details);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
@@ -788,12 +648,13 @@ DetailsDialog *Page::createDetailsDialog()
             dialog, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
             dialog, SLOT(setOnline(bool)));
+    connect( dialog, SIGNAL(itemSaved()),
+             this, SLOT(slotItemSaved()));
     connect(dialog, SIGNAL(closing()),
             this, SLOT(slotUnregisterDetailsDialog()));
     mDetailsDialogs.insert(dialog);
     return dialog;
 }
-
 
 DetailsDialog *Page::openedDialogForItem(const Item &item)
 {
@@ -809,6 +670,133 @@ void Page::slotUnregisterDetailsDialog()
 {
     DetailsDialog *dialog = qobject_cast<DetailsDialog*>(sender());
     mDetailsDialogs.remove(dialog);
+}
+
+void Page::slotChangeFields()
+{
+    const QAction *action = qobject_cast<QAction*>(sender());
+    if (!action)
+        return;
+
+    const ModifierField field = action->property(s_modifierFieldId).value<ModifierField>();
+
+    QString dialogTitle;
+    QString dialogText;
+    switch (field) {
+    case CityField:
+        dialogTitle = i18n("Change City");
+        dialogText = i18n("Please enter the new city name.");
+        break;
+    case CountryField:
+        dialogTitle = i18n("Change Country");
+        dialogText = i18n("Please enter the new country name.");
+        break;
+    case NextStepDateField:
+        dialogTitle = i18n("Change Next Step Date");
+        dialogText = i18n("Please select the next step date.");
+        break;
+    case AssigneeField:
+        dialogTitle = i18n("Change Assignee");
+        dialogText = i18n("Please select the new assignee.");
+        break;
+    }
+
+    bool ok = false;
+    QString replacementString;
+    QPair<QString, QString> replacementAssignee;
+    QDate replacementDate;
+
+    if (field == NextStepDateField) {
+        replacementDate = FatCRMInputDialog::getDate(dialogTitle, dialogText, QDate::currentDate(), &ok);
+    } else if (field == AssigneeField) {
+        replacementAssignee = FatCRMInputDialog::getAssignedUser(dialogTitle, dialogText, &ok);
+    } else {
+        replacementString = KInputDialog::getText(dialogTitle, dialogText, QString(), &ok);
+    }
+
+    if (!ok)
+        return;
+
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+
+    QVector<Item> modifiedItems;
+    modifiedItems.reserve(selectedIndexes.count());
+
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+
+        if (mType == Account) {
+            SugarAccount account = item.payload<SugarAccount>();
+
+            if (field == CityField) {
+                if (account.shippingAddressCity().isEmpty())
+                    account.setBillingAddressCity(replacementString);
+                else
+                    account.setShippingAddressCity(replacementString);
+            } else if (field == CountryField) {
+                if (account.shippingAddressCountry().isEmpty())
+                    account.setBillingAddressCountry(replacementString);
+                else
+                    account.setShippingAddressCountry(replacementString);
+            }
+
+            item.setPayload(account);
+        } else if (mType == Opportunity) {
+            SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+
+            if (field == NextStepDateField) {
+                opportunity.setNextCallDate(replacementDate);
+            } else if (field == AssigneeField) {
+                opportunity.setAssignedUserId(replacementAssignee.first);
+                opportunity.setAssignedUserName(replacementAssignee.second);
+            }
+
+            item.setPayload(opportunity);
+        } else if (mType == Contact) {
+            KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+
+            if (field == CityField) {
+                KContacts::Address workAddress = addressee.address(KContacts::Address::Work | KContacts::Address::Pref);
+                workAddress.setLocality(replacementString);
+                addressee.insertAddress(workAddress);
+            } else if (field == CountryField) {
+                KContacts::Address workAddress = addressee.address(KContacts::Address::Work | KContacts::Address::Pref);
+                workAddress.setCountry(replacementString);
+                addressee.insertAddress(workAddress);
+            }
+
+            item.setPayload(addressee);
+        }
+
+        modifiedItems << item;
+    }
+
+    mJobProgressTracker = new KJobProgressTracker(this, this);
+    mJobProgressTracker->setCaption(dialogTitle);
+    mJobProgressTracker->setLabel(i18n("Please wait..."));
+    connect(mJobProgressTracker, SIGNAL(finished()), mJobProgressTracker, SLOT(deleteLater()));
+
+    QString errorMessage;
+    switch (mType) {
+    case Account:
+        errorMessage = i18n("Failed to change account: %1");
+        break;
+    case Opportunity:
+        errorMessage = i18n("Failed to change opportunity: %1");
+        break;
+    case Contact:
+        errorMessage = i18n("Failed to change contact: %1");
+        break;
+    default:
+        break;
+    };
+
+    foreach (const Akonadi::Item &item, modifiedItems) {
+        Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
+        mJobProgressTracker->addJob(job, errorMessage);
+    }
+
+    mJobProgressTracker->start();
 }
 
 void Page::addAccountsData(int start, int end, bool emitChanges)
@@ -957,7 +945,6 @@ void Page::retrieveResourceUrl()
     reply.waitForFinished();
     if (reply.isValid()) {
         mResourceBaseUrl = iface.host();
-        mDetailsWidget->details()->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     }
 }
 
@@ -1013,5 +1000,19 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
             ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
             ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
         }
+    }
+}
+
+QString Page::reportTitle() const
+{
+    return QString();
+}
+
+void Page::slotDeleteJobResult(KJob *job)
+{
+    if (job->error() != 0) {
+        const QString error = i18n("Item could not be deleted! Job error: %1").arg(job->errorText());
+        qWarning() << error;
+        emit statusMessage(error);
     }
 }

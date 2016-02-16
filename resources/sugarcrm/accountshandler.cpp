@@ -82,8 +82,7 @@ QStringList AccountsHandler::supportedSugarFields() const
 
 QStringList AccountsHandler::supportedCRMFields() const
 {
-    // SugarAccountIO uses the Sugar field names, so it matches
-    return availableFields();
+    return sugarFieldsToCrmFields(availableFields());
 }
 
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
@@ -116,7 +115,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
         }
         const SugarAccount::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(it.key());
+        field.setName(sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
         itemList << field;
@@ -128,7 +127,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     const QMap<QString, QString>::const_iterator end = customFields.constEnd();
     for ( ; cit != end ; ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(cit.key());
+        field.setName(customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
         itemList << field;
     }
@@ -144,7 +143,8 @@ int AccountsHandler::expectedContentsVersion() const
 {
     // version 1 = accounts now store all fields, including custom fields
     // version 2 = ensure we get trimmed names (no trailing spaces)
-    return 2;
+    // version 3 = renaming of custom fields
+    return 3;
 }
 
 Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -164,10 +164,12 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     SugarAccount account;
     account.setId(entry.id());
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(namedValue.name());
+        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
         if (accessIt == mAccessors.constEnd()) {
-            account.setCustomField(namedValue.name(), value);
+            const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
+            account.setCustomField(crmCustomFieldName, value);
             continue;
         }
 

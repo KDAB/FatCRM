@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>691</width>
-    <height>444</height>
+    <width>537</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -220,7 +220,7 @@
        <widget class="QLineEdit" name="visma_id_c"/>
       </item>
       <item row="10" column="1">
-       <widget class="QPlainTextEdit" name="accounting_c"/>
+       <widget class="BetterPlainTextEdit" name="accounting_c"/>
       </item>
       <item row="8" column="0">
        <widget class="QLabel" name="label_30">
@@ -300,9 +300,6 @@
       <string>Office Address</string>
      </property>
      <layout class="QFormLayout" name="formLayout_4">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_23">
         <property name="text">
