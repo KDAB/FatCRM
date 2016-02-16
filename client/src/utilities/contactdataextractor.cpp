@@ -22,7 +22,7 @@
 
 #include "contactdataextractor.h"
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include <KLocalizedString>
 

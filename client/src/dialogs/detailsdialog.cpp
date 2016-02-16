@@ -40,7 +40,7 @@
 #include <AkonadiCore/ItemCreateJob>
 #include <AkonadiCore/ItemModifyJob>
 
-#include <KPIMUtils/Email>
+#include <KEmailAddress>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
@@ -108,12 +108,12 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     if (mDetails->type() == Contact) {
         QString email = currentData.value(KDCRMFields::email1());
         if (!email.isEmpty()) {
-            currentData.insert(KDCRMFields::email1(), KPIMUtils::extractEmailAddress(email));
+            currentData.insert(KDCRMFields::email1(), KEmailAddress::extractEmailAddress(email));
         }
 
         email = currentData.value(KDCRMFields::email2());
         if (!email.isEmpty()) {
-            currentData.insert(KDCRMFields::email2(), KPIMUtils::extractEmailAddress(email));
+            currentData.insert(KDCRMFields::email2(), KEmailAddress::extractEmailAddress(email));
         }
     }
 
