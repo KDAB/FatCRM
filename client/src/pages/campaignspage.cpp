@@ -28,6 +28,8 @@
 
 #include "kdcrmdata/sugarcampaign.h"
 
+#include <referenceddata.h>
+
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)
@@ -43,6 +45,26 @@ CampaignsPage::~CampaignsPage()
 QString CampaignsPage::reportTitle() const
 {
     return i18n("List of Campaigns");
+}
+
+void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug(); QElapsedTimer dt; dt.start();
+    //QMap<QString, QString> campaignRefMap;
+    QMap<QString, QString> assignedToRefMap;
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarCampaign>()) {
+            const SugarCampaign campaign = item.payload<SugarCampaign>();
+            //campaignRefMap.insert(campaign.id(), campaign.name());
+            assignedToRefMap.insert(campaign.assignedUserId(), campaign.assignedUserName());
+        }
+    }
+    //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
+    //kDebug() << "done," << dt.elapsed() << "ms";
 }
 
 ItemDataExtractor *CampaignsPage::itemDataExtractor() const

@@ -44,6 +44,7 @@ protected:
     QMap<QString, QString> dataForNewObject() Q_DECL_OVERRIDE;
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
     QString reportTitle() const Q_DECL_OVERRIDE;
+    void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
 
 private:
     OpportunityFilterWidget *mFilterUiWidget;

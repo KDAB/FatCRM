@@ -38,6 +38,8 @@ public:
 protected:
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
     QString reportTitle() const Q_DECL_OVERRIDE;
+    void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
+    void handleRemovedRows(int start, int end, bool initialLoadingDone) Q_DECL_OVERRIDE;
 
 private:
     AccountDataExtractor *mDataExtractor;

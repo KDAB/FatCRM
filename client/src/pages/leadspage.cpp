@@ -29,6 +29,8 @@
 #include "kdcrmdata/sugarlead.h"
 
 #include <QDebug>
+#include <referenceddata.h>
+#include <sugaropportunity.h>
 
 using namespace Akonadi;
 
@@ -45,6 +47,22 @@ LeadsPage::~LeadsPage()
 QString LeadsPage::reportTitle() const
 {
     return i18n("List of Leads");
+}
+
+void LeadsPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug();
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    QMap<QString, QString> assignedToRefMap;
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarOpportunity>()) {
+            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
+        }
+    }
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
 ItemDataExtractor *LeadsPage::itemDataExtractor() const

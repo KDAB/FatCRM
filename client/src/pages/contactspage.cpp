@@ -28,6 +28,8 @@
 #include <KABC/Address>
 #include <KABC/Addressee>
 
+#include <referenceddata.h>
+
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
@@ -49,4 +51,28 @@ QString ContactsPage::reportTitle() const
 ItemDataExtractor *ContactsPage::itemDataExtractor() const
 {
     return mDataExtractor;
+}
+
+void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug(); QElapsedTimer dt; dt.start();
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    QMap<QString, QString> contactRefMap, assignedToRefMap;
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KABC::Addressee>()) {
+            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+            const QString id = addressee.custom("FATCRM", "X-ContactId");
+            if (id.isEmpty()) { // newly created, not ID yet
+                continue;
+            }
+            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
+            contactRefMap.insert(id, fullName);
+            assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        }
+    }
+    ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
+    //kDebug() << "done," << dt.elapsed() << "ms";
 }

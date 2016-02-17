@@ -28,6 +28,7 @@
 #include "kdcrmdata/sugaraccount.h"
 
 #include <QDebug>
+#include <referenceddata.h>
 
 using namespace Akonadi;
 
@@ -44,6 +45,45 @@ AccountsPage::~AccountsPage()
 QString AccountsPage::reportTitle() const
 {
     return i18n("List of Accounts");
+}
+
+void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug() << start << end;
+    // QElapsedTimer dt; dt.start();
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    QMap<QString, QString> accountRefMap, assignedToRefMap;
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            const QString accountId = account.id();
+            if (accountId.isEmpty()) // it just got created on the client side, we'll wait for the server to assign it an ID
+                continue;
+            accountRefMap.insert(accountId, account.name());
+            assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
+            AccountRepository::instance()->addAccount(account, item.id());
+        }
+    }
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
+    //kDebug() << "done," << dt.elapsed() << "ms";
+}
+
+void AccountsPage::handleRemovedRows(int start, int end, bool initialLoadingDone)
+{
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            ReferencedData::instance(AccountRef)->removeReferencedData(account.id(), initialLoadingDone);
+
+            AccountRepository::instance()->removeAccount(account);
+        }
+    }
 }
 
 ItemDataExtractor *AccountsPage::itemDataExtractor() const

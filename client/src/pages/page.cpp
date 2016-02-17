@@ -165,6 +165,13 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     // now we wait for the collection manager to find our collection and tell us
 }
 
+void Page::handleRemovedRows(int start, int end, bool initialLoadingDone)
+{
+    Q_UNUSED(start)
+    Q_UNUSED(end)
+    Q_UNUSED(initialLoadingDone)
+}
+
 void Page::slotOnlineStatusChanged(bool online)
 {
     mOnline = online;
@@ -294,25 +301,8 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
     const bool emitChanges = mInitialLoadingDone;
 
-    switch (mType) {
-    case Account:
-        addAccountsData(start, end, emitChanges);
-        break;
-    case Campaign:
-        addCampaignsData(start, end, emitChanges);
-        break;
-    case Contact:
-        addContactsData(start, end, emitChanges);
-        break;
-    case Lead:
-        addLeadsData(start, end, emitChanges);
-        break;
-    case Opportunity:
-        addOpportunitiesData(start, end, emitChanges);
-        break;
-    default: // other objects (like Note) not shown in a Page
-        break;
-    }
+    handleNewRows(emitChanges, end, start);
+
     // Select the first row; looks nicer than empty fields in the details widget.
     //kDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
@@ -335,25 +325,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 
 void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
 {
-    switch (mType) {
-    case Account:
-        removeAccountsData(start, end, mInitialLoadingDone);
-        break;
-    case Campaign:
-        removeCampaignsData(start, end, mInitialLoadingDone);
-        break;
-    case Contact:
-        removeContactsData(start, end, mInitialLoadingDone);
-        break;
-    case Lead:
-        removeLeadsData(start, end, mInitialLoadingDone);
-        break;
-    case Opportunity:
-        removeOpportunitiesData(start, end, mInitialLoadingDone);
-        break;
-    default: // other objects (like Note) not shown in a Page
-        break;
-    }
+    handleRemovedRows(start, end, mInitialLoadingDone);
 }
 
 void Page::initialize()
@@ -798,144 +770,6 @@ void Page::slotChangeFields()
     }
 
     mJobProgressTracker->start();
-}
-
-void Page::addAccountsData(int start, int end, bool emitChanges)
-{
-    //kDebug() << start << end;
-    // QElapsedTimer dt; dt.start();
-    QMap<QString, QString> accountRefMap, assignedToRefMap;
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<SugarAccount>()) {
-            const SugarAccount account = item.payload<SugarAccount>();
-            const QString accountId = account.id();
-            if (accountId.isEmpty()) // it just got created on the client side, we'll wait for the server to assign it an ID
-                continue;
-            accountRefMap.insert(accountId, account.name());
-            assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
-            AccountRepository::instance()->addAccount(account, item.id());
-        }
-    }
-    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
-    //kDebug() << "done," << dt.elapsed() << "ms";
-}
-
-void Page::removeAccountsData(int start, int end, bool emitChanges)
-{
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<SugarAccount>()) {
-            const SugarAccount account = item.payload<SugarAccount>();
-            ReferencedData::instance(AccountRef)->removeReferencedData(account.id(), emitChanges);
-
-            AccountRepository::instance()->removeAccount(account);
-        }
-    }
-}
-
-void Page::addCampaignsData(int start, int end, bool emitChanges)
-{
-    //kDebug(); QElapsedTimer dt; dt.start();
-    //QMap<QString, QString> campaignRefMap;
-    QMap<QString, QString> assignedToRefMap;
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<SugarCampaign>()) {
-            const SugarCampaign campaign = item.payload<SugarCampaign>();
-            //campaignRefMap.insert(campaign.id(), campaign.name());
-            assignedToRefMap.insert(campaign.assignedUserId(), campaign.assignedUserName());
-        }
-    }
-    //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
-}
-
-void Page::removeCampaignsData(int start, int end, bool emitChanges)
-{
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    Q_UNUSED(emitChanges)
-}
-
-void Page::addContactsData(int start, int end, bool emitChanges)
-{
-    //kDebug(); QElapsedTimer dt; dt.start();
-    QMap<QString, QString> contactRefMap, assignedToRefMap;
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KABC::Addressee>()) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-            const QString id = addressee.custom("FATCRM", "X-ContactId");
-            if (id.isEmpty()) { // newly created, not ID yet
-                continue;
-            }
-            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
-            contactRefMap.insert(id, fullName);
-            assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
-        }
-    }
-    ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
-}
-
-void Page::removeContactsData(int start, int end, bool emitChanges)
-{
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    Q_UNUSED(emitChanges)
-}
-
-void Page::addLeadsData(int start, int end, bool emitChanges)
-{
-    //kDebug();
-    QMap<QString, QString> assignedToRefMap;
-
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<SugarLead>()) {
-            const SugarLead lead = item.payload<SugarLead>();
-            assignedToRefMap.insert(lead.assignedUserId(), lead.assignedUserName());
-        }
-    }
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-}
-
-void Page::removeLeadsData(int start, int end, bool emitChanges)
-{
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    Q_UNUSED(emitChanges)
-}
-
-void Page::addOpportunitiesData(int start, int end, bool emitChanges)
-{
-    //kDebug();
-    QMap<QString, QString> assignedToRefMap;
-    for (int row = start; row <= end; ++row) {
-        const QModelIndex index = mItemsTreeModel->index(row, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<SugarOpportunity>()) {
-            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
-        }
-    }
-    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-}
-
-void Page::removeOpportunitiesData(int start, int end, bool emitChanges)
-{
-    Q_UNUSED(start)
-    Q_UNUSED(end)
-    Q_UNUSED(emitChanges)
 }
 
 void Page::retrieveResourceUrl()
