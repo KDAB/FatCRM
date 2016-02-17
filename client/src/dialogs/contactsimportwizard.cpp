@@ -108,9 +108,22 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
             Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, mContactsCollection, this);
 
             const QString errorMessage = i18n("Unable to create contact %1: %2", contact.realName());
+            if (mContactsImportPage->openContactsAfterImport()) {
+                connect(job, SIGNAL(result(KJob*)), this, SLOT(slotContactCreated(KJob*)));
+            }
             tracker->addJob(job, errorMessage);
         }
     }
 
     tracker->start();
+}
+
+void ContactsImportWizard::slotContactCreated(KJob *job)
+{
+    Akonadi::ItemCreateJob *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
+    if (!createJob->error()) {
+        const Akonadi::Item item = createJob->item();
+        // no remote id yet, can't use ItemDataExtractor
+        emit openFutureContact(item.id());
+    }
 }

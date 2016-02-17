@@ -485,6 +485,11 @@ bool ContactsImportPage::validatePage()
     return true;
 }
 
+bool ContactsImportPage::openContactsAfterImport() const
+{
+    return mUi->cbOpenContacts->isChecked();
+}
+
 void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
 {
     {

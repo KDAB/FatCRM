@@ -23,16 +23,14 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <Akonadi/Collection>
 #include "ui_mainwindow.h"
-#include "accountspage.h"
-#include "campaignspage.h"
-#include "contactspage.h"
 #include "enums.h"
-#include "leadspage.h"
-#include "opportunitiespage.h"
 
 #include <QMainWindow>
 
+class ItemsTreeModel;
+class KJob;
 class QAction;
 class QCheckBox;
 class QComboBox;
@@ -42,7 +40,9 @@ class QToolBar;
 class ResourceConfigDialog;
 class CollectionManager;
 class NotesRepository;
+class Page;
 class ReportPage;
+class ContactsPage;
 
 namespace Akonadi
 {
@@ -87,7 +87,7 @@ private:
     NotesRepository *mNotesRepository;
 
     Page *mAccountPage;
-    Page *mContactsPage;
+    ContactsPage *mContactsPage;
     ItemsTreeModel *mContactsModel;
 
     QToolBar *mMainToolBar;

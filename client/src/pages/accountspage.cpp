@@ -49,7 +49,7 @@ QString AccountsPage::reportTitle() const
 
 void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug() << start << end;
+    //kDebug() << this << start << end;
     // QElapsedTimer dt; dt.start();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> accountRefMap, assignedToRefMap;
@@ -84,6 +84,26 @@ void AccountsPage::handleRemovedRows(int start, int end, bool initialLoadingDone
             AccountRepository::instance()->removeAccount(account);
         }
     }
+}
+
+void AccountsPage::handleItemChanged(const Item &item)
+{
+    Q_ASSERT(item.hasPayload<SugarAccount>());
+    const SugarAccount account = item.payload<SugarAccount>();
+    const QString id = account.id();
+    Q_ASSERT(!id.isEmpty());
+    const bool newAccount = !AccountRepository::instance()->hasId(id);
+    bool updateNameRef = newAccount;
+    // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
+    // So we wait for the first dataChanged to create new accounts
+    if (newAccount) {
+        AccountRepository::instance()->addAccount(account, item.id());
+    } else {
+        QVector<AccountRepository::Field> changed = AccountRepository::instance()->modifyAccount(account);
+        updateNameRef = changed.contains(AccountRepository::Name);
+    }
+    if (updateNameRef)
+        ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
 }
 
 ItemDataExtractor *AccountsPage::itemDataExtractor() const

@@ -40,6 +40,7 @@ protected:
     QString reportTitle() const Q_DECL_OVERRIDE;
     void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
     void handleRemovedRows(int start, int end, bool initialLoadingDone) Q_DECL_OVERRIDE;
+    void handleItemChanged(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
 private:
     AccountDataExtractor *mDataExtractor;

@@ -101,6 +101,8 @@ public:
 
     bool validatePage() Q_DECL_OVERRIDE;
 
+    bool openContactsAfterImport() const;
+
 public slots:
     void setChosenContacts(const QVector<ContactsSet> &contacts);
 

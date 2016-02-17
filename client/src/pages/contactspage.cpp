@@ -43,6 +43,11 @@ ContactsPage::~ContactsPage()
 {
 }
 
+void ContactsPage::slotOpenFutureContact(Akonadi::Item::Id id)
+{
+    mPendingContactsToOpen.append(id);
+}
+
 QString ContactsPage::reportTitle() const
 {
     return i18n("List of Contacts");
@@ -75,4 +80,21 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
     ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
     //kDebug() << "done," << dt.elapsed() << "ms";
+}
+
+void ContactsPage::handleItemChanged(const Item &item)
+{
+    Q_ASSERT(item.hasPayload<KABC::Addressee>());
+    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
+    const QString id = addressee.custom("FATCRM", "X-ContactId");
+    if (!id.isEmpty()) {
+        const int idx = mPendingContactsToOpen.indexOf(item.id());
+        if (idx > -1) {
+            mPendingContactsToOpen.remove(idx);
+            openDialogForItem(item);
+        }
+        ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
+        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+    }
 }

@@ -35,14 +35,19 @@ public:
 
     ~ContactsPage();
 
+public slots:
+    void slotOpenFutureContact(Akonadi::Item::Id id);
+
 protected:
     QString reportTitle() const Q_DECL_OVERRIDE;
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
     void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
+    void handleItemChanged(const Akonadi::Item &item) Q_DECL_OVERRIDE;
 
 private:
     ContactDataExtractor *mDataExtractor;
+    QVector<Akonadi::Item::Id> mPendingContactsToOpen;
 };
 
 #endif /* CONTACTSPAGE_H */

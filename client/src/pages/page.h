@@ -64,6 +64,7 @@ public:
     void setNotesRepository(NotesRepository *repo);
     bool queryClose();
     void openDialog(const QString &id);
+    void openDialogForItem(const Akonadi::Item &item);
     void printReport();
     KJob *clearTimestamp();
 Q_SIGNALS:
@@ -84,6 +85,7 @@ protected:
     virtual ItemDataExtractor *itemDataExtractor() const = 0;
     virtual void handleNewRows(int start, int end, bool emitChanges) = 0;
     virtual void handleRemovedRows(int start, int end, bool initialLoadingDone);
+    virtual void handleItemChanged(const Akonadi::Item &item);
 
     inline Akonadi::EntityTreeView *treeView() {
         return mUi.treeView;

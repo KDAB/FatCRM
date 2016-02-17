@@ -21,13 +21,19 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>384</width>
-        <height>284</height>
+        <width>386</width>
+        <height>261</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="mainLayout">
-      </layout>
+      <layout class="QVBoxLayout" name="mainLayout"/>
      </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cbOpenContacts">
+     <property name="text">
+      <string>Open Contacts after Import</string>
+     </property>
     </widget>
    </item>
   </layout>

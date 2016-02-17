@@ -22,6 +22,10 @@
 
 #include "mainwindow.h"
 
+#include "contactspage.h"
+#include "accountspage.h"
+#include "opportunitiespage.h"
+
 #include "accountrepository.h"
 #include "clientsettings.h"
 #include "collectionmanager.h"
@@ -578,6 +582,8 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
     Page *page = pageForType(type);
     if (page) {
         page->openDialog(id);
+    } else {
+        kDebug() << "No page for type" << type;
     }
 }
 
@@ -608,6 +614,8 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);
         importWizard->setContactsModel(mContactsModel);
+        connect(importWizard, SIGNAL(openFutureContact(Akonadi::Item::Id)),
+                mContactsPage, SLOT(slotOpenFutureContact(Akonadi::Item::Id)));
         importWizard->show();
     } else {
         QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),

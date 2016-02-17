@@ -113,18 +113,24 @@ void Page::openDialog(const QString &id)
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
         const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        // we do not check for itemDataExtractor == 0 because we know it is an AccountDataExtractor
         if (itemDataExtractor()->idForItem(item) == id) {
-            DetailsDialog *dialog = openedDialogForItem(item);
-            if (!dialog) {
-                dialog = createDetailsDialog();
-                dialog->setItem(item);
-                dialog->show();
-                // cppcheck-suppress memleak as dialog deletes itself
-            } else {
-                dialog->raise();
-            }
+            openDialogForItem(item);
+            return;
         }
+    }
+    kWarning() << this << "Object not found:" << id;
+}
+
+void Page::openDialogForItem(const Akonadi::Item &item)
+{
+    DetailsDialog *dialog = openedDialogForItem(item);
+    if (!dialog) {
+        dialog = createDetailsDialog();
+        dialog->setItem(item);
+        dialog->show();
+        // cppcheck-suppress memleak as dialog deletes itself
+    } else {
+        dialog->raise();
     }
 }
 
@@ -170,6 +176,11 @@ void Page::handleRemovedRows(int start, int end, bool initialLoadingDone)
     Q_UNUSED(start)
     Q_UNUSED(end)
     Q_UNUSED(initialLoadingDone)
+}
+
+void Page::handleItemChanged(const Item &item)
+{
+    Q_UNUSED(item)
 }
 
 void Page::slotOnlineStatusChanged(bool online)
@@ -806,31 +817,7 @@ void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentif
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
     //kDebug() << "slotItemChanged" << partIdentifiers;
     Q_UNUSED(partIdentifiers);
-    if (mType == Account && item.hasPayload<SugarAccount>()) {
-        const SugarAccount account = item.payload<SugarAccount>();
-        const QString id = account.id();
-        Q_ASSERT(!id.isEmpty());
-        const bool newAccount = !AccountRepository::instance()->hasId(id);
-        bool updateNameRef = newAccount;
-        // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
-        // So we wait for the first dataChanged to create new accounts
-        if (newAccount) {
-            AccountRepository::instance()->addAccount(account, item.id());
-        } else {
-            QVector<AccountRepository::Field> changed = AccountRepository::instance()->modifyAccount(account);
-            updateNameRef = changed.contains(AccountRepository::Name);
-        }
-        if (updateNameRef)
-            ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
-    } else if (mType == Contact && item.hasPayload<KABC::Addressee>()) {
-        const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-        const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
-        const QString id = addressee.custom("FATCRM", "X-ContactId");
-        if (!id.isEmpty()) {
-            ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-            ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
-        }
-    }
+    handleItemChanged(item);
 }
 
 QString Page::reportTitle() const
