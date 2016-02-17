@@ -301,7 +301,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
     const bool emitChanges = mInitialLoadingDone;
 
-    handleNewRows(emitChanges, end, start);
+    handleNewRows(start, end, emitChanges);
 
     // Select the first row; looks nicer than empty fields in the details widget.
     //kDebug() << "model has" << mItemsTreeModel->rowCount()
@@ -804,7 +804,7 @@ KJob *Page::clearTimestamp()
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
-    //qDebug() << "slotItemChanged" << partIdentifiers;
+    //kDebug() << "slotItemChanged" << partIdentifiers;
     Q_UNUSED(partIdentifiers);
     if (mType == Account && item.hasPayload<SugarAccount>()) {
         const SugarAccount account = item.payload<SugarAccount>();
