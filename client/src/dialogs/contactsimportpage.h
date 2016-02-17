@@ -51,10 +51,11 @@ class MergeWidget : public QWidget
 
 public:
     MergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
-                const QVector<MatchPair> &possibleMatches, QWidget *parent = Q_NULLPTR);
+                const QVector<MatchPair> &possibleMatches,
+                QWidget *parent = Q_NULLPTR);
 
     bool skipItem() const;
-    Akonadi::Item finalItem() const;
+    Akonadi::Item finalItem(const QString &descriptionText);
 
 private slots:
     void updateFinalContact();
