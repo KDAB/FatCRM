@@ -26,7 +26,7 @@
 #include "opportunitydataextractor.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
-#include <referenceddata.h>
+#include "referenceddata.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"

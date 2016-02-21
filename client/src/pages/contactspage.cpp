@@ -24,11 +24,10 @@
 #include "contactdataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "referenceddata.h"
 
 #include <KABC/Address>
 #include <KABC/Addressee>
-
-#include <referenceddata.h>
 
 using namespace Akonadi;
 

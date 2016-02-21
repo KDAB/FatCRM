@@ -24,11 +24,11 @@
 #include "accountdataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "referenceddata.h"
 
 #include "kdcrmdata/sugaraccount.h"
 
 #include <QDebug>
-#include <referenceddata.h>
 
 using namespace Akonadi;
 

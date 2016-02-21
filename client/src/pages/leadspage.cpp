@@ -25,12 +25,12 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 #include "leaddataextractor.h"
+#include "referenceddata.h"
+#include "sugaropportunity.h"
 
 #include "kdcrmdata/sugarlead.h"
 
 #include <QDebug>
-#include <referenceddata.h>
-#include <sugaropportunity.h>
 
 using namespace Akonadi;
 

@@ -25,10 +25,9 @@
 #include "campaigndataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "referenceddata.h"
 
 #include "kdcrmdata/sugarcampaign.h"
-
-#include <referenceddata.h>
 
 using namespace Akonadi;
 
