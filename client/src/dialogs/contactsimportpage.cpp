@@ -307,7 +307,7 @@ Akonadi::Item MergeWidget::finalItem(const QString &descriptionText)
     QString description = mFinalContact.note();
     if (!descriptionText.isEmpty() && !description.contains(descriptionText)) {
         if (!description.isEmpty()) {
-            description += "\n";
+            description += '\n';
         }
         description += descriptionText;
         mFinalContact.setNote(description);
