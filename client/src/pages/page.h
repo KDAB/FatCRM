@@ -64,10 +64,11 @@ public:
     void setNotesRepository(NotesRepository *repo);
     bool queryClose();
     void openDialog(const QString &id);
+    void openDialogForItem(const Akonadi::Item &item);
     void printReport();
     KJob *clearTimestamp();
-
 Q_SIGNALS:
+
     void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
     void modelLoaded(DetailsType type);
@@ -82,10 +83,15 @@ public Q_SLOTS:
 
 protected:
     virtual ItemDataExtractor *itemDataExtractor() const = 0;
+    virtual void handleNewRows(int start, int end, bool emitChanges) = 0;
+    virtual void handleRemovedRows(int start, int end, bool initialLoadingDone);
+    virtual void handleItemChanged(const Akonadi::Item &item);
 
-    inline Akonadi::EntityTreeView *treeView()
-    {
+    inline Akonadi::EntityTreeView *treeView() {
         return mUi.treeView;
+    }
+    ItemsTreeModel *itemsTreeModel() const {
+        return mItemsTreeModel;
     }
     void setFilter(FilterProxyModel *filter);
 
@@ -122,17 +128,6 @@ private:
     void readSupportedFields();
     void readEnumDefinitionAttributes();
     void retrieveResourceUrl();
-
-    void addAccountsData(int start, int end, bool emitChanges);
-    void removeAccountsData(int start, int end, bool emitChanges);
-    void addCampaignsData(int start, int end, bool emitChanges);
-    void removeCampaignsData(int start, int end, bool emitChanges);
-    void addContactsData(int start, int end, bool emitChanges);
-    void removeContactsData(int start, int end, bool emitChanges);
-    void addLeadsData(int start, int end, bool emitChanges);
-    void removeLeadsData(int start, int end, bool emitChanges);
-    void addOpportunitiesData(int start, int end, bool emitChanges);
-    void removeOpportunitiesData(int start, int end, bool emitChanges);
 
     DetailsDialog *createDetailsDialog();
     DetailsDialog *openedDialogForItem(const Akonadi::Item &item);

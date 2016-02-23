@@ -22,6 +22,7 @@
 #define CONTACTSIMPORTWIZARD_H
 
 #include "contactsset.h"
+#include "details.h"
 
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
@@ -48,9 +49,13 @@ public:
     void accept() Q_DECL_OVERRIDE;
     void reject() Q_DECL_OVERRIDE;
 
+signals:
+    void openFutureContact(Akonadi::Item::Id id);
+
 private slots:
     void adaptWindowSize();
     void importItems(const QVector<Akonadi::Item> &items);
+    void slotContactCreated(KJob *job);
 
 private:
     AccountImportPage *mAccountImportPage;

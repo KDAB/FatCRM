@@ -26,6 +26,7 @@
 #include "opportunitydataextractor.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
+#include "referenceddata.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -92,6 +93,22 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 QString OpportunitiesPage::reportTitle() const
 {
     return i18n("List of Opportunities");
+}
+
+void OpportunitiesPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug();
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    QMap<QString, QString> assignedToRefMap;
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarOpportunity>()) {
+            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
+        }
+    }
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
 ItemDataExtractor *OpportunitiesPage::itemDataExtractor() const

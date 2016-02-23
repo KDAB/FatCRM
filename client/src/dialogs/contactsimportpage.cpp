@@ -299,10 +299,19 @@ bool MergeWidget::skipItem() const
     return (index == ExcludeContact);
 }
 
-Akonadi::Item MergeWidget::finalItem() const
+Akonadi::Item MergeWidget::finalItem(const QString &descriptionText)
 {
     const QAbstractButton *button = mButtonGroup->checkedButton();
     const int index = button->property("__index").toInt();
+
+    QString description = mFinalContact.note();
+    if (!descriptionText.isEmpty() && !description.contains(descriptionText)) {
+        if (!description.isEmpty()) {
+            description += '\n';
+        }
+        description += descriptionText;
+        mFinalContact.setNote(description);
+    }
 
     if (index == ExcludeContact) {
         Q_ASSERT(false); // should never be called
@@ -475,14 +484,19 @@ bool ContactsImportPage::validatePage()
 {
     QVector<Akonadi::Item> items;
 
-    foreach (const MergeWidget *mergeWidget, findChildren<MergeWidget*>()) {
+    foreach (MergeWidget *mergeWidget, findChildren<MergeWidget*>()) {
         if (!mergeWidget->skipItem())
-            items << mergeWidget->finalItem();
+            items << mergeWidget->finalItem(mUi->lineEdit->text());
     }
 
     emit importedItems(items);
 
     return true;
+}
+
+bool ContactsImportPage::openContactsAfterImport() const
+{
+    return mUi->cbOpenContacts->isChecked();
 }
 
 void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
@@ -539,5 +553,6 @@ void ContactsImportPage::adjustPageSize()
 void ContactsImportPage::addMergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                                         const QVector<MatchPair> &possibleMatches)
 {
-    mUi->mainLayout->addWidget(new MergeWidget(account, importedAddressee, possibleMatches));
+    MergeWidget *widget = new MergeWidget(account, importedAddressee, possibleMatches);
+    mUi->mainLayout->addWidget(widget);
 }

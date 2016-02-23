@@ -24,6 +24,7 @@
 #include "accountdataextractor.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "referenceddata.h"
 
 #include "kdcrmdata/sugaraccount.h"
 
@@ -44,6 +45,65 @@ AccountsPage::~AccountsPage()
 QString AccountsPage::reportTitle() const
 {
     return i18n("List of Accounts");
+}
+
+void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
+{
+    //kDebug() << this << start << end;
+    // QElapsedTimer dt; dt.start();
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    QMap<QString, QString> accountRefMap, assignedToRefMap;
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            const QString accountId = account.id();
+            if (accountId.isEmpty()) // it just got created on the client side, we'll wait for the server to assign it an ID
+                continue;
+            accountRefMap.insert(accountId, account.name());
+            assignedToRefMap.insert(account.assignedUserId(), account.assignedUserName());
+            AccountRepository::instance()->addAccount(account, item.id());
+        }
+    }
+    ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
+    ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
+    //kDebug() << "done," << dt.elapsed() << "ms";
+}
+
+void AccountsPage::handleRemovedRows(int start, int end, bool initialLoadingDone)
+{
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarAccount>()) {
+            const SugarAccount account = item.payload<SugarAccount>();
+            ReferencedData::instance(AccountRef)->removeReferencedData(account.id(), initialLoadingDone);
+
+            AccountRepository::instance()->removeAccount(account);
+        }
+    }
+}
+
+void AccountsPage::handleItemChanged(const Item &item)
+{
+    Q_ASSERT(item.hasPayload<SugarAccount>());
+    const SugarAccount account = item.payload<SugarAccount>();
+    const QString id = account.id();
+    Q_ASSERT(!id.isEmpty());
+    const bool newAccount = !AccountRepository::instance()->hasId(id);
+    bool updateNameRef = newAccount;
+    // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
+    // So we wait for the first dataChanged to create new accounts
+    if (newAccount) {
+        AccountRepository::instance()->addAccount(account, item.id());
+    } else {
+        QVector<AccountRepository::Field> changed = AccountRepository::instance()->modifyAccount(account);
+        updateNameRef = changed.contains(AccountRepository::Name);
+    }
+    if (updateNameRef)
+        ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
 }
 
 ItemDataExtractor *AccountsPage::itemDataExtractor() const
