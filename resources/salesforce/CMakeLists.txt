@@ -30,7 +30,7 @@ kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR
 add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 
 target_link_libraries(akonadi_salesforce_resource
-  ${KDSoap_LIBRARIES}
+  KDSoap::kdsoap
   KF5::Contacts
   KF5::KDELibs4Support
   Qt5::DBus
