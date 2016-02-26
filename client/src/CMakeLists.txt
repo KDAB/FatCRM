@@ -113,7 +113,7 @@ target_link_libraries(fatcrmprivate
 )
 
 target_link_libraries(fatcrmprivate
-  ${KDReports_LIBRARIES}
+  KDReports::kdreports
 )
 
 add_executable(fatcrm app/main.cpp)
