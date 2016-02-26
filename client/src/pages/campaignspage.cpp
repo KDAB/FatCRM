@@ -48,7 +48,7 @@ QString CampaignsPage::reportTitle() const
 
 void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //qDebug(); QElapsedTimer dt; dt.start();
     //QMap<QString, QString> campaignRefMap;
     QMap<QString, QString> assignedToRefMap;
     ItemsTreeModel *treeModel = itemsTreeModel();
@@ -63,7 +63,7 @@ void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 ItemDataExtractor *CampaignsPage::itemDataExtractor() const

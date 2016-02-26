@@ -59,7 +59,7 @@ ItemDataExtractor *ContactsPage::itemDataExtractor() const
 
 void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //qDebug(); QElapsedTimer dt; dt.start();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> contactRefMap, assignedToRefMap;
     for (int row = start; row <= end; ++row) {
@@ -78,7 +78,7 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void ContactsPage::handleItemChanged(const Item &item)

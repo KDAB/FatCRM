@@ -819,7 +819,7 @@ KJob *Page::clearTimestamp()
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
-    //kDebug() << "slotItemChanged" << partIdentifiers;
+    //qDebug() << "slotItemChanged" << partIdentifiers;
     Q_UNUSED(partIdentifiers);
     handleItemChanged(item);
 }

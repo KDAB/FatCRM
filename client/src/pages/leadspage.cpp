@@ -51,7 +51,7 @@ QString LeadsPage::reportTitle() const
 
 void LeadsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug();
+    //qDebug();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
