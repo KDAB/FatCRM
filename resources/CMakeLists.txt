@@ -4,6 +4,8 @@ find_package(KDSoap CONFIG QUIET) # first try KDSoapConfig.cmake
 find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
 #macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
 
+# TODO: Just use KDSOAP_GENERATE_WSDL?
+set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
 if(KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
   macro(kdsoap_generate_soap_bindings _sources _wsdl _name)
