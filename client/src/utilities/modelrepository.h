@@ -26,7 +26,7 @@
 #include <QObject>
 #include <QMap>
 
-class QAbstractItemModel;
+class ItemsTreeModel;
 
 class ModelRepository : public QObject
 {
@@ -35,14 +35,14 @@ public:
     static ModelRepository *instance();
     ~ModelRepository();
 
-    void setModel(DetailsType type, QAbstractItemModel *model);
-    QAbstractItemModel *model(DetailsType type);
-
+    void setModel(DetailsType type, ItemsTreeModel *model);
+    ItemsTreeModel *model(DetailsType type);
+    void removeModel(DetailsType key);
 
 private:
     ModelRepository();
 
-    QMap<DetailsType, QAbstractItemModel*> mModelsMap;
+    QMap<DetailsType, ItemsTreeModel*> mModelsMap;
 };
 
 #endif // MODELREPOSITORY_H

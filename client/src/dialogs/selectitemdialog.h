@@ -37,6 +37,8 @@ class SelectItemDialog;
 
 class ItemDataExtractor;
 
+class QAbstractItemModel;
+
 class SelectItemDialog : public QDialog
 {
     Q_OBJECT

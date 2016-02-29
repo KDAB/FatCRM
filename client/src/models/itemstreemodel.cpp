@@ -212,7 +212,7 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                     return i18nc("@title:Sugar items overview", "Items");
                     break;
                 }
-            } else if (headerGroup == EntityTreeModel::ItemListHeaders) {
+            } else { // e.g EntityTreeModel::ItemListHeaders
                 if (section < 0 || section >= d->mColumns.count()) {
                     return QVariant();
                 }
