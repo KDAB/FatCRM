@@ -40,7 +40,7 @@ set(app_SRCS
   dialogs/detailsdialog.cpp
   dialogs/editlistdialog.cpp
   dialogs/fatcrminputdialog.cpp
-  dialogs/notesdialog.cpp
+  dialogs/noteswindow.cpp
   dialogs/resourceconfigdialog.cpp
   dialogs/selectitemdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
@@ -83,7 +83,7 @@ kde4_add_ui_files(app_SRCS
   dialogs/configurationdialog.ui
   dialogs/contactsimportpage.ui
   dialogs/detailsdialog.ui
-  dialogs/notesdialog.ui
+  dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.ui
   dialogs/selectitemdialog.ui
 )

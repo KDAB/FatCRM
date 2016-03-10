@@ -25,7 +25,7 @@
 #include "ui_opportunitydetails.h"
 #include "enums.h"
 #include "modelrepository.h"
-#include "notesdialog.h"
+#include "noteswindow.h"
 #include "notesrepository.h"
 #include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
@@ -153,7 +153,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     kDebug() << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
     kDebug() << emails.count() << "emails found for opp" << oppId;
-    NotesDialog *dlg = new NotesDialog(this);
+    NotesWindow *dlg = new NotesWindow(0);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
