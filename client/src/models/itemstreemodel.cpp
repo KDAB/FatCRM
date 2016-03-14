@@ -36,6 +36,7 @@
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <QMetaEnum>
+#include <QFont>
 
 using namespace Akonadi;
 
@@ -106,6 +107,8 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
         } else if (mType == Opportunity) {
             return opportunityToolTip(item);
         }
+    } else if (mType == Opportunity && role == Qt::FontRole) {
+        return opportunityData(item, column, role);
     }
 
     return EntityTreeModel::entityData(item, column, role);
@@ -211,7 +214,7 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
                     return i18nc("@title:Sugar items overview", "Items");
                     break;
                 }
-            } else if (headerGroup == EntityTreeModel::ItemListHeaders) {
+            } else { // e.g EntityTreeModel::ItemListHeaders
                 if (section < 0 || section >= d->mColumns.count()) {
                     return QVariant();
                 }
@@ -441,6 +444,13 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
 
         default:
             return QVariant();
+        }
+    }
+    if (role == Qt::FontRole) {
+        if (opportunity.customFields().value("urgent") == "1") {
+            QFont boldFont;
+            boldFont.setBold(true);
+            return boldFont;
         }
     }
     return QVariant();

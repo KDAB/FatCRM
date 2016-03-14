@@ -1,27 +1,5 @@
-/*
-  This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
-
-  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-  Authors: David Faure <david.faure@kdab.com>
-           Michel Boyer de la Giroday <michel.giroday@kdab.com>
-           Kevin Krammer <kevin.krammer@kdab.com>
-
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation, either version 2 of the License, or
-  (at your option) any later version.
-
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-#include "notesdialog.h"
-#include "ui_notesdialog.h"
+#include "noteswindow.h"
+#include "ui_noteswindow.h"
 #include "kdcrmutils.h"
 #include "clientsettings.h"
 
@@ -30,23 +8,23 @@
 
 #include <QScrollBar>
 
-NotesDialog::NotesDialog(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::NotesDialog)
+NotesWindow::NotesWindow(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::NotesWindow)
 {
     ui->setupUi(this);
     ui->textEdit->enableFindReplace(true);
     ui->textEdit->setAcceptRichText(true);
-    ClientSettings::self()->restoreWindowSize("notesDialog", this);
+    ClientSettings::self()->restoreWindowSize("NotesWindow", this);
 }
 
-NotesDialog::~NotesDialog()
+NotesWindow::~NotesWindow()
 {
-    ClientSettings::self()->saveWindowSize("notesDialog", this);
+    ClientSettings::self()->saveWindowSize("NotesWindow", this);
     delete ui;
 }
 
-void NotesDialog::addNote(const SugarNote &note)
+void NotesWindow::addNote(const SugarNote &note)
 {
     const QDateTime modified = KDCRMUtils::dateTimeFromString(note.dateModified());
     QString htmlHeader;
@@ -60,7 +38,7 @@ void NotesDialog::addNote(const SugarNote &note)
     m_notes.append(NoteText(modified, htmlHeader, text));
 }
 
-void NotesDialog::addEmail(const SugarEmail &email)
+void NotesWindow::addEmail(const SugarEmail &email)
 {
     const QString toList = email.toAddrNames();
     const QDateTime dateSent = KDCRMUtils::dateTimeFromString(email.dateSent());
@@ -72,7 +50,7 @@ void NotesDialog::addEmail(const SugarEmail &email)
     m_notes.append(NoteText(dateSent, htmlHeader, text));
 }
 
-void NotesDialog::setVisible(bool visible)
+void NotesWindow::setVisible(bool visible)
 {
     if (ui->textEdit->document()->isEmpty()) {
         qSort(m_notes);
@@ -89,6 +67,11 @@ void NotesDialog::setVisible(bool visible)
             cursor.insertText(note.text());
         }
     }
-    QDialog::setVisible(visible);
+    QWidget::setVisible(visible);
     ui->textEdit->verticalScrollBar()->setValue(0);
+}
+
+void NotesWindow::on_buttonBox_rejected()
+{
+    QWidget::close();
 }

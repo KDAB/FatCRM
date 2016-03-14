@@ -46,11 +46,11 @@ find_package(KF5AkonadiContact CONFIG REQUIRED)
 
 # Version setup
 set(FATCRM_VERSION_MAJOR "1")
-set(FATCRM_VERSION_MINOR "1")
-set(FATCRM_VERSION_PATCH "1")
+set(FATCRM_VERSION_MINOR "2")
+set(FATCRM_VERSION_PATCH "0")
 set(FATCRM_VERSION "${FATCRM_VERSION_MAJOR}.${FATCRM_VERSION_MINOR}.${FATCRM_VERSION_PATCH}")
 set(FATCRM_VERSION_STRING "${FATCRM_VERSION}")
-set(FATCRM_SOVERSION "0.1.0") # for libkdcrmdata
+set(FATCRM_SOVERSION "0.2.0") # for libkdcrmdata
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   find_package(Git)
@@ -99,7 +99,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   check_cxx_compiler_flag(-Wsizeof-pointer-memaccess HAVE_GXX_POINTER_MEMACCESS)
   check_cxx_compiler_flag(-Wreorder HAVE_GXX_REORDER)
   check_cxx_compiler_flag(-Wformat-security HAVE_GXX_FORMAT_SECURITY)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++11 -Wno-deprecated -Wall -Wextra -Woverloaded-virtual -Winit-self -Wmissing-include-dirs -Wunused -Wno-div-by-zero -Wundef -Wpointer-arith -Wmissing-noreturn -Werror=return-type")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -std=c++11 -Wno-deprecated -Wall -Wextra -Woverloaded-virtual -Winit-self -Wunused -Wno-div-by-zero -Wundef -Wpointer-arith -Wmissing-noreturn -Werror=return-type")
   if(HAVE_GXX_UNUSED_BUT_SET)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wunused-but-set-variable")
   endif()

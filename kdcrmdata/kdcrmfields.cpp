@@ -656,3 +656,8 @@ QString KDCRMFields::website()
 {
     return QLatin1String("website");
 }
+
+QString KDCRMFields::opportunityPriority()
+{
+    return QLatin1String("opportunity_priority");
+}

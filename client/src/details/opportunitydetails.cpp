@@ -25,7 +25,7 @@
 #include "ui_opportunitydetails.h"
 #include "enums.h"
 #include "modelrepository.h"
-#include "notesdialog.h"
+#include "noteswindow.h"
 #include "notesrepository.h"
 #include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
@@ -61,6 +61,7 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->next_call_date->setObjectName(KDCRMFields::nextCallDate());
     mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
     mUi->probability->setObjectName(KDCRMFields::probability());
+    mUi->opportunityPriority->setObjectName(KDCRMFields::opportunityPriority());
 
     initialize();
 }
@@ -131,6 +132,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     fillComboBox(mUi->opportunity_type, KDCRMFields::opportunityType());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
+    fillComboBox(mUi->opportunityPriority, KDCRMFields::opportunityPriority());
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
@@ -152,7 +154,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
     qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for opp" << oppId;
-    NotesDialog *dlg = new NotesDialog(this);
+    NotesWindow *dlg = new NotesWindow(0);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);

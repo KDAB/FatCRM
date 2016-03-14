@@ -180,7 +180,10 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
             //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << fieldName << "TYPE" << field.type();
             if (field.type() == QLatin1String("enum")) {
                 //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << moduleName() << "enum" << fieldName;
-                EnumDefinitions::Enum definition(fieldName);
+                QString crmFieldName = sugarFieldToCrmField(fieldName);
+                if (crmFieldName.isEmpty())
+                    crmFieldName = customSugarFieldToCrmField(fieldName);
+                EnumDefinitions::Enum definition(crmFieldName);
                 foreach (const KDSoapGenerated::TNS__Name_value &nameValue, field.options().items()) {
                     // In general, name==value except for some like
                     // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"

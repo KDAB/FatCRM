@@ -156,10 +156,12 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     mResourceIdentifier = identifier;
 
     // cleanup from last time (useful when switching resources)
+    ModelRepository::instance()->removeModel(mType);
     mFilter->setSourceModel(0);
     delete mFilterModel;
     mFilterModel = 0;
     mUi.treeView->setModel(0);
+
     delete mItemsTreeModel;
     mItemsTreeModel = 0;
 
@@ -463,7 +465,7 @@ void Page::setupModel()
     mFilter->setSourceModel(mFilterModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
-    ModelRepository::instance()->setModel(mType, treeView()->model());
+    ModelRepository::instance()->setModel(mType, mItemsTreeModel);
 
     emit modelCreated(mItemsTreeModel); // give it to the reports page
 }

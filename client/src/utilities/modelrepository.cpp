@@ -20,7 +20,7 @@
 
 #include "modelrepository.h"
 
-#include <QAbstractItemModel>
+#include "itemstreemodel.h"
 
 ModelRepository *ModelRepository::instance()
 {
@@ -32,16 +32,21 @@ ModelRepository::~ModelRepository()
 {
 }
 
-void ModelRepository::setModel(DetailsType type, QAbstractItemModel *model)
+void ModelRepository::setModel(DetailsType type, ItemsTreeModel *model)
 {
     mModelsMap.insert(type, model);
 }
 
-QAbstractItemModel *ModelRepository::model(DetailsType type)
+ItemsTreeModel *ModelRepository::model(DetailsType type)
 {
     return mModelsMap.value(type);
 }
 
 ModelRepository::ModelRepository()
 {
+}
+
+void ModelRepository::removeModel(DetailsType key)
+{
+    mModelsMap.remove(key);
 }

@@ -82,6 +82,7 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString shippingAddressPostalcode();
     KDCRMDATA_EXPORT QString industry();
     KDCRMDATA_EXPORT QString accountType();
+    KDCRMDATA_EXPORT QString opportunityPriority();
 
     // for Contacts
     KDCRMDATA_EXPORT QString primaryAddressStreet();
