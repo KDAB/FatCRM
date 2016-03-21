@@ -34,8 +34,8 @@ class SugarNote;
 struct NoteText
 {
     NoteText() {}
-    NoteText(const QDateTime &dt, const QString &htmlHeader, const QString &text)
-        : m_date(dt), m_htmlHeader(htmlHeader), m_text(text) {}
+    NoteText(const QDateTime &dt, const QString &htmlHeader, const QString &text, bool isHtml = false)
+        : m_date(dt), m_htmlHeader(htmlHeader), m_text(text), m_isHtml(isHtml) {}
 
     bool operator<(const NoteText &other) const {
         // Most recent at the top
@@ -44,10 +44,13 @@ struct NoteText
 
     QString text() const { return m_text; }
     QString htmlHeader() const { return m_htmlHeader; }
+    bool isHtml() const { return m_isHtml; }
+
 private:
     QDateTime m_date;
     QString m_htmlHeader;
     QString m_text;
+    bool m_isHtml;
 };
 
 class NotesWindow : public QWidget

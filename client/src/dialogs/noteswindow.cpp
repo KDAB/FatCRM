@@ -66,8 +66,10 @@ void NotesWindow::addEmail(const SugarEmail &email)
     htmlHeader += QString("<html><h1>Mail from %1. Date: %2</h1>\n").arg(email.fromAddrName().trimmed(), KDCRMUtils::formatDateTime(dateSent));
     htmlHeader += QString("<h2>Subject: %1</h2>\n").arg(email.name());
     htmlHeader += QString("<p>To: %1</p>\n").arg(toList);
-    const QString text = email.description() + '\n';
-    m_notes.append(NoteText(dateSent, htmlHeader, text));
+
+    const bool useHtml = email.description().isEmpty();
+    const QString text = (useHtml ? email.descriptionHtml() : email.description()) + '\n';
+    m_notes.append(NoteText(dateSent, htmlHeader, text, useHtml));
 }
 
 void NotesWindow::setVisible(bool visible)
@@ -84,7 +86,10 @@ void NotesWindow::setVisible(bool visible)
             cursor.setBlockFormat(QTextBlockFormat());
             cursor.insertBlock();
             cursor.insertBlock();
-            cursor.insertText(note.text());
+            if (note.isHtml())
+                cursor.insertHtml(note.text());
+            else
+                cursor.insertText(note.text());
         }
     }
     QWidget::setVisible(visible);

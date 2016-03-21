@@ -190,6 +190,10 @@ public:
     void setDescription(const QString &value);
     QString description() const;
 
+    // The mail body in HTML formatting
+    void setDescriptionHtml(const QString &value);
+    QString descriptionHtml() const;
+
     /**
       Convenience: set the data for this email
      */

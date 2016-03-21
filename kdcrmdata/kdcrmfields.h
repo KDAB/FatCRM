@@ -56,6 +56,7 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString reportsToId();
     KDCRMDATA_EXPORT QString opportunityType();
     KDCRMDATA_EXPORT QString description();
+    KDCRMDATA_EXPORT QString descriptionHtml();
     KDCRMDATA_EXPORT QString deleted();
     KDCRMDATA_EXPORT QString content();
     KDCRMDATA_EXPORT QString leadSource();
