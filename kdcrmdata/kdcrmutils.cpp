@@ -56,7 +56,7 @@ void KDCRMUtils::decrementTimeStamp(QString &serverTimestamp)
 
 QString KDCRMUtils::formatTimestamp(const QString &serverTimestamp)
 {
-    const QDateTime dt = dateTimeFromString(serverTimestamp).toLocalTime();
+    const QDateTime dt = dateTimeFromString(serverTimestamp);
     return formatDateTime(dt);
 }
 
@@ -87,7 +87,7 @@ QString KDCRMUtils::formatDate(const QDate &date)
 
 QString KDCRMUtils::formatDateTime(const QDateTime &dt)
 {
-    return KGlobal::locale()->formatDateTime(dt, KLocale::ShortDate, true);
+    return KGlobal::locale()->formatDateTime(dt.toLocalTime(), KLocale::ShortDate, true);
 }
 
 // Sugar SOAP apparently uses double-escaping
