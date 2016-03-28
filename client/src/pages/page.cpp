@@ -282,10 +282,32 @@ void Page::slotRemoveItem()
     }
 
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    QString deleStr = i18n("The selected item will be deleted permanently!");
+    switch (mType) {
+    case Account: {
+        SugarAccount acct = item.payload<SugarAccount>();
+        deleStr = i18n("The account \"%1\" will be deleted permanently!", acct.name());
+        break;
+    }
+    case Opportunity: {
+        SugarOpportunity opp = item.payload<SugarOpportunity>();
+        deleStr = i18n("The %1 opportunity \"%2\" will be deleted permanently!",
+                       opp.tempAccountName(), opp.name());
+        break;
+    }
+    case Contact: {
+        const KABC::Addressee contact = item.payload<KABC::Addressee>();
+        deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
+        break;
+    }
+    case Lead:
+    case Campaign:
+        break;
+    }
 
     QMessageBox msgBox;
     msgBox.setWindowTitle(i18n("Delete record"));
-    msgBox.setText(QString("The selected item will be deleted permanently!"));
+    msgBox.setText(deleStr);
     msgBox.setInformativeText(i18n("Are you sure you want to delete it?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
