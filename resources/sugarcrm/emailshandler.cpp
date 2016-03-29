@@ -134,7 +134,9 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             } else {
                 SugarEmail email = items[pos].payload<SugarEmail>();
                 email.setDescription(description);
-                email.setDescriptionHtml(descriptionHtml);
+                if (description.isEmpty()) {
+                    email.setDescriptionHtml(descriptionHtml);
+                }
                 items[pos].setPayload<SugarEmail>(email);
             }
         }
