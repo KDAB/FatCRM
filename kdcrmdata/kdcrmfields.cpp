@@ -142,6 +142,11 @@ QString KDCRMFields::description()
     return QStringLiteral("description");
 }
 
+QString KDCRMFields::descriptionHtml()
+{
+    return QLatin1String("description_html");
+}
+
 QString KDCRMFields::deleted()
 {
     return QStringLiteral("deleted");

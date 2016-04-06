@@ -60,6 +60,7 @@ public:
     QString mCcAddrNames;
 
     QString mDescription;
+    QString mDescriptionHtml;
 };
 
 SugarEmail::SugarEmail()
@@ -304,6 +305,17 @@ QString SugarEmail::description() const
     return d->mDescription;
 }
 
+void SugarEmail::setDescriptionHtml(const QString &value)
+{
+    d->mEmpty = false;
+    d->mDescriptionHtml = value;
+}
+
+QString SugarEmail::descriptionHtml() const
+{
+    return d->mDescriptionHtml;
+}
+
 void SugarEmail::setData(const QMap<QString, QString>& data)
 {
     d->mEmpty = false;
@@ -457,6 +469,8 @@ KDCRMFields::deleted() = "0"
         // We add an accessor for SugarEmailIO though.
         accessors.insert(KDCRMFields::description(),
                          EmailAccessorPair(&SugarEmail::description, &SugarEmail::setDescription, QString()));
+        accessors.insert(KDCRMFields::descriptionHtml(),
+                         EmailAccessorPair(&SugarEmail::descriptionHtml, &SugarEmail::setDescriptionHtml, QString()));
 
     }
     return accessors;

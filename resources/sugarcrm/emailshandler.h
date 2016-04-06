@@ -45,6 +45,8 @@ public:
     QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
     QStringList supportedCRMFields() const Q_DECL_OVERRIDE;
 
+    int expectedContentsVersion() const Q_DECL_OVERRIDE;
+
     bool needsExtraInformation() const Q_DECL_OVERRIDE { return true; }
     void getExtraInformation(Akonadi::Item::List &items) Q_DECL_OVERRIDE;
 

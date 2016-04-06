@@ -77,6 +77,12 @@ QStringList EmailsHandler::supportedCRMFields() const
     return mAccessors.keys();
 }
 
+int EmailsHandler::expectedContentsVersion() const
+{
+    // version 1 = description_html field added
+    return 1;
+}
+
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
 {
     /* EmailText contains e.g.
@@ -102,19 +108,21 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
         itemIndexById.insert(item.remoteId(), i);
     }
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(QStringList() << "email_id" << "description");
+    selectedFields.setItems(QStringList() << "email_id" << "description" << "description_html");
     // Blocking call
     KDSoapGenerated::TNS__Get_entry_list_result result =
             soap()->get_entry_list(sessionId(), "EmailText", query, QString() /*orderBy*/,
                                    0 /*offset*/, selectedFields, items.count() /*maxResults*/, 0 /*fetchDeleted*/);
 
     foreach(const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {
-        QString email_id, description;
+        QString email_id, description, descriptionHtml;
         foreach(const KDSoapGenerated::TNS__Name_value &val, entry.name_value_list().items()) {
             if (val.name() == "email_id") {
                 email_id = val.value();
             } else if (val.name() == "description") {
-                description = KDCRMUtils::decodeXML(val.value());
+                description = KDCRMUtils::decodeXML(val.value().trimmed());
+            } else if (val.name() == "description_html") {
+                descriptionHtml = KDCRMUtils::decodeXML(val.value().trimmed());
             }
         }
         if (email_id.isEmpty()) {
@@ -126,6 +134,9 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             } else {
                 SugarEmail email = items[pos].payload<SugarEmail>();
                 email.setDescription(description);
+                if (description.isEmpty()) {
+                    email.setDescriptionHtml(descriptionHtml);
+                }
                 items[pos].setPayload<SugarEmail>(email);
             }
         }
@@ -158,6 +169,10 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
+            continue;
+        }
+        if (it.key() == "description" || it.key() == "description_html") {
+            // those ones don't exist on the server, they have been copied from EmailsText
             continue;
         }
         const SugarEmail::valueGetter getter = (*it).getter;
