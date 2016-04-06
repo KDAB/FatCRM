@@ -98,6 +98,7 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
     connect(tracker, SIGNAL(finished()), SLOT(deleteLater()));
 
     foreach (const Akonadi::Item &item, items) {
+        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         if (item.isValid()) {
             Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);

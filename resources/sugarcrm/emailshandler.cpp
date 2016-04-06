@@ -132,12 +132,14 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             if (pos == -1) {
                 qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Email not found:" << email_id;
             } else {
-                SugarEmail email = items[pos].payload<SugarEmail>();
+                auto item = items.at(pos);
+                Q_ASSERT(item.hasPayload<SugarEmail>());
+                SugarEmail email = item.payload<SugarEmail>();
                 email.setDescription(description);
                 if (description.isEmpty()) {
                     email.setDescriptionHtml(descriptionHtml);
                 }
-                items[pos].setPayload<SugarEmail>(email);
+                item.setPayload<SugarEmail>(email);
             }
         }
     }
