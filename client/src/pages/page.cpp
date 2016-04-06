@@ -296,7 +296,7 @@ void Page::slotRemoveItem()
         break;
     }
     case Contact: {
-        const KABC::Addressee contact = item.payload<KABC::Addressee>();
+        const auto contact = item.payload<KContacts::Addressee>();
         deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
         break;
     }
