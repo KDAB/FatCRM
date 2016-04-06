@@ -22,7 +22,7 @@
 
 #include "contactdataextractor.h"
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include <KLocalizedString>
 
@@ -44,8 +44,8 @@ QString ContactDataExtractor::itemAddress() const
 
 QString ContactDataExtractor::idForItem(const Akonadi::Item &item) const
 {
-    if (item.hasPayload<KABC::Addressee>()) {
-        KABC::Addressee contact = item.payload<KABC::Addressee>();
+    if (item.hasPayload<KContacts::Addressee>()) {
+        KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         return contact.custom("FATCRM", "X-ContactId");
     }
     return QString();

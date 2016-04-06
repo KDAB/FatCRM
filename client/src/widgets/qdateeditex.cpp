@@ -27,7 +27,7 @@
 #include <QStyleOptionSpinBox>
 #include <QKeyEvent>
 #include <QCalendarWidget>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 /*!
   \class DateEditEx dateeditex.h

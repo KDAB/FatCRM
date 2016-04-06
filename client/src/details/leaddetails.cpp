@@ -31,6 +31,8 @@
 #include "kdcrmdata/sugarlead.h"
 #include "kdcrmdata/kdcrmfields.h"
 
+#include <QDialog>
+
 LeadDetails::LeadDetails(QWidget *parent)
     : Details(Lead, parent), mUi(new Ui::LeadDetails), mDataExtractor(new LeadDataExtractor(this))
 

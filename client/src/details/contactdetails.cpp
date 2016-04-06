@@ -33,8 +33,8 @@
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 
-#include <KABC/Address>
-#include <KABC/Addressee>
+#include <KContacts/Address>
+#include <KContacts/Addressee>
 
 #include <QMessageBox>
 
@@ -185,12 +185,12 @@ void ContactDetails::slotAccountActivated()
 
 QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
 {
-    Q_ASSERT(item.hasPayload<KABC::Addressee>());
-    KABC::Addressee contact = item.payload<KABC::Addressee>();
+    Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+    KContacts::Addressee contact = item.payload<KContacts::Addressee>();
     return contactData(contact);
 }
 
-QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addressee) const
+QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &addressee) const
 {
     QMap<QString, QString> data;
     data.insert(KDCRMFields::salutation(), addressee.custom("FATCRM", "X-Salutation"));
@@ -206,20 +206,20 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
     if (!emails.isEmpty()) {
         data.insert(KDCRMFields::email2(), emails.at(0));
     }
-    data.insert(KDCRMFields::phoneHome(), addressee.phoneNumber(KABC::PhoneNumber::Home).number());
-    data.insert(KDCRMFields::phoneMobile(), addressee.phoneNumber(KABC::PhoneNumber::Cell).number());
-    data.insert(KDCRMFields::phoneWork(), addressee.phoneNumber(KABC::PhoneNumber::Work).number());
-    data.insert(KDCRMFields::phoneOther(), addressee.phoneNumber(KABC::PhoneNumber::Car).number());
-    data.insert(KDCRMFields::phoneFax(), addressee.phoneNumber(KABC::PhoneNumber::Fax).number());
+    data.insert(KDCRMFields::phoneHome(), addressee.phoneNumber(KContacts::PhoneNumber::Home).number());
+    data.insert(KDCRMFields::phoneMobile(), addressee.phoneNumber(KContacts::PhoneNumber::Cell).number());
+    data.insert(KDCRMFields::phoneWork(), addressee.phoneNumber(KContacts::PhoneNumber::Work).number());
+    data.insert(KDCRMFields::phoneOther(), addressee.phoneNumber(KContacts::PhoneNumber::Car).number());
+    data.insert(KDCRMFields::phoneFax(), addressee.phoneNumber(KContacts::PhoneNumber::Fax).number());
 
-    const KABC::Address address = addressee.address(KABC::Address::Work | KABC::Address::Pref);
+    const KContacts::Address address = addressee.address(KContacts::Address::Work | KContacts::Address::Pref);
     data.insert(KDCRMFields::primaryAddressStreet(), address.street());
     data.insert(KDCRMFields::primaryAddressCity(), address.locality());
     data.insert(KDCRMFields::primaryAddressState(), address.region());
     data.insert(KDCRMFields::primaryAddressPostalcode(), address.postalCode());
     data.insert(KDCRMFields::primaryAddressCountry(), address.country());
 
-    const KABC::Address other = addressee.address(KABC::Address::Home);
+    const KContacts::Address other = addressee.address(KContacts::Address::Home);
     data.insert(KDCRMFields::altAddressStreet(), other.street());
     data.insert(KDCRMFields::altAddressCity(), other.locality());
     data.insert(KDCRMFields::altAddressState(), other.region());
@@ -252,14 +252,14 @@ QMap<QString, QString> ContactDetails::contactData(const KABC::Addressee &addres
 
 void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const
 {
-    KABC::Addressee addressee;
-    if (item.hasPayload<KABC::Addressee>()) {
+    KContacts::Addressee addressee;
+    if (item.hasPayload<KContacts::Addressee>()) {
         // start from the existing item (to keep custom fields not shown in GUI, I suppose)
-        addressee = item.payload<KABC::Addressee>();
+        addressee = item.payload<KContacts::Addressee>();
         // but for anything that uses insert... below, start by clearing the lists.
-        foreach (const KABC::Address &addr, addressee.addresses())
+        foreach (const KContacts::Address &addr, addressee.addresses())
             addressee.removeAddress(addr);
-        foreach (const KABC::PhoneNumber &nr, addressee.phoneNumbers())
+        foreach (const KContacts::PhoneNumber &nr, addressee.phoneNumbers())
             addressee.removePhoneNumber(nr);
     }
 
@@ -273,14 +273,14 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     emails << data.value(KDCRMFields::email1()) // first one is preferred one
            << data.value(KDCRMFields::email2());
     addressee.setEmails(emails);
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneHome()), KABC::PhoneNumber::Home));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KABC::PhoneNumber::Cell));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneWork()), KABC::PhoneNumber::Work));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneOther()), KABC::PhoneNumber::Car));
-    addressee.insertPhoneNumber(KABC::PhoneNumber(data.value(KDCRMFields::phoneFax()), KABC::PhoneNumber::Work | KABC::PhoneNumber::Fax));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneHome()), KContacts::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneMobile()), KContacts::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneWork()), KContacts::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneOther()), KContacts::PhoneNumber::Car));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(data.value(KDCRMFields::phoneFax()), KContacts::PhoneNumber::Work | KContacts::PhoneNumber::Fax));
 
-    KABC::Address primaryAddress;
-    primaryAddress.setType(KABC::Address::Work | KABC::Address::Pref);
+    KContacts::Address primaryAddress;
+    primaryAddress.setType(KContacts::Address::Work | KContacts::Address::Pref);
     primaryAddress.setStreet(data.value(KDCRMFields::primaryAddressStreet()));
     primaryAddress.setLocality(data.value(KDCRMFields::primaryAddressCity()));
     primaryAddress.setRegion(data.value(KDCRMFields::primaryAddressState()));
@@ -288,8 +288,8 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     primaryAddress.setCountry(data.value(KDCRMFields::primaryAddressCountry()));
     addressee.insertAddress(primaryAddress);
 
-    KABC::Address otherAddress;
-    otherAddress.setType(KABC::Address::Home);
+    KContacts::Address otherAddress;
+    otherAddress.setType(KContacts::Address::Home);
     otherAddress.setStreet(data.value(KDCRMFields::altAddressStreet()));
     otherAddress.setLocality(data.value(KDCRMFields::altAddressCity()));
     otherAddress.setRegion(data.value(KDCRMFields::altAddressState()));
@@ -323,8 +323,8 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.insertCustom("FATCRM", "X-Deleted", data.value(KDCRMFields::deleted()));
     addressee.insertCustom("FATCRM", "X-DoNotCall", data.value(KDCRMFields::doNotCall()));
 
-    item.setMimeType(KABC::Addressee::mimeType());
-    item.setPayload<KABC::Addressee>(addressee);
+    item.setMimeType(KContacts::Addressee::mimeType());
+    item.setPayload<KContacts::Addressee>(addressee);
 }
 
 void ContactDetails::setDataInternal(const QMap<QString, QString> &) const

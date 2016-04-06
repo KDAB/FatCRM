@@ -24,13 +24,14 @@
 #define ACCOUNTREPOSITORY_H
 
 #include "sugaraccount.h"
-
-#include <Akonadi/Item>
+#include "fatcrmprivate_export.h"
 
 #include <QMap>
 #include <QVector>
 
-class AccountRepository : public QObject
+#include <AkonadiCore/item.h>
+
+class FATCRMPRIVATE_EXPORT AccountRepository : public QObject
 {
     Q_OBJECT
 public:

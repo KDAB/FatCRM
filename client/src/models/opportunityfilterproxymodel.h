@@ -45,7 +45,7 @@ public:
      *
      * @param parent The parent object.
      */
-    explicit OpportunityFilterProxyModel(QObject *parent = 0);
+    explicit OpportunityFilterProxyModel(QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the filter proxy model.
@@ -57,8 +57,8 @@ public:
     QString filterDescription() const;
 
 protected:
-    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+    bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
 
 private:
     class Private;

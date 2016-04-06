@@ -25,7 +25,7 @@
 #include "sugarnote.h"
 #include "sugarnoteio.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <QtCore/qplugin.h>
 
@@ -63,6 +63,3 @@ void SerializerPluginSugarNote::serialize(const Item &item, const QByteArray &la
     io.writeSugarNote(sugarNote, &data);
 }
 
-Q_EXPORT_PLUGIN2(akonadi_serializer_sugarnote, Akonadi::SerializerPluginSugarNote)
-
-#include "serializerpluginsugarnote.moc"

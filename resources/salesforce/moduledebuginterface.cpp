@@ -57,4 +57,3 @@ QStringList ModuleDebugInterface::supportedFields() const
     return QStringList();
 }
 
-#include "moduledebuginterface.moc"

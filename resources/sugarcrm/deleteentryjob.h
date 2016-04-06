@@ -30,7 +30,6 @@ namespace Akonadi
 class Item;
 }
 
-class ModuleHandler;
 namespace KDSoapGenerated
 {
 class TNS__Set_entry_result;
@@ -41,14 +40,14 @@ class DeleteEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
+    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~DeleteEntryJob();
 
     Akonadi::Item item() const;
 
 protected:
-    void startSugarTask();
+    void startSugarTask() Q_DECL_OVERRIDE;
 
 private:
     class Private;

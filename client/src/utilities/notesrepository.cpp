@@ -21,12 +21,12 @@
 */
 
 #include "notesrepository.h"
-
-#include <Akonadi/Collection>
-#include <Akonadi/CollectionStatistics>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/Monitor>
+#include "fatcrm_client_debug.h"
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/collectionstatistics.h>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/Monitor>
 
 NotesRepository::NotesRepository(QObject *parent) :
     QObject(parent),
@@ -53,7 +53,7 @@ void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadNotes()
 {
-    //kDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
+    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mNotesCollection.statistics().count() << "notes";
 
     // load notes
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
@@ -73,7 +73,7 @@ void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeNote(item);
     }
-    //kDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
+    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
     if (mNotesLoaded == mNotesCollection.statistics().count())
         emit notesLoaded(mNotesLoaded);
 }
@@ -96,7 +96,7 @@ void NotesRepository::storeNote(const Akonadi::Item &item)
         } else {
             // We also get notes for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring notes for" << note.parentType();
+            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring notes for" << note.parentType();
         }
     }
 }
@@ -106,13 +106,13 @@ void NotesRepository::removeNote(const QString &id)
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mNotesParentIdHash.value(id);
     if (!oldParentId.isEmpty()) {
-        kDebug() << "note" << id << "oldParentId" << oldParentId;
+        qDebug() << "note" << id << "oldParentId" << oldParentId;
         // Note is no longer associated with this opportunity
         QVector<SugarNote> &notes = mNotesHash[oldParentId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
         if (it != notes.constEnd()) {
             const int idx = std::distance(notes.constBegin(), it);
-            kDebug() << "Removing note at" << idx;
+            qDebug() << "Removing note at" << idx;
             notes.remove(idx);
         }
     }
@@ -127,7 +127,7 @@ void NotesRepository::setEmailsCollection(const Akonadi::Collection &collection)
 
 void NotesRepository::loadEmails()
 {
-    //kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
+    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -161,7 +161,7 @@ void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeEmail(item);
     }
-    //kDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
+    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
     if (mEmailsLoaded == mEmailsCollection.statistics().count())
         emit emailsLoaded(mEmailsLoaded);
 }
@@ -184,7 +184,7 @@ void NotesRepository::storeEmail(const Akonadi::Item &item)
         } else {
             // We also get emails for Accounts and Emails.
             // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring emails for" << email.parentType();
+            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring emails for" << email.parentType();
         }
     }
 }
@@ -194,13 +194,13 @@ void NotesRepository::removeEmail(const QString &id)
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mEmailsParentIdHash.value(id);
     if (!oldParentId.isEmpty()) {
-        kDebug() << "email" << id << "oldParentId" << oldParentId;
+        qDebug() << "email" << id << "oldParentId" << oldParentId;
         // Email is no longer associated with this opportunity
         QVector<SugarEmail> &emails = mEmailsHash[oldParentId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
         if (it != emails.constEnd()) {
             const int idx = std::distance(emails.constBegin(), it);
-            kDebug() << "Removing email at" << idx;
+            qDebug() << "Removing email at" << idx;
             emails.remove(idx);
         }
     }
@@ -220,19 +220,19 @@ void NotesRepository::updateItem(const Akonadi::Item &item, const Akonadi::Colle
     } else if (collection == mEmailsCollection) {
         storeEmail(item);
     } else {
-        kWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
+        qCWarning(FATCRM_CLIENT_LOG) << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
     }
 }
 
 void NotesRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
-    kDebug() << item.id() << item.mimeType();
+    qDebug() << item.id() << item.mimeType();
     updateItem(item, collection);
 }
 
 void NotesRepository::slotItemRemoved(const Akonadi::Item &item)
 {
-    kDebug() << item.id();
+    qDebug() << item.id();
     const Akonadi::Collection collection = item.parentCollection();
     // Don't use the payload to handle removals (no payload anymore on removal)
     if (collection == mNotesCollection) {
@@ -240,14 +240,14 @@ void NotesRepository::slotItemRemoved(const Akonadi::Item &item)
     } else if (collection == mEmailsCollection) {
         removeEmail(item.remoteId());
     } else {
-        kWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
+        qWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
     }
 }
 
 void NotesRepository::slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // I get only REMOTEREVISION even when changing the parentid in the SugarEmail...
-    //kDebug() << item.id() << partIdentifiers;
+    //qDebug() << item.id() << partIdentifiers;
     Q_UNUSED(partIdentifiers);
 
     // Handle the case where the parent id changed

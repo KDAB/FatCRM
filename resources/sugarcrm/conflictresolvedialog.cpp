@@ -22,14 +22,14 @@
 
 #include "conflictresolvedialog.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <akonadi/differencesalgorithminterface.h> //krazy:exclude=camelcase
-#include <Akonadi/Item>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/differencesalgorithminterface.h>
+#include <AkonadiCore/Item>
 
 #include <KColorScheme>
-#include <KLocale>
-#include <KPushButton>
-#include <KTextBrowser>
+#include <KLocalizedString>
+#include <QTextBrowser>
+#include <QPushButton>
 
 #include <QVBoxLayout>
 
@@ -52,22 +52,22 @@ public:
         return header() + mContent + footer();
     }
 
-    void setPropertyNameTitle(const QString &title)
+    void setPropertyNameTitle(const QString &title) Q_DECL_OVERRIDE
     {
         mNameTitle = title;
     }
 
-    void setLeftPropertyValueTitle(const QString &title)
+    void setLeftPropertyValueTitle(const QString &title) Q_DECL_OVERRIDE
     {
         mLeftTitle = title;
     }
 
-    void setRightPropertyValueTitle(const QString &title)
+    void setRightPropertyValueTitle(const QString &title) Q_DECL_OVERRIDE
     {
         mRightTitle = title;
     }
 
-    void addProperty(Mode mode, const QString &name, const QString &leftValue, const QString &rightValue)
+    void addProperty(Mode mode, const QString &name, const QString &leftValue, const QString &rightValue) Q_DECL_OVERRIDE
     {
         switch (mode) {
         case NormalMode:
@@ -141,7 +141,7 @@ public:
 
     DifferencesAlgorithmInterface *mDiffInterface;
 
-    KTextBrowser *mView;
+    QTextBrowser *mView;
 
 public: // slots
     void useLocalItem();
@@ -196,7 +196,8 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     QWidget *widget = new QWidget(this);
     QVBoxLayout *box = new QVBoxLayout(widget);
 
-    d->mView = new KTextBrowser(widget);
+    d->mView = new QTextBrowser(widget);
+    d->mView->setOpenLinks(false);
     box->addWidget(d->mView);
 
     setMainWidget(widget);
@@ -225,4 +226,4 @@ ConflictHandler::ResolveStrategy ConflictResolveDialog::resolveStrategy() const
     return d->mStrategy;
 }
 
-#include "conflictresolvedialog.moc"
+#include "moc_conflictresolvedialog.cpp"

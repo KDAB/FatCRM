@@ -21,21 +21,21 @@
 */
 
 #include "noteshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 
 NotesHandler::NotesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Notes"), session),
+    : ModuleHandler(QStringLiteral("Notes"), session),
       mAccessors(SugarNote::accessorHash())
 {
 }
@@ -59,12 +59,12 @@ Akonadi::Collection NotesHandler::handlerCollection() const
 
 QString NotesHandler::queryStringForListing() const
 {
-    return QLatin1String("notes.parent_type='Opportunities'");
+    return QStringLiteral("notes.parent_type='Opportunities'");
 }
 
 QString NotesHandler::orderByForListing() const
 {
-    return QLatin1String("notes.name");
+    return QStringLiteral("notes.name");
 }
 
 QStringList NotesHandler::supportedSugarFields() const
@@ -80,7 +80,7 @@ QStringList NotesHandler::supportedCRMFields() const
 bool NotesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarNote>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Note payload";
         return false;
     }
@@ -91,7 +91,7 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the note being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -126,7 +126,7 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Notes entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Notes entry for id=" << entry.id() << "has no values";
         return item;
     }
 

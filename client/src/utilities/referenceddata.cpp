@@ -22,8 +22,6 @@
 
 #include "referenceddata.h"
 
-#include <KDebug>
-
 #include <QVector>
 #include <QMap>
 #include <QPair>
@@ -221,4 +219,4 @@ ReferencedData::ReferencedData(ReferencedDataType type, QObject *parent)
 {
 }
 
-#include "referenceddata.moc"
+#include "moc_referenceddata.cpp"

@@ -30,7 +30,7 @@
 
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <Akonadi/EntityTreeModel>
+#include <AkonadiCore/EntityTreeModel>
 
 #include <QDate>
 
@@ -161,4 +161,3 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
     return FilterProxyModel::lessThan(left, right);
 }
 
-#include "opportunityfilterproxymodel.moc"

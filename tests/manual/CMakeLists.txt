@@ -13,11 +13,17 @@ include_directories(
 add_executable(resourceconfigdialogtest resourceconfigdialogtest.cpp)
 target_link_libraries(resourceconfigdialogtest
   fatcrmprivate
-  ${QT_QTGUI_LIBS}
+  Qt5::Gui
+  KF5::AkonadiCore
+  Qt5::Widgets
+  kdcrmdata
 )
 
-kde4_add_executable(itemstreemodeltest itemstreemodeltest.cpp)
+add_executable(itemstreemodeltest itemstreemodeltest.cpp)
 target_link_libraries(itemstreemodeltest
   fatcrmprivate
-  ${QT_QTGUI_LIBS}
+  Qt5::Gui
+  KF5::AkonadiCore
+  Qt5::Widgets
+  kdcrmdata
 )

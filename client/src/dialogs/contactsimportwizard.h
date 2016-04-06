@@ -24,16 +24,14 @@
 #include "contactsset.h"
 #include "details.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 #include <QWizard>
 
 class AccountImportPage;
 class ContactsImportPage;
 class ItemsTreeModel;
-class QProgressDialog;
-class ItemDataExtractor;
 
 class ContactsImportWizard : public QWizard
 {

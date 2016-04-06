@@ -30,8 +30,8 @@ using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 //#include <QCryptographicHash>
 
-#include <KDebug>
-#include <KLocale>
+#include "sugarcrmresource_debug.h"
+#include <KLocalizedString>
 
 #include <QNetworkReply>
 
@@ -63,7 +63,7 @@ public: // slots
 
 void SugarJob::Private::startLogin()
 {
-    kDebug() << q;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q;
     mTryRelogin = false;
 
     Sugarsoap *soap = mSession->soap();
@@ -99,7 +99,7 @@ void SugarJob::Private::startLogin()
 
 void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
 {
-    kDebug() << q << "error=" << callResult.error().number();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "error=" << callResult.error().number();
     const QString sessionId = callResult.id();
 
     QString message;
@@ -108,7 +108,7 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
     } else if (sessionId == QLatin1String("-1")) {
         message = i18nc("@info:status", "server returned an invalid session identifier");
     } else {
-        kDebug() << q << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "Login (for" << q->metaObject()->className() << ") succeeded: sessionId=" << sessionId;
         mSession->setSessionId(sessionId);
         q->setError(0);
         q->setErrorText(QString());
@@ -127,7 +127,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
     mSession->setSessionId(QString());
 
     const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
-    kDebug() << q << "faultcode=" << faultcode;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "faultcode=" << faultcode;
     if (faultcode == QNetworkReply::UnknownNetworkError ||
             faultcode == QNetworkReply::HostNotFoundError) {
         q->setError(SugarJob::CouldNotConnectError);
@@ -141,7 +141,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
 
 void SugarJob::Private::slotPasswordAvailable()
 {
-    kDebug();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     startLogin();
 }
 
@@ -152,12 +152,12 @@ SugarJob::SugarJob(SugarSession *session, QObject *parent)
             this, SLOT(loginDone(KDSoapGenerated::TNS__Set_entry_result)));
     connect(session->soap(), SIGNAL(loginError(KDSoapMessage)),
             this, SLOT(loginError(KDSoapMessage)));
-    //kDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
 }
 
 SugarJob::~SugarJob()
 {
-    //kDebug() << this;
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << this;
     delete d;
 }
 
@@ -198,13 +198,13 @@ bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
     if (errorValue.number() == QLatin1String("10")) {
         // Invalid login error, meaning we need to log in again
         if (d->mTryRelogin) {
-            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
             QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
             // We'll retry the operation in loginDone()
             return true;
         }
     }
-    kDebug() << errorValue.number() << errorValue.description();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << errorValue.number() << errorValue.description();
     setError(SugarJob::SoapError);
     setErrorText(errorValue.description());
     emitResult();
@@ -216,7 +216,7 @@ bool SugarJob::handleLoginError(const KDSoapMessage &fault)
 {
     // TODO check for error indicating that new login is required, e.g. network error.
     // No point in re-login on a real fault sent by the server.
-    kWarning() << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
     Q_UNUSED(fault);
     if (d->mTryRelogin) {
         QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
@@ -235,5 +235,4 @@ Sugarsoap *SugarJob::soap()
 {
     return d->mSession->soap();
 }
-
-#include "sugarjob.moc"
+#include "moc_sugarjob.cpp"

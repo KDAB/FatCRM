@@ -25,8 +25,9 @@
 
 #include <QSharedData>
 #include <QString>
+#include <QMap>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 class SugarNote::Private : public QSharedData
 {
@@ -332,7 +333,7 @@ QMap<QString, QString> SugarNote::data() const
 
 QString SugarNote::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.note");
+    return QStringLiteral("application/x-vnd.kdab.crm.note");
 }
 
 Q_GLOBAL_STATIC(SugarNote::AccessorHash, s_accessors)

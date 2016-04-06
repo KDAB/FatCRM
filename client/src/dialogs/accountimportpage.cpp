@@ -25,7 +25,7 @@
 #include "accountrepository.h"
 
 #include <KJobUiDelegate>
-#include <Akonadi/ItemCreateJob>
+#include <AkonadiCore/ItemCreateJob>
 
 #include <QCheckBox>
 #include <QGroupBox>

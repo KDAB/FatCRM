@@ -47,11 +47,11 @@ public:
         TaskError
     };
 
-    explicit SugarJob(SugarSession *session, QObject *parent = 0);
+    explicit SugarJob(SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~SugarJob();
 
-    void start();
+    void start() Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     void restart();

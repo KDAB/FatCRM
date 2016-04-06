@@ -37,14 +37,14 @@ class ListModulesJob : public SugarJob
     Q_OBJECT
 
 public:
-    explicit ListModulesJob(SugarSession *session, QObject *parent = 0);
+    explicit ListModulesJob(SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~ListModulesJob();
 
     QStringList modules() const;
 
 protected:
-    void startSugarTask();
+    void startSugarTask() Q_DECL_OVERRIDE;
 
 private:
     class Private;

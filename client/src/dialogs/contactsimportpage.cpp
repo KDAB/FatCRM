@@ -24,7 +24,7 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 
-#include <Akonadi/ItemCreateJob>
+#include <AkonadiCore/ItemCreateJob>
 #include <KJobUiDelegate>
 #include <QBoxLayout>
 #include <QCheckBox>
@@ -105,7 +105,7 @@ QString formattedContact(const QString &prefix, int prefixFlags,
 }
 
 // For one-line descriptions
-QString formattedContact(const KABC::Addressee &addressee, bool withAddress = false)
+QString formattedContact(const KContacts::Addressee &addressee, bool withAddress = false)
 {
     QStringList parts;
 
@@ -147,7 +147,7 @@ QString formattedContact(const KABC::Addressee &addressee, bool withAddress = fa
     return parts.join(" ");
 }
 
-QString formattedAddress(const KABC::Address &address)
+QString formattedAddress(const KContacts::Address &address)
 {
     QStringList parts;
     if (!address.street().isEmpty())
@@ -186,7 +186,7 @@ QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
     return checkBox;
 }
 
-MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
+MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                          const QVector<MatchPair> &possibleMatches, QWidget *parent)
     : QWidget(parent)
     , mAccount(account)
@@ -239,8 +239,8 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
         mUpdateCheckBoxes.emailAddress = addFieldCheckBox(mImportedAddressee.preferredEmail());
     }
 
-    if (!mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number().isEmpty()) {
-        const QString str = mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number();
+    if (!mImportedAddressee.phoneNumber(KContacts::PhoneNumber::Work).number().isEmpty()) {
+        const QString str = mImportedAddressee.phoneNumber(KContacts::PhoneNumber::Work).number();
         mUpdateCheckBoxes.phoneNumber = addFieldCheckBox(str);
     }
 
@@ -253,7 +253,7 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KABC::Addressee &imp
     connect(mButtonGroup, SIGNAL(buttonClicked(int)), SLOT(updateFinalContact()));
 
     for (int i = 0; i < mPossibleMatches.count(); ++i) {
-        const KABC::Addressee &possibleMatch = mPossibleMatches.at(i).contact;
+        const KContacts::Addressee &possibleMatch = mPossibleMatches.at(i).contact;
         QRadioButton *button = new QRadioButton;
         button->setProperty("__index", i);
         button->setText(i18n("Update %1", formattedContact(possibleMatch, true)));
@@ -318,7 +318,7 @@ Akonadi::Item MergeWidget::finalItem(const QString &descriptionText)
         return Akonadi::Item();
     } else if (index == CreateNewContact) {
         Akonadi::Item item;
-        item.setMimeType(KABC::Addressee::mimeType());
+        item.setMimeType(KContacts::Addressee::mimeType());
         item.setPayload(mFinalContact);
         return item;
     } else {
@@ -344,7 +344,7 @@ void MergeWidget::updateFinalContact()
     if (index == ExcludeContact) {
         // do nothing
     } else if (index == CreateNewContact) {
-        mFinalContact = KABC::Addressee();
+        mFinalContact = KContacts::Addressee();
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             prefixFlags = IsNew;
@@ -373,10 +373,10 @@ void MergeWidget::updateFinalContact()
 
         if (mUpdateCheckBoxes.phoneNumber && mUpdateCheckBoxes.phoneNumber->isChecked()) {
             phoneNumberFlags = IsNew;
-            mFinalContact.insertPhoneNumber(mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work));
+            mFinalContact.insertPhoneNumber(mImportedAddressee.phoneNumber(KContacts::PhoneNumber::Work));
         }
 
-        KABC::Address address(KABC::Address::Work | KABC::Address::Pref);
+        KContacts::Address address(KContacts::Address::Work | KContacts::Address::Pref);
         if (!mAccount.shippingAddressStreet().isEmpty()) {
             address.setStreet(mAccount.shippingAddressStreet());
             address.setLocality(mAccount.shippingAddressCity());
@@ -392,7 +392,7 @@ void MergeWidget::updateFinalContact()
         }
 
         addressFlags = IsNew;
-        mFinalContact.removeAddress(mFinalContact.address(KABC::Address::Work|KABC::Address::Pref));
+        mFinalContact.removeAddress(mFinalContact.address(KContacts::Address::Work|KContacts::Address::Pref));
         mFinalContact.insertAddress(address);
 
         mFinalContact.insertCustom("FATCRM", "X-AccountId", mAccount.id());
@@ -436,10 +436,10 @@ void MergeWidget::updateFinalContact()
         }
 
         if (mUpdateCheckBoxes.phoneNumber && mUpdateCheckBoxes.phoneNumber->isChecked()) {
-            if (mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number() != mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work).number()) {
-                phoneNumberFlags = (mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number().isEmpty() ? IsNew : IsModified);
-                mFinalContact.removePhoneNumber(mFinalContact.phoneNumber(KABC::PhoneNumber::Work));
-                mFinalContact.insertPhoneNumber(mImportedAddressee.phoneNumber(KABC::PhoneNumber::Work));
+            if (mFinalContact.phoneNumber(KContacts::PhoneNumber::Work).number() != mImportedAddressee.phoneNumber(KContacts::PhoneNumber::Work).number()) {
+                phoneNumberFlags = (mFinalContact.phoneNumber(KContacts::PhoneNumber::Work).number().isEmpty() ? IsNew : IsModified);
+                mFinalContact.removePhoneNumber(mFinalContact.phoneNumber(KContacts::PhoneNumber::Work));
+                mFinalContact.insertPhoneNumber(mImportedAddressee.phoneNumber(KContacts::PhoneNumber::Work));
             }
         }
     }
@@ -452,8 +452,8 @@ void MergeWidget::updateFinalContact()
                                                      mFinalContact.familyName(), familyNameFlags,
                                                      mFinalContact.title(), jobTitleFlags,
                                                      mFinalContact.preferredEmail(), emailAddressFlags,
-                                                     mFinalContact.phoneNumber(KABC::PhoneNumber::Work).number(), phoneNumberFlags,
-                                                     formattedAddress(mFinalContact.address(KABC::Address::Work|KABC::Address::Pref)), addressFlags));
+                                                     mFinalContact.phoneNumber(KContacts::PhoneNumber::Work).number(), phoneNumberFlags,
+                                                     formattedAddress(mFinalContact.address(KContacts::Address::Work|KContacts::Address::Pref)), addressFlags));
     }
 }
 
@@ -510,14 +510,15 @@ void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
     }
 
     foreach (const ContactsSet &contactsSet, contacts) {
-        foreach (const KABC::Addressee &addressee, contactsSet.addressees) {
+        foreach (const KContacts::Addressee &addressee, contactsSet.addressees) {
             QVector<MatchPair> matchByEmail;
             QVector<MatchPair> matchByName;
 
             for (int row = 0; row < mContactsModel->rowCount(); ++row) {
                 const QModelIndex index = mContactsModel->index(row, 0);
                 const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-                const KABC::Addressee possibleMatch = item.payload<KABC::Addressee>();
+                Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+                const KContacts::Addressee possibleMatch = item.payload<KContacts::Addressee>();
                 if (possibleMatch.preferredEmail() == addressee.preferredEmail()) {
                     MatchPair pair;
                     pair.contact = possibleMatch;
@@ -550,7 +551,7 @@ void ContactsImportPage::adjustPageSize()
     emit layoutChanged();
 }
 
-void ContactsImportPage::addMergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
+void ContactsImportPage::addMergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                                         const QVector<MatchPair> &possibleMatches)
 {
     MergeWidget *widget = new MergeWidget(account, importedAddressee, possibleMatches);

@@ -22,17 +22,19 @@
 
 #include "leadshandler.h"
 #include "sugarsession.h"
+#include "sugarcrmresource_debug.h"
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
-#include <KABC/Address>
-#include <KLocale>
+#include <KContacts/Address>
+
+#include <KLocalizedString>
 
 LeadsHandler::LeadsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Leads"), session),
@@ -54,7 +56,7 @@ Akonadi::Collection LeadsHandler::handlerCollection() const
 
 QString LeadsHandler::orderByForListing() const
 {
-    return QLatin1String("leads.last_name");
+    return QStringLiteral("leads.last_name");
 }
 
 QStringList LeadsHandler::supportedSugarFields() const
@@ -65,7 +67,7 @@ QStringList LeadsHandler::supportedSugarFields() const
 bool LeadsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarLead>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Lead payload";
         return false;
     }
@@ -76,7 +78,7 @@ bool LeadsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the lead being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
         itemList << field;
     }
@@ -110,7 +112,7 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Leads entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Leads entry for id=" << entry.id() << "has no values";
         return item;
     }
 
@@ -176,14 +178,14 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                         seenPrimaryAddress = true;
                         diffName = i18nc("@item:intable", "Primary Address");
 
-                        KABC::Address leftAddress(KABC::Address::Work | KABC::Address::Pref);
+                        KContacts::Address leftAddress(KContacts::Address::Work | KContacts::Address::Pref);
                         leftAddress.setStreet(leftLead.primaryAddressStreet());
                         leftAddress.setLocality(leftLead.primaryAddressCity());
                         leftAddress.setRegion(leftLead.primaryAddressState());
                         leftAddress.setCountry(leftLead.primaryAddressCountry());
                         leftAddress.setPostalCode(leftLead.primaryAddressPostalcode());
 
-                        KABC::Address rightAddress(KABC::Address::Work | KABC::Address::Pref);
+                        KContacts::Address rightAddress(KContacts::Address::Work | KContacts::Address::Pref);
                         rightAddress.setStreet(rightLead.primaryAddressStreet());
                         rightAddress.setLocality(rightLead.primaryAddressCity());
                         rightAddress.setRegion(rightLead.primaryAddressState());
@@ -201,14 +203,14 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                         seenOtherAddress = true;
                         diffName = i18nc("@item:intable", "Other Address");
 
-                        KABC::Address leftAddress(KABC::Address::Home);
+                        KContacts::Address leftAddress(KContacts::Address::Home);
                         leftAddress.setStreet(leftLead.altAddressStreet());
                         leftAddress.setLocality(leftLead.altAddressCity());
                         leftAddress.setRegion(leftLead.altAddressState());
                         leftAddress.setCountry(leftLead.altAddressCountry());
                         leftAddress.setPostalCode(leftLead.altAddressPostalcode());
 
-                        KABC::Address rightAddress(KABC::Address::Home);
+                        KContacts::Address rightAddress(KContacts::Address::Home);
                         rightAddress.setStreet(rightLead.altAddressStreet());
                         rightAddress.setLocality(rightLead.altAddressCity());
                         rightAddress.setRegion(rightLead.altAddressState());

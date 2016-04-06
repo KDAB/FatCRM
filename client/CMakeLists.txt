@@ -6,7 +6,5 @@ set_package_properties(KDReports PROPERTIES
   PURPOSE "Required to generate reports."
 )
 
-include_directories(${KDReports_INCLUDE_DIR} ${KDReports_INCLUDE_DIR}/KDReports)
-
 add_subdirectory(src)
 add_subdirectory(icons)

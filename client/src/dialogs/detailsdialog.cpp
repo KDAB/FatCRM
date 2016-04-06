@@ -35,17 +35,17 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemModifyJob>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemModifyJob>
 
-#include <KPIMUtils/Email>
+#include <KEmailAddress>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 #include <QMessageBox>
 #include <QKeyEvent>
 
@@ -108,12 +108,12 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     if (mDetails->type() == Contact) {
         QString email = currentData.value(KDCRMFields::email1());
         if (!email.isEmpty()) {
-            currentData.insert(KDCRMFields::email1(), KPIMUtils::extractEmailAddress(email));
+            currentData.insert(KDCRMFields::email1(), KEmailAddress::extractEmailAddress(email));
         }
 
         email = currentData.value(KDCRMFields::email2());
         if (!email.isEmpty()) {
-            currentData.insert(KDCRMFields::email2(), KPIMUtils::extractEmailAddress(email));
+            currentData.insert(KDCRMFields::email2(), KEmailAddress::extractEmailAddress(email));
         }
     }
 
@@ -134,10 +134,10 @@ void DetailsDialog::Private::saveClicked()
 
     Job *job = 0;
     if (item.isValid()) {
-        kDebug() << "Item modify";
+        qCDebug(FATCRM_CLIENT_LOG) << "Item modify";
         job = new ItemModifyJob(item, q);
     } else {
-        kDebug() << "Item create";
+        qCDebug(FATCRM_CLIENT_LOG) << "Item create";
         Q_ASSERT(mCollection.isValid());
         job = new ItemCreateJob(item, mCollection, q);
     }
@@ -184,9 +184,9 @@ Item DetailsDialog::item() const
 
 void DetailsDialog::Private::saveResult(KJob *job)
 {
-    kDebug() << "save result=" << job->error();
+    qCDebug(FATCRM_CLIENT_LOG) << "save result=" << job->error();
     if (job->error() != 0) {
-        kError() << job->errorText();
+        qCCritical(FATCRM_CLIENT_LOG) << job->errorText();
         mUi.labelOffline->setText(job->errorText());
         mUi.labelOffline->show();
         return;
@@ -215,7 +215,7 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     connect(d->mSaveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close())); // TODO confirm if modified
+    connect(cancelButton, &QAbstractButton::clicked, this, &QDialog::close); // TODO confirm if modified
 
     ClientSettings::self()->restoreWindowSize("details", this);
 }
@@ -344,4 +344,4 @@ Details *DetailsDialog::details()
     return d->mDetails;
 }
 
-#include "detailsdialog.moc"
+#include "moc_detailsdialog.cpp"

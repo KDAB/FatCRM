@@ -26,23 +26,26 @@
 #include "sugaropportunity.h"
 #include <config-fatcrm-version.h>
 
-#include <KApplication>
-#include <KAboutData>
-#include <KCmdLineArgs>
-#include <KLocale>
 
-#include <Akonadi/Collection>
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/CollectionFetchScope>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/EntityTreeView>
-#include <Akonadi/EntityMimeTypeFilterModel>
-#include <Akonadi/Session>
+#include <KAboutData>
+
+#include <KLocalizedString>
+
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiWidgets/EntityTreeView>
+#include <AkonadiCore/EntityMimeTypeFilterModel>
+#include <AkonadiCore/Session>
 using namespace Akonadi;
 
 #include <QTreeView>
 #include <QTimer>
+#include <QApplication>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 class Controller : public QObject
 {
@@ -63,14 +66,14 @@ public:
 private Q_SLOTS:
     void rootFetchJobDone(KJob *job) {
         if (job->error()) {
-            kWarning() << job->errorString();
+            qWarning() << job->errorString();
             return;
         }
         CollectionFetchJob *collectionJob = qobject_cast<CollectionFetchJob *>(job);
         const Collection::List list = collectionJob->collections();
 
-        kDebug() << list.count();
-        kDebug() << list.first().name();
+        qDebug() << list.count();
+        qDebug() << list.first().name();
         mChangeRecorder->setCollectionMonitored(list.first(), true);
 
         ItemsTreeModel *model = new ItemsTreeModel(Opportunity, mChangeRecorder);
@@ -99,13 +102,19 @@ private:
 
 int main(int argc, char **argv)
 {
-    KAboutData about("itemstreemodeltest", 0, ki18n("ItemsTreeModel test"),
-                     FATCRM_VERSION_STRING, ki18n("Interactive test program for ItemsTreeModel"),
-                     KAboutData::License_GPL_V2, ki18n("(C) 2015-2016 KDAB"),
-                     KLocalizedString(), 0, "david.faure@kdab.com");
+    QApplication app(argc, argv);
+    KAboutData about("itemstreemodeltest", i18n("ItemsTreeModel test"),
+                     "0.1", i18n("Interactive test program for ItemsTreeModel"),
+                     KAboutLicense::GPL_V2, i18n("(C) 2015-2016 KDAB"),
+                     QString(), "david.faure@kdab.com");
 
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(about);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    about.setupCommandLine(&parser);
+    parser.process(app); 
+    about.processCommandLine(&parser);
 
     Akonadi::ChangeRecorder recorder;
 

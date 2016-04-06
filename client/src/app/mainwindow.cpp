@@ -43,16 +43,14 @@
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
-#include <Akonadi/AgentFilterProxyModel>
-#include <Akonadi/AgentInstance>
-#include <Akonadi/AgentInstanceModel>
-#include <Akonadi/AgentManager>
-#include <Akonadi/AttributeFactory>
-#include <Akonadi/Control>
-#include <Akonadi/ServerManager>
+#include <AkonadiCore/AgentFilterProxyModel>
+#include <AkonadiCore/AgentInstance>
+#include <AkonadiCore/AgentInstanceModel>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiCore/AttributeFactory>
+#include <AkonadiWidgets/ControlGui>
+#include <AkonadiCore/ServerManager>
 using namespace Akonadi;
-
-#include <kdeversion.h>
 
 #include <QCheckBox>
 #include <QCloseEvent>
@@ -64,6 +62,8 @@ using namespace Akonadi;
 #include <QProgressBar>
 #include <QTimer>
 #include <QToolBar>
+
+#include "fatcrm_client_debug.h"
 
 MainWindow::MainWindow()
     : QMainWindow(),
@@ -81,7 +81,7 @@ MainWindow::MainWindow()
      * this creates an overlay in case Akonadi is not running,
      * allowing the user to restart it
      */
-    Akonadi::Control::widgetNeedsAkonadi(this);
+    Akonadi::ControlGui::widgetNeedsAkonadi(this);
     QMetaObject::invokeMethod(this, "slotDelayedInit", Qt::AutoConnection);
 
     (void)new DBusWinIdProvider(this);
@@ -112,12 +112,8 @@ void MainWindow::slotDelayedInit()
 
     setupResourcesCombo();
 
-#if KDE_IS_VERSION(4, 14, 10) // technically it's about the kdepimlibs version, but there's no define for that
-    mResourceDialog = new ResourceConfigDialog(this);
-#else
     // no parent so it can have its own Akonadi-not-started overlay (bug in Akonadi::ErrorOverlay, fixed in f5f76cc, kdepimlibs >= 4.14.10)
     mResourceDialog = new ResourceConfigDialog;
-#endif
 
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
             this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
@@ -267,7 +263,7 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
 
 void MainWindow::slotServerStarted()
 {
-    kDebug() << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
+    qCDebug(FATCRM_CLIENT_LOG) << "Akonadi server started. Resource selector has" << mResourceSelector->count() << "items";
     if (mResourceSelector->count() > 0) {
         initialResourceSelection();
     }
@@ -284,7 +280,7 @@ void MainWindow::slotToggleOffline(bool offline)
     AgentInstance currentAgent = currentResource();
     const bool online = !offline;
     if (currentAgent.isValid() && currentAgent.isOnline() != online) {
-        kDebug() << "setting agent" << currentAgent.identifier() << "to online=" << online;
+        qCDebug(FATCRM_CLIENT_LOG) << "setting agent" << currentAgent.identifier() << "to online=" << online;
         currentAgent.setIsOnline(online);
     }
 }
@@ -323,14 +319,14 @@ void MainWindow::slotFullReload()
 
 void MainWindow::slotShowMessage(const QString &message)
 {
-    kDebug() << message;
+    qCDebug(FATCRM_CLIENT_LOG) << message;
     statusBar()->showMessage(message);
 }
 
 void MainWindow::slotModelLoaded(DetailsType type)
 {
     // We load Opps, Accounts, Contacts, Notes and Emails in this order (see CollectionManager)
-    //qDebug() << typeToString(type) << "loaded";
+    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(type) << "loaded";
     switch (type)
     {
     case Account:
@@ -504,7 +500,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             statusBar()->clearMessage();
             mProgressBarHideTimer->start();
         } else {
-            kDebug() << progress << message;
+            qCDebug(FATCRM_CLIENT_LOG) << progress << message;
             mProgressBar->show();
             mProgressBar->setValue(progress);
             if (progress == 100) {
@@ -583,7 +579,7 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
     if (page) {
         page->openDialog(id);
     } else {
-        kDebug() << "No page for type" << type;
+        qCDebug(FATCRM_CLIENT_LOG) << "No page for type" << type;
     }
 }
 
@@ -670,4 +666,3 @@ void MainWindow::processPendingImports()
     mPendingImportPaths.clear();
 }
 
-#include "mainwindow.moc"

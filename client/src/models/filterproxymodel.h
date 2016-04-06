@@ -23,7 +23,7 @@
 #ifndef FILTERPROXYMODEL_H
 #define FILTERPROXYMODEL_H
 
-#include <QtGui/QSortFilterProxyModel>
+#include <QSortFilterProxyModel>
 #include "enums.h"
 
 /**
@@ -46,7 +46,7 @@ public:
      * @param DetailsType the type of CRM object
      * @param parent The parent object.
      */
-    explicit FilterProxyModel(DetailsType type, QObject *parent = 0);
+    explicit FilterProxyModel(DetailsType type, QObject *parent = Q_NULLPTR);
 
     /**
      * Destroys the filter proxy model.

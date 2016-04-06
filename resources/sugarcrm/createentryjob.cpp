@@ -21,17 +21,16 @@
 */
 
 #include "createentryjob.h"
-
+#include "sugarcrmresource_debug.h"
 #include "modulehandler.h"
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
-#include <KDebug>
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QStringList>
 
@@ -72,7 +71,7 @@ void CreateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    kDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 
     mStage = Private::GetEntry;
@@ -88,7 +87,7 @@ void CreateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
     Q_ASSERT(mStage == CreateEntry);
 
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Create Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Create Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -112,7 +111,7 @@ void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     item.setId(mItem.id());
     item.setRevision(mItem.revision());
     mItem = item;
-    kDebug() << "Got entry with revision" << mItem.remoteRevision();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got entry with revision" << mItem.remoteRevision();
 
     q->emitResult();
 }
@@ -121,7 +120,7 @@ void CreateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
 {
     Q_ASSERT(mStage == GetEntry);
 
-    kWarning() << "Error when getting remote version:" << fault.faultAsString();
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Error when getting remote version:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();
@@ -169,5 +168,4 @@ void CreateEntryJob::startSugarTask()
         emitResult();
     }
 }
-
-#include "createentryjob.moc"
+#include "moc_createentryjob.cpp"

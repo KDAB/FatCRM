@@ -814,7 +814,7 @@ QMap<QString, QString> SugarLead::data()
 
 QString SugarLead::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.lead");
+    return QStringLiteral("application/x-vnd.kdab.crm.lead");
 }
 
 Q_GLOBAL_STATIC(SugarLead::AccessorHash, s_accessors)

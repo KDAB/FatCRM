@@ -20,7 +20,7 @@
 
 #include "invoker.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QCoreApplication>
 
@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     QCoreApplication app(argc, argv);
 
     if (argc == 1) {
-        kWarning() << "usage: fatcrminvoker <csv file>";
+        qWarning() << "usage: fatcrminvoker <csv file>";
         return 0;
     }
 

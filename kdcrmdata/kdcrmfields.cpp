@@ -24,122 +24,122 @@
 
 QString KDCRMFields::assignedUserName()
 {
-    return QLatin1String("assigned_user_name");
+    return QStringLiteral("assigned_user_name");
 }
 
 QString KDCRMFields::dateModified()
 {
-    return QLatin1String("date_modified");
+    return QStringLiteral("date_modified");
 }
 
 QString KDCRMFields::dateEntered()
 {
-    return QLatin1String("date_entered");
+    return QStringLiteral("date_entered");
 }
 
 QString KDCRMFields::id()
 {
-    return QLatin1String("id");
+    return QStringLiteral("id");
 }
 
 QString KDCRMFields::name()
 {
-    return QLatin1String("name");
+    return QStringLiteral("name");
 }
 
 QString KDCRMFields::modifiedUserId()
 {
-    return QLatin1String("modified_user_id");
+    return QStringLiteral("modified_user_id");
 }
 
 QString KDCRMFields::modifiedByName()
 {
-    return QLatin1String("modified_by_name");
+    return QStringLiteral("modified_by_name");
 }
 
 QString KDCRMFields::createdBy()
 {
-    return QLatin1String("created_by");
+    return QStringLiteral("created_by");
 }
 
 QString KDCRMFields::createdByName()
 {
-    return QLatin1String("created_by_name");
+    return QStringLiteral("created_by_name");
 }
 
 QString KDCRMFields::assignedUserId()
 {
-    return QLatin1String("assigned_user_id");
+    return QStringLiteral("assigned_user_id");
 }
 
 QString KDCRMFields::accountName()
 {
-    return QLatin1String("account_name");
+    return QStringLiteral("account_name");
 }
 
 QString KDCRMFields::campaignName()
 {
-    return QLatin1String("campaign_name");
+    return QStringLiteral("campaign_name");
 }
 
 QString KDCRMFields::campaignType()
 {
-    return QLatin1String("campaign_type");
+    return QStringLiteral("campaign_type");
 }
 
 QString KDCRMFields::campaignId()
 {
-    return QLatin1String("campaign_id");
+    return QStringLiteral("campaign_id");
 }
 
 QString KDCRMFields::status()
 {
-    return QLatin1String("status");
+    return QStringLiteral("status");
 }
 
 QString KDCRMFields::parentName()
 {
-    return QLatin1String("parent_name");
+    return QStringLiteral("parent_name");
 }
 
 QString KDCRMFields::tickerSymbol()
 {
-    return QLatin1String("ticker_symbol");
+    return QStringLiteral("ticker_symbol");
 }
 
 QString KDCRMFields::campaign()
 {
-    return QLatin1String("campaign");
+    return QStringLiteral("campaign");
 }
 
 QString KDCRMFields::reportsTo()
 {
-    return QLatin1String("reports_to");
+    return QStringLiteral("reports_to");
 }
 
 QString KDCRMFields::parentId()
 {
-    return QLatin1String("parent_id");
+    return QStringLiteral("parent_id");
 }
 
 QString KDCRMFields::accountId()
 {
-    return QLatin1String("account_id");
+    return QStringLiteral("account_id");
 }
 
 QString KDCRMFields::reportsToId()
 {
-    return QLatin1String("reports_to_id");
+    return QStringLiteral("reports_to_id");
 }
 
 QString KDCRMFields::opportunityType()
 {
-    return QLatin1String("opportunity_type");
+    return QStringLiteral("opportunity_type");
 }
 
 QString KDCRMFields::description()
 {
-    return QLatin1String("description");
+    return QStringLiteral("description");
 }
 
 QString KDCRMFields::descriptionHtml()
@@ -149,277 +149,277 @@ QString KDCRMFields::descriptionHtml()
 
 QString KDCRMFields::deleted()
 {
-    return QLatin1String("deleted");
+    return QStringLiteral("deleted");
 }
 
 QString KDCRMFields::content()
 {
-    return QLatin1String("content");
+    return QStringLiteral("content");
 }
 
 QString KDCRMFields::leadSource()
 {
-    return QLatin1String("lead_source");
+    return QStringLiteral("lead_source");
 }
 
 QString KDCRMFields::amount()
 {
-    return QLatin1String("amount");
+    return QStringLiteral("amount");
 }
 
 QString KDCRMFields::amountUsDollar()
 {
-    return QLatin1String("amount_usdollar");
+    return QStringLiteral("amount_usdollar");
 }
 
 QString KDCRMFields::contactId()
 {
-    return QLatin1String("contact_id");
+    return QStringLiteral("contact_id");
 }
 
 QString KDCRMFields::currencyId()
 {
-    return QLatin1String("currency_id");
+    return QStringLiteral("currency_id");
 }
 
 QString KDCRMFields::currencyName()
 {
-    return QLatin1String("currency_name");
+    return QStringLiteral("currency_name");
 }
 
 QString KDCRMFields::currencySymbol()
 {
-    return QLatin1String("currency_symbol");
+    return QStringLiteral("currency_symbol");
 }
 
 QString KDCRMFields::dateClosed()
 {
-    return QLatin1String("date_closed");
+    return QStringLiteral("date_closed");
 }
 
 QString KDCRMFields::nextStep()
 {
-    return QLatin1String("next_step");
+    return QStringLiteral("next_step");
 }
 
 QString KDCRMFields::salesStage()
 {
-    return QLatin1String("sales_stage");
+    return QStringLiteral("sales_stage");
 }
 
 QString KDCRMFields::probability()
 {
-    return QLatin1String("probability");
+    return QStringLiteral("probability");
 }
 
 QString KDCRMFields::nextCallDate()
 {
-    return QLatin1String("next_call_date");
+    return QStringLiteral("next_call_date");
 }
 
 QString KDCRMFields::billingAddressStreet()
 {
-    return QLatin1String("billing_address_street");
+    return QStringLiteral("billing_address_street");
 }
 
 QString KDCRMFields::billingAddressCity()
 {
-    return QLatin1String("billing_address_city");
+    return QStringLiteral("billing_address_city");
 }
 
 QString KDCRMFields::billingAddressState()
 {
-    return QLatin1String("billing_address_state");
+    return QStringLiteral("billing_address_state");
 }
 
 QString KDCRMFields::billingAddressCountry()
 {
-    return QLatin1String("billing_address_country");
+    return QStringLiteral("billing_address_country");
 }
 
 QString KDCRMFields::billingAddressPostalcode()
 {
-    return QLatin1String("billing_address_postalcode");
+    return QStringLiteral("billing_address_postalcode");
 }
 
 QString KDCRMFields::shippingAddressStreet()
 {
-    return QLatin1String("shipping_address_street");
+    return QStringLiteral("shipping_address_street");
 }
 
 QString KDCRMFields::shippingAddressCity()
 {
-    return QLatin1String("shipping_address_city");
+    return QStringLiteral("shipping_address_city");
 }
 
 QString KDCRMFields::shippingAddressState()
 {
-    return QLatin1String("shipping_address_state");
+    return QStringLiteral("shipping_address_state");
 }
 
 QString KDCRMFields::shippingAddressCountry()
 {
-    return QLatin1String("shipping_address_country");
+    return QStringLiteral("shipping_address_country");
 }
 
 QString KDCRMFields::shippingAddressPostalcode()
 {
-    return QLatin1String("shipping_address_postalcode");
+    return QStringLiteral("shipping_address_postalcode");
 }
 
 QString KDCRMFields::industry()
 {
-    return QLatin1String("industry");
+    return QStringLiteral("industry");
 }
 
 QString KDCRMFields::accountType()
 {
-    return QLatin1String("account_type");
+    return QStringLiteral("account_type");
 }
 
 QString KDCRMFields::primaryAddressStreet()
 {
-    return QLatin1String("primaryAddressStreet");
+    return QStringLiteral("primaryAddressStreet");
 }
 
 QString KDCRMFields::primaryAddressCity()
 {
-    return QLatin1String("primaryAddressCity");
+    return QStringLiteral("primaryAddressCity");
 }
 
 QString KDCRMFields::primaryAddressState()
 {
-    return QLatin1String("primaryAddressState");
+    return QStringLiteral("primaryAddressState");
 }
 
 QString KDCRMFields::primaryAddressCountry()
 {
-    return QLatin1String("primaryAddressCountry");
+    return QStringLiteral("primaryAddressCountry");
 }
 
 QString KDCRMFields::primaryAddressPostalcode()
 {
-    return QLatin1String("primaryAddressPostalcode");
+    return QStringLiteral("primaryAddressPostalcode");
 }
 
 
 QString KDCRMFields::altAddressStreet()
 {
-    return QLatin1String("altAddressStreet");
+    return QStringLiteral("altAddressStreet");
 }
 
 QString KDCRMFields::altAddressCity()
 {
-    return QLatin1String("altAddressCity");
+    return QStringLiteral("altAddressCity");
 }
 
 QString KDCRMFields::altAddressState()
 {
-    return QLatin1String("altAddressState");
+    return QStringLiteral("altAddressState");
 }
 
 QString KDCRMFields::altAddressCountry()
 {
-    return QLatin1String("altAddressCountry");
+    return QStringLiteral("altAddressCountry");
 }
 
 QString KDCRMFields::altAddressPostalcode()
 {
-    return QLatin1String("altAddressPostalcode");
+    return QStringLiteral("altAddressPostalcode");
 }
 QString KDCRMFields::firstName()
 {
-    return QLatin1String("first_name");
+    return QStringLiteral("first_name");
 }
 
 QString KDCRMFields::lastName()
 {
-    return QLatin1String("last_name");
+    return QStringLiteral("last_name");
 }
 
 QString KDCRMFields::title()
 {
-    return QLatin1String("title");
+    return QStringLiteral("title");
 }
 
 QString KDCRMFields::department()
 {
-    return QLatin1String("department");
+    return QStringLiteral("department");
 }
 
 QString KDCRMFields::email1()
 {
-    return QLatin1String("email1");
+    return QStringLiteral("email1");
 }
 
 QString KDCRMFields::email2()
 {
-    return QLatin1String("email2");
+    return QStringLiteral("email2");
 }
 
 QString KDCRMFields::phoneHome()
 {
-    return QLatin1String("phone_home");
+    return QStringLiteral("phone_home");
 }
 
 QString KDCRMFields::phoneMobile()
 {
-    return QLatin1String("phone_mobile");
+    return QStringLiteral("phone_mobile");
 }
 
 QString KDCRMFields::phoneWork()
 {
-    return QLatin1String("phone_work");
+    return QStringLiteral("phone_work");
 }
 
 QString KDCRMFields::phoneOther()
 {
-    return QLatin1String("phone_other");
+    return QStringLiteral("phone_other");
 }
 
 QString KDCRMFields::phoneFax()
 {
-    return QLatin1String("phone_fax");
+    return QStringLiteral("phone_fax");
 }
 
 QString KDCRMFields::birthdate()
 {
-    return QLatin1String("birthdate");
+    return QStringLiteral("birthdate");
 }
 
 QString KDCRMFields::assistant()
 {
-    return QLatin1String("assistant");
+    return QStringLiteral("assistant");
 }
 
 QString KDCRMFields::phoneAssistant()
 {
-    return QLatin1String("phoneAssistant");
+    return QStringLiteral("phoneAssistant");
 }
 
 QString KDCRMFields::salutation()
 {
-    return QLatin1String("salutation");
+    return QStringLiteral("salutation");
 }
 
 QString KDCRMFields::doNotCall()
 {
-    return QLatin1String("do_not_call");
+    return QStringLiteral("do_not_call");
 }
 
 QString KDCRMFields::cAcceptStatusFields()
 {
-    return QLatin1String("cAcceptStatusFields");
+    return QStringLiteral("cAcceptStatusFields");
 }
 
 QString KDCRMFields::mAcceptStatusFields()
 {
-    return QLatin1String("mAcceptStatusFields");
+    return QStringLiteral("mAcceptStatusFields");
 }
 
 QString KDCRMFields::opportunityRoleFields()
 {
-    return QLatin1String("opportunityRoleFields");
+    return QStringLiteral("opportunityRoleFields");
 }
 
 QString KDCRMFields::accountDescription()

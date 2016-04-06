@@ -30,12 +30,12 @@ class LoginJob : public SugarJob
     Q_OBJECT
 
 public:
-    explicit LoginJob(SugarSession *session, QObject *parent = 0);
+    explicit LoginJob(SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~LoginJob();
 
 protected:
-    void startSugarTask();
+    void startSugarTask() Q_DECL_OVERRIDE;
 };
 
 #endif

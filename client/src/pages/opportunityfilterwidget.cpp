@@ -28,7 +28,7 @@
 
 #include <QCalendarWidget>
 #include <QDate>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 enum MaxNextStepDate {
     NoDate,

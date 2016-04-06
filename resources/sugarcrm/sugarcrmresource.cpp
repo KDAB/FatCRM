@@ -21,6 +21,7 @@
 */
 
 #include "sugarcrmresource.h"
+#include "sugarcrmresource_debug.h"
 
 #include "accountshandler.h"
 #include "campaignshandler.h"
@@ -47,15 +48,15 @@
 #include "updateentryjob.h"
 #include "passwordhandler.h"
 
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/Collection>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/CachePolicy>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/CachePolicy>
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <QtDBus/QDBusConnection>
@@ -84,9 +85,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             QDBusConnection::ExportScriptableSlots);
 
     setNeedsNetwork(true);
-#if KDE_IS_VERSION(4, 14, 0)
     setDisableAutomaticItemDeliveryDone(true);
-#endif
 
     // make sure itemAdded() and itemChanged() get the full item from Akonadi before being called
     changeRecorder()->itemFetchScope().fetchFullPayload();
@@ -153,7 +152,7 @@ void SugarCRMResource::configure(WId windowId)
     Settings::setHost(host);
     Settings::setUser(user);
     Settings::setIntervalCheckTime(intervalCheckTime);
-    Settings::self()->writeConfig();
+    Settings::self()->save();
     mPasswordHandler->setPassword(password);
 
     setName(accountName);
@@ -172,7 +171,7 @@ void SugarCRMResource::doSetOnline(bool online)
     // akonadiserver calls setOnline() multiple times with the same value...
     // let's only react to real changes here
     if (online != mOnline) {
-        kDebug() << online;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << online;
         mOnline = online;
         if (online) {
             if (Settings::host().isEmpty()) {
@@ -223,7 +222,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
     } else {
         const QString message = i18nc("@info:status", "Cannot add items to folder %1",
                                       collection.name());
-        kWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
         error(message);
@@ -239,7 +238,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
         if (!handler->needBackendChange(item, parts)) {
-            kWarning() << "Handler for module" << handler->moduleName()
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Handler for module" << handler->moduleName()
                        << "indicates that backend change for item id=" << item.id()
                        << ", remoteId=" << item.remoteId()
                        << "is not required for given modified parts: " << parts;
@@ -252,7 +251,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     } else {
         const QString message = i18nc("@info:status", "Cannot modify items in folder %1",
                                       collection.name());
-        kWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
         error(message);
@@ -320,7 +319,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         const QString message = job->isUpdateJob()
                 ? i18nc("@info:status", "Updating contents of folder %1", collection.name())
                 : i18nc("@info:status", "Retrieving contents of folder %1", collection.name());
-        kDebug() << message;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
 
         connect(job, SIGNAL(totalItems(int)),
@@ -332,8 +331,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
-        kDebug() << "No module handler for collection" << collection;
-        kDebug() << mModuleHandlers->keys();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << mModuleHandlers->keys();
         itemsRetrieved(Item::List());
     }
 }
@@ -350,7 +349,7 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
     if (handler) {
         const QString message = i18nc("@info:status", "Retrieving entry from folder %1",
                                       collection.name());
-        kDebug() << message;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
 
         FetchEntryJob *job = new FetchEntryJob(item, mSession, this);
@@ -361,14 +360,14 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         job->start();
         return true;
     } else {
-        kDebug() << "No module handler for collection" << collection;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
         return false;
     }
 }
 
 void SugarCRMResource::startExplicitLogin()
 {
-    kDebug();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     Q_ASSERT(!mLoginJob); // didn't we kill it in doSetOnline(false) already?
     mLoginJob = new LoginJob(mSession, this);
     connect(mLoginJob, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
@@ -385,7 +384,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 
     if (job->error() != 0) {
         QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         if (Settings::host().isEmpty()) {
             message = i18nc("@info:status", "No server configured");
@@ -396,7 +395,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
                             Settings::user(), Settings::host(), message);
         }
 
-        kWarning() << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Broken, message);
         error(message);
         cancelTask(message);
@@ -419,7 +418,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -463,7 +462,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
     }
 
     Settings::setAvailableModules(availableModules);
-    Settings::self()->writeConfig();
+    Settings::self()->save();
 
     collectionsRetrieved(collections);
     status(Idle);
@@ -496,10 +495,10 @@ void SugarCRMResource::listEntriesResult(KJob *job)
         return;
     }
 
-    kDebug() << job;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job;
     if (job->error() != 0) {
         const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -555,7 +554,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
     mCurrentJob = ldeJob;
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
     const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
-    kDebug() << message;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
     status(Running, message);
     ldeJob->start();
 }
@@ -563,7 +562,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
 void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
 {
     if (job->error()) {
-        kWarning() << job->errorString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
     mCurrentJob = 0;
 
@@ -587,7 +586,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -616,7 +615,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -641,7 +640,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
 
     if (job->error() != 0) {
         const QString message = job->errorText();
-        kWarning() << "error=" << job->error() << ":" << message;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
         status(Broken, message);
         error(message);
@@ -670,7 +669,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
     if (job->error() != 0) {
         if (job->error() != UpdateEntryJob::ConflictError) {
             const QString message = job->errorText();
-            kWarning() << "error=" << job->error() << ":" << message;
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
             status(Broken, message);
             error(message);
@@ -706,7 +705,7 @@ void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
     if (handler) {
         updateItem(item, handler);
     } else {
-        kError() << "No module handler for collection" << collection.remoteId();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection.remoteId();
     }
 }
 
@@ -746,7 +745,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             } else if (module == QLatin1String("Emails")) {
                 handler = new EmailsHandler(mSession);
             } else {
-                //kDebug() << "No module handler for" << module;
+                //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for" << module;
                 continue;
             }
 
@@ -770,10 +769,10 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
-    kDebug() << "job->error()=" << job->error();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error();
     switch (job->error()) {
     case SugarJob::LoginError:
-        kDebug() << "LoginError! Going to Broken state";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "LoginError! Going to Broken state";
         setOnline( false );
         emit status( Broken, job->errorText() );
         // if this is any other job than an explicit login, defer to next attempt
@@ -784,9 +783,9 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         }
         return true;
     case SugarJob::CouldNotConnectError: // transient error, try again later
-        kDebug() << job->errorString();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
         emit status( Idle, i18n( "Server is not available." ) );
-        kDebug() << "deferring task";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;
@@ -794,7 +793,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         if (job->errorString() == "You do not have access") // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
             return false;
         emit status( Idle, job->errorString() );
-        kDebug() << "deferring task";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
         deferTask();
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;
@@ -806,4 +805,3 @@ bool SugarCRMResource::handleLoginError(KJob *job)
 
 AKONADI_RESOURCE_MAIN(SugarCRMResource)
 
-#include "sugarcrmresource.moc"

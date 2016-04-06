@@ -28,7 +28,7 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 #include <QFile>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 #include <QTextCodec>
 
 ContactsImporter::ContactsImporter()
@@ -68,13 +68,13 @@ bool ContactsImporter::importFile(const QString &fileName)
         QMap<int, QString>::const_iterator it = accountColumns.constBegin();
         for ( ; it != accountColumns.end() ; ++it) {
             const QString value = builder.data(row, it.key());
-            //qDebug() << it.key() << value << "->" << it.value();
+            //qCDebug(FATCRM_CLIENT_LOG) << it.key() << value << "->" << it.value();
             if (!value.isEmpty()) {
                 accountData.insert(it.value(), value);
             }
         }
 
-        KABC::Addressee addressee;
+        KContacts::Addressee addressee;
         const QString givenName = builder.data(row, 0).trimmed();
         if (!givenName.isEmpty())
             addressee.setGivenName(givenName);
@@ -89,7 +89,7 @@ bool ContactsImporter::importFile(const QString &fileName)
 
         const QString phoneNumber = builder.data(row, 3).trimmed();
         if (!phoneNumber.isEmpty())
-            addressee.insertPhoneNumber(KABC::PhoneNumber(phoneNumber, KABC::PhoneNumber::Work));
+            addressee.insertPhoneNumber(KContacts::PhoneNumber(phoneNumber, KContacts::PhoneNumber::Work));
 
         const QString emailAddress = builder.data(row, 4).trimmed();
         if (!emailAddress.isEmpty())
@@ -99,7 +99,7 @@ bool ContactsImporter::importFile(const QString &fileName)
         if (!companyName.isEmpty())
             addressee.setOrganization(companyName);
 
-        KABC::Address workAddress(KABC::Address::Work|KABC::Address::Pref);
+        KContacts::Address workAddress(KContacts::Address::Work|KContacts::Address::Pref);
         const QString workStreet = builder.data(row, 6).trimmed();
         if (!workStreet.isEmpty())
             workAddress.setStreet(workStreet);

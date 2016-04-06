@@ -24,7 +24,6 @@
 #include "opportunityfiltersettings.h"
 
 #include <KLocalizedString>
-#include <KDebug>
 
 #include <QWidget>
 #include <QSettings>
@@ -188,13 +187,13 @@ void ClientSettings::GroupFilters::addGroup(const ClientSettings::GroupFilters::
 
 void ClientSettings::saveHeaderView(const QString &viewId, const QByteArray &headerViewData)
 {
-    //kDebug() << "writing" << ("header/"+viewId);
+    //qDebug() << "writing" << ("header/"+viewId);
     m_settings->setValue("header/" + viewId, headerViewData);
 }
 
 QByteArray ClientSettings::restoreHeaderView(const QString &viewId) const
 {
-    //kDebug() << "reading" << ("header/"+viewId);
+    //qDebug() << "reading" << ("header/"+viewId);
     return m_settings->value("header/" + viewId).toByteArray();
 }
 

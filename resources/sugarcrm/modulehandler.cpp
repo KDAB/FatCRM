@@ -21,6 +21,7 @@
 */
 
 #include "modulehandler.h"
+#include "sugarcrmresource_debug.h"
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
@@ -32,12 +33,12 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 
-#include <Akonadi/AgentManager>
-#include <Akonadi/AttributeFactory>
-#include <Akonadi/CollectionFetchJob>
-#include <Akonadi/CollectionModifyJob>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiCore/AttributeFactory>
+#include <AkonadiCore/CollectionFetchJob>
+#include <AkonadiCore/CollectionModifyJob>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QVector>
 
@@ -115,7 +116,7 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
 QStringList ModuleHandler::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {
-        kDebug() << "Available Fields for " << mModuleName
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Available Fields for " << mModuleName
                  << "not fetched yet, getting them now";
 
         mAvailableFields = listAvailableFields(mSession, mModuleName);
@@ -130,7 +131,7 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
-        qWarning() << "No session! Need to login first.";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
     }
 
     const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
@@ -142,9 +143,9 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
         Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
             availableFields << field.name();
         }
-        kDebug() << "Got" << availableFields << "fields";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << availableFields << "fields";
     } else {
-        kDebug() << "Got error: number=" << error.number()
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error: number=" << error.number()
                  << "name=" << error.name()
                  << "description=" << error.description();
     }
@@ -154,7 +155,7 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
 bool ModuleHandler::getEntry(const Akonadi::Item &item)
 {
     if (item.remoteId().isEmpty()) {
-        kError() << "Item remoteId is empty. id=" << item.id();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "Item remoteId is empty. id=" << item.id();
         return false;
     }
 
@@ -176,9 +177,9 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
         mParsedEnumDefinitions = true;
         foreach (const KDSoapGenerated::TNS__Field &field, fields.items()) {
             const QString fieldName = field.name();
-            //kDebug() << fieldName << "TYPE" << field.type();
+            //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << fieldName << "TYPE" << field.type();
             if (field.type() == QLatin1String("enum")) {
-                //kDebug() << moduleName() << "enum" << fieldName;
+                //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << moduleName() << "enum" << fieldName;
                 QString crmFieldName = sugarFieldToCrmField(fieldName);
                 if (crmFieldName.isEmpty())
                     crmFieldName = customSugarFieldToCrmField(fieldName);
@@ -186,7 +187,7 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
                 foreach (const KDSoapGenerated::TNS__Name_value &nameValue, field.options().items()) {
                     // In general, name==value except for some like
                     // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"
-                    //kDebug() << nameValue.name() << nameValue.value();
+                    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << nameValue.name() << nameValue.value();
                     EnumDefinitions::KeyValue keyValue;
                     keyValue.key = nameValue.name();
                     keyValue.value = nameValue.value();
@@ -195,13 +196,17 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
                 mEnumDefinitions.append(definition);
             }
         }
-        kDebug() << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
         // Accounts: account_type, industry
         // Contacts: salutation, lead_source, portal_user_type
         // Opportunities: opportunity_type, lead_source, sales_stage
         // Emails: type, status
         // Notes: <none>
+#ifdef AKONADI_OLD_API
         EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
+#else
+        EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);
+#endif
         const QString serialized = mEnumDefinitions.toString();
         if (attr->value() != serialized) {
             attr->setValue(serialized);
@@ -450,7 +455,7 @@ Sugarsoap *ModuleHandler::soap() const
 void ModuleHandler::slotCollectionModifyResult(KJob *job)
 {
     if (job->error()) {
-        kWarning() << job->errorString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }
 
@@ -462,7 +467,7 @@ void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &col
     Akonadi::Collection collection = collections.at(0);
     if (ListEntriesJob::currentContentsVersion(collection) != expectedContentsVersion()) {
         // the contents need to be relisted, do this right now before users get a chance to view bad data
-        kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
                  << ListEntriesJob::currentContentsVersion(collection) << "!="
                  << expectedContentsVersion();
         Akonadi::AgentManager::self()->synchronizeCollection(collection);

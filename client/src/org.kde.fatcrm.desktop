@@ -46,3 +46,4 @@ X-DBUS-StartupType=Multi
 X-DBUS-ServiceName=org.kde.fatcrm
 GenericName=Desktop application for SugarCRM
 Terminal=false
+X-DBUS-ServiceName=org.kde.fatcrm

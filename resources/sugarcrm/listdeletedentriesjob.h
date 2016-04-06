@@ -25,7 +25,7 @@
 
 #include "sugarjob.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 namespace Akonadi
 {
@@ -35,7 +35,6 @@ class Collection;
 class ModuleHandler;
 namespace KDSoapGenerated
 {
-class TNS__Get_entries_count_result;
 class TNS__Get_entry_list_result;
 }
 
@@ -44,7 +43,7 @@ class ListDeletedEntriesJob : public SugarJob
     Q_OBJECT
 
 public:
-    ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
+    ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = Q_NULLPTR);
     ~ListDeletedEntriesJob();
 
     Akonadi::Collection collection() const;

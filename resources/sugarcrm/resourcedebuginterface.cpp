@@ -21,6 +21,7 @@
 */
 
 #include "resourcedebuginterface.h"
+#include "sugarcrmresource_debug.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 #include "modulehandler.h"
@@ -69,14 +70,14 @@ int ResourceDebugInterface::getCount(const QString &module) const
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
-        qWarning() << "No session! Need to login first.";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
     }
 
     // for notes and emails, use this:
     //const QString query = QString("parent_type=\"Opportunities\"");
     const QString query = QString();
     KDSoapGenerated::TNS__Get_entries_count_result response = soap->get_entries_count(sessionId, module, query, 0);
-    kDebug() << response.result_count() << "entries";
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << response.result_count() << "entries";
 
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
@@ -86,13 +87,12 @@ int ResourceDebugInterface::getCount(const QString &module) const
     if (!items.isEmpty()) {
         QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
         Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
-            qDebug() << value.name() << "=" << value.value();
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << value.name() << "=" << value.value();
         }
     } else {
-        kDebug() << "No items found. lastError=" << soap->lastError();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No items found. lastError=" << soap->lastError();
     }
 
     return response.result_count();
 }
 
-#include "resourcedebuginterface.moc"

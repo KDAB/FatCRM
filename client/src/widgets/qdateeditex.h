@@ -24,8 +24,8 @@
 #define DATEEDITEX_H
 
 #include <QDateEdit>
-
-class QDateEditEx : public QDateEdit
+#include "fatcrmprivate_export.h"
+class FATCRMPRIVATE_EXPORT QDateEditEx : public QDateEdit
 {
     Q_OBJECT
 

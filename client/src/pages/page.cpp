@@ -43,30 +43,30 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <Akonadi/AgentManager>
-#include <Akonadi/ChangeRecorder>
-#include <Akonadi/CollectionModifyJob>
-#include <Akonadi/CollectionStatistics>
-#include <Akonadi/EntityAnnotationsAttribute>
-#include <Akonadi/EntityMimeTypeFilterModel>
-#include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemDeleteJob>
-#include <Akonadi/ItemFetchScope>
-#include <Akonadi/ItemModifyJob>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/CollectionModifyJob>
+#include <AkonadiCore/collectionstatistics.h>
+#include <AkonadiCore/EntityMimeTypeFilterModel>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemDeleteJob>
+#include <AkonadiCore/ItemFetchScope>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/EntityAnnotationsAttribute>
 
-#include <KABC/Address>
-#include <KABC/Addressee>
+#include <KContacts/Address>
+#include <KContacts/Addressee>
 
-#include <KDebug>
-#include <KInputDialog>
+#include "fatcrm_client_debug.h"
+#include <QInputDialog>
 
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>
-#include <KPIMUtils/Email>
+#include <KEmailAddress>
 
 namespace {
 
@@ -118,7 +118,7 @@ void Page::openDialog(const QString &id)
             return;
         }
     }
-    kWarning() << this << "Object not found:" << id;
+    qCWarning(FATCRM_CLIENT_LOG) << this << "Object not found:" << id;
 }
 
 void Page::openDialogForItem(const Akonadi::Item &item)
@@ -285,18 +285,21 @@ void Page::slotRemoveItem()
     QString deleStr = i18n("The selected item will be deleted permanently!");
     switch (mType) {
     case Account: {
+        Q_ASSERT(item.hasPayload<SugarAccount>());
         SugarAccount acct = item.payload<SugarAccount>();
         deleStr = i18n("The account \"%1\" will be deleted permanently!", acct.name());
         break;
     }
     case Opportunity: {
+        Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
         deleStr = i18n("The %1 opportunity \"%2\" will be deleted permanently!",
                        opp.tempAccountName(), opp.name());
         break;
     }
     case Contact: {
-        const KABC::Addressee contact = item.payload<KABC::Addressee>();
+        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+        const auto contact = item.payload<KContacts::Addressee>();
         deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
         break;
     }
@@ -333,17 +336,16 @@ void Page::slotVisibleRowCountChanged()
 
 void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 {
-    //kDebug() << typeToString(mType) << ": rows inserted from" << start << "to" << end;
     const bool emitChanges = mInitialLoadingDone;
 
     handleNewRows(start, end, emitChanges);
 
     // Select the first row; looks nicer than empty fields in the details widget.
-    //kDebug() << "model has" << mItemsTreeModel->rowCount()
+    //qCDebug(FATCRM_CLIENT_LOG) << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
     const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
     if (done) {
-        //kDebug() << "Finished loading" << typeToString(mType);
+        //qCDebug(FATCRM_CLIENT_LOG) << "Finished loading" << typeToString(mType);
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
@@ -408,9 +410,9 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
     const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
     Q_FOREACH (const QModelIndex &index, selectedIndexes) {
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KABC::Addressee>()) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-            const QString preferredEmail = KPIMUtils::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
 
             if (!preferredEmail.isEmpty())
                 mSelectedEmails.append(preferredEmail);
@@ -500,13 +502,13 @@ void Page::insertFilterWidget(QWidget *widget)
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-    //kDebug() << typeToString(mType) << topLeft << bottomRight;
+    //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << topLeft << bottomRight;
     const int start = topLeft.row();
     const int end = bottomRight.row();
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = mItemsTreeModel->index(row, 0, QModelIndex());
         if (!index.isValid()) {
-            kWarning() << "Invalid index:" << "row=" << row << "/" << mItemsTreeModel->rowCount();
+            qCWarning(FATCRM_CLIENT_LOG) << "Invalid index:" << "row=" << row << "/" << mItemsTreeModel->rowCount();
             return;
         }
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
@@ -524,7 +526,7 @@ void Page::readSupportedFields()
             mCollection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
         mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
-        //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
+        //qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << "supported fields" << msupportedFields;
         if (mSupportedFields.isEmpty()) {
             static bool errorShown = false;
             if (!errorShown) {
@@ -541,10 +543,10 @@ void Page::readEnumDefinitionAttributes()
     if (enumsAttr) {
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
     } else {
-        kWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
-        kWarning() << "Collection attributes:";
+        qCWarning(FATCRM_CLIENT_LOG) << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
+        qCWarning(FATCRM_CLIENT_LOG) << "Collection attributes:";
         foreach (Akonadi::Attribute *attr, mCollection.attributes()) {
-            kWarning() << attr->type();
+            qCWarning(FATCRM_CLIENT_LOG) << attr->type();
         }
 
         static bool errorShown = false;
@@ -569,7 +571,7 @@ void Page::slotReloadCollection()
 
 void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
-    kDebug() << collection.id() << attributeNames;
+    qDebug() << collection.id() << attributeNames;
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
 
@@ -719,7 +721,7 @@ void Page::slotChangeFields()
     } else if (field == AssigneeField) {
         replacementAssignee = FatCRMInputDialog::getAssignedUser(dialogTitle, dialogText, &ok);
     } else {
-        replacementString = KInputDialog::getText(dialogTitle, dialogText, QString(), &ok);
+        replacementString = QInputDialog::getText(this, dialogTitle, dialogText, QLineEdit::Normal, QString(), &ok);
     }
 
     if (!ok)
@@ -734,6 +736,7 @@ void Page::slotChangeFields()
         Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
 
         if (mType == Account) {
+            Q_ASSERT(item.hasPayload<SugarAccount>());
             SugarAccount account = item.payload<SugarAccount>();
 
             if (field == CityField) {
@@ -750,6 +753,7 @@ void Page::slotChangeFields()
 
             item.setPayload(account);
         } else if (mType == Opportunity) {
+            Q_ASSERT(item.hasPayload<SugarOpportunity>());
             SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
             if (field == NextStepDateField) {
@@ -761,14 +765,15 @@ void Page::slotChangeFields()
 
             item.setPayload(opportunity);
         } else if (mType == Contact) {
-            KABC::Addressee addressee = item.payload<KABC::Addressee>();
+            Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+            KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
             if (field == CityField) {
-                KABC::Address workAddress = addressee.address(KABC::Address::Work | KABC::Address::Pref);
+                KContacts::Address workAddress = addressee.address(KContacts::Address::Work | KContacts::Address::Pref);
                 workAddress.setLocality(replacementString);
                 addressee.insertAddress(workAddress);
             } else if (field == CountryField) {
-                KABC::Address workAddress = addressee.address(KABC::Address::Work | KABC::Address::Pref);
+                KContacts::Address workAddress = addressee.address(KContacts::Address::Work | KContacts::Address::Pref);
                 workAddress.setCountry(replacementString);
                 addressee.insertAddress(workAddress);
             }
@@ -827,8 +832,13 @@ KJob *Page::clearTimestamp()
     coll.setResource(mCollection.resource());
     EntityAnnotationsAttribute *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>();
+#ifdef AKONADI_OLD_API
     EntityAnnotationsAttribute *newAnnotationsAttribute =
             coll.attribute<EntityAnnotationsAttribute>(Entity::AddIfMissing);
+#else
+    EntityAnnotationsAttribute *newAnnotationsAttribute =
+            coll.attribute<EntityAnnotationsAttribute>(Collection::AddIfMissing);
+#endif
     if (annotationsAttribute)
         *newAnnotationsAttribute = *annotationsAttribute;
     newAnnotationsAttribute->insert(s_timeStampKey, QString());
@@ -839,7 +849,7 @@ KJob *Page::clearTimestamp()
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
-    //kDebug() << "slotItemChanged" << partIdentifiers;
+    //qDebug() << "slotItemChanged" << partIdentifiers;
     Q_UNUSED(partIdentifiers);
     handleItemChanged(item);
 }
@@ -853,7 +863,7 @@ void Page::slotDeleteJobResult(KJob *job)
 {
     if (job->error() != 0) {
         const QString error = i18n("Item could not be deleted! Job error: %1").arg(job->errorText());
-        kWarning() << error;
+        qWarning() << error;
         emit statusMessage(error);
     }
 }

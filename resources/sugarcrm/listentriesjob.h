@@ -25,7 +25,7 @@
 
 #include "sugarjob.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 namespace Akonadi
 {
@@ -44,7 +44,7 @@ class ListEntriesJob : public SugarJob
     Q_OBJECT
 
 public:
-    ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = 0);
+    ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = Q_NULLPTR);
 
     ~ListEntriesJob();
 

@@ -23,16 +23,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 #include "ui_mainwindow.h"
 #include "enums.h"
-
+#include "fatcrmprivate_export.h"
 #include <QMainWindow>
 
 class ItemsTreeModel;
 class KJob;
 class QAction;
-class QCheckBox;
 class QComboBox;
 class QProgressBar;
 class QTimer;
@@ -49,7 +48,7 @@ namespace Akonadi
 class AgentInstance;
 }
 
-class MainWindow : public QMainWindow
+class FATCRMPRIVATE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:

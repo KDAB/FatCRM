@@ -25,7 +25,6 @@
 
 #include "page.h"
 
-class QAbstractItemModel;
 class OpportunityFilterWidget;
 class OpportunityFilterProxyModel;
 class OpportunityDataExtractor;

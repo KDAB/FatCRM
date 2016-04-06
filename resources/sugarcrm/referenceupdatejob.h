@@ -22,8 +22,8 @@
 #define REFERENCEUPDATEJOB_H
 
 #include <KCompositeJob>
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 /**
  * @brief The reference update job goes through a collection and changes
@@ -34,7 +34,7 @@ class ReferenceUpdateJob : public KCompositeJob
 {
     Q_OBJECT
 public:
-    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = 0);
+    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = Q_NULLPTR);
 
     void start() Q_DECL_OVERRIDE;
 

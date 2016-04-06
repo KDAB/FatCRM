@@ -22,7 +22,7 @@
 
 #ifndef RESOURCECONFIGDIALOG_H
 #define RESOURCECONFIGDIALOG_H
-
+#include "fatcrmprivate_export.h"
 #include <QDialog>
 #include <QSortFilterProxyModel>
 
@@ -33,7 +33,7 @@ class AgentInstance;
 
 class KJob;
 
-class ResourceConfigDialog : public QDialog
+class FATCRMPRIVATE_EXPORT ResourceConfigDialog : public QDialog
 {
     Q_OBJECT
 public:

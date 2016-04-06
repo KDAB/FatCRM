@@ -39,7 +39,7 @@ public:
      *
      * @param parent The parent widget.
      */
-    explicit ConflictResolveDialog(QWidget *parent = 0);
+    explicit ConflictResolveDialog(QWidget *parent = Q_NULLPTR);
 
     ~ConflictResolveDialog();
 

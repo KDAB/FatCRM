@@ -22,13 +22,13 @@
 
 #include "loginjob.h"
 
-#include <KDebug>
+#include "sugarcrmresource_debug.h"
 
 LoginJob::LoginJob(SugarSession *session, QObject *parent)
     : SugarJob(session, parent)
 {
     if (!sessionId().isEmpty()) {
-        kWarning() << "Creating Login job when there is a valid session ID. Will not change anything";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Creating Login job when there is a valid session ID. Will not change anything";
     }
 }
 
@@ -42,4 +42,3 @@ void LoginJob::startSugarTask()
     emitResult();
 }
 
-#include "loginjob.moc"

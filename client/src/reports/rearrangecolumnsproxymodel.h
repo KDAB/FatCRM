@@ -24,7 +24,7 @@
 #define REARRANGECOLUMNSPROXYMODEL_H
 
 #include <QIdentityProxyModel>
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 /**
  * Selects columns from the source model, in any order.
@@ -39,7 +39,7 @@ class RearrangeColumnsProxyModel : public QIdentityProxyModel
 {
     Q_OBJECT
 public:
-    explicit RearrangeColumnsProxyModel(QObject *parent = 0);
+    explicit RearrangeColumnsProxyModel(QObject *parent = Q_NULLPTR);
 
     // API
 

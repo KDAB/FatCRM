@@ -25,7 +25,7 @@
 
 #include "details.h"
 
-namespace KABC
+namespace KContacts
 {
 class Addressee;
 }
@@ -56,7 +56,7 @@ private:
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
 
-    QMap<QString, QString> contactData(const KABC::Addressee &contact) const;
+    QMap<QString, QString> contactData(const KContacts::Addressee &contact) const;
 
 private Q_SLOTS:
     void slotSetBirthday();

@@ -25,10 +25,11 @@
 
 #include "contactsset.h"
 #include "kdcrmdata/sugaraccount.h"
+#include "fatcrmprivate_export.h"
 
 #include <QVector>
 
-class ContactsImporter
+class FATCRMPRIVATE_EXPORT ContactsImporter
 {
 public:
     ContactsImporter();
@@ -39,7 +40,6 @@ public:
 
 private:
     QVector<ContactsSet> mContacts;
-
 };
 
 #endif // CONTACTSIMPORTER_H

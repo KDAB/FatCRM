@@ -22,7 +22,7 @@
 
 #include "betterplaintextedit.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 #include <QTextDocument>
 #include <QScrollBar>
 #include <QStyle>

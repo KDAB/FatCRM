@@ -1,22 +1,48 @@
 project(FatCRM)
 
-cmake_minimum_required(VERSION 2.4)
-if(COMMAND cmake_policy)
-  cmake_policy(SET CMP0003 NEW)
-endif()
+cmake_minimum_required(VERSION 2.8.12)
 
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+# we need some parts of the ECM CMake helpers
+find_package(ECM 5.12.0 REQUIRED NO_MODULE)
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${ECM_MODULE_PATH})
 
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
-endif()
-#TODO: support a real debugfull, like in KDE
-string(TOLOWER ${CMAKE_BUILD_TYPE} _lower)
-if(${_lower} MATCHES "debugfull")
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-endif()
+include(ECMOptionalAddSubdirectory)
+include(ECMInstallIcons)
+include(ECMSetupVersion)
+include(ECMAddTests)
+include(ECMMarkNonGuiExecutable)
+
+include(CMakePackageConfigHelpers)
+include(FeatureSummary)
+include(CheckFunctionExists)
+
+include(KDEInstallDirs)
+include(KDECMakeSettings)
+include(KDECompilerSettings)
+include(ECMAddAppIcon)
+include(ECMQtDeclareLoggingCategory)
 
 enable_testing()
+
+set(QT_REQUIRED_VERSION "5.4.0")
+set(KF5_VERSION "5.12.0")
+set(KCONTACTS_LIB_VERSION "4.89.0")
+set(KCALENDARCORE_LIB_VERSION "4.81.0")
+
+find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+find_package(Qt5Sql ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+
+find_package(KF5Wallet ${KF5_VERSION} CONFIG REQUIRED)
+find_package(KF5Akonadi "5.1" CONFIG QUIET)
+if (NOT KF5Akonadi_FOUND)
+    find_package(KF5Akonadi "4.80" CONFIG REQUIRED)
+    add_definitions(-DAKONADI_OLD_API)
+endif()
+
+find_package(KF5Akonadi ${KDEPIMLIBS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
+find_package(KF5AkonadiContact CONFIG REQUIRED)
 
 # Version setup
 set(FATCRM_VERSION_MAJOR "1")
@@ -48,16 +74,12 @@ configure_file(
 )
 
 # search packages used by KDE
-find_package(KDE4 REQUIRED)
-include(KDE4Defaults)
-find_package(KdepimLibs REQUIRED)
 find_package(Boost REQUIRED)
 
 find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
 include(MacroLibrary)
-include(MacroOptionalAddSubdirectory)
 include(CheckIncludeFiles)
 
 # Stolen from zanshin
@@ -68,25 +90,7 @@ macro(assert_min_ver version)
   endif()
 endmacro()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # using Clang >= 3.3
-  assert_min_ver("3.3")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  # using GCC >= 4.8
-  assert_min_ver("4.8")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-else()
-  add_definitions(-DQ_DECL_OVERRIDE=)
-  add_definitions(-DQ_DECL_FINAL=)
-  add_definitions(-DQ_NULLPTR=0)
-endif()
-
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+kde_enable_exceptions()
 
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   include(CheckCXXCompilerFlag)
@@ -123,9 +127,6 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 endif()
 
 include_directories(
-  ${QT_INCLUDES}
-  ${KDE4_INCLUDES}
-  ${KDEPIMLIBS_INCLUDE_DIRS}
   ${Boost_INCLUDE_DIR}
 )
 
@@ -135,5 +136,6 @@ add_subdirectory(resources)
 add_subdirectory(invoker)
 add_subdirectory(images)
 add_subdirectory(tests)
+install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
 
 message(STATUS "Building FatCRM ${FATCRM_VERSION_STRING} in ${CMAKE_BUILD_TYPE} mode")

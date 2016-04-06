@@ -23,7 +23,7 @@
 #include "sugarcampaign.h"
 #include "kdcrmfields.h"
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 #include <QMap>
@@ -454,7 +454,7 @@ QMap<QString, QString> SugarCampaign::data()
 
 QString SugarCampaign::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.campaign");
+    return QStringLiteral("application/x-vnd.kdab.crm.campaign");
 }
 
 Q_GLOBAL_STATIC(SugarCampaign::AccessorHash, s_accessors)

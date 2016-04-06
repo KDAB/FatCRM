@@ -23,12 +23,12 @@
 
 #include "sugaraccount.h"
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 struct ContactsSet
 {
     SugarAccount account;
-    QVector<KABC::Addressee> addressees;
+    QVector<KContacts::Addressee> addressees;
 };
 
 #endif

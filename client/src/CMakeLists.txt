@@ -13,6 +13,7 @@ include_directories(
 )
 
 set(app_SRCS
+  fatcrm_client_debug.cpp
   app/mainwindow.cpp
   app/clientsettings.cpp
   pages/page.cpp
@@ -68,8 +69,9 @@ set(app_SRCS
   widgets/betterplaintextedit.cpp
   widgets/qdateeditex.cpp
 )
+ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
 
-kde4_add_ui_files(app_SRCS
+ki18n_wrap_ui(app_SRCS
   app/mainwindow.ui
   pages/page.ui
   pages/reportpage.ui
@@ -88,38 +90,33 @@ kde4_add_ui_files(app_SRCS
   dialogs/selectitemdialog.ui
 )
 
-kde4_add_app_icon(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
+#qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
 
-qt4_add_resources(app_SRCS
-  widgets/widgets.qrc
-)
-qt4_add_resources(app_SRCS
+qt5_add_resources(app_SRCS
   icons/icons.qrc
+  widgets/widgets.qrc
 )
 
 # Generate DBus interface in order to find out the config of the sugar resource (for the web link)
 # TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
-qt4_add_dbus_interface(app_SRCS
+qt5_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-kde4_add_library(fatcrmprivate ${app_SRCS})
-
+add_library(fatcrmprivate ${app_SRCS})
+generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
   kdcrmdata
-  ${KDE4_KDECORE_LIBS}
-  ${KDE4_AKONADI_LIBS}
-  ${KDEPIMLIBS_KABC_LIBS}
-  ${KDEPIMLIBS_KPIMUTILS_LIBS}
-  ${QT_QTGUI_LIBS}
+  KF5::AkonadiWidgets
+  KF5::Contacts
 )
 
 target_link_libraries(fatcrmprivate
-  ${KDReports_LIBRARIES}
+  KDReports::kdreports
 )
 
-kde4_add_executable(fatcrm app/main.cpp)
+add_executable(fatcrm app/main.cpp)
 
 target_link_libraries(fatcrm
   fatcrmprivate
@@ -130,4 +127,4 @@ install(TARGETS fatcrm ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
 
-install(FILES fatcrm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})
+install(FILES org.kde.fatcrm.desktop DESTINATION ${XDG_APPS_INSTALL_DIR})

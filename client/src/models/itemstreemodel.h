@@ -24,18 +24,19 @@
 #define ITEMSTREEMODEL_H
 
 #include "enums.h"
+#include "fatcrmprivate_export.h"
+#include <AkonadiCore/EntityTreeModel>
 #include "accountrepository.h"
 
-#include <Akonadi/EntityTreeModel>
+namespace KContacts { class Addressee; }
 
-namespace KABC { class Addressee; }
 
 /**
  * A model for sugar items.
  * This class provides a model for displaying the sugar items.
  *
  */
-class ItemsTreeModel : public Akonadi::EntityTreeModel
+class FATCRMPRIVATE_EXPORT ItemsTreeModel : public Akonadi::EntityTreeModel
 {
     Q_OBJECT
 
@@ -95,7 +96,7 @@ public:
      * represented in the model.
      * param: parent The parent object.
      */
-    explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = 0);
+    explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = Q_NULLPTR);
 
     virtual ~ItemsTreeModel();
 
@@ -112,7 +113,7 @@ public:
     QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
     int entityColumnCount(HeaderGroup headerGroup) const Q_DECL_OVERRIDE;
 
-    static QString countryForContact(const KABC::Addressee &addressee);
+    static QString countryForContact(const KContacts::Addressee &addressee);
 
 private Q_SLOTS:
     void slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields);

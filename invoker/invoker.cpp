@@ -20,7 +20,7 @@
 
 #include "invoker.h"
 
-#include <KDebug>
+#include <QDebug>
 #include <KToolInvocation>
 
 #include <QDBusConnection>
@@ -38,7 +38,7 @@ void Invoker::run()
 {
     QDBusConnectionInterface *iface = QDBusConnection::sessionBus().interface();
     if (!iface) {
-        kWarning() << "Unable to connect to dbus";
+        qWarning() << "Unable to connect to dbus";
         return;
     }
 
@@ -54,7 +54,7 @@ void Invoker::invokeRunningInstance(const QString &serviceName)
 {
     QDBusInterface iface(serviceName, "/InvokerInterface");
     if (!iface.isValid()) {
-        kWarning() << "Unable to access invoker interface of fatcrm:" << iface.lastError().message();
+        qWarning() << "Unable to access invoker interface of fatcrm:" << iface.lastError().message();
         return;
     }
 
@@ -68,7 +68,7 @@ void Invoker::invokeNewInstance()
 
     const int result = KToolInvocation::startServiceByDesktopName("fatcrm", QStringList(), &errorMessage, &serviceName);
     if (result != 0) {
-        kWarning() << "Unable to start fatcrm:" << errorMessage;
+        qWarning() << "Unable to start fatcrm:" << errorMessage;
         return;
     }
 

@@ -168,5 +168,4 @@ int ReferencedDataModel::rowCount(const QModelIndex &index) const
 
     return 0;
 }
-
-#include "referenceddatamodel.moc"
+#include "moc_referenceddatamodel.cpp"

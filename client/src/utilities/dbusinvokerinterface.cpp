@@ -20,7 +20,7 @@
 
 #include "dbusinvokerinterface.h"
 
-#include <KDebug>
+#include <QDebug>
 
 #include <QDBusConnection>
 
@@ -31,7 +31,7 @@ DBusInvokerInterface::DBusInvokerInterface(QObject *parent)
     const bool registered = bus.registerObject(QLatin1String("/InvokerInterface"), this,
                                                QDBusConnection::ExportScriptableSlots);
     if (!registered) {
-        kWarning() << "Failed to register provider object /InvokerInterface";
+        qWarning() << "Failed to register provider object /InvokerInterface";
     }
 }
 

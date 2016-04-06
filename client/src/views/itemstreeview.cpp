@@ -23,6 +23,7 @@
 #include "itemstreeview.h"
 #include "itemstreemodel.h"
 #include "clientsettings.h"
+#include "fatcrm_client_debug.h"
 
 #include <QAction>
 #include <QHeaderView>
@@ -57,7 +58,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         QStringList defaultColumnNames;
         foreach(ItemsTreeModel::ColumnType ct, defaultColumns)
             defaultColumnNames.append(ItemsTreeModel::columnNameFromType(ct));
-        kDebug() << objectName() << "defaultColumnNames:" << defaultColumnNames;
+        qDebug() << objectName() << "defaultColumnNames:" << defaultColumnNames;
         for (int i = 0; i < header()->count(); ++i) {
             const QString name = mItemsTreeModel->columnName(i);
             header()->setSectionHidden(i, !defaultColumnNames.contains(name));
@@ -66,7 +67,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         //header()->resizeSections(QHeaderView::ResizeToContents);
         header()->resizeSections(QHeaderView::Stretch);
     } else {
-        //kDebug() << objectName() << "restoring state" << state.size() << state;
+        //qDebug() << objectName() << "restoring state" << state.size() << state;
         header()->restoreState(state);
     }
 
@@ -109,7 +110,7 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
     case ItemsTreeModel::NextStepDate:
     case ItemsTreeModel::CreationDate:
     case ItemsTreeModel::LastModifiedDate:
-        qDebug() << "Clicked on a date!";
+        qCDebug(FATCRM_CLIENT_LOG) << "Clicked on a date!";
     default:
         break;
     }

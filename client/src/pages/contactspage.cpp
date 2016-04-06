@@ -26,13 +26,13 @@
 #include "filterproxymodel.h"
 #include "referenceddata.h"
 
-#include <KABC/Address>
-#include <KABC/Addressee>
+#include <KContacts/Address>
+#include <KContacts/Addressee>
 
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, QString(KABC::Addressee::mimeType()), Contact), mDataExtractor(new ContactDataExtractor(this))
+    : Page(parent, QString(KContacts::Addressee::mimeType()), Contact), mDataExtractor(new ContactDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Contact, this));
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -59,14 +59,14 @@ ItemDataExtractor *ContactsPage::itemDataExtractor() const
 
 void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug(); QElapsedTimer dt; dt.start();
+    //qDebug(); QElapsedTimer dt; dt.start();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> contactRefMap, assignedToRefMap;
     for (int row = start; row <= end; ++row) {
         const QModelIndex index = treeModel->index(row, 0);
         const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KABC::Addressee>()) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
             const QString id = addressee.custom("FATCRM", "X-ContactId");
             if (id.isEmpty()) { // newly created, not ID yet
                 continue;
@@ -78,13 +78,13 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void ContactsPage::handleItemChanged(const Item &item)
 {
-    Q_ASSERT(item.hasPayload<KABC::Addressee>());
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
     const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
     const QString id = addressee.custom("FATCRM", "X-ContactId");
     if (!id.isEmpty()) {

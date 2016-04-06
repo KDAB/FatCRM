@@ -24,9 +24,9 @@
 #include "contactsimportpage.h"
 #include "kjobprogresstracker.h"
 
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemModifyJob>
-#include <KLocale>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemModifyJob>
+#include <KLocalizedString>
 
 ContactsImportWizard::ContactsImportWizard(QWidget *parent)
     : QWizard(parent)
@@ -98,7 +98,8 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
     connect(tracker, SIGNAL(finished()), SLOT(deleteLater()));
 
     foreach (const Akonadi::Item &item, items) {
-        const KABC::Addressee contact = item.payload<KABC::Addressee>();
+        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+        const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         if (item.isValid()) {
             Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
 

@@ -16,9 +16,8 @@ macro(add_fatcrm_tests)
     kde4_add_unit_test(${_testname} TESTNAME "${_testname}" ${_testname}.cpp)
     target_link_libraries(${_testname}
       fatcrmprivate
+      Qt5::Test
       kdcrmdata
-      ${QT_QTTEST_LIBRARY}
-      ${QT_QTGUI_LIBS}
     )
   endforeach()
 endmacro()

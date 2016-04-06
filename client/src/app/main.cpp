@@ -23,23 +23,32 @@
 #include "mainwindow.h"
 #include <config-fatcrm-version.h>
 
-#include <KApplication>
+
 #include <KAboutData>
-#include <KCmdLineArgs>
-#include <KLocale>
+
+#include <QApplication>
+#include <KLocalizedString>
+#include <QCommandLineParser>
 
 static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
 static const char version[] = FATCRM_VERSION_STRING;
 
 int main(int argc, char **argv)
 {
-    KAboutData about("fatcrm", 0, ki18n("FatCRM"),
-                     version, ki18n(description),
-                     KAboutData::License_GPL_V2, ki18n("(C) 2010-2016 KDAB"),
-                     KLocalizedString(), 0, "info@kdab.com");
+    QApplication app(argc, argv);
 
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
+    KAboutData aboutData("fatcrm", i18n("FatCRM"),
+                     version, i18n(description),
+                     KAboutLicense::GPL_V2, i18n("(C) 2010-2016 KDAB"),
+                     QString(), "info@kdab.com");
+
+    QCommandLineParser parser;
+    KAboutData::setApplicationData(aboutData);
+    parser.addVersionOption();
+    parser.addHelpOption();
+    aboutData.setupCommandLine(&parser);
+    parser.process(app);
+    aboutData.processCommandLine(&parser);
     MainWindow *window = new MainWindow;
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();

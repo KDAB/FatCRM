@@ -28,10 +28,10 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
-#include <KDebug>
-#include <KLocale>
+#include "sugarcrmresource_debug.h"
+#include <KLocalizedString>
 
 #include <QStringList>
 
@@ -84,22 +84,22 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
 
     const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
     if (entries.count() != 1) {
-        qWarning() << "Got" << entries.count() << "entries";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << entries.count() << "entries";
         Q_ASSERT(entries.count() == 1);
     }
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
-    kDebug() << "remote=" << remoteItem.remoteRevision()
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
     bool hasConflict = false;
     if (mItem.remoteRevision().isEmpty()) {
-        kWarning() << "local item (id=" << mItem.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "local item (id=" << mItem.id()
                    << ", remoteId=" << mItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
         hasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if (remoteItem.remoteRevision().isEmpty()) {
-        kWarning() << "remote item (id=" << remoteItem.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
                    << ") in collection=" << mHandler->moduleName()
                    << "does not have remoteRevision";
@@ -130,7 +130,7 @@ void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
     }
 
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -144,13 +144,13 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    kDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
     mItem.setRemoteId(callResult.id());
 
     mStage = Private::GetRevision;
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(QStringList() << QLatin1String("date_modified"));
+    selectedFields.setItems(QStringList() << QStringLiteral("date_modified"));
 
     q->soap()->asyncGet_entry(q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields);
 }
@@ -158,7 +158,7 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void UpdateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Update Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -178,7 +178,7 @@ void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Get_en
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
 
     mItem.setRemoteRevision(remoteItem.remoteRevision());
-    kDebug() << "Got remote revision" << mItem.remoteRevision();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got remote revision" << mItem.remoteRevision();
 
     q->emitResult();
 }
@@ -190,7 +190,7 @@ void UpdateEntryJob::Private::getRevisionError(const KDSoapMessage &fault)
         return;
     }
 
-    kWarning() << "Error when getting remote revision:" << fault.faultAsString();
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Error when getting remote revision:" << fault.faultAsString();
 
     // the item has been added we just don't have a server side datetime
     q->emitResult();
@@ -254,5 +254,4 @@ void UpdateEntryJob::startSugarTask()
         emitResult();
     }
 }
-
-#include "updateentryjob.moc"
+#include "moc_updateentryjob.cpp"

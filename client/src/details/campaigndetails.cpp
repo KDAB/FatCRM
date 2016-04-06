@@ -31,6 +31,8 @@
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/sugarcampaign.h"
 
+#include <QDialog>
+
 CampaignDetails::CampaignDetails(QWidget *parent)
     : Details(Campaign, parent), mUi(new Ui::CampaignDetails), mDataExtractor(new CampaignDataExtractor(this))
 

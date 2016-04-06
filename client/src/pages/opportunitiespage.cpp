@@ -32,7 +32,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 #include <QStyledItemDelegate>
 
 using namespace Akonadi;
@@ -97,7 +97,7 @@ QString OpportunitiesPage::reportTitle() const
 
 void OpportunitiesPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug();
+    //qDebug();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {

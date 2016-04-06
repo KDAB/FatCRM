@@ -26,8 +26,8 @@
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 
-#include <Akonadi/Item>
-#include <Akonadi/Collection>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/Collection>
 
 #include <QObject>
 
@@ -41,7 +41,7 @@ class NotesRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit NotesRepository(QObject *parent = 0);
+    explicit NotesRepository(QObject *parent = Q_NULLPTR);
 
     void clear();
 

@@ -28,7 +28,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <QDebug>
+#include "fatcrm_client_debug.h"
 
 using namespace Akonadi;
 
@@ -49,7 +49,7 @@ QString AccountsPage::reportTitle() const
 
 void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //kDebug() << this << start << end;
+    //qDebug() << this << start << end;
     // QElapsedTimer dt; dt.start();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> accountRefMap, assignedToRefMap;
@@ -68,7 +68,7 @@ void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
-    //kDebug() << "done," << dt.elapsed() << "ms";
+    //qDebug() << "done," << dt.elapsed() << "ms";
 }
 
 void AccountsPage::handleRemovedRows(int start, int end, bool initialLoadingDone)

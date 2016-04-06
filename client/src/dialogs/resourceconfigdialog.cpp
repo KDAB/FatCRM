@@ -24,18 +24,18 @@
 
 #include "ui_resourceconfigdialog.h"
 
-#include <Akonadi/AgentFilterProxyModel>
-#include <Akonadi/AgentInstance>
-#include <Akonadi/AgentInstanceCreateJob>
-#include <Akonadi/AgentInstanceWidget>
-#include <Akonadi/AgentManager>
-#include <Akonadi/AgentType>
-#include <Akonadi/AgentTypeDialog>
-#include <Akonadi/AgentTypeModel>
-#include <Akonadi/Control>
+#include <AkonadiCore/AgentFilterProxyModel>
+#include <AkonadiCore/AgentInstance>
+#include <AkonadiCore/AgentInstanceCreateJob>
+#include <AkonadiWidgets/agentinstancewidget.h>
+#include <AkonadiCore/AgentManager>
+#include <AkonadiCore/AgentType>
+#include <AkonadiWidgets/AgentTypeDialog>
+#include <AkonadiCore/AgentTypeModel>
+#include <AkonadiWidgets/controlgui.h>
 using namespace Akonadi;
 
-#include <KDebug>
+#include "fatcrm_client_debug.h"
 
 #include <QAbstractItemView>
 #include <QItemSelectionModel>
@@ -73,14 +73,14 @@ void ResourceConfigDialog::Private::updateButtonStates()
 
     mCurrentResource = AgentInstance();
 
-    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     switch (selectedResources.count()) {
     case 0:
         break;
 
     case 1:
         mCurrentResource = selectedResources.at(0);
-        canConfigure = !mCurrentResource.type().capabilities().contains(QLatin1String("NoConfig"));
+        canConfigure = !mCurrentResource.type().capabilities().contains(QStringLiteral("NoConfig"));
         canDelete = true;
         break;
 
@@ -100,7 +100,7 @@ void ResourceConfigDialog::Private::addResource()
     AgentTypeDialog dialog(q);
 
     AgentFilterProxyModel *filterModel = dialog.agentFilterProxyModel();
-    filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
+    filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));
 
     if (dialog.exec() == QDialog::Accepted) {
         const AgentType resourceType = dialog.agentType();
@@ -122,7 +122,7 @@ void ResourceConfigDialog::Private::configureResource()
 
 void ResourceConfigDialog::Private::syncResources()
 {
-    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     Q_FOREACH (AgentInstance resource, selectedResources) {
         resource.synchronize();
     }
@@ -130,7 +130,7 @@ void ResourceConfigDialog::Private::syncResources()
 
 void ResourceConfigDialog::Private::removeResource()
 {
-    const QList<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
+    const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     Q_FOREACH (const AgentInstance &resource, selectedResources) {
         if (resource == mSelectedResource) {
             mSelectedResource = AgentInstance();
@@ -145,7 +145,7 @@ void ResourceConfigDialog::Private::removeResource()
 
 void ResourceConfigDialog::Private::resourceCreateResult(KJob *job)
 {
-    kDebug() << "error=" << job->error() << "string=" << job->errorString();
+    qCDebug(FATCRM_CLIENT_LOG) << "error=" << job->error() << "string=" << job->errorString();
     if (job->error() != 0) {
         QMessageBox::critical(q, i18nc("@title:window", "Failed to create CRM connector"),
                               job->errorString());
@@ -170,10 +170,10 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
 {
     d->mUi.setupUi(this);
 
-    Akonadi::Control::widgetNeedsAkonadi(this);
+    Akonadi::ControlGui::widgetNeedsAkonadi(this);
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
-    filterModel->addCapabilityFilter(QLatin1String("KDCRM"));
+    filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));
 
     // Remove this and use filterModel on the last line when everyone has kdepimlibs >= 4.14.7
 #if 1
@@ -243,4 +243,4 @@ bool WorkaroundFilterProxyModel::filterAcceptsRow(int source_row, const QModelIn
     return capabilities.contains("KDCRM");
 }
 
-#include "resourceconfigdialog.moc"
+#include "moc_resourceconfigdialog.cpp"

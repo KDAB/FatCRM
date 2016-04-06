@@ -9,31 +9,34 @@ set(salesforceresource_SRCS
   salesforceresource.cpp
 )
 
-kde4_add_ui_files(salesforceresource_SRCS
+ecm_qt_declare_logging_category(salesforceresource_SRCS HEADER salesforceresource_debug.h IDENTIFIER FATCRM_SALESFORCERESOURCE_LOG CATEGORY_NAME log_fatcrm_salesforceresource)
+
+ki18n_wrap_ui(salesforceresource_SRCS
   salesforceconfigdialog.ui
 )
 
 install(FILES salesforceresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
-kde4_add_kcfg_files(salesforceresource_SRCS settings.kcfgc)
+kconfig_add_kcfg_files(salesforceresource_SRCS settings.kcfgc)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/salesforceresource.kcfg
   org.kde.Akonadi.SalesForce.Settings
 )
-qt4_add_dbus_adaptor(salesforceresource_SRCS
+qt5_add_dbus_adaptor(salesforceresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SalesForce.Settings.xml settings.h Settings
 )
 
 kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap)
 
-kde4_add_executable(akonadi_salesforce_resource RUN_UNINSTALLED ${salesforceresource_SRCS})
+add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 
 target_link_libraries(akonadi_salesforce_resource
-  ${KDSoap_LIBRARIES}
-  ${KDE4_AKONADI_LIBS}
-  ${KDEPIMLIBS_KABC_LIBS}
-  ${KDE4_KDECORE_LIBS}
-  ${QT_QTDBUS_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
+  KDSoap::kdsoap
+  KF5::Contacts
+  KF5::KDELibs4Support
+  Qt5::DBus
+  Qt5::Core
+  KF5::AkonadiCore
+  KF5::AkonadiAgentBase
 )
 
 install(TARGETS akonadi_salesforce_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -28,10 +28,10 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
-#include <KDebug>
+#include "sugarcrmresource_debug.h"
 
 #include <QStringList>
 
@@ -62,7 +62,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
         return;
     }
 
-    kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();
 }
@@ -70,7 +70,7 @@ void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
 void DeleteEntryJob::Private::setEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Delete Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Delete Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -105,17 +105,16 @@ void DeleteEntryJob::startSugarTask()
     // delete just required identifier and "deleted" field
     // no need for type specific code
     KDSoapGenerated::TNS__Name_value idField;
-    idField.setName(QLatin1String("id"));
+    idField.setName(QStringLiteral("id"));
     idField.setValue(d->mItem.remoteId());
 
     KDSoapGenerated::TNS__Name_value deletedField;
-    deletedField.setName(QLatin1String("deleted"));
-    deletedField.setValue(QLatin1String("1"));
+    deletedField.setName(QStringLiteral("deleted"));
+    deletedField.setValue(QStringLiteral("1"));
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField);
 
     soap()->asyncSet_entry(sessionId(), d->mItem.parentCollection().remoteId(), valueList);
 }
-
-#include "deleteentryjob.moc"
+#include "moc_deleteentryjob.cpp"

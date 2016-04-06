@@ -19,7 +19,7 @@
 */
 
 #include "passwordhandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include <settings.h>
 
 #if USE_KWALLET
@@ -46,7 +46,7 @@ PasswordHandler::PasswordHandler(const QString &resourceId, QObject *parent) :
         connect(wallet, SIGNAL(walletOpened(bool)),
                  this, SLOT(onWalletOpened(bool)));
     } else {
-        kWarning() << "openWallet(Asynchronous) failed!";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "openWallet(Asynchronous) failed!";
     }
 #endif
 }
@@ -141,7 +141,7 @@ bool PasswordHandler::savePassword()
         wallet->writePassword(mResourceId, mPassword);
         wallet->sync();
         Settings::setPassword(QString()); // ensure no plain-text password from before in the config file
-        Settings::self()->writeConfig();
+        Settings::self()->save();
         return true;
     }
     return false;

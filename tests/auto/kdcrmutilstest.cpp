@@ -53,4 +53,4 @@ private Q_SLOTS:
 };
 
 QTEST_MAIN(KDCRMUtilsTest)
-#include "kdcrmutils.moc"
+#include "kdcrmutilstest.moc"

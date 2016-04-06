@@ -21,7 +21,7 @@
 */
 
 #include "accountshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugaraccountcache.h"
 #include "sugarsession.h"
@@ -30,19 +30,19 @@ using namespace KDSoapGenerated;
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
-#include <Akonadi/ItemFetchJob>
-#include <Akonadi/ItemFetchScope>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/ItemFetchJob>
+#include <AkonadiCore/ItemFetchScope>
 
-#include <KABC/Address>
+#include <KContacts/Address>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Accounts"), session),
+    : ModuleHandler(QStringLiteral("Accounts"), session),
       mAccessors(SugarAccount::accessorHash())
 {
     // Load a cache of all accounts from the database
@@ -71,7 +71,7 @@ Akonadi::Collection AccountsHandler::handlerCollection() const
 
 QString AccountsHandler::orderByForListing() const
 {
-    return QLatin1String("accounts.name");
+    return QStringLiteral("accounts.name");
 }
 
 QStringList AccountsHandler::supportedSugarFields() const
@@ -88,7 +88,7 @@ QStringList AccountsHandler::supportedCRMFields() const
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarAccount>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
         return false;
     }
@@ -99,7 +99,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the account being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -153,7 +153,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Accounts entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Accounts entry for id=" << entry.id() << "has no values";
         return item;
     }
 
@@ -221,19 +221,19 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // check for special fields
-            if (it.key().startsWith(QLatin1String("billing"))) {
+            if (it.key().startsWith(QStringLiteral("billing"))) {
                 if (!seenBillingAddress) {
                     seenBillingAddress = true;
                     diffName = i18nc("@item:intable", "Billing Address");
 
-                    KABC::Address leftAddress;
+                    KContacts::Address leftAddress;
                     leftAddress.setStreet(leftAccount.billingAddressStreet());
                     leftAddress.setLocality(leftAccount.billingAddressCity());
                     leftAddress.setRegion(leftAccount.billingAddressState());
                     leftAddress.setCountry(leftAccount.billingAddressCountry());
                     leftAddress.setPostalCode(leftAccount.billingAddressPostalcode());
 
-                    KABC::Address rightAddress;
+                    KContacts::Address rightAddress;
                     rightAddress.setStreet(rightAccount.billingAddressStreet());
                     rightAddress.setLocality(rightAccount.billingAddressCity());
                     rightAddress.setRegion(rightAccount.billingAddressState());
@@ -246,19 +246,19 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                     // already printed, skip
                     continue;
                 }
-            } else if (it.key().startsWith(QLatin1String("shipping"))) {
+            } else if (it.key().startsWith(QStringLiteral("shipping"))) {
                 if (!seenShippingAddress) {
                     seenShippingAddress = true;
                     diffName = i18nc("@item:intable", "Office Address");
 
-                    KABC::Address leftAddress(KABC::Address::Parcel);
+                    KContacts::Address leftAddress(KContacts::Address::Parcel);
                     leftAddress.setStreet(leftAccount.shippingAddressStreet());
                     leftAddress.setLocality(leftAccount.shippingAddressCity());
                     leftAddress.setRegion(leftAccount.shippingAddressState());
                     leftAddress.setCountry(leftAccount.shippingAddressCountry());
                     leftAddress.setPostalCode(leftAccount.shippingAddressPostalcode());
 
-                    KABC::Address rightAddress(KABC::Address::Parcel);
+                    KContacts::Address rightAddress(KContacts::Address::Parcel);
                     rightAddress.setStreet(rightAccount.shippingAddressStreet());
                     rightAddress.setLocality(rightAccount.shippingAddressCity());
                     rightAddress.setRegion(rightAccount.shippingAddressState());
@@ -302,12 +302,12 @@ void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
         const SugarAccount account = item.payload<SugarAccount>();
         cache->addAccount(account.name(), account.id());
     }
-    //kDebug() << "Added" << items.count() << "items into cache for" << moduleName();
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Added" << items.count() << "items into cache for" << moduleName();
 }
 
 void AccountsHandler::slotUpdateJobResult(KJob *job)
 {
     if (job->error()) {
-        kError() << job->errorString();
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }

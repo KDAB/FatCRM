@@ -25,7 +25,6 @@
 
 #include "ui_salesforceconfigdialog.h"
 
-class Settings;
 
 class SalesforceConfigDialog : public QDialog
 {

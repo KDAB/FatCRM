@@ -21,19 +21,19 @@
 */
 
 #include "campaignshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 
 using namespace KDSoapGenerated;
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 CampaignsHandler::CampaignsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Campaigns"), session),
+    : ModuleHandler(QStringLiteral("Campaigns"), session),
       mAccessors(SugarCampaign::accessorHash())
 {
 }
@@ -53,7 +53,7 @@ Akonadi::Collection CampaignsHandler::handlerCollection() const
 
 QString CampaignsHandler::orderByForListing() const
 {
-    return QLatin1String("campaigns.name");
+    return QStringLiteral("campaigns.name");
 }
 
 QStringList CampaignsHandler::supportedSugarFields() const
@@ -64,7 +64,7 @@ QStringList CampaignsHandler::supportedSugarFields() const
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarCampaign>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Campaign payload";
         return false;
     }
@@ -75,7 +75,7 @@ bool CampaignsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the campaign being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -110,7 +110,7 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Campaigns entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Campaigns entry for id=" << entry.id() << "has no values";
         return item;
     }
 

@@ -21,108 +21,109 @@
 */
 
 #include "salesforcecontactshandler.h"
+#include "salesforceresource_debug.h"
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
-#include <Akonadi/Collection>
+#include <AkonadiCore/Collection>
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 
-typedef QString(*valueGetter)(const KABC::Addressee &);
-typedef void (*valueSetter)(const QString &, KABC::Addressee &);
+typedef QString(*valueGetter)(const KContacts::Addressee &);
+typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
 
-static QString getId(const KABC::Addressee &addressee)
+static QString getId(const KContacts::Addressee &addressee)
 {
     return addressee.uid();
 }
 
-static void setId(const QString &value, KABC::Addressee &addressee)
+static void setId(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.setUid(value);
 }
 
-static QString getFirstName(const KABC::Addressee &addressee)
+static QString getFirstName(const KContacts::Addressee &addressee)
 {
     return addressee.givenName();
 }
 
-static void setFirstName(const QString &value, KABC::Addressee &addressee)
+static void setFirstName(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.setGivenName(value);
 }
 
-static QString getLastName(const KABC::Addressee &addressee)
+static QString getLastName(const KContacts::Addressee &addressee)
 {
     return addressee.familyName();
 }
 
-static void setLastName(const QString &value, KABC::Addressee &addressee)
+static void setLastName(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.setFamilyName(value);
 }
 
-static QString getTitle(const KABC::Addressee &addressee)
+static QString getTitle(const KContacts::Addressee &addressee)
 {
     return addressee.title();
 }
 
-static void setTitle(const QString &value, KABC::Addressee &addressee)
+static void setTitle(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.setTitle(value);
 }
 
-static QString getDepartment(const KABC::Addressee &addressee)
+static QString getDepartment(const KContacts::Addressee &addressee)
 {
     return addressee.department();
 }
 
-static void setDepartment(const QString &value, KABC::Addressee &addressee)
+static void setDepartment(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.setDepartment(value);
 }
 
-static QString getEmail1(const KABC::Addressee &addressee)
+static QString getEmail1(const KContacts::Addressee &addressee)
 {
     return addressee.preferredEmail();
 }
 
-static void setEmail1(const QString &value, KABC::Addressee &addressee)
+static void setEmail1(const QString &value, KContacts::Addressee &addressee)
 {
     addressee.insertEmail(value, true);
 }
 
-static QString getHomePhone(const KABC::Addressee &addressee)
+static QString getHomePhone(const KContacts::Addressee &addressee)
 {
-    return addressee.phoneNumber(KABC::PhoneNumber::Home).number();
+    return addressee.phoneNumber(KContacts::PhoneNumber::Home).number();
 }
 
-static void setHomePhone(const QString &value, KABC::Addressee &addressee)
+static void setHomePhone(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Home));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Home));
 }
 
-static QString getWorkPhone(const KABC::Addressee &addressee)
+static QString getWorkPhone(const KContacts::Addressee &addressee)
 {
-    return addressee.phoneNumber(KABC::PhoneNumber::Work).number();
+    return addressee.phoneNumber(KContacts::PhoneNumber::Work).number();
 }
 
-static void setWorkPhone(const QString &value, KABC::Addressee &addressee)
+static void setWorkPhone(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Work));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Work));
 }
 
-static QString getMobilePhone(const KABC::Addressee &addressee)
+static QString getMobilePhone(const KContacts::Addressee &addressee)
 {
-    return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
+    return addressee.phoneNumber(KContacts::PhoneNumber::Cell).number();
 }
 
-static void setMobilePhone(const QString &value, KABC::Addressee &addressee)
+static void setMobilePhone(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.insertPhoneNumber(KABC::PhoneNumber(value, KABC::PhoneNumber::Cell));
+    addressee.insertPhoneNumber(KContacts::PhoneNumber(value, KContacts::PhoneNumber::Cell));
 }
 
 class ContactAccessorPair
@@ -138,23 +139,23 @@ public:
 };
 
 SalesforceContactsHandler::SalesforceContactsHandler()
-    : SalesforceModuleHandler(QLatin1String("Contact")),
+    : SalesforceModuleHandler(QStringLiteral("Contact")),
       mAccessors(new ContactAccessorHash)
 {
     // interestingly, if we don't specifically request Id in queries, the resulting
     // XML does contain empty Id elements. If we request Id, we get it twice, but that's better
     // than never
-    mAccessors->insert(QLatin1String("Id"), ContactAccessorPair(getId, setId));
+    mAccessors->insert(QStringLiteral("Id"), ContactAccessorPair(getId, setId));
 
-    mAccessors->insert(QLatin1String("FirstName"), ContactAccessorPair(getFirstName, setFirstName));
-    mAccessors->insert(QLatin1String("LastName"), ContactAccessorPair(getLastName, setLastName));
+    mAccessors->insert(QStringLiteral("FirstName"), ContactAccessorPair(getFirstName, setFirstName));
+    mAccessors->insert(QStringLiteral("LastName"), ContactAccessorPair(getLastName, setLastName));
 
-    mAccessors->insert(QLatin1String("Email"), ContactAccessorPair(getEmail1, setEmail1));
-    mAccessors->insert(QLatin1String("Title"), ContactAccessorPair(getTitle, setTitle));
-    mAccessors->insert(QLatin1String("Department"), ContactAccessorPair(getDepartment, setDepartment));
-    mAccessors->insert(QLatin1String("HomePhone"), ContactAccessorPair(getHomePhone, setHomePhone));
-    mAccessors->insert(QLatin1String("Phone"), ContactAccessorPair(getWorkPhone, setWorkPhone));
-    mAccessors->insert(QLatin1String("MobilePhone"), ContactAccessorPair(getMobilePhone, setMobilePhone));
+    mAccessors->insert(QStringLiteral("Email"), ContactAccessorPair(getEmail1, setEmail1));
+    mAccessors->insert(QStringLiteral("Title"), ContactAccessorPair(getTitle, setTitle));
+    mAccessors->insert(QStringLiteral("Department"), ContactAccessorPair(getDepartment, setDepartment));
+    mAccessors->insert(QStringLiteral("HomePhone"), ContactAccessorPair(getHomePhone, setHomePhone));
+    mAccessors->insert(QStringLiteral("Phone"), ContactAccessorPair(getWorkPhone, setWorkPhone));
+    mAccessors->insert(QStringLiteral("MobilePhone"), ContactAccessorPair(getMobilePhone, setMobilePhone));
 }
 
 SalesforceContactsHandler::~SalesforceContactsHandler()
@@ -179,7 +180,7 @@ void SalesforceContactsHandler::setDescriptionResult(const TNS__DescribeSObjectR
         it->isAvailable = fields.contains(it.key());
 
         if (!it->isAvailable) {
-            kDebug() << "Disabling accessor pair for" << it.key()
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Disabling accessor pair for" << it.key()
                      << "because it is not part of the server's available fields";
         }
     }
@@ -189,7 +190,7 @@ Akonadi::Collection SalesforceContactsHandler::collection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleName());
-    contactCollection.setContentMimeTypes(QStringList() << KABC::Addressee::mimeType());
+    contactCollection.setContentMimeTypes(QStringList() << KContacts::Addressee::mimeType());
     contactCollection.setName(i18nc("@item folder name", "Contacts"));
     contactCollection.setRights(Akonadi::Collection::CanChangeItem |
                                 Akonadi::Collection::CanCreateItem |
@@ -217,8 +218,8 @@ void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, Sf
 
 bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceService *soap)
 {
-    if (!item.hasPayload<KABC::Addressee>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+    if (!item.hasPayload<KContacts::Addressee>()) {
+        qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
         return false;
     }
@@ -232,8 +233,8 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         object.setId(item.remoteId());
     }
 
-    Q_ASSERT(item.hasPayload<KABC::Addressee>());
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
     QList<KDSoapValue> valueList;
     ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
@@ -247,7 +248,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
         if (it->isAvailable) {
             const QString value = it->getter(addressee);
             valueList << KDSoapValue(it.key(), value);
-            kDebug() << "Upsert: name=" << it.key() << "value=" << value;
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Upsert: name=" << it.key() << "value=" << value;
         }
     }
 
@@ -269,17 +270,17 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
     Q_FOREACH (const ENS__SObject &entry, queryResult.records()) {
         const QList<KDSoapValue> valueList = entry.any();
         if (valueList.isEmpty()) {
-            kWarning() << "Contacts entry for id=" << entry.id().value() << "has no values";
-            kDebug() << "fieldsToNull:" << entry.fieldsToNull();
+            qCWarning(FATCRM_SALESFORCERESOURCE_LOG) << "Contacts entry for id=" << entry.id().value() << "has no values";
+            qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "fieldsToNull:" << entry.fieldsToNull();
             continue;
         }
 
         Akonadi::Item item;
         item.setRemoteId(entry.id().value());
         item.setParentCollection(parentCollection);
-        item.setMimeType(KABC::Addressee::mimeType());
+        item.setMimeType(KContacts::Addressee::mimeType());
 
-        KABC::Addressee addressee;
+        KContacts::Addressee addressee;
         addressee.setUid(entry.id().value());
 
         QList<KDSoapValue>::const_iterator it    = valueList.constBegin();
@@ -291,15 +292,15 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
                     accessorIt->setter(it->value().value<QString>(), addressee);
                 }
             } else {
-                kWarning() << "Contacts entry for id=" << entry.id().value()
+                qCWarning(FATCRM_SALESFORCERESOURCE_LOG) << "Contacts entry for id=" << entry.id().value()
                            << "has unknown value named" << it->name();
             }
         }
 
-        item.setPayload<KABC::Addressee>(addressee);
+        item.setPayload<KContacts::Addressee>(addressee);
         items << item;
     }
 
-    kDebug() << "Query result had" << items.count() << "valid contact items";
+    qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "Query result had" << items.count() << "valid contact items";
     return items;
 }

@@ -26,7 +26,7 @@
 #include "enums.h"
 #include "kdcrmdata/enumdefinitions.h"
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 #include <QWidget>
 

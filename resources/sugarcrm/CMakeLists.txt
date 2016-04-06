@@ -34,32 +34,36 @@ set(sugarcrmresource_SRCS
   conflictresolvedialog.cpp
 )
 
-kde4_add_ui_files(sugarcrmresource_SRCS
+ecm_qt_declare_logging_category(sugarcrmresource_SRCS HEADER sugarcrmresource_debug.h IDENTIFIER FATCRM_SUGARCRMRESOURCE_LOG CATEGORY_NAME log_fatcrm_sugarcrmresource)
+
+ki18n_wrap_ui(sugarcrmresource_SRCS
   sugarconfigdialog.ui
 )
 
 install(FILES sugarcrmresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
-kde4_add_kcfg_files(sugarcrmresource_SRCS settings.kcfgc)
+kconfig_add_kcfg_files(sugarcrmresource_SRCS settings.kcfgc)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
-qt4_add_dbus_adaptor(sugarcrmresource_SRCS
+qt5_add_dbus_adaptor(sugarcrmresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml settings.h Settings
 )
 
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap)
 
-kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
+add_executable(akonadi_sugarcrm_resource ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource
   kdcrmdata
-  ${KDSoap_LIBRARIES}
-  ${KDE4_AKONADI_KABC_LIBS}
-  ${KDE4_AKONADI_LIBS}
-  ${KDEPIMLIBS_KABC_LIBS}
-  ${KDEPIMLIBS_KCALCORE_LIBS}
-  ${KDE4_KDECORE_LIBS}
-  ${QT_QTDBUS_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
+  KDSoap::kdsoap
+  KF5::Contacts
+  KF5::CalendarCore
+  KF5::KDELibs4Support
+  Qt5::DBus
+  Qt5::Core
+  KF5::Wallet
+  KF5::CalendarCore
+  KF5::AkonadiAgentBase
+  KF5::AkonadiContact
 )
 
 install(TARGETS akonadi_sugarcrm_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

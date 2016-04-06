@@ -23,8 +23,8 @@
 
 #include "contactsset.h"
 
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
 
 #include <QWizardPage>
 
@@ -41,7 +41,7 @@ class QVBoxLayout;
 
 struct MatchPair
 {
-    KABC::Addressee contact;
+    KContacts::Addressee contact;
     Akonadi::Item item;
 };
 
@@ -50,7 +50,7 @@ class MergeWidget : public QWidget
     Q_OBJECT
 
 public:
-    MergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
+    MergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                 const QVector<MatchPair> &possibleMatches,
                 QWidget *parent = Q_NULLPTR);
 
@@ -64,9 +64,9 @@ private:
     QCheckBox *addFieldCheckBox(const QString &str);
 
     SugarAccount mAccount;
-    KABC::Addressee mImportedAddressee;
+    KContacts::Addressee mImportedAddressee;
     QVector<MatchPair> mPossibleMatches;
-    KABC::Addressee mFinalContact;
+    KContacts::Addressee mFinalContact;
 
     QLabel *mImportedContactLabel;
     struct UpdateCheckBoxes
@@ -115,7 +115,7 @@ private slots:
     void adjustPageSize();
 
 private:
-    void addMergeWidget(const SugarAccount &account, const KABC::Addressee &importedAddressee,
+    void addMergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                         const QVector<MatchPair> &possibleMatches);
 
     Ui::ContactsImportPage *mUi;

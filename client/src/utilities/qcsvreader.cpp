@@ -364,7 +364,7 @@ QString QCsvStandardBuilder::data( uint row, uint column ) const
         return QString();
     }
 
-    //qDebug() << "mRows[" << row << "][" << column << "] = " << d->mRows[ row ][ column ];
+    //qCDebug(FATCRM_CLIENT_LOG) << "mRows[" << row << "][" << column << "] = " << d->mRows[ row ][ column ];
     return d->mRows[ row ][ column ];
 }
 
@@ -389,7 +389,7 @@ void QCsvStandardBuilder::field( const QString &data, uint row, uint column )
     }
 
     d->mRows[ row ][ column ] = data;
-    //qDebug() << "mRows[" << row << "][" << column << "] = " << data;
+    //qCDebug(FATCRM_CLIENT_LOG) << "mRows[" << row << "][" << column << "] = " << data;
 
     d->mColumnCount = qMax( d->mColumnCount, column + 1 );
 }

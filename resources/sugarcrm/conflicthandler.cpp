@@ -22,15 +22,15 @@
 
 #include "conflicthandler.h"
 #include "conflictresolvedialog.h"
-
-#include <Akonadi/Collection>
-#include <Akonadi/Item>
-#include <Akonadi/ItemCreateJob>
-#include <Akonadi/ItemModifyJob>
-#include <Akonadi/Session>
+#include "sugarcrmresource_debug.h"
+#include <AkonadiCore/Collection>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/Session>
 using namespace Akonadi;
 
-#include <KLocale>
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 class ConflictHandler::Private
@@ -121,7 +121,7 @@ void ConflictHandler::Private::resolve()
 
 void ConflictHandler::Private::createDuplicate(const Item &item)
 {
-    kDebug() << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Creating duplicate of item: id=" << item.id() << ", remoteId=" << item.remoteId();
     Item duplicate(item);
     duplicate.setId(-1);
     duplicate.setRemoteId(QString());
@@ -139,12 +139,12 @@ void ConflictHandler::Private::duplicateLocalItemResult(KJob *job)
     const Item item = createJob->item();
 
     if (createJob->error() != 0) {
-        kWarning() << "Duplicating local item" << item.id()
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Duplicating local item" << item.id()
                    << ", collection" << item.parentCollection().name()
                    << "for conflict resolution failed on local create: "
                    << "error=" << createJob->error() << "message=" << createJob->errorText();
     } else {
-        kDebug() << "Duplicating local item" << item.id()
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Duplicating local item" << item.id()
                  << ", collection" << item.parentCollection().name()
                  << "for conflict resolution succeeded:";
     }
@@ -188,5 +188,4 @@ void ConflictHandler::start()
 
     d->resolve();
 }
-
-#include "conflicthandler.moc"
+#include "moc_conflicthandler.cpp"

@@ -35,7 +35,8 @@
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <KLocale>
+#include <KLocalizedString>
+#include "fatcrm_client_debug.h"
 
 #include <QCalendarWidget>
 
@@ -150,9 +151,9 @@ void OpportunityDetails::on_viewNotesButton_clicked()
 {
     const QString oppId = id();
     const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(oppId);
-    kDebug() << notes.count() << "notes found for opp" << oppId;
+    qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
-    kDebug() << emails.count() << "emails found for opp" << oppId;
+    qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for opp" << oppId;
     NotesWindow *dlg = new NotesWindow(0);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));
     foreach(const SugarNote &note, notes) {

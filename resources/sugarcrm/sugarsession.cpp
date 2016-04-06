@@ -27,7 +27,7 @@
 
 using namespace KDSoapGenerated;
 #include <KUrl>
-#include <KDebug>
+#include "sugarcrmresource_debug.h"
 
 static QString endPointFromHostString(const QString &host)
 {
@@ -137,9 +137,9 @@ void SugarSession::logout()
     if (!d->mSessionId.isEmpty() && d->mSoap != 0) {
         KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
         if (errorValue.number() != "0")
-            kDebug() << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
         if (!d->mSoap->lastError().isEmpty())
-            kDebug() << "logout had fault" << d->mSoap->lastError();
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout had fault" << d->mSoap->lastError();
     }
     forgetSession();
 }
@@ -159,4 +159,3 @@ Sugarsoap *SugarSession::soap()
     return d->mSoap;
 }
 
-#include "sugarsession.moc"

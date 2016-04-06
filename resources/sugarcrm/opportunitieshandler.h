@@ -26,7 +26,6 @@
 #include "modulehandler.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-class OpportunityAccessorPair;
 
 template <typename U, typename V> class QHash;
 

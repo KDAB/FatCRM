@@ -2,8 +2,10 @@
 # To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
 find_package(KDSoap CONFIG QUIET) # first try KDSoapConfig.cmake
 find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
-macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
+#macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
 
+# TODO: Just use KDSOAP_GENERATE_WSDL?
+set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
 if(KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
   macro(kdsoap_generate_soap_bindings _sources _wsdl _name)
@@ -21,7 +23,7 @@ if(KDSoap_CODEGENERATOR)
               ${_wsdl}
     )
 
-    qt4_generate_moc(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
+    qt5_generate_moc(${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp PROPERTIES SKIP_AUTOMOC TRUE)
 
     set(${_sources} ${${_sources}} ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h ${CMAKE_CURRENT_BINARY_DIR}/${_name}_moc.cpp)

@@ -39,15 +39,15 @@ public:
 
     QStringList supportedFields() const Q_DECL_OVERRIDE;
 
-    virtual void setDescriptionResult(const KDSoapGenerated::TNS__DescribeSObjectResult &description) Q_DECL_OVERRIDE;
+    void setDescriptionResult(const KDSoapGenerated::TNS__DescribeSObjectResult &description) Q_DECL_OVERRIDE;
 
     Akonadi::Collection collection() const Q_DECL_OVERRIDE;
 
-    virtual void listEntries(const KDSoapGenerated::TNS__QueryLocator &locator, KDSoapGenerated::SforceService *soap) Q_DECL_OVERRIDE;
+    void listEntries(const KDSoapGenerated::TNS__QueryLocator &locator, KDSoapGenerated::SforceService *soap) Q_DECL_OVERRIDE;
 
-    virtual bool setEntry(const Akonadi::Item &item, KDSoapGenerated::SforceService *soap) Q_DECL_OVERRIDE;
+    bool setEntry(const Akonadi::Item &item, KDSoapGenerated::SforceService *soap) Q_DECL_OVERRIDE;
 
-    virtual Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__QueryResult &queryResult,
+    Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__QueryResult &queryResult,
             const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
 private:
     typedef QHash<QString, ContactAccessorPair> ContactAccessorHash;

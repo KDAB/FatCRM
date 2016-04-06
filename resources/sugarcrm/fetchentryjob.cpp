@@ -28,10 +28,10 @@ using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
-#include <KDebug>
-#include <KLocale>
+#include "sugarcrmresource_debug.h"
+#include <KLocalizedString>
 
 #include <QStringList>
 
@@ -70,7 +70,7 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_
     item.setId(mItem.id());
     item.setRevision(mItem.revision());
     mItem = item;
-    kDebug() << "Fetched" << mHandler->moduleName()
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fetched" << mHandler->moduleName()
              << "Entry" << mItem.remoteId()
              << "with revision" << mItem.remoteRevision();
 
@@ -80,7 +80,7 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_
 void FetchEntryJob::Private::getEntryError(const KDSoapMessage &fault)
 {
     if (!q->handleLoginError(fault)) {
-        kWarning() << "Fetch Entry Error:" << fault.faultAsString();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Fetch Entry Error:" << fault.faultAsString();
 
         q->setError(SugarJob::SoapError);
         q->setErrorText(fault.faultAsString());
@@ -124,5 +124,4 @@ void FetchEntryJob::startSugarTask()
         emitResult();
     }
 }
-
-#include "fetchentryjob.moc"
+#include "moc_fetchentryjob.cpp"

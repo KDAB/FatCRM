@@ -21,21 +21,21 @@
 */
 
 #include "emailshandler.h"
-
+#include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 using namespace KDSoapGenerated;
 
-#include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <Akonadi/Collection>
+#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
+#include <AkonadiCore/Collection>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 #include <QHash>
 
 EmailsHandler::EmailsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Emails"), session),
+    : ModuleHandler(QStringLiteral("Emails"), session),
       mAccessors(SugarEmail::accessorHash())
 {
 }
@@ -59,12 +59,12 @@ Akonadi::Collection EmailsHandler::handlerCollection() const
 
 QString EmailsHandler::queryStringForListing() const
 {
-    return QLatin1String("emails.parent_type='Opportunities'");
+    return QStringLiteral("emails.parent_type='Opportunities'");
 }
 
 QString EmailsHandler::orderByForListing() const
 {
-    return QLatin1String("emails.name");
+    return QStringLiteral("emails.name");
 }
 
 QStringList EmailsHandler::supportedSugarFields() const
@@ -126,18 +126,20 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
             }
         }
         if (email_id.isEmpty()) {
-            kWarning() << "No email_id found in entry";
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No email_id found in entry";
         } else {
             const int pos = itemIndexById.value(email_id, -1);
             if (pos == -1) {
-                kWarning() << "Email not found:" << email_id;
+                qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Email not found:" << email_id;
             } else {
-                SugarEmail email = items[pos].payload<SugarEmail>();
+                auto item = items.at(pos);
+                Q_ASSERT(item.hasPayload<SugarEmail>());
+                SugarEmail email = item.payload<SugarEmail>();
                 email.setDescription(description);
                 if (description.isEmpty()) {
                     email.setDescriptionHtml(descriptionHtml);
                 }
-                items[pos].setPayload<SugarEmail>(email);
+                item.setPayload<SugarEmail>(email);
             }
         }
     }
@@ -146,7 +148,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
 bool EmailsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarEmail>()) {
-        kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Email payload";
         return false;
     }
@@ -157,7 +159,7 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the email being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -196,7 +198,7 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
 
     const QList<KDSoapGenerated::TNS__Name_value> valueList = entry.name_value_list().items();
     if (valueList.isEmpty()) {
-        kWarning() << "Emails entry for id=" << entry.id() << "has no values";
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Emails entry for id=" << entry.id() << "has no values";
         return item;
     }
 

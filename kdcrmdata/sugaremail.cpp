@@ -25,8 +25,9 @@
 
 #include <QSharedData>
 #include <QString>
+#include <QMap>
 
-#include <KLocale>
+#include <KLocalizedString>
 
 class SugarEmail::Private : public QSharedData
 {
@@ -356,7 +357,7 @@ QMap<QString, QString> SugarEmail::data() const
 
 QString SugarEmail::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.email");
+    return QStringLiteral("application/x-vnd.kdab.crm.email");
 }
 
 Q_GLOBAL_STATIC(SugarEmail::AccessorHash, s_accessors)
