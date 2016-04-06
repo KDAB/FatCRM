@@ -285,17 +285,20 @@ void Page::slotRemoveItem()
     QString deleStr = i18n("The selected item will be deleted permanently!");
     switch (mType) {
     case Account: {
+        Q_ASSERT(item.hasPayload<SugarAccount>());
         SugarAccount acct = item.payload<SugarAccount>();
         deleStr = i18n("The account \"%1\" will be deleted permanently!", acct.name());
         break;
     }
     case Opportunity: {
+        Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
         deleStr = i18n("The %1 opportunity \"%2\" will be deleted permanently!",
                        opp.tempAccountName(), opp.name());
         break;
     }
     case Contact: {
+        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const auto contact = item.payload<KContacts::Addressee>();
         deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
         break;
@@ -733,6 +736,7 @@ void Page::slotChangeFields()
         Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
 
         if (mType == Account) {
+            Q_ASSERT(item.hasPayload<SugarAccount>());
             SugarAccount account = item.payload<SugarAccount>();
 
             if (field == CityField) {
@@ -749,6 +753,7 @@ void Page::slotChangeFields()
 
             item.setPayload(account);
         } else if (mType == Opportunity) {
+            Q_ASSERT(item.hasPayload<SugarOpportunity>());
             SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
             if (field == NextStepDateField) {
@@ -760,6 +765,7 @@ void Page::slotChangeFields()
 
             item.setPayload(opportunity);
         } else if (mType == Contact) {
+            Q_ASSERT(item.hasPayload<KContacts::Addressee>());
             KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
             if (field == CityField) {
