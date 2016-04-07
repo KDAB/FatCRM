@@ -517,6 +517,7 @@ void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
             for (int row = 0; row < mContactsModel->rowCount(); ++row) {
                 const QModelIndex index = mContactsModel->index(row, 0);
                 const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+                Q_ASSERT(item.hasPayload<KContacts::Addressee>());
                 const KContacts::Addressee possibleMatch = item.payload<KContacts::Addressee>();
                 if (possibleMatch.preferredEmail() == addressee.preferredEmail()) {
                     MatchPair pair;
