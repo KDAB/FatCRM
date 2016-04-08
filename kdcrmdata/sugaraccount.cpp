@@ -180,11 +180,11 @@ bool SugarAccount::isSameAccount(const SugarAccount &other) const
         return false;
     }
 
-    if (d->mBillingAddressCountry != other.d->mBillingAddressCountry) {
+    if (QString::compare(d->mBillingAddressCountry, other.d->mBillingAddressCountry, Qt::CaseInsensitive) != 0) {
         return false;
     }
 
-    if (d->mBillingAddressCity != other.d->mBillingAddressCity) {
+    if (QString::compare(d->mBillingAddressCity, other.d->mBillingAddressCity, Qt::CaseInsensitive) != 0) {
         return false;
     }
 
