@@ -97,7 +97,7 @@ void AccountImportPage::fillSimilarAccounts(int row)
             button->setChecked(true);
         }
         buttonsLayout->addWidget(button, buttonRow, buttonCol++);
-        if (buttonCol == 4) {
+        if (buttonCol == 3) {
             buttonCol = 0;
             ++buttonRow;
         }
@@ -148,6 +148,13 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
     }
 
     emit completeChanged();
+    QMetaObject::invokeMethod(this, "adjustPageSize", Qt::QueuedConnection);
+}
+
+void AccountImportPage::adjustPageSize()
+{
+    setMinimumWidth(mUi->scrollArea->widget()->width() + 40);
+    emit layoutChanged();
 }
 
 QVector<ContactsSet> AccountImportPage::chosenContacts() const
