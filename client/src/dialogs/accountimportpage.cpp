@@ -27,7 +27,6 @@
 #include <KJobUiDelegate>
 #include <Akonadi/ItemCreateJob>
 
-#include <QCheckBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
@@ -91,7 +90,8 @@ void AccountImportPage::fillSimilarAccounts(int row)
     int buttonCol = 0;
     foreach(const SugarAccount &account, similarAccounts) {
         const bool perfectMatch = account.isSameAccount(newAccount);
-        QRadioButton *button = new QRadioButton(accountNameAndLocation(account), container);
+        QString text = accountNameAndLocation(account);
+        QRadioButton *button = new QRadioButton(text.replace('&', "&&"), container);
         if (perfectMatch) {
             //foundMatch = true;
             button->setChecked(true);
