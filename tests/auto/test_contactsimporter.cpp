@@ -43,6 +43,8 @@ private Q_SLOTS:
         QTest::newRow("AB_nospace") << "KDAB" << "KD" << false;
         QTest::newRow("sas_sa") << "KDAB S.A.S." << "KDAB S.A." << true;
         QTest::newRow("case_insensitive") << "EXAMPLE SAS" << "Example" << true;
+        QTest::newRow("NV") << "One Two" << "One Two N.V." << true;
+        QTest::newRow("nv_lowercase") << "One Two" << "One Two n.v." << true;
     }
 
     void testSimilarAccountNames()
@@ -56,6 +58,7 @@ private Q_SLOTS:
         SugarAccount ac2;
         ac2.setName(account2);
         QCOMPARE(ac1.isSameAccount(ac2), expectedSame);
+        QCOMPARE(ac2.isSameAccount(ac1), expectedSame);
         if (expectedSame)
             QCOMPARE(ac1.key(), ac2.key());
         else

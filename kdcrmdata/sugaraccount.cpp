@@ -201,10 +201,10 @@ QString SugarAccount::cleanAccountName() const
     QString result = d->mName;
     for (int i = 0; i < s_extensionCount; ++i) {
         const QString extension = s_extensions[i];
-        result.remove(", " + extension + '.');
-        result.remove(", " + extension);
-        result.remove(QChar(' ') + extension + '.');
-        result.remove(QChar(' ') + extension);
+        result.remove(", " + extension + '.', Qt::CaseInsensitive);
+        result.remove(", " + extension, Qt::CaseInsensitive);
+        result.remove(QChar(' ') + extension + '.', Qt::CaseInsensitive);
+        result.remove(QChar(' ') + extension, Qt::CaseInsensitive);
     }
     return result.toLower();
 }
