@@ -31,6 +31,21 @@
 #include <QDebug>
 #include <QTextCodec>
 
+static const int COLUMN_COUNTRY = 10;
+
+static QString canonicalCountryName(const QString &input)
+{
+    const QString c = input.toLower();
+    if (c.contains(QLatin1String("netherlands"))) {
+        return QString::fromLatin1("The Netherlands");
+    } else if (c == QLatin1String("united kingdom") || c == QLatin1String("great britain") || c == QLatin1String("u.k.")) {
+        return QString::fromLatin1("UK");
+    } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
+        return QString::fromLatin1("USA");
+    }
+    return input;
+}
+
 ContactsImporter::ContactsImporter()
 {
 }
@@ -56,7 +71,7 @@ bool ContactsImporter::importFile(const QString &fileName)
     accountColumns.insert(7, KDCRMFields::billingAddressCity());
     accountColumns.insert(8, KDCRMFields::billingAddressPostalcode());
     accountColumns.insert(9, KDCRMFields::billingAddressState());
-    accountColumns.insert(10, KDCRMFields::billingAddressCountry());
+    accountColumns.insert(COLUMN_COUNTRY, KDCRMFields::billingAddressCountry());
     accountColumns.insert(11, KDCRMFields::vatNo());
     accountColumns.insert(12, KDCRMFields::website());
     accountColumns.insert(13, KDCRMFields::description());
@@ -67,8 +82,11 @@ bool ContactsImporter::importFile(const QString &fileName)
         QMap<QString, QString> accountData;
         QMap<int, QString>::const_iterator it = accountColumns.constBegin();
         for ( ; it != accountColumns.end() ; ++it) {
-            const QString value = builder.data(row, it.key());
+            QString value = builder.data(row, it.key());
             //qDebug() << it.key() << value << "->" << it.value();
+            if (it.key() == COLUMN_COUNTRY) {
+                value = canonicalCountryName(value);
+            }
             if (!value.isEmpty()) {
                 accountData.insert(it.value(), value);
             }
