@@ -206,6 +206,15 @@ QString SugarAccount::cleanAccountName() const
         result.remove(QChar(' ') + extension + '.', Qt::CaseInsensitive);
         result.remove(QChar(' ') + extension, Qt::CaseInsensitive);
     }
+    if (result.endsWith(']')) {
+        int pos = result.lastIndexOf('[');
+        if (pos > 0) {
+            if (result.at(pos - 1) == ' ') {
+                --pos;
+            }
+            result.truncate(pos);
+        }
+    }
     return result.toLower();
 }
 
