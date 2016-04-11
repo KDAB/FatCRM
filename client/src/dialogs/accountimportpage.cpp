@@ -56,10 +56,12 @@ void AccountImportPage::setAccountCollection(const Akonadi::Collection &collecti
 
 static QString location(const SugarAccount &account)
 {
-    QString location = account.billingAddressCity();
+    QString location = !account.shippingAddressCity().isEmpty() ? account.shippingAddressCity() : account.billingAddressCity();
     if (location.isEmpty())
         location = i18n("<missing city>");
-    if (!account.billingAddressCountry().isEmpty()) {
+    if (!account.shippingAddressCountry().isEmpty()) {
+        location = i18n("%1, %2", location, account.shippingAddressCountry());
+    } else if (!account.billingAddressCountry().isEmpty()) {
         location = i18n("%1, %2", location, account.billingAddressCountry());
     } else {
         location = i18n("%1, <missing country>", location);
