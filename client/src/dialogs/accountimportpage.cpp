@@ -32,6 +32,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QTextDocument>
 
 AccountImportPage::AccountImportPage(QWidget *parent) :
     QWizardPage(parent),
@@ -137,6 +138,15 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         accountLineEdit->setProperty("row", row);
         QButtonGroup *buttonGroup = new QButtonGroup(this);
         connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton*)));
+
+        QString contactsInfo;
+        foreach (const KABC::Addressee &addressee, contacts.at(row).addressees) {
+            kDebug() << addressee.familyName() << " " << addressee.fullEmail();
+            contactsInfo += Qt::escape(addressee.fullEmail()) + "\n";
+        }
+        if (!contactsInfo.isEmpty()) {
+            accountLineEdit->setToolTip(contactsInfo);
+        }
 
         PendingAccount pendingAccount;
         pendingAccount.buttonGroup = buttonGroup;
