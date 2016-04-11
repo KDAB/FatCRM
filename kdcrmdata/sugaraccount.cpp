@@ -163,7 +163,7 @@ static const char* s_extensions[] = {
     "AB", // Sweden
     "AG", // Switzerland
     "BV", "B.V", // Netherlands
-    "N.V.", // Belgium
+    "N.V", // Belgium
     "AS" // Norway
 };
 static const int s_extensionCount = sizeof(s_extensions) / sizeof(*s_extensions);
