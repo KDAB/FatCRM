@@ -75,26 +75,35 @@ private Q_SLOTS:
     void testMultipleAccounts_data()
     {
         QTest::addColumn<QString>("csv");
-        QTest::addColumn<QStringList>("accountNames");
+        QTest::addColumn<QStringList>("expectedAccountNames");
+        QTest::addColumn<QStringList>("expectedEmails");
 
-        QTest::newRow("empty") << "" << QStringList();
-        QTest::newRow("one") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345" << (QStringList() << "KDAB");
-        QTest::newRow("dupe") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\nClone,Faure,Mr,12345,clone.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345" << (QStringList() << "KDAB");
+        QTest::newRow("empty") << "" << QStringList() << QStringList();
+        QTest::newRow("one") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345"
+            << (QStringList() << "KDAB") << (QStringList() << "david.faure@example.com");
+        QTest::newRow("dupe") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\n"
+                                 "Clone,Faure,Mr,12345,clone.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345"
+            << (QStringList() << "KDAB") << (QStringList() << "david.faure@example.com" << "clone.faure@example.com");
 
-        QTest::newRow("2+1") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\nClone,Faure,Mr,12345,clone.faure@example.com,KDAB Inc.,\"32, street name\",Vedène,84000,,France,FR 12345\nClone,Faure,Mr,12345,clone.faure@foo.com,Foo,\"32, street name\",Vedène,84000,,France,FR 12345" << (QStringList() << "KDAB" << "Foo");
+        QTest::newRow("2+1") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\n"
+                                "Clone,Faure,Mr,12345,clone.faure@example.com,KDAB Inc.,\"32, street name\",Vedène,84000,,France,FR 12345\n"
+                                "Clone,Faure,Mr,12345,clone.faure@foo.com,Foo,\"32, street name\",Vedène,84000,,France,FR 12345"
+            << (QStringList() << "KDAB" << "Foo") << (QStringList() << "david.faure@example.com" << "clone.faure@example.com" << "clone.faure@foo.com");
     }
 
     void testMultipleAccounts()
     {
         QFETCH(QString, csv);
-        QFETCH(QStringList, accountNames);
+        QFETCH(QStringList, expectedAccountNames);
+        QFETCH(QStringList, expectedEmails);
 
         ContactsImporter importer;
         QTemporaryFile file;
         writeTempFile(file, csv.toUtf8());
         QVERIFY(importer.importFile(file.fileName()));
         const QVector<ContactsSet> contacts = importer.contacts();
-        QCOMPARE(extractAccountNames(contacts), accountNames);
+        QCOMPARE(extractAccountNames(contacts), expectedAccountNames);
+        QCOMPARE(extractEmails(contacts), expectedEmails);
     }
 
     void testImportingAccounts()
@@ -127,8 +136,21 @@ private:
     static QStringList extractAccountNames(const QVector<ContactsSet> &contacts)
     {
         QStringList ret;
+        ret.reserve(contacts.count());
         foreach(const ContactsSet &contactsSet, contacts) {
             ret << contactsSet.account.name();
+        }
+        return ret;
+    }
+    static QStringList extractEmails(const QVector<ContactsSet> &contacts)
+    {
+        QStringList ret;
+        ret.reserve(contacts.count());
+        foreach(const ContactsSet &contactsSet, contacts) {
+            foreach (const KABC::Addressee &addressee, contactsSet.addressees) {
+                qDebug() << addressee.fullEmail();
+                ret << addressee.preferredEmail();
+            }
         }
         return ret;
     }
