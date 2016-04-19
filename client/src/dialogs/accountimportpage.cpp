@@ -142,7 +142,7 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         QString contactsInfo;
         foreach (const KABC::Addressee &addressee, contacts.at(row).addressees) {
             kDebug() << addressee.familyName() << " " << addressee.fullEmail();
-            contactsInfo += Qt::escape(addressee.fullEmail()) + "\n";
+            contactsInfo += Qt::escape(addressee.fullEmail()) + '\n';
         }
         if (!contactsInfo.isEmpty()) {
             accountLineEdit->setToolTip(contactsInfo);
