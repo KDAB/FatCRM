@@ -136,3 +136,4 @@ add_subdirectory(tests)
 install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
 
 message(STATUS "Building FatCRM ${FATCRM_VERSION_STRING} in ${CMAKE_BUILD_TYPE} mode")
+feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
