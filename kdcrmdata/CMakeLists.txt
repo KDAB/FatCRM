@@ -26,8 +26,14 @@ generate_export_header(kdcrmdata BASE_NAME kdcrmdata)
 
 target_link_libraries(kdcrmdata PUBLIC
   Qt5::Core
+  Qt5::DBus
   KF5::AkonadiCore
-  KF5::KDELibs4Support
+  KF5::I18n
+  KF5::ConfigCore
+  KF5::Codecs
+  KF5::IconThemes
+  KF5::WidgetsAddons
+  KF5::TextWidgets
 )
 
 set_target_properties(kdcrmdata PROPERTIES
