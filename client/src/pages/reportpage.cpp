@@ -25,9 +25,24 @@
 #include "itemstreemodel.h"
 #include "sugaropportunity.h"
 #include "kdcrmutils.h"
+#include <QDate>
 
 #include <AkonadiCore/EntityTreeModel>
 #include <AkonadiCore/Item>
+
+#include <QFile>
+#include <QFileDialog>
+#include <QMessageBox>
+
+static QDate firstDayOfMonth(const QDate &date)
+{
+    return QDate(date.year(), date.month(), 1);
+}
+
+static QDate lastDayOfMonth(const QDate &date)
+{
+    return QDate(date.year(), date.month(), date.daysInMonth());
+}
 
 ReportPage::ReportPage(QWidget *parent) :
     QWidget(parent),
@@ -36,11 +51,15 @@ ReportPage::ReportPage(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // beginning of this month
+    // TODO: use OpportunityFilterWidget, to be able to filter on country / assignee / etc. ?
+
+    // 12 months before the beginning of this month
     const QDate today = QDate::currentDate();
-    ui->from->setDate(QDate(today.year(), today.month(), 1));
-    // end of this month
-    ui->to->setDate(QDate(today.year(), today.month(), today.daysInMonth()));
+    ui->from->setDate(QDate(today.year() - 1, today.month(), 1));
+    // last day of last month
+    ui->to->setDate(firstDayOfMonth(today).addDays(-1));
+
+    ui->pbMonthlySpreadsheet->setEnabled(false);
 }
 
 ReportPage::~ReportPage()
@@ -53,11 +72,29 @@ void ReportPage::setOppModel(ItemsTreeModel *model)
     mOppModel = model;
 }
 
+// If @p from is month 0, return how many months @p date is after @p from.
+// Example: relativeMonthNumber( feb 2016, nov 2015 ) = 3
+//          (0=nov, 1=dec, 2=jan, 3=feb)
+//          12 + 2 - 11 = 3
+static int relativeMonthNumber(const QDate &date, const QDate &from)
+{
+    return ( date.year() - from.year() ) * 12 + date.month() - from.month();
+}
+
+QStringList ReportPage::headerLabels() const
+{
+    return QStringList() << i18n("Created") << i18n("Won") << i18n("Lost");
+}
+
 void ReportPage::on_calculateOppCount_clicked()
 {
-    int createdCount = 0;
-    int wonCount = 0;
-    int lostCount = 0;
+    // The date in this map is always day==1, so the key is the month+year.
+    const QDate monthFrom = firstDayOfMonth(ui->from->date());
+    const QDate monthTo = lastDayOfMonth(ui->to->date());
+    const int numMonths = ( monthTo.year() - monthFrom.year() ) * 12 + monthTo.month() - monthFrom.month() + 1;
+    numCreated.fill(0, numMonths);
+    numWon.fill(0, numMonths);
+    numLost.fill(0, numMonths);
     for (int i = 0; i < mOppModel->rowCount(); ++i) {
         const QModelIndex index = mOppModel->index(i, 0);
         const Akonadi::Item item = mOppModel->data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
@@ -66,24 +103,68 @@ void ReportPage::on_calculateOppCount_clicked()
 
             const QDate created = KDCRMUtils::dateTimeFromString(opportunity.dateEntered()).date();
             if (created >= ui->from->date() && created <= ui->to->date()) {
-                ++createdCount;
+                ++numCreated[relativeMonthNumber(created, monthFrom)];
             }
 
             const QString salesStage = opportunity.salesStage();
             if (salesStage.contains("Closed")) {
                 const QDate dateModified = opportunity.dateModified().date();
+                // ### This is not exactly correct, if an opp is modified again after being closed
+                // (which happens when adding a custom field.....)
                 if (dateModified >= ui->from->date() && dateModified <= ui->to->date()) {
                     if (salesStage.contains("Closed Won") ) {
-                        ++wonCount;
+                        ++numWon[relativeMonthNumber(dateModified, monthFrom)];
                     } else if (salesStage.contains("Closed Lost")) {
-                        ++lostCount;
+                        ++numLost[relativeMonthNumber(dateModified, monthFrom)];
                     }
                 }
             }
 
         }
     }
-    QString reportText = QString("%1 opportunities created, %2 opportunities won, %3 opportunities lost");
-    reportText = reportText.arg(createdCount).arg(wonCount).arg(lostCount);
-    ui->result->setText(reportText);
+    ui->table->setColumnCount(numMonths);
+    const QStringList labels = headerLabels();
+    ui->table->setRowCount(labels.count());
+    ui->table->setVerticalHeaderLabels(labels);
+    enum { ROW_CREATED, ROW_WON, ROW_LOST };
+    QDate monthStart = monthFrom;
+    for (int month = 0; month < numMonths; ++month) {
+        const QString monthName = monthStart.toString("MMM yyyy");
+        monthStart = monthStart.addMonths(1);
+        ui->table->setHorizontalHeaderItem(month, new QTableWidgetItem(monthName));
+        const int created = numCreated.at(month);
+        ui->table->setItem(ROW_CREATED, month, new QTableWidgetItem(QString::number(created)));
+        const int won = numWon.at(month);
+        ui->table->setItem(ROW_WON, month, new QTableWidgetItem(QString::number(won)));
+        const int lost = numLost.at(month);
+        ui->table->setItem(ROW_LOST, month, new QTableWidgetItem(QString::number(lost)));
+    }
+    ui->pbMonthlySpreadsheet->setEnabled(true);
+}
+
+void ReportPage::on_pbMonthlySpreadsheet_clicked()
+{
+    const QString csvFile = QFileDialog::getSaveFileName(this, i18n("Save to CSV file"), QString(), "*.csv");
+    if (!csvFile.isEmpty()) {
+        QFile file(csvFile);
+        if (!file.open(QIODevice::WriteOnly)) {
+            QMessageBox::warning(this, i18n("Error while saving"), i18n("Could not open file %1 for writing, check permissions", csvFile));
+        } else {
+            QTextStream stream(&file);
+            stream.setCodec("UTF-8");
+            const QChar sep(',');
+            const int numMonths = numCreated.size();
+            stream << i18n("Month") << sep << headerLabels().join(sep) << "\n";
+            const QDate monthFrom = firstDayOfMonth(ui->from->date());
+            QDate monthStart = monthFrom;
+            for (int month = 0; month < numMonths; ++month) {
+                const QString monthName = monthStart.toString("MMM yyyy");
+                monthStart = monthStart.addMonths(1);
+                stream << monthName << sep
+                       << numCreated.at(month) << sep
+                       << numWon.at(month) << sep
+                       << numLost.at(month) << "\n";
+            }
+        }
+    }
 }

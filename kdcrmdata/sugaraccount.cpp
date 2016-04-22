@@ -163,6 +163,7 @@ static const char* s_extensions[] = {
     "AB", // Sweden
     "AG", // Switzerland
     "BV", "B.V", // Netherlands
+    "N.V", // Belgium
     "AS" // Norway
 };
 static const int s_extensionCount = sizeof(s_extensions) / sizeof(*s_extensions);
@@ -179,11 +180,11 @@ bool SugarAccount::isSameAccount(const SugarAccount &other) const
         return false;
     }
 
-    if (d->mBillingAddressCountry != other.d->mBillingAddressCountry) {
+    if (QString::compare(d->mBillingAddressCountry, other.d->mBillingAddressCountry, Qt::CaseInsensitive) != 0) {
         return false;
     }
 
-    if (d->mBillingAddressCity != other.d->mBillingAddressCity) {
+    if (QString::compare(d->mBillingAddressCity, other.d->mBillingAddressCity, Qt::CaseInsensitive) != 0) {
         return false;
     }
 
@@ -200,10 +201,19 @@ QString SugarAccount::cleanAccountName() const
     QString result = d->mName;
     for (int i = 0; i < s_extensionCount; ++i) {
         const QString extension = s_extensions[i];
-        result.remove(", " + extension + '.');
-        result.remove(", " + extension);
-        result.remove(QChar(' ') + extension + '.');
-        result.remove(QChar(' ') + extension);
+        result.remove(", " + extension + '.', Qt::CaseInsensitive);
+        result.remove(", " + extension, Qt::CaseInsensitive);
+        result.remove(QChar(' ') + extension + '.', Qt::CaseInsensitive);
+        result.remove(QChar(' ') + extension, Qt::CaseInsensitive);
+    }
+    if (result.endsWith(']')) {
+        int pos = result.lastIndexOf('[');
+        if (pos > 0) {
+            if (result.at(pos - 1) == ' ') {
+                --pos;
+            }
+            result.truncate(pos);
+        }
     }
     return result.toLower();
 }

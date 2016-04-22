@@ -23,16 +23,17 @@
 #include "accountimportpage.h"
 #include "ui_accountimportpage.h"
 #include "accountrepository.h"
+#include "fatcrm_client_debug.h"
 
 #include <KJobUiDelegate>
 #include <AkonadiCore/ItemCreateJob>
 
-#include <QCheckBox>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QRadioButton>
+#include <QTextDocument>
 
 AccountImportPage::AccountImportPage(QWidget *parent) :
     QWizardPage(parent),
@@ -57,10 +58,12 @@ void AccountImportPage::setAccountCollection(const Akonadi::Collection &collecti
 
 static QString location(const SugarAccount &account)
 {
-    QString location = account.billingAddressCity();
+    QString location = !account.shippingAddressCity().isEmpty() ? account.shippingAddressCity() : account.billingAddressCity();
     if (location.isEmpty())
         location = i18n("<missing city>");
-    if (!account.billingAddressCountry().isEmpty()) {
+    if (!account.shippingAddressCountry().isEmpty()) {
+        location = i18n("%1, %2", location, account.shippingAddressCountry());
+    } else if (!account.billingAddressCountry().isEmpty()) {
         location = i18n("%1, %2", location, account.billingAddressCountry());
     } else {
         location = i18n("%1, <missing country>", location);
@@ -91,13 +94,14 @@ void AccountImportPage::fillSimilarAccounts(int row)
     int buttonCol = 0;
     foreach(const SugarAccount &account, similarAccounts) {
         const bool perfectMatch = account.isSameAccount(newAccount);
-        QRadioButton *button = new QRadioButton(accountNameAndLocation(account), container);
+        QString text = accountNameAndLocation(account);
+        QRadioButton *button = new QRadioButton(text.replace('&', "&&"), container);
         if (perfectMatch) {
             //foundMatch = true;
             button->setChecked(true);
         }
         buttonsLayout->addWidget(button, buttonRow, buttonCol++);
-        if (buttonCol == 4) {
+        if (buttonCol == 3) {
             buttonCol = 0;
             ++buttonRow;
         }
@@ -136,6 +140,15 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         QButtonGroup *buttonGroup = new QButtonGroup(this);
         connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton*)));
 
+        QString contactsInfo;
+        foreach (const KContacts::Addressee &addressee, contacts.at(row).addressees) {
+            qCDebug(FATCRM_CLIENT_LOG) << addressee.familyName() << " " << addressee.fullEmail();
+            contactsInfo += Qt::escape(addressee.fullEmail()) + '\n';
+        }
+        if (!contactsInfo.isEmpty()) {
+            accountLineEdit->setToolTip(contactsInfo);
+        }
+
         PendingAccount pendingAccount;
         pendingAccount.buttonGroup = buttonGroup;
         pendingAccount.groupBox = container;
@@ -148,6 +161,13 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
     }
 
     emit completeChanged();
+    QMetaObject::invokeMethod(this, "adjustPageSize", Qt::QueuedConnection);
+}
+
+void AccountImportPage::adjustPageSize()
+{
+    setMinimumWidth(mUi->scrollArea->widget()->width() + 40);
+    emit layoutChanged();
 }
 
 QVector<ContactsSet> AccountImportPage::chosenContacts() const

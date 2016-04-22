@@ -42,10 +42,14 @@ public:
 
 private slots:
     void on_calculateOppCount_clicked();
+    void on_pbMonthlySpreadsheet_clicked();
 
 private:
+    QStringList headerLabels() const;
+
     Ui::ReportPage *ui;
     ItemsTreeModel *mOppModel;
+    QVector<int> numCreated, numWon, numLost;
 };
 
 #endif // REPORTPAGE_H

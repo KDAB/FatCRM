@@ -61,12 +61,14 @@ public:
 
 signals:
     void chosenContactsAvailable(const QVector<ContactsSet> &contacts);
+    void layoutChanged();
 
 private Q_SLOTS:
     void slotTextChanged(QWidget *lineEdit);
     void slotButtonClicked(QAbstractButton *button);
     void slotCreateAccountResult(KJob *job);
     void slotAccountAdded(const QString &id, Akonadi::Item::Id akonadiId);
+    void adjustPageSize();
 
 private:
     void fillSimilarAccounts(int row);
