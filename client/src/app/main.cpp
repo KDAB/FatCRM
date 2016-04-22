@@ -36,12 +36,13 @@ static const char version[] = FATCRM_VERSION_STRING;
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
+    KLocalizedString::setApplicationDomain("fatcrm");
 
     KAboutData aboutData("fatcrm", i18n("FatCRM"),
                      version, i18n(description),
                      KAboutLicense::GPL_V2, i18n("(C) 2010-2016 KDAB"),
                      QString(), "info@kdab.com");
-
+   
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();

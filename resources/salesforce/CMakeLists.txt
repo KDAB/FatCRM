@@ -1,5 +1,7 @@
 #Salesforce Resource
 
+add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_salesforce_resource\")
+
 set(salesforceresource_SRCS
   salesforcecontactshandler.cpp
   moduledebuginterface.cpp

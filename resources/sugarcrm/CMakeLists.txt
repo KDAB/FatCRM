@@ -1,5 +1,7 @@
 #SugarCRM Resource
 
+add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_sugarcrm_resource\")
+
 set(sugarcrmresource_SRCS
   accountshandler.cpp
   campaignshandler.cpp
