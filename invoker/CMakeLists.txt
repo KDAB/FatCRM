@@ -3,12 +3,12 @@ set(app_SRCS
     main.cpp
 )
 
-kde4_add_executable(fatcrminvoker ${app_SRCS})
+add_executable(fatcrminvoker ${app_SRCS})
 
 target_link_libraries(fatcrminvoker
-  ${KDE4_KDECORE_LIBS}
-  ${QT_QTDBUS_LIBRARY}
-  ${QT_QTCORE_LIBRARY}
+  Qt5::DBus
+  Qt5::Core
+  KF5::Service
 )
 
 install(TARGETS fatcrminvoker ${INSTALL_TARGETS_DEFAULT_ARGS})
