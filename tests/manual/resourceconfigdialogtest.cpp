@@ -23,20 +23,17 @@
 #include "resourceconfigdialog.h"
 #include <config-fatcrm-version.h>
 
-#include <KApplication>
-#include <K4AboutData>
-#include <KCmdLineArgs>
-#include <KLocalizedString>
+#include <QApplication>
+#include <QCommandLineParser>
 
 int main(int argc, char **argv)
 {
-    K4AboutData about("resourceconfigdialogtest", 0, ki18n("ResourceConfigDialog test"),
-                     "0.1", ki18n("Resource Config Dialog test program"),
-                     K4AboutData::License_GPL_V2, ki18n("(C) 2015-2016 KDAB"),
-                     KLocalizedString(), 0, "david.faure@kdab.com");
+    QApplication app(argc, argv);
+    QCommandLineParser parser;
+    parser.addVersionOption();
+    parser.addHelpOption();
+    parser.process(app);
 
-    KCmdLineArgs::init(argc, argv, &about);
-    KApplication app;
     ResourceConfigDialog *dlg = new ResourceConfigDialog;
     dlg->show();
     return app.exec();
