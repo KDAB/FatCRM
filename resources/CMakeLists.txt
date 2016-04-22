@@ -47,7 +47,7 @@ else()
   set(_default_kwallet_option 1)
 endif()
 option(USE_KWALLET "Use KWallet for password storage (default 1 on Unix, 0 on Windows/Mac)" ${_default_kwallet_option})
-configure_file(config-kwallet.h.in ${CMAKE_CURRENT_BINARY_DIR}/config-kwallet.h)
+configure_file(config-kwallet.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-kwallet.h)
 
 add_subdirectory(salesforce)
 add_subdirectory(sugarcrm)
