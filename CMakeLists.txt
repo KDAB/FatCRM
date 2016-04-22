@@ -1,7 +1,9 @@
 project(FatCRM)
 
 cmake_minimum_required(VERSION 2.8.12)
-
+if (POLICY CMP0063)
+    cmake_policy(SET CMP0063 NEW)
+endif()
 # we need some parts of the ECM CMake helpers
 find_package(ECM 5.12.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${ECM_MODULE_PATH})
