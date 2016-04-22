@@ -22,9 +22,9 @@
 
 #include "kdcrmutils.h"
 
-#include <KGlobal>
 #include <KLocalizedString>
 
+#include <QLocale>
 #include <QDateTime>
 
 #define TIMESTAMPFORMAT QLatin1String( "yyyy-MM-dd hh:mm:ss" )
@@ -82,12 +82,12 @@ QString KDCRMUtils::dateTimeToString(const QDateTime &dateTime)
 
 QString KDCRMUtils::formatDate(const QDate &date)
 {
-    return KGlobal::locale()->formatDate(date, KLocale::ShortDate);
+    return QLocale().toString(date, QLocale::ShortFormat);
 }
 
 QString KDCRMUtils::formatDateTime(const QDateTime &dt)
 {
-    return KGlobal::locale()->formatDateTime(dt.toLocalTime(), KLocale::ShortDate, true);
+    return QLocale().toString(dt.toLocalTime(), QLocale::ShortFormat);
 }
 
 // Sugar SOAP apparently uses double-escaping
