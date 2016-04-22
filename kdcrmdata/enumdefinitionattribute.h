@@ -28,10 +28,6 @@
 #include <QString>
 #include "kdcrmdata_export.h"
 
-namespace Akonadi {
-    class Collection;
-}
-
 /**
  * An attribute for letting the resource store the definition of enums, that FatCRM can use.
  */
