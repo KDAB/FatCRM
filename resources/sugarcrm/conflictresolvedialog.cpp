@@ -32,6 +32,8 @@
 #include <QPushButton>
 
 #include <QVBoxLayout>
+#include <KConfigGroup>
+#include <QDialogButtonBox>
 
 using namespace Akonadi;
 
@@ -180,27 +182,34 @@ void ConflictResolveDialog::Private::createReport()
 }
 
 ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
-    : KDialog(parent), d(new Private(this))
+    : QDialog(parent), d(new Private(this))
 {
-    setButtons(User1 | User2 | User3);
-    setDefaultButton(User3);
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    setLayout(mainLayout);
 
-    button(User3)->setText(i18nc("@action:button", "Take left one"));
-    button(User2)->setText(i18nc("@action:button", "Take right one"));
-    button(User1)->setText(i18nc("@action:button", "Keep both"));
+    QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
+    QPushButton *user1Button = new QPushButton;
+    buttonBox->addButton(user1Button, QDialogButtonBox::ActionRole);
+    QPushButton *user2Button = new QPushButton;
+    buttonBox->addButton(user2Button, QDialogButtonBox::ActionRole);
+    QPushButton *user3Button = new QPushButton;
+    buttonBox->addButton(user3Button, QDialogButtonBox::ActionRole);
+    user2Button->setText(i18nc("@action:button", "Take right one"));
+    user3Button->setText(i18nc("@action:button", "Take left one"));
+    user1Button->setText(i18nc("@action:button", "Keep both"));
 
-    connect(this, SIGNAL(user1Clicked()), SLOT(useBothItems()));
-    connect(this, SIGNAL(user2Clicked()), SLOT(useOtherItem()));
-    connect(this, SIGNAL(user3Clicked()), SLOT(useLocalItem()));
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    QWidget *widget = new QWidget(this);
-    QVBoxLayout *box = new QVBoxLayout(widget);
+    user3Button->setDefault(true);
+    connect(user1Button, SIGNAL(clicked()), this, SLOT(useBothItems()));
+    connect(user2Button, SIGNAL(clicked()), this, SLOT(useOtherItem()));
+    connect(user3Button, SIGNAL(clicked()), this, SLOT(useLocalItem()));
 
-    d->mView = new QTextBrowser(widget);
+    d->mView = new QTextBrowser(this);
     d->mView->setOpenLinks(false);
-    box->addWidget(d->mView);
-
-    setMainWidget(widget);
+    mainLayout->addWidget(d->mView);
+    mainLayout->addWidget(buttonBox);
 
     QMetaObject::invokeMethod(this, "createReport", Qt::QueuedConnection);
 }

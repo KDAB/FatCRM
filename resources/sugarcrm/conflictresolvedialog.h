@@ -27,9 +27,9 @@
 
 #include "conflicthandler.h"
 
-#include <KDialog>
+#include <QDialog>
 
-class ConflictResolveDialog : public KDialog
+class ConflictResolveDialog : public QDialog
 {
     Q_OBJECT
 
