@@ -12,15 +12,15 @@ include_directories(
 )
 
 macro(add_fatcrm_tests)
-  foreach(_testname ${ARGN})
-    kde4_add_unit_test(${_testname} TESTNAME "${_testname}" ${_testname}.cpp)
-    target_link_libraries(${_testname}
-      fatcrmprivate
-      Qt5::Test
-      kdcrmdata
-    )
-  endforeach()
-endmacro()
+    foreach(_testname ${ARGN})
+       set(_test ${_testname})
+       get_filename_component(_name ${_testname} NAME_WE)
+       ecm_add_test(${_testname} 
+        TEST_NAME ${_testname}
+        NAME_PREFIX "fatcrm-"
+        LINK_LIBRARIES fatcrmprivate Qt5::Test kdcrmdata )
+    endforeach()
+endmacro ()
 
 add_fatcrm_tests(
   referenceddatatest

@@ -147,7 +147,7 @@ private:
         QStringList ret;
         ret.reserve(contacts.count());
         foreach(const ContactsSet &contactsSet, contacts) {
-            foreach (const KABC::Addressee &addressee, contactsSet.addressees) {
+            foreach (const KContacts::Addressee &addressee, contactsSet.addressees) {
                 qDebug() << addressee.fullEmail();
                 ret << addressee.preferredEmail();
             }
