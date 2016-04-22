@@ -53,7 +53,6 @@ add_library(akonadi_serializer_sugaraccount
 )
 target_link_libraries(akonadi_serializer_sugaraccount
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugaraccount DESTINATION ${PLUGIN_INSTALL_DIR})
@@ -78,7 +77,6 @@ add_library(akonadi_serializer_sugarlead
 )
 target_link_libraries(akonadi_serializer_sugarlead
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugarlead DESTINATION ${PLUGIN_INSTALL_DIR})
@@ -91,7 +89,6 @@ add_library(akonadi_serializer_sugarcampaign
 )
 target_link_libraries(akonadi_serializer_sugarcampaign
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugarcampaign DESTINATION ${PLUGIN_INSTALL_DIR})
@@ -104,7 +101,6 @@ add_library(akonadi_serializer_sugarnote
 )
 target_link_libraries(akonadi_serializer_sugarnote
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugarnote DESTINATION ${PLUGIN_INSTALL_DIR})
@@ -117,7 +113,6 @@ add_library(akonadi_serializer_sugaremail
 )
 target_link_libraries(akonadi_serializer_sugaremail
   kdcrmdata
-  KF5::KDELibs4Support
   KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugaremail DESTINATION ${PLUGIN_INSTALL_DIR})
