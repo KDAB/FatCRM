@@ -25,6 +25,8 @@
 
 #include "details.h"
 
+#include <QDate>
+
 namespace Ui
 {
 class OpportunityDetails;
@@ -49,6 +51,7 @@ private Q_SLOTS:
     void slotSalesStageActivated(const QString &stage);
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
+    void slotCloseDateChanged(const QDate &date);
 
     void on_viewNotesButton_clicked();
     void on_buttonOpenAccount_clicked();
@@ -63,6 +66,8 @@ private:
     Ui::OpportunityDetails *mUi;
     NotesRepository *mNotesRepository;
     OpportunityDataExtractor *mDataExtractor;
+    QDate mOriginalCloseDate;
+    bool mCloseDateChangedByUser;
 };
 
 #endif /* OPPORTUNITYDETAILS_H */

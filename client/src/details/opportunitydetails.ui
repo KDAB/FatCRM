@@ -77,7 +77,7 @@
        <widget class="QComboBox" name="lead_source"/>
       </item>
       <item row="4" column="0">
-       <widget class="QLabel" name="label_10">
+       <widget class="QLabel" name="expectedCloseDateLabel">
         <property name="text">
          <string>Expected Close Date:</string>
         </property>
