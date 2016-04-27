@@ -90,12 +90,27 @@ MainWindow::MainWindow()
     connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
 
     ClientSettings::self()->restoreWindowSize("main", this);
+
+    qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
     ClientSettings::self()->saveWindowSize("main", this);
     delete mResourceDialog;
+}
+
+bool MainWindow::eventFilter(QObject *object, QEvent *event)
+{
+    // Intercept mouse wheel events on closed combo boxes, because
+    // it causes accidentally data changes in the UI.
+    if (event->type() == QEvent::Wheel) {
+        QComboBox *cb = qobject_cast<QComboBox*>(object);
+        if (cb)
+            return true;
+    }
+
+    return QMainWindow::eventFilter(object, event);
 }
 
 void MainWindow::slotDelayedInit()

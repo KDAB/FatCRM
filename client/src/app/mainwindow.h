@@ -57,6 +57,8 @@ public:
 
     ~MainWindow();
 
+    bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);
     void onlineStatusChanged(bool online);
