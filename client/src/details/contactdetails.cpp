@@ -327,7 +327,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     item.setPayload<KABC::Addressee>(addressee);
 }
 
-void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
+void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());

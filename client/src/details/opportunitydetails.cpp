@@ -126,7 +126,7 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
     item.setPayload<SugarOpportunity>(opportunity);
 }
 
-void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
+void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
 {
     fillComboBox(mUi->opportunity_type, KDCRMFields::opportunityType());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());

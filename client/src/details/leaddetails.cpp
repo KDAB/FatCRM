@@ -127,7 +127,7 @@ void LeadDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &
     item.setPayload<SugarLead>(lead);
 }
 
-void LeadDetails::setDataInternal(const QMap<QString, QString> &data) const
+void LeadDetails::setDataInternal(const QMap<QString, QString> &data)
 {
     Q_UNUSED(data);
     fillComboBox(mUi->salutation, KDCRMFields::salutation());

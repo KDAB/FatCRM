@@ -106,7 +106,7 @@ void AccountDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     item.setPayload<SugarAccount>(account);
 }
 
-void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
+void AccountDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->industry, KDCRMFields::industry());
     fillComboBox(mUi->account_type, KDCRMFields::accountType());

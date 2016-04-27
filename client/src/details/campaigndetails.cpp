@@ -117,7 +117,7 @@ void CampaignDetails::updateItem(Akonadi::Item &item, const QMap<QString, QStrin
     item.setPayload<SugarCampaign>(campaign);
 }
 
-void CampaignDetails::setDataInternal(const QMap<QString, QString> &) const
+void CampaignDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->status, KDCRMFields::status());
     fillComboBox(mUi->campaign_type, KDCRMFields::campaignType());
