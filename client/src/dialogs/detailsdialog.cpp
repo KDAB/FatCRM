@@ -58,7 +58,7 @@ class DetailsDialog::Private
 public:
     explicit Private(Details *details, DetailsDialog *parent)
         : q(parent), mDetails(details),
-          mButtonBox(0), mSaveButton(0)
+          mButtonBox(0), mIsModified(false)
     {
     }
 
@@ -72,10 +72,11 @@ public:
     Collection mCollection;
     Details *mDetails;
     QDialogButtonBox *mButtonBox;
-    QPushButton *mSaveButton;
+    bool mIsModified;
 
 public: // slots
     void saveClicked();
+    void cancelClicked();
     void dataModified();
     void saveResult(KJob *job);
 };
@@ -122,6 +123,11 @@ QMap<QString, QString> DetailsDialog::Private::data() const
 
 void DetailsDialog::Private::saveClicked()
 {
+    if (!mIsModified) {
+        q->close();
+        return;
+    }
+
     if (mDetails->type() == Opportunity) {
         if (mDetails->currentAccountId().isEmpty()) {
             QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
@@ -144,14 +150,20 @@ void DetailsDialog::Private::saveClicked()
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
 
+void DetailsDialog::Private::cancelClicked()
+{
+    mIsModified = false;
+    q->close();
+}
+
 void DetailsDialog::Private::dataModified()
 {
-    mSaveButton->setEnabled(true);
+    mIsModified = true;
 }
 
 bool DetailsDialog::isModified() const
 {
-    return d->mSaveButton->isEnabled();
+    return d->mIsModified;
 }
 
 QString DetailsDialog::title() const
@@ -190,6 +202,8 @@ void DetailsDialog::Private::saveResult(KJob *job)
         mUi.labelOffline->setText(job->errorText());
         mUi.labelOffline->show();
         return;
+    } else {
+        mIsModified = false;
     }
     emit q->itemSaved();
     q->close(); // was accept();
@@ -210,12 +224,11 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
 
     connect(d->mUi.description, SIGNAL(textChanged()), this,  SLOT(dataModified()));
 
-    d->mSaveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
-    d->mSaveButton->setEnabled(false);
-    connect(d->mSaveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
+    QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close())); // TODO confirm if modified
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
 
     ClientSettings::self()->restoreWindowSize("details", this);
 }
@@ -234,39 +247,13 @@ void DetailsDialog::keyPressEvent(QKeyEvent *e)
            d->saveClicked();
            return;
        case Qt::Key_Escape:
-           reject();
+           close();
            return;
        default:
            break;
        }
    }
    e->ignore();
-}
-
-void DetailsDialog::reject()
-{
-    if (isModified()) {
-        QMessageBox msgBox;
-        msgBox.setText(i18n("The data for %1 has been modified.", d->mDetails->name()));
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        switch (msgBox.exec()) {
-        case QMessageBox::Save:
-            // Save was clicked
-            d->saveClicked();
-            break;
-        case QMessageBox::Discard:
-            // Don't Save was clicked
-            close();
-            break;
-        default:
-            // Cancel
-            break;
-        }
-    } else {
-        close();
-    }
 }
 
 // open for creation
@@ -281,7 +268,7 @@ void DetailsDialog::showNewItem(const QMap<QString, QString> &data, const Akonad
 
     d->mDetails->assignToMe();
 
-    d->mSaveButton->setEnabled(false);
+    d->mIsModified = false;
     setWindowTitle(title());
 }
 
@@ -295,7 +282,7 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
 
     setWindowTitle(title());
 
-    d->mSaveButton->setEnabled(false);
+    d->mIsModified = false;
 }
 
 void DetailsDialog::updateItem(const Akonadi::Item &item)
@@ -322,8 +309,31 @@ void DetailsDialog::setOnline(bool online)
 
 void DetailsDialog::closeEvent(QCloseEvent *event)
 {
+    if (isModified()) {
+        QMessageBox msgBox(this);
+        msgBox.setText(i18n("The data for %1 has been modified.", d->mDetails->name()));
+        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+        switch (msgBox.exec()) {
+        case QMessageBox::Save:
+            // Save was clicked
+            d->saveClicked();
+            event->ignore();
+            return;
+        case QMessageBox::Discard:
+            // Don't Save was clicked
+            break;
+        default:
+            // Cancel
+            event->ignore();
+            return;
+        }
+    }
+
     emit closing();
-    QWidget::closeEvent(event);
+
+    event->accept();
 }
 
 Details *DetailsDialog::createDetailsForType(DetailsType type)
