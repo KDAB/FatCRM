@@ -107,13 +107,13 @@ void OpportunityDetails::slotSalesStageActivated(const QString &stage)
     mUi->probability->setValue(percent);
 
     if (stage == "Closed Won" || stage == "Closed Lost") {
-        mUi->expectedCloseDateLabel->setText(tr("Close Date:"));
+        updateCloseDateLabel(true);
         if (!mCloseDateChangedByUser) {
             mUi->date_closed->setDate(QDate::currentDate());
             mCloseDateChangedByUser = false;
         }
     } else {
-        mUi->expectedCloseDateLabel->setText(tr("Expected Close Date:"));
+        updateCloseDateLabel(false);
         if (!mCloseDateChangedByUser) {
             mUi->date_closed->setDate(mOriginalCloseDate);
             mCloseDateChangedByUser = false;
@@ -166,6 +166,17 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     mUi->viewNotesButton->setText(buttonText);
 
     mOriginalCloseDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::dateClosed()));
+
+    const QString stage = data.value(KDCRMFields::salesStage());
+    updateCloseDateLabel(stage == "Closed Won" || stage == "Closed Lost");
+}
+
+void OpportunityDetails::updateCloseDateLabel(bool closed)
+{
+    if (closed)
+        mUi->expectedCloseDateLabel->setText(i18n("Close Date:"));
+    else
+        mUi->expectedCloseDateLabel->setText(i18n("Expected Close Date:"));
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()
