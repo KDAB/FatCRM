@@ -42,6 +42,8 @@ static QString canonicalCountryName(const QString &input)
         return QString::fromLatin1("UK");
     } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
         return QString::fromLatin1("USA");
+    } else if (c == QLatin1String("Czechoslovakia")) {
+        return QString::fromLatin1("Czech Republic");
     }
     return input;
 }
