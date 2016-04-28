@@ -41,7 +41,8 @@ public:
     void setOppModel(ItemsTreeModel *model);
 
 private slots:
-    void on_calculateOppCount_clicked();
+    void on_calculateCreatedWonLostReport_clicked();
+    void on_calculateOpenPerCountryReport_clicked();
     void on_pbMonthlySpreadsheet_clicked();
 
 private:
