@@ -50,6 +50,7 @@ KDCRMDATA_EXPORT QString decodeXML(const QString &str);
 
 KDCRMDATA_EXPORT QString limitString(const QString &str, int wantedParagraphs);
 
+KDCRMDATA_EXPORT QString canonicalCountryName(const QString &input);
 }
 
 

@@ -142,3 +142,18 @@ QString KDCRMUtils::limitString(const QString &str, int wantedParagraphs)
     }
     return str;
 }
+
+QString KDCRMUtils::canonicalCountryName(const QString &input)
+{
+    const QString c = input.toLower();
+    if (c.contains(QLatin1String("netherlands"))) {
+        return QString::fromLatin1("The Netherlands");
+    } else if (c == QLatin1String("united kingdom") || c == QLatin1String("great britain") || c == QLatin1String("u.k.")) {
+        return QString::fromLatin1("UK");
+    } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
+        return QString::fromLatin1("USA");
+    } else if (c == QLatin1String("Czechoslovakia")) {
+        return QString::fromLatin1("Czech Republic");
+    }
+    return input;
+}
