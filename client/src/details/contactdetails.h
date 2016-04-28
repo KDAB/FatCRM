@@ -65,6 +65,8 @@ private Q_SLOTS:
     void on_buttonOpenAccount_clicked();
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
+    void slotPrimaryAddressCountryEditingFinished();
+    void slotOtherAddressCountryEditingFinished();
 
 private:
     ContactDataExtractor *mDataExtractor;

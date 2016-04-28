@@ -42,6 +42,10 @@ public:
 
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
+private Q_SLOTS:
+    void slotBillingAddressCountryEditingFinished();
+    void slotShippingAddressCountryEditingFinished();
+
 private:
     Ui::AccountDetails *mUi;
 
