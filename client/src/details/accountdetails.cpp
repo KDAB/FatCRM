@@ -28,6 +28,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/kdcrmfields.h"
+#include "kdcrmdata/kdcrmutils.h"
 
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this))
@@ -78,6 +79,16 @@ ItemDataExtractor *AccountDetails::itemDataExtractor() const
     return mDataExtractor;
 }
 
+void AccountDetails::slotBillingAddressCountryEditingFinished()
+{
+    mUi->billing_address_country->setText(KDCRMUtils::canonicalCountryName(mUi->billing_address_country->text()));
+}
+
+void AccountDetails::slotShippingAddressCountryEditingFinished()
+{
+    mUi->shipping_address_country->setText(KDCRMUtils::canonicalCountryName(mUi->shipping_address_country->text()));
+}
+
 void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
@@ -85,6 +96,9 @@ void AccountDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->parent_id, AccountRef);
     //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
+
+    connect(mUi->billing_address_country, SIGNAL(editingFinished()), SLOT(slotBillingAddressCountryEditingFinished()));
+    connect(mUi->shipping_address_country, SIGNAL(editingFinished()), SLOT(slotShippingAddressCountryEditingFinished()));
 }
 
 QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const
@@ -96,17 +110,24 @@ QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const
 
 void AccountDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const
 {
+    QMap<QString, QString> canonicalData(data);
+
+    canonicalData.insert(KDCRMFields::billingAddressCountry(),
+                         KDCRMUtils::canonicalCountryName(data.value(KDCRMFields::billingAddressCountry())));
+    canonicalData.insert(KDCRMFields::shippingAddressCountry(),
+                         KDCRMUtils::canonicalCountryName(data.value(KDCRMFields::shippingAddressCountry())));
+
     SugarAccount account;
     if (item.hasPayload<SugarAccount>()) {
         account = item.payload<SugarAccount>();
     }
-    account.setData(data);
+    account.setData(canonicalData);
 
     item.setMimeType(SugarAccount::mimeType());
     item.setPayload<SugarAccount>(account);
 }
 
-void AccountDetails::setDataInternal(const QMap<QString, QString> &) const
+void AccountDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->industry, KDCRMFields::industry());
     fillComboBox(mUi->account_type, KDCRMFields::accountType());

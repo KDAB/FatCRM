@@ -65,9 +65,6 @@ protected:
     void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
-private Q_SLOTS:
-    void reject();
-
 private:
     QString title() const;
 
@@ -75,6 +72,7 @@ private:
     Private *const d;
 
     Q_PRIVATE_SLOT(d, void saveClicked())
+    Q_PRIVATE_SLOT(d, void cancelClicked())
     Q_PRIVATE_SLOT(d, void dataModified())
     Q_PRIVATE_SLOT(d, void saveResult(KJob *job))
 };

@@ -54,7 +54,7 @@ private:
     void initialize();
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
 
     QMap<QString, QString> contactData(const KContacts::Addressee &contact) const;
 
@@ -65,6 +65,8 @@ private Q_SLOTS:
     void on_buttonOpenAccount_clicked();
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
+    void slotPrimaryAddressCountryEditingFinished();
+    void slotOtherAddressCountryEditingFinished();
 
 private:
     ContactDataExtractor *mDataExtractor;

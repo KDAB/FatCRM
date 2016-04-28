@@ -75,7 +75,7 @@ protected:
 
     void fillComboBox(QComboBox *combo, const QString &objectName) const;
 
-    virtual void setDataInternal(const QMap<QString, QString> &) const {}
+    virtual void setDataInternal(const QMap<QString, QString> &) {}
     QString id() const;
 
 

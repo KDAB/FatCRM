@@ -41,15 +41,13 @@ public:
     void setOppModel(ItemsTreeModel *model);
 
 private slots:
-    void on_calculateOppCount_clicked();
+    void on_calculateCreatedWonLostReport_clicked();
+    void on_calculateOpenPerCountryReport_clicked();
     void on_pbMonthlySpreadsheet_clicked();
 
 private:
-    QStringList headerLabels() const;
-
     Ui::ReportPage *ui;
     ItemsTreeModel *mOppModel;
-    QVector<int> numCreated, numWon, numLost;
 };
 
 #endif // REPORTPAGE_H

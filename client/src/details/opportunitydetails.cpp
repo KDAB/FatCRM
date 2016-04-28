@@ -41,7 +41,7 @@
 #include <QCalendarWidget>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
+    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this)), mCloseDateChangedByUser(false)
 {
     mUi->setupUi(this);
 
@@ -79,6 +79,7 @@ void OpportunityDetails::initialize()
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
+    connect(mUi->date_closed, SIGNAL(dateChanged(QDate)), this, SLOT(slotCloseDateChanged(QDate)));
 }
 
 ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
@@ -105,6 +106,25 @@ void OpportunityDetails::slotSalesStageActivated(const QString &stage)
     else if (stage == "Closed Lost")
         percent = 0;
     mUi->probability->setValue(percent);
+
+    if (stage == "Closed Won" || stage == "Closed Lost") {
+        updateCloseDateLabel(true);
+        if (!mCloseDateChangedByUser) {
+            mUi->date_closed->setDate(QDate::currentDate());
+            mCloseDateChangedByUser = false;
+        }
+    } else {
+        updateCloseDateLabel(false);
+        if (!mCloseDateChangedByUser) {
+            mUi->date_closed->setDate(mOriginalCloseDate);
+            mCloseDateChangedByUser = false;
+        }
+    }
+}
+
+void OpportunityDetails::slotCloseDateChanged(const QDate &newCloseDate)
+{
+    mCloseDateChangedByUser = (newCloseDate != mOriginalCloseDate);
 }
 
 QMap<QString, QString> OpportunityDetails::data(const Akonadi::Item &item) const
@@ -127,7 +147,7 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
     item.setPayload<SugarOpportunity>(opportunity);
 }
 
-void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
+void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
 {
     fillComboBox(mUi->opportunity_type, KDCRMFields::opportunityType());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
@@ -145,6 +165,19 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &) const
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
+
+    mOriginalCloseDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::dateClosed()));
+
+    const QString stage = data.value(KDCRMFields::salesStage());
+    updateCloseDateLabel(stage == "Closed Won" || stage == "Closed Lost");
+}
+
+void OpportunityDetails::updateCloseDateLabel(bool closed)
+{
+    if (closed)
+        mUi->expectedCloseDateLabel->setText(i18n("Close Date:"));
+    else
+        mUi->expectedCloseDateLabel->setText(i18n("Expected Close Date:"));
 }
 
 void OpportunityDetails::on_viewNotesButton_clicked()

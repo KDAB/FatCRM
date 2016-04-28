@@ -26,25 +26,13 @@
 #include "contactsimporter.h"
 #include "qcsvreader.h"
 #include "kdcrmdata/kdcrmfields.h"
+#include "kdcrmdata/kdcrmutils.h"
 
 #include <QFile>
 #include "fatcrm_client_debug.h"
 #include <QTextCodec>
 
 static const int COLUMN_COUNTRY = 10;
-
-static QString canonicalCountryName(const QString &input)
-{
-    const QString c = input.toLower();
-    if (c.contains(QLatin1String("netherlands"))) {
-        return QString::fromLatin1("The Netherlands");
-    } else if (c == QLatin1String("united kingdom") || c == QLatin1String("great britain") || c == QLatin1String("u.k.")) {
-        return QString::fromLatin1("UK");
-    } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
-        return QString::fromLatin1("USA");
-    }
-    return input;
-}
 
 ContactsImporter::ContactsImporter()
 {
@@ -85,7 +73,7 @@ bool ContactsImporter::importFile(const QString &fileName)
             QString value = builder.data(row, it.key());
              //qCDebug(FATCRM_CLIENT_LOG) << it.key() << value << "->" << it.value();
             if (it.key() == COLUMN_COUNTRY) {
-                value = canonicalCountryName(value);
+                value = KDCRMUtils::canonicalCountryName(value);
             }
             if (!value.isEmpty()) {
                 accountData.insert(it.value(), value);

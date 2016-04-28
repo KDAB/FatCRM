@@ -95,6 +95,9 @@ void ContactDetails::initialize()
             this, SLOT(slotSetBirthday()));
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
     connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
+
+    connect(mUi->primaryAddressCountry, SIGNAL(editingFinished()), SLOT(slotPrimaryAddressCountryEditingFinished()));
+    connect(mUi->altAddressCountry, SIGNAL(editingFinished()), SLOT(slotOtherAddressCountryEditingFinished()));
 }
 
 ItemDataExtractor *ContactDetails::itemDataExtractor() const
@@ -168,13 +171,13 @@ void ContactDetails::slotAccountActivated()
             mUi->primaryAddressCity->setText(account.shippingAddressCity());
             mUi->primaryAddressState->setText(account.shippingAddressState());
             mUi->primaryAddressPostalcode->setText(account.shippingAddressPostalcode());
-            mUi->primaryAddressCountry->setText(account.shippingAddressCountry());
+            mUi->primaryAddressCountry->setText(KDCRMUtils::canonicalCountryName(account.shippingAddressCountry()));
         } else {
             mUi->primaryAddressStreet->setPlainText(account.billingAddressStreet());
             mUi->primaryAddressCity->setText(account.billingAddressCity());
             mUi->primaryAddressState->setText(account.billingAddressState());
             mUi->primaryAddressPostalcode->setText(account.billingAddressPostalcode());
-            mUi->primaryAddressCountry->setText(account.billingAddressCountry());
+            mUi->primaryAddressCountry->setText(KDCRMUtils::canonicalCountryName(account.billingAddressCountry()));
         }
     }
 
@@ -285,7 +288,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     primaryAddress.setLocality(data.value(KDCRMFields::primaryAddressCity()));
     primaryAddress.setRegion(data.value(KDCRMFields::primaryAddressState()));
     primaryAddress.setPostalCode(data.value(KDCRMFields::primaryAddressPostalcode()));
-    primaryAddress.setCountry(data.value(KDCRMFields::primaryAddressCountry()));
+    primaryAddress.setCountry(KDCRMUtils::canonicalCountryName(data.value(KDCRMFields::primaryAddressCountry())));
     addressee.insertAddress(primaryAddress);
 
     KContacts::Address otherAddress;
@@ -294,7 +297,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     otherAddress.setLocality(data.value(KDCRMFields::altAddressCity()));
     otherAddress.setRegion(data.value(KDCRMFields::altAddressState()));
     otherAddress.setPostalCode(data.value(KDCRMFields::altAddressPostalcode()));
-    otherAddress.setCountry(data.value(KDCRMFields::altAddressCountry()));
+    otherAddress.setCountry(KDCRMUtils::canonicalCountryName(data.value(KDCRMFields::altAddressCountry())));
     addressee.insertAddress(otherAddress);
 
     addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value(KDCRMFields::birthdate()))));
@@ -327,7 +330,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     item.setPayload<KContacts::Addressee>(addressee);
 }
 
-void ContactDetails::setDataInternal(const QMap<QString, QString> &) const
+void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
@@ -358,4 +361,14 @@ void ContactDetails::slotAccountSelected(const QString &accountId)
     if (idx > -1) {
         mUi->account_id->setCurrentIndex(idx);
     }
+}
+
+void ContactDetails::slotPrimaryAddressCountryEditingFinished()
+{
+    mUi->primaryAddressCountry->setText(KDCRMUtils::canonicalCountryName(mUi->primaryAddressCountry->text()));
+}
+
+void ContactDetails::slotOtherAddressCountryEditingFinished()
+{
+    mUi->altAddressCountry->setText(KDCRMUtils::canonicalCountryName(mUi->altAddressCountry->text()));
 }

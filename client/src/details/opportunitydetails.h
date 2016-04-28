@@ -25,6 +25,8 @@
 
 #include "details.h"
 
+#include <QDate>
+
 namespace Ui
 {
 class OpportunityDetails;
@@ -49,6 +51,7 @@ private Q_SLOTS:
     void slotSalesStageActivated(const QString &stage);
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
+    void slotCloseDateChanged(const QDate &date);
 
     void on_viewNotesButton_clicked();
     void on_buttonOpenAccount_clicked();
@@ -57,12 +60,15 @@ private:
     void initialize();
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
+    void updateCloseDateLabel(bool closed);
 
 private:
     Ui::OpportunityDetails *mUi;
     NotesRepository *mNotesRepository;
     OpportunityDataExtractor *mDataExtractor;
+    QDate mOriginalCloseDate;
+    bool mCloseDateChangedByUser;
 };
 
 #endif /* OPPORTUNITYDETAILS_H */

@@ -53,7 +53,7 @@ private:
     void initialize();
     QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
+    void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
     LeadDataExtractor *mDataExtractor;
 };
 
