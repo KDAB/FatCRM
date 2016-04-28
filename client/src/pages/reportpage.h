@@ -49,7 +49,7 @@ private:
 
     Ui::ReportPage *ui;
     ItemsTreeModel *mOppModel;
-    QVector<int> numCreated, numWon, numLost;
+    QVector<int> numCreated, numWon, numLost, avgAgeWon, avgAgeLost;
 };
 
 #endif // REPORTPAGE_H

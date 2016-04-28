@@ -83,7 +83,7 @@ static int relativeMonthNumber(const QDate &date, const QDate &from)
 
 QStringList ReportPage::headerLabels() const
 {
-    return QStringList() << i18n("Created") << i18n("Won") << i18n("Lost");
+    return QStringList() << i18n("Created") << i18n("Won") << i18n("Lost") << i18n("Avg. Age Won") << i18n("Avg. Age Lost");
 }
 
 void ReportPage::on_calculateOppCount_clicked()
@@ -95,38 +95,54 @@ void ReportPage::on_calculateOppCount_clicked()
     numCreated.fill(0, numMonths);
     numWon.fill(0, numMonths);
     numLost.fill(0, numMonths);
+    avgAgeWon.fill(0, numMonths);
+    avgAgeLost.fill(0, numMonths);
     for (int i = 0; i < mOppModel->rowCount(); ++i) {
         const QModelIndex index = mOppModel->index(i, 0);
         const Akonadi::Item item = mOppModel->data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
-            const QDate created = KDCRMUtils::dateTimeFromString(opportunity.dateEntered()).date();
-            if (created >= ui->from->date() && created <= ui->to->date()) {
-                ++numCreated[relativeMonthNumber(created, monthFrom)];
+            const QDate createdDate = KDCRMUtils::dateTimeFromString(opportunity.dateEntered()).date();
+            if (createdDate >= ui->from->date() && createdDate <= ui->to->date()) {
+                ++numCreated[relativeMonthNumber(createdDate, monthFrom)];
             }
 
             const QString salesStage = opportunity.salesStage();
             if (salesStage.contains("Closed")) {
-                const QDate dateModified = opportunity.dateModified().date();
-                // ### This is not exactly correct, if an opp is modified again after being closed
-                // (which happens when adding a custom field.....)
-                if (dateModified >= ui->from->date() && dateModified <= ui->to->date()) {
+                // FatCRM now sets dateClosed when closing an opp, but older versions didn't do it,
+                // and Sugar Web doesn't do it, so we use dateModified as fallback, when it's clearly
+                // more correct (earlier than dateClosed).
+                const QDate closedDate = qMin(KDCRMUtils::dateFromString(opportunity.dateClosed()),
+                                              opportunity.dateModified().date());
+
+                if (closedDate >= ui->from->date() && closedDate <= ui->to->date()) {
+                    const int month = relativeMonthNumber(closedDate, monthFrom);
                     if (salesStage.contains("Closed Won") ) {
-                        ++numWon[relativeMonthNumber(dateModified, monthFrom)];
+                        ++numWon[month];
+                        avgAgeWon[month] += createdDate.daysTo(closedDate);
                     } else if (salesStage.contains("Closed Lost")) {
-                        ++numLost[relativeMonthNumber(dateModified, monthFrom)];
+                        ++numLost[month];
+                        avgAgeLost[month] += createdDate.daysTo(closedDate);
                     }
                 }
             }
-
         }
     }
+
+    for (int month = 0; month < numMonths; ++month) {
+        if (numWon[month] != 0)
+            avgAgeWon[month] = avgAgeWon[month] / numWon[month];
+
+        if (numLost[month] != 0)
+            avgAgeLost[month] = avgAgeLost[month] / numLost[month];
+    }
+
     ui->table->setColumnCount(numMonths);
     const QStringList labels = headerLabels();
     ui->table->setRowCount(labels.count());
     ui->table->setVerticalHeaderLabels(labels);
-    enum { ROW_CREATED, ROW_WON, ROW_LOST };
+    enum { ROW_CREATED, ROW_WON, ROW_LOST, ROW_AVG_AGE_WON, ROW_AVG_AGE_LOST };
     QDate monthStart = monthFrom;
     for (int month = 0; month < numMonths; ++month) {
         const QString monthName = monthStart.toString("MMM yyyy");
@@ -138,6 +154,10 @@ void ReportPage::on_calculateOppCount_clicked()
         ui->table->setItem(ROW_WON, month, new QTableWidgetItem(QString::number(won)));
         const int lost = numLost.at(month);
         ui->table->setItem(ROW_LOST, month, new QTableWidgetItem(QString::number(lost)));
+        const int ageWon = avgAgeWon.at(month);
+        ui->table->setItem(ROW_AVG_AGE_WON, month, new QTableWidgetItem(ki18ncp("number of days", "%1 day", "%1 days").subs(ageWon).toString()));
+        const int ageLost = avgAgeLost.at(month);
+        ui->table->setItem(ROW_AVG_AGE_LOST, month, new QTableWidgetItem(ki18ncp("number of days", "%1 day", "%1 days").subs(ageLost).toString()));
     }
     ui->pbMonthlySpreadsheet->setEnabled(true);
 }
@@ -163,7 +183,9 @@ void ReportPage::on_pbMonthlySpreadsheet_clicked()
                 stream << monthName << sep
                        << numCreated.at(month) << sep
                        << numWon.at(month) << sep
-                       << numLost.at(month) << "\n";
+                       << numLost.at(month) << sep
+                       << avgAgeWon.at(month) << sep
+                       << avgAgeLost.at(month) << "\n";
             }
         }
     }
