@@ -81,17 +81,14 @@ static int relativeMonthNumber(const QDate &date, const QDate &from)
     return ( date.year() - from.year() ) * 12 + date.month() - from.month();
 }
 
-QStringList ReportPage::headerLabels() const
-{
-    return QStringList() << i18n("Created") << i18n("Won") << i18n("Lost") << i18n("Avg. Age Won") << i18n("Avg. Age Lost");
-}
-
 void ReportPage::on_calculateOppCount_clicked()
 {
     // The date in this map is always day==1, so the key is the month+year.
     const QDate monthFrom = firstDayOfMonth(ui->from->date());
     const QDate monthTo = lastDayOfMonth(ui->to->date());
     const int numMonths = ( monthTo.year() - monthFrom.year() ) * 12 + monthTo.month() - monthFrom.month() + 1;
+    QVector<int> numCreated, numWon, numLost, avgAgeWon, avgAgeLost;
+
     numCreated.fill(0, numMonths);
     numWon.fill(0, numMonths);
     numLost.fill(0, numMonths);
@@ -138,27 +135,56 @@ void ReportPage::on_calculateOppCount_clicked()
             avgAgeLost[month] = avgAgeLost[month] / numLost[month];
     }
 
+    ui->table->clear();
     ui->table->setColumnCount(numMonths);
-    const QStringList labels = headerLabels();
+    const QStringList labels = QStringList() << i18n("Created") << i18n("Won") << i18n("Lost") << i18n("Avg. Age Won") << i18n("Avg. Age Lost");
+
     ui->table->setRowCount(labels.count());
     ui->table->setVerticalHeaderLabels(labels);
     enum { ROW_CREATED, ROW_WON, ROW_LOST, ROW_AVG_AGE_WON, ROW_AVG_AGE_LOST };
     QDate monthStart = monthFrom;
+
+    QTableWidgetItem *item = Q_NULLPTR;
     for (int month = 0; month < numMonths; ++month) {
         const QString monthName = monthStart.toString("MMM yyyy");
         monthStart = monthStart.addMonths(1);
-        ui->table->setHorizontalHeaderItem(month, new QTableWidgetItem(monthName));
+
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, monthName);
+        item->setData(Qt::UserRole, monthName);
+        ui->table->setHorizontalHeaderItem(month, item);
+
         const int created = numCreated.at(month);
-        ui->table->setItem(ROW_CREATED, month, new QTableWidgetItem(QString::number(created)));
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, QString::number(created));
+        item->setData(Qt::UserRole, created);
+        ui->table->setItem(ROW_CREATED, month, item);
+
         const int won = numWon.at(month);
-        ui->table->setItem(ROW_WON, month, new QTableWidgetItem(QString::number(won)));
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, QString::number(won));
+        item->setData(Qt::UserRole, won);
+        ui->table->setItem(ROW_WON, month, item);
+
         const int lost = numLost.at(month);
-        ui->table->setItem(ROW_LOST, month, new QTableWidgetItem(QString::number(lost)));
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, QString::number(lost));
+        item->setData(Qt::UserRole, lost);
+        ui->table->setItem(ROW_LOST, month, item);
+
         const int ageWon = avgAgeWon.at(month);
-        ui->table->setItem(ROW_AVG_AGE_WON, month, new QTableWidgetItem(ki18ncp("number of days", "%1 day", "%1 days").subs(ageWon).toString()));
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, ki18ncp("number of days", "%1 day", "%1 days").subs(ageWon).toString());
+        item->setData(Qt::UserRole, ageWon);
+        ui->table->setItem(ROW_AVG_AGE_WON, month, item);
+
         const int ageLost = avgAgeLost.at(month);
-        ui->table->setItem(ROW_AVG_AGE_LOST, month, new QTableWidgetItem(ki18ncp("number of days", "%1 day", "%1 days").subs(ageLost).toString()));
+        item = new QTableWidgetItem();
+        item->setData(Qt::DisplayRole, ki18ncp("number of days", "%1 day", "%1 days").subs(ageLost).toString());
+        item->setData(Qt::UserRole, ageLost);
+        ui->table->setItem(ROW_AVG_AGE_LOST, month, item);
     }
+
     ui->pbMonthlySpreadsheet->setEnabled(true);
 }
 
@@ -173,19 +199,25 @@ void ReportPage::on_pbMonthlySpreadsheet_clicked()
             QTextStream stream(&file);
             stream.setCodec("UTF-8");
             const QChar sep(',');
-            const int numMonths = numCreated.size();
-            stream << i18n("Month") << sep << headerLabels().join(sep) << "\n";
-            const QDate monthFrom = firstDayOfMonth(ui->from->date());
-            QDate monthStart = monthFrom;
-            for (int month = 0; month < numMonths; ++month) {
-                const QString monthName = monthStart.toString("MMM yyyy");
-                monthStart = monthStart.addMonths(1);
-                stream << monthName << sep
-                       << numCreated.at(month) << sep
-                       << numWon.at(month) << sep
-                       << numLost.at(month) << sep
-                       << avgAgeWon.at(month) << sep
-                       << avgAgeLost.at(month) << "\n";
+
+            stream << i18n("Month") << sep;
+            for (int row = 0; row < ui->table->rowCount(); ++row) {
+                stream << ui->table->verticalHeaderItem(row)->text();
+                if (row < (ui->table->rowCount() - 1))
+                    stream << sep;
+                else
+                    stream << "\n";
+            }
+
+            for (int column = 0; column < ui->table->columnCount(); ++column) {
+                stream << ui->table->horizontalHeaderItem(column)->text() << sep;
+                for (int row = 0; row < ui->table->rowCount(); ++row) {
+                    stream << ui->table->item(row, column)->data(Qt::UserRole).toString();
+                    if (row < (ui->table->rowCount() - 1))
+                        stream << sep;
+                    else
+                        stream << "\n";
+                }
             }
         }
     }

@@ -45,11 +45,8 @@ private slots:
     void on_pbMonthlySpreadsheet_clicked();
 
 private:
-    QStringList headerLabels() const;
-
     Ui::ReportPage *ui;
     ItemsTreeModel *mOppModel;
-    QVector<int> numCreated, numWon, numLost, avgAgeWon, avgAgeLost;
 };
 
 #endif // REPORTPAGE_H
