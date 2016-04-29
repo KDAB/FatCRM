@@ -666,3 +666,78 @@ QString KDCRMFields::opportunityPriority()
 {
     return QLatin1String("opportunity_priority");
 }
+
+QString KDCRMFields::documentName()
+{
+    return QLatin1String("document_name");
+}
+
+QString KDCRMFields::docId()
+{
+    return QLatin1String("doc_id");
+}
+
+QString KDCRMFields::docType()
+{
+    return QLatin1String("doc_type");
+}
+
+QString KDCRMFields::docUrl()
+{
+    return QLatin1String("doc_url");
+}
+
+QString KDCRMFields::activeDate()
+{
+    return QLatin1String("active_date");
+}
+
+QString KDCRMFields::expDate()
+{
+    return QLatin1String("exp_date");
+}
+
+QString KDCRMFields::categoryId()
+{
+    return QLatin1String("category_id");
+}
+
+QString KDCRMFields::subcategoryId()
+{
+    return QLatin1String("subcategory_id");
+}
+
+QString KDCRMFields::statusId()
+{
+    return QLatin1String("status_id");
+}
+
+QString KDCRMFields::documentRevisionId()
+{
+    return QLatin1String("document_revision_id");
+}
+
+QString KDCRMFields::relatedDocId()
+{
+    return QLatin1String("related_doc_id");
+}
+
+QString KDCRMFields::relatedDocName()
+{
+    return QLatin1String("related_doc_name");
+}
+
+QString KDCRMFields::relatedDocRevId()
+{
+    return QLatin1String("related_doc_rev_id");
+}
+
+QString KDCRMFields::isTemplate()
+{
+    return QLatin1String("is_template");
+}
+
+QString KDCRMFields::templateType()
+{
+    return QLatin1String("template_type");
+}

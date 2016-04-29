@@ -28,6 +28,7 @@
 #include "contactshandler.h"
 #include "createentryjob.h"
 #include "deleteentryjob.h"
+#include "documentshandler.h"
 #include "emailshandler.h"
 #include "fetchentryjob.h"
 #include "leadshandler.h"
@@ -745,6 +746,8 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
                 handler = new NotesHandler(mSession);
             } else if (module == QLatin1String("Emails")) {
                 handler = new EmailsHandler(mSession);
+            } else if (module == QLatin1String("Documents")) {
+                handler = new DocumentsHandler(mSession);
             } else {
                 //kDebug() << "No module handler for" << module;
                 continue;

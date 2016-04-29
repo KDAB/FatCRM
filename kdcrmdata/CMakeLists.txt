@@ -9,6 +9,8 @@ set(kdcrmdata_LIB_SRCS
   sugaraccountcache.cpp
   sugaraccount.cpp
   sugaraccountio.cpp
+  sugardocument.cpp
+  sugardocumentio.cpp
   sugaropportunity.cpp
   sugaropportunityio.cpp
   sugarlead.cpp
@@ -109,6 +111,18 @@ target_link_libraries(akonadi_serializer_sugaremail
 )
 install(TARGETS akonadi_serializer_sugaremail DESTINATION ${PLUGIN_INSTALL_DIR})
 
+### next target
+set(akonadi_serializer_sugardocument_PART_SRCS serializerpluginsugardocument.cpp)
+kde4_add_plugin(akonadi_serializer_sugardocument
+  ${akonadi_serializer_sugardocument_PART_SRCS}
+)
+target_link_libraries(akonadi_serializer_sugardocument
+  kdcrmdata
+  ${KDE4_KDECORE_LIBS}
+  ${KDEPIMLIBS_AKONADI_LIBS}
+)
+install(TARGETS akonadi_serializer_sugardocument DESTINATION ${PLUGIN_INSTALL_DIR})
+
 ########### install files ###############
 
 install(FILES
@@ -118,6 +132,7 @@ install(FILES
   akonadi_serializer_sugarcampaign.desktop
   akonadi_serializer_sugarnote.desktop
   akonadi_serializer_sugaremail.desktop
+  akonadi_serializer_sugardocument.desktop
   DESTINATION ${DATA_INSTALL_DIR}/akonadi/plugins/serializer
 )
 
