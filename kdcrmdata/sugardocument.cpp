@@ -65,6 +65,8 @@ public:
     QString mRelatedDocumentRevisionId;
     QString mIsTemplate;
     QString mTemplateType;
+    QStringList mLinkedAccountIds;
+    QStringList mLinkedOpportunityIds;
 
     QMap<QString, QString> mCustomFields;
 };
@@ -391,6 +393,28 @@ void SugarDocument::setTemplateType(const QString &type)
 QString SugarDocument::templateType() const
 {
     return d->mTemplateType;
+}
+
+void SugarDocument::setLinkedAccountIds(const QStringList &ids)
+{
+    d->mEmpty = false;
+    d->mLinkedAccountIds = ids;
+}
+
+QStringList SugarDocument::linkedAccountIds() const
+{
+    return d->mLinkedAccountIds;
+}
+
+void SugarDocument::setLinkedOpportunityIds(const QStringList &ids)
+{
+    d->mEmpty = false;
+    d->mLinkedOpportunityIds = ids;
+}
+
+QStringList SugarDocument::linkedOpportunityIds() const
+{
+    return d->mLinkedOpportunityIds;
 }
 
 void SugarDocument::setCustomField(const QString &name, const QString &value)

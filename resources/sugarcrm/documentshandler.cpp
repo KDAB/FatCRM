@@ -130,6 +130,53 @@ bool DocumentsHandler::setEntry(const Akonadi::Item &item)
     return true;
 }
 
+bool DocumentsHandler::needsExtraInformation() const
+{
+    return true;
+}
+
+void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
+{
+    for (int pos = 0; pos < items.count(); ++pos) {
+        Akonadi::Item &item = items[pos];
+
+        if (!item.hasPayload<SugarDocument>()) {
+            kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+                     << ", mime=" << item.mimeType() << ") is missing Document payload";
+            continue;
+        }
+
+        SugarDocument document = item.payload<SugarDocument>();
+        bool update = false;
+
+        KDSoapGenerated::TNS__Get_relationships_result result = soap()->get_relationships(sessionId(), "Documents", document.id(), "Accounts", QString(), 0);
+
+        QStringList linkedAccountIds;
+        Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
+            linkedAccountIds.append(idMod.id());
+        }
+
+        if (!linkedAccountIds.isEmpty()) {
+            document.setLinkedAccountIds(linkedAccountIds);
+            update = true;
+        }
+
+        QStringList linkedOpportunityIds;
+        result = soap()->get_relationships(sessionId(), "Documents", document.id(), "Opportunities", QString(), 0);
+        Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
+            linkedOpportunityIds.append(idMod.id());
+        }
+
+        if (!linkedOpportunityIds.isEmpty()) {
+            document.setLinkedOpportunityIds(linkedOpportunityIds);
+            update = true;
+        }
+
+        if (update)
+            item.setPayload<SugarDocument>(document);
+    }
+}
+
 Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;

@@ -45,6 +45,8 @@ public:
 
     int expectedContentsVersion() const Q_DECL_OVERRIDE;
 
+    bool needsExtraInformation() const Q_DECL_OVERRIDE;
+    void getExtraInformation(Akonadi::Item::List &items) Q_DECL_OVERRIDE;
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,

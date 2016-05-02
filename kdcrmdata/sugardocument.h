@@ -327,6 +327,24 @@ public:
      */
     QString templateType() const;
 
+    /**
+      Sets the IDs of accounts that are linked to this document.
+     */
+    void setLinkedAccountIds(const QStringList &ids);
+    /**
+      Returns the IDs of accounts that are linked to this document.
+     */
+    QStringList linkedAccountIds() const;
+
+    /**
+      Sets the IDs of opportunities that are linked to this document.
+     */
+    void setLinkedOpportunityIds(const QStringList &ids);
+    /**
+      Returns the IDs of opportunities that are linked to this document.
+     */
+    QStringList linkedOpportunityIds() const;
+
     // Unknown fields (missing in this code) and custom fields (added by Sugar configuration)
     void setCustomField(const QString &name, const QString &value);
     QMap<QString, QString> customFields() const;

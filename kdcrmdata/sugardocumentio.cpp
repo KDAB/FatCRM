@@ -28,6 +28,9 @@
 #include <QIODevice>
 #include <QXmlStreamWriter>
 
+static const char s_linkedAccountIdsKey[] = "linked_account_ids";
+static const char s_linkedOpportunityIdsKey[] = "linked_opportunity_ids";
+
 SugarDocumentIO::SugarDocumentIO()
 {
 }
@@ -72,7 +75,15 @@ void SugarDocumentIO::readDocument(SugarDocument &document)
         if (accessIt != accessors.constEnd()) {
             (document.*(accessIt.value().setter))(value);
         } else {
-            document.setCustomField(key, value);
+            if (key == QLatin1String(s_linkedAccountIdsKey)) {
+                const QStringList ids = value.split(QLatin1Char(','));
+                document.setLinkedAccountIds(ids);
+            } else if (key == QLatin1String(s_linkedOpportunityIdsKey)) {
+                const QStringList ids = value.split(QLatin1Char(','));
+                document.setLinkedOpportunityIds(ids);
+            } else {
+                document.setCustomField(key, value);
+            }
         }
     }
 }
@@ -97,6 +108,12 @@ bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevic
         const SugarDocument::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (document.*getter)());
     }
+
+    if (!document.linkedAccountIds().isEmpty())
+        writer.writeTextElement(s_linkedAccountIdsKey, document.linkedAccountIds().join(QLatin1String(",")));
+
+    if (!document.linkedOpportunityIds().isEmpty())
+        writer.writeTextElement(s_linkedOpportunityIdsKey, document.linkedOpportunityIds().join(QLatin1String(",")));
 
     // plus custom fields
     QMap<QString, QString> customFields = document.customFields();
