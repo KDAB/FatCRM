@@ -24,9 +24,9 @@
 
 #include "ui_opportunitydetails.h"
 #include "enums.h"
+#include "linkeditemsrepository.h"
 #include "modelrepository.h"
 #include "noteswindow.h"
-#include "notesrepository.h"
 #include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
@@ -160,7 +160,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
         mUi->urllabel->clear();
 
     const QString oppId = id();
-    const int notes = oppId.isEmpty() ? 0 : mNotesRepository->notesForOpportunity(oppId).count() + mNotesRepository->emailsForOpportunity(oppId).count();
+    const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
     mUi->viewNotesButton->setEnabled(notes > 0);
     const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
     mUi->viewNotesButton->setText(buttonText);
@@ -182,9 +182,9 @@ void OpportunityDetails::updateCloseDateLabel(bool closed)
 void OpportunityDetails::on_viewNotesButton_clicked()
 {
     const QString oppId = id();
-    const QVector<SugarNote> notes = mNotesRepository->notesForOpportunity(oppId);
+    const QVector<SugarNote> notes = mLinkedItemsRepository->notesForOpportunity(oppId);
     kDebug() << notes.count() << "notes found for opp" << oppId;
-    const QVector<SugarEmail> emails = mNotesRepository->emailsForOpportunity(oppId);
+    const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForOpportunity(oppId);
     kDebug() << emails.count() << "emails found for opp" << oppId;
     NotesWindow *dlg = new NotesWindow(0);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));

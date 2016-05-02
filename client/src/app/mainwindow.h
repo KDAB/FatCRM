@@ -39,7 +39,7 @@ class QTimer;
 class QToolBar;
 class ResourceConfigDialog;
 class CollectionManager;
-class NotesRepository;
+class LinkedItemsRepository;
 class Page;
 class ReportPage;
 class ContactsPage;
@@ -86,7 +86,7 @@ private:
 
     ResourceConfigDialog *mResourceDialog;
     CollectionManager *mCollectionManager;
-    NotesRepository *mNotesRepository;
+    LinkedItemsRepository *mLinkedItemsRepository;
 
     Page *mAccountPage;
     ContactsPage *mContactsPage;

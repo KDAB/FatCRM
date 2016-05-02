@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "notesrepository.h"
+#include "linkeditemsrepository.h"
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionStatistics>
@@ -28,7 +28,7 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/Monitor>
 
-NotesRepository::NotesRepository(QObject *parent) :
+LinkedItemsRepository::LinkedItemsRepository(QObject *parent) :
     QObject(parent),
     mMonitor(0),
     mNotesLoaded(0),
@@ -36,7 +36,7 @@ NotesRepository::NotesRepository(QObject *parent) :
 {
 }
 
-void NotesRepository::clear()
+void LinkedItemsRepository::clear()
 {
     mNotesLoaded = 0;
     mEmailsLoaded = 0;
@@ -46,12 +46,12 @@ void NotesRepository::clear()
     mMonitor = 0;
 }
 
-void NotesRepository::setNotesCollection(const Akonadi::Collection &collection)
+void LinkedItemsRepository::setNotesCollection(const Akonadi::Collection &collection)
 {
     mNotesCollection = collection;
 }
 
-void NotesRepository::loadNotes()
+void LinkedItemsRepository::loadNotes()
 {
     //kDebug() << "Loading" << mNotesCollection.statistics().count() << "notes";
 
@@ -62,12 +62,12 @@ void NotesRepository::loadNotes()
             this, SLOT(slotNotesReceived(Akonadi::Item::List)));
 }
 
-QVector<SugarNote> NotesRepository::notesForOpportunity(const QString &id) const
+QVector<SugarNote> LinkedItemsRepository::notesForOpportunity(const QString &id) const
 {
     return mNotesHash.value(id);
 }
 
-void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
+void LinkedItemsRepository::slotNotesReceived(const Akonadi::Item::List &items)
 {
     mNotesLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
@@ -78,7 +78,7 @@ void NotesRepository::slotNotesReceived(const Akonadi::Item::List &items)
         emit notesLoaded(mNotesLoaded);
 }
 
-void NotesRepository::storeNote(const Akonadi::Item &item)
+void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
 {
     if (item.hasPayload<SugarNote>()) {
         SugarNote note = item.payload<SugarNote>();
@@ -101,7 +101,7 @@ void NotesRepository::storeNote(const Akonadi::Item &item)
     }
 }
 
-void NotesRepository::removeNote(const QString &id)
+void LinkedItemsRepository::removeNote(const QString &id)
 {
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mNotesParentIdHash.value(id);
@@ -120,12 +120,12 @@ void NotesRepository::removeNote(const QString &id)
 
 ///
 
-void NotesRepository::setEmailsCollection(const Akonadi::Collection &collection)
+void LinkedItemsRepository::setEmailsCollection(const Akonadi::Collection &collection)
 {
     mEmailsCollection = collection;
 }
 
-void NotesRepository::loadEmails()
+void LinkedItemsRepository::loadEmails()
 {
     //kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
@@ -136,7 +136,7 @@ void NotesRepository::loadEmails()
             this, SLOT(slotEmailsReceived(Akonadi::Item::List)));
 }
 
-void NotesRepository::monitorChanges()
+void LinkedItemsRepository::monitorChanges()
 {
     mMonitor = new Akonadi::Monitor(this);
     mMonitor->setCollectionMonitored(mNotesCollection);
@@ -150,12 +150,12 @@ void NotesRepository::monitorChanges()
             this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
 }
 
-QVector<SugarEmail> NotesRepository::emailsForOpportunity(const QString &id) const
+QVector<SugarEmail> LinkedItemsRepository::emailsForOpportunity(const QString &id) const
 {
     return mEmailsHash.value(id);
 }
 
-void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
+void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
 {
     mEmailsLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
@@ -166,7 +166,7 @@ void NotesRepository::slotEmailsReceived(const Akonadi::Item::List &items)
         emit emailsLoaded(mEmailsLoaded);
 }
 
-void NotesRepository::storeEmail(const Akonadi::Item &item)
+void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
 {
     if (item.hasPayload<SugarEmail>()) {
         SugarEmail email = item.payload<SugarEmail>();
@@ -189,7 +189,7 @@ void NotesRepository::storeEmail(const Akonadi::Item &item)
     }
 }
 
-void NotesRepository::removeEmail(const QString &id)
+void LinkedItemsRepository::removeEmail(const QString &id)
 {
     Q_ASSERT(!id.isEmpty());
     const QString oldParentId = mEmailsParentIdHash.value(id);
@@ -206,14 +206,14 @@ void NotesRepository::removeEmail(const QString &id)
     }
 }
 
-void NotesRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
+void LinkedItemsRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
 {
     scope.setFetchRemoteIdentification(false);
     scope.setIgnoreRetrievalErrors(true);
     scope.fetchFullPayload(true);
 }
 
-void NotesRepository::updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection)
+void LinkedItemsRepository::updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
     if (collection == mNotesCollection) {
         storeNote(item);
@@ -224,13 +224,13 @@ void NotesRepository::updateItem(const Akonadi::Item &item, const Akonadi::Colle
     }
 }
 
-void NotesRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
+void LinkedItemsRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
     kDebug() << item.id() << item.mimeType();
     updateItem(item, collection);
 }
 
-void NotesRepository::slotItemRemoved(const Akonadi::Item &item)
+void LinkedItemsRepository::slotItemRemoved(const Akonadi::Item &item)
 {
     kDebug() << item.id();
     const Akonadi::Collection collection = item.parentCollection();
@@ -244,7 +244,7 @@ void NotesRepository::slotItemRemoved(const Akonadi::Item &item)
     }
 }
 
-void NotesRepository::slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers)
+void LinkedItemsRepository::slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // I get only REMOTEREVISION even when changing the parentid in the SugarEmail...
     //kDebug() << item.id() << partIdentifiers;
