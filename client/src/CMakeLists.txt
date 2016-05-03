@@ -38,6 +38,7 @@ set(app_SRCS
   dialogs/contactsimportwizard.cpp
   dialogs/configurationdialog.cpp
   dialogs/detailsdialog.cpp
+  dialogs/documentswindow.cpp
   dialogs/editlistdialog.cpp
   dialogs/fatcrminputdialog.cpp
   dialogs/noteswindow.cpp
@@ -83,6 +84,7 @@ kde4_add_ui_files(app_SRCS
   dialogs/configurationdialog.ui
   dialogs/contactsimportpage.ui
   dialogs/detailsdialog.ui
+  dialogs/documentswindow.ui
   dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.ui
   dialogs/selectitemdialog.ui
@@ -104,10 +106,16 @@ qt4_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
+qt4_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemdownloadinterface.h org.kde.Akonadi.SugarCRM.ItemDownload.xml)
+qt4_add_dbus_interface(app_SRCS
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemDownload.xml sugarresourceitemdownload SugarItemDownload
+)
+
 kde4_add_library(fatcrmprivate ${app_SRCS})
 
 target_link_libraries(fatcrmprivate
   kdcrmdata
+  ${KDE4_KIO_LIBS}
   ${KDE4_KDECORE_LIBS}
   ${KDE4_AKONADI_LIBS}
   ${KDEPIMLIBS_KABC_LIBS}

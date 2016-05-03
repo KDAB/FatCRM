@@ -31,6 +31,7 @@ class AccountDetails;
 }
 
 class AccountDataExtractor;
+class LinkedItemsRepository;
 
 class AccountDetails : public Details
 {
@@ -40,11 +41,13 @@ public:
 
     ~AccountDetails();
 
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotBillingAddressCountryEditingFinished();
     void slotShippingAddressCountryEditingFinished();
+    void on_viewDocumentsButton_clicked();
 
 private:
     Ui::AccountDetails *mUi;
@@ -55,6 +58,7 @@ private:
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
     void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
     AccountDataExtractor *mDataExtractor;
+    LinkedItemsRepository *mLinkedItemsRepository;
 };
 
 #endif /* ACCOUNTDETAILS_H */

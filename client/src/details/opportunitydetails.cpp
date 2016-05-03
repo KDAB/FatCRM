@@ -23,6 +23,7 @@
 #include "opportunitydetails.h"
 
 #include "ui_opportunitydetails.h"
+#include "documentswindow.h"
 #include "enums.h"
 #include "linkeditemsrepository.h"
 #include "modelrepository.h"
@@ -160,10 +161,18 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
         mUi->urllabel->clear();
 
     const QString oppId = id();
-    const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
-    mUi->viewNotesButton->setEnabled(notes > 0);
-    const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
-    mUi->viewNotesButton->setText(buttonText);
+    {
+        const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
+        mUi->viewNotesButton->setEnabled(notes > 0);
+        const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
+        mUi->viewNotesButton->setText(buttonText);
+    }
+    {
+        const int documents = oppId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForOpportunity(oppId).count();
+        mUi->viewDocumentsButton->setEnabled(documents > 0);
+        const QString buttonText = (documents == 0) ? i18n("View Documents") : i18np("View 1 Document", "View %1 Documents", documents);
+        mUi->viewDocumentsButton->setText(buttonText);
+    }
 
     mOriginalCloseDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::dateClosed()));
 
@@ -194,6 +203,24 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     foreach(const SugarEmail &email, emails) {
         dlg->addEmail(email);
     }
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
+void OpportunityDetails::on_viewDocumentsButton_clicked()
+{
+    const QString oppId = id();
+    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForOpportunity(oppId);
+    kDebug() << documents.count() << "documents found for opp" << oppId;
+
+    DocumentsWindow *dlg = new DocumentsWindow(0);
+    dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
+    dlg->setResourceIdentifier(resourceIdentifier());
+
+    foreach (const SugarDocument &document, documents) {
+        dlg->addDocument(document);
+    }
+
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();
 }

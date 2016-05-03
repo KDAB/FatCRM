@@ -54,6 +54,7 @@ private Q_SLOTS:
     void slotCloseDateChanged(const QDate &date);
 
     void on_viewNotesButton_clicked();
+    void on_viewDocumentsButton_clicked();
     void on_buttonOpenAccount_clicked();
 
 private:

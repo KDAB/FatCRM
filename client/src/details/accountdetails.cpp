@@ -21,9 +21,11 @@
 */
 
 #include "accountdetails.h"
+#include "ui_accountdetails.h"
 
 #include "accountdataextractor.h"
-#include "ui_accountdetails.h"
+#include "documentswindow.h"
+#include "linkeditemsrepository.h"
 #include "referenceddatamodel.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -31,7 +33,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 
 AccountDetails::AccountDetails(QWidget *parent)
-    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this))
+    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -89,6 +91,24 @@ void AccountDetails::slotShippingAddressCountryEditingFinished()
     mUi->shipping_address_country->setText(KDCRMUtils::canonicalCountryName(mUi->shipping_address_country->text()));
 }
 
+void AccountDetails::on_viewDocumentsButton_clicked()
+{
+    const QString accountId = id();
+    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForAccount(accountId);
+    kDebug() << documents.count() << "documents found for account" << accountId;
+
+    DocumentsWindow *dlg = new DocumentsWindow(0);
+    dlg->setWindowTitle(i18n("Documents for account %1", name()));
+    dlg->setResourceIdentifier(resourceIdentifier());
+
+    foreach (const SugarDocument &document, documents) {
+        dlg->addDocument(document);
+    }
+
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
+}
+
 void AccountDetails::initialize()
 {
     setObjectName("accountDetails");
@@ -134,4 +154,12 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &)
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
+
+    const QString accountId = id();
+    {
+        const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
+        mUi->viewDocumentsButton->setEnabled(documents > 0);
+        const QString buttonText = (documents == 0) ? i18n("View Documents") : i18np("View 1 Document", "View %1 Documents", documents);
+        mUi->viewDocumentsButton->setText(buttonText);
+    }
 }
