@@ -36,7 +36,7 @@
 #include "dbuswinidprovider.h"
 #include "enums.h"
 #include "config-fatcrm-version.h"
-#include "notesrepository.h"
+#include "linkeditemsrepository.h"
 #include "referenceddata.h"
 #include "reportpage.h"
 #include "resourceconfigdialog.h"
@@ -70,7 +70,7 @@ MainWindow::MainWindow()
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
-      mNotesRepository(new NotesRepository(this)),
+      mLinkedItemsRepository(new LinkedItemsRepository(this)),
       mContactsModel(0),
       mInitialLoadingDone(false)
 {
@@ -181,9 +181,9 @@ void MainWindow::initialize()
     mProgressBarHideTimer->setInterval(1000);
     connect(mProgressBarHideTimer, SIGNAL(timeout()), mProgressBar, SLOT(hide()));
 
-    connect(mNotesRepository, SIGNAL(notesLoaded(int)),
+    connect(mLinkedItemsRepository, SIGNAL(notesLoaded(int)),
             this, SLOT(slotNotesLoaded(int)));
-    connect(mNotesRepository, SIGNAL(emailsLoaded(int)),
+    connect(mLinkedItemsRepository, SIGNAL(emailsLoaded(int)),
             this, SLOT(slotEmailsLoaded(int)));
 }
 
@@ -254,7 +254,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         slotResourceProgress(agent);
         ReferencedData::clearAll();
         AccountRepository::instance()->clear();
-        mNotesRepository->clear();
+        mLinkedItemsRepository->clear();
         mCollectionManager->setResource(identifier);
         slotShowMessage(i18n("(0/5) Listing folders..."));
     } else {
@@ -353,7 +353,7 @@ void MainWindow::slotModelLoaded(DetailsType type)
     case Contact:
         slotShowMessage(i18n("(4/5) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
-        mNotesRepository->loadNotes();
+        mLinkedItemsRepository->loadNotes();
         break;
     case Lead:
     case Campaign:
@@ -366,7 +366,7 @@ void MainWindow::slotNotesLoaded(int count)
 {
     Q_UNUSED(count);
     slotShowMessage(i18n("(5/5) Loading emails..."));
-    mNotesRepository->loadEmails();
+    mLinkedItemsRepository->loadEmails();
 }
 
 void MainWindow::slotEmailsLoaded(int count)
@@ -379,7 +379,7 @@ void MainWindow::initialLoadingDone()
 {
     mInitialLoadingDone = true;
 
-    mNotesRepository->monitorChanges();
+    mLinkedItemsRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
 
     processPendingImports();
@@ -392,7 +392,7 @@ void MainWindow::createTabs()
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
     Page *page = new OpportunitiesPage(this);
-    page->setNotesRepository(mNotesRepository);
+    page->setLinkedItemsRepository(mLinkedItemsRepository);
     mPages << page;
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
 
@@ -571,9 +571,9 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
         }
     }
     if (mimeType == "application/x-vnd.kdab.crm.note") {
-        mNotesRepository->setNotesCollection(collection);
+        mLinkedItemsRepository->setNotesCollection(collection);
     } else if (mimeType == "application/x-vnd.kdab.crm.email") {
-        mNotesRepository->setEmailsCollection(collection);
+        mLinkedItemsRepository->setEmailsCollection(collection);
     }
 
 }

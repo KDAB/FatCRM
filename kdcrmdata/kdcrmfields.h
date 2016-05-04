@@ -164,6 +164,22 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString vatNo();
     KDCRMDATA_EXPORT QString vismaId();
     KDCRMDATA_EXPORT QString website();
+
+    KDCRMDATA_EXPORT QString documentName();
+    KDCRMDATA_EXPORT QString docId();
+    KDCRMDATA_EXPORT QString docType();
+    KDCRMDATA_EXPORT QString docUrl();
+    KDCRMDATA_EXPORT QString activeDate();
+    KDCRMDATA_EXPORT QString expDate();
+    KDCRMDATA_EXPORT QString categoryId();
+    KDCRMDATA_EXPORT QString subcategoryId();
+    KDCRMDATA_EXPORT QString statusId();
+    KDCRMDATA_EXPORT QString documentRevisionId();
+    KDCRMDATA_EXPORT QString relatedDocId();
+    KDCRMDATA_EXPORT QString relatedDocName();
+    KDCRMDATA_EXPORT QString relatedDocRevId();
+    KDCRMDATA_EXPORT QString isTemplate();
+    KDCRMDATA_EXPORT QString templateType();
 }
 
 #endif // KDCRMFIELDS_H

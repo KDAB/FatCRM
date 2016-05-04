@@ -433,6 +433,21 @@ const QMap<QString, QString>& ModuleHandler::fieldNamesMapping() const
         mapping.insert(KDCRMFields::trackerText(), QLatin1String("tracker_text"));
         mapping.insert(KDCRMFields::toAddrsNames(), QLatin1String("to_addrs_names"));
         mapping.insert(KDCRMFields::website(), QLatin1String("website"));
+        mapping.insert(KDCRMFields::documentName(), QLatin1String("document_name"));
+        mapping.insert(KDCRMFields::docId(), QLatin1String("doc_id"));
+        mapping.insert(KDCRMFields::docType(), QLatin1String("doc_type"));
+        mapping.insert(KDCRMFields::docUrl(), QLatin1String("doc_url"));
+        mapping.insert(KDCRMFields::activeDate(), QLatin1String("active_date"));
+        mapping.insert(KDCRMFields::expDate(), QLatin1String("exp_date"));
+        mapping.insert(KDCRMFields::categoryId(), QLatin1String("category_id"));
+        mapping.insert(KDCRMFields::subcategoryId(), QLatin1String("subcategory_id"));
+        mapping.insert(KDCRMFields::statusId(), QLatin1String("status_id"));
+        mapping.insert(KDCRMFields::documentRevisionId(), QLatin1String("document_revision_id"));
+        mapping.insert(KDCRMFields::relatedDocId(), QLatin1String("related_doc_id"));
+        mapping.insert(KDCRMFields::relatedDocName(), QLatin1String("related_doc_name"));
+        mapping.insert(KDCRMFields::relatedDocRevId(), QLatin1String("related_doc_rev_id"));
+        mapping.insert(KDCRMFields::isTemplate(), QLatin1String("is_template"));
+        mapping.insert(KDCRMFields::templateType(), QLatin1String("template_type"));
     }
 
     return mapping;

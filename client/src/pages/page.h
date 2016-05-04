@@ -46,7 +46,7 @@ class DetailsDialog;
 class ItemDataExtractor;
 class KJob;
 class KJobProgressTracker;
-class NotesRepository;
+class LinkedItemsRepository;
 class QPoint;
 
 class Page : public QWidget
@@ -61,7 +61,7 @@ public:
     DetailsType detailsType() const { return mType; }
     void setCollection(const Akonadi::Collection& collection);
     Akonadi::Collection collection() const { return mCollection; }
-    void setNotesRepository(NotesRepository *repo);
+    void setLinkedItemsRepository(LinkedItemsRepository *repo);
     bool queryClose();
     void openDialog(const QString &id);
     void openDialogForItem(const Akonadi::Item &item);
@@ -147,7 +147,7 @@ private:
     QString mResourceBaseUrl;
     QStringList mSupportedFields;
     QUrl mCurrentItemUrl;
-    NotesRepository *mNotesRepository;
+    LinkedItemsRepository *mLinkedItemsRepository;
     EnumDefinitions mEnumDefinitions;
     bool mOnline;
 

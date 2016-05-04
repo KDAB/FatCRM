@@ -20,8 +20,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NOTESREPOSITORY_H
-#define NOTESREPOSITORY_H
+#ifndef LINKEDITEMSREPOSITORY_H
+#define LINKEDITEMSREPOSITORY_H
 
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
@@ -37,11 +37,11 @@ namespace Akonadi
     class ItemFetchScope;
 }
 
-class NotesRepository : public QObject
+class LinkedItemsRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit NotesRepository(QObject *parent = Q_NULLPTR);
+    explicit LinkedItemsRepository(QObject *parent = Q_NULLPTR);
 
     void clear();
 
@@ -90,4 +90,4 @@ private:
 
 };
 
-#endif // NOTESREPOSITORY_H
+#endif // LINKEDITEMSREPOSITORY_H

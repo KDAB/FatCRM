@@ -1,0 +1,9 @@
+[Misc]
+Name=CRM Document Serializer
+Comment=An Akonadi serializer plugin for CRM Document objects
+
+[Plugin]
+Type=application/x-vnd.kdab.crm.document
+X-KDE-Library=akonadi_serializer_sugardocument
+X-Akonadi-Class=legacy;default;SugarDocument;
+X-KDE-ClassName=Akonadi::SerializerPluginSugarDocument

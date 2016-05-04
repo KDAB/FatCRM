@@ -32,7 +32,7 @@ namespace Ui
 class OpportunityDetails;
 }
 
-class NotesRepository;
+class LinkedItemsRepository;
 class OpportunityDataExtractor;
 
 class OpportunityDetails : public Details
@@ -43,7 +43,7 @@ public:
 
     ~OpportunityDetails();
 
-    void setNotesRepository(NotesRepository *notesRepo) Q_DECL_OVERRIDE { mNotesRepository = notesRepo; }
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
@@ -65,7 +65,7 @@ private:
 
 private:
     Ui::OpportunityDetails *mUi;
-    NotesRepository *mNotesRepository;
+    LinkedItemsRepository *mLinkedItemsRepository;
     OpportunityDataExtractor *mDataExtractor;
     QDate mOriginalCloseDate;
     bool mCloseDateChangedByUser;

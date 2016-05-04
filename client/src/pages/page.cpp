@@ -228,9 +228,9 @@ void Page::setCollection(const Collection &collection)
     }
 }
 
-void Page::setNotesRepository(NotesRepository *repo)
+void Page::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
-    mNotesRepository = repo;
+    mLinkedItemsRepository = repo;
 }
 
 bool Page::queryClose()
@@ -644,7 +644,7 @@ DetailsDialog *Page::createDetailsDialog()
 {
     Details* details = DetailsDialog::createDetailsForType(mType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
-    details->setNotesRepository(mNotesRepository);
+    details->setLinkedItemsRepository(mLinkedItemsRepository);
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
     connect(details, SIGNAL(openObject(DetailsType,QString)),

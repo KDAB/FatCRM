@@ -360,6 +360,7 @@ void ContactDetails::slotAccountSelected(const QString &accountId)
     const int idx = mUi->account_id->findData(accountId);
     if (idx > -1) {
         mUi->account_id->setCurrentIndex(idx);
+        slotAccountActivated();
     }
 }
 

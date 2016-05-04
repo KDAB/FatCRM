@@ -31,7 +31,7 @@
 #include <QWidget>
 
 class QComboBox;
-class NotesRepository;
+class LinkedItemsRepository;
 class ItemDataExtractor;
 
 class Details : public QWidget
@@ -53,7 +53,7 @@ public:
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     void setSupportedFields(const QStringList &fields);
     void setEnumDefinitions(const EnumDefinitions &enums);
-    virtual void setNotesRepository(NotesRepository *notesRepo) { Q_UNUSED(notesRepo); }
+    virtual void setLinkedItemsRepository(LinkedItemsRepository *repo) { Q_UNUSED(repo); }
     virtual ItemDataExtractor *itemDataExtractor() const = 0;
 
     DetailsType type() const

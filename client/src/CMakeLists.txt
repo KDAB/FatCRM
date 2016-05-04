@@ -59,8 +59,8 @@ set(app_SRCS
   utilities/itemdataextractor.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp
+  utilities/linkeditemsrepository.cpp
   utilities/modelrepository.cpp
-  utilities/notesrepository.cpp
   utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp

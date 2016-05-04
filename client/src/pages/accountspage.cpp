@@ -91,7 +91,9 @@ void AccountsPage::handleItemChanged(const Item &item)
     Q_ASSERT(item.hasPayload<SugarAccount>());
     const SugarAccount account = item.payload<SugarAccount>();
     const QString id = account.id();
-    Q_ASSERT(!id.isEmpty());
+    if (id.isEmpty()) {
+        return;
+    }
     const bool newAccount = !AccountRepository::instance()->hasId(id);
     bool updateNameRef = newAccount;
     // Accounts first get created without an ID, and then the remote ID comes in (after the sync).
