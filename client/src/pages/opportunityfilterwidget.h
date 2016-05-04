@@ -36,7 +36,7 @@ class OpportunityFilterWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel, QWidget *parent = 0);
+    explicit OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel, QWidget *parent = Q_NULLPTR);
     ~OpportunityFilterWidget();
 
 private Q_SLOTS:

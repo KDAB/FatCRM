@@ -44,7 +44,7 @@ class AccountImportPage : public QWizardPage
     Q_OBJECT
 
 public:
-    explicit AccountImportPage(QWidget *parent = 0);
+    explicit AccountImportPage(QWidget *parent = Q_NULLPTR);
     ~AccountImportPage();
 
     // intput

@@ -39,7 +39,7 @@ class OpportunityDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit OpportunityDetails(QWidget *parent = 0);
+    explicit OpportunityDetails(QWidget *parent = Q_NULLPTR);
 
     ~OpportunityDetails();
 

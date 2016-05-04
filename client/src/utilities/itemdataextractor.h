@@ -31,7 +31,7 @@ class ItemDataExtractor : public QObject
 {
     Q_OBJECT
 public:
-    explicit ItemDataExtractor(QObject *parent = 0);
+    explicit ItemDataExtractor(QObject *parent = Q_NULLPTR);
     ~ItemDataExtractor();
 
     virtual QString itemAddress() const = 0;

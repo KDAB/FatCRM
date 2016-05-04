@@ -36,7 +36,7 @@ class CampaignDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit CampaignDetails(QWidget *parent = 0);
+    explicit CampaignDetails(QWidget *parent = Q_NULLPTR);
 
     ~CampaignDetails();
 

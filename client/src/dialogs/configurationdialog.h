@@ -37,7 +37,7 @@ class ConfigurationDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ConfigurationDialog(QWidget *parent = 0);
+    explicit ConfigurationDialog(QWidget *parent = Q_NULLPTR);
     ~ConfigurationDialog();
 
     void setFullUserName(const QString &fullUserName);

@@ -31,7 +31,7 @@ class AccountsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit AccountsPage(QWidget *parent = 0);
+    explicit AccountsPage(QWidget *parent = Q_NULLPTR);
 
     ~AccountsPage();
 

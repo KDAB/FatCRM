@@ -31,7 +31,7 @@ class FATCRMPRIVATE_EXPORT QDateEditEx : public QDateEdit
 
     Q_PROPERTY(bool nullable READ isNullable WRITE setNullable)
 public:
-    explicit QDateEditEx(QWidget *parent = 0);
+    explicit QDateEditEx(QWidget *parent = Q_NULLPTR);
     ~QDateEditEx();
 
     QDateTime dateTime() const;

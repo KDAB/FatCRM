@@ -29,7 +29,7 @@ class OpportunityDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    explicit OpportunityDataExtractor(QObject *parent = 0);
+    explicit OpportunityDataExtractor(QObject *parent = Q_NULLPTR);
 
     ~OpportunityDataExtractor();
 

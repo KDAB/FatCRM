@@ -29,7 +29,7 @@ class CampaignDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    explicit CampaignDataExtractor(QObject *parent = 0);
+    explicit CampaignDataExtractor(QObject *parent = Q_NULLPTR);
 
     ~CampaignDataExtractor();
 

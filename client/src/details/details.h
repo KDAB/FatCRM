@@ -39,7 +39,7 @@ class Details : public QWidget
     Q_OBJECT
 
 public:
-    explicit Details(DetailsType type, QWidget *parent = 0);
+    explicit Details(DetailsType type, QWidget *parent = Q_NULLPTR);
 
     ~Details();
 

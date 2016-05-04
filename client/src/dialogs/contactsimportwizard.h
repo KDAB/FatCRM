@@ -38,7 +38,7 @@ class ContactsImportWizard : public QWizard
     Q_OBJECT
 
 public:
-    explicit ContactsImportWizard(QWidget *parent = 0);
+    explicit ContactsImportWizard(QWidget *parent = Q_NULLPTR);
 
     // intput
     void setAccountCollection(const Akonadi::Collection &collection);

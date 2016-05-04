@@ -37,7 +37,7 @@ class FATCRMPRIVATE_EXPORT ResourceConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit ResourceConfigDialog(QWidget *parent = 0);
+    explicit ResourceConfigDialog(QWidget *parent = Q_NULLPTR);
 
     ~ResourceConfigDialog();
 

@@ -30,7 +30,7 @@ class LeadDataExtractor : public ItemDataExtractor
     Q_OBJECT
 public:
 
-    explicit LeadDataExtractor(QObject *parent = 0);
+    explicit LeadDataExtractor(QObject *parent = Q_NULLPTR);
 
     ~LeadDataExtractor();
 

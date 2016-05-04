@@ -36,7 +36,7 @@ class AccountDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit AccountDetails(QWidget *parent = 0);
+    explicit AccountDetails(QWidget *parent = Q_NULLPTR);
 
     ~AccountDetails();
 

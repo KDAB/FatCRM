@@ -58,7 +58,7 @@ class NotesWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit NotesWindow(QWidget *parent = 0);
+    explicit NotesWindow(QWidget *parent = Q_NULLPTR);
     ~NotesWindow();
 
     void addNote(const SugarNote &note);

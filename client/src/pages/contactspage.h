@@ -31,7 +31,7 @@ class ContactsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit ContactsPage(QWidget *parent = 0);
+    explicit ContactsPage(QWidget *parent = Q_NULLPTR);
 
     ~ContactsPage();
 

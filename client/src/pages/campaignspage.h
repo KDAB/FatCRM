@@ -31,7 +31,7 @@ class CampaignsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit CampaignsPage(QWidget *parent = 0);
+    explicit CampaignsPage(QWidget *parent = Q_NULLPTR);
 
     ~CampaignsPage();
 

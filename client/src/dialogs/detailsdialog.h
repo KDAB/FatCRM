@@ -40,7 +40,7 @@ class DetailsDialog : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DetailsDialog(Details *details, QWidget *parent = 0);
+    explicit DetailsDialog(Details *details, QWidget *parent = Q_NULLPTR);
 
     ~DetailsDialog();
 
