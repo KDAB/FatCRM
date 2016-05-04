@@ -28,6 +28,7 @@
 
 class LeadsHandler : public ModuleHandler
 {
+    Q_OBJECT
 public:
     explicit LeadsHandler(SugarSession *session);
 

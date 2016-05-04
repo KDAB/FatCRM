@@ -41,21 +41,21 @@ public:
     bool isNullable() const;
     void setNullable(bool enable);
 
-    QSize sizeHint() const;
-    QSize minimumSizeHint() const;
+    QSize sizeHint() const Q_DECL_OVERRIDE;
+    QSize minimumSizeHint() const Q_DECL_OVERRIDE;
 
     void clear() Q_DECL_OVERRIDE;
 
 protected:
-    /*! \reimp */ void showEvent(QShowEvent *event);
-    /*! \reimp */ void resizeEvent(QResizeEvent *event);
-    /*! \reimp */ void paintEvent(QPaintEvent *event);
-    /*! \reimp */ void keyPressEvent(QKeyEvent *event);
-    /*! \reimp */ void mousePressEvent(QMouseEvent *event);
-    /*! \reimp */ bool focusNextPrevChild(bool next);
-    /*! \reimp */ void focusInEvent(QFocusEvent *event);
-    /*! \reimp */ void focusOutEvent(QFocusEvent *event);
-    /*! \reimp */ QValidator::State validate(QString &input, int &pos) const;
+    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
+    void resizeEvent(QResizeEvent *event) Q_DECL_OVERRIDE;
+    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
+    bool focusNextPrevChild(bool next) Q_DECL_OVERRIDE;
+    void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
+    void focusOutEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
+    QValidator::State validate(QString &input, int &pos) const Q_DECL_OVERRIDE;
 
 public Q_SLOTS:
     /*! \reimp */ void setDateTime(const QDateTime &dateTime);

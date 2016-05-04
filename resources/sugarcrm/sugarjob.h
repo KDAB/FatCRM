@@ -57,7 +57,7 @@ public Q_SLOTS:
     void restart();
 
 protected:
-    virtual bool doKill();
+    bool doKill() Q_DECL_OVERRIDE;
     virtual void startSugarTask() = 0;
 
     bool handleError(const KDSoapGenerated::TNS__Error_value &errorValue);

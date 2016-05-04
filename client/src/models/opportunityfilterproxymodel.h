@@ -54,7 +54,7 @@ public:
 
     void setFilter(const OpportunityFilterSettings &settings);
 
-    QString filterDescription() const;
+    QString filterDescription() const Q_DECL_OVERRIDE;
 
 protected:
     bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;

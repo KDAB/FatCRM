@@ -55,7 +55,7 @@ public:
     ~SalesforceResource();
 
 public Q_SLOTS:
-    virtual void configure(WId windowId);
+    void configure(WId windowId) Q_DECL_OVERRIDE;
 
 protected:
     KDSoapGenerated::SforceService *mSoap;
