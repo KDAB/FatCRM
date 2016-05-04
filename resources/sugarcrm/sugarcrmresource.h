@@ -51,6 +51,7 @@ struct ListDeletedItemsArg
 
 class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
 {
+    friend class ItemDownloadInterface;
     friend class ModuleDebugInterface;
     friend class ResourceDebugInterface;
 
