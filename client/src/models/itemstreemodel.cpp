@@ -325,7 +325,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.title();
         case Organization: {
             // not using addressee.organization() since that doesn't follow account renames/deletions
-            const QString accountId = addressee.custom("FATCRM", "X-AccountId");
+            const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
             return ReferencedData::instance(AccountRef)->referencedData(accountId);
         }
         case PreferredEmail:
@@ -338,7 +338,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return countryForContact(addressee);
         case LastModifiedDate:
         {
-            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom("FATCRM", "X-DateModified"));
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified")));
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
@@ -447,7 +447,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
     }
     if (role == Qt::FontRole) {
-        if (opportunity.customFields().value("urgent") == "1") {
+        if (opportunity.customFields().value(QStringLiteral("urgent")) == QLatin1String("1")) {
             QFont boldFont;
             boldFont.setBold(true);
             return boldFont;
@@ -464,7 +464,7 @@ QVariant ItemsTreeModel::accountToolTip(const Item &item) const
 
     const SugarAccount account = item.payload<SugarAccount>();
     QString accountDescription = account.limitedDescription(5);
-    accountDescription.replace('\n', "<br>");
+    accountDescription.replace('\n', QLatin1String("<br>"));
 
     QString toolTipOutput;
     QString accountCountry = account.countryForGui();
@@ -516,7 +516,7 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
     }
 
     QString opportunityShortDescription = opportunity.limitedDescription(5);
-    opportunityShortDescription.replace('\n', "<br>");
+    opportunityShortDescription.replace('\n', QLatin1String("<br>"));
     if (!opportunityShortDescription.isEmpty()) {
         toolTipOutput.append(i18n("<p><b>Description</b><br>%1</p>", opportunityShortDescription));
     }

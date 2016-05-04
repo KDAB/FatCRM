@@ -103,25 +103,25 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
     for (int i = 0; i < items.count(); ++i) {
         const Akonadi::Item &item = items.at(i);
         if (!query.isEmpty())
-            query += " or ";
+            query += QLatin1String(" or ");
         query += "email_id='" + item.remoteId() + '\'';
         itemIndexById.insert(item.remoteId(), i);
     }
     KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(QStringList() << "email_id" << "description" << "description_html");
+    selectedFields.setItems(QStringList() << QStringLiteral("email_id") << QStringLiteral("description") << QStringLiteral("description_html"));
     // Blocking call
     KDSoapGenerated::TNS__Get_entry_list_result result =
-            soap()->get_entry_list(sessionId(), "EmailText", query, QString() /*orderBy*/,
+            soap()->get_entry_list(sessionId(), QStringLiteral("EmailText"), query, QString() /*orderBy*/,
                                    0 /*offset*/, selectedFields, items.count() /*maxResults*/, 0 /*fetchDeleted*/);
 
     foreach(const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {
         QString email_id, description, descriptionHtml;
         foreach(const KDSoapGenerated::TNS__Name_value &val, entry.name_value_list().items()) {
-            if (val.name() == "email_id") {
+            if (val.name() == QLatin1String("email_id")) {
                 email_id = val.value();
-            } else if (val.name() == "description") {
+            } else if (val.name() == QLatin1String("description")) {
                 description = KDCRMUtils::decodeXML(val.value().trimmed());
-            } else if (val.name() == "description_html") {
+            } else if (val.name() == QLatin1String("description_html")) {
                 descriptionHtml = KDCRMUtils::decodeXML(val.value().trimmed());
             }
         }
@@ -170,10 +170,10 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
     SugarEmail::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
-        if (it.key() == "description" || it.key() == "description_html") {
+        if (it.key() == QLatin1String("description") || it.key() == QLatin1String("description_html")) {
             // those ones don't exist on the server, they have been copied from EmailsText
             continue;
         }

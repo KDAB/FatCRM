@@ -44,7 +44,7 @@ bool SugarEmailIO::readSugarEmail(QIODevice *device, SugarEmail &email)
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarEmail"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readEmail(email);
         } else {
             xml.raiseError(i18n("It is not a sugarEmail version 1.0 data."));
@@ -88,9 +88,9 @@ bool SugarEmailIO::writeSugarEmail(const SugarEmail &email, QIODevice *device)
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarEmail>");
-    writer.writeStartElement("sugarEmail");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarEmail>"));
+    writer.writeStartElement(QStringLiteral("sugarEmail"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
     SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();

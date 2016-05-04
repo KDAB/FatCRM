@@ -95,7 +95,7 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->cbOpen->setChecked(settings.showOpen());
     ui->cbClosed->setChecked(settings.showClosed());
     if (settings.customMaxDate().isValid()) {
-        ui->cbMaxNextStepDate->insertItem(CustomDate, settings.customMaxDate().toString("MM/d/yyyy"));
+        ui->cbMaxNextStepDate->insertItem(CustomDate, settings.customMaxDate().toString(QStringLiteral("MM/d/yyyy")));
         mCustomMaxNextStepDate = settings.customMaxDate();
     }
     ui->cbMaxNextStepDate->setCurrentIndex(settings.maxDateIndex());
@@ -137,7 +137,7 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
         date = QDate(date.year(), 12, 31);
         break;
     case CustomDate: // User selection
-        date = QDate::fromString(ui->cbMaxNextStepDate->currentText(), "MM/d/yyyy");
+        date = QDate::fromString(ui->cbMaxNextStepDate->currentText(), QStringLiteral("MM/d/yyyy"));
         break;
     }
     return date;
@@ -207,7 +207,7 @@ void OpportunityFilterWidget::slotSetMaxNextStepCustomDate(const QDate &date)
     if (mCustomMaxNextStepDate.isValid())
         ui->cbMaxNextStepDate->removeItem(CustomDate); // existing custom date will be replaced
     mCustomMaxNextStepDate = date;
-    ui->cbMaxNextStepDate->insertItem(CustomDate, mCustomMaxNextStepDate.toString("MM/d/yyyy"));
+    ui->cbMaxNextStepDate->insertItem(CustomDate, mCustomMaxNextStepDate.toString(QStringLiteral("MM/d/yyyy")));
     ui->cbMaxNextStepDate->setCurrentIndex(CustomDate);
     calendar->close(); // Qt::WA_DeleteOnClose
     filterChanged();

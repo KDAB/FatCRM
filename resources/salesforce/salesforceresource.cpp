@@ -61,11 +61,11 @@ SalesforceResource::SalesforceResource(const QString &id)
       mModuleHandlers(new ModuleHandlerHash)
 {
     new SettingsAdaptor(Settings::self());
-    QDBusConnection::sessionBus().registerObject(QLatin1String("/Settings"),
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),
             Settings::self(), QDBusConnection::ExportAdaptors);
 
     ResourceDebugInterface *debugInterface = new ResourceDebugInterface(this);
-    QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug"),
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug"),
             debugInterface,
             QDBusConnection::ExportScriptableSlots);
 
@@ -737,7 +737,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
             mModuleHandlers->insert(module, handler);
 
             ModuleDebugInterface *debugInterface = new ModuleDebugInterface(module, this);
-            QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + module,
+            QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug/modules/") + module,
                     debugInterface,
                     QDBusConnection::ExportScriptableSlots);
         }

@@ -32,7 +32,7 @@ using namespace KDSoapGenerated;
 static QString endPointFromHostString(const QString &host)
 {
     KUrl url(host);
-    url.setFileName(QLatin1String("soap.php"));
+    url.setFileName(QStringLiteral("soap.php"));
     url.setQuery(QString());
 
     return url.url();
@@ -136,7 +136,7 @@ void SugarSession::logout()
 {
     if (!d->mSessionId.isEmpty() && d->mSoap != 0) {
         KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
-        if (errorValue.number() != "0")
+        if (errorValue.number() != QLatin1String("0"))
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
         if (!d->mSoap->lastError().isEmpty())
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout had fault" << d->mSoap->lastError();

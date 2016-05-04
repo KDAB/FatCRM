@@ -43,7 +43,7 @@ bool SugarLeadIO::readSugarLead(QIODevice *device, SugarLead &lead)
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarLead"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readLead(lead);
         } else {
             xml.raiseError(i18n("It is not a sugarLead version 1.0 data."));
@@ -88,9 +88,9 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarLead>");
-    writer.writeStartElement("sugarLead");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarLead>"));
+    writer.writeStartElement(QStringLiteral("sugarLead"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
     SugarLead::AccessorHash::const_iterator it = accessors.constBegin();

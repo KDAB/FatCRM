@@ -34,7 +34,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 DocumentsHandler::DocumentsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Documents"), session),
+    : ModuleHandler(QStringLiteral("Documents"), session),
       mAccessors(SugarDocument::accessorHash())
 {
 }
@@ -58,7 +58,7 @@ Akonadi::Collection DocumentsHandler::handlerCollection() const
 
 QString DocumentsHandler::orderByForListing() const
 {
-    return QLatin1String("documents.document_name");
+    return QStringLiteral("documents.document_name");
 }
 
 QStringList DocumentsHandler::supportedSugarFields() const
@@ -90,7 +90,7 @@ bool DocumentsHandler::setEntry(const Akonadi::Item &item)
     // no id will result in the email being added
     if (!item.remoteId().isEmpty()) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(QLatin1String("id"));
+        field.setName(QStringLiteral("id"));
         field.setValue(item.remoteId());
 
         itemList << field;
@@ -101,7 +101,7 @@ bool DocumentsHandler::setEntry(const Akonadi::Item &item)
     SugarDocument::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
 
@@ -150,7 +150,7 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         SugarDocument document = item.payload<SugarDocument>();
         bool update = false;
 
-        KDSoapGenerated::TNS__Get_relationships_result result = soap()->get_relationships(sessionId(), "Documents", document.id(), "Accounts", QString(), 0);
+        KDSoapGenerated::TNS__Get_relationships_result result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Accounts"), QString(), 0);
 
         QStringList linkedAccountIds;
         Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
@@ -163,7 +163,7 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         }
 
         QStringList linkedOpportunityIds;
-        result = soap()->get_relationships(sessionId(), "Documents", document.id(), "Opportunities", QString(), 0);
+        result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Opportunities"), QString(), 0);
         Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
             linkedOpportunityIds.append(idMod.id());
         }

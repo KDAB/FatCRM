@@ -51,7 +51,7 @@ private Q_SLOTS:
 
         // And then loading data into the model
         ReferencedData *assignedToRefData = ReferencedData::instance(AssignedToRef);
-        assignedToRefData->setReferencedData("e88a49f9", "David Faure");
+        assignedToRefData->setReferencedData(QStringLiteral("e88a49f9"), QStringLiteral("David Faure"));
 
         QCOMPARE(spyRowsATBI.count(), 1);
         QCOMPARE(spyRowsInserted.count(), 1);
@@ -61,7 +61,7 @@ private Q_SLOTS:
         QCOMPARE(combo->count(), 2); // +1 for empty item at the top
         QCOMPARE(comboTexts(combo), QStringList() << QString() << "David Faure");
 
-        assignedToRefData->setReferencedData("14fc9aa7", "Sabine Faure");
+        assignedToRefData->setReferencedData(QStringLiteral("14fc9aa7"), QStringLiteral("Sabine Faure"));
 
         QCOMPARE(spyRowsATBI.count(), 2);
         QCOMPARE(spyRowsATBI.at(0).at(1).toInt(), 1);
@@ -75,12 +75,12 @@ private Q_SLOTS:
         QCOMPARE(combo->count(), 3);
         QCOMPARE(comboTexts(combo), QStringList() << QString() << "David Faure" << "Sabine Faure");
 
-        assignedToRefData->setReferencedData("3ab7e3b5", "Adam Faure");
-        assignedToRefData->setReferencedData("0cdd11df", "Ernest Faure");
-        assignedToRefData->setReferencedData("f0129ggs", "Charles Faure");
+        assignedToRefData->setReferencedData(QStringLiteral("3ab7e3b5"), QStringLiteral("Adam Faure"));
+        assignedToRefData->setReferencedData(QStringLiteral("0cdd11df"), QStringLiteral("Ernest Faure"));
+        assignedToRefData->setReferencedData(QStringLiteral("f0129ggs"), QStringLiteral("Charles Faure"));
         // Add some duplicates
-        assignedToRefData->setReferencedData("0cdd11df", "Ernest Faure");
-        assignedToRefData->setReferencedData("e88a49f9", "David Faure");
+        assignedToRefData->setReferencedData(QStringLiteral("0cdd11df"), QStringLiteral("Ernest Faure"));
+        assignedToRefData->setReferencedData(QStringLiteral("e88a49f9"), QStringLiteral("David Faure"));
 
         // The combo should show the 5 people, sorted
         QCOMPARE(spyRowsInserted.count(), 5);

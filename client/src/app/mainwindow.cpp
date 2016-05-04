@@ -89,14 +89,14 @@ MainWindow::MainWindow()
     DBusInvokerInterface *iface = new DBusInvokerInterface(this);
     connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
 
-    ClientSettings::self()->restoreWindowSize("main", this);
+    ClientSettings::self()->restoreWindowSize(QStringLiteral("main"), this);
 
     qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
 {
-    ClientSettings::self()->saveWindowSize("main", this);
+    ClientSettings::self()->saveWindowSize(QStringLiteral("main"), this);
     delete mResourceDialog;
 }
 
@@ -155,7 +155,7 @@ void MainWindow::slotDelayedInit()
 
 void MainWindow::slotAboutApp()
 {
-    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB)", QString(FATCRM_VERSION_STRING)));
+    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB)", QStringLiteral(FATCRM_VERSION_STRING)));
 }
 
 void MainWindow::initialize()
@@ -434,7 +434,7 @@ void MainWindow::setupResourcesCombo()
     // monitor Akonadi agents so we can check for KDCRM specific resources
     AgentInstanceModel *agentModel = new AgentInstanceModel(this);
     AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel(this);
-    agentFilterModel->addCapabilityFilter(QString("KDCRM").toLatin1());
+    agentFilterModel->addCapabilityFilter(QStringLiteral("KDCRM").toLatin1());
     agentFilterModel->setSourceModel(agentModel);
 
     // Remove this and use agentFilterModel on the last line when everyone has kdepimlibs >= 4.14.7
@@ -532,7 +532,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
 
 void MainWindow::slotImportContacts()
 {
-    const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), "*.csv");
+    const QString csvFile = QFileDialog::getOpenFileName(this, i18n("Select contacts file"), QString(), QStringLiteral("*.csv"));
     if (!csvFile.isEmpty()) {
         slotImportCsvFile(csvFile);
     }
@@ -561,7 +561,7 @@ void MainWindow::slotPrintReport()
 
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
-    if (mimeType == "application/x-vnd.kdab.crm.account") {
+    if (mimeType == QLatin1String("application/x-vnd.kdab.crm.account")) {
         slotShowMessage(i18n("(1/5) Loading accounts..."));
     }
     foreach(Page *page, mPages) {
@@ -570,9 +570,9 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
             return;
         }
     }
-    if (mimeType == "application/x-vnd.kdab.crm.note") {
+    if (mimeType == QLatin1String("application/x-vnd.kdab.crm.note")) {
         mLinkedItemsRepository->setNotesCollection(collection);
-    } else if (mimeType == "application/x-vnd.kdab.crm.email") {
+    } else if (mimeType == QLatin1String("application/x-vnd.kdab.crm.email")) {
         mLinkedItemsRepository->setEmailsCollection(collection);
     }
 

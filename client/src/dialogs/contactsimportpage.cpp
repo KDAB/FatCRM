@@ -50,9 +50,9 @@ enum ChangedFlags
 QString markupString(const QString &text, int flags)
 {
     if (flags & IsNew)
-        return QString::fromLatin1("<b>%1</b>").arg(text);
+        return QStringLiteral("<b>%1</b>").arg(text);
     else if (flags & IsModified)
-        return QString::fromLatin1("<font color=\"#0000ff\"><b>%1</b></font>").arg(text);
+        return QStringLiteral("<font color=\"#0000ff\"><b>%1</b></font>").arg(text);
     else
         return text;
 }
@@ -79,29 +79,29 @@ QString formattedContact(const QString &prefix, int prefixFlags,
         parts << markupString(familyName, familyNameFlags);
 
     if (!emailAddress.isEmpty())
-        parts << markupString(QString::fromLatin1("&lt;%1&gt;").arg(emailAddress), emailAddressFlags);
+        parts << markupString(QStringLiteral("&lt;%1&gt;").arg(emailAddress), emailAddressFlags);
 
     // Other lines below
 
     if (!jobTitle.isEmpty()) {
         if (!parts.isEmpty())
-            parts << "<br/>";
+            parts << QStringLiteral("<br/>");
         parts << markupString(jobTitle, jobTitleFlags);
     }
 
     if (!phoneNumber.isEmpty()) {
         if (!parts.isEmpty())
-            parts << "<br/>";
+            parts << QStringLiteral("<br/>");
         parts << markupString(phoneNumber, phoneNumberFlags);
     }
 
     if (!address.isEmpty()) {
         if (!parts.isEmpty())
-            parts << "<br/>";
+            parts << QStringLiteral("<br/>");
         parts << markupString(address, addressFlags);
     }
 
-    return parts.join(" ");
+    return parts.join(QStringLiteral(" "));
 }
 
 // For one-line descriptions
@@ -122,11 +122,11 @@ QString formattedContact(const KContacts::Addressee &addressee, bool withAddress
     if (!addressee.preferredEmail().isEmpty()) {
         if (parts.isEmpty())
             parts << addressee.preferredEmail();
-        parts << QString::fromLatin1("<%1>").arg(addressee.preferredEmail());
+        parts << QStringLiteral("<%1>").arg(addressee.preferredEmail());
     }
 
     if (withAddress) {
-        const QString id = addressee.custom("FATCRM", "X-AccountId");
+        const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
         const SugarAccount account = AccountRepository::instance()->accountById(id);
 
         QStringList addressParts;
@@ -140,11 +140,11 @@ QString formattedContact(const KContacts::Addressee &addressee, bool withAddress
             addressParts << account.countryForGui();
 
         if (!addressParts.isEmpty()) {
-            parts << QString::fromLatin1("(%1)").arg(addressParts.join(", "));
+            parts << QStringLiteral("(%1)").arg(addressParts.join(QStringLiteral(", ")));
         }
     }
 
-    return parts.join(" ");
+    return parts.join(QStringLiteral(" "));
 }
 
 QString formattedAddress(const KContacts::Address &address)
@@ -159,7 +159,7 @@ QString formattedAddress(const KContacts::Address &address)
     if (!address.country().isEmpty())
         parts << address.country();
 
-    return parts.join(", ");
+    return parts.join(QStringLiteral(", "));
 }
 
 } // namespace
@@ -178,7 +178,7 @@ QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
 {
     QCheckBox *checkBox = new QCheckBox;
     QString text(str);
-    checkBox->setText(text.replace('&', "&&"));
+    checkBox->setText(text.replace('&', QLatin1String("&&")));
     mImportedContactLayout->addWidget(checkBox);
     checkBox->setChecked(true);
     connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
@@ -216,11 +216,11 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     mImportedContactLabel->setWordWrap(true);
     mImportedContactLayout->addWidget(mImportedContactLabel);
 
-    mImportedAddressee.insertCustom("FATCRM", "X-AccountId", mAccount.id());
+    mImportedAddressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
     mImportedContactLabel->setText(formattedContact(mImportedAddressee, true));
 
-    if (!mImportedAddressee.custom("FATCRM", "X-Salutation").isEmpty()) {
-        mUpdateCheckBoxes.prefix = addFieldCheckBox(mImportedAddressee.custom("FATCRM", "X-Salutation"));
+    if (!mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")).isEmpty()) {
+        mUpdateCheckBoxes.prefix = addFieldCheckBox(mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
     }
 
     if (!mImportedAddressee.givenName().isEmpty()) {
@@ -348,7 +348,7 @@ void MergeWidget::updateFinalContact()
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             prefixFlags = IsNew;
-            mFinalContact.insertCustom("FATCRM", "X-Salutation", mImportedAddressee.custom("FATCRM", "X-Salutation"));
+            mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
         }
 
         if (mUpdateCheckBoxes.givenName && mUpdateCheckBoxes.givenName->isChecked()) {
@@ -395,14 +395,14 @@ void MergeWidget::updateFinalContact()
         mFinalContact.removeAddress(mFinalContact.address(KContacts::Address::Work|KContacts::Address::Pref));
         mFinalContact.insertAddress(address);
 
-        mFinalContact.insertCustom("FATCRM", "X-AccountId", mAccount.id());
+        mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
     } else {
         mFinalContact = mPossibleMatches.at(index).contact;
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
-            if (mFinalContact.custom("FATCRM", "X-Salutation") != mImportedAddressee.custom("FATCRM", "X-Salutation")) {
+            if (mFinalContact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")) != mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"))) {
                 prefixFlags = (mFinalContact.prefix().isEmpty() ? IsNew : IsModified);
-                mFinalContact.insertCustom("FATCRM", "X-Salutation", mImportedAddressee.custom("FATCRM", "X-Salutation"));
+                mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
             }
         }
 
@@ -447,7 +447,7 @@ void MergeWidget::updateFinalContact()
     if (index == ExcludeContact) {
         mFinalContactLabel->setText(QString());
     } else {
-        mFinalContactLabel->setText(formattedContact(mFinalContact.custom("FATCRM", "X-Salutation"), prefixFlags,
+        mFinalContactLabel->setText(formattedContact(mFinalContact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")), prefixFlags,
                                                      mFinalContact.givenName(), givenNameFlags,
                                                      mFinalContact.familyName(), familyNameFlags,
                                                      mFinalContact.title(), jobTitleFlags,

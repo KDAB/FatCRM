@@ -184,7 +184,7 @@ void Details::setData(const QMap<QString, QString> &data,
             setProperty(prop.toLatin1(), data.value(prop));
         }
     }
-    setProperty("name", data.value("name")); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
+    setProperty("name", data.value(QStringLiteral("name"))); // displayed in lineedit, but useful for subclasses (e.g. NotesDialog title)
 
     if (mKeys.isEmpty()) {
         mKeys = data.keys(); // remember what are the expected keys, so getData can skip internal widgets
@@ -220,7 +220,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QCheckBox *cb, checkBoxes) {
         key = cb->objectName();
         if (!data.contains(key)) continue;
-        cb->setChecked(data.value(key) == "1" ? true : false);
+        cb->setChecked(data.value(key) == QLatin1String("1") ? true : false);
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
@@ -359,7 +359,7 @@ const QMap<QString, QString> Details::getData() const
     // (and for showing in the GUI until the next sync)
     currentData[KDCRMFields::dateModified()] = KDCRMUtils::currentTimestamp();
     const QString fullUserName = ClientSettings::self()->fullUserName();
-    currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QString("me") : fullUserName;
+    currentData[KDCRMFields::modifiedByName()] = fullUserName.isEmpty() ? QStringLiteral("me") : fullUserName;
 
     // Missing when arriving here (note that description is added later)
     // for opps: amount_usdollar, campaign_id, campaign_name

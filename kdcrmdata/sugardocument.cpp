@@ -467,7 +467,7 @@ QMap<QString, QString> SugarDocument::data() const
 
 QString SugarDocument::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.document");
+    return QStringLiteral("application/x-vnd.kdab.crm.document");
 }
 
 Q_GLOBAL_STATIC(SugarDocument::AccessorHash, s_accessors)

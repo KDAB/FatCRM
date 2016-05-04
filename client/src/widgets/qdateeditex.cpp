@@ -58,7 +58,7 @@ public:
     void setNull(bool n) {
         null = n;
         if (null) {
-            QLineEdit *edit = qFindChild<QLineEdit *>(q, "qt_spinbox_lineedit");
+            QLineEdit *edit = qFindChild<QLineEdit *>(q, QStringLiteral("qt_spinbox_lineedit"));
             if (!edit->text().isEmpty()) {
                 edit->clear();
             }
@@ -279,7 +279,7 @@ void QDateEditEx::keyPressEvent(QKeyEvent *event)
         return;
     }
     if (event->key() == Qt::Key_Backspace && d->nullable){
-        QLineEdit *edit = qFindChild<QLineEdit *>(this, "qt_spinbox_lineedit");
+        QLineEdit *edit = qFindChild<QLineEdit *>(this, QStringLiteral("qt_spinbox_lineedit"));
         if (edit->selectedText() == edit->text()) {
             setDateTime(QDateTime());
             event->accept();

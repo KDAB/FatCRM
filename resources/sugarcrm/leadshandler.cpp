@@ -37,7 +37,7 @@ using namespace KDSoapGenerated;
 #include <KLocalizedString>
 
 LeadsHandler::LeadsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Leads"), session),
+    : ModuleHandler(QStringLiteral("Leads"), session),
       mAccessors(SugarLead::accessorHash())
 {
 }
@@ -88,7 +88,7 @@ bool LeadsHandler::setEntry(const Akonadi::Item &item)
     SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
         const SugarLead::valueGetter getter = (*it).getter;
@@ -161,7 +161,7 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
 
@@ -224,18 +224,18 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
                         continue;
                     }
                 }
-            } else if (it.key() == "do_not_call") {
+            } else if (it.key() == QLatin1String("do_not_call")) {
                 diffName = i18nc("@item:intable", "Do Not Call");
                 leftValue = leftLead.doNotCall() == QLatin1String("1")
-                            ? QLatin1String("Yes") : QLatin1String("No");
+                            ? QStringLiteral("Yes") : QStringLiteral("No");
                 rightValue = rightLead.doNotCall() == QLatin1String("1")
-                             ? QLatin1String("Yes") : QLatin1String("No");
-            } else if (it.key() == "converted") {
+                             ? QStringLiteral("Yes") : QStringLiteral("No");
+            } else if (it.key() == QLatin1String("converted")) {
                 diffName = i18nc("@item:intable", "Converted");
                 leftValue = leftLead.converted() == QLatin1String("1")
-                            ? QLatin1String("Yes") : QLatin1String("No");
+                            ? QStringLiteral("Yes") : QStringLiteral("No");
                 rightValue = rightLead.converted() == QLatin1String("1")
-                             ? QLatin1String("Yes") : QLatin1String("No");
+                             ? QStringLiteral("Yes") : QStringLiteral("No");
             } else {
                 // internal field, skip
                 continue;

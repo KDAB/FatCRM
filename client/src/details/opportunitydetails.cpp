@@ -95,19 +95,19 @@ void OpportunityDetails::slotAutoNextStepDate()
 void OpportunityDetails::slotSalesStageActivated(const QString &stage)
 {
     int percent = 50;
-    if (stage == "Prospecting")
+    if (stage == QLatin1String("Prospecting"))
         percent = 10;
-    else if (stage == "Proposal/Price Quote")
+    else if (stage == QLatin1String("Proposal/Price Quote"))
         percent = 65;
-    else if (stage == "Negotiation/Review")
+    else if (stage == QLatin1String("Negotiation/Review"))
         percent = 80;
-    else if (stage == "Closed Won")
+    else if (stage == QLatin1String("Closed Won"))
         percent = 100;
-    else if (stage == "Closed Lost")
+    else if (stage == QLatin1String("Closed Lost"))
         percent = 0;
     mUi->probability->setValue(percent);
 
-    if (stage == "Closed Won" || stage == "Closed Lost") {
+    if (stage == QLatin1String("Closed Won") || stage == QLatin1String("Closed Lost")) {
         updateCloseDateLabel(true);
         if (!mCloseDateChangedByUser) {
             mUi->date_closed->setDate(QDate::currentDate());
@@ -156,7 +156,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
+        mUi->urllabel->setText(QStringLiteral("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
     else
         mUi->urllabel->clear();
 
@@ -169,7 +169,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     mOriginalCloseDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::dateClosed()));
 
     const QString stage = data.value(KDCRMFields::salesStage());
-    updateCloseDateLabel(stage == "Closed Won" || stage == "Closed Lost");
+    updateCloseDateLabel(stage == QLatin1String("Closed Won") || stage == QLatin1String("Closed Lost"));
 }
 
 void OpportunityDetails::updateCloseDateLabel(bool closed)

@@ -38,10 +38,10 @@ private Q_SLOTS:
         QTest::addColumn<int>("expectedIndexOfValue");
 
         QTest::newRow("empty") << EnumDefinitions() << "" << -1;
-        QTest::newRow("emptyEnum") << (EnumDefinitions() << EnumDefinitions::Enum("e1")) << "" << -1;
-        QTest::newRow("emptyEnums") << (EnumDefinitions() << EnumDefinitions::Enum("e1") << EnumDefinitions::Enum("e2")) << "" << -1;
+        QTest::newRow("emptyEnum") << (EnumDefinitions() << EnumDefinitions::Enum(QStringLiteral("e1"))) << "" << -1;
+        QTest::newRow("emptyEnums") << (EnumDefinitions() << EnumDefinitions::Enum(QStringLiteral("e1")) << EnumDefinitions::Enum(QStringLiteral("e2"))) << "" << -1;
 
-        EnumDefinitions::Enum leadSource("lead_source");
+        EnumDefinitions::Enum leadSource(QStringLiteral("lead_source"));
         EnumDefinitions::KeyValue kv1 = {"key", "value"};
         leadSource.mEnumValues.append(kv1);
         QTest::newRow("oneValue") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
@@ -49,7 +49,7 @@ private Q_SLOTS:
         leadSource.mEnumValues.append(kv2);
         QTest::newRow("twoValues") << (EnumDefinitions() << leadSource) << "lead_source" << 0;
 
-        EnumDefinitions::Enum salutation("salutation");
+        EnumDefinitions::Enum salutation(QStringLiteral("salutation"));
         EnumDefinitions::KeyValue kv3 = {"another", "value"};
         salutation.mEnumValues.append(kv3);
         QTest::newRow("twoEnums") << (EnumDefinitions() << leadSource << salutation) << "salutation" << 1;

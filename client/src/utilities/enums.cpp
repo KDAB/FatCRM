@@ -26,15 +26,15 @@
 QString typeToString(DetailsType type)
 {
     if (type == Account) {
-        return QString("Accounts");
+        return QStringLiteral("Accounts");
     } else if (type == Opportunity) {
-        return QString("Opportunities");
+        return QStringLiteral("Opportunities");
     } else if (type == Lead) {
-        return QString("Leads");
+        return QStringLiteral("Leads");
     } else if (type == Contact) {
-        return QString("Contacts");
+        return QStringLiteral("Contacts");
     } else if (type == Campaign) {
-        return QString("Campaigns");
+        return QStringLiteral("Campaigns");
     } else {
         return QString();
     }

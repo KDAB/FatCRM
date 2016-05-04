@@ -63,7 +63,7 @@ void ReportGenerator::addHeader(KDReports::Report &report)
 {
     KDReports::Header& header = report.header();
     header.setTabPositions(QList<QTextOption::Tab>() << report.rightAlignedTab());
-    header.addInlineElement(KDReports::TextElement("\t"));
+    header.addInlineElement(KDReports::TextElement(QStringLiteral("\t")));
     header.addVariable(KDReports::DefaultLocaleLongDate);
 }
 

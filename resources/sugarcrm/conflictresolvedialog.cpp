@@ -73,24 +73,24 @@ public:
     {
         switch (mode) {
         case NormalMode:
-            mContent.append(QString::fromLatin1("<tr><td align=\"right\"><b>%1:</b></td><td>%2</td><td></td><td>%3</td></tr>")
+            mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td>%2</td><td></td><td>%3</td></tr>")
                             .arg(name)
                             .arg(textToHTML(leftValue))
                             .arg(textToHTML(rightValue)));
             break;
         case ConflictMode:
-            mContent.append(QString::fromLatin1("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#ff8686\">%2</td><td></td><td bgcolor=\"#ff8686\">%3</td></tr>")
+            mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#ff8686\">%2</td><td></td><td bgcolor=\"#ff8686\">%3</td></tr>")
                             .arg(name)
                             .arg(textToHTML(leftValue))
                             .arg(textToHTML(rightValue)));
             break;
         case AdditionalLeftMode:
-            mContent.append(QString::fromLatin1("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#9cff83\">%2</td><td></td><td></td></tr>")
+            mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#9cff83\">%2</td><td></td><td></td></tr>")
                             .arg(name)
                             .arg(textToHTML(leftValue)));
             break;
         case AdditionalRightMode:
-            mContent.append(QString::fromLatin1("<tr><td align=\"right\"><b>%1:</b></td><td></td><td></td><td bgcolor=\"#9cff83\">%2</td></tr>")
+            mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td></td><td></td><td bgcolor=\"#9cff83\">%2</td></tr>")
                             .arg(name)
                             .arg(textToHTML(rightValue)));
             break;
@@ -100,12 +100,12 @@ public:
 private:
     QString header() const
     {
-        QString header = QLatin1String("<html>");
-        header += QString::fromLatin1("<body text=\"%1\" bgcolor=\"%2\">")
+        QString header = QStringLiteral("<html>");
+        header += QStringLiteral("<body text=\"%1\" bgcolor=\"%2\">")
                   .arg(KColorScheme(QPalette::Active, KColorScheme::View).foreground().color().name())
                   .arg(KColorScheme(QPalette::Active, KColorScheme::View).background().color().name());
         header += QLatin1String("<center><table>");
-        header += QString::fromLatin1("<tr><th align=\"center\">%1</th><th align=\"center\">%2</th><td>&nbsp;</td><th align=\"center\">%3</th></tr>")
+        header += QStringLiteral("<tr><th align=\"center\">%1</th><th align=\"center\">%2</th><td>&nbsp;</td><th align=\"center\">%3</th></tr>")
                   .arg(mNameTitle)
                   .arg(mLeftTitle)
                   .arg(mRightTitle);
@@ -115,7 +115,7 @@ private:
 
     QString footer() const
     {
-        return QLatin1String("</table></center>"
+        return QStringLiteral("</table></center>"
                              "</body>"
                              "</html>");
     }

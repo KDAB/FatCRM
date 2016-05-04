@@ -35,12 +35,12 @@ NotesWindow::NotesWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->textEdit->enableFindReplace(true);
     ui->textEdit->setAcceptRichText(true);
-    ClientSettings::self()->restoreWindowSize("NotesWindow", this);
+    ClientSettings::self()->restoreWindowSize(QStringLiteral("NotesWindow"), this);
 }
 
 NotesWindow::~NotesWindow()
 {
-    ClientSettings::self()->saveWindowSize("NotesWindow", this);
+    ClientSettings::self()->saveWindowSize(QStringLiteral("NotesWindow"), this);
     delete ui;
 }
 
@@ -48,7 +48,7 @@ void NotesWindow::addNote(const SugarNote &note)
 {
     const QDateTime modified = KDCRMUtils::dateTimeFromString(note.dateModified());
     QString htmlHeader;
-    htmlHeader += (QString("<html><h1>Note by %1, last modified %2:</h1>\n").arg(note.createdByName()).arg(KDCRMUtils::formatDateTime(modified)));
+    htmlHeader += (QStringLiteral("<html><h1>Note by %1, last modified %2:</h1>\n").arg(note.createdByName()).arg(KDCRMUtils::formatDateTime(modified)));
     htmlHeader += "<h2>" + note.name() + "</h2>\n"; // called "Subject" in the web gui
     QString text;
     if (!note.description().isEmpty()) {
@@ -63,9 +63,9 @@ void NotesWindow::addEmail(const SugarEmail &email)
     const QString toList = email.toAddrNames();
     const QDateTime dateSent = KDCRMUtils::dateTimeFromString(email.dateSent());
     QString htmlHeader;
-    htmlHeader += QString("<html><h1>Mail from %1. Date: %2</h1>\n").arg(email.fromAddrName().trimmed(), KDCRMUtils::formatDateTime(dateSent));
-    htmlHeader += QString("<h2>Subject: %1</h2>\n").arg(email.name());
-    htmlHeader += QString("<p>To: %1</p>\n").arg(toList);
+    htmlHeader += QStringLiteral("<html><h1>Mail from %1. Date: %2</h1>\n").arg(email.fromAddrName().trimmed(), KDCRMUtils::formatDateTime(dateSent));
+    htmlHeader += QStringLiteral("<h2>Subject: %1</h2>\n").arg(email.name());
+    htmlHeader += QStringLiteral("<p>To: %1</p>\n").arg(toList);
 
     const bool useHtml = email.description().isEmpty();
     const QString text = (useHtml ? email.descriptionHtml() : email.description()) + '\n';
@@ -79,7 +79,7 @@ void NotesWindow::setVisible(bool visible)
         QTextCursor cursor = ui->textEdit->textCursor();
         foreach (const NoteText &note, m_notes) {
             //cursor.insertText(s_separator);
-            cursor.insertHtml("<hr>");
+            cursor.insertHtml(QStringLiteral("<hr>"));
             cursor.insertBlock();
             cursor.setBlockFormat(QTextBlockFormat());
             cursor.insertHtml(note.htmlHeader());

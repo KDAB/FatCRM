@@ -67,13 +67,13 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
         const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KContacts::Addressee>()) {
             const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const QString id = addressee.custom("FATCRM", "X-ContactId");
+            const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
             if (id.isEmpty()) { // newly created, not ID yet
                 continue;
             }
             const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
             contactRefMap.insert(id, fullName);
-            assignedToRefMap.insert(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+            assignedToRefMap.insert(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
         }
     }
     ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
@@ -86,7 +86,7 @@ void ContactsPage::handleItemChanged(const Item &item)
     Q_ASSERT(item.hasPayload<KContacts::Addressee>());
     const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
     const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
-    const QString id = addressee.custom("FATCRM", "X-ContactId");
+    const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
     if (!id.isEmpty()) {
         const int idx = mPendingContactsToOpen.indexOf(item.id());
         if (idx > -1) {
@@ -94,6 +94,6 @@ void ContactsPage::handleItemChanged(const Item &item)
             openDialogForItem(item);
         }
         ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom("FATCRM", "X-AssignedUserId"), addressee.custom("FATCRM", "X-AssignedUserName"));
+        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
     }
 }

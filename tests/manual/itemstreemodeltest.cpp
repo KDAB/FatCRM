@@ -103,10 +103,10 @@ private:
 int main(int argc, char **argv)
 {
     QApplication app(argc, argv);
-    KAboutData about("itemstreemodeltest", i18n("ItemsTreeModel test"),
-                     "0.1", i18n("Interactive test program for ItemsTreeModel"),
+    KAboutData about(QStringLiteral("itemstreemodeltest"), i18n("ItemsTreeModel test"),
+                     QStringLiteral("0.1"), i18n("Interactive test program for ItemsTreeModel"),
                      KAboutLicense::GPL_V2, i18n("(C) 2015-2016 KDAB"),
-                     QString(), "david.faure@kdab.com");
+                     QString(), QStringLiteral("david.faure@kdab.com"));
 
     QCommandLineParser parser;
     KAboutData::setApplicationData(about);

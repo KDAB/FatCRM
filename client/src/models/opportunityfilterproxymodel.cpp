@@ -118,7 +118,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
             return false;
     }
 
-    const bool isClosed = opportunity.salesStage().contains("Closed");
+    const bool isClosed = opportunity.salesStage().contains(QLatin1String("Closed"));
     if (!d->settings.showClosed() && isClosed)
         return false;
     if (!d->settings.showOpen() && !isClosed)

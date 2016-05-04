@@ -44,7 +44,7 @@ bool SugarAccountIO::readSugarAccount(QIODevice *device, SugarAccount &account)
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarAccount"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readAccount(account);
         } else {
             xml.raiseError(i18n("It is not a sugarAccount version 1.0 data."));
@@ -88,9 +88,9 @@ bool SugarAccountIO::writeSugarAccount(const SugarAccount &account, QIODevice *d
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarAccount>");
-    writer.writeStartElement("sugarAccount");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarAccount>"));
+    writer.writeStartElement(QStringLiteral("sugarAccount"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
     SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();

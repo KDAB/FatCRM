@@ -36,7 +36,7 @@ ClientSettings *ClientSettings::self()
 }
 
 ClientSettings::ClientSettings()
-    : m_settings(new QSettings("KDAB", "FatCRM"))
+    : m_settings(new QSettings(QStringLiteral("KDAB"), QStringLiteral("FatCRM")))
 {
 }
 
@@ -63,12 +63,12 @@ bool ClientSettings::showDetails(const QString &typeString) const
 
 void ClientSettings::setFullUserName(const QString &name)
 {
-    m_settings->setValue("fullUserName", name);
+    m_settings->setValue(QStringLiteral("fullUserName"), name);
 }
 
 QString ClientSettings::fullUserName() const
 {
-    return m_settings->value("fullUserName").toString();
+    return m_settings->value(QStringLiteral("fullUserName")).toString();
 }
 
 void ClientSettings::saveWindowSize(const QString &windowId, QWidget *window)
@@ -86,14 +86,14 @@ void ClientSettings::restoreWindowSize(const QString &windowId, QWidget *window)
 
 void ClientSettings::setAssigneeFilters(const ClientSettings::GroupFilters &filters)
 {
-    m_settings->setValue("assigneeFilters", filters.toString());
+    m_settings->setValue(QStringLiteral("assigneeFilters"), filters.toString());
     emit assigneeFiltersChanged();
 }
 
 ClientSettings::GroupFilters ClientSettings::assigneeFilters() const
 {
     ClientSettings::GroupFilters ret;
-    ret.loadFromString(m_settings->value("assigneeFilters").toString());
+    ret.loadFromString(m_settings->value(QStringLiteral("assigneeFilters")).toString());
 
     // Clean up after a previous bug
     const QStringList groups = ret.groupNames();
@@ -106,14 +106,14 @@ ClientSettings::GroupFilters ClientSettings::assigneeFilters() const
 
 void ClientSettings::setCountryFilters(const ClientSettings::GroupFilters &filters)
 {
-    m_settings->setValue("countryFilters", filters.toString());
+    m_settings->setValue(QStringLiteral("countryFilters"), filters.toString());
     emit countryFiltersChanged();
 }
 
 ClientSettings::GroupFilters ClientSettings::countryFilters() const
 {
     ClientSettings::GroupFilters ret;
-    const QString str = m_settings->value("countryFilters").toString();
+    const QString str = m_settings->value(QStringLiteral("countryFilters")).toString();
 
     if (str.isEmpty()) {
         // Initial set
@@ -199,12 +199,12 @@ QByteArray ClientSettings::restoreHeaderView(const QString &viewId) const
 
 void ClientSettings::setFilterSettings(const OpportunityFilterSettings &settings)
 {
-    settings.save(*m_settings, "defaultOppFilter");
+    settings.save(*m_settings, QStringLiteral("defaultOppFilter"));
 }
 
 OpportunityFilterSettings ClientSettings::filterSettings() const
 {
     OpportunityFilterSettings settings;
-    settings.load(*m_settings, "defaultOppFilter");
+    settings.load(*m_settings, QStringLiteral("defaultOppFilter"));
     return settings;
 }

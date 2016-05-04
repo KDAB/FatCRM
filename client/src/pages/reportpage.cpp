@@ -107,7 +107,7 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
             }
 
             const QString salesStage = opportunity.salesStage();
-            if (salesStage.contains("Closed")) {
+            if (salesStage.contains(QLatin1String("Closed"))) {
                 // FatCRM now sets dateClosed when closing an opp, but older versions didn't do it,
                 // and Sugar Web doesn't do it, so we use dateModified as fallback, when it's clearly
                 // more correct (earlier than dateClosed).
@@ -116,10 +116,10 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
 
                 if (closedDate >= ui->from->date() && closedDate <= ui->to->date()) {
                     const int month = relativeMonthNumber(closedDate, monthFrom);
-                    if (salesStage.contains("Closed Won") ) {
+                    if (salesStage.contains(QLatin1String("Closed Won")) ) {
                         ++numWon[month];
                         avgAgeWon[month] += createdDate.daysTo(closedDate);
-                    } else if (salesStage.contains("Closed Lost")) {
+                    } else if (salesStage.contains(QLatin1String("Closed Lost"))) {
                         ++numLost[month];
                         avgAgeLost[month] += createdDate.daysTo(closedDate);
                     }
@@ -147,7 +147,7 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
 
     QTableWidgetItem *item = Q_NULLPTR;
     for (int month = 0; month < numMonths; ++month) {
-        const QString monthName = monthStart.toString("MMM yyyy");
+        const QString monthName = monthStart.toString(QStringLiteral("MMM yyyy"));
         monthStart = monthStart.addMonths(1);
 
         item = new QTableWidgetItem();
@@ -239,7 +239,7 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
             const QDate closedDate = qMin(KDCRMUtils::dateFromString(opportunity.dateClosed()),
                                           opportunity.dateModified().date());
 
-            const bool isClosed = opportunity.salesStage().contains("Closed");
+            const bool isClosed = opportunity.salesStage().contains(QLatin1String("Closed"));
 
             const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
             const QSet<int> groupIndexes = groupIndexLookupHash.value(country);
@@ -271,7 +271,7 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
     QTableWidgetItem *item = Q_NULLPTR;
 
     for (int month = 0; month < numMonths; ++month) {
-        const QString monthName = monthStart.toString("MMM yyyy");
+        const QString monthName = monthStart.toString(QStringLiteral("MMM yyyy"));
         monthStart = monthStart.addMonths(1);
 
         item = new QTableWidgetItem();
@@ -299,7 +299,7 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
 
 void ReportPage::on_pbMonthlySpreadsheet_clicked()
 {
-    const QString csvFile = QFileDialog::getSaveFileName(this, i18n("Save to CSV file"), QString(), "*.csv");
+    const QString csvFile = QFileDialog::getSaveFileName(this, i18n("Save to CSV file"), QString(), QStringLiteral("*.csv"));
     if (!csvFile.isEmpty()) {
         QFile file(csvFile);
         if (!file.open(QIODevice::WriteOnly)) {

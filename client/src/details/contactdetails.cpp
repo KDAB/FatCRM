@@ -196,13 +196,13 @@ QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
 QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &addressee) const
 {
     QMap<QString, QString> data;
-    data.insert(KDCRMFields::salutation(), addressee.custom("FATCRM", "X-Salutation"));
+    data.insert(KDCRMFields::salutation(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
     data.insert(KDCRMFields::firstName(), addressee.givenName());
     data.insert(KDCRMFields::lastName(), addressee.familyName());
     data.insert(KDCRMFields::title(), addressee.title());
     data.insert(KDCRMFields::department(), addressee.department());
     data.insert(KDCRMFields::accountName(), addressee.organization());
-    data.insert(KDCRMFields::accountId(), addressee.custom("FATCRM", "X-AccountId"));
+    data.insert(KDCRMFields::accountId(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId")));
     data.insert(KDCRMFields::email1(), addressee.preferredEmail());
     QStringList emails = addressee.emails();
     emails.removeAll(addressee.preferredEmail());
@@ -229,27 +229,27 @@ QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &a
     data.insert(KDCRMFields::altAddressPostalcode(), other.postalCode());
     data.insert(KDCRMFields::altAddressCountry(), other.country());
     data.insert(KDCRMFields::birthdate(), KDCRMUtils::dateToString(addressee.birthday().date()));
-    data.insert(KDCRMFields::assistant(), addressee.custom("KADDRESSBOOK", "X-AssistantsName"));
-    data.insert(KDCRMFields::phoneAssistant(), addressee.custom("FATCRM", "X-AssistantsPhone"));
-    data.insert(KDCRMFields::leadSource(), addressee.custom("FATCRM", "X-LeadSourceName"));
-    data.insert(KDCRMFields::campaign(), addressee.custom("FATCRM", "X-CampaignName"));
-    data.insert(KDCRMFields::assignedUserId(), addressee.custom("FATCRM", "X-AssignedUserId"));
-    data.insert(KDCRMFields::assignedUserName(), addressee.custom("FATCRM", "X-AssignedUserName"));
-    data.insert(KDCRMFields::reportsToId(), addressee.custom("FATCRM", "X-ReportsToUserId"));
-    data.insert(KDCRMFields::reportsTo(), addressee.custom("FATCRM", "X-ReportsToUserName"));
-    data.insert(KDCRMFields::doNotCall(), addressee.custom("FATCRM", "X-DoNotCall"));
+    data.insert(KDCRMFields::assistant(), addressee.custom(QStringLiteral("KADDRESSBOOK"), QStringLiteral("X-AssistantsName")));
+    data.insert(KDCRMFields::phoneAssistant(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssistantsPhone")));
+    data.insert(KDCRMFields::leadSource(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName")));
+    data.insert(KDCRMFields::campaign(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignName")));
+    data.insert(KDCRMFields::assignedUserId(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")));
+    data.insert(KDCRMFields::assignedUserName(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
+    data.insert(KDCRMFields::reportsToId(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserId")));
+    data.insert(KDCRMFields::reportsTo(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserName")));
+    data.insert(KDCRMFields::doNotCall(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall")));
     data.insert(KDCRMFields::description(), addressee.note());
-    data.insert(KDCRMFields::modifiedByName(), addressee.custom("FATCRM", "X-ModifiedByName"));
-    data.insert(KDCRMFields::dateModified(), addressee.custom("FATCRM", "X-DateModified"));
-    data.insert(KDCRMFields::dateEntered(), addressee.custom("FATCRM", "X-DateCreated"));
-    data.insert(KDCRMFields::createdByName(), addressee.custom("FATCRM", "X-CreatedByName"));
-    data.insert(KDCRMFields::modifiedUserId(), addressee.custom("FATCRM", "X-ModifiedUserId"));
-    data.insert(KDCRMFields::id(), addressee.custom("FATCRM", "X-ContactId"));
-    data.insert(KDCRMFields::opportunityRoleFields(), addressee.custom("FATCRM", "X-OpportunityRoleFields"));
-    data.insert(KDCRMFields::cAcceptStatusFields(), addressee.custom("FATCRM", "X-CacceptStatusFields"));
-    data.insert(KDCRMFields::mAcceptStatusFields(), addressee.custom("FATCRM", "X-MacceptStatusFields"));
-    data.insert(KDCRMFields::deleted(), addressee.custom("FATCRM", "X-Deleted"));
-    data.insert(KDCRMFields::createdBy(), addressee.custom("FATCRM", "X-CreatedById"));
+    data.insert(KDCRMFields::modifiedByName(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedByName")));
+    data.insert(KDCRMFields::dateModified(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified")));
+    data.insert(KDCRMFields::dateEntered(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated")));
+    data.insert(KDCRMFields::createdByName(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedByName")));
+    data.insert(KDCRMFields::modifiedUserId(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedUserId")));
+    data.insert(KDCRMFields::id(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId")));
+    data.insert(KDCRMFields::opportunityRoleFields(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-OpportunityRoleFields")));
+    data.insert(KDCRMFields::cAcceptStatusFields(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CacceptStatusFields")));
+    data.insert(KDCRMFields::mAcceptStatusFields(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-MacceptStatusFields")));
+    data.insert(KDCRMFields::deleted(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted")));
+    data.insert(KDCRMFields::createdBy(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedById")));
     return data;
 }
 
@@ -271,7 +271,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.setTitle(data.value(KDCRMFields::title()));
     addressee.setDepartment(data.value(KDCRMFields::department()));
     addressee.setOrganization(data.value(KDCRMFields::accountName()));
-    addressee.insertCustom("FATCRM", "X-AccountId", data.value(KDCRMFields::accountId()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), data.value(KDCRMFields::accountId()));
     QStringList emails;
     emails << data.value(KDCRMFields::email1()) // first one is preferred one
            << data.value(KDCRMFields::email2());
@@ -303,28 +303,28 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(data.value(KDCRMFields::birthdate()))));
 
     addressee.setNote(data.value(KDCRMFields::description()));
-    addressee.insertCustom("KADDRESSBOOK", "X-AssistantsName", data.value(KDCRMFields::assistant()));
-    addressee.insertCustom("FATCRM", "X-AssistantsPhone", data.value(KDCRMFields::phoneAssistant()));
-    addressee.insertCustom("FATCRM", "X-LeadSourceName", data.value(KDCRMFields::leadSource()));
-    addressee.insertCustom("FATCRM", "X-CampaignName", data.value(KDCRMFields::campaign()));
-    addressee.insertCustom("FATCRM", "X-CampaignId", data.value(KDCRMFields::campaignId()));
-    addressee.insertCustom("FATCRM", "X-CacceptStatusFields", data.value(KDCRMFields::cAcceptStatusFields()));
-    addressee.insertCustom("FATCRM", "X-MacceptStatusFields", data.value(KDCRMFields::mAcceptStatusFields()));
-    addressee.insertCustom("FATCRM", "X-AssignedUserId", data.value(KDCRMFields::assignedUserId()));
-    addressee.insertCustom("FATCRM", "X-AssignedUserName", data.value(KDCRMFields::assignedUserName()));
-    addressee.insertCustom("FATCRM", "X-ReportsToUserName", data.value(KDCRMFields::reportsTo()));
-    addressee.insertCustom("FATCRM", "X-ReportsToUserId", data.value(KDCRMFields::reportsToId()));
-    addressee.insertCustom("FATCRM", "X-OpportunityRoleFields", data.value(KDCRMFields::opportunityRoleFields()));
-    addressee.insertCustom("FATCRM", "X-ModifiedByName", data.value(KDCRMFields::modifiedByName()));
-    addressee.insertCustom("FATCRM", "X-DateModified", data.value(KDCRMFields::dateModified()));
-    addressee.insertCustom("FATCRM", "X-ModifiedUserId", data.value(KDCRMFields::modifiedUserId()));
-    addressee.insertCustom("FATCRM", "X-DateCreated", data.value(KDCRMFields::dateEntered()));
-    addressee.insertCustom("FATCRM", "X-CreatedByName", data.value(KDCRMFields::createdByName()));
-    addressee.insertCustom("FATCRM", "X-CreatedById", data.value(KDCRMFields::createdBy()));
-    addressee.insertCustom("FATCRM", "X-ContactId", data.value(KDCRMFields::id()));
-    addressee.insertCustom("FATCRM", "X-Salutation", data.value(KDCRMFields::salutation()));
-    addressee.insertCustom("FATCRM", "X-Deleted", data.value(KDCRMFields::deleted()));
-    addressee.insertCustom("FATCRM", "X-DoNotCall", data.value(KDCRMFields::doNotCall()));
+    addressee.insertCustom(QStringLiteral("KADDRESSBOOK"), QStringLiteral("X-AssistantsName"), data.value(KDCRMFields::assistant()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssistantsPhone"), data.value(KDCRMFields::phoneAssistant()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName"), data.value(KDCRMFields::leadSource()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignName"), data.value(KDCRMFields::campaign()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignId"), data.value(KDCRMFields::campaignId()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CacceptStatusFields"), data.value(KDCRMFields::cAcceptStatusFields()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-MacceptStatusFields"), data.value(KDCRMFields::mAcceptStatusFields()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId"), data.value(KDCRMFields::assignedUserId()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName"), data.value(KDCRMFields::assignedUserName()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserName"), data.value(KDCRMFields::reportsTo()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserId"), data.value(KDCRMFields::reportsToId()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-OpportunityRoleFields"), data.value(KDCRMFields::opportunityRoleFields()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedByName"), data.value(KDCRMFields::modifiedByName()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified"), data.value(KDCRMFields::dateModified()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedUserId"), data.value(KDCRMFields::modifiedUserId()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"), data.value(KDCRMFields::dateEntered()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedByName"), data.value(KDCRMFields::createdByName()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedById"), data.value(KDCRMFields::createdBy()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"), data.value(KDCRMFields::id()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), data.value(KDCRMFields::salutation()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted"), data.value(KDCRMFields::deleted()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall"), data.value(KDCRMFields::doNotCall()));
 
     item.setMimeType(KContacts::Addressee::mimeType());
     item.setPayload<KContacts::Addressee>(addressee);
@@ -337,7 +337,7 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
+        mUi->urllabel->setText(QStringLiteral("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()

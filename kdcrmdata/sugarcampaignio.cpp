@@ -43,7 +43,7 @@ bool SugarCampaignIO::readSugarCampaign(QIODevice *device, SugarCampaign &campai
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarCampaign"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readCampaign(campaign);
         } else {
             xml.raiseError(i18n("It is not a sugarCampaign version 1.0 data."));
@@ -88,9 +88,9 @@ bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevic
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarCampaign>");
-    writer.writeStartElement("sugarCampaign");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarCampaign>"));
+    writer.writeStartElement(QStringLiteral("sugarCampaign"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
     SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();

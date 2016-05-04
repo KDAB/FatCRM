@@ -91,7 +91,7 @@ bool ContactsImporter::importFile(const QString &fileName)
 
         const QString prefix = builder.data(row, 2).trimmed();
         if (!prefix.isEmpty())
-            addressee.insertCustom(QLatin1String("FATCRM"), QLatin1String("X-Salutation"), prefix);
+            addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), prefix);
 
         const QString phoneNumber = builder.data(row, 3).trimmed();
         if (!phoneNumber.isEmpty())
@@ -134,8 +134,8 @@ bool ContactsImporter::importFile(const QString &fileName)
             addressee.setTitle(jobTitle);
 
         if (accountData.value(KDCRMFields::name()).trimmed().isEmpty()) {
-            const QString identifier = ((!givenName.isEmpty() || !familyName.isEmpty()) ? QString::fromLatin1("%1 %2").arg(givenName, familyName).trimmed() : emailAddress);
-            accountData.insert(KDCRMFields::name(), QString::fromLatin1("%1 (individual)").arg(identifier));
+            const QString identifier = ((!givenName.isEmpty() || !familyName.isEmpty()) ? QStringLiteral("%1 %2").arg(givenName, familyName).trimmed() : emailAddress);
+            accountData.insert(KDCRMFields::name(), QStringLiteral("%1 (individual)").arg(identifier));
         }
 
         SugarAccount newAccount;

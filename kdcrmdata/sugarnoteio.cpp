@@ -42,7 +42,7 @@ bool SugarNoteIO::readSugarNote(QIODevice *device, SugarNote &note)
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarNote"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readNote(note);
         } else {
             xml.raiseError(i18n("It is not a sugarNote version 1.0 data."));
@@ -85,9 +85,9 @@ bool SugarNoteIO::writeSugarNote(const SugarNote &note, QIODevice *device)
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarNote>");
-    writer.writeStartElement("sugarNote");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarNote>"));
+    writer.writeStartElement(QStringLiteral("sugarNote"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
     SugarNote::AccessorHash::const_iterator it    = accessors.constBegin();

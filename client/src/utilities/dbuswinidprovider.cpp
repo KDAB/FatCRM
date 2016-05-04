@@ -52,12 +52,12 @@ void DBusWinIdProvider::Private::tryRegister()
     // this is for fallback in case the tray app is not running
     QDBusConnection bus = QDBusConnection::sessionBus();
     QDBusConnectionInterface *busInterface = bus.interface();
-    busInterface->registerService(QLatin1String("org.freedesktop.akonaditray"),
+    busInterface->registerService(QStringLiteral("org.freedesktop.akonaditray"),
                                   QDBusConnectionInterface::DontQueueService,
                                   QDBusConnectionInterface::AllowReplacement);
 
     if (!mObjectRegistered) {
-        mObjectRegistered = bus.registerObject(QLatin1String("/Actions"), q,
+        mObjectRegistered = bus.registerObject(QStringLiteral("/Actions"), q,
                                                QDBusConnection::ExportScriptableSlots);
         if (!mObjectRegistered) {
             qCWarning(FATCRM_CLIENT_LOG) << "Failed to register provider object /Actions";
@@ -65,7 +65,7 @@ void DBusWinIdProvider::Private::tryRegister()
     }
 
     qCDebug(FATCRM_CLIENT_LOG) << "currentOwner="
-             << busInterface->serviceOwner(QLatin1String("org.freedesktop.akonaditray"));
+             << busInterface->serviceOwner(QStringLiteral("org.freedesktop.akonaditray"));
 }
 
 DBusWinIdProvider::DBusWinIdProvider(QWidget *referenceWindow)
@@ -74,7 +74,7 @@ DBusWinIdProvider::DBusWinIdProvider(QWidget *referenceWindow)
     Q_ASSERT(referenceWindow != 0);
 
     QDBusServiceWatcher *watcher =
-        new QDBusServiceWatcher(QLatin1String("org.freedesktop.akonaditray"),
+        new QDBusServiceWatcher(QStringLiteral("org.freedesktop.akonaditray"),
                                 QDBusConnection::sessionBus(),
                                 QDBusServiceWatcher::WatchForUnregistration,
                                 this);

@@ -89,12 +89,12 @@ void SugarJob::Private::startLogin()
     KDSoapGenerated::TNS__User_auth userAuth;
     userAuth.setUser_name(username);
     userAuth.setPassword(QString::fromAscii(passwordHash));
-    userAuth.setVersion(QLatin1String(".01"));
+    userAuth.setVersion(QStringLiteral(".01"));
 
     mSession->setSessionId(QString());
 
     // results handled by slots loginDone() and loginError()
-    soap->asyncLogin(userAuth, QLatin1String("FatCRM"));
+    soap->asyncLogin(userAuth, QStringLiteral("FatCRM"));
 }
 
 void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
@@ -126,7 +126,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
 {
     mSession->setSessionId(QString());
 
-    const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
+    const int faultcode = fault.childValues().child(QStringLiteral("faultcode")).value().toInt();
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "faultcode=" << faultcode;
     if (faultcode == QNetworkReply::UnknownNetworkError ||
             faultcode == QNetworkReply::HostNotFoundError) {

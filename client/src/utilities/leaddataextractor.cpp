@@ -37,7 +37,7 @@ LeadDataExtractor::~LeadDataExtractor()
 
 QString LeadDataExtractor::itemAddress() const
 {
-    return QString("?action=DetailView&module=Leads&record=");
+    return QStringLiteral("?action=DetailView&module=Leads&record=");
 }
 
 QString LeadDataExtractor::idForItem(const Akonadi::Item &item) const

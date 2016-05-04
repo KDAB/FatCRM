@@ -482,7 +482,7 @@ QMap<QString, QString> SugarOpportunity::data()
 
 QString SugarOpportunity::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.opportunity");
+    return QStringLiteral("application/x-vnd.kdab.crm.opportunity");
 }
 
 

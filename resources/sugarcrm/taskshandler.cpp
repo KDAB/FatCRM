@@ -54,7 +54,7 @@ static QString getDateEntered( const KCalCore::Todo &todo )
 
 static void setDateEntered( const QString &value, KCalCore::Todo &todo )
 {
-    todo.setCreated( KDateTime::fromString(value, "%Y-%m-%d %H:%M:%S") );
+    todo.setCreated( KDateTime::fromString(value, QStringLiteral("%Y-%m-%d %H:%M:%S")) );
 }
 
 static QString getDateModified( const KCalCore::Todo &todo )
@@ -140,17 +140,17 @@ static void setAssignedUserName( const QString &value, KCalCore::Todo &todo )
 static QString getStatus( const KCalCore::Todo &todo )
 {
     if ( todo.status() == KCalCore::Todo::StatusConfirmed ) {
-        return QLatin1String( "Not Started" );
+        return QStringLiteral( "Not Started" );
     } else if ( todo.status() == KCalCore::Todo::StatusInProcess ) {
-        return QLatin1String( "In Progress" );
+        return QStringLiteral( "In Progress" );
     } else if ( todo.status() == KCalCore::Todo::StatusCompleted ) {
-        return QLatin1String( "Completed" );
+        return QStringLiteral( "Completed" );
     } else if ( todo.status() == KCalCore::Todo::StatusNeedsAction ) {
-        return QLatin1String( "Pending Input" );
-    } else if ( todo.customStatus() == "StatusDeferred" ) {
-        return QLatin1String( "Deferred" );
+        return QStringLiteral( "Pending Input" );
+    } else if ( todo.customStatus() == QLatin1String("StatusDeferred") ) {
+        return QStringLiteral( "Deferred" );
     } else {
-        return QLatin1String( "None" );
+        return QStringLiteral( "None" );
     }
 }
 
@@ -165,7 +165,7 @@ static void setStatus( const QString &value, KCalCore::Todo &todo )
     } else if ( value == QLatin1String( "Pending Input" ) ) {
         todo.setStatus( KCalCore::Todo::StatusNeedsAction );
     } else if ( value == QLatin1String( "Deferred" ) ) {
-        todo.setCustomStatus( QLatin1String( "StatusDeferred" ) );
+        todo.setCustomStatus( QStringLiteral( "StatusDeferred" ) );
     } else {
         todo.setStatus( KCalCore::Todo::StatusNone );
     }
@@ -184,12 +184,12 @@ static void setDateDueFlag( const QString &value, KCalCore::Todo &todo )
 static QString getDateDue( const KCalCore::Todo &todo )
 {
     KDateTime dateDue = todo.dtDue();
-    return dateDue.toString( "%Y-%m-%d %H:%M:%S" );
+    return dateDue.toString( QStringLiteral("%Y-%m-%d %H:%M:%S") );
 }
 
 static void setDateDue( const QString &value, KCalCore::Todo &todo )
 {
-    todo.setDtDue( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", 0, true ) );
+    todo.setDtDue( KDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S"), 0, true ) );
 }
 
 static QString getDateStartFlag( const KCalCore::Todo &todo )
@@ -205,12 +205,12 @@ static void setDateStartFlag( const QString &value, KCalCore::Todo &todo )
 static QString getDateStart( const KCalCore::Todo &todo )
 {
     KDateTime dateStart = todo.dtStart();
-    return dateStart.toString( "%Y-%m-%d %H:%M:%S" );
+    return dateStart.toString( QStringLiteral("%Y-%m-%d %H:%M:%S") );
 }
 
 static void setDateStart( const QString &value, KCalCore::Todo &todo )
 {
-    todo.setDtStart( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", 0, true ) );
+    todo.setDtStart( KDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S"), 0, true ) );
 }
 
 static QString getParentType( const KCalCore::Todo &todo )
@@ -246,13 +246,13 @@ static void setContactId( const QString &value, KCalCore::Todo &todo )
 static QString getPriority( const KCalCore::Todo &todo )
 {
     if ( todo.priority() == 1 ) {
-        return QLatin1String( "High" );
+        return QStringLiteral( "High" );
     } else if ( todo.priority() == 5 ) {
-        return QLatin1String( "Medium" );
+        return QStringLiteral( "Medium" );
     } else if ( todo.priority() == 9 ) {
-        return QLatin1String( "Low" );
+        return QStringLiteral( "Low" );
     } else {
-        return QLatin1String( "None" );
+        return QStringLiteral( "None" );
     }
 }
 
@@ -270,7 +270,7 @@ static void setPriority( const QString &value, KCalCore::Todo &todo )
 }
 
 TasksHandler::TasksHandler( SugarSession *session )
-    : ModuleHandler( QLatin1String( "Tasks" ), session ),
+    : ModuleHandler( QStringLiteral( "Tasks" ), session ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( KDCRMFields::id(),
@@ -333,7 +333,7 @@ Akonadi::Collection TasksHandler::handlerCollection() const
 
 QString TasksHandler::orderByForListing() const
 {
-    return QLatin1String("tasks.id");
+    return QStringLiteral("tasks.id");
 }
 
 QStringList TasksHandler::supportedSugarFields() const
@@ -360,7 +360,7 @@ bool TasksHandler::setEntry( const Akonadi::Item &item )
     // no id will result in the contact being added
     if ( !item.remoteId().isEmpty() ) {
         TNS__Name_value field;
-        field.setName( QLatin1String( "id" ) );
+        field.setName( QStringLiteral( "id" ) );
         field.setValue( item.remoteId() );
 
         itemList << field;

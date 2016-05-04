@@ -744,7 +744,7 @@ QMap<QString, QString> SugarAccount::data() const
 
 QString SugarAccount::mimeType()
 {
-    return QLatin1String("application/x-vnd.kdab.crm.account");
+    return QStringLiteral("application/x-vnd.kdab.crm.account");
 }
 
 Q_GLOBAL_STATIC(SugarAccount::AccessorHash, s_accessors)

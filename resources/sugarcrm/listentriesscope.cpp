@@ -81,5 +81,5 @@ QString ListEntriesScope::query(const QString &filter, const QString &moduleName
     if (!queryStr.isEmpty())
         queryStr += QLatin1String(" AND ");
 
-    return queryStr + moduleName + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
+    return queryStr + moduleName + QStringLiteral(".date_modified >= '") + mUpdateTimestamp + QStringLiteral("'");
 }

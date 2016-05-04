@@ -110,7 +110,7 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
         const SugarAccount::valueGetter getter = (*it).getter;
@@ -210,7 +210,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
 

@@ -39,7 +39,7 @@ OpportunityDataExtractor::~OpportunityDataExtractor()
 
 QString OpportunityDataExtractor::itemAddress() const
 {
-    return QString("?action=DetailView&module=Opportunities&record=");;
+    return QStringLiteral("?action=DetailView&module=Opportunities&record=");;
 }
 
 QString OpportunityDataExtractor::idForItem(const Akonadi::Item &item) const

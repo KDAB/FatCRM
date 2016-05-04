@@ -37,7 +37,7 @@ AccountDataExtractor::~AccountDataExtractor()
 
 QString AccountDataExtractor::itemAddress() const
 {
-    return QString("?action=DetailView&module=Accounts&record=");
+    return QStringLiteral("?action=DetailView&module=Accounts&record=");
 }
 
 QString AccountDataExtractor::idForItem(const Akonadi::Item &item) const

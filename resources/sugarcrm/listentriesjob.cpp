@@ -162,7 +162,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
             }
         }
         // Also store the list of supported fields, so that the GUI knows what to expect and set
-        const QString fields = mHandler->supportedCRMFields().join(",");
+        const QString fields = mHandler->supportedCRMFields().join(QStringLiteral(","));
         if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
             annotationsAttribute->insert(s_supportedFieldsKey, fields);
             changed = true;

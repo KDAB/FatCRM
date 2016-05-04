@@ -40,16 +40,16 @@ private Q_SLOTS:
     void shouldNotHaveIdImmediately()
     {
         SugarAccountCache *cache = SugarAccountCache::instance();
-        cache->addPendingAccountName("KDAB");
+        cache->addPendingAccountName(QStringLiteral("KDAB"));
         QCOMPARE(cache->accountIdForName("KDAB"), QString());
     }
 
     void shouldHaveIdWhenAdding()
     {
         SugarAccountCache *cache = SugarAccountCache::instance();
-        cache->addPendingAccountName("KDAB");
+        cache->addPendingAccountName(QStringLiteral("KDAB"));
         QSignalSpy spy(cache, SIGNAL(pendingAccountAdded(QString,QString)));
-        cache->addAccount("KDAB", "id_kdab");
+        cache->addAccount(QStringLiteral("KDAB"), QStringLiteral("id_kdab"));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.at(0).at(0).toString(), QString("KDAB"));
         QCOMPARE(spy.at(0).at(1).toString(), QString("id_kdab"));
@@ -59,12 +59,12 @@ private Q_SLOTS:
     void shouldSaveAndRestore()
     {
         SugarAccountCache *cache = SugarAccountCache::instance();
-        cache->addPendingAccountName("QTC");
+        cache->addPendingAccountName(QStringLiteral("QTC"));
         QSignalSpy spy(cache, SIGNAL(pendingAccountAdded(QString,QString)));
         cache->save();
         cache->clear();
         cache->restore();
-        cache->addAccount("QTC", "id_qtc");
+        cache->addAccount(QStringLiteral("QTC"), QStringLiteral("id_qtc"));
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.at(0).at(0).toString(), QString("QTC"));
         QCOMPARE(spy.at(0).at(1).toString(), QString("id_qtc"));

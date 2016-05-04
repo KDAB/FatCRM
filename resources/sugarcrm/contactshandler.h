@@ -60,11 +60,11 @@ private:
     }
     inline bool isAltAddressValue(const QString &value) const
     {
-        return value.startsWith(QString("altAddress"));
+        return value.startsWith(QStringLiteral("altAddress"));
     }
     inline bool isPrimaryAddressValue(const QString &value) const
     {
-        return value.startsWith(QString("primaryAddress"));
+        return value.startsWith(QStringLiteral("primaryAddress"));
     }
 
     typedef QHash<QString, ContactAccessorPair *> ContactAccessorHash;

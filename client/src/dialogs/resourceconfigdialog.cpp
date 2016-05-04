@@ -240,7 +240,7 @@ bool WorkaroundFilterProxyModel::filterAcceptsRow(int source_row, const QModelIn
 {
     const QModelIndex index = sourceModel()->index(source_row, 0);
     const QStringList capabilities = index.data(Akonadi::AgentTypeModel::CapabilitiesRole).toStringList();
-    return capabilities.contains("KDCRM");
+    return capabilities.contains(QStringLiteral("KDCRM"));
 }
 
 #include "moc_resourceconfigdialog.cpp"

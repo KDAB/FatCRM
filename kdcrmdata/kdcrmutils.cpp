@@ -67,12 +67,12 @@ QString KDCRMUtils::currentTimestamp()
 
 QDate KDCRMUtils::dateFromString(const QString &dateString)
 {
-    return QDate::fromString(dateString, QLatin1String("yyyy-MM-dd"));
+    return QDate::fromString(dateString, QStringLiteral("yyyy-MM-dd"));
 }
 
 QString KDCRMUtils::dateToString(const QDate &date)
 {
-    return date.toString(QLatin1String("yyyy-MM-dd"));
+    return date.toString(QStringLiteral("yyyy-MM-dd"));
 }
 
 QString KDCRMUtils::dateTimeToString(const QDateTime &dateTime)
@@ -98,22 +98,22 @@ QString KDCRMUtils::formatDateTime(const QDateTime &dt)
 QString KDCRMUtils::encodeXML(const QString &str)
 {
     QString encoded = str;
-    encoded.replace('&', "&amp;");
-    encoded.replace('<', "&lt;");
-    encoded.replace('>', "&gt;");
-    encoded.replace('\'', "&#039;");
-    encoded.replace('"', "&quot;");
+    encoded.replace('&', QLatin1String("&amp;"));
+    encoded.replace('<', QLatin1String("&lt;"));
+    encoded.replace('>', QLatin1String("&gt;"));
+    encoded.replace('\'', QLatin1String("&#039;"));
+    encoded.replace('"', QLatin1String("&quot;"));
     return encoded;
 }
 
 QString KDCRMUtils::decodeXML(const QString &str)
 {
     QString decoded = str;
-    decoded.replace("&quot;", QChar('"'));
-    decoded.replace("&#039;", QChar('\''));
-    decoded.replace("&gt;", QChar('>'));
-    decoded.replace("&lt;", QChar('<'));
-    decoded.replace("&amp;", QChar('&'));
+    decoded.replace(QLatin1String("&quot;"), QChar('"'));
+    decoded.replace(QLatin1String("&#039;"), QChar('\''));
+    decoded.replace(QLatin1String("&gt;"), QChar('>'));
+    decoded.replace(QLatin1String("&lt;"), QChar('<'));
+    decoded.replace(QLatin1String("&amp;"), QChar('&'));
     // While at it, remove trailing spaces, they can be confusing with e.g. country filtering.
     return decoded.trimmed();
 }
@@ -147,13 +147,13 @@ QString KDCRMUtils::canonicalCountryName(const QString &input)
 {
     const QString c = input.toLower();
     if (c.contains(QLatin1String("netherlands"))) {
-        return QString::fromLatin1("The Netherlands");
+        return QStringLiteral("The Netherlands");
     } else if (c == QLatin1String("united kingdom") || c == QLatin1String("great britain") || c == QLatin1String("u.k.")) {
-        return QString::fromLatin1("UK");
+        return QStringLiteral("UK");
     } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
-        return QString::fromLatin1("USA");
+        return QStringLiteral("USA");
     } else if (c == QLatin1String("Czechoslovakia")) {
-        return QString::fromLatin1("Czech Republic");
+        return QStringLiteral("Czech Republic");
     }
     return input;
 }

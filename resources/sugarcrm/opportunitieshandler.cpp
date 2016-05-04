@@ -87,7 +87,7 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
         const SugarOpportunity::valueGetter getter = (*it).getter;
@@ -205,7 +205,7 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
     SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if (it.key() == "id") {
+        if (it.key() == QLatin1String("id")) {
             continue;
         }
 

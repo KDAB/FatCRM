@@ -77,11 +77,11 @@ SugarCRMResource::SugarCRMResource(const QString &id)
       mOnline(false)
 {
     new SettingsAdaptor(Settings::self());
-    QDBusConnection::sessionBus().registerObject(QLatin1String("/Settings"),
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),
             Settings::self(),
             QDBusConnection::ExportAdaptors);
 
-    QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug"),
+    QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug"),
             mDebugInterface,
             QDBusConnection::ExportScriptableSlots);
 
@@ -760,7 +760,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             ModuleDebugInterface *debugInterface = mModuleDebugInterfaces->value(module);
             if (!debugInterface) {
                 debugInterface = new ModuleDebugInterface(module, this);
-                QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + module,
+                QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug/modules/") + module,
                                                              debugInterface,
                                                              QDBusConnection::ExportScriptableSlots);
                 mModuleDebugInterfaces->insert(module, debugInterface);
@@ -793,7 +793,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         setTemporaryOffline(300); // this calls doSetOnline(false)
         return true;
     case SugarJob::SoapError: // this could be transient too, e.g. capturing portal. Or it could be real...
-        if (job->errorString() == "You do not have access") // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
+        if (job->errorString() == QLatin1String("You do not have access")) // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
             return false;
         emit status( Idle, job->errorString() );
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";

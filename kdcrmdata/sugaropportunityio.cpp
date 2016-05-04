@@ -47,7 +47,7 @@ bool SugarOpportunityIO::readSugarOpportunity(QIODevice *device, SugarOpportunit
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarOpportunity"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readOpportunity(opportunity);
         } else {
             xml.raiseError(i18n("It is not a sugarOpportunity version 1.0 data."));
@@ -77,7 +77,7 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
         if (accessIt != accessors.constEnd()) {
             (opportunity.*(accessIt.value().setter))(value);
         } else {
-            if (key == "nextCallDate") {
+            if (key == QLatin1String("nextCallDate")) {
                 // compat code, fixing previous mistake
                 opportunity.setCustomField(KDCRMFields::nextCallDate(), value);
             } else {
@@ -96,9 +96,9 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarOpportunity>");
-    writer.writeStartElement("sugarOpportunity");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarOpportunity>"));
+    writer.writeStartElement(QStringLiteral("sugarOpportunity"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
     SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();

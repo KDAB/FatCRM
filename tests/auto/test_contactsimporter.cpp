@@ -67,7 +67,7 @@ private Q_SLOTS:
 
         AccountRepository *repo = AccountRepository::instance();
         repo->clear();
-        ac1.setId("id1");
+        ac1.setId(QStringLiteral("id1"));
         repo->addAccount(ac1, 0);
         QCOMPARE(repo->similarAccounts(ac2).count(), expectedSame ? 1 : 0);
     }
@@ -80,15 +80,15 @@ private Q_SLOTS:
 
         QTest::newRow("empty") << "" << QStringList() << QStringList();
         QTest::newRow("one") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345"
-            << (QStringList() << "KDAB") << (QStringList() << "david.faure@example.com");
+            << (QStringList() << QStringLiteral("KDAB")) << (QStringList() << QStringLiteral("david.faure@example.com"));
         QTest::newRow("dupe") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\n"
                                  "Clone,Faure,Mr,12345,clone.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345"
-            << (QStringList() << "KDAB") << (QStringList() << "david.faure@example.com" << "clone.faure@example.com");
+            << (QStringList() << QStringLiteral("KDAB")) << (QStringList() << QStringLiteral("david.faure@example.com") << QStringLiteral("clone.faure@example.com"));
 
         QTest::newRow("2+1") << "David,Faure,Mr,12345,david.faure@example.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345\n"
                                 "Clone,Faure,Mr,12345,clone.faure@example.com,KDAB Inc.,\"32, street name\",Vedène,84000,,France,FR 12345\n"
                                 "Clone,Faure,Mr,12345,clone.faure@foo.com,Foo,\"32, street name\",Vedène,84000,,France,FR 12345"
-            << (QStringList() << "KDAB" << "Foo") << (QStringList() << "david.faure@example.com" << "clone.faure@example.com" << "clone.faure@foo.com");
+            << (QStringList() << QStringLiteral("KDAB") << QStringLiteral("Foo")) << (QStringList() << QStringLiteral("david.faure@example.com") << QStringLiteral("clone.faure@example.com") << QStringLiteral("clone.faure@foo.com"));
     }
 
     void testMultipleAccounts()

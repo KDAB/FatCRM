@@ -91,7 +91,7 @@ void AccountDetails::slotShippingAddressCountryEditingFinished()
 
 void AccountDetails::initialize()
 {
-    setObjectName("accountDetails");
+    setObjectName(QStringLiteral("accountDetails"));
 
     ReferencedDataModel::setModelForCombo(mUi->parent_id, AccountRef);
     //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
@@ -133,5 +133,5 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &)
     fillComboBox(mUi->account_type, KDCRMFields::accountType());
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
-        mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
+        mUi->urllabel->setText(QStringLiteral("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
 }

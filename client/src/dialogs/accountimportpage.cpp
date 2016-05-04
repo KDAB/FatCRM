@@ -73,7 +73,7 @@ static QString location(const SugarAccount &account)
 
 static QString accountNameAndLocation(const SugarAccount &account)
 {
-    return QString("%1 (%2)").arg(account.name(), location(account));
+    return QStringLiteral("%1 (%2)").arg(account.name(), location(account));
 }
 
 void AccountImportPage::fillSimilarAccounts(int row)
@@ -95,7 +95,7 @@ void AccountImportPage::fillSimilarAccounts(int row)
     foreach(const SugarAccount &account, similarAccounts) {
         const bool perfectMatch = account.isSameAccount(newAccount);
         QString text = accountNameAndLocation(account);
-        QRadioButton *button = new QRadioButton(text.replace('&', "&&"), container);
+        QRadioButton *button = new QRadioButton(text.replace('&', QLatin1String("&&")), container);
         if (perfectMatch) {
             //foundMatch = true;
             button->setChecked(true);

@@ -201,9 +201,9 @@ Akonadi::Collection SalesforceContactsHandler::collection() const
 
 void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, SforceService *soap)
 {
-    static QString queryString = QLatin1String("Select ") +
-                                 QStringList(mAccessors->keys()).join(QLatin1String(", ")) +
-                                 QLatin1String(" from Contact");   // without trailing 's'
+    static QString queryString = QStringLiteral("Select ") +
+                                 QStringList(mAccessors->keys()).join(QStringLiteral(", ")) +
+                                 QStringLiteral(" from Contact");   // without trailing 's'
 
     if (locator.value().isEmpty()) {
         TNS__Query query;
@@ -225,7 +225,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
     }
 
     ENS__SObject object;
-    object.setType(QLatin1String("Contact"));
+    object.setType(QStringLiteral("Contact"));
 
     // if there is an id add it, otherwise skip this field
     // no id will result in the contact being added
@@ -255,7 +255,7 @@ bool SalesforceContactsHandler::setEntry(const Akonadi::Item &item, SforceServic
     object.setAny(valueList);
 
     TNS__Upsert upsert;
-    upsert.setExternalIDFieldName(QLatin1String("Id"));
+    upsert.setExternalIDFieldName(QStringLiteral("Id"));
     upsert.setSObjects(QList<ENS__SObject>() << object);
     soap->asyncUpsert(upsert);
 

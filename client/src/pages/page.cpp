@@ -330,7 +330,7 @@ void Page::slotRemoveItem()
 void Page::slotVisibleRowCountChanged()
 {
     if (mUi.treeView->model()) {
-        mUi.itemCountLB->setText(QString("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
+        mUi.itemCountLB->setText(QStringLiteral("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
     }
 }
 
@@ -468,7 +468,7 @@ void Page::slotCopyLink()
 
 void Page::slotOpenEmailClient()
 {
-    QDesktopServices::openUrl("mailto:" + mSelectedEmails.join(","));
+    QDesktopServices::openUrl("mailto:" + mSelectedEmails.join(QStringLiteral(",")));
 }
 
 void Page::setupModel()
@@ -599,7 +599,7 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 
 void Page::slotItemSaved()
 {
-    emit statusMessage("Item successfully saved");
+    emit statusMessage(QStringLiteral("Item successfully saved"));
 }
 
 void Page::printReport()
@@ -815,7 +815,7 @@ void Page::slotChangeFields()
 void Page::retrieveResourceUrl()
 {
     OrgKdeAkonadiSugarCRMSettingsInterface iface(
-                QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/Settings"), QDBusConnection::sessionBus() );
+                QStringLiteral("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QStringLiteral("/Settings"), QDBusConnection::sessionBus() );
     QDBusPendingReply<QString> reply = iface.host();
     reply.waitForFinished();
     if (reply.isValid()) {

@@ -230,12 +230,12 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
     connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
 
-    ClientSettings::self()->restoreWindowSize("details", this);
+    ClientSettings::self()->restoreWindowSize(QStringLiteral("details"), this);
 }
 
 DetailsDialog::~DetailsDialog()
 {
-    ClientSettings::self()->saveWindowSize("details", this);
+    ClientSettings::self()->saveWindowSize(QStringLiteral("details"), this);
     delete d;
 }
 
@@ -312,7 +312,7 @@ void DetailsDialog::closeEvent(QCloseEvent *event)
     if (isModified()) {
         QMessageBox msgBox(this);
         msgBox.setText(i18n("The data for %1 has been modified.", d->mDetails->name()));
-        msgBox.setInformativeText("Do you want to save your changes?");
+        msgBox.setInformativeText(QStringLiteral("Do you want to save your changes?"));
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
         switch (msgBox.exec()) {

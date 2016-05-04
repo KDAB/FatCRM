@@ -45,7 +45,7 @@ bool SugarDocumentIO::readSugarDocument(QIODevice *device, SugarDocument &docume
     xml.setDevice(device);
     if (xml.readNextStartElement()) {
         if (xml.name() == "sugarDocument"
-                && xml.attributes().value("version") == "1.0") {
+                && xml.attributes().value(QStringLiteral("version")) == "1.0") {
             readDocument(document);
         } else {
             xml.raiseError(i18n("It is not a sugarDocument version 1.0 data."));
@@ -97,9 +97,9 @@ bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevic
     QXmlStreamWriter writer(device);
     writer.setAutoFormatting(true);
     writer.writeStartDocument();
-    writer.writeDTD("<!DOCTYPE sugarDocument>");
-    writer.writeStartElement("sugarDocument");
-    writer.writeAttribute("version", "1.0");
+    writer.writeDTD(QStringLiteral("<!DOCTYPE sugarDocument>"));
+    writer.writeStartElement(QStringLiteral("sugarDocument"));
+    writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
     SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
@@ -110,10 +110,10 @@ bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevic
     }
 
     if (!document.linkedAccountIds().isEmpty())
-        writer.writeTextElement(s_linkedAccountIdsKey, document.linkedAccountIds().join(QLatin1String(",")));
+        writer.writeTextElement(s_linkedAccountIdsKey, document.linkedAccountIds().join(QStringLiteral(",")));
 
     if (!document.linkedOpportunityIds().isEmpty())
-        writer.writeTextElement(s_linkedOpportunityIdsKey, document.linkedOpportunityIds().join(QLatin1String(",")));
+        writer.writeTextElement(s_linkedOpportunityIdsKey, document.linkedOpportunityIds().join(QStringLiteral(",")));
 
     // plus custom fields
     QMap<QString, QString> customFields = document.customFields();

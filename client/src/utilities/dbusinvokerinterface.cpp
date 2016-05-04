@@ -28,7 +28,7 @@ DBusInvokerInterface::DBusInvokerInterface(QObject *parent)
     : QObject(parent)
 {
     QDBusConnection bus = QDBusConnection::sessionBus();
-    const bool registered = bus.registerObject(QLatin1String("/InvokerInterface"), this,
+    const bool registered = bus.registerObject(QStringLiteral("/InvokerInterface"), this,
                                                QDBusConnection::ExportScriptableSlots);
     if (!registered) {
         qWarning() << "Failed to register provider object /InvokerInterface";

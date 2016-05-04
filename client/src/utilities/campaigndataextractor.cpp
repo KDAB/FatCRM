@@ -37,7 +37,7 @@ CampaignDataExtractor::~CampaignDataExtractor()
 
 QString CampaignDataExtractor::itemAddress() const
 {
-    return QString("?action=DetailView&module=Campaigns&record=");
+    return QStringLiteral("?action=DetailView&module=Campaigns&record=");
 }
 
 QString CampaignDataExtractor::idForItem(const Akonadi::Item &item) const

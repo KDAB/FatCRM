@@ -39,14 +39,14 @@ ContactDataExtractor::~ContactDataExtractor()
 
 QString ContactDataExtractor::itemAddress() const
 {
-    return QString("?action=DetailView&module=Contacts&record=");
+    return QStringLiteral("?action=DetailView&module=Contacts&record=");
 }
 
 QString ContactDataExtractor::idForItem(const Akonadi::Item &item) const
 {
     if (item.hasPayload<KContacts::Addressee>()) {
         KContacts::Addressee contact = item.payload<KContacts::Addressee>();
-        return contact.custom("FATCRM", "X-ContactId");
+        return contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
     }
     return QString();
 }

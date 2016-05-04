@@ -38,7 +38,7 @@ private Q_SLOTS:
     void testSpecialValue()
     {
         QDateEdit w;
-        w.setSpecialValueText(" ");
+        w.setSpecialValueText(QStringLiteral(" "));
         w.setDate(w.minimumDate());
         QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
         QVERIFY(spy.isValid());
@@ -54,7 +54,7 @@ private Q_SLOTS:
         QDateEdit w;
         w.setMinimumDate(QDate());
         //qDebug() << w.minimumDate(); // still 1752
-        w.setSpecialValueText(" ");
+        w.setSpecialValueText(QStringLiteral(" "));
         w.setDate(QDate());
         //QCOMPARE(w.text(), QString(" ")); // fails
     }
@@ -66,16 +66,16 @@ private Q_SLOTS:
         w.setDate(QDate());
         QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
         QVERIFY(spy.isValid());
-        QCOMPARE(w.text(), QString(""));
+        QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);
         w.show();
         QPushButton *clearButton = w.findChild<QPushButton *>();
         QVERIFY(clearButton);
         QVERIFY(!clearButton->isVisible());
-        QCOMPARE(w.text(), QString(""));
+        QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);
         QTest::qWait(500);
-        QCOMPARE(w.text(), QString(""));
+        QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);
 
         w.setDate(QDate::currentDate());
