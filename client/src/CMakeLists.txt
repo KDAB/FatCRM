@@ -39,6 +39,7 @@ set(app_SRCS
   dialogs/contactsimportwizard.cpp
   dialogs/configurationdialog.cpp
   dialogs/detailsdialog.cpp
+  dialogs/documentswindow.cpp
   dialogs/editlistdialog.cpp
   dialogs/fatcrminputdialog.cpp
   dialogs/noteswindow.cpp
@@ -85,6 +86,7 @@ ki18n_wrap_ui(app_SRCS
   dialogs/configurationdialog.ui
   dialogs/contactsimportpage.ui
   dialogs/detailsdialog.ui
+  dialogs/documentswindow.ui
   dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.ui
   dialogs/selectitemdialog.ui
@@ -104,13 +106,20 @@ qt5_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
+qt5_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemdownloadinterface.h org.kde.Akonadi.SugarCRM.ItemDownload.xml)
+qt5_add_dbus_interface(app_SRCS
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemDownload.xml sugarresourceitemdownload SugarItemDownload
+)
+
 add_library(fatcrmprivate ${app_SRCS})
 generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
   kdcrmdata
   KF5::AkonadiWidgets
   KF5::Contacts
-)
+  KF5::KDELibs4Support
+  )
+
 
 target_link_libraries(fatcrmprivate
   KDReports::kdreports

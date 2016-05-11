@@ -185,6 +185,8 @@ void MainWindow::initialize()
             this, SLOT(slotNotesLoaded(int)));
     connect(mLinkedItemsRepository, SIGNAL(emailsLoaded(int)),
             this, SLOT(slotEmailsLoaded(int)));
+    connect(mLinkedItemsRepository, SIGNAL(documentsLoaded(int)),
+            this, SLOT(slotDocumentsLoaded(int)));
 }
 
 void MainWindow::createActions()
@@ -345,13 +347,13 @@ void MainWindow::slotModelLoaded(DetailsType type)
     switch (type)
     {
     case Account:
-        slotShowMessage(i18n("(2/5) Loading opportunities..."));
+        slotShowMessage(i18n("(2/6) Loading opportunities..."));
         break;
     case Opportunity:
-        slotShowMessage(i18n("(3/5) Loading contacts..."));
+        slotShowMessage(i18n("(3/6) Loading contacts..."));
         break;
     case Contact:
-        slotShowMessage(i18n("(4/5) Loading notes..."));
+        slotShowMessage(i18n("(4/6) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
         mLinkedItemsRepository->loadNotes();
         break;
@@ -365,11 +367,18 @@ void MainWindow::slotModelLoaded(DetailsType type)
 void MainWindow::slotNotesLoaded(int count)
 {
     Q_UNUSED(count);
-    slotShowMessage(i18n("(5/5) Loading emails..."));
+    slotShowMessage(i18n("(5/6) Loading emails..."));
     mLinkedItemsRepository->loadEmails();
 }
 
 void MainWindow::slotEmailsLoaded(int count)
+{
+    Q_UNUSED(count);
+    slotShowMessage(i18n("(6/6) Loading documents..."));
+    mLinkedItemsRepository->loadDocuments();
+}
+
+void MainWindow::slotDocumentsLoaded(int count)
 {
     Q_UNUSED(count);
     initialLoadingDone();
@@ -388,6 +397,7 @@ void MainWindow::initialLoadingDone()
 void MainWindow::createTabs()
 {
     mAccountPage = new AccountsPage(this);
+    mAccountPage->setLinkedItemsRepository(mLinkedItemsRepository);
     mPages << mAccountPage;
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
@@ -562,7 +572,7 @@ void MainWindow::slotPrintReport()
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
     if (mimeType == QLatin1String("application/x-vnd.kdab.crm.account")) {
-        slotShowMessage(i18n("(1/5) Loading accounts..."));
+        slotShowMessage(i18n("(1/6) Loading accounts..."));
     }
     foreach(Page *page, mPages) {
         if (page->mimeType() == mimeType) {
@@ -574,6 +584,8 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
         mLinkedItemsRepository->setNotesCollection(collection);
     } else if (mimeType == QLatin1String("application/x-vnd.kdab.crm.email")) {
         mLinkedItemsRepository->setEmailsCollection(collection);
+    } else if (mimeType == "application/x-vnd.kdab.crm.document") {
+        mLinkedItemsRepository->setDocumentsCollection(collection);
     }
 
 }

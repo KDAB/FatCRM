@@ -28,11 +28,14 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/Monitor>
 
+#include <QStringList>
+
 LinkedItemsRepository::LinkedItemsRepository(QObject *parent) :
     QObject(parent),
     mMonitor(0),
     mNotesLoaded(0),
-    mEmailsLoaded(0)
+    mEmailsLoaded(0),
+    mDocumentsLoaded(0)
 {
 }
 
@@ -40,8 +43,11 @@ void LinkedItemsRepository::clear()
 {
     mNotesLoaded = 0;
     mEmailsLoaded = 0;
+    mDocumentsLoaded = 0;
     mNotesHash.clear();
     mEmailsHash.clear();
+    mAccountDocumentsHash.clear();
+    mOpportunityDocumentsHash.clear();
     delete mMonitor;
     mMonitor = 0;
 }
@@ -141,6 +147,7 @@ void LinkedItemsRepository::monitorChanges()
     mMonitor = new Akonadi::Monitor(this);
     mMonitor->setCollectionMonitored(mNotesCollection);
     mMonitor->setCollectionMonitored(mEmailsCollection);
+    mMonitor->setCollectionMonitored(mDocumentsCollection);
     configureItemFetchScope(mMonitor->itemFetchScope());
     connect(mMonitor, SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
             this, SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
@@ -206,6 +213,96 @@ void LinkedItemsRepository::removeEmail(const QString &id)
     }
 }
 
+///
+
+void LinkedItemsRepository::setDocumentsCollection(const Akonadi::Collection &collection)
+{
+    mDocumentsCollection = collection;
+}
+
+void LinkedItemsRepository::loadDocuments()
+{
+    //kDebug() << "Loading" << mDocumentsCollection.statistics().count() << "documents";
+
+    // load documents
+    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mDocumentsCollection, this);
+    configureItemFetchScope(job->fetchScope());
+    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
+            this, SLOT(slotDocumentsReceived(Akonadi::Item::List)));
+}
+
+QVector<SugarDocument> LinkedItemsRepository::documentsForOpportunity(const QString &id) const
+{
+    return mOpportunityDocumentsHash.value(id);
+}
+
+QVector<SugarDocument> LinkedItemsRepository::documentsForAccount(const QString &id) const
+{
+    return mAccountDocumentsHash.value(id);
+}
+
+void LinkedItemsRepository::slotDocumentsReceived(const Akonadi::Item::List &items)
+{
+    mDocumentsLoaded += items.count();
+    foreach(const Akonadi::Item &item, items) {
+        storeDocument(item);
+    }
+
+    if (mDocumentsLoaded == mDocumentsCollection.statistics().count())
+        emit documentsLoaded(mDocumentsLoaded);
+}
+
+void LinkedItemsRepository::storeDocument(const Akonadi::Item &item)
+{
+    if (item.hasPayload<SugarDocument>()) {
+        SugarDocument document = item.payload<SugarDocument>();
+        const QString id = document.id();
+        Q_ASSERT(!id.isEmpty());
+
+        removeDocument(id); // handle change of opp
+
+        mDocumentsAccountIdHash.remove(id);
+        mDocumentsOpportunityIdHash.remove(id);
+
+        Q_FOREACH (const QString &accountId, document.linkedAccountIds()) {
+            mAccountDocumentsHash[accountId].append(document);
+            mDocumentsAccountIdHash[id].insert(accountId);
+        }
+
+        Q_FOREACH (const QString &opportunityId, document.linkedOpportunityIds()) {
+            mOpportunityDocumentsHash[opportunityId].append(document);
+            mDocumentsOpportunityIdHash[id].insert(opportunityId);
+        }
+    }
+}
+
+void LinkedItemsRepository::removeDocument(const QString &id)
+{
+    Q_ASSERT(!id.isEmpty());
+
+    const QSet<QString> oldLinkedAccountIds = mDocumentsAccountIdHash.value(id);
+    Q_FOREACH (const QString &oldLinkedAccountId, oldLinkedAccountIds) {
+        QVector<SugarDocument> &documents = mAccountDocumentsHash[oldLinkedAccountId];
+        auto it = std::find_if(documents.constBegin(), documents.constEnd(), [&id](const SugarDocument &document) { return document.id() == id; });
+        if (it != documents.constEnd()) {
+            const int idx = std::distance(documents.constBegin(), it);
+            qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
+            documents.remove(idx);
+        }
+    }
+
+    const QSet<QString> oldLinkedOpportunityIds = mDocumentsOpportunityIdHash.value(id);
+    Q_FOREACH (const QString &oldLinkedOpportunityId, oldLinkedOpportunityIds) {
+        QVector<SugarDocument> &documents = mOpportunityDocumentsHash[oldLinkedOpportunityId];
+        auto it = std::find_if(documents.constBegin(), documents.constEnd(), [&id](const SugarDocument &document) { return document.id() == id; });
+        if (it != documents.constEnd()) {
+            const int idx = std::distance(documents.constBegin(), it);
+            qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
+            documents.remove(idx);
+        }
+    }
+}
+
 void LinkedItemsRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
 {
     scope.setFetchRemoteIdentification(false);
@@ -219,28 +316,32 @@ void LinkedItemsRepository::updateItem(const Akonadi::Item &item, const Akonadi:
         storeNote(item);
     } else if (collection == mEmailsCollection) {
         storeEmail(item);
+    } else if (collection == mDocumentsCollection) {
+        storeDocument(item);
     } else {
-        qCWarning(FATCRM_CLIENT_LOG) << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
+        qCWarning(FATCRM_CLIENT_LOG) << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "," << mEmailsCollection.id() << "or" << mDocumentsCollection.id();
     }
 }
 
 void LinkedItemsRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
-    qDebug() << item.id() << item.mimeType();
+    qCWarning(FATCRM_CLIENT_LOG) << item.id() << item.mimeType();
     updateItem(item, collection);
 }
 
 void LinkedItemsRepository::slotItemRemoved(const Akonadi::Item &item)
 {
-    qDebug() << item.id();
+    qCWarning(FATCRM_CLIENT_LOG) << item.id();
     const Akonadi::Collection collection = item.parentCollection();
     // Don't use the payload to handle removals (no payload anymore on removal)
     if (collection == mNotesCollection) {
         removeNote(item.remoteId());
     } else if (collection == mEmailsCollection) {
         removeEmail(item.remoteId());
+    } else if (collection == mDocumentsCollection) {
+        removeDocument(item.remoteId());
     } else {
-        qWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "or" << mEmailsCollection.id();
+        qCWarning(FATCRM_CLIENT_LOG) << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "," << mEmailsCollection.id() << "or" << mDocumentsCollection.id();
     }
 }
 

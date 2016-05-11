@@ -23,8 +23,9 @@
 #ifndef LINKEDITEMSREPOSITORY_H
 #define LINKEDITEMSREPOSITORY_H
 
-#include "kdcrmdata/sugarnote.h"
+#include "kdcrmdata/sugardocument.h"
 #include "kdcrmdata/sugaremail.h"
+#include "kdcrmdata/sugarnote.h"
 
 #include <AkonadiCore/Item>
 #include <AkonadiCore/Collection>
@@ -47,17 +48,23 @@ public:
 
     void setNotesCollection(const Akonadi::Collection &collection);
     void setEmailsCollection(const Akonadi::Collection &collection);
+    void setDocumentsCollection(const Akonadi::Collection &collection);
 
     void loadNotes();
     void loadEmails();
+    void loadDocuments();
     void monitorChanges();
 
     QVector<SugarNote> notesForOpportunity(const QString &id) const;
     QVector<SugarEmail> emailsForOpportunity(const QString &id) const;
 
+    QVector<SugarDocument> documentsForAccount(const QString &id) const;
+    QVector<SugarDocument> documentsForOpportunity(const QString &id) const;
+
 signals:
     void notesLoaded(int count);
     void emailsLoaded(int count);
+    void documentsLoaded(int count);
 
 private Q_SLOTS:
     void slotNotesReceived(const Akonadi::Item::List &items);
@@ -66,12 +73,15 @@ private Q_SLOTS:
     void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray>& partIdentifiers);
 
     void slotEmailsReceived(const Akonadi::Item::List &items);
+    void slotDocumentsReceived(const Akonadi::Item::List &items);
 
 private:
     void storeNote(const Akonadi::Item &item);
     void removeNote(const QString &id);
     void storeEmail(const Akonadi::Item &item);
     void removeEmail(const QString &id);
+    void storeDocument(const Akonadi::Item &item);
+    void removeDocument(const QString &id);
     void configureItemFetchScope(Akonadi::ItemFetchScope &scope);
     void updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection);
 
@@ -88,6 +98,13 @@ private:
     QHash<QString, QString> mEmailsParentIdHash; // email id -> opportunity id (to handle removals)
     int mEmailsLoaded;
 
+    Akonadi::Collection mDocumentsCollection;
+    typedef QHash<QString, QVector<SugarDocument> > DocumentsHash;
+    DocumentsHash mAccountDocumentsHash;
+    DocumentsHash mOpportunityDocumentsHash;
+    QHash<QString, QSet<QString> > mDocumentsAccountIdHash; // document id -> account ids (to handle removals)
+    QHash<QString, QSet<QString> > mDocumentsOpportunityIdHash; // document id -> opportunity ids (to handle removals)
+    int mDocumentsLoaded;
 };
 
 #endif // LINKEDITEMSREPOSITORY_H
