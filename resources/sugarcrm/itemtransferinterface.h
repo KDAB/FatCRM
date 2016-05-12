@@ -18,20 +18,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ITEMDOWNLOADINTERFACE_H
-#define ITEMDOWNLOADINTERFACE_H
+#ifndef ITEMTRANSFERINTERFACE_H
+#define ITEMTRANSFERINTERFACE_H
 
 #include <QObject>
 
 class SugarCRMResource;
 
-class ItemDownloadInterface : public QObject
+class ItemTransferInterface : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ItemDownload")
+    Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ItemTransfer")
 
 public:
-    explicit ItemDownloadInterface(SugarCRMResource *resource);
+    explicit ItemTransferInterface(SugarCRMResource *resource);
 
 public Q_SLOTS:
     /**
@@ -39,6 +39,12 @@ public Q_SLOTS:
      * The caller is responsible to clean up the temp file.
      */
     Q_SCRIPTABLE QString downloadDocumentRevision(const QString &documentRevisionId) const;
+
+    /**
+     * Creates a new document via SOAP and returns the document id or an empty
+     * string in case of an error.
+     */
+    Q_SCRIPTABLE QString uploadDocument(const QString &documentName, const QString &localFilePath) const;
 
 private:
     SugarCRMResource *const mResource;

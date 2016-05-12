@@ -112,9 +112,9 @@ qt4_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-qt4_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemdownloadinterface.h org.kde.Akonadi.SugarCRM.ItemDownload.xml)
+qt4_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemtransferinterface.h org.kde.Akonadi.SugarCRM.ItemTransfer.xml)
 qt4_add_dbus_interface(app_SRCS
-  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemDownload.xml sugarresourceitemdownload SugarItemDownload
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemTransfer.xml sugarresourceitemtransfer SugarItemTransfer
 )
 
 kde4_add_library(fatcrmprivate ${app_SRCS})

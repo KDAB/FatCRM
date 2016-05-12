@@ -31,7 +31,7 @@
 #include "documentshandler.h"
 #include "emailshandler.h"
 #include "fetchentryjob.h"
-#include "itemdownloadinterface.h"
+#include "itemtransferinterface.h"
 #include "leadshandler.h"
 #include "listentriesjob.h"
 #include "listdeletedentriesjob.h"
@@ -85,8 +85,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             mDebugInterface,
             QDBusConnection::ExportScriptableSlots);
 
-    ItemDownloadInterface *itemDownloadInterface = new ItemDownloadInterface(this);
-    QDBusConnection::sessionBus().registerObject(QLatin1String("/ItemDownload"),
+    ItemTransferInterface *itemDownloadInterface = new ItemTransferInterface(this);
+    QDBusConnection::sessionBus().registerObject(QLatin1String("/ItemTransfer"),
             itemDownloadInterface,
             QDBusConnection::ExportScriptableSlots);
 

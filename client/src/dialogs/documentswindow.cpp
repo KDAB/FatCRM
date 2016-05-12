@@ -24,7 +24,7 @@
 #include "clientsettings.h"
 #include "kdcrmdata/sugardocument.h"
 #include "kdcrmutils.h"
-#include "sugarresourceitemdownload.h"
+#include "sugarresourceitemtransfer.h"
 
 #include <KMimeType>
 #include <KRun>
@@ -88,9 +88,9 @@ void DocumentsWindow::urlClicked(const QUrl &url)
 {
     const QString documentRevisionId = url.path().mid(1); // strip leading '/' from path
 
-    ComKdabSugarCRMItemDownloadInterface downloadInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemDownload"), QDBusConnection::sessionBus());
+    ComKdabSugarCRMItemTransferInterface transferInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
 
-    QDBusPendingReply<QString> reply = downloadInterface.downloadDocumentRevision(documentRevisionId);
+    QDBusPendingReply<QString> reply = transferInterface.downloadDocumentRevision(documentRevisionId);
     reply.waitForFinished();
 
     if (reply.isValid()) {

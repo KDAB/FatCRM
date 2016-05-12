@@ -9,7 +9,7 @@ set(sugarcrmresource_SRCS
   documentshandler.cpp
   emailshandler.cpp
   fetchentryjob.cpp
-  itemdownloadinterface.cpp
+  itemtransferinterface.cpp
   leadshandler.cpp
   listdeletedentriesjob.cpp
   listentriesjob.cpp
