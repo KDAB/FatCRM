@@ -220,6 +220,11 @@ void LinkedItemsRepository::setDocumentsCollection(const Akonadi::Collection &co
     mDocumentsCollection = collection;
 }
 
+Akonadi::Collection LinkedItemsRepository::documentsCollection() const
+{
+    return mDocumentsCollection;
+}
+
 void LinkedItemsRepository::loadDocuments()
 {
     //kDebug() << "Loading" << mDocumentsCollection.statistics().count() << "documents";
@@ -239,6 +244,11 @@ QVector<SugarDocument> LinkedItemsRepository::documentsForOpportunity(const QStr
 QVector<SugarDocument> LinkedItemsRepository::documentsForAccount(const QString &id) const
 {
     return mAccountDocumentsHash.value(id);
+}
+
+Akonadi::Item LinkedItemsRepository::documentItem(const QString &id) const
+{
+    return mDocumentItems.value(id);
 }
 
 void LinkedItemsRepository::slotDocumentsReceived(const Akonadi::Item::List &items)
@@ -273,6 +283,8 @@ void LinkedItemsRepository::storeDocument(const Akonadi::Item &item)
             mOpportunityDocumentsHash[opportunityId].append(document);
             mDocumentsOpportunityIdHash[id].insert(opportunityId);
         }
+
+        mDocumentItems[id] = item;
     }
 }
 
@@ -301,6 +313,8 @@ void LinkedItemsRepository::removeDocument(const QString &id)
             documents.remove(idx);
         }
     }
+
+    mDocumentItems.remove(id);
 }
 
 void LinkedItemsRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)

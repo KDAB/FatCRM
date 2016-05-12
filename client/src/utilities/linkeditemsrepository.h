@@ -49,6 +49,7 @@ public:
     void setNotesCollection(const Akonadi::Collection &collection);
     void setEmailsCollection(const Akonadi::Collection &collection);
     void setDocumentsCollection(const Akonadi::Collection &collection);
+    Akonadi::Collection documentsCollection() const;
 
     void loadNotes();
     void loadEmails();
@@ -60,6 +61,8 @@ public:
 
     QVector<SugarDocument> documentsForAccount(const QString &id) const;
     QVector<SugarDocument> documentsForOpportunity(const QString &id) const;
+
+    Akonadi::Item documentItem(const QString &id) const;
 
 signals:
     void notesLoaded(int count);
@@ -104,6 +107,7 @@ private:
     DocumentsHash mOpportunityDocumentsHash;
     QHash<QString, QSet<QString> > mDocumentsAccountIdHash; // document id -> account ids (to handle removals)
     QHash<QString, QSet<QString> > mDocumentsOpportunityIdHash; // document id -> opportunity ids (to handle removals)
+    QHash<QString, Akonadi::Item> mDocumentItems;
     int mDocumentsLoaded;
 };
 

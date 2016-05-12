@@ -210,16 +210,13 @@ void OpportunityDetails::on_viewNotesButton_clicked()
 void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
-    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForOpportunity(oppId);
-    kDebug() << documents.count() << "documents found for opp" << oppId;
 
     DocumentsWindow *dlg = new DocumentsWindow(0);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
-    dlg->setResourceIdentifier(resourceIdentifier());
 
-    foreach (const SugarDocument &document, documents) {
-        dlg->addDocument(document);
-    }
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->loadDocumentsFor(oppId, DocumentsWindow::Opportunity);
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();

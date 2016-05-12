@@ -98,16 +98,13 @@ void AccountDetails::slotShippingAddressCountryEditingFinished()
 void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
-    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForAccount(accountId);
-    kDebug() << documents.count() << "documents found for account" << accountId;
 
     DocumentsWindow *dlg = new DocumentsWindow(0);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
-    dlg->setResourceIdentifier(resourceIdentifier());
 
-    foreach (const SugarDocument &document, documents) {
-        dlg->addDocument(document);
-    }
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->loadDocumentsFor(accountId, DocumentsWindow::Account);
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();

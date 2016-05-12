@@ -21,14 +21,55 @@
 #ifndef DOCUMENTSWINDOW_H
 #define DOCUMENTSWINDOW_H
 
+#include "kdcrmdata/enumdefinitions.h"
+#include "kdcrmdata/sugardocument.h"
+
 #include <QWidget>
 
 namespace Ui {
 class DocumentsWindow;
 }
 
-class SugarDocument;
+class KJob;
+class LinkedItemsRepository;
+class QComboBox;
+class QLabel;
+class QPlainTextEdit;
+class QPushButton;
 class QUrl;
+
+class DocumentWidget : public QWidget
+{
+    Q_OBJECT
+
+public:
+    explicit DocumentWidget(EnumDefinitions *definitions, QWidget *parent = Q_NULLPTR);
+
+    void setDocument(const SugarDocument &document);
+    SugarDocument document() const;
+
+    SugarDocument modifiedDocument() const;
+
+    void setNewDocumentFilePath(const QString &filePath);
+    QString newDocumentFilePath() const;
+
+    bool isModified() const;
+
+signals:
+    void urlClicked(const QString &url);
+    void deleteDocument();
+
+private:
+    QLabel *mNameLabel;
+    QComboBox *mStatusBox;
+    QPlainTextEdit *mDescriptionEdit;
+    QPushButton *mDeleteButton;
+
+    SugarDocument mDocument;
+    QString mNewDocumentFilePath;
+
+    EnumDefinitions *mEnumDefinitions;
+};
 
 class DocumentsWindow : public QWidget
 {
@@ -38,21 +79,50 @@ public:
     explicit DocumentsWindow(QWidget *parent = Q_NULLPTR);
     ~DocumentsWindow();
 
-    void addDocument(const SugarDocument &document);
-
-    void setVisible(bool visible) Q_DECL_OVERRIDE;
-
     void setResourceIdentifier(const QString &identifier);
+    void setLinkedItemsRepository(LinkedItemsRepository *repository);
+
+    enum LinkedItemType
+    {
+        Account,
+        Opportunity
+    };
+
+    void loadDocumentsFor(const QString &id, LinkedItemType itemType);
+
+protected:
+    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
 
 private slots:
+    void on_buttonBox_accepted();
     void on_buttonBox_rejected();
 
-    void urlClicked(const QUrl &url);
+    void urlClicked(const QString &url);
+    void deleteDocument();
+    void attachDocument();
+
+    void slotJobResult(KJob *job);
 
 private:
-    QVector<SugarDocument> m_documents;
+    DocumentWidget* addDocument(const SugarDocument &document);
+
+    bool isModified() const;
+    void saveChanges();
+
+private:
+    QVector<SugarDocument> mDocuments;
+    QVector<DocumentWidget*> mDocumentWidgets;
+
     Ui::DocumentsWindow *ui;
     QString mResourceIdentifier;
+    LinkedItemsRepository *mLinkedItemsRepository;
+    EnumDefinitions mEnumDefinitions;
+    bool mIsNotModifiedOverride;
+
+    QString mLinkedItemId;
+    LinkedItemType mLinkedItemType;
+
+    int mPendingJobCount;
 };
 
 #endif // DOCUMENTSWINDOW_H

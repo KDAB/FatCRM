@@ -107,4 +107,32 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
     return documentId;
 }
 
+bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString &sourceModuleName,
+                                     const QString &targetItemId, const QString &targetModuleName) const
+{
+    SugarSession *session = mResource->mSession;
+    KDSoapGenerated::Sugarsoap *soap = session->soap();
+    const QString sessionId = session->sessionId();
+    if (sessionId.isEmpty()) {
+        qWarning() << "No session! Need to login first.";
+        return false;
+    }
+
+    KDSoapGenerated::TNS__Set_relationship_value relationshipValue;
+    relationshipValue.setModule1(sourceModuleName);
+    relationshipValue.setModule1_id(sourceItemId);
+    relationshipValue.setModule2(targetModuleName);
+    relationshipValue.setModule2_id(targetItemId);
+    qWarning() << sourceModuleName << ":" << sourceItemId << "->" << targetModuleName << ":" << targetItemId;
+
+    const KDSoapGenerated::TNS__Error_value result = soap->set_relationship(sessionId, relationshipValue);
+
+    if (result.number() != QLatin1String("0")) {
+        qWarning() << "Unable to link items:" << result.number() << result.name() << result.description();
+        return false;
+    }
+
+    return true;
+}
+
 #include "itemtransferinterface.moc"

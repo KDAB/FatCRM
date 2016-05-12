@@ -46,6 +46,12 @@ public Q_SLOTS:
      */
     Q_SCRIPTABLE QString uploadDocument(const QString &documentName, const QString &localFilePath) const;
 
+    /**
+     * Links the two items together name.
+     */
+    Q_SCRIPTABLE bool linkItem(const QString &sourceItemId, const QString &sourceModuleName,
+                               const QString &targetItemId, const QString &targetModuleName) const;
+
 private:
     SugarCRMResource *const mResource;
 };
