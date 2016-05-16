@@ -341,7 +341,7 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
     // Select the first row; looks nicer than empty fields in the details widget.
     //kDebug() << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
-    const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
+    const bool done = !mInitialLoadingDone && mItemsTreeModel->isCollectionPopulated(mCollection.id());
     if (done) {
         //kDebug() << "Finished loading" << typeToString(mType);
         if (!mUi.treeView->currentIndex().isValid()) {

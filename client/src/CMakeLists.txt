@@ -56,6 +56,7 @@ set(app_SRCS
   utilities/dbuswinidprovider.cpp
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp
+  utilities/fatcrmoverlay.cpp
   utilities/itemdataextractor.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp

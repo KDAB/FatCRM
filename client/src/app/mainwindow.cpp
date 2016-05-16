@@ -35,6 +35,7 @@
 #include "dbusinvokerinterface.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
+#include "fatcrmoverlay.h"
 #include "config-fatcrm-version.h"
 #include "linkeditemsrepository.h"
 #include "referenceddata.h"
@@ -65,7 +66,7 @@ using namespace Akonadi;
 #include <QTimer>
 #include <QToolBar>
 
-MainWindow::MainWindow()
+MainWindow::MainWindow(bool displayOverlay)
     : QMainWindow(),
       mProgressBar(0),
       mProgressBarHideTimer(0),
@@ -75,7 +76,7 @@ MainWindow::MainWindow()
       mInitialLoadingDone(false)
 {
     mUi.setupUi(this);
-    initialize();
+    initialize(displayOverlay);
 
     /*
      * this creates an overlay in case Akonadi is not running,
@@ -162,9 +163,13 @@ void MainWindow::slotAboutApp()
     QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2016 Klarälvdalens Datakonsult AB (KDAB)", QString(FATCRM_VERSION_STRING)));
 }
 
-void MainWindow::initialize()
+void MainWindow::initialize(bool displayOverlay)
 {
     Q_INIT_RESOURCE(icons);
+
+    mFatCRMOverlay = new FatCRMOverlay(mUi.tabWidget);
+    if (!displayOverlay)
+        slotHideOverlay();
 
     resize(900, 900);
     createActions();
@@ -248,6 +253,8 @@ void MainWindow::setupActions()
 
 void MainWindow::slotResourceSelectionChanged(int index)
 {
+    mFatCRMOverlay->show();
+    mFatCRMOverlay->setMessage(i18n("Loading..."));
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
         const QByteArray identifier = agent.identifier().toLatin1();
@@ -359,6 +366,7 @@ void MainWindow::slotModelLoaded(DetailsType type)
     case Contact:
         slotShowMessage(i18n("(4/6) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
+        slotHideOverlay();
         mLinkedItemsRepository->loadNotes();
         break;
     case Lead:
@@ -520,11 +528,14 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
         const int progress = resource.progress();
         const QString message = resource.statusMessage();
         AgentInstance::Status status = resource.status();
-
         if (status == AgentInstance::Broken
                 || status == AgentInstance::NotConfigured
                 || !resource.isOnline()) {
             mProgressBar->hide();
+            if (!mUi.actionOfflineMode->isChecked()) {
+                statusBar()->showMessage(message);
+                return;
+            }
         } else if (status == AgentInstance::Idle) {
             statusBar()->clearMessage();
             mProgressBarHideTimer->start();
@@ -670,13 +681,22 @@ void MainWindow::initialResourceSelection()
     if (selectors == 1) {
         slotResourceSelectionChanged(mResourceSelector->currentIndex());
         mResourceDialog->hide();
+    } else if (selectors == 0) {
+        mFatCRMOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
+        showResourceDialog();
     } else {
         mResourceSelector->setCurrentIndex(-1);
-        mResourceDialog->show();
-        // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
-        // This is part of the "mResourceDialog has no parent" workaround
-        QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
+        mFatCRMOverlay->setMessage(i18n("Choose a SugarCRM resource."));
+        showResourceDialog();
     }
+}
+
+void MainWindow::showResourceDialog()
+{
+    mResourceDialog->show();
+    // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
+    // This is part of the "mResourceDialog has no parent" workaround
+    QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
 }
 
 Page *MainWindow::pageForType(DetailsType type) const
@@ -695,6 +715,11 @@ void MainWindow::processPendingImports()
         slotImportCsvFile(filePath);
 
     mPendingImportPaths.clear();
+}
+
+void MainWindow::slotHideOverlay()
+{
+    mFatCRMOverlay->hide();
 }
 
 #include "mainwindow.moc"

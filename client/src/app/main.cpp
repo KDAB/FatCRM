@@ -41,6 +41,11 @@ int main(int argc, char **argv)
                      KLocalizedString(), 0, "info@kdab.com");
 
     KCmdLineArgs::init(argc, argv, &about);
+    KCmdLineOptions options;
+    options.add("nooverlay", ki18n("Do not display the overlay during initial data loading"));
+    KCmdLineArgs::addCmdLineOptions( options );
+    KCmdLineArgs *args = KCmdLineArgs::parsedArgs();
+
     KApplication app;
 
     if (!KMimeType::mimeType("application/x-vnd.kdab.crm.opportunity")) {
@@ -48,7 +53,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    MainWindow *window = new MainWindow;
+    MainWindow *window = new MainWindow(args->isSet("overlay"));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
     return app.exec();
