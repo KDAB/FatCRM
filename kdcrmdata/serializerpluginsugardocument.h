@@ -32,6 +32,7 @@ class SerializerPluginSugarDocument : public QObject, public ItemSerializerPlugi
 {
     Q_OBJECT
     Q_INTERFACES(Akonadi::ItemSerializerPlugin)
+    Q_PLUGIN_METADATA(IID "org.kde.akonadi.SerializerPluginSugarDocument")
 
 public:
     bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version);
