@@ -25,16 +25,17 @@
 #include "accountrepository.h"
 #include "clientsettings.h"
 #include "details.h"
-#include "detailsdialog.h"
-#include "enums.h"
 #include "fatcrminputdialog.h"
 #include "itemdataextractor.h"
+#include "itemeditwidgetbase.h"
 #include "kjobprogresstracker.h"
 #include "modelrepository.h"
 #include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
+#include "simpleitemeditwidget.h"
 #include "sugarresourcesettings.h"
+#include "tabbeditemeditwidget.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -105,30 +106,30 @@ Page::~Page()
 {
 }
 
-void Page::openDialog(const QString &id)
+void Page::openWidget(const QString &id)
 {
     const int count = mItemsTreeModel->rowCount();
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (itemDataExtractor()->idForItem(item) == id) {
-            openDialogForItem(item);
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemIdRole).value<Item>();
+        if (itemDataExtractor() && itemDataExtractor()->idForItem(item) == id) {
+            openWidgetForItem(item, mType);
             return;
         }
     }
     kWarning() << this << "Object not found:" << id;
 }
 
-void Page::openDialogForItem(const Akonadi::Item &item)
+void Page::openWidgetForItem(const Item &item, DetailsType itemType)
 {
-    DetailsDialog *dialog = openedDialogForItem(item);
-    if (!dialog) {
-        dialog = createDetailsDialog();
-        dialog->setItem(item);
-        dialog->show();
-        // cppcheck-suppress memleak as dialog deletes itself
+    ItemEditWidgetBase *widget = openedWidgetForItem(item);
+
+    if (!widget) {
+        widget = createItemEditWidget(item, itemType);
+        widget->show();
     } else {
-        dialog->raise();
+        widget->raise();
+        widget->activateWindow();
     }
 }
 
@@ -231,20 +232,20 @@ void Page::setLinkedItemsRepository(LinkedItemsRepository *repo)
 
 bool Page::queryClose()
 {
-    foreach (DetailsDialog *dialog, mDetailsDialogs) {
-        if (dialog->isModified()) {
+    foreach (ItemEditWidgetBase *widget, mItemEditWidgets) {
+        if (widget->isModified()) {
             if (QMessageBox::Yes == QMessageBox::question(this, i18n("Close?"),
                                                           i18n("A currently opened dialog has modifications, are you sure you want to exit without saving?"),
                                                           QMessageBox::Yes|QMessageBox::No))
             {
-                dialog->close();
+                widget->close();
             } else {
-                dialog->raise();
-                dialog->activateWindow();
+                widget->raise();
+                widget->activateWindow();
                 return false;
             }
         } else {
-            dialog->close();
+            widget->close();
         }
     }
     return true;
@@ -253,12 +254,12 @@ bool Page::queryClose()
 void Page::slotNewClicked()
 {
     const QMap<QString, QString> data = dataForNewObject();
-    DetailsDialog *dialog = createDetailsDialog();
     Item item;
+    ItemEditWidgetBase *widget = createItemEditWidget(item, mType, true); // create a simple widget type
     item.setParentCollection(mCollection);
-    dialog->showNewItem(data, mCollection);
-    dialog->show();
-    // cppcheck-suppress memleak as dialog deletes itself
+    widget->showNewItem(data, mCollection);
+    widget->show();
+    // cppcheck-suppress memleak as widget deletes itself
 }
 
 QString Page::reportSubTitle(int count) const
@@ -586,15 +587,7 @@ void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QS
 // triggered on double-click and Key_Return
 void Page::slotItemDoubleClicked(const Akonadi::Item &item)
 {
-    DetailsDialog *dialog = openedDialogForItem(item);
-    if (!dialog) {
-        dialog = createDetailsDialog();
-        dialog->setItem(item);
-        dialog->show();
-    } else {
-        dialog->raise();
-        dialog->activateWindow();
-    }
+    openWidgetForItem(item, mType);
 }
 
 void Page::slotItemSaved()
@@ -640,46 +633,71 @@ void Page::printReport()
     generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
 }
 
-DetailsDialog *Page::createDetailsDialog()
+ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget)
 {
-    Details* details = DetailsDialog::createDetailsForType(mType);
+    Details* details = ItemEditWidgetBase::createDetailsForType(itemType);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setLinkedItemsRepository(mLinkedItemsRepository);
     details->setSupportedFields(mSupportedFields);
     details->setEnumDefinitions(mEnumDefinitions);
     connect(details, SIGNAL(openObject(DetailsType,QString)),
             this, SIGNAL(openObject(DetailsType,QString)));
-    // Don't set a parent, so that the dialogs can be minimized/restored independently
-    DetailsDialog *dialog = new DetailsDialog(details);
-    dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->setOnline(mOnline);
-    // in case of changes while the dialog is up
+    // Don't set a parent, so that the widgets can be minimized/restored independently
+    SimpleItemEditWidget *widget = new SimpleItemEditWidget(details);
+    widget->setOnline(mOnline);
+    if (item.isValid()) // no need for new widget
+        widget->setItem(item);
+
+    // in case of changes while the widget is up
     connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
-            dialog, SLOT(updateItem(Akonadi::Item)));
+            widget, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
-            dialog, SLOT(setOnline(bool)));
-    connect( dialog, SIGNAL(itemSaved()),
+            widget, SLOT(setOnline(bool)));
+    connect( widget, SIGNAL(itemSaved()),
              this, SLOT(slotItemSaved()));
-    connect(dialog, SIGNAL(closing()),
-            this, SLOT(slotUnregisterDetailsDialog()));
-    mDetailsDialogs.insert(dialog);
-    return dialog;
+
+    ItemEditWidgetType widgetType;
+    if (forceSimpleWidget) {
+        widgetType = Simple;
+    } else {
+        if (item.hasPayload<SugarAccount>() || item.hasPayload<SugarOpportunity>())
+            widgetType = TabWidget;
+        else
+            widgetType = Simple;
+    }
+
+    if (widgetType == Simple) {
+        widget->setAttribute(Qt::WA_DeleteOnClose);
+        mItemEditWidgets.insert(widget);
+        connect (widget, SIGNAL(closing()),
+                 this, SLOT(slotUnregisterItemEditWidget()));
+        return widget;
+    } else {
+        TabbedItemEditWidget *tabbedWidget = new TabbedItemEditWidget(widget, itemType, this);
+        tabbedWidget->setAttribute(Qt::WA_DeleteOnClose);
+        connect (tabbedWidget, SIGNAL(openWidgetForItem(Akonadi::Item, DetailsType)),
+                 this, SLOT(openWidgetForItem(Akonadi::Item, DetailsType)));
+        connect (tabbedWidget, SIGNAL(closing()),
+                 this, SLOT(slotUnregisterItemEditWidget()));
+        mItemEditWidgets.insert(tabbedWidget);
+        return tabbedWidget;
+    }
 }
 
-DetailsDialog *Page::openedDialogForItem(const Item &item)
+ItemEditWidgetBase *Page::openedWidgetForItem(const Item &item)
 {
-    auto it = std::find_if(mDetailsDialogs.constBegin(), mDetailsDialogs.constEnd(),
-                           [&](DetailsDialog *dialog) { return item.id() == dialog->item().id(); });
-    if (it == mDetailsDialogs.constEnd()) {
+    auto it = std::find_if(mItemEditWidgets.constBegin(), mItemEditWidgets.constEnd(),
+                           [&](ItemEditWidgetBase *widget) { return item.id() == widget->item().id(); });
+    if (it == mItemEditWidgets.constEnd()) {
         return nullptr;
     }
     return *it;
 }
 
-void Page::slotUnregisterDetailsDialog()
+void Page::slotUnregisterItemEditWidget()
 {
-    DetailsDialog *dialog = qobject_cast<DetailsDialog*>(sender());
-    mDetailsDialogs.remove(dialog);
+    ItemEditWidgetBase *widget = qobject_cast<ItemEditWidgetBase*>(sender());
+    mItemEditWidgets.remove(widget);
 }
 
 void Page::slotChangeFields()

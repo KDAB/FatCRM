@@ -619,7 +619,7 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
 {
     Page *page = pageForType(type);
     if (page) {
-        page->openDialog(id);
+        page->openWidget(id);
     } else {
         kDebug() << "No page for type" << type;
     }

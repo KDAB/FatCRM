@@ -20,16 +20,11 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "detailsdialog.h"
+#include "simpleitemeditwidget.h"
 
 #include "details.h"
-#include "ui_detailsdialog.h"
-#include "accountdetails.h"
-#include "campaigndetails.h"
+#include "ui_simpleitemeditwidget.h"
 #include "clientsettings.h"
-#include "contactdetails.h"
-#include "leaddetails.h"
-#include "opportunitydetails.h"
 #include "referenceddatamodel.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -42,23 +37,19 @@
 
 #include <KPIMUtils/Email>
 
-#include <QDialogButtonBox>
-#include <QPushButton>
-#include <QVBoxLayout>
-#include <QDebug>
 #include <QMessageBox>
-#include <QKeyEvent>
+#include <QPushButton>
 
 using namespace Akonadi;
 
-class DetailsDialog::Private
+class SimpleItemEditWidget::Private
 {
-    DetailsDialog *const q;
+    SimpleItemEditWidget *const q;
 
 public:
-    explicit Private(Details *details, DetailsDialog *parent)
+    explicit Private(Details *details, SimpleItemEditWidget *parent)
         : q(parent), mDetails(details),
-          mButtonBox(0), mIsModified(false)
+          mButtonBox(0), mSaveButton(0)
     {
     }
 
@@ -66,23 +57,24 @@ public:
     QMap<QString, QString> data() const;
 
 public:
-    Ui::DetailsDialog mUi;
+    Ui::SimpleItemEditWidget mUi;
 
     Item mItem;
     Collection mCollection;
     Details *mDetails;
     QDialogButtonBox *mButtonBox;
-    bool mIsModified;
+    QPushButton *mSaveButton;
 
 public: // slots
     void saveClicked();
-    void cancelClicked();
     void dataModified();
     void saveResult(KJob *job);
 };
 
-// similar with detailswidget
-void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
+// This doesn't derive from QDialog anymore because for some reason KWin (or Qt)
+// places all dialogs at the same position on the screen, even in Random or Smart placement policy.
+// (FATCRM-76). Anyway we don't need modality, just support for Esc.
+void SimpleItemEditWidget::Private::setData(const QMap<QString, QString> &data)
 {
     mDetails->setData(data, mUi.createdModifiedContainer);
     // Transform the time returned by the server to system time
@@ -97,7 +89,7 @@ void DetailsDialog::Private::setData(const QMap<QString, QString> &data)
 }
 
 // similar with detailswidget
-QMap<QString, QString> DetailsDialog::Private::data() const
+QMap<QString, QString> SimpleItemEditWidget::Private::data() const
 {
     QMap<QString, QString> currentData = mDetails->getData();
 
@@ -121,13 +113,8 @@ QMap<QString, QString> DetailsDialog::Private::data() const
     return currentData;
 }
 
-void DetailsDialog::Private::saveClicked()
+void SimpleItemEditWidget::Private::saveClicked()
 {
-    if (!mIsModified) {
-        q->close();
-        return;
-    }
-
     if (mDetails->type() == Opportunity) {
         if (mDetails->currentAccountId().isEmpty()) {
             QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
@@ -150,26 +137,21 @@ void DetailsDialog::Private::saveClicked()
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
 
-void DetailsDialog::Private::cancelClicked()
+void SimpleItemEditWidget::Private::dataModified()
 {
-    mIsModified = false;
-    q->close();
+    mSaveButton->setEnabled(true);
+    emit q->dataModified();
 }
 
-void DetailsDialog::Private::dataModified()
+bool SimpleItemEditWidget::isModified() const
 {
-    mIsModified = true;
+    return d->mSaveButton->isEnabled();
 }
 
-bool DetailsDialog::isModified() const
-{
-    return d->mIsModified;
-}
-
-QString DetailsDialog::title() const
+QString SimpleItemEditWidget::title() const
 {
     if (d->mItem.isValid()) {
-        const QString name = d->mDetails->name();
+        const QString name = detailsName();
         switch (d->mDetails->type()) {
         case Account: return i18n("Account: %1", name);
         case Campaign: return i18n("Campaign: %1", name);
@@ -189,12 +171,17 @@ QString DetailsDialog::title() const
     return QString(); // for stupid compilers
 }
 
-Item DetailsDialog::item() const
+QString SimpleItemEditWidget::detailsName() const
+{
+    return d->mDetails->name();
+}
+
+Item SimpleItemEditWidget::item() const
 {
     return d->mItem;
 }
 
-void DetailsDialog::Private::saveResult(KJob *job)
+void SimpleItemEditWidget::Private::saveResult(KJob *job)
 {
     kDebug() << "save result=" << job->error();
     if (job->error() != 0) {
@@ -202,18 +189,14 @@ void DetailsDialog::Private::saveResult(KJob *job)
         mUi.labelOffline->setText(job->errorText());
         mUi.labelOffline->show();
         return;
-    } else {
-        mIsModified = false;
     }
+
     emit q->itemSaved();
     q->close(); // was accept();
 }
 
-// This doesn't derive from QDialog anymore because for some reason KWin (or Qt)
-// places all dialogs at the same position on the screen, even in Random or Smart placement policy.
-// (FATCRM-76). Anyway we don't need modality, just support for Esc.
-DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
-    : QWidget(parent), d(new Private(details, this))
+SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
+    : ItemEditWidgetBase(parent), d(new Private(details, this))
 {
     d->mUi.setupUi(this);
 
@@ -224,40 +207,29 @@ DetailsDialog::DetailsDialog(Details *details, QWidget *parent)
 
     connect(d->mUi.description, SIGNAL(textChanged()), this,  SLOT(dataModified()));
 
-    QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
-    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
+    d->mSaveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
+    d->mSaveButton->setEnabled(false);
+    connect(d->mUi.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
+    connect(d->mUi.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
 
-    QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancelClicked()));
-
-    ClientSettings::self()->restoreWindowSize("details", this);
+    if (isWindow())
+        ClientSettings::self()->restoreWindowSize("details", this);
 }
 
-DetailsDialog::~DetailsDialog()
+SimpleItemEditWidget::~SimpleItemEditWidget()
 {
-    ClientSettings::self()->saveWindowSize("details", this);
+    if (isWindow())
+        ClientSettings::self()->saveWindowSize("details", this);
     delete d;
 }
 
-void DetailsDialog::keyPressEvent(QKeyEvent *e)
+void SimpleItemEditWidget::accept()
 {
-   if (!e->modifiers()) {
-       switch (e->key()) {
-       case Qt::Key_Enter:
-           d->saveClicked();
-           return;
-       case Qt::Key_Escape:
-           close();
-           return;
-       default:
-           break;
-       }
-   }
-   e->ignore();
+    d->saveClicked();
 }
 
 // open for creation
-void DetailsDialog::showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection)
+void SimpleItemEditWidget::showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection)
 {
     d->setData(data);
 
@@ -268,12 +240,12 @@ void DetailsDialog::showNewItem(const QMap<QString, QString> &data, const Akonad
 
     d->mDetails->assignToMe();
 
-    d->mIsModified = false;
+    d->mSaveButton->setEnabled(false);
     setWindowTitle(title());
 }
 
 // open for modification
-void DetailsDialog::setItem(const Akonadi::Item &item)
+void SimpleItemEditWidget::setItem(const Akonadi::Item &item)
 {
     d->mItem = item;
 
@@ -282,10 +254,10 @@ void DetailsDialog::setItem(const Akonadi::Item &item)
 
     setWindowTitle(title());
 
-    d->mIsModified = false;
+    d->mSaveButton->setEnabled(false);
 }
 
-void DetailsDialog::updateItem(const Akonadi::Item &item)
+void SimpleItemEditWidget::updateItem(const Akonadi::Item &item)
 {
     if (item == d->mItem) {
         if (isModified()) {
@@ -299,7 +271,7 @@ void DetailsDialog::updateItem(const Akonadi::Item &item)
     }
 }
 
-void DetailsDialog::setOnline(bool online)
+void SimpleItemEditWidget::setOnline(bool online)
 {
     d->mUi.labelOffline->setVisible(!online);
     if (!online) {
@@ -307,51 +279,13 @@ void DetailsDialog::setOnline(bool online)
     }
 }
 
-void DetailsDialog::closeEvent(QCloseEvent *event)
-{
-    if (isModified()) {
-        QMessageBox msgBox(this);
-        msgBox.setText(i18n("The data for %1 has been modified.", d->mDetails->name()));
-        msgBox.setInformativeText("Do you want to save your changes?");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Save);
-        switch (msgBox.exec()) {
-        case QMessageBox::Save:
-            // Save was clicked
-            d->saveClicked();
-            event->ignore();
-            return;
-        case QMessageBox::Discard:
-            // Don't Save was clicked
-            break;
-        default:
-            // Cancel
-            event->ignore();
-            return;
-        }
-    }
-
-    emit closing();
-
-    event->accept();
-}
-
-Details *DetailsDialog::createDetailsForType(DetailsType type)
-{
-    switch (type) {
-    case Account: return new AccountDetails;
-    case Opportunity: return new OpportunityDetails;
-    case Contact: return new ContactDetails;
-    case Lead: return new LeadDetails;
-    case Campaign: return new CampaignDetails;
-    }
-
-    return 0;
-}
-
-Details *DetailsDialog::details()
+Details *SimpleItemEditWidget::details()
 {
     return d->mDetails;
 }
 
-#include "detailsdialog.moc"
+void SimpleItemEditWidget::hideButtonBox()
+{
+    d->mUi.buttonBox->hide();
+}
+#include "simpleitemeditwidget.moc"
