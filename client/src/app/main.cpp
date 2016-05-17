@@ -28,7 +28,9 @@
 
 #include <QApplication>
 #include <KLocalizedString>
+#include <KMessageBox>
 #include <QCommandLineParser>
+#include <QMimeDatabase>
 
 static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
 static const char version[] = FATCRM_VERSION_STRING;
@@ -50,6 +52,13 @@ int main(int argc, char **argv)
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
+
+    QMimeDatabase db;
+    if (!db.mimeTypeForName("application/x-vnd.kdab.crm.opportunity").isValid()) {
+        KMessageBox::error(0, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
+        return 1;
+    }
+
     MainWindow *window = new MainWindow;
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();

@@ -58,7 +58,8 @@ static int orderForCollection(const QString &contentMimeType)
         "application/x-vnd.kdab.crm.email",
         "application/x-vnd.akonadi.calendar.todo",
         "inode/directory",
-        "text/directory"
+        "text/directory",
+        "application/x-vnd.kdab.crm.document"
     };
     for (uint i = 0 ; i < sizeof(s_orderedMimeTypes) / sizeof(*s_orderedMimeTypes); ++i) {
         if (contentMimeType == s_orderedMimeTypes[i])
