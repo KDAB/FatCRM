@@ -128,7 +128,9 @@ static bool accountMatchesFilter(const SugarAccount &account, const QString &fil
         return true;
     }
     if (account.billingAddressCity().contains(filter, Qt::CaseInsensitive) ||
-            account.shippingAddressCity().contains(filter, Qt::CaseInsensitive)) {
+            account.shippingAddressCity().contains(filter, Qt::CaseInsensitive) ||
+            account.billingAddressStreet().contains(filter, Qt::CaseInsensitive) ||
+            account.shippingAddressStreet().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
     if (account.email1().contains(filter, Qt::CaseInsensitive)) {
