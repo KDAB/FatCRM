@@ -42,7 +42,7 @@ class CollectionManager;
 class LinkedItemsRepository;
 class Page;
 class ReportPage;
-class FatCRMOverlay;
+class LoadingOverlay;
 class ContactsPage;
 
 namespace Akonadi
@@ -99,7 +99,7 @@ private:
 
     bool mInitialLoadingDone;
     QStringList mPendingImportPaths;
-    FatCRMOverlay *mFatCRMOverlay;
+    LoadingOverlay *mLoadingOverlay;
 
 private Q_SLOTS:
     void slotDelayedInit();

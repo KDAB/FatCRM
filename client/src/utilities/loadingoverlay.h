@@ -1,17 +1,17 @@
-#ifndef FATCRMOVERLAY_H
-#define FATCRMOVERLAY_H
+#ifndef LOADINGOVERLAY_H
+#define LOADINGOVERLAY_H
 
 #include <QWidget>
 
 class QEvent;
 class QPaintEvent;
 
-class FatCRMOverlay : public QWidget
+class LoadingOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FatCRMOverlay(QWidget *parent = 0);
-    ~FatCRMOverlay();
+    explicit LoadingOverlay(QWidget *parent = 0);
+    ~LoadingOverlay();
 
     void setMessage(const QString &message);
 
@@ -24,4 +24,4 @@ private:
 
 };
 
-#endif // FATCRMOVERLAY_H
+#endif // LOADINGOVERLAY_H

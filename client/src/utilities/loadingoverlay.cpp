@@ -1,9 +1,9 @@
-#include "fatcrmoverlay.h"
+#include "loadingoverlay.h"
 
 #include <QResizeEvent>
 #include <QPainter>
 
-FatCRMOverlay::FatCRMOverlay(QWidget *parent) : QWidget(parent)
+LoadingOverlay::LoadingOverlay(QWidget *parent) : QWidget(parent)
 {
     setAttribute(Qt::WA_TranslucentBackground);
     if (parent) {
@@ -12,11 +12,11 @@ FatCRMOverlay::FatCRMOverlay(QWidget *parent) : QWidget(parent)
     }
 }
 
-FatCRMOverlay::~FatCRMOverlay()
+LoadingOverlay::~LoadingOverlay()
 {
 }
 
-bool FatCRMOverlay::eventFilter(QObject *object, QEvent *event)
+bool LoadingOverlay::eventFilter(QObject *object, QEvent *event)
 {
     if (object == parent()) {
         if (event->type() == QEvent::Resize) {
@@ -27,7 +27,7 @@ bool FatCRMOverlay::eventFilter(QObject *object, QEvent *event)
     return QWidget::eventFilter(object, event);
 }
 
-void FatCRMOverlay::paintEvent(QPaintEvent *)
+void LoadingOverlay::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
     p.fillRect(rect(), QColor(100, 100, 100, 128));
@@ -38,7 +38,7 @@ void FatCRMOverlay::paintEvent(QPaintEvent *)
     p.drawText(rect(), mMessage, QTextOption(Qt::AlignCenter));
 }
 
-void FatCRMOverlay::setMessage(const QString &message)
+void LoadingOverlay::setMessage(const QString &message)
 {
     mMessage = message;
     update();

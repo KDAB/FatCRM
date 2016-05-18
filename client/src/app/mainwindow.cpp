@@ -35,7 +35,7 @@
 #include "dbusinvokerinterface.h"
 #include "dbuswinidprovider.h"
 #include "enums.h"
-#include "fatcrmoverlay.h"
+#include "loadingoverlay.h"
 #include "config-fatcrm-version.h"
 #include "linkeditemsrepository.h"
 #include "referenceddata.h"
@@ -167,7 +167,7 @@ void MainWindow::initialize(bool displayOverlay)
 {
     Q_INIT_RESOURCE(icons);
 
-    mFatCRMOverlay = new FatCRMOverlay(mUi.tabWidget);
+    mLoadingOverlay = new LoadingOverlay(mUi.tabWidget);
     if (!displayOverlay)
         slotHideOverlay();
 
@@ -253,8 +253,8 @@ void MainWindow::setupActions()
 
 void MainWindow::slotResourceSelectionChanged(int index)
 {
-    mFatCRMOverlay->show();
-    mFatCRMOverlay->setMessage(i18n("Loading..."));
+    mLoadingOverlay->show();
+    mLoadingOverlay->setMessage(i18n("Loading..."));
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
         const QByteArray identifier = agent.identifier().toLatin1();
@@ -682,11 +682,11 @@ void MainWindow::initialResourceSelection()
         slotResourceSelectionChanged(mResourceSelector->currentIndex());
         mResourceDialog->hide();
     } else if (selectors == 0) {
-        mFatCRMOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
+        mLoadingOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
         showResourceDialog();
     } else {
         mResourceSelector->setCurrentIndex(-1);
-        mFatCRMOverlay->setMessage(i18n("Choose a SugarCRM resource."));
+        mLoadingOverlay->setMessage(i18n("Choose a SugarCRM resource."));
         showResourceDialog();
     }
 }
@@ -719,7 +719,7 @@ void MainWindow::processPendingImports()
 
 void MainWindow::slotHideOverlay()
 {
-    mFatCRMOverlay->hide();
+    mLoadingOverlay->hide();
 }
 
 #include "mainwindow.moc"
