@@ -48,7 +48,6 @@
 #include <Akonadi/CollectionModifyJob>
 #include <Akonadi/CollectionStatistics>
 #include <Akonadi/EntityAnnotationsAttribute>
-#include <Akonadi/EntityMimeTypeFilterModel>
 #include <Akonadi/Item>
 #include <Akonadi/ItemCreateJob>
 #include <Akonadi/ItemDeleteJob>
@@ -94,7 +93,6 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mItemsTreeModel(0),
       mOnline(false),
       mInitialLoadingDone(false),
-      mFilterModel(0),
       mJobProgressTracker(Q_NULLPTR)
 {
     mUi.setupUi(this);
@@ -158,8 +156,6 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     // cleanup from last time (useful when switching resources)
     ModelRepository::instance()->removeModel(mType);
     mFilter->setSourceModel(0);
-    delete mFilterModel;
-    mFilterModel = 0;
     mUi.treeView->setModel(0);
 
     delete mItemsTreeModel;
@@ -490,12 +486,7 @@ void Page::setupModel()
     connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
-    mFilterModel = new EntityMimeTypeFilterModel(this);
-    mFilterModel->setSourceModel(mItemsTreeModel);
-    mFilterModel->addMimeTypeInclusionFilter(mMimeType);
-    mFilterModel->setHeaderGroup(EntityTreeModel::ItemListHeaders);
-
-    mFilter->setSourceModel(mFilterModel);
+    mFilter->setSourceModel(mItemsTreeModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
     ModelRepository::instance()->setModel(mType, mItemsTreeModel);

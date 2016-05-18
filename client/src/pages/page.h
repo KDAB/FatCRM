@@ -38,7 +38,6 @@
 namespace Akonadi
 {
 class ChangeRecorder;
-class EntityMimeTypeFilterModel;
 class Item;
 }
 
@@ -153,7 +152,6 @@ private:
     bool mOnline;
 
     bool mInitialLoadingDone;
-    Akonadi::EntityMimeTypeFilterModel *mFilterModel;
 
     QStringList mSelectedEmails;
 

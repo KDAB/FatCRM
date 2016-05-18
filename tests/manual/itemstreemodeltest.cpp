@@ -37,7 +37,6 @@
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/EntityTreeView>
-#include <Akonadi/EntityMimeTypeFilterModel>
 #include <Akonadi/Session>
 using namespace Akonadi;
 
@@ -79,13 +78,8 @@ private Q_SLOTS:
 
         //
     #if 1
-        Akonadi::EntityMimeTypeFilterModel *filterModel = new Akonadi::EntityMimeTypeFilterModel(this);
-        filterModel->setSourceModel(model);
-        filterModel->addMimeTypeInclusionFilter(SugarOpportunity::mimeType());
-        filterModel->setHeaderGroup(Akonadi::EntityTreeModel::ItemListHeaders);
-
         Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
-        view->setModel(filterModel);
+        view->setModel(model);
         view->resize(900, 900);
         view->show();
     #endif
