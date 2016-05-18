@@ -49,6 +49,8 @@ int main(int argc, char **argv)
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
+    QCommandLineOption noOverlayOption("nooverlay", i18n("Do not display the overlay during initial data loading"));
+    parser.addOption(noOverlayOption);
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
@@ -59,7 +61,7 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    MainWindow *window = new MainWindow;
+    MainWindow *window = new MainWindow(!parser.isSet(noOverlayOption));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
     return app.exec();

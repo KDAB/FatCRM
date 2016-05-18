@@ -104,6 +104,7 @@ private Q_SLOTS:
     void slotRemoveItem();
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int start, int end);
+    void slotCheckCollectionPopulated(Akonadi::Collection::Id);
     void slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
     void slotResetSearch();

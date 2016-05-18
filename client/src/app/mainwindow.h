@@ -41,6 +41,7 @@ class CollectionManager;
 class LinkedItemsRepository;
 class Page;
 class ReportPage;
+class LoadingOverlay;
 class ContactsPage;
 
 namespace Akonadi
@@ -52,7 +53,7 @@ class FATCRMPRIVATE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow();
+    MainWindow(bool displayOverlay);
 
     ~MainWindow();
 
@@ -66,7 +67,7 @@ protected:
     void closeEvent(QCloseEvent *event);
 
 private:
-    void initialize();
+    void initialize(bool displayOverlay);
     void createActions();
     void setupActions();
     void createTabs();
@@ -97,6 +98,7 @@ private:
 
     bool mInitialLoadingDone;
     QStringList mPendingImportPaths;
+    LoadingOverlay *mLoadingOverlay;
 
 private Q_SLOTS:
     void slotDelayedInit();
@@ -128,6 +130,7 @@ private Q_SLOTS:
     void slotClearTimestampResult(KJob*);
     void slotTryImportCsvFile(const QString &filePath);
     void slotImportCsvFile(const QString &filePath);
+    void slotHideOverlay();
 
 private:
     Page *currentPage() const;
@@ -137,6 +140,7 @@ private:
     void initialResourceSelection();
     void initialLoadingDone();
     void processPendingImports();
+    void showResourceDialog();
 };
 
 #endif

@@ -340,12 +340,21 @@ void Page::slotRowsInserted(const QModelIndex &, int start, int end)
 
     handleNewRows(start, end, emitChanges);
 
-    // Select the first row; looks nicer than empty fields in the details widget.
+    if (!mInitialLoadingDone)
+        slotCheckCollectionPopulated(mCollection.id());
+}
+
+void Page::slotCheckCollectionPopulated(Akonadi::Collection::Id id)
+{
     //qCDebug(FATCRM_CLIENT_LOG) << "model has" << mItemsTreeModel->rowCount()
     //         << "rows, we expect" << mCollection.statistics().count();
-    const bool done = !mInitialLoadingDone && mItemsTreeModel->rowCount() == mCollection.statistics().count();
+    if (mItemsTreeModel->rowCount() == 0)
+        return;
+
+    const bool done = !mInitialLoadingDone && mItemsTreeModel->isCollectionPopulated(id);
     if (done) {
         //qCDebug(FATCRM_CLIENT_LOG) << "Finished loading" << typeToString(mType);
+        // Select the first row (historic reason: embedded details widget)
         if (!mUi.treeView->currentIndex().isValid()) {
             mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
         }
@@ -479,6 +488,7 @@ void Page::setupModel()
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
+    connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)), this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));
     connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
