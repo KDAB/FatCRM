@@ -54,7 +54,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow(bool displayOverlay);
+    explicit MainWindow(bool displayOverlay);
 
     ~MainWindow();
 
