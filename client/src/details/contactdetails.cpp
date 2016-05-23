@@ -36,6 +36,7 @@
 #include <KABC/Address>
 #include <KABC/Addressee>
 
+#include <QCompleter>
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
@@ -74,6 +75,10 @@ ContactDetails::ContactDetails(QWidget *parent)
     mUi->altAddressState->setObjectName(KDCRMFields::altAddressState());
     mUi->altAddressPostalcode->setObjectName(KDCRMFields::altAddressPostalcode());
     mUi->altAddressCountry->setObjectName(KDCRMFields::altAddressCountry());
+
+    QCompleter *countriesCompleter = createCountriesCompleter();
+    mUi->altAddressCountry->setCompleter(countriesCompleter);
+    mUi->primaryAddressCountry->setCompleter(countriesCompleter);
 
     initialize();
 }
@@ -372,4 +377,21 @@ void ContactDetails::slotPrimaryAddressCountryEditingFinished()
 void ContactDetails::slotOtherAddressCountryEditingFinished()
 {
     mUi->altAddressCountry->setText(KDCRMUtils::canonicalCountryName(mUi->altAddressCountry->text()));
+}
+
+void ContactDetails::setItemsTreeModel(ItemsTreeModel *model)
+{
+    QSet<QString> words;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QModelIndex index = model->index(row, 0);
+        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+        const QString addresseeTitle = addressee.title();
+        if (!addresseeTitle.isEmpty())
+            words.insert(addresseeTitle);
+    }
+    QCompleter *titlesCompleter = new QCompleter(words.toList(), this);
+    titlesCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    mUi->title->setCompleter(titlesCompleter);
+    Details::setItemsTreeModel(model);
 }

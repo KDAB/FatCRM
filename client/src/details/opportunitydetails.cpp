@@ -39,6 +39,7 @@
 #include <KLocale>
 
 #include <QCalendarWidget>
+#include <QCompleter>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this)), mCloseDateChangedByUser(false)
@@ -62,7 +63,6 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
     mUi->probability->setObjectName(KDCRMFields::probability());
     mUi->opportunityPriority->setObjectName(KDCRMFields::opportunityPriority());
-
     initialize();
 }
 
@@ -246,4 +246,21 @@ void OpportunityDetails::slotAccountSelected(const QString &accountId)
     if (idx > -1) {
         mUi->account_id->setCurrentIndex(idx);
     }
+}
+
+void OpportunityDetails::setItemsTreeModel(ItemsTreeModel *model)
+{
+    QSet<QString> words;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QModelIndex index = model->index(row, 0);
+        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+        const QString nextStep = opportunity.nextStep();
+        if (!nextStep.isEmpty())
+            words.insert(nextStep);
+    }
+    QCompleter *nextStepCompleter = new QCompleter(words.toList(), this);
+    nextStepCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    mUi->next_step->setCompleter(nextStepCompleter);
+    Details::setItemsTreeModel(model);
 }

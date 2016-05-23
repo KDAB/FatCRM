@@ -636,6 +636,7 @@ void Page::printReport()
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget)
 {
     Details* details = ItemEditWidgetBase::createDetailsForType(itemType);
+    details->setItemsTreeModel(mItemsTreeModel);
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setLinkedItemsRepository(mLinkedItemsRepository);
     details->setSupportedFields(mSupportedFields);

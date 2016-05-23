@@ -46,6 +46,8 @@ public:
     ~ContactDetails();
 
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    void setItemsTreeModel(ItemsTreeModel *model) Q_DECL_OVERRIDE;
+
 
 private:
     Ui::ContactDetails *mUi;

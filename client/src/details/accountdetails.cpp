@@ -68,6 +68,10 @@ AccountDetails::AccountDetails(QWidget *parent)
     mUi->shipping_address_postalcode->setObjectName(KDCRMFields::shippingAddressPostalcode());
     mUi->shipping_address_country->setObjectName(KDCRMFields::shippingAddressCountry());
 
+    QCompleter *countriesCompleter = createCountriesCompleter();
+    mUi->billing_address_country->setCompleter(countriesCompleter);
+    mUi->shipping_address_country->setCompleter(countriesCompleter);
+
     initialize();
 }
 

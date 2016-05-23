@@ -53,6 +53,7 @@ public:
     QVector<AccountRepository::Field> modifyAccount(const SugarAccount &account);
 
     SugarAccount accountById(const QString &id) const;
+    QStringList countries() const;
     bool hasId(const QString &id) const;
 
     QList<SugarAccount> similarAccounts(const SugarAccount &account) const;
@@ -75,6 +76,7 @@ private:
     Map mIdMap;
     Map mKeyMap;
     Map mNameMap;
+    QSet<QString> mCountries;
 };
 
 #endif // ACCOUNTREPOSITORY_H
