@@ -593,6 +593,7 @@ void Page::slotItemDoubleClicked(const Akonadi::Item &item)
         dialog->show();
     } else {
         dialog->raise();
+        dialog->activateWindow();
     }
 }
 
