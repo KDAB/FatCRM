@@ -33,7 +33,6 @@ class TabbedItemEditWidget;
 }
 
 class SimpleItemEditWidget;
-class QPushButton;
 
 class TabbedItemEditWidget : public ItemEditWidgetBase
 {
@@ -60,7 +59,6 @@ private:
 
     SimpleItemEditWidget * mItemEditWidget;
     DetailsType mType;
-    QPushButton *mSaveButton;
     QMap<QString, QPair<Akonadi::Item, DetailsType> > mItemsMap;
     Ui::TabbedItemEditWidget *mUi;
 };

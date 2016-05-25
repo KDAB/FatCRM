@@ -42,9 +42,10 @@ ItemEditWidgetBase::ItemEditWidgetBase(QWidget *parent)
 
 void ItemEditWidgetBase::keyPressEvent(QKeyEvent *e)
 {
-    if (!this->isWindow())
+    if (!this->isWindow()) {
         e->ignore(); // we're an embedded simple edit widget, let the event propagate up
-
+        return;
+    }
     if (e->modifiers() == Qt::KeypadModifier || !e->modifiers()) {
         switch (e->key()) {
         case Qt::Key_Return:
@@ -53,7 +54,7 @@ void ItemEditWidgetBase::keyPressEvent(QKeyEvent *e)
             return;
         }
         case Qt::Key_Escape:
-            reject();
+            close();
             return;
         default:
             break;
@@ -62,37 +63,32 @@ void ItemEditWidgetBase::keyPressEvent(QKeyEvent *e)
     e->ignore();
 }
 
-void ItemEditWidgetBase::reject()
+void ItemEditWidgetBase::closeEvent(QCloseEvent *event)
 {
     if (!this->isWindow())
         return;
 
     if (isModified()) {
-        QMessageBox msgBox;
-        msgBox.setText(i18n("The data for %1 has been modified.", detailsName()));
+        QMessageBox msgBox(this);
+        msgBox.setText(i18n("The data for %1 has been modified.", this->detailsName()));
         msgBox.setInformativeText("Do you want to save your changes?");
         msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
         msgBox.setDefaultButton(QMessageBox::Save);
-        switch (msgBox.exec()) {
+        switch(msgBox.exec()) {
         case QMessageBox::Save:
             // Save was clicked
             accept();
-            break;
+            event->ignore();
+            return;
         case QMessageBox::Discard:
             // Don't Save was clicked
-            close();
             break;
         default:
             // Cancel
-            break;
+            event->ignore();
+            return;
         }
-    } else {
-        close();
     }
-}
-
-void ItemEditWidgetBase::closeEvent(QCloseEvent *event)
-{
     emit closing();
     event->accept();
 }

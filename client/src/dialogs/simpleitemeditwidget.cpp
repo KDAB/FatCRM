@@ -49,7 +49,7 @@ class SimpleItemEditWidget::Private
 public:
     explicit Private(Details *details, SimpleItemEditWidget *parent)
         : q(parent), mDetails(details),
-          mButtonBox(0), mSaveButton(0)
+          mButtonBox(0), mIsModified(false)
     {
     }
 
@@ -63,7 +63,7 @@ public:
     Collection mCollection;
     Details *mDetails;
     QDialogButtonBox *mButtonBox;
-    QPushButton *mSaveButton;
+    bool mIsModified;
 
 public: // slots
     void saveClicked();
@@ -115,6 +115,11 @@ QMap<QString, QString> SimpleItemEditWidget::Private::data() const
 
 void SimpleItemEditWidget::Private::saveClicked()
 {
+    if (!mIsModified) {
+        q->close();
+        return;
+    }
+
     if (mDetails->type() == Opportunity) {
         if (mDetails->currentAccountId().isEmpty()) {
             QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
@@ -139,13 +144,15 @@ void SimpleItemEditWidget::Private::saveClicked()
 
 void SimpleItemEditWidget::Private::dataModified()
 {
-    mSaveButton->setEnabled(true);
+    mIsModified = true;
+    q->setWindowTitle(q->title());
+    q->setWindowModified(true);
     emit q->dataModified();
 }
 
 bool SimpleItemEditWidget::isModified() const
 {
-    return d->mSaveButton->isEnabled();
+    return d->mIsModified;
 }
 
 QString SimpleItemEditWidget::title() const
@@ -153,19 +160,19 @@ QString SimpleItemEditWidget::title() const
     if (d->mItem.isValid()) {
         const QString name = detailsName();
         switch (d->mDetails->type()) {
-        case Account: return i18n("Account: %1", name);
-        case Campaign: return i18n("Campaign: %1", name);
-        case Contact: return i18n("Contact: %1", name);
-        case Lead: return i18n("Lead: %1", name);
-        case Opportunity: return i18n("Opportunity: %1", name);
+        case Account: return i18n("Account: %1[*]", name);
+        case Campaign: return i18n("Campaign: %1[*]", name);
+        case Contact: return i18n("Contact: %1[*]", name);
+        case Lead: return i18n("Lead: %1[*]", name);
+        case Opportunity: return i18n("Opportunity: %1[*]", name);
         }
     } else {
         switch (d->mDetails->type()) {
-        case Account: return i18n("New Account");
-        case Campaign: return i18n("New Campaign");
-        case Contact: return i18n("New Contact");
-        case Lead: return i18n("New Lead");
-        case Opportunity: return i18n("New Opportunity");
+        case Account: return i18n("New Account[*]");
+        case Campaign: return i18n("New Campaign[*]");
+        case Contact: return i18n("New Contact[*]");
+        case Lead: return i18n("New Lead[*]");
+        case Opportunity: return i18n("New Opportunity[*]");
         }
     }
     return QString(); // for stupid compilers
@@ -189,8 +196,9 @@ void SimpleItemEditWidget::Private::saveResult(KJob *job)
         mUi.labelOffline->setText(job->errorText());
         mUi.labelOffline->show();
         return;
+    } else {
+        mIsModified = false;
     }
-
     emit q->itemSaved();
     q->close(); // was accept();
 }
@@ -207,10 +215,11 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
 
     connect(d->mUi.description, SIGNAL(textChanged()), this,  SLOT(dataModified()));
 
-    d->mSaveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
-    d->mSaveButton->setEnabled(false);
-    connect(d->mUi.buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(d->mUi.buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
+    connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
+
+    QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
+    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
 
     if (isWindow())
         ClientSettings::self()->restoreWindowSize("details", this);
@@ -240,8 +249,9 @@ void SimpleItemEditWidget::showNewItem(const QMap<QString, QString> &data, const
 
     d->mDetails->assignToMe();
 
-    d->mSaveButton->setEnabled(false);
+    d->mIsModified = false;
     setWindowTitle(title());
+    setWindowModified(false);
 }
 
 // open for modification
@@ -253,8 +263,8 @@ void SimpleItemEditWidget::setItem(const Akonadi::Item &item)
     d->setData(d->mDetails->data(item));
 
     setWindowTitle(title());
-
-    d->mSaveButton->setEnabled(false);
+    setWindowModified(false);
+    d->mIsModified = false;
 }
 
 void SimpleItemEditWidget::updateItem(const Akonadi::Item &item)

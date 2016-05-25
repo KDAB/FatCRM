@@ -46,10 +46,9 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     setWindowFlags(Qt::Window);
     mUi->setupUi(this);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    mSaveButton = buttonBox->button(QDialogButtonBox::Save);
-    mSaveButton->setEnabled(false);
+    setWindowModified(false);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout()->addWidget(buttonBox);
 
     ItemEditWidget->hideButtonBox();
@@ -156,7 +155,7 @@ void TabbedItemEditWidget::openWidget(const QString &itemKey)
 
 void TabbedItemEditWidget::dataChanged()
 {
-    mSaveButton->setEnabled(true);
+    setWindowModified(true);
 }
 
 void TabbedItemEditWidget::accept()
