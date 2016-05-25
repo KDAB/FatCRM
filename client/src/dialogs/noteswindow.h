@@ -33,7 +33,8 @@ class SugarNote;
 // internal. Generic representation for notes and emails, to sort them by date.
 struct NoteText
 {
-    NoteText() {}
+    NoteText()
+        : m_isHtml(false) {}
     NoteText(const QDateTime &dt, const QString &htmlHeader, const QString &text, bool isHtml = false)
         : m_date(dt), m_htmlHeader(htmlHeader), m_text(text), m_isHtml(isHtml) {}
 

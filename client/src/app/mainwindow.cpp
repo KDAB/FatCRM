@@ -615,7 +615,7 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
 {
     Page *page = pageForType(type);
     if (page) {
-        page->openDialog(id);
+        page->openWidget(id);
     } else {
         qCDebug(FATCRM_CLIENT_LOG) << "No page for type" << type;
     }

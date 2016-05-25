@@ -91,7 +91,7 @@ void ContactsPage::handleItemChanged(const Item &item)
         const int idx = mPendingContactsToOpen.indexOf(item.id());
         if (idx > -1) {
             mPendingContactsToOpen.remove(idx);
-            openDialogForItem(item);
+            openWidgetForItem(item, Contact);
         }
         ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
         ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));

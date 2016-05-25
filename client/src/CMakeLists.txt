@@ -38,13 +38,15 @@ set(app_SRCS
   dialogs/contactsimportpage.cpp
   dialogs/contactsimportwizard.cpp
   dialogs/configurationdialog.cpp
-  dialogs/detailsdialog.cpp
+  dialogs/itemeditwidgetbase.cpp
+  dialogs/simpleitemeditwidget.cpp
   dialogs/documentswindow.cpp
   dialogs/editlistdialog.cpp
   dialogs/fatcrminputdialog.cpp
   dialogs/noteswindow.cpp
   dialogs/resourceconfigdialog.cpp
   dialogs/selectitemdialog.cpp
+  dialogs/tabbeditemeditwidget.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
   utilities/accountdataextractor.cpp
@@ -68,6 +70,7 @@ set(app_SRCS
   utilities/qcsvreader.cpp
   utilities/referenceddata.cpp
   views/itemstreeview.cpp
+  widgets/associateddatawidget.cpp
   widgets/betterplaintextedit.cpp
   widgets/qdateeditex.cpp
 )
@@ -86,11 +89,13 @@ ki18n_wrap_ui(app_SRCS
   dialogs/accountimportpage.ui
   dialogs/configurationdialog.ui
   dialogs/contactsimportpage.ui
-  dialogs/detailsdialog.ui
   dialogs/documentswindow.ui
   dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.ui
   dialogs/selectitemdialog.ui
+  dialogs/simpleitemeditwidget.ui
+  dialogs/tabbeditemeditwidget.ui
+  widgets/associateddatawidget.ui
 )
 
 #qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")

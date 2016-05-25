@@ -38,12 +38,11 @@
 namespace Akonadi
 {
 class ChangeRecorder;
-class EntityMimeTypeFilterModel;
 class Item;
 }
 
-class DetailsDialog;
 class ItemDataExtractor;
+class ItemEditWidgetBase;
 class KJob;
 class KJobProgressTracker;
 class LinkedItemsRepository;
@@ -63,12 +62,11 @@ public:
     Akonadi::Collection collection() const { return mCollection; }
     void setLinkedItemsRepository(LinkedItemsRepository *repo);
     bool queryClose();
-    void openDialog(const QString &id);
-    void openDialogForItem(const Akonadi::Item &item);
+    void openWidget(const QString &id);
     void printReport();
     KJob *clearTimestamp();
-Q_SIGNALS:
 
+Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
     void modelLoaded(DetailsType type);
@@ -80,6 +78,7 @@ Q_SIGNALS:
 public Q_SLOTS:
     void slotOnlineStatusChanged(bool online);
     void slotResourceSelectionChanged(const QByteArray &identifier);
+    void openWidgetForItem(const Akonadi::Item &item, DetailsType itemType);
 
 protected:
     virtual ItemDataExtractor *itemDataExtractor() const = 0;
@@ -117,7 +116,7 @@ private Q_SLOTS:
     void slotOpenUrl();
     void slotCopyLink();
     void slotOpenEmailClient();
-    void slotUnregisterDetailsDialog();
+    void slotUnregisterItemEditWidget();
     void slotChangeFields();
     void slotDeleteJobResult(KJob *job);
 
@@ -130,8 +129,9 @@ private:
     void readEnumDefinitionAttributes();
     void retrieveResourceUrl();
 
-    DetailsDialog *createDetailsDialog();
-    DetailsDialog *openedDialogForItem(const Akonadi::Item &item);
+    enum ItemEditWidgetType { Simple, TabWidget };
+    ItemEditWidgetBase *createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget = false);
+    ItemEditWidgetBase *openedWidgetForItem(const Akonadi::Item &item);
 
 private:
     QString mMimeType;
@@ -142,7 +142,7 @@ private:
     Akonadi::Collection mCollection;
     Ui_page mUi;
     QByteArray mResourceIdentifier;
-    QSet<DetailsDialog*> mDetailsDialogs;
+    QSet<ItemEditWidgetBase*> mItemEditWidgets;
 
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;
@@ -151,9 +151,7 @@ private:
     LinkedItemsRepository *mLinkedItemsRepository;
     EnumDefinitions mEnumDefinitions;
     bool mOnline;
-
     bool mInitialLoadingDone;
-    Akonadi::EntityMimeTypeFilterModel *mFilterModel;
 
     QStringList mSelectedEmails;
 

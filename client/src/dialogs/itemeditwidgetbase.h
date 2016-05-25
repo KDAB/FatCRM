@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -20,12 +20,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DETAILSDIALOG_H
-#define DETAILSDIALOG_H
+#ifndef ITEMEDITWIDGETBASE_H
+#define ITEMEDITWIDGETBASE_H
+
+#include "details.h"
 
 #include <QWidget>
-
-#include "enums.h"
 
 namespace Akonadi
 {
@@ -33,48 +33,33 @@ class Item;
 class Collection;
 }
 
-class Details;
-class KJob;
-
-class DetailsDialog : public QWidget
+class ItemEditWidgetBase : public QWidget
 {
     Q_OBJECT
 public:
-    explicit DetailsDialog(Details *details, QWidget *parent = Q_NULLPTR);
-
-    ~DetailsDialog();
-
-    void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection);
-    bool isModified() const;
-    Details *details();
+    explicit ItemEditWidgetBase(QWidget *parent = 0);
 
     static Details *createDetailsForType(DetailsType type);
 
-    Akonadi::Item item() const;
-
-public Q_SLOTS:
-    void setItem(const Akonadi::Item &item);
-    void updateItem(const Akonadi::Item &item);
-    void setOnline(bool online);
+    virtual void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) { Q_UNUSED(data); Q_UNUSED(collection); }
+    virtual bool isModified() const = 0;
+    virtual Akonadi::Item item() const = 0;
+    virtual QString title() const = 0;
+    virtual QString detailsName() const = 0;
 
 Q_SIGNALS:
     void itemSaved();
     void closing();
+    void openWidgetForItem(Akonadi::Item item, DetailsType type);
+    void dataModified();
+
+protected Q_SLOTS:
+    void reject();
+    virtual void accept() = 0;
 
 protected:
-    void keyPressEvent(QKeyEvent *ev) Q_DECL_OVERRIDE;
     void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
-
-private:
-    QString title() const;
-
-    class Private;
-    Private *const d;
-
-    Q_PRIVATE_SLOT(d, void saveClicked())
-    Q_PRIVATE_SLOT(d, void cancelClicked())
-    Q_PRIVATE_SLOT(d, void dataModified())
-    Q_PRIVATE_SLOT(d, void saveResult(KJob *job))
+    void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
 };
 
-#endif
+#endif // ITEMEDITWIDGETBASE_H
