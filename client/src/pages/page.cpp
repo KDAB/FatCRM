@@ -676,8 +676,8 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, Details
     } else {
         TabbedItemEditWidget *tabbedWidget = new TabbedItemEditWidget(widget, itemType, this);
         tabbedWidget->setAttribute(Qt::WA_DeleteOnClose);
-        connect (tabbedWidget, SIGNAL(openWidgetForItem(Akonadi::Item, DetailsType)),
-                 this, SLOT(openWidgetForItem(Akonadi::Item, DetailsType)));
+        connect (tabbedWidget, SIGNAL(openWidgetForItem(Akonadi::Item,DetailsType)),
+                 this, SLOT(openWidgetForItem(Akonadi::Item,DetailsType)));
         connect (tabbedWidget, SIGNAL(closing()),
                  this, SLOT(slotUnregisterItemEditWidget()));
         mItemEditWidgets.insert(tabbedWidget);
