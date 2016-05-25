@@ -28,12 +28,15 @@
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QStringListModel>
 #include <QVBoxLayout>
+
+// kdepimlibs4 compat
+#define KABC KContacts
 
 using namespace Akonadi;
 
