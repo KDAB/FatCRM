@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>837</width>
+    <width>1052</width>
     <height>480</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <property name="title">
       <string>Details</string>
      </property>
-     <layout class="QFormLayout" name="formLayout">
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -94,7 +94,7 @@
           <property name="icon">
            <iconset theme="document-open">
             <normaloff/>
-           </iconset>
+	   </iconset>
           </property>
          </widget>
         </item>
@@ -128,7 +128,18 @@
        </widget>
       </item>
       <item row="8" column="1">
-       <widget class="QLineEdit" name="email1"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="email1"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonMailToPrimary">
+          <property name="text">
+           <string>Send Email</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="9" column="0">
        <widget class="QLabel" name="label_31">
@@ -138,7 +149,18 @@
        </widget>
       </item>
       <item row="9" column="1">
-       <widget class="QLineEdit" name="email2"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QLineEdit" name="email2"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonMailToOther">
+          <property name="text">
+           <string>Send Email</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="10" column="0">
        <widget class="QLabel" name="label_11">

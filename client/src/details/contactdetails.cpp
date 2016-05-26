@@ -37,6 +37,7 @@
 #include <KABC/Addressee>
 
 #include <QCompleter>
+#include <QDesktopServices>
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
@@ -343,6 +344,13 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
+
+    slotEnableMailToPrimary();
+    connect(mUi->email1, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToPrimary()));
+    connect(mUi->buttonMailToPrimary, SIGNAL(clicked(bool)), this, SLOT(slotMailToPrimary()));
+    slotEnableMailToOther();
+    connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
+    connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()
@@ -394,4 +402,24 @@ void ContactDetails::setItemsTreeModel(ItemsTreeModel *model)
     titlesCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     mUi->title->setCompleter(titlesCompleter);
     Details::setItemsTreeModel(model);
+}
+
+void ContactDetails::slotEnableMailToPrimary()
+{
+    mUi->buttonMailToPrimary->setEnabled(!mUi->email1->text().isEmpty());
+}
+
+void ContactDetails::slotEnableMailToOther()
+{
+    mUi->buttonMailToOther->setEnabled(!mUi->email2->text().isEmpty());
+}
+
+void ContactDetails::slotMailToPrimary()
+{
+    QDesktopServices::openUrl(QUrl("mailto:" + mUi->email1->text()));
+}
+
+void ContactDetails::slotMailToOther()
+{
+    QDesktopServices::openUrl(QUrl("mailto:" + mUi->email2->text()));
 }
