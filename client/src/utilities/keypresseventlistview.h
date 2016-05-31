@@ -18,38 +18,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ASSOCIATEDDATAWIDGET_H
-#define ASSOCIATEDDATAWIDGET_H
+#ifndef KEYPRESSEVENTLISTVIEW_H
+#define KEYPRESSEVENTLISTVIEW_H
 
-#include <QWidget>
+#include <QListView>
 
-namespace Ui {
-class AssociatedDataWidget;
-}
+/*
+ * This ListView is emitting the editSelectedItem signal
+ * after an item was selected and the user is pressing
+ * the Enter or Return key.
+ */
 
-class QModelIndex;
-class QStringListModel;
-
-class AssociatedDataWidget : public QWidget
+class KeyPressEventListView : public QListView
 {
     Q_OBJECT
 
 public:
-    explicit AssociatedDataWidget(QWidget *parent = 0);
-    ~AssociatedDataWidget();
+    KeyPressEventListView(QWidget *parent = 0);
 
-    void hideOpportunityGui();
-    void setContactsModel(QStringListModel *model);
-    void setOpportunitiesModel(QStringListModel *model);
+    virtual void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
 
-Q_SIGNALS:
-    void openItem(const QString &item);
-
-public Q_SLOTS:
-    void editItem(const QModelIndex &index);
-
-private:
-    Ui::AssociatedDataWidget *mUi;
+signals:
+    void returnPressed(const QModelIndex &index);
 };
 
-#endif // ASSOCIATEDDATAWIDGET_H
+#endif // KEYPRESSEVENTLISTVIEW_H

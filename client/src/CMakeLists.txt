@@ -60,6 +60,7 @@ set(app_SRCS
   utilities/enums.cpp
   utilities/loadingoverlay.cpp
   utilities/itemdataextractor.cpp
+  utilities/keypresseventlistview.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp
   utilities/linkeditemsrepository.cpp

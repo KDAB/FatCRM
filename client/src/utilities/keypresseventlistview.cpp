@@ -18,38 +18,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ASSOCIATEDDATAWIDGET_H
-#define ASSOCIATEDDATAWIDGET_H
+#include "keypresseventlistview.h"
 
-#include <QWidget>
+#include <QKeyEvent>
 
-namespace Ui {
-class AssociatedDataWidget;
+KeyPressEventListView::KeyPressEventListView(QWidget *parent)
+    : QListView(parent)
+{
+    setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
-class QModelIndex;
-class QStringListModel;
-
-class AssociatedDataWidget : public QWidget
+void KeyPressEventListView::keyPressEvent(QKeyEvent *event)
 {
-    Q_OBJECT
-
-public:
-    explicit AssociatedDataWidget(QWidget *parent = 0);
-    ~AssociatedDataWidget();
-
-    void hideOpportunityGui();
-    void setContactsModel(QStringListModel *model);
-    void setOpportunitiesModel(QStringListModel *model);
-
-Q_SIGNALS:
-    void openItem(const QString &item);
-
-public Q_SLOTS:
-    void editItem(const QModelIndex &index);
-
-private:
-    Ui::AssociatedDataWidget *mUi;
-};
-
-#endif // ASSOCIATEDDATAWIDGET_H
+    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        const QModelIndex idx = currentIndex();
+        if (idx.isValid())
+            emit returnPressed(idx);
+    }
+    QListView::keyPressEvent(event);
+}
