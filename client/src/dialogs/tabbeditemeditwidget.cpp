@@ -22,6 +22,7 @@
 #include "ui_tabbeditemeditwidget.h"
 
 #include "associateddatawidget.h"
+#include "clientsettings.h"
 #include "itemstreemodel.h"
 #include "modelrepository.h"
 #include "simpleitemeditwidget.h"
@@ -71,10 +72,12 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     mUi->tabWidget->setCurrentIndex(0);
     setWindowTitle(mItemEditWidget->title());
     initialize();
+    ClientSettings::self()->restoreWindowSize("tabbeddetails", this);
 }
 
 TabbedItemEditWidget::~TabbedItemEditWidget()
 {
+    ClientSettings::self()->saveWindowSize("tabbeddetails", this);
     delete mUi;
 }
 
