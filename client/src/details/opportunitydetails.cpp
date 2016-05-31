@@ -256,6 +256,7 @@ void OpportunityDetails::setItemsTreeModel(ItemsTreeModel *model)
         if (!nextStep.isEmpty())
             words.insert(nextStep);
     }
+
     QCompleter *nextStepCompleter = new QCompleter(words.toList(), this);
     nextStepCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     mUi->next_step->setCompleter(nextStepCompleter);

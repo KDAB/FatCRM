@@ -64,6 +64,7 @@ set(app_SRCS
   utilities/leaddataextractor.cpp
   utilities/linkeditemsrepository.cpp
   utilities/modelrepository.cpp
+  utilities/openedwidgetsrepository.cpp
   utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp

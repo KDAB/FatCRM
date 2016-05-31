@@ -18,38 +18,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ASSOCIATEDDATAWIDGET_H
-#define ASSOCIATEDDATAWIDGET_H
+#ifndef OPENEDWIDGETSREPOSITORY_H
+#define OPENEDWIDGETSREPOSITORY_H
 
-#include <QWidget>
+#include <QObject>
 
-namespace Ui {
-class AssociatedDataWidget;
-}
+#include "itemeditwidgetbase.h"
 
-class QModelIndex;
-class QStringListModel;
+class ItemEditWidgetBase;
 
-class AssociatedDataWidget : public QWidget
+class OpenedWidgetsRepository : public QObject
 {
     Q_OBJECT
-
 public:
-    explicit AssociatedDataWidget(QWidget *parent = 0);
-    ~AssociatedDataWidget();
+    static OpenedWidgetsRepository *instance();
+    ~OpenedWidgetsRepository();
 
-    void hideOpportunityGui();
-    void setContactsModel(QStringListModel *model);
-    void setOpportunitiesModel(QStringListModel *model);
-
-Q_SIGNALS:
-    void openItem(const QString &item);
-
-public Q_SLOTS:
-    void itemDoubleClicked(const QModelIndex &index);
+    void registerWidget(ItemEditWidgetBase *widget);
+    void unregisterWidget(ItemEditWidgetBase *widget);
+    QSet<ItemEditWidgetBase*> openedWidgets() const;
 
 private:
-    Ui::AssociatedDataWidget *mUi;
+    QSet<ItemEditWidgetBase*> mItemEditWidgets;
+
+    OpenedWidgetsRepository();
 };
 
-#endif // ASSOCIATEDDATAWIDGET_H
+#endif // OPENEDWIDGETSREPOSITORY_H

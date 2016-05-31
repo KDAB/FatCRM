@@ -28,8 +28,8 @@ AssociatedDataWidget::AssociatedDataWidget(QWidget *parent) :
     mUi(new Ui::AssociatedDataWidget)
 {
     mUi->setupUi(this);
-    connect(mUi->opportunitiesListView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
-    connect(mUi->contactsListView, SIGNAL(activated(QModelIndex)), this, SLOT(itemActivated(QModelIndex)));
+    connect(mUi->opportunitiesListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)));
+    connect(mUi->contactsListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(itemDoubleClicked(QModelIndex)));
 }
 
 AssociatedDataWidget::~AssociatedDataWidget()
@@ -54,7 +54,7 @@ void AssociatedDataWidget::setOpportunitiesModel(QStringListModel *model)
     mUi->opportunitiesListView->setModel(model);
 }
 
-void AssociatedDataWidget::itemActivated(const QModelIndex &index)
+void AssociatedDataWidget::itemDoubleClicked(const QModelIndex &index)
 {
     emit openItem(index.data(Qt::DisplayRole).toString());
 

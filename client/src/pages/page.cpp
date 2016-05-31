@@ -30,6 +30,7 @@
 #include "itemeditwidgetbase.h"
 #include "kjobprogresstracker.h"
 #include "modelrepository.h"
+#include "openedwidgetsrepository.h"
 #include "rearrangecolumnsproxymodel.h"
 #include "referenceddata.h"
 #include "reportgenerator.h"
@@ -232,7 +233,7 @@ void Page::setLinkedItemsRepository(LinkedItemsRepository *repo)
 
 bool Page::queryClose()
 {
-    foreach (ItemEditWidgetBase *widget, mItemEditWidgets) {
+    foreach (ItemEditWidgetBase *widget, OpenedWidgetsRepository::instance()->openedWidgets()) {
         if (widget->isModified()) {
             if (QMessageBox::Yes == QMessageBox::question(this, i18n("Close?"),
                                                           i18n("A currently opened dialog has modifications, are you sure you want to exit without saving?"),
@@ -636,7 +637,7 @@ void Page::printReport()
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget)
 {
     Details* details = ItemEditWidgetBase::createDetailsForType(itemType);
-    details->setItemsTreeModel(mItemsTreeModel);
+    details->setItemsTreeModel(ModelRepository::instance()->model(itemType));
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setLinkedItemsRepository(mLinkedItemsRepository);
     details->setSupportedFields(mSupportedFields);
@@ -669,7 +670,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, Details
 
     if (widgetType == Simple) {
         widget->setAttribute(Qt::WA_DeleteOnClose);
-        mItemEditWidgets.insert(widget);
+        OpenedWidgetsRepository::instance()->registerWidget(widget);
         connect (widget, SIGNAL(closing()),
                  this, SLOT(slotUnregisterItemEditWidget()));
         return widget;
@@ -680,16 +681,17 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, Details
                  this, SLOT(openWidgetForItem(Akonadi::Item,DetailsType)));
         connect (tabbedWidget, SIGNAL(closing()),
                  this, SLOT(slotUnregisterItemEditWidget()));
-        mItemEditWidgets.insert(tabbedWidget);
+        OpenedWidgetsRepository::instance()->registerWidget(tabbedWidget);
         return tabbedWidget;
     }
 }
 
 ItemEditWidgetBase *Page::openedWidgetForItem(const Item &item)
 {
-    auto it = std::find_if(mItemEditWidgets.constBegin(), mItemEditWidgets.constEnd(),
+    QSet<ItemEditWidgetBase*> itemEditWidgets = OpenedWidgetsRepository::instance()->openedWidgets();
+    auto it = std::find_if(itemEditWidgets.constBegin(), itemEditWidgets.constEnd(),
                            [&](ItemEditWidgetBase *widget) { return item.id() == widget->item().id(); });
-    if (it == mItemEditWidgets.constEnd()) {
+    if (it == itemEditWidgets.constEnd()) {
         return nullptr;
     }
     return *it;
@@ -698,7 +700,7 @@ ItemEditWidgetBase *Page::openedWidgetForItem(const Item &item)
 void Page::slotUnregisterItemEditWidget()
 {
     ItemEditWidgetBase *widget = qobject_cast<ItemEditWidgetBase*>(sender());
-    mItemEditWidgets.remove(widget);
+    OpenedWidgetsRepository::instance()->unregisterWidget(widget);
 }
 
 void Page::slotChangeFields()

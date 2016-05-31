@@ -142,7 +142,6 @@ private:
     Akonadi::Collection mCollection;
     Ui_page mUi;
     QByteArray mResourceIdentifier;
-    QSet<ItemEditWidgetBase*> mItemEditWidgets;
 
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;

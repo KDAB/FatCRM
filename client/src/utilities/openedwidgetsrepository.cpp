@@ -18,38 +18,33 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ASSOCIATEDDATAWIDGET_H
-#define ASSOCIATEDDATAWIDGET_H
+#include "openedwidgetsrepository.h"
 
-#include <QWidget>
-
-namespace Ui {
-class AssociatedDataWidget;
+OpenedWidgetsRepository *OpenedWidgetsRepository::instance()
+{
+    static OpenedWidgetsRepository repo;
+    return &repo;
 }
 
-class QModelIndex;
-class QStringListModel;
-
-class AssociatedDataWidget : public QWidget
+OpenedWidgetsRepository::~OpenedWidgetsRepository()
 {
-    Q_OBJECT
+}
 
-public:
-    explicit AssociatedDataWidget(QWidget *parent = 0);
-    ~AssociatedDataWidget();
+void OpenedWidgetsRepository::registerWidget(ItemEditWidgetBase *widget)
+{
+    mItemEditWidgets.insert(widget);
+}
 
-    void hideOpportunityGui();
-    void setContactsModel(QStringListModel *model);
-    void setOpportunitiesModel(QStringListModel *model);
+void OpenedWidgetsRepository::unregisterWidget(ItemEditWidgetBase *widget)
+{
+    mItemEditWidgets.remove(widget);
+}
 
-Q_SIGNALS:
-    void openItem(const QString &item);
+QSet<ItemEditWidgetBase*> OpenedWidgetsRepository::openedWidgets() const
+{
+    return mItemEditWidgets;
+}
 
-public Q_SLOTS:
-    void itemDoubleClicked(const QModelIndex &index);
-
-private:
-    Ui::AssociatedDataWidget *mUi;
-};
-
-#endif // ASSOCIATEDDATAWIDGET_H
+OpenedWidgetsRepository::OpenedWidgetsRepository()
+{
+}
