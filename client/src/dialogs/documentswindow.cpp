@@ -115,7 +115,7 @@ QString DocumentWidget::newDocumentFilePath() const
 
 bool DocumentWidget::isModified() const
 {
-    if (mDocument.id().startsWith("__temp"))
+    if (mDocument.id().startsWith(QLatin1String("__temp")))
         return true;
 
     if (mStatusBox->currentText() != mDocument.statusId())
@@ -361,7 +361,7 @@ void DocumentsWindow::saveChanges()
     foreach (DocumentWidget *widget, mDocumentWidgets) {
         if (widget->isModified()) {
             const SugarDocument document = widget->document();
-            if (document.id().startsWith("__temp")) {
+            if (document.id().startsWith(QLatin1String("__temp"))) {
                 ComKdabSugarCRMItemTransferInterface transferInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
 
                 // create new document instance
