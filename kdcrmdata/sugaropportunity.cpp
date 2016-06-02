@@ -54,6 +54,7 @@ public:
     QString mAssignedUserId;
     QString mAssignedUserName;
     QString mOpportunityType;
+    QString mOpportunitySize;
     QString mAccountName;
     QString mAccountId;
     QString mCampaignId;
@@ -255,6 +256,17 @@ void SugarOpportunity::setOpportunityType(const QString &value)
 QString SugarOpportunity::opportunityType() const
 {
     return d->mOpportunityType;
+}
+
+void SugarOpportunity::setOpportunitySize(const QString &value)
+{
+    d->mEmpty = false;
+    d->mOpportunitySize = value;
+}
+
+QString SugarOpportunity::opportunitySize() const
+{
+    return d->mOpportunitySize;
 }
 
 void SugarOpportunity::setTempAccountName(const QString &value)
@@ -523,6 +535,9 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
         accessors.insert(KDCRMFields::opportunityType(),
                            OpportunityAccessorPair(&SugarOpportunity::opportunityType, &SugarOpportunity::setOpportunityType,
                                             i18nc("@item:intable", "Type")));
+        accessors.insert(KDCRMFields::opportunitySize(),
+                           OpportunityAccessorPair(&SugarOpportunity::opportunitySize, &SugarOpportunity::setOpportunitySize,
+                                            i18nc("@item.intable", "Size")));
         accessors.insert(KDCRMFields::accountName(),
                            OpportunityAccessorPair(&SugarOpportunity::tempAccountName, &SugarOpportunity::setTempAccountName,
                                             i18nc("@item:intable", "Account")));

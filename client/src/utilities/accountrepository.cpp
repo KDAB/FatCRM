@@ -21,7 +21,10 @@
 */
 
 #include "accountrepository.h"
+
 #include "fatcrm_client_debug.h"
+
+#include <QStringList>
 
 AccountRepository *AccountRepository::instance()
 {
@@ -38,11 +41,18 @@ void AccountRepository::clear()
     mIdMap.clear();
     mKeyMap.clear();
     mNameMap.clear();
+    mCountries.clear();
+}
+
+QStringList AccountRepository::countries() const
+{
+    return mCountries.toList();
 }
 
 void AccountRepository::addAccount(const SugarAccount &account, Akonadi::Item::Id akonadiId)
 {
     const QString accountId = account.id();
+
     Q_ASSERT(!accountId.isEmpty());
     if (mIdMap.contains(accountId)) // can this happen?
         qWarning() << "AccountRepository: already have" << accountId << mIdMap.value(accountId).name() << account.name();
@@ -50,6 +60,8 @@ void AccountRepository::addAccount(const SugarAccount &account, Akonadi::Item::I
     // ## This does not handle the case of renaming accounts later on
     mKeyMap.insertMulti(account.key(), account);
     mNameMap.insertMulti(account.cleanAccountName(), account);
+    mCountries.insert(account.billingAddressCountry());
+    mCountries.insert(account.shippingAddressCountry());
     emit accountAdded(accountId, akonadiId);
 }
 

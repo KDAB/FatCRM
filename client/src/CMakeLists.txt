@@ -61,10 +61,12 @@ set(app_SRCS
   utilities/enums.cpp
   utilities/loadingoverlay.cpp
   utilities/itemdataextractor.cpp
+  utilities/keypresseventlistview.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp
   utilities/linkeditemsrepository.cpp
   utilities/modelrepository.cpp
+  utilities/openedwidgetsrepository.cpp
   utilities/opportunitydataextractor.cpp
   utilities/opportunityfiltersettings.cpp
   utilities/qcsvreader.cpp
@@ -112,9 +114,9 @@ qt5_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
 )
 
-qt5_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemdownloadinterface.h org.kde.Akonadi.SugarCRM.ItemDownload.xml)
+qt5_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemtransferinterface.h org.kde.Akonadi.SugarCRM.ItemTransfer.xml)
 qt5_add_dbus_interface(app_SRCS
-  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemDownload.xml sugarresourceitemdownload SugarItemDownload
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemTransfer.xml sugarresourceitemtransfer SugarItemTransfer
 )
 
 add_library(fatcrmprivate ${app_SRCS})

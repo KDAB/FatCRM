@@ -22,6 +22,7 @@
 #include "ui_tabbeditemeditwidget.h"
 
 #include "associateddatawidget.h"
+#include "clientsettings.h"
 #include "itemstreemodel.h"
 #include "modelrepository.h"
 #include "simpleitemeditwidget.h"
@@ -49,10 +50,9 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     setWindowFlags(Qt::Window);
     mUi->setupUi(this);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel, Qt::Horizontal, this);
-    mSaveButton = buttonBox->button(QDialogButtonBox::Save);
-    mSaveButton->setEnabled(false);
+    setWindowModified(false);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
     layout()->addWidget(buttonBox);
 
     ItemEditWidget->hideButtonBox();
@@ -75,10 +75,12 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     mUi->tabWidget->setCurrentIndex(0);
     setWindowTitle(mItemEditWidget->title());
     initialize();
+    ClientSettings::self()->restoreWindowSize("tabbeddetails", this);
 }
 
 TabbedItemEditWidget::~TabbedItemEditWidget()
 {
+    ClientSettings::self()->saveWindowSize("tabbeddetails", this);
     delete mUi;
 }
 
@@ -159,7 +161,7 @@ void TabbedItemEditWidget::openWidget(const QString &itemKey)
 
 void TabbedItemEditWidget::dataChanged()
 {
-    mSaveButton->setEnabled(true);
+    setWindowModified(true);
 }
 
 void TabbedItemEditWidget::accept()

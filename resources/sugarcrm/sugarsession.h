@@ -36,7 +36,7 @@ class SugarSession : public QObject
     Q_OBJECT
 
     friend class SugarJob;
-    friend class ItemDownloadInterface;
+    friend class ItemTransferInterface;
     friend class ResourceDebugInterface;
     friend class ModuleDebugInterface;
     friend class ModuleHandler;

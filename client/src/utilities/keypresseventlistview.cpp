@@ -2,7 +2,7 @@
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
   Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-  Authors: Tobias Koenig <tobias.koenig@kdab.com>
+  Authors: Michel Boyer de la Giroday <michel.giroday@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -18,30 +18,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ITEMDOWNLOADINTERFACE_H
-#define ITEMDOWNLOADINTERFACE_H
+#include "keypresseventlistview.h"
 
-#include <QObject>
+#include <QKeyEvent>
 
-class SugarCRMResource;
-
-class ItemDownloadInterface : public QObject
+KeyPressEventListView::KeyPressEventListView(QWidget *parent)
+    : QListView(parent)
 {
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ItemDownload")
+    setSelectionMode(QAbstractItemView::SingleSelection);
+}
 
-public:
-    explicit ItemDownloadInterface(SugarCRMResource *resource);
-
-public Q_SLOTS:
-    /**
-     * Downloads the document via SOAP and returns the path to a local temp file.
-     * The caller is responsible to clean up the temp file.
-     */
-    Q_SCRIPTABLE QString downloadDocumentRevision(const QString &documentRevisionId) const;
-
-private:
-    SugarCRMResource *const mResource;
-};
-
-#endif
+void KeyPressEventListView::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Enter || event->key() == Qt::Key_Return) {
+        const QModelIndex idx = currentIndex();
+        if (idx.isValid())
+            emit returnPressed(idx);
+    }
+    QListView::keyPressEvent(event);
+}

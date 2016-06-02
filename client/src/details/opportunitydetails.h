@@ -45,6 +45,7 @@ public:
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    void setItemsTreeModel(ItemsTreeModel *model) Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotAutoNextStepDate();

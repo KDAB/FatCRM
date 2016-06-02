@@ -54,7 +54,6 @@ Q_SIGNALS:
     void dataModified();
 
 protected Q_SLOTS:
-    void reject();
     virtual void accept() = 0;
 
 protected:

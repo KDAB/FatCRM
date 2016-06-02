@@ -69,6 +69,10 @@ AccountDetails::AccountDetails(QWidget *parent)
     mUi->shipping_address_postalcode->setObjectName(KDCRMFields::shippingAddressPostalcode());
     mUi->shipping_address_country->setObjectName(KDCRMFields::shippingAddressCountry());
 
+    QCompleter *countriesCompleter = createCountriesCompleter();
+    mUi->billing_address_country->setCompleter(countriesCompleter);
+    mUi->shipping_address_country->setCompleter(countriesCompleter);
+
     initialize();
 }
 
@@ -95,16 +99,13 @@ void AccountDetails::slotShippingAddressCountryEditingFinished()
 void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
-    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForAccount(accountId);
-    qCDebug(FATCRM_CLIENT_LOG) << documents.count() << "documents found for account" << accountId;
 
     DocumentsWindow *dlg = new DocumentsWindow(0);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
-    dlg->setResourceIdentifier(resourceIdentifier());
 
-    foreach (const SugarDocument &document, documents) {
-        dlg->addDocument(document);
-    }
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->loadDocumentsFor(accountId, DocumentsWindow::Account);
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();

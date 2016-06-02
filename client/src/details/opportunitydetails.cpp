@@ -40,6 +40,7 @@
 #include "fatcrm_client_debug.h"
 
 #include <QCalendarWidget>
+#include <QCompleter>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this)), mCloseDateChangedByUser(false)
@@ -63,7 +64,7 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
     mUi->probability->setObjectName(KDCRMFields::probability());
     mUi->opportunityPriority->setObjectName(KDCRMFields::opportunityPriority());
-
+    mUi->opportunitySize->setObjectName(KDCRMFields::opportunitySize());
     initialize();
 }
 
@@ -154,6 +155,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
     fillComboBox(mUi->opportunityPriority, KDCRMFields::opportunityPriority());
+    fillComboBox(mUi->opportunitySize, KDCRMFields::opportunitySize());
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
@@ -211,16 +213,13 @@ void OpportunityDetails::on_viewNotesButton_clicked()
 void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
-    const QVector<SugarDocument> documents = mLinkedItemsRepository->documentsForOpportunity(oppId);
-     qCDebug(FATCRM_CLIENT_LOG) << documents.count() << "documents found for opp" << oppId;
 
     DocumentsWindow *dlg = new DocumentsWindow(0);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
-    dlg->setResourceIdentifier(resourceIdentifier());
 
-    foreach (const SugarDocument &document, documents) {
-        dlg->addDocument(document);
-    }
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->loadDocumentsFor(oppId, DocumentsWindow::Opportunity);
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();
@@ -247,4 +246,22 @@ void OpportunityDetails::slotAccountSelected(const QString &accountId)
     if (idx > -1) {
         mUi->account_id->setCurrentIndex(idx);
     }
+}
+
+void OpportunityDetails::setItemsTreeModel(ItemsTreeModel *model)
+{
+    QSet<QString> words;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QModelIndex index = model->index(row, 0);
+        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+        const QString nextStep = opportunity.nextStep();
+        if (!nextStep.isEmpty())
+            words.insert(nextStep);
+    }
+
+    QCompleter *nextStepCompleter = new QCompleter(words.toList(), this);
+    nextStepCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    mUi->next_step->setCompleter(nextStepCompleter);
+    Details::setItemsTreeModel(model);
 }

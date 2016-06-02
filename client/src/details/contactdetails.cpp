@@ -36,6 +36,8 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
+#include <QCompleter>
+#include <QDesktopServices>
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
@@ -74,6 +76,10 @@ ContactDetails::ContactDetails(QWidget *parent)
     mUi->altAddressState->setObjectName(KDCRMFields::altAddressState());
     mUi->altAddressPostalcode->setObjectName(KDCRMFields::altAddressPostalcode());
     mUi->altAddressCountry->setObjectName(KDCRMFields::altAddressCountry());
+
+    QCompleter *countriesCompleter = createCountriesCompleter();
+    mUi->altAddressCountry->setCompleter(countriesCompleter);
+    mUi->primaryAddressCountry->setCompleter(countriesCompleter);
 
     initialize();
 }
@@ -337,7 +343,14 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
-        mUi->urllabel->setText(QStringLiteral("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
+        mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
+
+    slotEnableMailToPrimary();
+    connect(mUi->email1, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToPrimary()));
+    connect(mUi->buttonMailToPrimary, SIGNAL(clicked(bool)), this, SLOT(slotMailToPrimary()));
+    slotEnableMailToOther();
+    connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
+    connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()
@@ -372,4 +385,41 @@ void ContactDetails::slotPrimaryAddressCountryEditingFinished()
 void ContactDetails::slotOtherAddressCountryEditingFinished()
 {
     mUi->altAddressCountry->setText(KDCRMUtils::canonicalCountryName(mUi->altAddressCountry->text()));
+}
+
+void ContactDetails::setItemsTreeModel(ItemsTreeModel *model)
+{
+    QSet<QString> words;
+    for (int row = 0; row < model->rowCount(); ++row) {
+        const QModelIndex index = model->index(row, 0);
+        const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+        const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+        const QString addresseeTitle = addressee.title();
+        if (!addresseeTitle.isEmpty())
+            words.insert(addresseeTitle);
+    }
+    QCompleter *titlesCompleter = new QCompleter(words.toList(), this);
+    titlesCompleter->setCaseSensitivity(Qt::CaseInsensitive);
+    mUi->title->setCompleter(titlesCompleter);
+    Details::setItemsTreeModel(model);
+}
+
+void ContactDetails::slotEnableMailToPrimary()
+{
+    mUi->buttonMailToPrimary->setEnabled(!mUi->email1->text().isEmpty());
+}
+
+void ContactDetails::slotEnableMailToOther()
+{
+    mUi->buttonMailToOther->setEnabled(!mUi->email2->text().isEmpty());
+}
+
+void ContactDetails::slotMailToPrimary()
+{
+    QDesktopServices::openUrl(QUrl("mailto:" + mUi->email1->text()));
+}
+
+void ContactDetails::slotMailToOther()
+{
+    QDesktopServices::openUrl(QUrl("mailto:" + mUi->email2->text()));
 }

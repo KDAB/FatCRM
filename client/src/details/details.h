@@ -24,6 +24,7 @@
 #define DETAILS_H
 
 #include "enums.h"
+
 #include "kdcrmdata/enumdefinitions.h"
 
 #include <AkonadiCore/Item>
@@ -31,8 +32,10 @@
 #include <QWidget>
 
 class QComboBox;
+class QCompleter;
 class LinkedItemsRepository;
 class ItemDataExtractor;
+class ItemsTreeModel;
 
 class Details : public QWidget
 {
@@ -54,6 +57,7 @@ public:
     void setSupportedFields(const QStringList &fields);
     void setEnumDefinitions(const EnumDefinitions &enums);
     virtual void setLinkedItemsRepository(LinkedItemsRepository *repo) { Q_UNUSED(repo); }
+    virtual void setItemsTreeModel(ItemsTreeModel *model);
     virtual ItemDataExtractor *itemDataExtractor() const = 0;
 
     DetailsType type() const
@@ -72,12 +76,13 @@ Q_SIGNALS:
 protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
     QString resourceBaseUrl() const { return mResourceBaseUrl; }
+    QCompleter *createCountriesCompleter();
 
     void fillComboBox(QComboBox *combo, const QString &objectName) const;
 
     virtual void setDataInternal(const QMap<QString, QString> &) {}
     QString id() const;
-
+    ItemsTreeModel *mItemsTreeModel;
 
 private Q_SLOTS:
     void doConnects();

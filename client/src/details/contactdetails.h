@@ -46,6 +46,8 @@ public:
     ~ContactDetails();
 
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    void setItemsTreeModel(ItemsTreeModel *model) Q_DECL_OVERRIDE;
+
 
 private:
     Ui::ContactDetails *mUi;
@@ -67,6 +69,10 @@ private Q_SLOTS:
     void slotAccountSelected(const QString &accountId);
     void slotPrimaryAddressCountryEditingFinished();
     void slotOtherAddressCountryEditingFinished();
+    void slotEnableMailToPrimary();
+    void slotEnableMailToOther();
+    void slotMailToPrimary();
+    void slotMailToOther();
 
 private:
     ContactDataExtractor *mDataExtractor;

@@ -22,6 +22,7 @@
 
 #include "details.h"
 
+#include "accountrepository.h"
 #include "clientsettings.h"
 #include "kdcrmfields.h"
 #include "kdcrmutils.h"
@@ -29,11 +30,13 @@
 #include "referenceddatamodel.h"
 #include "referenceddata.h"
 #include "itemdataextractor.h"
+#include "itemstreemodel.h"
 
 #include <KLocalizedString>
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QCompleter>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPlainTextEdit>
@@ -415,4 +418,17 @@ QString Details::name() const
 QString Details::id() const
 {
     return property("id").toString();
+}
+
+QCompleter *Details::createCountriesCompleter()
+{
+    QCompleter *completer = new QCompleter(AccountRepository::instance()->countries(), this);
+    completer->setCaseSensitivity(Qt::CaseInsensitive);
+    return completer;
+}
+
+void Details::setItemsTreeModel(ItemsTreeModel *model)
+{
+    // keep the member - could be useful later
+    mItemsTreeModel = model;
 }

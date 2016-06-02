@@ -94,6 +94,9 @@ static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const 
     if (opportunity.assignedUserName().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
+    if (opportunity.opportunitySize().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
 
     return false;
 }
