@@ -84,6 +84,7 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString industry();
     KDCRMDATA_EXPORT QString accountType();
     KDCRMDATA_EXPORT QString opportunityPriority();
+    KDCRMDATA_EXPORT QString opportunitySize();
 
     // for Contacts
     KDCRMDATA_EXPORT QString primaryAddressStreet();

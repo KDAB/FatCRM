@@ -121,7 +121,8 @@ int OpportunitiesHandler::expectedContentsVersion() const
     // version 1 = account_name is resolved to account_id upon loading
     // version 2 = changed custom fields storage names
     // version 3 = fix list of supported crm fields
-    return 3;
+    // version 4 = new custom field opportunity_size_c
+    return 4;
 }
 
 QString OpportunitiesHandler::orderByForListing() const

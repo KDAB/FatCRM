@@ -63,6 +63,7 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->sales_stage->setObjectName(KDCRMFields::salesStage());
     mUi->probability->setObjectName(KDCRMFields::probability());
     mUi->opportunityPriority->setObjectName(KDCRMFields::opportunityPriority());
+    mUi->opportunitySize->setObjectName(KDCRMFields::opportunitySize());
     initialize();
 }
 
@@ -153,6 +154,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     fillComboBox(mUi->lead_source, KDCRMFields::leadSource());
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
     fillComboBox(mUi->opportunityPriority, KDCRMFields::opportunityPriority());
+    fillComboBox(mUi->opportunitySize, KDCRMFields::opportunitySize());
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())

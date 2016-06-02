@@ -195,6 +195,15 @@ public:
     QString opportunityType() const;
 
     /**
+      Set Opportunity size.
+     */
+    void setOpportunitySize(const QString &value);
+    /**
+      Return Opportunity size.
+     */
+    QString opportunitySize() const;
+
+    /**
       Set the Account Name; used temporarily during listing.
       Don't use from the GUI, use the account ID instead.
      */

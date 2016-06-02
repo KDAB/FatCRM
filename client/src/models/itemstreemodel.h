@@ -73,6 +73,7 @@ public:
         LeadUser,
         OpportunityName,
         OpportunityAccountName,
+        OpportunitySize,
         SalesStage,
         Amount,
         NextStep,

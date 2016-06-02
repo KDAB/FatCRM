@@ -667,6 +667,11 @@ QString KDCRMFields::opportunityPriority()
     return QLatin1String("opportunity_priority");
 }
 
+QString KDCRMFields::opportunitySize()
+{
+    return QLatin1String("opportunity_size");
+}
+
 QString KDCRMFields::documentName()
 {
     return QLatin1String("document_name");

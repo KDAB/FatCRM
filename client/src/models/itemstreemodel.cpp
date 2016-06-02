@@ -414,6 +414,8 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return opportunity.salesStage();
         case Amount:
             return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
+        case OpportunitySize:
+            return opportunity.opportunitySize();
         case Description:
             return opportunity.limitedDescription(2);
         case CreationDate: {
@@ -564,6 +566,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::SalesStage
                 << ItemsTreeModel::Amount
+                << ItemsTreeModel::OpportunitySize
                 << ItemsTreeModel::Description
                 << ItemsTreeModel::CreationDate
                 << ItemsTreeModel::NextStep
@@ -641,6 +644,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column name for the Opportunity", "Opportunity");
     case OpportunityAccountName:
         return i18nc("@title:column account name", "Account Name");
+    case OpportunitySize:
+        return i18nc("@title:column opportunity size", "Size");
     case SalesStage:
         return i18nc("@title:column sales stage", "Sales Stage");
     case Amount:
