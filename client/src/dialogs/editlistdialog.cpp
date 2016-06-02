@@ -21,12 +21,13 @@
 */
 
 #include "editlistdialog.h"
+#include "clientsettings.h"
 
-#include <KEditListWidget>
 #include <KLocalizedString>
 
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QTextEdit>
 #include <QVBoxLayout>
 
 EditListDialog::EditListDialog(const QString &labelText, QWidget *parent) :
@@ -34,20 +35,26 @@ EditListDialog::EditListDialog(const QString &labelText, QWidget *parent) :
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(labelText, this));
-    mEditListWidget = new KEditListWidget(this);
-    layout->addWidget(mEditListWidget);
+    mTextEdit = new QTextEdit(this);
+    layout->addWidget(mTextEdit);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, this);
     layout->addWidget(buttonBox);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));
+    ClientSettings::self()->restoreWindowSize("editlistdialog", this);
+}
+
+EditListDialog::~EditListDialog()
+{
+    ClientSettings::self()->saveWindowSize("editlistdialog", this);
 }
 
 void EditListDialog::setItems(const QStringList &items)
 {
-    mEditListWidget->setItems(items);
+    mTextEdit->setPlainText(items.join("\n"));
 }
 
 QStringList EditListDialog::items() const
 {
-    return mEditListWidget->items();
+    return mTextEdit->toPlainText().trimmed().split('\n', QString::SkipEmptyParts);
 }

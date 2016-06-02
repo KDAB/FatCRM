@@ -22,10 +22,11 @@
 
 #include "configurationdialog.h"
 #include "editlistdialog.h"
+#include "clientsettings.h"
 #include "ui_configurationdialog.h"
+
 #include <QListView>
 #include <QModelIndex>
-#include <QDebug>
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     QDialog(parent),
@@ -54,10 +55,12 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     connect(ui->editSelectedCountryFilter, SIGNAL(clicked()),
             this, SLOT(slotEditCountryGroup()));
     ui->editSelectedCountryFilter->setEnabled(false);
+    ClientSettings::self()->restoreWindowSize("configurationdialog", this);
 }
 
 ConfigurationDialog::~ConfigurationDialog()
 {
+    ClientSettings::self()->saveWindowSize("configurationdialog", this);
     delete ui;
 }
 
@@ -129,7 +132,7 @@ void ConfigurationDialog::slotCountryAdded(const QString &country)
 
 void ConfigurationDialog::slotEditAssigneeGroup()
 {
-    EditListDialog dialog(i18n("Type the full name of users to add them to the group:"), this);
+    EditListDialog dialog(i18n("Enter the full name of the users for the group, one name per line:"), this);
     ClientSettings::GroupFilters::Group group = m_assigneeFilters.groups().at(m_currentAssigneeFilterRow);
     dialog.setWindowTitle(i18n("Editing assignee group %1", group.group));
     dialog.setItems(group.entries);
@@ -140,7 +143,7 @@ void ConfigurationDialog::slotEditAssigneeGroup()
 
 void ConfigurationDialog::slotEditCountryGroup()
 {
-    EditListDialog dialog(i18n("Type country names to add them to the group:"), this);
+    EditListDialog dialog(i18n("Enter the names of the countries for the group, one country per line:"), this);
     ClientSettings::GroupFilters::Group group = m_countryFilters.groups().at(m_currentCountryGroupRow);
     dialog.setWindowTitle(i18n("Editing country group %1", group.group));
     dialog.setItems(group.entries);

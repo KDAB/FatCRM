@@ -25,26 +25,23 @@
 
 #include <QDialog>
 
-class KEditListWidget;
+class QTextEdit;
 
 /**
  * A dialog for editing a list of strings
- * (with KEditListWidget)
  */
 class EditListDialog : public QDialog
 {
     Q_OBJECT
 public:
     explicit EditListDialog(const QString &labelText, QWidget *parent = 0);
+    ~EditListDialog();
 
     void setItems(const QStringList &items);
     QStringList items() const;
 
-signals:
-
 private:
-    KEditListWidget *mEditListWidget;
-
+    QTextEdit *mTextEdit;
 };
 
 #endif // EDITLISTDIALOG_H
