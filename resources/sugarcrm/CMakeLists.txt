@@ -50,6 +50,8 @@ qt4_add_dbus_adaptor(sugarcrmresource_SRCS
 
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap "")
 
+kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap41 "41")
+
 kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource

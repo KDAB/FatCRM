@@ -22,6 +22,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarsoap41.h"
 #include "sugarcrmresource.h"
 
 #include <KCodecs>
@@ -111,24 +112,27 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
                                      const QString &targetItemId, const QString &targetModuleName) const
 {
     SugarSession *session = mResource->mSession;
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
         qWarning() << "No session! Need to login first.";
         return false;
     }
 
-    KDSoapGenerated::TNS__Set_relationship_value relationshipValue;
-    relationshipValue.setModule1(sourceModuleName);
-    relationshipValue.setModule1_id(sourceItemId);
-    relationshipValue.setModule2(targetModuleName);
-    relationshipValue.setModule2_id(targetItemId);
-    qWarning() << sourceModuleName << ":" << sourceItemId << "->" << targetModuleName << ":" << targetItemId;
+    KUrl url(session->host());
+    url.setPath("/service/v4_1/soap.php");
+    url.setQuery(QString());
 
-    const KDSoapGenerated::TNS__Error_value result = soap->set_relationship(sessionId, relationshipValue);
+    KDSoapGenerated41::Sugarsoap soap;
+    soap.setEndPoint(url.url());
 
-    if (result.number() != QLatin1String("0")) {
-        qWarning() << "Unable to link items:" << result.number() << result.name() << result.description();
+
+    KDSoapGenerated41::TNS__Select_fields relatedIds;
+    relatedIds.setItems(QStringList() << targetItemId);
+
+    const KDSoapGenerated41::TNS__New_set_relationship_list_result result = soap.set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated41::TNS__Name_value_list(), 0);
+
+    if (!soap.lastError().isEmpty()) {
+        qWarning() << "Unable to link items:" << soap.lastError();
         return false;
     }
 
