@@ -8,16 +8,16 @@ find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
 set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
 if(KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
-  macro(kdsoap_generate_soap_bindings _sources _wsdl _name)
+  macro(kdsoap_generate_soap_bindings _sources _wsdl _name _namespaceSuffix)
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
-      COMMAND ${KDSoap_CODEGENERATOR} -namespace KDSoapGenerated -o ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -namespace KDSoapGenerated${_namespaceSuffix} -o ${_name}.h
               ${_wsdl}
       DEPENDS ${_wsdl}
     )
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp
-      COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.cpp -namespace KDSoapGenerated -impl ${_name}.h
+      COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.cpp -namespace KDSoapGenerated${_namespaceSuffix} -impl ${_name}.h
               ${_wsdl}
       DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h
               ${_wsdl}

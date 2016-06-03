@@ -22,6 +22,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarsoap41.h"
 #include "sugarcrmresource.h"
 
 #include <KCodecs>
@@ -59,7 +60,7 @@ QString ItemTransferInterface::downloadDocumentRevision(const QString &documentR
     return fullPath;
 }
 
-QString ItemTransferInterface::uploadDocument(const QString &documentName, const QString &localFilePath) const
+QString ItemTransferInterface::uploadDocument(const QString &documentName, const QString &statusId, const QString &description, const QString &localFilePath) const
 {
     QFile file(localFilePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -75,12 +76,20 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
     }
 
     // first create the document entry
-    KDSoapGenerated::TNS__Name_value documentProperty;
-    documentProperty.setName("document_name");
-    documentProperty.setValue(documentName);
+    KDSoapGenerated::TNS__Name_value documentNameProperty;
+    documentNameProperty.setName("document_name");
+    documentNameProperty.setValue(documentName);
+
+    KDSoapGenerated::TNS__Name_value statusIdProperty;
+    statusIdProperty.setName("status_id");
+    statusIdProperty.setValue(statusId);
+
+    KDSoapGenerated::TNS__Name_value descriptionProperty;
+    descriptionProperty.setName("description");
+    descriptionProperty.setValue(description);
 
     KDSoapGenerated::TNS__Name_value_list documentProperties;
-    documentProperties.setItems(QList<KDSoapGenerated::TNS__Name_value>() << documentProperty);
+    documentProperties.setItems(QList<KDSoapGenerated::TNS__Name_value>() << documentNameProperty << statusIdProperty << descriptionProperty);
 
     KDSoapGenerated::TNS__Set_entry_result result = soap->set_entry(sessionId, "Documents", documentProperties);
     if (result.error().number() != QLatin1String("0")) {
@@ -111,24 +120,27 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
                                      const QString &targetItemId, const QString &targetModuleName) const
 {
     SugarSession *session = mResource->mSession;
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
         qWarning() << "No session! Need to login first.";
         return false;
     }
 
-    KDSoapGenerated::TNS__Set_relationship_value relationshipValue;
-    relationshipValue.setModule1(sourceModuleName);
-    relationshipValue.setModule1_id(sourceItemId);
-    relationshipValue.setModule2(targetModuleName);
-    relationshipValue.setModule2_id(targetItemId);
-    qWarning() << sourceModuleName << ":" << sourceItemId << "->" << targetModuleName << ":" << targetItemId;
+    KUrl url(session->host());
+    url.setPath("/service/v4_1/soap.php");
+    url.setQuery(QString());
 
-    const KDSoapGenerated::TNS__Error_value result = soap->set_relationship(sessionId, relationshipValue);
+    KDSoapGenerated41::Sugarsoap soap;
+    soap.setEndPoint(url.url());
 
-    if (result.number() != QLatin1String("0")) {
-        qWarning() << "Unable to link items:" << result.number() << result.name() << result.description();
+
+    KDSoapGenerated41::TNS__Select_fields relatedIds;
+    relatedIds.setItems(QStringList() << targetItemId);
+
+    const KDSoapGenerated41::TNS__New_set_relationship_list_result result = soap.set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated41::TNS__Name_value_list(), 0);
+
+    if (!soap.lastError().isEmpty()) {
+        qWarning() << "Unable to link items:" << soap.lastError();
         return false;
     }
 

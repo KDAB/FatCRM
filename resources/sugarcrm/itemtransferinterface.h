@@ -44,7 +44,7 @@ public Q_SLOTS:
      * Creates a new document via SOAP and returns the document id or an empty
      * string in case of an error.
      */
-    Q_SCRIPTABLE QString uploadDocument(const QString &documentName, const QString &localFilePath) const;
+    Q_SCRIPTABLE QString uploadDocument(const QString &documentName, const QString &statusId, const QString &description, const QString &localFilePath) const;
 
     /**
      * Links the two items together name.
