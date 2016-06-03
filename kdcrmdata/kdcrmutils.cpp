@@ -150,7 +150,7 @@ QString KDCRMUtils::canonicalCountryName(const QString &input)
         return QStringLiteral("The Netherlands");
     } else if (c == QLatin1String("united kingdom") || c == QLatin1String("great britain") || c == QLatin1String("u.k.")) {
         return QStringLiteral("UK");
-    } else if (c == QLatin1String("u.s.a") || c == QLatin1String("united states")) {
+    } else if (c == QLatin1String("u.s.a") || c == QLatin1String("us") || c == QLatin1String("united states")) {
         return QStringLiteral("USA");
     } else if (c == QLatin1String("Czechoslovakia")) {
         return QStringLiteral("Czech Republic");
