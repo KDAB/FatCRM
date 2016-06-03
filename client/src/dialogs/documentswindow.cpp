@@ -27,8 +27,8 @@
 #include "linkeditemsrepository.h"
 #include "sugarresourceitemtransfer.h"
 
-#include <Akonadi/ItemDeleteJob>
-#include <Akonadi/ItemModifyJob>
+#include <AkonadiCore/ItemDeleteJob>
+#include <AkonadiCore/ItemModifyJob>
 #include <KMimeType>
 #include <KRun>
 

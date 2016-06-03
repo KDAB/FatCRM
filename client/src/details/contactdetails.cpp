@@ -40,6 +40,8 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 
+#define KABC KContacts
+
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
 {
