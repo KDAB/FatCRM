@@ -23,7 +23,7 @@ qt4_add_dbus_adaptor(salesforceresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SalesForce.Settings.xml settings.h Settings
 )
 
-kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap)
+kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap "")
 
 kde4_add_executable(akonadi_salesforce_resource RUN_UNINSTALLED ${salesforceresource_SRCS})
 

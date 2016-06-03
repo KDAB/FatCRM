@@ -48,7 +48,7 @@ qt4_add_dbus_adaptor(sugarcrmresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml settings.h Settings
 )
 
-kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap)
+kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap "")
 
 kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
 
