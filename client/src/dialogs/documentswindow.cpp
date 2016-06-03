@@ -139,9 +139,6 @@ DocumentsWindow::DocumentsWindow(QWidget *parent)
     ClientSettings::self()->restoreWindowSize("DocumentsWindow", this);
 
     connect(ui->attachButton, SIGNAL(clicked()), SLOT(attachDocument()));
-
-    //TODO: show again as soon as we know how to link documents in the backend
-    ui->attachButton->setVisible(false);
 }
 
 DocumentsWindow::~DocumentsWindow()
