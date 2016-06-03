@@ -358,11 +358,13 @@ void DocumentsWindow::saveChanges()
     foreach (DocumentWidget *widget, mDocumentWidgets) {
         if (widget->isModified()) {
             const SugarDocument document = widget->document();
+            const SugarDocument modifiedDocument = widget->modifiedDocument();
             if (document.id().startsWith(QLatin1String("__temp"))) {
                 ComKdabSugarCRMItemTransferInterface transferInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
 
                 // create new document instance
-                QDBusPendingReply<QString> uploadReply = transferInterface.uploadDocument(document.documentName(), widget->newDocumentFilePath());
+                QDBusPendingReply<QString> uploadReply = transferInterface.uploadDocument(modifiedDocument.documentName(), modifiedDocument.statusId(),
+                                                                                          modifiedDocument.description(), widget->newDocumentFilePath());
                 uploadReply.waitForFinished();
 
                 const QString documentId = uploadReply.value();
@@ -386,7 +388,7 @@ void DocumentsWindow::saveChanges()
             } else {
                 Akonadi::Item item = mLinkedItemsRepository->documentItem(document.id());
                 if (item.isValid()) {
-                    item.setPayload(widget->modifiedDocument());
+                    item.setPayload(modifiedDocument);
 
                     Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
                     connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));

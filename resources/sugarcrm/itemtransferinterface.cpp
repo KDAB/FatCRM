@@ -60,7 +60,7 @@ QString ItemTransferInterface::downloadDocumentRevision(const QString &documentR
     return fullPath;
 }
 
-QString ItemTransferInterface::uploadDocument(const QString &documentName, const QString &localFilePath) const
+QString ItemTransferInterface::uploadDocument(const QString &documentName, const QString &statusId, const QString &description, const QString &localFilePath) const
 {
     QFile file(localFilePath);
     if (!file.open(QIODevice::ReadOnly)) {
@@ -76,12 +76,20 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
     }
 
     // first create the document entry
-    KDSoapGenerated::TNS__Name_value documentProperty;
-    documentProperty.setName("document_name");
-    documentProperty.setValue(documentName);
+    KDSoapGenerated::TNS__Name_value documentNameProperty;
+    documentNameProperty.setName("document_name");
+    documentNameProperty.setValue(documentName);
+
+    KDSoapGenerated::TNS__Name_value statusIdProperty;
+    statusIdProperty.setName("status_id");
+    statusIdProperty.setValue(statusId);
+
+    KDSoapGenerated::TNS__Name_value descriptionProperty;
+    descriptionProperty.setName("description");
+    descriptionProperty.setValue(description);
 
     KDSoapGenerated::TNS__Name_value_list documentProperties;
-    documentProperties.setItems(QList<KDSoapGenerated::TNS__Name_value>() << documentProperty);
+    documentProperties.setItems(QList<KDSoapGenerated::TNS__Name_value>() << documentNameProperty << statusIdProperty << descriptionProperty);
 
     KDSoapGenerated::TNS__Set_entry_result result = soap->set_entry(sessionId, "Documents", documentProperties);
     if (result.error().number() != QLatin1String("0")) {
