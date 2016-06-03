@@ -126,7 +126,7 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
         return false;
     }
 
-    KUrl url(session->host());
+    QUrl url(session->host());
     url.setPath("/service/v4_1/soap.php");
     url.setQuery(QString());
 
