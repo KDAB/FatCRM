@@ -227,7 +227,7 @@ Akonadi::Collection LinkedItemsRepository::documentsCollection() const
 
 void LinkedItemsRepository::loadDocuments()
 {
-    //kDebug() << "Loading" << mDocumentsCollection.statistics().count() << "documents";
+    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mDocumentsCollection.statistics().count() << "documents";
 
     // load documents
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mDocumentsCollection, this);
