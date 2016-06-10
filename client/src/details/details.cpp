@@ -104,9 +104,25 @@ void Details::doConnects()
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 }
 
+void Details::hideIfUnsupported(QWidget *widget)
+{
+    const QString key = widget->objectName();
+    if (!mKeys.contains(key)) {
+        //kDebug() << "HIDING" << key;
+        widget->hide();
+        // Find the label whose buddy is <widget>
+        foreach (QLabel *label, widget->parentWidget()->findChildren<QLabel *>()) {
+            if (label->buddy() == widget) {
+                label->hide();
+                break;
+            }
+        }
+    }
+}
+
 void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
 {
-    if (combo->count() == 0) {
+    if (mKeys.contains(combo->objectName()) && combo->count() == 0) {
         const int enumIndex = mEnumDefinitions.indexOf(objectName);
         if (enumIndex == -1) {
             kWarning() << "Enum definition not found for" << objectName << "in" << typeToString(mType);
@@ -198,15 +214,17 @@ void Details::setData(const QMap<QString, QString> &data,
     QString key;
 
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits) {
-        key = le->objectName();
-        if (!data.contains(key)) continue; // skip internal lineedits (e.g. in spinbox)
-        le->setText(data.value(key));
+    Q_FOREACH (QLineEdit *w, lineEdits) {
+        key = w->objectName();
+        if (key.startsWith("qt_")) continue; // skip internal lineedits (e.g. in spinbox)
+        hideIfUnsupported(w);
+        w->setText(data.value(key));
     }
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (!data.contains(key)) continue; // skip internal combos (e.g. in QDateEditEx)
+        if (key.startsWith("qt_")) continue; // skip internal combos (e.g. in QDateEditEx)
+        hideIfUnsupported(cb);
         const int idx = cb->findData(data.value(key));
         if (idx == -1 && cb->count() > 1) {
             kDebug() << "Didn't find" << data.value(key) << "in combo" << key;
@@ -218,35 +236,36 @@ void Details::setData(const QMap<QString, QString> &data,
     }
 
     QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes) {
-        key = cb->objectName();
-        if (!data.contains(key)) continue;
-        cb->setChecked(data.value(key) == "1" ? true : false);
+    Q_FOREACH (QCheckBox *w, checkBoxes) {
+        key = w->objectName();
+        hideIfUnsupported(w);
+        w->setChecked(data.value(key) == QLatin1String("1"));
     }
 
     QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
     Q_FOREACH (QTextEdit *w, textEdits) {
         key = w->objectName();
-        if (!data.contains(key)) continue;
+        hideIfUnsupported(w);
         w->setPlainText(data.value(key));
     }
 
     QList<QPlainTextEdit *> plainTextEdits = findChildren<QPlainTextEdit *>();
     Q_FOREACH (QPlainTextEdit *w, plainTextEdits) {
         key = w->objectName();
-        if (!data.contains(key)) continue;
+        hideIfUnsupported(w);
         w->setPlainText(data.value(key));
     }
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
         key = w->objectName();
-        if (!data.contains(key)) continue;
+        if (key.startsWith("qt_")) continue; // skip internal widgets (e.g. in QCalendarWidget)
+        hideIfUnsupported(w);
         w->setValue(data.value(key).toInt());
     }
 
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
-        if (!data.contains(key)) continue;
+        hideIfUnsupported(w);
         //kDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
         if (key == KDCRMFields::amount())
@@ -255,7 +274,7 @@ void Details::setData(const QMap<QString, QString> &data,
 
     Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
         key = w->objectName();
-        if (!data.contains(key)) continue;
+        hideIfUnsupported(w);
         //kDebug() << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
