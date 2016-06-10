@@ -26,13 +26,14 @@
 #include "passwordhandler.h"
 
 using namespace KDSoapGenerated;
-#include <KUrl>
+#include <QUrl>
 #include "sugarcrmresource_debug.h"
 
 static QString endPointFromHostString(const QString &host)
 {
-    KUrl url(host);
-    url.setFileName(QStringLiteral("soap.php"));
+    QUrl url(host);
+    url = url.adjusted(QUrl::RemoveFilename);
+    url.setPath(url.path() + QStringLiteral("soap.php"));
     url.setQuery(QString());
 
     return url.url();
