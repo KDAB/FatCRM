@@ -56,7 +56,11 @@ public:
     void loadDocuments();
     void monitorChanges();
 
+    QVector<SugarNote> notesForAccount(const QString &id) const;
+    QVector<SugarNote> notesForContact(const QString &id) const;
     QVector<SugarNote> notesForOpportunity(const QString &id) const;
+    QVector<SugarEmail> emailsForAccount(const QString &id) const;
+    QVector<SugarEmail> emailsForContact(const QString &id) const;
     QVector<SugarEmail> emailsForOpportunity(const QString &id) const;
 
     QVector<SugarDocument> documentsForAccount(const QString &id) const;
@@ -91,14 +95,22 @@ private:
     Akonadi::Collection mNotesCollection;
     Akonadi::Monitor *mMonitor;
     typedef QHash<QString, QVector<SugarNote> > NotesHash;
-    NotesHash mNotesHash;
-    QHash<QString, QString> mNotesParentIdHash; // note id -> opportunity id (to handle removals)
+    NotesHash mAccountNotesHash;
+    NotesHash mContactNotesHash;
+    NotesHash mOpportunityNotesHash;
+    QHash<QString, QString> mNotesAccountIdHash; // note id -> account id (to handle removals)
+    QHash<QString, QString> mNotesContactIdHash; // note id -> contact id (to handle removals)
+    QHash<QString, QString> mNotesOpportunityIdHash; // note id -> opportunity id (to handle removals)
     int mNotesLoaded;
 
     Akonadi::Collection mEmailsCollection;
     typedef QHash<QString, QVector<SugarEmail> > EmailsHash;
-    EmailsHash mEmailsHash;
-    QHash<QString, QString> mEmailsParentIdHash; // email id -> opportunity id (to handle removals)
+    EmailsHash mAccountEmailsHash;
+    EmailsHash mContactEmailsHash;
+    EmailsHash mOpportunityEmailsHash;
+    QHash<QString, QString> mEmailsAccountIdHash; // email id -> account id (to handle removals)
+    QHash<QString, QString> mEmailsContactIdHash; // email id -> contact id (to handle removals)
+    QHash<QString, QString> mEmailsOpportunityIdHash; // email id -> opportunity id (to handle removals)
     int mEmailsLoaded;
 
     Akonadi::Collection mDocumentsCollection;

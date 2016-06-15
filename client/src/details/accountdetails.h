@@ -47,6 +47,7 @@ public:
 private Q_SLOTS:
     void slotBillingAddressCountryEditingFinished();
     void slotShippingAddressCountryEditingFinished();
+    void on_viewNotesButton_clicked();
     void on_viewDocumentsButton_clicked();
 
 private:

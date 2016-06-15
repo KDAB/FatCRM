@@ -25,7 +25,9 @@
 #include "accountrepository.h"
 #include "contactdataextractor.h"
 #include "editcalendarbutton.h"
+#include "linkeditemsrepository.h"
 #include "modelrepository.h"
+#include "noteswindow.h"
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
 #include "ui_contactdetails.h"
@@ -41,7 +43,7 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
+    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -351,12 +353,39 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
     slotEnableMailToOther();
     connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
     connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
+
+    const QString contactId = id();
+    {
+        const int notes = contactId.isEmpty() ? 0 : mLinkedItemsRepository->notesForContact(contactId).count() + mLinkedItemsRepository->emailsForContact(contactId).count();
+        mUi->viewNotesButton->setEnabled(notes > 0);
+        const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
+        mUi->viewNotesButton->setText(buttonText);
+    }
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
     emit openObject(Account, accountId);
+}
+
+void ContactDetails::on_viewNotesButton_clicked()
+{
+    const QString contactId = id();
+    const QVector<SugarNote> notes = mLinkedItemsRepository->notesForContact(contactId);
+    kDebug() << notes.count() << "notes found for contact" << contactId;
+    const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
+    kDebug() << emails.count() << "emails found for contact" << contactId;
+    NotesWindow *dlg = new NotesWindow(0);
+    dlg->setWindowTitle(i18n("Notes for contact %1", name()));
+    foreach(const SugarNote &note, notes) {
+        dlg->addNote(note);
+    }
+    foreach(const SugarEmail &email, emails) {
+        dlg->addEmail(email);
+    }
+    dlg->setAttribute(Qt::WA_DeleteOnClose);
+    dlg->show();
 }
 
 void ContactDetails::slotSelectAccount()

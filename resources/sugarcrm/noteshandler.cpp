@@ -59,7 +59,7 @@ Akonadi::Collection NotesHandler::handlerCollection() const
 
 QString NotesHandler::queryStringForListing() const
 {
-    return QLatin1String("notes.parent_type='Opportunities'");
+    return QLatin1String("notes.parent_type='Opportunities' or notes.parent_type='Accounts' or notes.parent_type='Contacts'");
 }
 
 QString NotesHandler::orderByForListing() const
@@ -75,6 +75,12 @@ QStringList NotesHandler::supportedSugarFields() const
 QStringList NotesHandler::supportedCRMFields() const
 {
     return mAccessors.keys();
+}
+
+int NotesHandler::expectedContentsVersion() const
+{
+    // version 1 = query notes for accounts and contacts as well
+    return 1;
 }
 
 bool NotesHandler::setEntry(const Akonadi::Item &item)

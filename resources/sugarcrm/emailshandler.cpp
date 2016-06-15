@@ -59,7 +59,7 @@ Akonadi::Collection EmailsHandler::handlerCollection() const
 
 QString EmailsHandler::queryStringForListing() const
 {
-    return QLatin1String("emails.parent_type='Opportunities'");
+    return QLatin1String("emails.parent_type='Opportunities' or emails.parent_type='Accounts' or emails.parent_type='Contacts'");
 }
 
 QString EmailsHandler::orderByForListing() const
@@ -80,7 +80,8 @@ QStringList EmailsHandler::supportedCRMFields() const
 int EmailsHandler::expectedContentsVersion() const
 {
     // version 1 = description_html field added
-    return 1;
+    // version 2 = query emails for accounts and contacts as well
+    return 2;
 }
 
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
