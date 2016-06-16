@@ -216,14 +216,18 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *w, lineEdits) {
         key = w->objectName();
-        if (key.startsWith("qt_")) continue; // skip internal lineedits (e.g. in spinbox)
+        if (key.startsWith(QLatin1String("qt_"))) {
+            continue; // skip internal lineedits (e.g. in spinbox)
+        }
         hideIfUnsupported(w);
         w->setText(data.value(key));
     }
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (key.startsWith("qt_")) continue; // skip internal combos (e.g. in QDateEditEx)
+        if (key.startsWith(QLatin1String("qt_"))) {
+            continue; // skip internal combos (e.g. in QDateEditEx)
+        }
         hideIfUnsupported(cb);
         const int idx = cb->findData(data.value(key));
         if (idx == -1 && cb->count() > 1) {
@@ -258,7 +262,9 @@ void Details::setData(const QMap<QString, QString> &data,
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
         key = w->objectName();
-        if (key.startsWith("qt_")) continue; // skip internal widgets (e.g. in QCalendarWidget)
+        if (key.startsWith(QLatin1String("qt_"))) {
+            continue; // skip internal widgets (e.g. in QCalendarWidget)
+        }
         hideIfUnsupported(w);
         w->setValue(data.value(key).toInt());
     }
