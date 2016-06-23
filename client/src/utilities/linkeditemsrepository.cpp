@@ -30,6 +30,8 @@
 
 #include <QStringList>
 
+#define kDebug qDebug
+
 LinkedItemsRepository::LinkedItemsRepository(QObject *parent) :
     QObject(parent),
     mMonitor(0),
@@ -44,8 +46,12 @@ void LinkedItemsRepository::clear()
     mNotesLoaded = 0;
     mEmailsLoaded = 0;
     mDocumentsLoaded = 0;
-    mNotesHash.clear();
-    mEmailsHash.clear();
+    mAccountNotesHash.clear();
+    mContactNotesHash.clear();
+    mOpportunityNotesHash.clear();
+    mAccountEmailsHash.clear();
+    mContactEmailsHash.clear();
+    mOpportunityEmailsHash.clear();
     mAccountDocumentsHash.clear();
     mOpportunityDocumentsHash.clear();
     delete mMonitor;
@@ -68,9 +74,19 @@ void LinkedItemsRepository::loadNotes()
             this, SLOT(slotNotesReceived(Akonadi::Item::List)));
 }
 
+QVector<SugarNote> LinkedItemsRepository::notesForAccount(const QString &id) const
+{
+    return mAccountNotesHash.value(id);
+}
+
+QVector<SugarNote> LinkedItemsRepository::notesForContact(const QString &id) const
+{
+    return mContactNotesHash.value(id);
+}
+
 QVector<SugarNote> LinkedItemsRepository::notesForOpportunity(const QString &id) const
 {
-    return mNotesHash.value(id);
+    return mOpportunityNotesHash.value(id);
 }
 
 void LinkedItemsRepository::slotNotesReceived(const Akonadi::Item::List &items)
@@ -91,13 +107,29 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
         const QString id = note.id();
         Q_ASSERT(!id.isEmpty());
         removeNote(id); // handle change of opp
-        if (note.parentType() == QLatin1String("Opportunities")) {
+        if (note.parentType() == QLatin1String("Accounts")) {
             const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
-                mNotesHash[parentId].append(note);
-                mNotesParentIdHash.insert(id, parentId);
+                mAccountNotesHash[parentId].append(note);
+                mNotesAccountIdHash.insert(id, parentId);
             } else {
-                mNotesParentIdHash.remove(id);
+                mNotesAccountIdHash.remove(id);
+            }
+        } else if (note.parentType() == QLatin1String("Contacts")) {
+            const QString parentId = note.parentId();
+            if (!parentId.isEmpty()) {
+                mContactNotesHash[parentId].append(note);
+                mNotesContactIdHash.insert(id, parentId);
+            } else {
+                mNotesContactIdHash.remove(id);
+            }
+        } else if (note.parentType() == QLatin1String("Opportunities")) {
+            const QString parentId = note.parentId();
+            if (!parentId.isEmpty()) {
+                mOpportunityNotesHash[parentId].append(note);
+                mNotesOpportunityIdHash.insert(id, parentId);
+            } else {
+                mNotesOpportunityIdHash.remove(id);
             }
         } else {
             // We also get notes for Accounts and Emails.
@@ -110,11 +142,38 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
 void LinkedItemsRepository::removeNote(const QString &id)
 {
     Q_ASSERT(!id.isEmpty());
-    const QString oldParentId = mNotesParentIdHash.value(id);
-    if (!oldParentId.isEmpty()) {
-        qDebug() << "note" << id << "oldParentId" << oldParentId;
+
+    const QString oldAccountId = mNotesAccountIdHash.value(id);
+    if (!oldAccountId.isEmpty()) {
+        kDebug() << "note" << id << "oldAccountId" << oldAccountId;
+        // Note is no longer associated with this account
+        QVector<SugarNote> &notes = mAccountNotesHash[oldAccountId];
+        auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
+        if (it != notes.constEnd()) {
+            const int idx = std::distance(notes.constBegin(), it);
+            kDebug() << "Removing note at" << idx;
+            notes.remove(idx);
+        }
+    }
+
+    const QString oldContactId = mNotesContactIdHash.value(id);
+    if (!oldContactId.isEmpty()) {
+        kDebug() << "note" << id << "oldContactId" << oldContactId;
+        // Note is no longer associated with this contact
+        QVector<SugarNote> &notes = mContactNotesHash[oldContactId];
+        auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
+        if (it != notes.constEnd()) {
+            const int idx = std::distance(notes.constBegin(), it);
+            kDebug() << "Removing note at" << idx;
+            notes.remove(idx);
+        }
+    }
+
+    const QString oldOpportunityId = mNotesOpportunityIdHash.value(id);
+    if (!oldOpportunityId.isEmpty()) {
+        kDebug() << "note" << id << "oldOpportunityId" << oldOpportunityId;
         // Note is no longer associated with this opportunity
-        QVector<SugarNote> &notes = mNotesHash[oldParentId];
+        QVector<SugarNote> &notes = mOpportunityNotesHash[oldOpportunityId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
         if (it != notes.constEnd()) {
             const int idx = std::distance(notes.constBegin(), it);
@@ -157,9 +216,19 @@ void LinkedItemsRepository::monitorChanges()
             this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
 }
 
+QVector<SugarEmail> LinkedItemsRepository::emailsForAccount(const QString &id) const
+{
+    return mAccountEmailsHash.value(id);
+}
+
+QVector<SugarEmail> LinkedItemsRepository::emailsForContact(const QString &id) const
+{
+    return mContactEmailsHash.value(id);
+}
+
 QVector<SugarEmail> LinkedItemsRepository::emailsForOpportunity(const QString &id) const
 {
-    return mEmailsHash.value(id);
+    return mOpportunityEmailsHash.value(id);
 }
 
 void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
@@ -180,13 +249,29 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
         const QString id = email.id();
         Q_ASSERT(!id.isEmpty());
         removeEmail(id); // handle change of opp
-        if (email.parentType() == QLatin1String("Opportunities")) {
+        if (email.parentType() == QLatin1String("Accounts")) {
             const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
-                mEmailsHash[parentId].append(email);
-                mEmailsParentIdHash.insert(id, parentId);
+                mAccountEmailsHash[parentId].append(email);
+                mEmailsAccountIdHash.insert(id, parentId);
             } else {
-                mEmailsParentIdHash.remove(id);
+                mEmailsAccountIdHash.remove(id);
+            }
+        } else if (email.parentType() == QLatin1String("Contacts")) {
+            const QString parentId = email.parentId();
+            if (!parentId.isEmpty()) {
+                mContactEmailsHash[parentId].append(email);
+                mEmailsContactIdHash.insert(id, parentId);
+            } else {
+                mEmailsContactIdHash.remove(id);
+            }
+        } else if (email.parentType() == QLatin1String("Opportunities")) {
+            const QString parentId = email.parentId();
+            if (!parentId.isEmpty()) {
+                mOpportunityEmailsHash[parentId].append(email);
+                mEmailsOpportunityIdHash.insert(id, parentId);
+            } else {
+                mEmailsOpportunityIdHash.remove(id);
             }
         } else {
             // We also get emails for Accounts and Emails.
@@ -199,11 +284,38 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
 void LinkedItemsRepository::removeEmail(const QString &id)
 {
     Q_ASSERT(!id.isEmpty());
-    const QString oldParentId = mEmailsParentIdHash.value(id);
-    if (!oldParentId.isEmpty()) {
-        qDebug() << "email" << id << "oldParentId" << oldParentId;
-        // Email is no longer associated with this opportunity
-        QVector<SugarEmail> &emails = mEmailsHash[oldParentId];
+
+    const QString oldAccountId = mEmailsAccountIdHash.value(id);
+    if (!oldAccountId.isEmpty()) {
+        kDebug() << "email" << id << "oldAccountId" << oldAccountId;
+        // Email is no longer associated with this account
+        QVector<SugarEmail> &emails = mAccountEmailsHash[oldAccountId];
+        auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
+        if (it != emails.constEnd()) {
+            const int idx = std::distance(emails.constBegin(), it);
+            kDebug() << "Removing email at" << idx;
+            emails.remove(idx);
+        }
+    }
+
+    const QString oldContactId = mEmailsContactIdHash.value(id);
+    if (!oldContactId.isEmpty()) {
+        kDebug() << "email" << id << "oldContactId" << oldContactId;
+        // Email is no longer associated with this contact
+        QVector<SugarEmail> &emails = mContactEmailsHash[oldContactId];
+        auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
+        if (it != emails.constEnd()) {
+            const int idx = std::distance(emails.constBegin(), it);
+            kDebug() << "Removing email at" << idx;
+            emails.remove(idx);
+        }
+    }
+
+    const QString oldOpportunityId = mEmailsOpportunityIdHash.value(id);
+    if (!oldOpportunityId.isEmpty()) {
+        kDebug() << "email" << id << "oldOpportunityId" << oldOpportunityId;
+        // Email is no longer associated with this contact
+        QVector<SugarEmail> &emails = mOpportunityEmailsHash[oldOpportunityId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
         if (it != emails.constEnd()) {
             const int idx = std::distance(emails.constBegin(), it);

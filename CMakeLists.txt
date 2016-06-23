@@ -51,9 +51,7 @@ set(FATCRM_SOVERSION "0.2.0") # for libkdcrmdata
 
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   find_package(Git)
-  #TODO: FeatureSummary requires modern CMake
-  #include(FeatureSummary)
-  #set_package_properties(Git PROPERTIES TYPE OPTIONAL PURPOSE "Determine exact build version.")
+  set_package_properties(Git PROPERTIES TYPE OPTIONAL PURPOSE "Determine exact build version.")
   if(GIT_FOUND)
     execute_process(
       COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD

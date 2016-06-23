@@ -36,6 +36,7 @@ class ContactDetails;
 }
 
 class ContactDataExtractor;
+class LinkedItemsRepository;
 
 class ContactDetails : public Details
 {
@@ -45,6 +46,7 @@ public:
 
     ~ContactDetails();
 
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
     void setItemsTreeModel(ItemsTreeModel *model) Q_DECL_OVERRIDE;
 
@@ -65,6 +67,7 @@ private Q_SLOTS:
     void slotClearDate();
     void slotAccountActivated();
     void on_buttonOpenAccount_clicked();
+    void on_viewNotesButton_clicked();
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
     void slotPrimaryAddressCountryEditingFinished();
@@ -76,6 +79,7 @@ private Q_SLOTS:
 
 private:
     ContactDataExtractor *mDataExtractor;
+    LinkedItemsRepository *mLinkedItemsRepository;
 };
 
 #endif /* CONTACTDETAILS_H */

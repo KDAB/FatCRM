@@ -423,6 +423,7 @@ void MainWindow::createTabs()
 #endif
 
     mContactsPage = new ContactsPage(this);
+    mContactsPage->setLinkedItemsRepository(mLinkedItemsRepository);
     mPages << mContactsPage;
     mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 

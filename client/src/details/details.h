@@ -88,6 +88,8 @@ private Q_SLOTS:
     void doConnects();
 
 private:
+    void hideIfUnsupported(QWidget *widget);
+
     const DetailsType mType;
     QByteArray mResourceIdentifier;
     QString mResourceBaseUrl;

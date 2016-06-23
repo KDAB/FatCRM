@@ -1,8 +1,10 @@
 
 # To ensure KDSoap is found, add its base directory to CMAKE_PREFIX_PATH
-find_package(KDSoap CONFIG QUIET) # first try KDSoapConfig.cmake
-find_package(KDSoap REQUIRED) # then try FindKDSoap.cmake
-#macro_log_feature(KDSoap "KD SOAP" "Qt SOAP library by KDAB.com" "http://www.kdab.com/kdsoap" TRUE "" "Need for access to the SugarCRM SOAP webservice. Required.")
+set(MIN_KDSOAP_VER "1.5.1")
+find_package(KDSoap ${MIN_KDSOAP_VER} CONFIG QUIET) # first try KDSoapConfig.cmake
+find_package(KDSoap ${MIN_KDSOAP_VER} REQUIRED) # then try FindKDSoap.cmake
+set_package_properties(KDSoap PROPERTIES DESCRIPTION "KDSoap, Qt SOAP library by KDAB.com" TYPE REQUIRED URL "http://www.kdab.com/kdsoap" PURPOSE "Required to access the SugarCRM SOAP webservice.")
+
 
 # TODO: Just use KDSOAP_GENERATE_WSDL?
 set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
