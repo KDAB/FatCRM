@@ -648,7 +648,8 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
     if (importer.importFile(filePath)) {
         const QVector<ContactsSet> contacts = importer.contacts();
         // non modal so that we can use FatCRM to search for accounts/contacts.
-        ContactsImportWizard *importWizard = new ContactsImportWizard(this);
+        // no parent widget so it can be minimized separately, shows up separate in the taskbar, etc.
+        ContactsImportWizard *importWizard = new ContactsImportWizard(0);
         importWizard->setAccountCollection(mAccountPage->collection());
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);
