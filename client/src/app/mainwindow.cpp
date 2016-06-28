@@ -587,7 +587,7 @@ void MainWindow::slotPrintReport()
 
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
-    if (mimeType == "application/x-vnd.kdab.crm.account") {
+    if (mimeType == SugarAccount::mimeType()) {
         slotShowMessage(i18n("(1/6) Loading accounts..."));
     }
     foreach(Page *page, mPages) {
@@ -596,14 +596,13 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
             return;
         }
     }
-    if (mimeType == "application/x-vnd.kdab.crm.note") {
+    if (mimeType == SugarNote::mimeType()) {
         mLinkedItemsRepository->setNotesCollection(collection);
-    } else if (mimeType == "application/x-vnd.kdab.crm.email") {
+    } else if (mimeType == SugarEmail::mimeType()) {
         mLinkedItemsRepository->setEmailsCollection(collection);
-    } else if (mimeType == "application/x-vnd.kdab.crm.document") {
+    } else if (mimeType == SugarDocument::mimeType()) {
         mLinkedItemsRepository->setDocumentsCollection(collection);
     }
-
 }
 
 void MainWindow::slotOppModelCreated(ItemsTreeModel *model)
