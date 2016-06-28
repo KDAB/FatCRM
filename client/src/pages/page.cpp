@@ -122,7 +122,7 @@ void Page::openWidget(const QString &id)
             return;
         }
     }
-    kWarning() << this << "Object not found:" << id;
+    kWarning() << this << "(" << typeToString(mType) << ") Object not found:" << id << "among" << count << "rows";
 }
 
 void Page::openWidgetForItem(const Item &item, DetailsType itemType)
