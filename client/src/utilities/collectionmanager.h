@@ -24,27 +24,58 @@
 #define COLLECTIONMANAGER_H
 
 #include <QObject>
+#include <QSet>
+#include <QStringList>
 
-namespace Akonadi
-{
-class Collection;
-}
+#include "enums.h"
+#include "enumdefinitions.h"
+#include <akonadi/collection.h> // for Id
+
 class KJob;
 
+/**
+ * The CollectionManager lists the collections initially, and emits them, in the desired order for loading.
+ */
 class CollectionManager : public QObject
 {
     Q_OBJECT
 public:
     explicit CollectionManager(QObject *parent = 0);
 
-    // This is what triggers the collection finding
+    /// This is what triggers the collection finding
     void setResource(const QByteArray &identifier);
+
+    /// Returns the collection ID for the given type of main object (account, contact, opp)
+    /// Note that the collection manager also knows about other collections (emails, documents etc.)
+    /// but you can use LinkedItemsRepository to get those.
+    Akonadi::Collection::Id collectionIdForType(DetailsType detailsType) const;
+
+    QStringList supportedFields(Akonadi::Collection::Id collectionId) const;
+    EnumDefinitions enumDefinitions(Akonadi::Collection::Id collectionId) const;
+
+public slots:
+    /// Update cached data when a collection changes.
+    void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
 
 signals:
     void collectionResult(const QString &mimeType, const Akonadi::Collection &collection);
 
 private slots:
     void slotCollectionFetchResult(KJob *job);
+
+private:
+    void readSupportedFields(const Akonadi::Collection &collection);
+    void readEnumDefinitionAttributes(const Akonadi::Collection &collection);
+
+    struct CollectionData
+    {
+        QStringList supportedFields;
+        EnumDefinitions enumDefinitions;
+    };
+
+    QHash<Akonadi::Collection::Id, CollectionData> mCollectionData;
+
+    QVector<Akonadi::Collection::Id> mMainCollectionIds; // index = DetailsType
 };
 
 #endif // COLLECTIONMANAGER_H

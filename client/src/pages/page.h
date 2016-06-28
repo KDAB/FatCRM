@@ -41,6 +41,7 @@ class ChangeRecorder;
 class Item;
 }
 
+class CollectionManager;
 class ItemDataExtractor;
 class ItemEditWidgetBase;
 class KJob;
@@ -60,6 +61,7 @@ public:
     DetailsType detailsType() const { return mType; }
     void setCollection(const Akonadi::Collection& collection);
     Akonadi::Collection collection() const { return mCollection; }
+    void setCollectionManager(CollectionManager *collectionManager);
     void setLinkedItemsRepository(LinkedItemsRepository *repo);
     bool queryClose();
     void openWidget(const QString &id);
@@ -125,8 +127,6 @@ private:
     QString reportSubTitle(int count) const;
     virtual QMap<QString, QString> dataForNewObject() { return QMap<QString, QString>(); }
     void initialize();
-    void readSupportedFields();
-    void readEnumDefinitionAttributes();
     void retrieveResourceUrl();
 
     enum ItemEditWidgetType { Simple, TabWidget };
@@ -145,10 +145,9 @@ private:
 
     // Things we keep around so we can set them on the details dialog when creating it
     QString mResourceBaseUrl;
-    QStringList mSupportedFields;
     QUrl mCurrentItemUrl;
+    CollectionManager *mCollectionManager;
     LinkedItemsRepository *mLinkedItemsRepository;
-    EnumDefinitions mEnumDefinitions;
     bool mOnline;
     bool mInitialLoadingDone;
 

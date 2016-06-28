@@ -21,6 +21,7 @@
 */
 
 #include "linkeditemsrepository.h"
+#include "collectionmanager.h"
 
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionStatistics>
@@ -30,12 +31,13 @@
 
 #include <QStringList>
 
-LinkedItemsRepository::LinkedItemsRepository(QObject *parent) :
+LinkedItemsRepository::LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent) :
     QObject(parent),
     mMonitor(0),
     mNotesLoaded(0),
     mEmailsLoaded(0),
-    mDocumentsLoaded(0)
+    mDocumentsLoaded(0),
+    mCollectionManager(collectionManager)
 {
 }
 
@@ -211,6 +213,8 @@ void LinkedItemsRepository::monitorChanges()
             this, SLOT(slotItemRemoved(Akonadi::Item)));
     connect(mMonitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),
             this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
+    connect(mMonitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
+            mCollectionManager, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 }
 
 QVector<SugarEmail> LinkedItemsRepository::emailsForAccount(const QString &id) const

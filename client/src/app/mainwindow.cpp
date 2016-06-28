@@ -71,7 +71,7 @@ MainWindow::MainWindow(bool displayOverlay)
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
-      mLinkedItemsRepository(new LinkedItemsRepository(this)),
+      mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
       mContactsModel(0),
       mInitialLoadingDone(false)
 {
@@ -406,36 +406,40 @@ void MainWindow::initialLoadingDone()
     processPendingImports();
 }
 
+void MainWindow::addPage(Page *page)
+{
+    page->setCollectionManager(mCollectionManager);
+    page->setLinkedItemsRepository(mLinkedItemsRepository);
+    mPages << page;
+}
+
 void MainWindow::createTabs()
 {
     mAccountPage = new AccountsPage(this);
-    mAccountPage->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << mAccountPage;
+    addPage(mAccountPage);
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
     Page *page = new OpportunitiesPage(this);
-    page->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new LeadsPage(this);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Leads"));
 #endif
 
     mContactsPage = new ContactsPage(this);
-    mContactsPage->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << mContactsPage;
+    addPage(mContactsPage);
     mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 
     connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new CampaignsPage(this);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Campaigns"));
 #endif
 

@@ -72,6 +72,7 @@ private:
     void createActions();
     void setupActions();
     void createTabs();
+    void addPage(Page *page);
     void updateWindowTitle(bool online);
 
     QList<Page *> mPages;

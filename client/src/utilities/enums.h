@@ -30,7 +30,8 @@ enum DetailsType {
     Opportunity,
     Lead,
     Contact,
-    Campaign
+    Campaign,
+    MaxType = Campaign
 };
 
 QString typeToString(DetailsType type);

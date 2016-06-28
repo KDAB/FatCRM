@@ -37,8 +37,8 @@
 #include "simpleitemeditwidget.h"
 #include "sugarresourcesettings.h"
 #include "tabbeditemeditwidget.h"
+#include "collectionmanager.h"
 
-#include "kdcrmdata/enumdefinitionattribute.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugaropportunity.h"
@@ -91,8 +91,12 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mChangeRecorder(0),
-      mItemsTreeModel(0),
+      mFilter(Q_NULLPTR),
+      mChangeRecorder(Q_NULLPTR),
+      mItemsTreeModel(Q_NULLPTR),
+      mCollection(),
+      mCollectionManager(Q_NULLPTR),
+      mLinkedItemsRepository(Q_NULLPTR),
       mOnline(false),
       mInitialLoadingDone(false),
       mJobProgressTracker(Q_NULLPTR)
@@ -199,8 +203,6 @@ void Page::slotOnlineStatusChanged(bool online)
 void Page::setCollection(const Collection &collection)
 {
     mCollection = collection;
-    readSupportedFields();
-    readEnumDefinitionAttributes();
 
     if (mCollection.isValid()) {
         mUi.newPB->setEnabled(true);
@@ -228,6 +230,11 @@ void Page::setCollection(const Collection &collection)
         mUi.newPB->setEnabled(false);
         mUi.reloadPB->setEnabled(false);
     }
+}
+
+void Page::setCollectionManager(CollectionManager *collectionManager)
+{
+    mCollectionManager = collectionManager;
 }
 
 void Page::setLinkedItemsRepository(LinkedItemsRepository *repo)
@@ -522,46 +529,6 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
     }
 }
 
-// duplicated in listentriesjob.cpp
-static const char s_supportedFieldsKey[] = "supportedFields";
-
-void Page::readSupportedFields()
-{
-    EntityAnnotationsAttribute *annotationsAttribute =
-            mCollection.attribute<EntityAnnotationsAttribute>();
-    if (annotationsAttribute) {
-        mSupportedFields = annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts);
-        //kDebug() << typeToString(mType) << "supported fields" << msupportedFields;
-        if (mSupportedFields.isEmpty()) {
-            static bool errorShown = false;
-            if (!errorShown) {
-                errorShown = true;
-                QMessageBox::warning(this, i18n("Internal error"), i18n("The list of fields for type '%1'' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", typeToString(mType)));
-            }
-        }
-    }
-}
-
-void Page::readEnumDefinitionAttributes()
-{
-    EnumDefinitionAttribute *enumsAttr = mCollection.attribute<EnumDefinitionAttribute>();
-    if (enumsAttr) {
-        mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
-    } else {
-        kWarning() << "No EnumDefinitions in collection attribute for" << mCollection.id() << mCollection.name();
-        kWarning() << "Collection attributes:";
-        foreach (Akonadi::Attribute *attr, mCollection.attributes()) {
-            kWarning() << attr->type();
-        }
-
-        static bool errorShown = false;
-        if (!errorShown) {
-            errorShown = true;
-            QMessageBox::warning(this, i18n("Internal error"), i18n("The list of enumeration values for type '%1'' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", typeToString(mType)));
-        }
-    }
-}
-
 void Page::slotResetSearch()
 {
     mUi.searchLE->clear();
@@ -579,13 +546,7 @@ void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QS
     kDebug() << collection.id() << attributeNames;
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
-
-        if (attributeNames.contains("entityannotations")) {
-            readSupportedFields();
-        }
-        if (attributeNames.contains("CRM-enumdefinitions")) { // EnumDefinitionAttribute::type()
-            readEnumDefinitionAttributes();
-        }
+        mCollectionManager->slotCollectionChanged(collection, attributeNames);
     }
 }
 
@@ -641,11 +602,12 @@ void Page::printReport()
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget)
 {
     Details* details = ItemEditWidgetBase::createDetailsForType(itemType);
-    details->setItemsTreeModel(ModelRepository::instance()->model(itemType));
+    details->setItemsTreeModel(ModelRepository::instance()->model(itemType)); // done here because virtual
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
+    details->setCollectionManager(mCollectionManager);
     details->setLinkedItemsRepository(mLinkedItemsRepository);
-    details->setSupportedFields(mSupportedFields);
-    details->setEnumDefinitions(mEnumDefinitions);
+    // warning, do not use any type-dependent member variable here. We could be creating a widget for another type.
+
     connect(details, SIGNAL(openObject(DetailsType,QString)),
             this, SIGNAL(openObject(DetailsType,QString)));
     // Don't set a parent, so that the widgets can be minimized/restored independently
