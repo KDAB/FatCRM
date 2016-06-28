@@ -27,19 +27,32 @@
 
 #include <Akonadi/Item>
 
+/**
+ * @brief Base class for type-dependent extraction of the ID from an Akonadi::Item
+ */
 class ItemDataExtractor : public QObject
 {
     Q_OBJECT
 public:
-    explicit ItemDataExtractor(QObject *parent = 0);
     ~ItemDataExtractor();
 
-    virtual QString itemAddress() const = 0;
+    // Extract the id from the (type-dependent) payload
     virtual QString idForItem(const Akonadi::Item &item) const = 0;
+
+    // Return the web URL for this item (after extracting the ID)
     QUrl itemUrl(const QString &resourceBaseUrl, const Akonadi::Item &item) const;
+
+    // Return the web URL for this item ID
     QUrl itemUrl(const QString &resourceBaseUrl, const QString &itemId) const; // called from details dialog
 
     static ItemDataExtractor *createDataExtractor(DetailsType type, QObject *parent);
+
+protected:
+    explicit ItemDataExtractor(QObject *parent = 0);
+
+private:
+    // Returns the part of the URL query that is type-dependent
+    virtual QString itemAddress() const = 0;
 };
 
 #endif // ITEMDATAEXTRACTOR_H
