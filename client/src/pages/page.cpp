@@ -109,11 +109,15 @@ Page::~Page()
 
 void Page::openWidget(const QString &id)
 {
+    ItemDataExtractor *dataExtractor = itemDataExtractor();
+    if (!dataExtractor) {
+        return;
+    }
     const int count = mItemsTreeModel->rowCount();
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = mItemsTreeModel->index(i, 0);
-        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemIdRole).value<Item>();
-        if (itemDataExtractor() && itemDataExtractor()->idForItem(item) == id) {
+        const Item item = mItemsTreeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (dataExtractor->idForItem(item) == id) {
             openWidgetForItem(item, mType);
             return;
         }
