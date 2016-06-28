@@ -59,9 +59,10 @@ QSize BetterPlainTextEdit::widgetSizeForTextSize(const QSize &size) const
 
 QSize BetterPlainTextEdit::minimumSizeHint() const
 {
-    QSize ds = document()->documentLayout()->documentSize().toSize();
-    ds.setWidth(50);
-    return widgetSizeForTextSize(ds);
+    const QSize ds = document()->documentLayout()->documentSize().toSize();
+    QFontMetrics fm(document()->defaultFont());
+    QSize minSize = widgetSizeForTextSize(ds);
+    return QSize(200, qMin(minSize.height(), fm.height() * 5)); // can shrink to 5 lines and get a scrollbar
 }
 
 QSize BetterPlainTextEdit::sizeHint() const
