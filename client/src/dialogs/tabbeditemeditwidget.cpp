@@ -55,7 +55,7 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     ItemEditWidget->hideButtonBox();
     mItemEditWidget = ItemEditWidget;
     connect(mItemEditWidget, SIGNAL(dataModified()), this, SLOT(dataChanged()));
-    connect(mItemEditWidget, SIGNAL(itemSaved()), this, SLOT(close()));
+    connect(mItemEditWidget, SIGNAL(closing()), this, SLOT(close()));
 
     if (mType == Account) {
         mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account details"));
@@ -162,5 +162,5 @@ void TabbedItemEditWidget::dataChanged()
 void TabbedItemEditWidget::accept()
 {
     mItemEditWidget->accept();
-    //We need to wait until the item is saved before closing - see connection to itemSaved signal above
+    //We need to wait until the item is saved before closing - see connection to closing signal above
 }

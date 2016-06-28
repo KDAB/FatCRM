@@ -116,7 +116,7 @@ QMap<QString, QString> SimpleItemEditWidget::Private::data() const
 void SimpleItemEditWidget::Private::saveClicked()
 {
     if (!mIsModified) {
-        q->close();
+        q->close(); // will emit closing
         return;
     }
 
@@ -200,7 +200,7 @@ void SimpleItemEditWidget::Private::saveResult(KJob *job)
         mIsModified = false;
     }
     emit q->itemSaved();
-    q->close(); // was accept();
+    q->close();
 }
 
 SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
