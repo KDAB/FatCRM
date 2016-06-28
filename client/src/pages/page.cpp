@@ -659,8 +659,8 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, Details
             widget, SLOT(updateItem(Akonadi::Item)));
     connect(this, SIGNAL(onlineStatusChanged(bool)),
             widget, SLOT(setOnline(bool)));
-    connect( widget, SIGNAL(itemSaved()),
-             this, SLOT(slotItemSaved()));
+    connect(widget, SIGNAL(itemSaved()),
+            this, SLOT(slotItemSaved()));
 
     ItemEditWidgetType widgetType;
     if (forceSimpleWidget) {

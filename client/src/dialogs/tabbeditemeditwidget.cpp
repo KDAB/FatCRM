@@ -98,6 +98,7 @@ QString TabbedItemEditWidget::title() const
 {
     return mItemEditWidget->title();
 }
+
 QString TabbedItemEditWidget::detailsName() const
 {
     return mItemEditWidget->detailsName();

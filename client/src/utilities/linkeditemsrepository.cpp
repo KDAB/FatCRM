@@ -93,7 +93,7 @@ void LinkedItemsRepository::slotNotesReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeNote(item);
     }
-    //kDebug() << "loaded" << mNotesLoaded << "notes; now hash has" << mNotesHash.count() << "entries";
+    //kDebug() << "loaded" << mNotesLoaded << "notes";
     if (mNotesLoaded == mNotesCollection.statistics().count())
         emit notesLoaded(mNotesLoaded);
 }
@@ -104,9 +104,9 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
         SugarNote note = item.payload<SugarNote>();
         const QString id = note.id();
         Q_ASSERT(!id.isEmpty());
-        removeNote(id); // handle change of opp
+        removeNote(id); // handle change of parent
+        const QString parentId = note.parentId();
         if (note.parentType() == QLatin1String("Accounts")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mAccountNotesHash[parentId].append(note);
                 mNotesAccountIdHash.insert(id, parentId);
@@ -114,7 +114,6 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesAccountIdHash.remove(id);
             }
         } else if (note.parentType() == QLatin1String("Contacts")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mContactNotesHash[parentId].append(note);
                 mNotesContactIdHash.insert(id, parentId);
@@ -122,7 +121,6 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesContactIdHash.remove(id);
             }
         } else if (note.parentType() == QLatin1String("Opportunities")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mOpportunityNotesHash[parentId].append(note);
                 mNotesOpportunityIdHash.insert(id, parentId);
@@ -130,10 +128,11 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesOpportunityIdHash.remove(id);
             }
         } else {
-            // We also get notes for Accounts and Emails.
-            // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring notes for" << note.parentType();
+            // We filter out the rest in the resource, but just in case:
+            kDebug() << "ignoring notes for" << note.parentType();
         }
+    } else {
+        kWarning() << "Note item without a SugarNote payload?" << item.id() << item.remoteId();
     }
 }
 
@@ -190,7 +189,7 @@ void LinkedItemsRepository::setEmailsCollection(const Akonadi::Collection &colle
 
 void LinkedItemsRepository::loadEmails()
 {
-    //kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
+    kDebug() << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -235,9 +234,10 @@ void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeEmail(item);
     }
-    //kDebug() << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
-    if (mEmailsLoaded == mEmailsCollection.statistics().count())
+    //kDebug() << "loaded" << mEmailsLoaded << "emails";
+    if (mEmailsLoaded == mEmailsCollection.statistics().count()) {
         emit emailsLoaded(mEmailsLoaded);
+    }
 }
 
 void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
@@ -246,9 +246,9 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
         SugarEmail email = item.payload<SugarEmail>();
         const QString id = email.id();
         Q_ASSERT(!id.isEmpty());
-        removeEmail(id); // handle change of opp
+        removeEmail(id); // handle change of parent
+        const QString parentId = email.parentId();
         if (email.parentType() == QLatin1String("Accounts")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mAccountEmailsHash[parentId].append(email);
                 mEmailsAccountIdHash.insert(id, parentId);
@@ -256,7 +256,6 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsAccountIdHash.remove(id);
             }
         } else if (email.parentType() == QLatin1String("Contacts")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mContactEmailsHash[parentId].append(email);
                 mEmailsContactIdHash.insert(id, parentId);
@@ -264,7 +263,6 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsContactIdHash.remove(id);
             }
         } else if (email.parentType() == QLatin1String("Opportunities")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mOpportunityEmailsHash[parentId].append(email);
                 mEmailsOpportunityIdHash.insert(id, parentId);
@@ -272,10 +270,11 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsOpportunityIdHash.remove(id);
             }
         } else {
-            // We also get emails for Accounts and Emails.
-            // (well, no longer, we filter this out in the resource)
-            //kDebug() << "ignoring emails for" << email.parentType();
+            // We filter out the rest in the resource, but just in case:
+            kDebug() << "ignoring emails for" << email.parentType();
         }
+    } else {
+        kWarning() << "Email item without a SugarEmail payload?" << item.id() << item.remoteId();
     }
 }
 
