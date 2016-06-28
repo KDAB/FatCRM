@@ -55,7 +55,7 @@ private Q_SLOTS:
 
 private:
     void initialize();
-    void loadAssociatedData(const QString &accountId, DetailsType type);
+    int loadAssociatedData(const QString &accountId, DetailsType type);
 
     SimpleItemEditWidget * mItemEditWidget;
     DetailsType mType;

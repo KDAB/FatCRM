@@ -61,12 +61,15 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
         mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account details"));
         mUi->tabWidget->setTabText(1, i18n("Opportunities and Contacts"));
         SugarAccount account = ItemEditWidget->item().payload<SugarAccount>();
-        loadAssociatedData(account.id(), Opportunity);
+        const int oppCount = loadAssociatedData(account.id(), Opportunity);
+        const int contactCount = loadAssociatedData(account.id(), Contact);
+        mUi->tabWidget->setTabEnabled(1, oppCount > 0 || contactCount > 0);
     } else if (mType == Opportunity) {
         mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Opportunity details"));
         mUi->tabWidget->setTabText(1, i18n("Contacts"));
         SugarOpportunity opportunity = ItemEditWidget->item().payload<SugarOpportunity>();
-        loadAssociatedData(opportunity.accountId(), Contact);
+        const int contactCount = loadAssociatedData(opportunity.accountId(), Contact);
+        mUi->tabWidget->setTabEnabled(1, contactCount > 0);
     }
 
     mUi->tabWidget->setCurrentIndex(0);
@@ -108,7 +111,7 @@ void TabbedItemEditWidget::initialize()
     connect (mUi->associatedDataTab, SIGNAL(openItem(QString)), this, SLOT(openWidget(QString)));
 }
 
-void TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsType type)
+int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsType type)
 {
     ItemsTreeModel *model = ModelRepository::instance()->model(type);
     const int count = model->rowCount();
@@ -118,37 +121,32 @@ void TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsT
         const QModelIndex index = model->index(i, 0);
         const Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (type == Opportunity) {
-            // still need to handle contacts for each opportunity here (Probably a bad choice of model and view)
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            if (opportunity.accountId()  ==  accountId) {
+            if (opportunity.accountId() == accountId) {
                 list << opportunity.name();
-                QPair<Akonadi::Item, DetailsType> data = qMakePair(item, Opportunity);
-                mItemsMap.insert(opportunity.name(), data);
-                loadAssociatedData(opportunity.accountId(), Contact);
+                mItemsMap.insert(opportunity.name(), qMakePair(item, Opportunity));
             }
-        } else {
+        } else if (type == Contact) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             if (addressee.custom("FATCRM", "X-AccountId")  == accountId) {
                 list << addressee.assembledName();
                 mItemsMap.insert(addressee.assembledName(), qMakePair(item, Contact));
             }
+        } else {
+            Q_ASSERT(0);
         }
     }
 
     listModel->setStringList(list);
 
-    bool haveOpportunities = false;
-    bool haveContacts = false;
     if (type == Opportunity) {
-        haveOpportunities = (listModel->rowCount() != 0);
         mUi->associatedDataTab->setOpportunitiesModel(listModel);
-    } else {
-        haveContacts = (listModel->rowCount() != 0);
+    } else if (type == Contact) {
         mUi->associatedDataTab->setContactsModel(listModel);
+    } else {
+        Q_ASSERT(0);
     }
-    // disable associated data tab if no data
-    if (!haveOpportunities && !haveContacts)
-        mUi->tabWidget->setTabEnabled(1, false);
+    return list.count();
 }
 
 void TabbedItemEditWidget::openWidget(const QString &itemKey)
