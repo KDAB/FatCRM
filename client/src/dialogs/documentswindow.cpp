@@ -133,6 +133,7 @@ DocumentsWindow::DocumentsWindow(QWidget *parent)
       ui(new Ui::DocumentsWindow),
       mLinkedItemsRepository(Q_NULLPTR),
       mIsNotModifiedOverride(false),
+      mLinkedItemType(Account),
       mPendingJobCount(0)
 {
     ui->setupUi(this);
