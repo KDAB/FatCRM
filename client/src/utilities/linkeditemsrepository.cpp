@@ -144,7 +144,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldAccountId = mNotesAccountIdHash.value(id);
     if (!oldAccountId.isEmpty()) {
-        kDebug() << "note" << id << "oldAccountId" << oldAccountId;
+        //kDebug() << "note" << id << "oldAccountId" << oldAccountId;
         // Note is no longer associated with this account
         QVector<SugarNote> &notes = mAccountNotesHash[oldAccountId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -157,7 +157,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldContactId = mNotesContactIdHash.value(id);
     if (!oldContactId.isEmpty()) {
-        kDebug() << "note" << id << "oldContactId" << oldContactId;
+        //kDebug() << "note" << id << "oldContactId" << oldContactId;
         // Note is no longer associated with this contact
         QVector<SugarNote> &notes = mContactNotesHash[oldContactId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -170,7 +170,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldOpportunityId = mNotesOpportunityIdHash.value(id);
     if (!oldOpportunityId.isEmpty()) {
-        kDebug() << "note" << id << "oldOpportunityId" << oldOpportunityId;
+        //kDebug() << "note" << id << "oldOpportunityId" << oldOpportunityId;
         // Note is no longer associated with this opportunity
         QVector<SugarNote> &notes = mOpportunityNotesHash[oldOpportunityId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -288,7 +288,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldAccountId = mEmailsAccountIdHash.value(id);
     if (!oldAccountId.isEmpty()) {
-        kDebug() << "email" << id << "oldAccountId" << oldAccountId;
+        //kDebug() << "email" << id << "oldAccountId" << oldAccountId;
         // Email is no longer associated with this account
         QVector<SugarEmail> &emails = mAccountEmailsHash[oldAccountId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
@@ -301,7 +301,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldContactId = mEmailsContactIdHash.value(id);
     if (!oldContactId.isEmpty()) {
-        kDebug() << "email" << id << "oldContactId" << oldContactId;
+        //kDebug() << "email" << id << "oldContactId" << oldContactId;
         // Email is no longer associated with this contact
         QVector<SugarEmail> &emails = mContactEmailsHash[oldContactId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
@@ -314,7 +314,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldOpportunityId = mEmailsOpportunityIdHash.value(id);
     if (!oldOpportunityId.isEmpty()) {
-        kDebug() << "email" << id << "oldOpportunityId" << oldOpportunityId;
+        //kDebug() << "email" << id << "oldOpportunityId" << oldOpportunityId;
         // Email is no longer associated with this contact
         QVector<SugarEmail> &emails = mOpportunityEmailsHash[oldOpportunityId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
