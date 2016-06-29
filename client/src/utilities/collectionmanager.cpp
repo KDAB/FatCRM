@@ -161,15 +161,20 @@ static const char s_supportedFieldsKey[] = "supportedFields";
 
 void CollectionManager::readSupportedFields(const Collection &collection)
 {
-    if (!mCollectionData.contains(collection.id()))
+    if (!mMainCollectionIds.contains(collection.id())) {
         return;
+    }
     Akonadi::EntityAnnotationsAttribute *annotationsAttribute =
             collection.attribute<Akonadi::EntityAnnotationsAttribute>();
     const QStringList fields = annotationsAttribute ? annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts) : QStringList();
     if (!fields.isEmpty()) {
         mCollectionData[collection.id()].supportedFields = fields;
     } else {
+<<<<<<< Updated upstream
         kWarning() << collection;
+=======
+        kWarning() << "No supported fields for" << collection;
+>>>>>>> Stashed changes
         static bool errorShown = false;
         if (!errorShown) {
             errorShown = true;
