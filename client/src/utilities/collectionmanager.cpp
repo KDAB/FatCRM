@@ -21,20 +21,22 @@
 */
 
 #include "collectionmanager.h"
+#include "kdcrmdata/enumdefinitionattribute.h"
+#include "sugaraccount.h"
+#include "sugarcampaign.h"
+#include "sugarlead.h"
+#include "sugaropportunity.h"
 
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionFetchScope>
 #include <Akonadi/EntityAnnotationsAttribute>
 
-#include "kdcrmdata/enumdefinitionattribute.h"
+#include <KABC/Addressee>
+
+#include <KLocalizedString>
+
 #include <QMessageBox>
 #include <QApplication>
-#include <kabc/addressee.h>
-#include <sugaraccount.h>
-#include <sugaropportunity.h>
-#include <sugarlead.h>
-#include <sugarcampaign.h>
-#include <klocalizedstring.h>
 
 using namespace Akonadi;
 

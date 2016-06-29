@@ -29,7 +29,8 @@
 
 #include "enums.h"
 #include "enumdefinitions.h"
-#include <akonadi/collection.h> // for Id
+
+#include <Akonadi/Collection> // for Id
 
 class KJob;
 
