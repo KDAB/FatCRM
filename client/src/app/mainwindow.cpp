@@ -71,7 +71,7 @@ MainWindow::MainWindow(bool displayOverlay)
       mProgressBar(0),
       mProgressBarHideTimer(0),
       mCollectionManager(new CollectionManager(this)),
-      mLinkedItemsRepository(new LinkedItemsRepository(this)),
+      mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
       mContactsModel(0),
       mInitialLoadingDone(false)
 {
@@ -402,36 +402,40 @@ void MainWindow::initialLoadingDone()
     processPendingImports();
 }
 
+void MainWindow::addPage(Page *page)
+{
+    page->setCollectionManager(mCollectionManager);
+    page->setLinkedItemsRepository(mLinkedItemsRepository);
+    mPages << page;
+}
+
 void MainWindow::createTabs()
 {
     mAccountPage = new AccountsPage(this);
-    mAccountPage->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << mAccountPage;
+    addPage(mAccountPage);
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
     Page *page = new OpportunitiesPage(this);
-    page->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new LeadsPage(this);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Leads"));
 #endif
 
     mContactsPage = new ContactsPage(this);
-    mContactsPage->setLinkedItemsRepository(mLinkedItemsRepository);
-    mPages << mContactsPage;
+    addPage(mContactsPage);
     mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 
     connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
 
 #if 0
     page = new CampaignsPage(this);
-    mPages << page;
+    addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Campaigns"));
 #endif
 
@@ -583,7 +587,7 @@ void MainWindow::slotPrintReport()
 
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
 {
-    if (mimeType == QLatin1String("application/x-vnd.kdab.crm.account")) {
+    if (mimeType == SugarAccount::mimeType()) {
         slotShowMessage(i18n("(1/6) Loading accounts..."));
     }
     foreach(Page *page, mPages) {
@@ -592,14 +596,13 @@ void MainWindow::slotCollectionResult(const QString &mimeType, const Collection 
             return;
         }
     }
-    if (mimeType == QLatin1String("application/x-vnd.kdab.crm.note")) {
+    if (mimeType == SugarNote::mimeType()) {
         mLinkedItemsRepository->setNotesCollection(collection);
-    } else if (mimeType == QLatin1String("application/x-vnd.kdab.crm.email")) {
+    } else if (mimeType == SugarEmail::mimeType()) {
         mLinkedItemsRepository->setEmailsCollection(collection);
-    } else if (mimeType == "application/x-vnd.kdab.crm.document") {
+    } else if (mimeType == SugarDocument::mimeType()) {
         mLinkedItemsRepository->setDocumentsCollection(collection);
     }
-
 }
 
 void MainWindow::slotOppModelCreated(ItemsTreeModel *model)
@@ -644,7 +647,8 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
     if (importer.importFile(filePath)) {
         const QVector<ContactsSet> contacts = importer.contacts();
         // non modal so that we can use FatCRM to search for accounts/contacts.
-        ContactsImportWizard *importWizard = new ContactsImportWizard(this);
+        // no parent widget so it can be minimized separately, shows up separate in the taskbar, etc.
+        ContactsImportWizard *importWizard = new ContactsImportWizard(0);
         importWizard->setAccountCollection(mAccountPage->collection());
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);

@@ -24,6 +24,7 @@
 
 #include "accountrepository.h"
 #include "clientsettings.h"
+#include "collectionmanager.h"
 #include "kdcrmfields.h"
 #include "kdcrmutils.h"
 #include "qdateeditex.h"
@@ -188,6 +189,14 @@ void Details::setSupportedFields(const QStringList &fields)
 void Details::setEnumDefinitions(const EnumDefinitions &enums)
 {
     mEnumDefinitions = enums;
+}
+
+void Details::setCollectionManager(CollectionManager *collectionManager)
+{
+    Akonadi::Collection::Id coll = collectionManager->collectionIdForType(mType);
+    //qDebug() << typeToString(mType) << coll << collectionManager->supportedFields(coll);
+    setSupportedFields(collectionManager->supportedFields(coll));
+    setEnumDefinitions(collectionManager->enumDefinitions(coll));
 }
 
 /*

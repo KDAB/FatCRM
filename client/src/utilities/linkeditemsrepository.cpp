@@ -21,7 +21,7 @@
 */
 
 #include "linkeditemsrepository.h"
-#include "fatcrm_client_debug.h"
+#include "collectionmanager.h"
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/collectionstatistics.h>
 #include <AkonadiCore/ItemFetchJob>
@@ -30,14 +30,18 @@
 
 #include <QStringList>
 
-#define kDebug qDebug
+#include "fatcrm_client_debug.h"
 
-LinkedItemsRepository::LinkedItemsRepository(QObject *parent) :
+#define kDebug() qCDebug(FATCRM_CLIENT_LOG)
+#define kWarning() qCWarning(FATCRM_CLIENT_LOG)
+
+LinkedItemsRepository::LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent) :
     QObject(parent),
     mMonitor(0),
     mNotesLoaded(0),
     mEmailsLoaded(0),
-    mDocumentsLoaded(0)
+    mDocumentsLoaded(0),
+    mCollectionManager(collectionManager)
 {
 }
 
@@ -106,9 +110,9 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
         SugarNote note = item.payload<SugarNote>();
         const QString id = note.id();
         Q_ASSERT(!id.isEmpty());
-        removeNote(id); // handle change of opp
+        removeNote(id); // handle change of parent
+        const QString parentId = note.parentId();
         if (note.parentType() == QLatin1String("Accounts")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mAccountNotesHash[parentId].append(note);
                 mNotesAccountIdHash.insert(id, parentId);
@@ -116,7 +120,6 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesAccountIdHash.remove(id);
             }
         } else if (note.parentType() == QLatin1String("Contacts")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mContactNotesHash[parentId].append(note);
                 mNotesContactIdHash.insert(id, parentId);
@@ -124,7 +127,6 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesContactIdHash.remove(id);
             }
         } else if (note.parentType() == QLatin1String("Opportunities")) {
-            const QString parentId = note.parentId();
             if (!parentId.isEmpty()) {
                 mOpportunityNotesHash[parentId].append(note);
                 mNotesOpportunityIdHash.insert(id, parentId);
@@ -132,10 +134,11 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
                 mNotesOpportunityIdHash.remove(id);
             }
         } else {
-            // We also get notes for Accounts and Emails.
-            // (well, no longer, we filter this out in the resource)
-            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring notes for" << note.parentType();
+            // We filter out the rest in the resource, but just in case:
+            qCDebug(FATCRM_CLIENT_LOG) << "ignoring notes for" << note.parentType();
         }
+    } else {
+        kWarning() << "Note item without a SugarNote payload?" << item.id() << item.remoteId();
     }
 }
 
@@ -145,7 +148,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldAccountId = mNotesAccountIdHash.value(id);
     if (!oldAccountId.isEmpty()) {
-        kDebug() << "note" << id << "oldAccountId" << oldAccountId;
+        //kDebug() << "note" << id << "oldAccountId" << oldAccountId;
         // Note is no longer associated with this account
         QVector<SugarNote> &notes = mAccountNotesHash[oldAccountId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -158,7 +161,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldContactId = mNotesContactIdHash.value(id);
     if (!oldContactId.isEmpty()) {
-        kDebug() << "note" << id << "oldContactId" << oldContactId;
+        //kDebug() << "note" << id << "oldContactId" << oldContactId;
         // Note is no longer associated with this contact
         QVector<SugarNote> &notes = mContactNotesHash[oldContactId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -171,7 +174,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
 
     const QString oldOpportunityId = mNotesOpportunityIdHash.value(id);
     if (!oldOpportunityId.isEmpty()) {
-        kDebug() << "note" << id << "oldOpportunityId" << oldOpportunityId;
+        //kDebug() << "note" << id << "oldOpportunityId" << oldOpportunityId;
         // Note is no longer associated with this opportunity
         QVector<SugarNote> &notes = mOpportunityNotesHash[oldOpportunityId];
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
@@ -192,7 +195,7 @@ void LinkedItemsRepository::setEmailsCollection(const Akonadi::Collection &colle
 
 void LinkedItemsRepository::loadEmails()
 {
-    //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mEmailsCollection.statistics().count() << "emails";
+    qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
@@ -214,6 +217,8 @@ void LinkedItemsRepository::monitorChanges()
             this, SLOT(slotItemRemoved(Akonadi::Item)));
     connect(mMonitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),
             this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
+    connect(mMonitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
+            mCollectionManager, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 }
 
 QVector<SugarEmail> LinkedItemsRepository::emailsForAccount(const QString &id) const
@@ -237,9 +242,10 @@ void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     foreach(const Akonadi::Item &item, items) {
         storeEmail(item);
     }
-    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mEmailsLoaded << "emails; now hash has" << mEmailsHash.count() << "entries";
-    if (mEmailsLoaded == mEmailsCollection.statistics().count())
+    //qCDebug(FATCRM_CLIENT_LOG) << "loaded" << mEmailsLoaded << "emails";
+    if (mEmailsLoaded == mEmailsCollection.statistics().count()) {
         emit emailsLoaded(mEmailsLoaded);
+    }
 }
 
 void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
@@ -248,9 +254,9 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
         SugarEmail email = item.payload<SugarEmail>();
         const QString id = email.id();
         Q_ASSERT(!id.isEmpty());
-        removeEmail(id); // handle change of opp
+        removeEmail(id); // handle change of parent
+        const QString parentId = email.parentId();
         if (email.parentType() == QLatin1String("Accounts")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mAccountEmailsHash[parentId].append(email);
                 mEmailsAccountIdHash.insert(id, parentId);
@@ -258,7 +264,6 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsAccountIdHash.remove(id);
             }
         } else if (email.parentType() == QLatin1String("Contacts")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mContactEmailsHash[parentId].append(email);
                 mEmailsContactIdHash.insert(id, parentId);
@@ -266,7 +271,6 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsContactIdHash.remove(id);
             }
         } else if (email.parentType() == QLatin1String("Opportunities")) {
-            const QString parentId = email.parentId();
             if (!parentId.isEmpty()) {
                 mOpportunityEmailsHash[parentId].append(email);
                 mEmailsOpportunityIdHash.insert(id, parentId);
@@ -274,10 +278,11 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
                 mEmailsOpportunityIdHash.remove(id);
             }
         } else {
-            // We also get emails for Accounts and Emails.
-            // (well, no longer, we filter this out in the resource)
-            //qCDebug(FATCRM_CLIENT_LOG) << "ignoring emails for" << email.parentType();
+            // We filter out the rest in the resource, but just in case:
+            qCDebug(FATCRM_CLIENT_LOG) << "ignoring emails for" << email.parentType();
         }
+    } else {
+        kWarning() << "Email item without a SugarEmail payload?" << item.id() << item.remoteId();
     }
 }
 
@@ -287,7 +292,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldAccountId = mEmailsAccountIdHash.value(id);
     if (!oldAccountId.isEmpty()) {
-        kDebug() << "email" << id << "oldAccountId" << oldAccountId;
+        //kDebug() << "email" << id << "oldAccountId" << oldAccountId;
         // Email is no longer associated with this account
         QVector<SugarEmail> &emails = mAccountEmailsHash[oldAccountId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
@@ -300,7 +305,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldContactId = mEmailsContactIdHash.value(id);
     if (!oldContactId.isEmpty()) {
-        kDebug() << "email" << id << "oldContactId" << oldContactId;
+        //kDebug() << "email" << id << "oldContactId" << oldContactId;
         // Email is no longer associated with this contact
         QVector<SugarEmail> &emails = mContactEmailsHash[oldContactId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
@@ -313,7 +318,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
 
     const QString oldOpportunityId = mEmailsOpportunityIdHash.value(id);
     if (!oldOpportunityId.isEmpty()) {
-        kDebug() << "email" << id << "oldOpportunityId" << oldOpportunityId;
+        //kDebug() << "email" << id << "oldOpportunityId" << oldOpportunityId;
         // Email is no longer associated with this contact
         QVector<SugarEmail> &emails = mOpportunityEmailsHash[oldOpportunityId];
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });

@@ -81,7 +81,8 @@ int EmailsHandler::expectedContentsVersion() const
 {
     // version 1 = description_html field added
     // version 2 = query emails for accounts and contacts as well
-    return 2;
+    // version 3 = fixed the wrong query, full download required
+    return 3;
 }
 
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)

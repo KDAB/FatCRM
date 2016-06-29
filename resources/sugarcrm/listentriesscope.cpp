@@ -79,7 +79,7 @@ QString ListEntriesScope::query(const QString &filter, const QString &moduleName
     }
 
     if (!queryStr.isEmpty())
-        queryStr += QLatin1String(" AND ");
+        queryStr = QLatin1String("( ") + queryStr + QLatin1String(" ) AND ");
 
     return queryStr + moduleName + QStringLiteral(".date_modified >= '") + mUpdateTimestamp + QStringLiteral("'");
 }

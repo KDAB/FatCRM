@@ -80,7 +80,8 @@ QStringList NotesHandler::supportedCRMFields() const
 int NotesHandler::expectedContentsVersion() const
 {
     // version 1 = query notes for accounts and contacts as well
-    return 1;
+    // version 2 = fixed the wrong query, full download required
+    return 2;
 }
 
 bool NotesHandler::setEntry(const Akonadi::Item &item)

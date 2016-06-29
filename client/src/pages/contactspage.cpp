@@ -32,7 +32,7 @@
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, QString(KContacts::Addressee::mimeType()), Contact), mDataExtractor(new ContactDataExtractor(this))
+    : Page(parent, KContacts::Addressee::mimeType(), Contact), mDataExtractor(new ContactDataExtractor(this))
 {
     setFilter(new FilterProxyModel(Contact, this));
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);

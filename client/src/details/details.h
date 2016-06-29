@@ -31,6 +31,7 @@
 
 #include <QWidget>
 
+class CollectionManager;
 class QComboBox;
 class QCompleter;
 class LinkedItemsRepository;
@@ -56,6 +57,7 @@ public:
     void setResourceIdentifier(const QByteArray &ident, const QString &baseUrl);
     void setSupportedFields(const QStringList &fields);
     void setEnumDefinitions(const EnumDefinitions &enums);
+    void setCollectionManager(CollectionManager *collectionManager);
     virtual void setLinkedItemsRepository(LinkedItemsRepository *repo) { Q_UNUSED(repo); }
     virtual void setItemsTreeModel(ItemsTreeModel *model);
     virtual ItemDataExtractor *itemDataExtractor() const = 0;

@@ -31,5 +31,47 @@
 BetterPlainTextEdit::BetterPlainTextEdit(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    //setSizeAdjustPolicy(QAbstractScrollArea::AdjustToContents);
+    connect(document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
+            this, SLOT(slotDocumentSizeChanged()));
+}
+
+QSize BetterPlainTextEdit::widgetSizeForTextSize(const QSize &size) const
+{
+    QFontMetrics fm(document()->defaultFont());
+    const int lineHeight = fm.height();
+    QSize ds(size);
+    ds.rheight() *= lineHeight;
+
+    // Taken from QAbstractScrollArea::minimumSizeHint() in Qt4
+    const int hsbExt = horizontalScrollBar()->sizeHint().height();
+    const int vsbExt = verticalScrollBar()->sizeHint().width();
+    int extra = 2 * frameWidth();
+    QStyleOption opt;
+    opt.initFrom(this);
+    if ((frameStyle() != QFrame::NoFrame)
+        && style()->styleHint(QStyle::SH_ScrollView_FrameOnlyAroundContents, &opt, this)) {
+        extra += style()->pixelMetric(QStyle::PM_ScrollView_ScrollBarSpacing, &opt, this);
+    }
+
+    return QSize(ds.width() + vsbExt + extra,
+                 ds.height() + hsbExt + extra);
+}
+
+QSize BetterPlainTextEdit::minimumSizeHint() const
+{
+    const QSize ds = document()->documentLayout()->documentSize().toSize();
+    QFontMetrics fm(document()->defaultFont());
+    QSize minSize = widgetSizeForTextSize(ds);
+    return QSize(200, qMin(minSize.height(), fm.height() * 5)); // can shrink to 5 lines and get a scrollbar
+}
+
+QSize BetterPlainTextEdit::sizeHint() const
+{
+    QSize ds = document()->documentLayout()->documentSize().toSize();
+    return widgetSizeForTextSize(ds);
+}
+
+void BetterPlainTextEdit::slotDocumentSizeChanged()
+{
+    updateGeometry();
 }

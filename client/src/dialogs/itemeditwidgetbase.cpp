@@ -65,10 +65,7 @@ void ItemEditWidgetBase::keyPressEvent(QKeyEvent *e)
 
 void ItemEditWidgetBase::closeEvent(QCloseEvent *event)
 {
-    if (!this->isWindow())
-        return;
-
-    if (isModified()) {
+    if (this->isWindow() && isModified()) {
         QMessageBox msgBox(this);
         msgBox.setText(i18n("The data for %1 has been modified.", this->detailsName()));
         msgBox.setInformativeText("Do you want to save your changes?");

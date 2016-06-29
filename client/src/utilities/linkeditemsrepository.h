@@ -32,6 +32,8 @@
 
 #include <QObject>
 
+class CollectionManager;
+
 namespace Akonadi
 {
     class Monitor;
@@ -42,7 +44,7 @@ class LinkedItemsRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit LinkedItemsRepository(QObject *parent = Q_NULLPTR);
+    explicit LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent = Q_NULLPTR);
 
     void clear();
 
@@ -121,6 +123,8 @@ private:
     QHash<QString, QSet<QString> > mDocumentsOpportunityIdHash; // document id -> opportunity ids (to handle removals)
     QHash<QString, Akonadi::Item> mDocumentItems;
     int mDocumentsLoaded;
+
+    CollectionManager *mCollectionManager;
 };
 
 #endif // LINKEDITEMSREPOSITORY_H
