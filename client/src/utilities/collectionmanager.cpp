@@ -161,16 +161,19 @@ static const char s_supportedFieldsKey[] = "supportedFields";
 
 void CollectionManager::readSupportedFields(const Collection &collection)
 {
+    if (!mCollectionData.contains(collection.id()))
+        return;
     Akonadi::EntityAnnotationsAttribute *annotationsAttribute =
             collection.attribute<Akonadi::EntityAnnotationsAttribute>();
     const QStringList fields = annotationsAttribute ? annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts) : QStringList();
     if (!fields.isEmpty()) {
         mCollectionData[collection.id()].supportedFields = fields;
     } else {
+        kWarning() << collection;
         static bool errorShown = false;
         if (!errorShown) {
             errorShown = true;
-            QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of fields for '%1'' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", collection.name()));
+            QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of fields for '%1' is not available. Creating new items will not work. Try restarting the CRM resource and synchronizing again (then restart FatCRM).", collection.name()));
         }
     }
 }
@@ -190,7 +193,7 @@ void CollectionManager::readEnumDefinitionAttributes(const Collection &collectio
         static bool errorShown = false;
         if (!errorShown) {
             errorShown = true;
-            QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of enumeration values for '%1'' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", collection.name()));
+            QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of enumeration values for '%1' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", collection.name()));
         }
     }
 }
