@@ -170,11 +170,7 @@ void CollectionManager::readSupportedFields(const Collection &collection)
     if (!fields.isEmpty()) {
         mCollectionData[collection.id()].supportedFields = fields;
     } else {
-<<<<<<< Updated upstream
-        kWarning() << collection;
-=======
         kWarning() << "No supported fields for" << collection;
->>>>>>> Stashed changes
         static bool errorShown = false;
         if (!errorShown) {
             errorShown = true;
