@@ -599,7 +599,7 @@ void Page::printReport()
     generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
 }
 
-ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget)
+ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget)
 {
     Details* details = ItemEditWidgetBase::createDetailsForType(itemType);
     details->setItemsTreeModel(ModelRepository::instance()->model(itemType)); // done here because virtual
