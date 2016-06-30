@@ -859,7 +859,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
 
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
 
-        if (isAddressValue(namedValue.name())) {
+        if (isAddressValue(crmFieldName)) {
             KContacts::Address &address =
                 isPrimaryAddressValue(namedValue.name()) ? workAddress : homeAddress;
             (*accessIt)->setter.aSetter(value, address);
