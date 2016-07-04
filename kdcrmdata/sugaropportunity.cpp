@@ -262,6 +262,11 @@ QString SugarOpportunity::opportunitySize() const
     return d->mCustomFields.value(KDCRMFields::opportunitySize());
 }
 
+QString SugarOpportunity::opportunityPriority() const
+{
+    return d->mCustomFields.value(KDCRMFields::opportunityPriority());
+}
+
 void SugarOpportunity::setTempAccountName(const QString &value)
 {
     d->mEmpty = false;
