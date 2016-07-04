@@ -80,7 +80,8 @@ public:
         NextStep,
         NextStepDate,
         LastModifiedDate,
-        AssignedTo
+        AssignedTo,
+        OpportunityPriority
     };
 
     Q_ENUMS(ColumnType)
