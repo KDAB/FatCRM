@@ -22,6 +22,7 @@
 
 #include "itemstreemodel.h"
 #include "referenceddata.h"
+#include "clientsettings.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -103,11 +104,14 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
             return opportunityData(item, column, role);
         }
     } else if (role == Qt::ToolTipRole) {
-        if (mType == Account) {
-            return accountToolTip(item);
-        } else if (mType == Opportunity) {
-            return opportunityToolTip(item);
+        if (ClientSettings::self()->showToolTips()) {
+            if (mType == Account) {
+                return accountToolTip(item);
+            } else if (mType == Opportunity) {
+                return opportunityToolTip(item);
+            }
         }
+        return QVariant();
     } else if (mType == Opportunity && role == Qt::FontRole) {
         return opportunityData(item, column, role);
     }

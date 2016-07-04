@@ -44,6 +44,9 @@ public:
     void setShowDetails(const QString &typeString, bool on);
     bool showDetails(const QString &typeString) const;
 
+    void setShowToolTips(bool on);
+    bool showToolTips() const;
+
     void setFullUserName(const QString &name);
     QString fullUserName() const;
 

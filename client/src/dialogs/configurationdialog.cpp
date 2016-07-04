@@ -55,6 +55,15 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     connect(ui->editSelectedCountryFilter, SIGNAL(clicked()),
             this, SLOT(slotEditCountryGroup()));
     ui->editSelectedCountryFilter->setEnabled(false);
+
+    ClientSettings *settings = ClientSettings::self();
+    ui->fullName->setText(settings->fullUserName());
+    m_assigneeFilters = settings->assigneeFilters();
+    ui->groupListWidget->setItems(m_assigneeFilters.groupNames());
+    m_countryFilters = settings->countryFilters();
+    ui->countryListWidget->setItems(m_countryFilters.groupNames());
+    ui->cbShowToolTips->setChecked(settings->showToolTips());
+
     ClientSettings::self()->restoreWindowSize("configurationdialog", this);
 }
 
@@ -64,20 +73,9 @@ ConfigurationDialog::~ConfigurationDialog()
     delete ui;
 }
 
-void ConfigurationDialog::setFullUserName(const QString &fullUserName)
-{
-    ui->fullName->setText(fullUserName);
-}
-
 QString ConfigurationDialog::fullUserName() const
 {
     return ui->fullName->text();
-}
-
-void ConfigurationDialog::setAssigneeFilters(const ClientSettings::GroupFilters &assigneeFilters)
-{
-    m_assigneeFilters = assigneeFilters;
-    ui->groupListWidget->setItems(m_assigneeFilters.groupNames());
 }
 
 ClientSettings::GroupFilters ConfigurationDialog::assigneeFilters() const
@@ -85,15 +83,20 @@ ClientSettings::GroupFilters ConfigurationDialog::assigneeFilters() const
     return m_assigneeFilters;
 }
 
-void ConfigurationDialog::setCountryFilters(const ClientSettings::GroupFilters &countryFilters)
-{
-    m_countryFilters = countryFilters;
-    ui->countryListWidget->setItems(m_countryFilters.groupNames());
-}
-
 ClientSettings::GroupFilters ConfigurationDialog::countryFilters() const
 {
     return m_countryFilters;
+}
+
+void ConfigurationDialog::accept()
+{
+    ClientSettings *settings = ClientSettings::self();
+    settings->setFullUserName(fullUserName());
+    settings->setAssigneeFilters(assigneeFilters());
+    settings->setCountryFilters(countryFilters());
+    settings->setShowToolTips(ui->cbShowToolTips->isChecked());
+    settings->sync();
+    QDialog::accept();
 }
 
 void ConfigurationDialog::slotGroupListClicked(const QModelIndex &idx)
