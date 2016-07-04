@@ -198,6 +198,10 @@ public:
       Return Opportunity size.
      */
     QString opportunitySize() const;
+    /**
+      Return Opportunity priority.
+     */
+    QString opportunityPriority() const;
 
     /**
       Set the Account Name; used temporarily during listing.

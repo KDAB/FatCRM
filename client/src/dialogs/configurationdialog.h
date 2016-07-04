@@ -40,14 +40,8 @@ public:
     explicit ConfigurationDialog(QWidget *parent = Q_NULLPTR);
     ~ConfigurationDialog();
 
-    void setFullUserName(const QString &fullUserName);
-    QString fullUserName() const;
-
-    void setAssigneeFilters(const ClientSettings::GroupFilters &assigneeFilters);
-    ClientSettings::GroupFilters assigneeFilters() const;
-
-    void setCountryFilters(const ClientSettings::GroupFilters &countryFilters);
-    ClientSettings::GroupFilters countryFilters() const;
+public Q_SLOTS:
+    void accept() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotGroupListClicked(const QModelIndex &idx);
@@ -60,6 +54,10 @@ private Q_SLOTS:
     void slotEditAssigneeGroup();
 
 private:
+    QString fullUserName() const;
+    ClientSettings::GroupFilters assigneeFilters() const;
+    ClientSettings::GroupFilters countryFilters() const;
+
     Ui::ConfigurationDialog *ui;
     ClientSettings::GroupFilters m_assigneeFilters;
     ClientSettings::GroupFilters m_countryFilters;

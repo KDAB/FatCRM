@@ -61,6 +61,16 @@ bool ClientSettings::showDetails(const QString &typeString) const
     return value.isValid() ? value.toBool() : false;
 }
 
+void ClientSettings::setShowToolTips(bool on)
+{
+    m_settings->setValue("showToolTips", on);
+}
+
+bool ClientSettings::showToolTips() const
+{
+    return m_settings->value("showToolTips", true).toBool();
+}
+
 void ClientSettings::setFullUserName(const QString &name)
 {
     m_settings->setValue(QStringLiteral("fullUserName"), name);

@@ -22,6 +22,7 @@
 
 #include "itemstreemodel.h"
 #include "referenceddata.h"
+#include "clientsettings.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -102,11 +103,14 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
             return opportunityData(item, column, role);
         }
     } else if (role == Qt::ToolTipRole) {
-        if (mType == Account) {
-            return accountToolTip(item);
-        } else if (mType == Opportunity) {
-            return opportunityToolTip(item);
+        if (ClientSettings::self()->showToolTips()) {
+            if (mType == Account) {
+                return accountToolTip(item);
+            } else if (mType == Opportunity) {
+                return opportunityToolTip(item);
+            }
         }
+        return QVariant();
     } else if (mType == Opportunity && role == Qt::FontRole) {
         return opportunityData(item, column, role);
     }
@@ -415,6 +419,8 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
         case OpportunitySize:
             return opportunity.opportunitySize();
+        case OpportunityPriority:
+            return opportunity.opportunityPriority().toUpper();
         case Description:
             return opportunity.limitedDescription(2);
         case CreationDate: {
@@ -571,7 +577,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::NextStep
                 << ItemsTreeModel::NextStepDate
                 << ItemsTreeModel::LastModifiedDate
-                << ItemsTreeModel::AssignedTo;
+                << ItemsTreeModel::AssignedTo
+                << ItemsTreeModel::OpportunityPriority;
         break;
     case Campaign:
         columns << ItemsTreeModel::CampaignName
@@ -645,6 +652,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column account name", "Account Name");
     case OpportunitySize:
         return i18nc("@title:column opportunity size", "Size");
+    case OpportunityPriority:
+        return i18nc("@title:column opportunity priority", "Priority");
     case SalesStage:
         return i18nc("@title:column sales stage", "Sales Stage");
     case Amount:
@@ -702,6 +711,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         columns.removeAll(ItemsTreeModel::Amount);
         columns.removeAll(ItemsTreeModel::NextStep);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
+        columns.removeAll(ItemsTreeModel::OpportunitySize);
         break;
     case Campaign:
         break;
