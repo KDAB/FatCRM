@@ -69,6 +69,7 @@ public:
     QMap<ReferencedDataType, ReferencedData *> map;
 };
 
+/* coverity[leaked_storage] */
 Q_GLOBAL_STATIC(ReferenceDataMap, s_instances)
 
 ReferencedData *ReferencedData::instance(ReferencedDataType type)

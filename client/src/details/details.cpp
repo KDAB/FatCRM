@@ -74,7 +74,7 @@ static QStringList storedProperties()
 }
 
 Details::Details(DetailsType type, QWidget *parent)
-    : QWidget(parent), mType(type)
+    : QWidget(parent), mItemsTreeModel(0), mType(type)
 {
     // delayed init, wait for subclasses to create GUI
     QMetaObject::invokeMethod(this, "doConnects", Qt::QueuedConnection);

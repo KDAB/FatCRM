@@ -333,8 +333,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
                 this, SLOT(slotTotalItems(int)));
         connect(job, SIGNAL(progress(int)),
                 this, SLOT(slotProgress(int)));
-        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-                this, SLOT(itemsReceived(Akonadi::Item::List)));
+        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)),
+                this, SLOT(slotItemsReceived(Akonadi::Item::List, bool)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
@@ -487,9 +487,13 @@ void SugarCRMResource::slotProgress(int count)
     emit percent(100 * count / mTotalItems);
 }
 
-void SugarCRMResource::itemsReceived(const Item::List &items)
+void SugarCRMResource::slotItemsReceived(const Item::List &items, bool isUpdateJob)
 {
-    itemsRetrievedIncremental(items, Item::List());
+    if (isUpdateJob) {
+        itemsRetrievedIncremental(items, Item::List());
+    } else {
+        itemsRetrieved(items);
+    }
 }
 
 void SugarCRMResource::listEntriesResult(KJob *job)
@@ -516,8 +520,6 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     if (listEntriesJob->isUpdateJob()) {
         // ensure the incremental mode is ON even if there were neither an update nor a delete
         itemsRetrievedIncremental(Item::List(), Item::List());
-    } else {
-        itemsRetrieved(listEntriesJob->fullItems());
     }
     itemsRetrievalDone();
 

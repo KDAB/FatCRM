@@ -21,21 +21,26 @@
 */
 
 #include "collectionmanager.h"
+
 #include "fatcrm_client_debug.h"
+
+#include "kdcrmdata/enumdefinitionattribute.h"
+#include "sugaraccount.h"
+#include "sugarcampaign.h"
+#include "sugarlead.h"
+#include "sugaropportunity.h"
+
 
 #include <AkonadiCore/CollectionFetchJob>
 #include <AkonadiCore/CollectionFetchScope>
 #include <AkonadiCore/EntityAnnotationsAttribute>
 
-#include "kdcrmdata/enumdefinitionattribute.h"
+#include <KContacts/Addressee>
+
+#include <KLocalizedString>
+
 #include <QMessageBox>
 #include <QApplication>
-#include <KContacts/Addressee>
-#include <sugaraccount.h>
-#include <sugaropportunity.h>
-#include <sugarlead.h>
-#include <sugarcampaign.h>
-#include <klocalizedstring.h>
 
 using namespace Akonadi;
 

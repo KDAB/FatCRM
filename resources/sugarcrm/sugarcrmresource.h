@@ -101,7 +101,7 @@ private Q_SLOTS:
 
     void slotTotalItems(int count);
     void slotProgress(int count);
-    void itemsReceived(const Akonadi::Item::List &items);
+    void slotItemsReceived(const Akonadi::Item::List &items, bool isUpdateJob);
     void listEntriesResult(KJob *job);
 
     void listDeletedItems(const QVariant &val);

@@ -470,6 +470,7 @@ QString SugarDocument::mimeType()
     return QStringLiteral("application/x-vnd.kdab.crm.document");
 }
 
+/* coverity[leaked_storage] */
 Q_GLOBAL_STATIC(SugarDocument::AccessorHash, s_accessors)
 
 SugarDocument::AccessorHash SugarDocument::accessorHash()

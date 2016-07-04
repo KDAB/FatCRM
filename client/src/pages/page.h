@@ -130,7 +130,7 @@ private:
     void retrieveResourceUrl();
 
     enum ItemEditWidgetType { Simple, TabWidget };
-    ItemEditWidgetBase *createItemEditWidget(const Akonadi::Item item, DetailsType itemType, bool forceSimpleWidget = false);
+    ItemEditWidgetBase *createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget = false);
     ItemEditWidgetBase *openedWidgetForItem(const Akonadi::Item &item);
 
 private:
