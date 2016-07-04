@@ -52,8 +52,10 @@ QString ItemTransferInterface::downloadDocumentRevision(const QString &documentR
 
     const QString fullPath(tempDir.name() + revision.filename());
     QFile file(fullPath);
-    if (!file.open(QIODevice::WriteOnly))
+    if (!file.open(QIODevice::WriteOnly)) {
+        tempDir.setAutoRemove(true);
         return QString();
+    }
 
     file.write(KCodecs::base64Decode(revision.file().toLatin1()));
 
