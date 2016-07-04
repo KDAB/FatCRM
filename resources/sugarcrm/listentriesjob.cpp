@@ -67,7 +67,6 @@ public:
     ListEntriesScope mListScope;
     Stage mStage;
     QString mLatestTimestampFromItems;
-    Akonadi::Item::List mFullItems;
     bool mCollectionAttributesChanged;
 
 public: // slots
@@ -129,13 +128,7 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
         kDebug() << "List Entries for" << mHandler->moduleName()
                  << "received" << items.count() << "items.";
 
-        if (mListScope.isUpdateScope()) {
-            emit q->itemsReceived(items);
-        } else {
-            mFullItems.append(items);
-            emit q->progress(mFullItems.count());
-        }
-
+        emit q->itemsReceived(items, mListScope.isUpdateScope());
         mListScope.setOffset(callResult.next_offset());
         mHandler->listEntries(mListScope);
     } else {
@@ -240,11 +233,6 @@ bool ListEntriesJob::collectionAttributesChanged() const
 bool ListEntriesJob::isUpdateJob() const
 {
     return d->mListScope.isUpdateScope();
-}
-
-Item::List ListEntriesJob::fullItems() const
-{
-    return d->mFullItems;
 }
 
 int ListEntriesJob::currentContentsVersion(const Collection &collection)

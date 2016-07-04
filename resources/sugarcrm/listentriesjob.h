@@ -56,14 +56,13 @@ public:
 
     bool collectionAttributesChanged() const;
     bool isUpdateJob() const;
-    Akonadi::Item::List fullItems() const;
 
     static int currentContentsVersion(const Akonadi::Collection &collection);
     static QString latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler);
 
 Q_SIGNALS:
     void totalItems(int count);
-    void itemsReceived(const Akonadi::Item::List &items);
+    void itemsReceived(const Akonadi::Item::List &items, bool isUpdateJob);
     void progress(int count);
 
 protected:
