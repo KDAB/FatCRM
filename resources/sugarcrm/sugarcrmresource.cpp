@@ -334,8 +334,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
                 this, SLOT(slotTotalItems(int)));
         connect(job, SIGNAL(progress(int)),
                 this, SLOT(slotProgress(int)));
-        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)),
-                this, SLOT(slotItemsReceived(Akonadi::Item::List, bool)));
+        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)),
+                this, SLOT(slotItemsReceived(Akonadi::Item::List,bool)));
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
