@@ -416,8 +416,12 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
         case SalesStage:
             return opportunity.salesStage();
-        case Amount:
-            return QLocale().toCurrencyString(QLocale::c().toDouble(opportunity.amount()), opportunity.currencySymbol());
+        case Amount: {
+            const double amount = QLocale::c().toDouble(opportunity.amount());
+            if (role == Qt::DisplayRole)
+                return QLocale().toCurrencyString(amount, opportunity.currencySymbol());
+            return amount; // for sorting
+        }
         case OpportunitySize:
             return opportunity.opportunitySize();
         case OpportunityPriority:
@@ -432,7 +436,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case NextStepDate:
             if (role == Qt::DisplayRole)
-                    return KDCRMUtils::formatDate(opportunity.nextCallDate());
+                return KDCRMUtils::formatDate(opportunity.nextCallDate());
             return opportunity.nextCallDate(); // for sorting
         case NextStep:
             return opportunity.nextStep();
