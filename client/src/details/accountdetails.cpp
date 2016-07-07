@@ -186,8 +186,7 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &)
     }
     {
         const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
-        mUi->viewDocumentsButton->setEnabled(documents > 0);
-        const QString buttonText = (documents == 0) ? i18n("View Documents") : i18np("View 1 Document", "View %1 Documents", documents);
+        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
         mUi->viewDocumentsButton->setText(buttonText);
     }
 }

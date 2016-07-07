@@ -59,6 +59,7 @@ Now restart akonadi so that it sees the newly installed resource (on the command
 * Web settings
 
 In SugarCRM, click on your own name in the topright corner, go to the Advanced tab, and in the first group ("User Settings"), ensure that "Show Full Names" is checked.
+Further below in the "Locale Settings" group, ensure that the decimal separator is "." (dot) and that the thousands separator is "," (comma).
 
 * Starting FatCRM
 
