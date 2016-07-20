@@ -26,11 +26,12 @@
 #include "itemstreemodel.h"
 #include "sugaropportunity.h"
 #include "kdcrmutils.h"
-#include <QDate>
+#include "referenceddata.h"
 
 #include <Akonadi/EntityTreeModel>
 #include <Akonadi/Item>
 
+#include <QDate>
 #include <QFile>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -88,22 +89,32 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
     const QDate monthFrom = firstDayOfMonth(ui->from->date());
     const QDate monthTo = lastDayOfMonth(ui->to->date());
     const int numMonths = ( monthTo.year() - monthFrom.year() ) * 12 + monthTo.month() - monthFrom.month() + 1;
-    QVector<int> numCreated, numWon, numLost, avgAgeWon, avgAgeLost;
 
+    QVector<int> numCreated, numWon, numLost, avgAgeWon, avgAgeLost;
     numCreated.fill(0, numMonths);
     numWon.fill(0, numMonths);
     numLost.fill(0, numMonths);
     avgAgeWon.fill(0, numMonths);
     avgAgeLost.fill(0, numMonths);
+
+    QVector<QStringList> detailsCreated, detailsWon, detailsLost;
+    detailsCreated.resize(numMonths);
+    detailsWon.resize(numMonths);
+    detailsLost.resize(numMonths);
+
     for (int i = 0; i < mOppModel->rowCount(); ++i) {
         const QModelIndex index = mOppModel->index(i, 0);
         const Akonadi::Item item = mOppModel->data(index, Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            const QString accountName = ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
+            const QString name = accountName + QLatin1String(" -- ") + opportunity.name();
 
             const QDate createdDate = KDCRMUtils::dateTimeFromString(opportunity.dateEntered()).date();
             if (createdDate >= ui->from->date() && createdDate <= ui->to->date()) {
-                ++numCreated[relativeMonthNumber(createdDate, monthFrom)];
+                const int month = relativeMonthNumber(createdDate, monthFrom);
+                ++numCreated[month];
+                detailsCreated[month].append(name);
             }
 
             const QString salesStage = opportunity.salesStage();
@@ -118,9 +129,11 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
                     const int month = relativeMonthNumber(closedDate, monthFrom);
                     if (salesStage.contains("Closed Won") ) {
                         ++numWon[month];
+                        detailsWon[month].append(name);
                         avgAgeWon[month] += createdDate.daysTo(closedDate);
                     } else if (salesStage.contains("Closed Lost")) {
                         ++numLost[month];
+                        detailsLost[month].append(name);
                         avgAgeLost[month] += createdDate.daysTo(closedDate);
                     }
                 }
@@ -145,6 +158,8 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
     enum { ROW_CREATED, ROW_WON, ROW_LOST, ROW_AVG_AGE_WON, ROW_AVG_AGE_LOST };
     QDate monthStart = monthFrom;
 
+    const QChar newline('\n');
+
     QTableWidgetItem *item = Q_NULLPTR;
     for (int month = 0; month < numMonths; ++month) {
         const QString monthName = monthStart.toString("MMM yyyy");
@@ -159,18 +174,21 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
         item = new QTableWidgetItem();
         item->setData(Qt::DisplayRole, QString::number(created));
         item->setData(Qt::UserRole, created);
+        item->setToolTip(detailsCreated.at(month).join(newline));
         ui->table->setItem(ROW_CREATED, month, item);
 
         const int won = numWon.at(month);
         item = new QTableWidgetItem();
         item->setData(Qt::DisplayRole, QString::number(won));
         item->setData(Qt::UserRole, won);
+        item->setToolTip(detailsWon.at(month).join(newline));
         ui->table->setItem(ROW_WON, month, item);
 
         const int lost = numLost.at(month);
         item = new QTableWidgetItem();
         item->setData(Qt::DisplayRole, QString::number(lost));
         item->setData(Qt::UserRole, lost);
+        item->setToolTip(detailsLost.at(month).join(newline));
         ui->table->setItem(ROW_LOST, month, item);
 
         const int ageWon = avgAgeWon.at(month);
