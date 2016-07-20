@@ -67,41 +67,6 @@ Q_SIGNALS:
 protected:
     void closeEvent(QCloseEvent *event);
 
-private:
-    void initialize(bool displayOverlay);
-    void createActions();
-    void setupActions();
-    void createTabs();
-    void addPage(Page *page);
-    void updateWindowTitle(bool online);
-
-    QList<Page *> mPages;
-
-    QComboBox *mResourceSelector;
-
-    Ui_MainWindow mUi;
-    QMenu *mViewMenu;
-
-    QProgressBar *mProgressBar;
-    QTimer *mProgressBarHideTimer;
-    ReportPage *mReportPage;
-
-    ResourceConfigDialog *mResourceDialog;
-    CollectionManager *mCollectionManager;
-    LinkedItemsRepository *mLinkedItemsRepository;
-
-    Page *mAccountPage;
-    ContactsPage *mContactsPage;
-    ItemsTreeModel *mContactsModel;
-
-    QToolBar *mMainToolBar;
-    QAction *mResourceSelectorAction;
-    QList<KJob *> mClearTimestampJobs;
-
-    bool mInitialLoadingDone;
-    QStringList mPendingImportPaths;
-    LoadingOverlay *mLoadingOverlay;
-
 private Q_SLOTS:
     void slotDelayedInit();
     void slotAboutApp();
@@ -135,6 +100,13 @@ private Q_SLOTS:
     void slotHideOverlay();
 
 private:
+    void initialize(bool displayOverlay);
+    void createActions();
+    void setupActions();
+    void createTabs();
+    void addPage(Page *page);
+    void updateWindowTitle(bool online);
+
     Page *currentPage() const;
     Page *pageForType(DetailsType type) const;
     void setupResourcesCombo();
@@ -143,6 +115,36 @@ private:
     void initialLoadingDone();
     void processPendingImports();
     void showResourceDialog();
+
+    QList<Page *> mPages;
+
+    QComboBox *mResourceSelector;
+
+    Ui_MainWindow mUi;
+    QMenu *mViewMenu;
+
+    QProgressBar *mProgressBar;
+    QTimer *mProgressBarHideTimer;
+    ReportPage *mReportPage;
+
+    ResourceConfigDialog *mResourceDialog;
+    CollectionManager *mCollectionManager;
+    LinkedItemsRepository *mLinkedItemsRepository;
+
+    Page *mAccountPage;
+    ContactsPage *mContactsPage;
+    ItemsTreeModel *mContactsModel;
+
+    QToolBar *mMainToolBar;
+    QAction *mResourceSelectorAction;
+    QList<KJob *> mClearTimestampJobs;
+
+    bool mInitialLoadingDone;
+    bool mDisplayOverlay;
+    QStringList mPendingImportPaths;
+    LoadingOverlay *mLoadingOverlay;
+
+
 };
 
 #endif
