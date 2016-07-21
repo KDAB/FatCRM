@@ -170,11 +170,16 @@ void ClientSettings::GroupFilters::removeGroup(int row)
     m_filters.remove(row);
 }
 
-void ClientSettings::GroupFilters::prependGroup(const QString &group)
+void ClientSettings::GroupFilters::addGroup(const QString &group)
 {
     Group item;
     item.group = group;
-    m_filters.prepend(item);
+    m_filters.append(item);
+}
+
+void ClientSettings::GroupFilters::renameGroup(int row, const QString &group)
+{
+    m_filters[row].group = group;
 }
 
 void ClientSettings::GroupFilters::updateGroup(int row, const QStringList &users)

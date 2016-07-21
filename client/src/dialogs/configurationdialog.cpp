@@ -25,43 +25,52 @@
 #include "clientsettings.h"
 #include "ui_configurationdialog.h"
 
+#include <QInputDialog>
 #include <QListView>
 #include <QModelIndex>
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     QDialog(parent),
-    ui(new Ui::ConfigurationDialog),
-    m_currentAssigneeFilterRow(-1),
-    m_currentCountryGroupRow(-1)
+    ui(new Ui::ConfigurationDialog)
 {
     ui->setupUi(this);
 
-    connect(ui->groupListWidget->listView(), SIGNAL(clicked(QModelIndex)),
-            this, SLOT(slotGroupListClicked(QModelIndex)));
-    connect(ui->groupListWidget, SIGNAL(removed(QString)),
-            this, SLOT(slotGroupRemoved(QString)));
-    connect(ui->groupListWidget, SIGNAL(added(QString)),
-            this, SLOT(slotGroupAdded(QString)));
-    connect(ui->editSelectedAssigneeFilter, SIGNAL(clicked()),
-            this, SLOT(slotEditAssigneeGroup()));
-    ui->editSelectedAssigneeFilter->setEnabled(false);
-
-    connect(ui->countryListWidget->listView(), SIGNAL(clicked(QModelIndex)),
-            this, SLOT(slotCountryListClicked(QModelIndex)));
-    connect(ui->countryListWidget, SIGNAL(removed(QString)),
-            this, SLOT(slotCountryRemoved(QString)));
-    connect(ui->countryListWidget, SIGNAL(added(QString)),
-            this, SLOT(slotCountryAdded(QString)));
+    connect(ui->countryListWidget->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(slotCurrentCountryChanged(QModelIndex)));
+    connect(ui->removeCountryGroup, SIGNAL(clicked()),
+            this, SLOT(slotRemoveCountry()));
+    connect(ui->addCountryGroup, SIGNAL(clicked()),
+            this, SLOT(slotAddCountry()));
     connect(ui->editSelectedCountryFilter, SIGNAL(clicked()),
             this, SLOT(slotEditCountryGroup()));
+    connect(ui->countryListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
+            this, SLOT(slotCountryGroupChanged(QListWidgetItem *)));
     ui->editSelectedCountryFilter->setEnabled(false);
+    ui->removeCountryGroup->setEnabled(false);
+
+    connect(ui->assigneeListWidget->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(slotCurrentAssigneeChanged(QModelIndex)));
+    connect(ui->removeAssigneeGroup, SIGNAL(clicked()),
+            this, SLOT(slotRemoveAssignee()));
+    connect(ui->addAssigneeGroup, SIGNAL(clicked()),
+            this, SLOT(slotAddAssignee()));
+    connect(ui->editSelectedAssigneeFilter, SIGNAL(clicked()),
+            this, SLOT(slotEditAssigneeGroup()));
+    connect(ui->assigneeListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
+            this, SLOT(slotAssigneeGroupChanged(QListWidgetItem *)));
+    ui->editSelectedAssigneeFilter->setEnabled(false);
+    ui->removeAssigneeGroup->setEnabled(false);
 
     ClientSettings *settings = ClientSettings::self();
     ui->fullName->setText(settings->fullUserName());
     m_assigneeFilters = settings->assigneeFilters();
-    ui->groupListWidget->setItems(m_assigneeFilters.groupNames());
+    foreach (const QString &groupName, m_assigneeFilters.groupNames()) {
+        addAssigneeItem(groupName);
+    }
     m_countryFilters = settings->countryFilters();
-    ui->countryListWidget->setItems(m_countryFilters.groupNames());
+    foreach (const QString &groupName, m_countryFilters.groupNames()) {
+        addCountryItem(groupName);
+    }
     ui->cbShowToolTips->setChecked(settings->showToolTips());
 
     ClientSettings::self()->restoreWindowSize("configurationdialog", this);
@@ -88,6 +97,18 @@ ClientSettings::GroupFilters ConfigurationDialog::countryFilters() const
     return m_countryFilters;
 }
 
+void ConfigurationDialog::addAssigneeItem(const QString &name)
+{
+    QListWidgetItem *item = new QListWidgetItem(name, ui->assigneeListWidget);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+}
+
+void ConfigurationDialog::addCountryItem(const QString &name)
+{
+    QListWidgetItem *item = new QListWidgetItem(name, ui->countryListWidget);
+    item->setFlags(item->flags() | Qt::ItemIsEditable);
+}
+
 void ConfigurationDialog::accept()
 {
     ClientSettings *settings = ClientSettings::self();
@@ -99,58 +120,78 @@ void ConfigurationDialog::accept()
     QDialog::accept();
 }
 
-void ConfigurationDialog::slotGroupListClicked(const QModelIndex &idx)
+void ConfigurationDialog::slotCurrentAssigneeChanged(const QModelIndex &idx)
 {
-    m_currentAssigneeFilterRow = idx.row();
-    ui->editSelectedAssigneeFilter->setEnabled(true);
+    ui->editSelectedAssigneeFilter->setEnabled(idx.isValid());
+    ui->removeAssigneeGroup->setEnabled(idx.isValid());
 }
 
-void ConfigurationDialog::slotGroupRemoved(const QString &group)
+void ConfigurationDialog::slotAssigneeGroupChanged(QListWidgetItem *item)
 {
-    Q_UNUSED(group);
-    m_assigneeFilters.removeGroup(m_currentAssigneeFilterRow);
+    const int row = ui->assigneeListWidget->row(item);
+    m_assigneeFilters.renameGroup(row, item->text());
 }
 
-void ConfigurationDialog::slotGroupAdded(const QString &group)
+void ConfigurationDialog::slotRemoveAssignee()
 {
-    m_assigneeFilters.prependGroup(group);
+    const int row = ui->assigneeListWidget->currentRow();
+    delete ui->assigneeListWidget->currentItem();
+    m_assigneeFilters.removeGroup(row);
 }
 
-void ConfigurationDialog::slotCountryListClicked(const QModelIndex &idx)
+void ConfigurationDialog::slotAddAssignee()
 {
-    m_currentCountryGroupRow = idx.row();
-    ui->editSelectedCountryFilter->setEnabled(true);
+    const QString assignee = QInputDialog::getText(this, i18n("Add assignee group"), i18n("Assignee group name"));
+    m_assigneeFilters.addGroup(assignee);
+    addAssigneeItem(assignee);
 }
 
-void ConfigurationDialog::slotCountryRemoved(const QString &country)
+void ConfigurationDialog::slotCurrentCountryChanged(const QModelIndex &idx)
 {
-    Q_UNUSED(country);
-    m_countryFilters.removeGroup(m_currentCountryGroupRow);
+    ui->editSelectedCountryFilter->setEnabled(idx.isValid());
+    ui->removeCountryGroup->setEnabled(idx.isValid());
 }
 
-void ConfigurationDialog::slotCountryAdded(const QString &country)
+void ConfigurationDialog::slotCountryGroupChanged(QListWidgetItem *item)
 {
-    m_countryFilters.prependGroup(country);
+    const int row = ui->countryListWidget->row(item);
+    m_countryFilters.renameGroup(row, item->text());
+}
+
+void ConfigurationDialog::slotRemoveCountry()
+{
+    const int row = ui->countryListWidget->currentRow();
+    delete ui->countryListWidget->currentItem();
+    m_countryFilters.removeGroup(row);
+}
+
+void ConfigurationDialog::slotAddCountry()
+{
+    const QString country = QInputDialog::getText(this, i18n("Add country group"), i18n("Country group name"));
+    m_countryFilters.addGroup(country);
+    addCountryItem(country);
 }
 
 void ConfigurationDialog::slotEditAssigneeGroup()
 {
+    const int row = ui->assigneeListWidget->currentRow();
     EditListDialog dialog(i18n("Enter the full name of the users for the group, one name per line:"), this);
-    ClientSettings::GroupFilters::Group group = m_assigneeFilters.groups().at(m_currentAssigneeFilterRow);
+    ClientSettings::GroupFilters::Group group = m_assigneeFilters.groups().at(row);
     dialog.setWindowTitle(i18n("Editing assignee group %1", group.group));
     dialog.setItems(group.entries);
     if (dialog.exec()) {
-        m_assigneeFilters.updateGroup(m_currentAssigneeFilterRow, dialog.items());
+        m_assigneeFilters.updateGroup(row, dialog.items());
     }
 }
 
 void ConfigurationDialog::slotEditCountryGroup()
 {
+    const int row = ui->countryListWidget->currentRow();
     EditListDialog dialog(i18n("Enter the names of the countries for the group, one country per line:"), this);
-    ClientSettings::GroupFilters::Group group = m_countryFilters.groups().at(m_currentCountryGroupRow);
+    ClientSettings::GroupFilters::Group group = m_countryFilters.groups().at(row);
     dialog.setWindowTitle(i18n("Editing country group %1", group.group));
     dialog.setItems(group.entries);
     if (dialog.exec()) {
-        m_countryFilters.updateGroup(m_currentCountryGroupRow, dialog.items());
+        m_countryFilters.updateGroup(row, dialog.items());
     }
 }
