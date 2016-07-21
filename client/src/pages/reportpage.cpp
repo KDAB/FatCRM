@@ -267,11 +267,10 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
             const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui().toLower();
             const QSet<int> groupIndexes = groupIndexLookupHash.value(country);
 
-            if (groupIndexes.isEmpty()) { // not part of configured country groups -> skip it
+            if (groupIndexes.isEmpty()) { // not part of configured country groups -> count it in "Total"
                 const QString accountName = ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
                 const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
                 qDebug() << "Opp in no country group:" << accountName << opportunity.name() << "country" << country << "closed" << isClosed << closedDate;
-                continue;
             }
 
             for (QDate month = monthFrom; month <= monthTo; month = month.addMonths(1)) {
