@@ -60,6 +60,8 @@ public:
 
     QString filterDescription() const;
 
+    static QString otherCountriesSpecialValue() { return QLatin1String("_OTHER_"); }
+
     void save(QSettings &settings, const QString &prefix) const;
     void load(const QSettings &settings, const QString &prefix);
 

@@ -27,6 +27,8 @@
 #include <QMap>
 #include "clientsettings.h"
 class QModelIndex;
+class QItemSelection;
+class QListWidgetItem;
 
 namespace Ui {
 class ConfigurationDialog;
@@ -44,25 +46,28 @@ public Q_SLOTS:
     void accept() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
-    void slotGroupListClicked(const QModelIndex &idx);
-    void slotGroupRemoved(const QString &group);
-    void slotGroupAdded(const QString &group);
-    void slotCountryListClicked(const QModelIndex &idx);
-    void slotCountryRemoved(const QString &country);
-    void slotCountryAdded(const QString &country);
-    void slotEditCountryGroup();
+    void slotCurrentAssigneeChanged(const QModelIndex &idx);
+    void slotAssigneeGroupChanged(QListWidgetItem *);
+    void slotRemoveAssignee();
+    void slotAddAssignee();
     void slotEditAssigneeGroup();
+
+    void slotCurrentCountryChanged(const QModelIndex &idx);
+    void slotCountryGroupChanged(QListWidgetItem *);
+    void slotRemoveCountry();
+    void slotAddCountry();
+    void slotEditCountryGroup();
 
 private:
     QString fullUserName() const;
     ClientSettings::GroupFilters assigneeFilters() const;
     ClientSettings::GroupFilters countryFilters() const;
+    void addCountryItem(const QString &name);
+    void addAssigneeItem(const QString &name);
 
     Ui::ConfigurationDialog *ui;
     ClientSettings::GroupFilters m_assigneeFilters;
     ClientSettings::GroupFilters m_countryFilters;
-    int m_currentAssigneeFilterRow;
-    int m_currentCountryGroupRow;
 };
 
 #endif // CONFIGURATIONDIALOG_H

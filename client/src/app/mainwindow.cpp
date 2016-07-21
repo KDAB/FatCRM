@@ -73,7 +73,8 @@ MainWindow::MainWindow(bool displayOverlay)
       mCollectionManager(new CollectionManager(this)),
       mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
       mContactsModel(0),
-      mInitialLoadingDone(false)
+      mInitialLoadingDone(false),
+      mDisplayOverlay(displayOverlay)
 {
     mUi.setupUi(this);
     initialize(displayOverlay);
@@ -249,8 +250,10 @@ void MainWindow::setupActions()
 
 void MainWindow::slotResourceSelectionChanged(int index)
 {
-    mLoadingOverlay->show();
-    mLoadingOverlay->setMessage(i18n("Loading..."));
+    if (mDisplayOverlay) {
+        mLoadingOverlay->show();
+        mLoadingOverlay->setMessage(i18n("Loading..."));
+    }
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
         const QByteArray identifier = agent.identifier().toLatin1();

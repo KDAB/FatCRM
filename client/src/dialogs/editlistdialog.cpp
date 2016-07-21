@@ -36,6 +36,7 @@ EditListDialog::EditListDialog(const QString &labelText, QWidget *parent) :
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(labelText, this));
     mTextEdit = new QTextEdit(this);
+    mTextEdit->setAcceptRichText(false);
     layout->addWidget(mTextEdit);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok|QDialogButtonBox::Cancel, Qt::Horizontal, this);
     layout->addWidget(buttonBox);

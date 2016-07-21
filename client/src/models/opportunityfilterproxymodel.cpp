@@ -117,8 +117,19 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     const QStringList countries = d->settings.countries();
     if (!countries.isEmpty()) {
         const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
-        if (!countries.contains(country, Qt::CaseInsensitive))
-            return false;
+        if (countries.contains(OpportunityFilterSettings::otherCountriesSpecialValue())) {
+            // Special case: filtering for a country not in any of the defined groups
+            QVector<ClientSettings::GroupFilters::Group> groups = ClientSettings::self()->countryFilters().groups();
+            const auto it = std::find_if(groups.constBegin(), groups.constEnd(),
+                                         [&country](const ClientSettings::GroupFilters::Group &group){
+                return group.entries.contains(country, Qt::CaseInsensitive); });
+            if (it != groups.constEnd())
+                return false;
+        } else {
+            // Standard filtering using a country group
+            if (!countries.contains(country, Qt::CaseInsensitive))
+                return false;
+        }
     }
 
     const bool isClosed = opportunity.salesStage().contains(QLatin1String("Closed"));

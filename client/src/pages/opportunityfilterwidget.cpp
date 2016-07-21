@@ -87,10 +87,11 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->cbAssignee->addItems(ClientSettings::self()->assigneeFilters().groupNames());
     ui->cbCountry->clear();
     ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());
+    ui->cbCountry->addItem(i18n("Other"));
 
     const OpportunityFilterSettings settings = ClientSettings::self()->filterSettings();
 
-    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.assigneeGroup())));
+    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbAssignee->findText(settings.assigneeGroup())));
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
     ui->cbClosed->setChecked(settings.showClosed());
@@ -164,7 +165,9 @@ void OpportunityFilterWidget::filterChanged()
         }
     } else if (ui->rbCountry->isChecked()) {
         const int idx = ui->cbCountry->currentIndex();
-        if (idx != -1) {
+        if (idx == ui->cbCountry->count() - 1) // "other"
+            countries << OpportunityFilterSettings::otherCountriesSpecialValue();
+        else if (idx != -1) {
             countries = ClientSettings::self()->countryFilters().groups().at(idx).entries;
         }
     }

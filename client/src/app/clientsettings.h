@@ -68,11 +68,13 @@ public:
             QStringList entries;
         };
 
+        bool isEmpty() const { return m_filters.isEmpty(); }
         QString toString() const;
         void loadFromString(const QString &str);
         const QVector<Group>& groups() const { return m_filters; }
         void removeGroup(int row);
-        void prependGroup(const QString &group);
+        void addGroup(const QString &group);
+        void renameGroup(int row, const QString &group);
         void updateGroup(int row, const QStringList &users);
         QStringList groupNames() const;
         void addGroup(const Group &item);
