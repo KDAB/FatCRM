@@ -234,7 +234,7 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
         labels << group.group;
 
         foreach (const QString &country, group.entries) {
-            groupIndexLookupHash[country].insert(groupIndex);
+            groupIndexLookupHash[country.toLower()].insert(groupIndex);
         }
 
         numPerCountry.append(QVector<int>(numMonths, 0));
@@ -256,14 +256,23 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
             // more correct (earlier than dateClosed).
             const QDate closedDate = qMin(KDCRMUtils::dateFromString(opportunity.dateClosed()),
                                           opportunity.dateModified().date());
-
             const bool isClosed = opportunity.salesStage().contains("Closed");
 
-            const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
+            if (isClosed && closedDate < monthFrom) {
+                // Opp too old to appear anywhere
+                continue;
+            }
+
+
+            const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui().toLower();
             const QSet<int> groupIndexes = groupIndexLookupHash.value(country);
 
-            if (groupIndexes.isEmpty()) // not part of configured country groups -> skip it
+            if (groupIndexes.isEmpty()) { // not part of configured country groups -> skip it
+                const QString accountName = ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
+                const QString country = AccountRepository::instance()->accountById(opportunity.accountId()).countryForGui();
+                qDebug() << "Opp in no country group:" << accountName << opportunity.name() << "country" << country << "closed" << isClosed << closedDate;
                 continue;
+            }
 
             for (QDate month = monthFrom; month <= monthTo; month = month.addMonths(1)) {
                 const QDate lastDay = lastDayOfMonth(month);
