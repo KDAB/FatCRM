@@ -90,7 +90,7 @@ void OpportunityFilterWidget::setupFromConfig()
 
     const OpportunityFilterSettings settings = ClientSettings::self()->filterSettings();
 
-    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.assigneeGroup())));
+    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbAssignee->findText(settings.assigneeGroup())));
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
     ui->cbClosed->setChecked(settings.showClosed());
