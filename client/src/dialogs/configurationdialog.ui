@@ -209,7 +209,6 @@
   <zorder>cbShowToolTips</zorder>
   <zorder>label_5</zorder>
   <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
   <zorder>assigneeListWidget</zorder>
   <zorder>assigneeListWidget</zorder>
  </widget>
