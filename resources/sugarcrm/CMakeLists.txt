@@ -60,7 +60,7 @@ add_executable(akonadi_sugarcrm_resource ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource
   kdcrmdata
-  KDSoap::kdsoap
+  ${KDSoap_LIBRARIES}
   KF5::Contacts
   KF5::CalendarCore
   KF5::KDELibs4Support

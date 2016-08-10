@@ -7,7 +7,6 @@ set_package_properties(KDSoap PROPERTIES DESCRIPTION "KDSoap, Qt SOAP library by
 
 
 # TODO: Just use KDSOAP_GENERATE_WSDL?
-set(KDSoap_CODEGENERATOR KDSoap::kdwsdl2cpp)
 if(KDSoap_CODEGENERATOR)
   # generate SOAP bindings for a wsdl file
   macro(kdsoap_generate_soap_bindings _sources _wsdl _name _namespaceSuffix)
