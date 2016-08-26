@@ -424,8 +424,12 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case OpportunitySize:
             return opportunity.opportunitySize();
-        case OpportunityPriority:
-            return opportunity.opportunityPriority().toUpper();
+        case OpportunityPriority: {
+            const QString priority = opportunity.opportunityPriority().toUpper();
+            if (role == Qt::DisplayRole)
+                return priority;
+            return priority.isEmpty() ? QString::fromLatin1("Z") : priority; // for better ordering: A, B, C, <none>
+        }
         case Description:
             return opportunity.limitedDescription(2);
         case CreationDate: {
