@@ -64,7 +64,7 @@ Q_SIGNALS:
     void onlineStatusChanged(bool online);
 
 protected:
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *event) override;
 
 private Q_SLOTS:
     void slotDelayedInit();
