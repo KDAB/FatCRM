@@ -62,7 +62,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Title:</string>
+         <string>&amp;Title:</string>
         </property>
         <property name="buddy">
          <cstring>title</cstring>
@@ -75,7 +75,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Department:</string>
+         <string>&amp;Department:</string>
         </property>
         <property name="buddy">
          <cstring>department</cstring>
@@ -111,8 +111,7 @@
          <widget class="QToolButton" name="buttonOpenAccount">
           <property name="icon">
            <iconset theme="document-open">
-            <normaloff/>
-           </iconset>
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -195,7 +194,7 @@
       <item row="10" column="0">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Assigned to:</string>
+         <string>Assi&amp;gned to:</string>
         </property>
         <property name="buddy">
          <cstring>assigned_user_id</cstring>
@@ -316,7 +315,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_30">
         <property name="text">
-         <string>Do Not Call:</string>
+         <string>Do &amp;Not Call:</string>
         </property>
         <property name="buddy">
          <cstring>do_not_call</cstring>
@@ -350,12 +349,18 @@
           <property name="text">
            <string>Clear</string>
           </property>
+          <property name="icon">
+           <iconset theme="edit-clear"/>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="EditCalendarButton" name="calendarButton">
           <property name="text">
            <string>&amp;Edit</string>
+          </property>
+          <property name="icon">
+           <iconset theme="edit-entry"/>
           </property>
          </widget>
         </item>
@@ -412,7 +417,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_19">
         <property name="text">
-         <string>City:</string>
+         <string>Cit&amp;y:</string>
         </property>
         <property name="buddy">
          <cstring>primaryAddressCity</cstring>
@@ -451,7 +456,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_22">
         <property name="text">
-         <string>Country:</string>
+         <string>Co&amp;untry:</string>
         </property>
         <property name="buddy">
          <cstring>primaryAddressCountry</cstring>

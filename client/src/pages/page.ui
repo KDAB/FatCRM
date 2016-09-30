@@ -23,6 +23,9 @@
          <property name="text">
           <string>&amp;New</string>
          </property>
+         <property name="icon">
+          <iconset theme="document-new"/>
+         </property>
         </widget>
        </item>
        <item>

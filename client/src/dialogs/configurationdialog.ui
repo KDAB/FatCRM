@@ -99,6 +99,9 @@
          <property name="text">
           <string>&amp;Edit...</string>
          </property>
+         <property name="icon">
+          <iconset theme="edit-entry"/>
+         </property>
         </widget>
        </item>
        <item>
@@ -175,6 +178,9 @@
          <property name="text">
           <string>&amp;Edit...</string>
          </property>
+         <property name="icon">
+          <iconset theme="edit-entry"/>
+         </property>
         </widget>
        </item>
        <item>
@@ -205,13 +211,11 @@
     </widget>
    </item>
   </layout>
+  <zorder>label_3</zorder>
   <zorder>label_2</zorder>
   <zorder>cbShowToolTips</zorder>
   <zorder>label_5</zorder>
   <zorder>buttonBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>assigneeListWidget</zorder>
-  <zorder>assigneeListWidget</zorder>
  </widget>
  <resources/>
  <connections>
