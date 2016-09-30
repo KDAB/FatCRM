@@ -35,7 +35,7 @@ class OpportunitiesPage : public Page
 public:
     explicit OpportunitiesPage(QWidget *parent = Q_NULLPTR);
 
-    ~OpportunitiesPage();
+    ~OpportunitiesPage() override;
 
     void setupModel() Q_DECL_OVERRIDE;
 

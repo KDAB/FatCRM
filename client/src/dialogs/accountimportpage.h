@@ -45,7 +45,7 @@ class AccountImportPage : public QWizardPage
 
 public:
     explicit AccountImportPage(QWidget *parent = Q_NULLPTR);
-    ~AccountImportPage();
+    ~AccountImportPage() override;
 
     // intput
     void setAccountCollection(const Akonadi::Collection &collection);

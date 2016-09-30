@@ -33,7 +33,7 @@ class ContactsPage : public Page
 public:
     explicit ContactsPage(QWidget *parent = Q_NULLPTR);
 
-    ~ContactsPage();
+    ~ContactsPage() override;
 
 public slots:
     void slotOpenFutureContact(Akonadi::Item::Id id);

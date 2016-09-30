@@ -33,7 +33,7 @@ class LeadsPage : public Page
 public:
     explicit LeadsPage(QWidget *parent = Q_NULLPTR);
 
-    ~LeadsPage();
+    ~LeadsPage() override;
 
 protected:
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

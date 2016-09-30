@@ -46,7 +46,7 @@ class ListEntriesJob : public SugarJob
 public:
     ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = Q_NULLPTR);
 
-    ~ListEntriesJob();
+    ~ListEntriesJob() override;
 
     Akonadi::Collection collection() const;
     void setModule(ModuleHandler *handler);
@@ -66,7 +66,7 @@ Q_SIGNALS:
     void progress(int count);
 
 protected:
-    void startSugarTask();
+    void startSugarTask() override;
 
 private:
     class Private;

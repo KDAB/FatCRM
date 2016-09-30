@@ -55,7 +55,7 @@ class Page : public QWidget
 public:
     explicit Page(QWidget *parent, const QString &mimeType, DetailsType type);
 
-    ~Page();
+    ~Page() override;
 
     QString mimeType() const { return mMimeType; }
     DetailsType detailsType() const { return mType; }

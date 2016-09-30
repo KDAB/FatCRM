@@ -32,7 +32,7 @@ public:
 
     explicit LeadDataExtractor(QObject *parent = Q_NULLPTR);
 
-    ~LeadDataExtractor();
+    ~LeadDataExtractor() override;
 
 protected:
     QString itemAddress() const Q_DECL_OVERRIDE;

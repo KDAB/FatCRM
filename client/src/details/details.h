@@ -45,7 +45,7 @@ class Details : public QWidget
 public:
     explicit Details(DetailsType type, QWidget *parent = Q_NULLPTR);
 
-    ~Details();
+    ~Details() override;
 
     virtual QMap<QString, QString> data(const Akonadi::Item &item) const = 0;
     virtual void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const = 0;

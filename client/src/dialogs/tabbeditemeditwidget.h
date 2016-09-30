@@ -40,7 +40,7 @@ class TabbedItemEditWidget : public ItemEditWidgetBase
 
 public:
     explicit TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent = 0);
-    ~TabbedItemEditWidget();
+    ~TabbedItemEditWidget() override;
 
     // check if that can be protected instead
     Akonadi::Item item() const Q_DECL_OVERRIDE;

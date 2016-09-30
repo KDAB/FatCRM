@@ -50,7 +50,7 @@ public:
     /**
      * Destroys the filter proxy model.
      */
-    ~OpportunityFilterProxyModel();
+    ~OpportunityFilterProxyModel() override;
 
     void setFilter(const OpportunityFilterSettings &settings);
 

@@ -41,7 +41,7 @@ public:
      */
     explicit ConflictResolveDialog(QWidget *parent = Q_NULLPTR);
 
-    ~ConflictResolveDialog();
+    ~ConflictResolveDialog() override;
 
     /**
      * Sets the items that causes the conflict.

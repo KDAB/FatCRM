@@ -33,7 +33,7 @@ class AccountsPage : public Page
 public:
     explicit AccountsPage(QWidget *parent = Q_NULLPTR);
 
-    ~AccountsPage();
+    ~AccountsPage() override;
 
 protected:
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

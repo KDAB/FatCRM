@@ -77,7 +77,7 @@ class DocumentsWindow : public QWidget
 
 public:
     explicit DocumentsWindow(QWidget *parent = Q_NULLPTR);
-    ~DocumentsWindow();
+    ~DocumentsWindow() override;
 
     void setResourceIdentifier(const QString &identifier);
     void setLinkedItemsRepository(LinkedItemsRepository *repository);

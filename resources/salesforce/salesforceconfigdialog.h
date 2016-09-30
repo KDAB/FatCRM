@@ -32,7 +32,7 @@ class SalesforceConfigDialog : public QDialog
 public:
     explicit SalesforceConfigDialog(const QString &accountName);
 
-    ~SalesforceConfigDialog();
+    ~SalesforceConfigDialog() override;
 
     QString accountName() const;
     QString host() const;

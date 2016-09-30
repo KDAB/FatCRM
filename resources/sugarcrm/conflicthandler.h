@@ -68,7 +68,7 @@ public:
      */
     explicit ConflictHandler(ConflictType type, QObject *parent = Q_NULLPTR);
 
-    ~ConflictHandler();
+    ~ConflictHandler() override;
 
     /**
      * Sets the items that causes the conflict.

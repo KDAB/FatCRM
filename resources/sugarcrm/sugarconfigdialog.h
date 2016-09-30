@@ -33,7 +33,7 @@ class SugarConfigDialog : public QDialog
 public:
     explicit SugarConfigDialog(PasswordHandler *passwordHandler, const QString &accountName, QWidget *parent = Q_NULLPTR);
 
-    ~SugarConfigDialog();
+    ~SugarConfigDialog() override;
 
     QString accountName() const;
     QString host() const;
