@@ -49,7 +49,7 @@ public:
 
     explicit SugarJob(SugarSession *session, QObject *parent = 0);
 
-    ~SugarJob();
+    ~SugarJob() override;
 
     void start();
 

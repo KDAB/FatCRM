@@ -35,7 +35,7 @@ class ResourceDebugInterface : public QObject
 
 public:
     explicit ResourceDebugInterface(SalesforceResource *resource);
-    ~ResourceDebugInterface();
+    ~ResourceDebugInterface() override;
 
 public Q_SLOTS:
     Q_SCRIPTABLE void setKDSoapDebugEnabled(bool enable);

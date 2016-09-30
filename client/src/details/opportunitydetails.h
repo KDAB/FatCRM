@@ -41,7 +41,7 @@ class OpportunityDetails : public Details
 public:
     explicit OpportunityDetails(QWidget *parent = 0);
 
-    ~OpportunityDetails();
+    ~OpportunityDetails() override;
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

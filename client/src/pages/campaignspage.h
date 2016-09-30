@@ -33,7 +33,7 @@ class CampaignsPage : public Page
 public:
     explicit CampaignsPage(QWidget *parent = 0);
 
-    ~CampaignsPage();
+    ~CampaignsPage() override;
 
 protected:
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

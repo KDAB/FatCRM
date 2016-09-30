@@ -107,7 +107,7 @@ public:
     /**
      * Destroys the csv reader.
      */
-    ~QCsvReader();
+    ~QCsvReader() override;
 
     /**
      * Parses the csv data from @p device.
@@ -194,7 +194,7 @@ public:
     /**
      * Destroys the csv standard builder.
      */
-    ~QCsvStandardBuilder();
+    ~QCsvStandardBuilder() override;
 
     /**
      * Returns the error message of the last error.
@@ -220,12 +220,12 @@ public:
     /**
      * @internal
      */
-    void begin();
-    void beginLine();
-    void field( const QString &data, uint row, uint column );
-    void endLine();
-    void end();
-    void error( const QString &errorMsg );
+    void begin() override;
+    void beginLine() override;
+    void field( const QString &data, uint row, uint column ) override;
+    void endLine() override;
+    void end() override;
+    void error( const QString &errorMsg ) override;
 
 private:
     class Private;

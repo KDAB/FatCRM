@@ -48,7 +48,7 @@ public:
 
     UpdateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
 
-    ~UpdateEntryJob();
+    ~UpdateEntryJob() override;
 
     void setModule(ModuleHandler *handler);
     ModuleHandler *module() const;

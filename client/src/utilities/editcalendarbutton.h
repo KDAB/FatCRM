@@ -32,10 +32,10 @@ class EditCalendarButton : public QToolButton
 public:
     explicit EditCalendarButton(QWidget *parent = 0);
 
-    ~EditCalendarButton();
+    ~EditCalendarButton() override;
 
 protected:
-    virtual void mousePressEvent(QMouseEvent *e);
+    void mousePressEvent(QMouseEvent *e) override;
 
     friend class ContactDetails;
     friend class OpportunityDetails;

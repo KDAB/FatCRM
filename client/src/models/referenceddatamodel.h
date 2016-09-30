@@ -35,12 +35,12 @@ class ReferencedDataModel : public QAbstractListModel
 public:
     explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = 0);
 
-    ~ReferencedDataModel();
+    ~ReferencedDataModel() override;
 
     static void setModelForCombo(QComboBox *combo, ReferencedDataType type);
 
-    /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
-    /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const;
+    /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const override;
 
 private:
     class Private;

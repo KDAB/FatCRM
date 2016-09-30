@@ -35,7 +35,7 @@ class ModuleDebugInterface : public QObject
 
 public:
     ModuleDebugInterface(const QString &moduleName, SalesforceResource *resource);
-    ~ModuleDebugInterface();
+    ~ModuleDebugInterface() override;
 
 public Q_SLOTS:
     Q_SCRIPTABLE QStringList availableFields() const;

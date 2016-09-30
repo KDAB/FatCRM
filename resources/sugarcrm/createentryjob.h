@@ -44,7 +44,7 @@ class CreateEntryJob : public SugarJob
 public:
     CreateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
 
-    ~CreateEntryJob();
+    ~CreateEntryJob() override;
 
     void setModule(ModuleHandler *handler);
 

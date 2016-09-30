@@ -39,7 +39,7 @@ class ResourceConfigDialog : public QDialog
 public:
     explicit ResourceConfigDialog(QWidget *parent = 0);
 
-    ~ResourceConfigDialog();
+    ~ResourceConfigDialog() override;
 
 Q_SIGNALS:
     void resourceSelected(const Akonadi::AgentInstance &resource);

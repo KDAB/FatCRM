@@ -39,7 +39,7 @@ class ListModulesJob : public SugarJob
 public:
     explicit ListModulesJob(SugarSession *session, QObject *parent = 0);
 
-    ~ListModulesJob();
+    ~ListModulesJob() override;
 
     QStringList modules() const;
 

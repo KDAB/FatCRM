@@ -52,7 +52,7 @@ class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBa
 
 public:
     explicit SalesforceResource(const QString &id);
-    ~SalesforceResource();
+    ~SalesforceResource() override;
 
 public Q_SLOTS:
     virtual void configure(WId windowId);

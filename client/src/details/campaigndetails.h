@@ -38,7 +38,7 @@ class CampaignDetails : public Details
 public:
     explicit CampaignDetails(QWidget *parent = 0);
 
-    ~CampaignDetails();
+    ~CampaignDetails() override;
 
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 

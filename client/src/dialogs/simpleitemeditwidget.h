@@ -42,7 +42,7 @@ class SimpleItemEditWidget : public ItemEditWidgetBase
 public:
     explicit SimpleItemEditWidget(Details *details, QWidget *parent = nullptr);
 
-    ~SimpleItemEditWidget();
+    ~SimpleItemEditWidget() override;
 
     void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
     bool isModified() const Q_DECL_OVERRIDE;

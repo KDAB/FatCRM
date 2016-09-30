@@ -36,7 +36,7 @@ class OpportunitiesHandler : public ModuleHandler
 public:
     explicit OpportunitiesHandler(SugarSession *session);
 
-    ~OpportunitiesHandler();
+    ~OpportunitiesHandler() override;
 
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 

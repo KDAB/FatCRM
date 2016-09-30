@@ -93,8 +93,8 @@ class ContactsImportPage : public QWizardPage
     Q_OBJECT
 
 public:
-    explicit ContactsImportPage(QWidget *parent = 0);
-    ~ContactsImportPage();
+    explicit ContactsImportPage(QWidget *parent = nullptr);
+    ~ContactsImportPage() override;
 
     void setContactsModel(ItemsTreeModel *model);
 

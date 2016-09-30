@@ -38,7 +38,7 @@ class LeadDetails : public Details
 public:
     explicit LeadDetails(QWidget *parent = 0);
 
-    ~LeadDetails();
+    ~LeadDetails() override;
 
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 

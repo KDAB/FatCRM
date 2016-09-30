@@ -44,7 +44,7 @@ class ContactDetails : public Details
 public:
     explicit ContactDetails(QWidget *parent = 0);
 
-    ~ContactDetails();
+    ~ContactDetails() override;
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

@@ -32,7 +32,7 @@ class LoginJob : public SugarJob
 public:
     explicit LoginJob(SugarSession *session, QObject *parent = 0);
 
-    ~LoginJob();
+    ~LoginJob() override;
 
 protected:
     void startSugarTask();

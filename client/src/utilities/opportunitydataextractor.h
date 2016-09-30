@@ -31,7 +31,7 @@ class OpportunityDataExtractor : public ItemDataExtractor
 public:
     explicit OpportunityDataExtractor(QObject *parent = 0);
 
-    ~OpportunityDataExtractor();
+    ~OpportunityDataExtractor() override;
 
 protected:
     QString itemAddress() const Q_DECL_OVERRIDE ;

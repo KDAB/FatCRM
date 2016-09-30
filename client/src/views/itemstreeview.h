@@ -42,7 +42,7 @@ signals:
 public slots:
 
 protected:
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
 private slots:
     void slotHeaderContextMenu(const QPoint &point);

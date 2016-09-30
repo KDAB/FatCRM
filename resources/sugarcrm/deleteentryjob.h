@@ -43,7 +43,7 @@ class DeleteEntryJob : public SugarJob
 public:
     DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
 
-    ~DeleteEntryJob();
+    ~DeleteEntryJob() override;
 
     Akonadi::Item item() const;
 

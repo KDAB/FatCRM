@@ -59,10 +59,10 @@ class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase
 
 public:
     explicit SugarCRMResource(const QString &id);
-    ~SugarCRMResource();
+    ~SugarCRMResource() override;
 
 public Q_SLOTS:
-    virtual void configure(WId windowId);
+    void configure(WId windowId) override;
 
 private:
     PasswordHandler *mPasswordHandler;

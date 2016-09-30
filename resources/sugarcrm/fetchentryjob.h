@@ -43,7 +43,7 @@ class FetchEntryJob : public SugarJob
 public:
     FetchEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = 0);
 
-    ~FetchEntryJob();
+    ~FetchEntryJob() override;
 
     void setModule(ModuleHandler *handler);
 

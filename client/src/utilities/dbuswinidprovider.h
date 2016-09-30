@@ -35,7 +35,7 @@ class DBusWinIdProvider : public QObject
 public:
     explicit DBusWinIdProvider(QWidget *referenceWindow);
 
-    ~DBusWinIdProvider();
+    ~DBusWinIdProvider() override;
 
 public Q_SLOTS:
     Q_SCRIPTABLE qlonglong getWinId();

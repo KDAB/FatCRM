@@ -33,7 +33,7 @@ class ModelRepository : public QObject
     Q_OBJECT
 public:
     static ModelRepository *instance();
-    ~ModelRepository();
+    ~ModelRepository() override;
 
     void setModel(DetailsType type, ItemsTreeModel *model);
     ItemsTreeModel *model(DetailsType type);

@@ -32,7 +32,7 @@ class OpenedWidgetsRepository : public QObject
     Q_OBJECT
 public:
     static OpenedWidgetsRepository *instance();
-    ~OpenedWidgetsRepository();
+    ~OpenedWidgetsRepository() override;
 
     void registerWidget(ItemEditWidgetBase *widget);
     void unregisterWidget(ItemEditWidgetBase *widget);
