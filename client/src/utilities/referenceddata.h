@@ -45,7 +45,7 @@ public:
     static ReferencedData *instance(ReferencedDataType type);
     static void clearAll();
 
-    ~ReferencedData();
+    ~ReferencedData() override;
 
     void clear();
 

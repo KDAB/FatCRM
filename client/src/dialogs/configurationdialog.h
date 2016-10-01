@@ -40,7 +40,7 @@ class ConfigurationDialog : public QDialog
 
 public:
     explicit ConfigurationDialog(QWidget *parent = Q_NULLPTR);
-    ~ConfigurationDialog();
+    ~ConfigurationDialog() override;
 
 public Q_SLOTS:
     void accept() Q_DECL_OVERRIDE;

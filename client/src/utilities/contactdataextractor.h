@@ -31,7 +31,7 @@ class ContactDataExtractor : public ItemDataExtractor
 public:
     explicit ContactDataExtractor(QObject *parent = Q_NULLPTR);
 
-    ~ContactDataExtractor();
+    ~ContactDataExtractor() override;
 
 protected:
     QString itemAddress() const Q_DECL_OVERRIDE ;

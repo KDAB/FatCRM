@@ -49,7 +49,7 @@ class ModuleHandler : public QObject, public Akonadi::DifferencesAlgorithmInterf
 public:
     explicit ModuleHandler(const QString &moduleName, SugarSession *session);
 
-    virtual ~ModuleHandler();
+    ~ModuleHandler() override;
 
     QString moduleName() const;
 

@@ -60,7 +60,7 @@ class NotesWindow : public QWidget
 
 public:
     explicit NotesWindow(QWidget *parent = Q_NULLPTR);
-    ~NotesWindow();
+    ~NotesWindow() override;
 
     void addNote(const SugarNote &note);
     void addEmail(const SugarEmail &email);

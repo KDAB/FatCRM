@@ -55,7 +55,7 @@ class FATCRMPRIVATE_EXPORT MainWindow : public QMainWindow
 public:
     explicit MainWindow(bool displayOverlay);
 
-    ~MainWindow();
+    ~MainWindow() override;
 
     bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
 

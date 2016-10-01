@@ -34,7 +34,7 @@ class KJobProgressTracker : public QObject
 
 public:
     explicit KJobProgressTracker(QWidget *parentWidget, QObject *parent = Q_NULLPTR);
-    ~KJobProgressTracker();
+    ~KJobProgressTracker() override;
 
     void setCaption(const QString &caption);
     void setLabel(const QString &label);

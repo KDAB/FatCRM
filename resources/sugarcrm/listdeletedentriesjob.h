@@ -44,7 +44,7 @@ class ListDeletedEntriesJob : public SugarJob
 
 public:
     ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent = Q_NULLPTR);
-    ~ListDeletedEntriesJob();
+    ~ListDeletedEntriesJob() override;
 
     Akonadi::Collection collection() const;
     void setModule(ModuleHandler *handler);
@@ -57,7 +57,7 @@ public:
     static QString latestTimestamp(const Akonadi::Collection &collection);
 
 protected:
-    void startSugarTask();
+    void startSugarTask() override;
 
 private:
     class Private;

@@ -39,7 +39,7 @@ class FATCRMPRIVATE_EXPORT ResourceConfigDialog : public QDialog
 public:
     explicit ResourceConfigDialog(QWidget *parent = Q_NULLPTR);
 
-    ~ResourceConfigDialog();
+    ~ResourceConfigDialog() override;
 
 Q_SIGNALS:
     void resourceSelected(const Akonadi::AgentInstance &resource);

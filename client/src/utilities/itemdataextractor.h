@@ -34,7 +34,7 @@ class ItemDataExtractor : public QObject
 {
     Q_OBJECT
 public:
-    ~ItemDataExtractor();
+    ~ItemDataExtractor() override;
 
     // Extract the id from the (type-dependent) payload
     virtual QString idForItem(const Akonadi::Item &item) const = 0;

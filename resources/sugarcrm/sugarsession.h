@@ -50,7 +50,7 @@ public:
 
     explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = Q_NULLPTR);
 
-    ~SugarSession();
+    ~SugarSession() override;
 
     RequiredAction setSessionParameters(const QString &username, const QString &password,
                                         const QString &host);

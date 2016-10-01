@@ -36,7 +36,7 @@ class FATCRMPRIVATE_EXPORT AccountRepository : public QObject
     Q_OBJECT
 public:
     static AccountRepository *instance();
-    ~AccountRepository();
+    ~AccountRepository() override;
 
     // Not a full list of fields, just the ones for which we care for modifications
     enum Field

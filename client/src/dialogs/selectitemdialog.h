@@ -45,7 +45,7 @@ class SelectItemDialog : public QDialog
 
 public:
     explicit SelectItemDialog(DetailsType type, QWidget *parent);
-    ~SelectItemDialog();
+    ~SelectItemDialog() override;
 
     void setModel(QAbstractItemModel *model);
 
@@ -53,7 +53,7 @@ Q_SIGNALS:
     void selectedItem(const QString &itemId);
 
 protected:
-    virtual void accept() Q_DECL_OVERRIDE;
+    void accept() Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
     void slotItemSelected(const Akonadi::Item &item);

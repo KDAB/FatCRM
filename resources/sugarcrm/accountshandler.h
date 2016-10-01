@@ -34,7 +34,7 @@ class AccountsHandler : public ModuleHandler
 public:
     explicit AccountsHandler(SugarSession *session);
 
-    ~AccountsHandler();
+    ~AccountsHandler() override;
 
     Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
 

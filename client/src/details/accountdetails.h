@@ -39,7 +39,7 @@ class AccountDetails : public Details
 public:
     explicit AccountDetails(QWidget *parent = Q_NULLPTR);
 
-    ~AccountDetails();
+    ~AccountDetails() override;
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;

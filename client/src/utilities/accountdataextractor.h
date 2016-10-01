@@ -32,7 +32,7 @@ class AccountDataExtractor : public ItemDataExtractor
 public:
     explicit AccountDataExtractor(QObject *parent = Q_NULLPTR);
 
-    ~AccountDataExtractor();
+    ~AccountDataExtractor() override;
 
 protected:
     QString itemAddress() const Q_DECL_OVERRIDE;

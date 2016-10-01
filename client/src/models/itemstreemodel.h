@@ -100,7 +100,7 @@ public:
      */
     explicit ItemsTreeModel(DetailsType type, Akonadi::ChangeRecorder *monitor, QObject *parent = Q_NULLPTR);
 
-    virtual ~ItemsTreeModel();
+    ~ItemsTreeModel() override;
 
     ColumnTypes columnTypes() const; // all available column types
     ColumnTypes defaultVisibleColumns() const; // the column types that should be initially visible
