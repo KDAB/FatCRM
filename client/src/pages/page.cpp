@@ -445,7 +445,7 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
     }
 
     if (!mSelectedEmails.isEmpty()) {
-        contextMenu.addAction(i18n("Open in &Email Client"), this, SLOT(slotOpenEmailClient()));
+        contextMenu.addAction(i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
     }
 
     if (!selectedIndexes.isEmpty() && (mType == Account || mType == Opportunity || mType == Contact)) {
