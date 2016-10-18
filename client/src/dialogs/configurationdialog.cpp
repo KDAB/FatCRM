@@ -46,7 +46,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     connect(ui->editSelectedCountryFilter, SIGNAL(clicked()),
             this, SLOT(slotEditCountryGroup()));
     connect(ui->countryListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
-            this, SLOT(slotCountryGroupChanged(QListWidgetItem *)));
+            this, SLOT(slotCountryGroupChanged(QListWidgetItem*)));
     ui->editSelectedCountryFilter->setEnabled(false);
     ui->removeCountryGroup->setEnabled(false);
 
@@ -59,7 +59,7 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     connect(ui->editSelectedAssigneeFilter, SIGNAL(clicked()),
             this, SLOT(slotEditAssigneeGroup()));
     connect(ui->assigneeListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
-            this, SLOT(slotAssigneeGroupChanged(QListWidgetItem *)));
+            this, SLOT(slotAssigneeGroupChanged(QListWidgetItem*)));
     ui->editSelectedAssigneeFilter->setEnabled(false);
     ui->removeAssigneeGroup->setEnabled(false);
 
