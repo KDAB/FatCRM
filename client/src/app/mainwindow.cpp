@@ -66,6 +66,8 @@ using namespace Akonadi;
 
 #include "fatcrm_client_debug.h"
 
+MainWindow* MainWindow::s_instance = nullptr;
+
 MainWindow::MainWindow(bool displayOverlay)
     : QMainWindow(),
       mProgressBar(0),
@@ -76,7 +78,11 @@ MainWindow::MainWindow(bool displayOverlay)
       mInitialLoadingDone(false),
       mDisplayOverlay(displayOverlay)
 {
+    Q_ASSERT(!s_instance);
+    s_instance = this;
+
     mUi.setupUi(this);
+
     initialize(displayOverlay);
 
     /*

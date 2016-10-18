@@ -27,6 +27,9 @@ namespace Ui {
 class AssociatedDataWidget;
 }
 
+class OpportunitiesPage;
+
+class QAbstractItemModel;
 class QModelIndex;
 class QStringListModel;
 
@@ -39,8 +42,9 @@ public:
     ~AssociatedDataWidget() override;
 
     void hideOpportunityGui();
+
     void setContactsModel(QStringListModel *model);
-    void setOpportunitiesModel(QStringListModel *model);
+    OpportunitiesPage *opportunitiesPage() const;
 
 Q_SIGNALS:
     void openItem(const QString &item);

@@ -66,6 +66,11 @@ OpportunitiesPage::OpportunitiesPage(QWidget *parent)
     mFilterUiWidget = new OpportunityFilterWidget(mOppFilterProxyModel, this);
     insertFilterWidget(mFilterUiWidget);
 }
+void OpportunitiesPage::hideFilterWidget()
+{
+    delete mFilterUiWidget;
+    mFilterUiWidget = nullptr;
+}
 
 OpportunitiesPage::~OpportunitiesPage()
 {

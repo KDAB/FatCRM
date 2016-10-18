@@ -501,17 +501,29 @@ void Page::setupModel()
     Q_ASSERT(mFilter); // must be set by derived class ctor
 
     Q_ASSERT(!mItemsTreeModel);
-    mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
+    mItemsTreeModel = ModelRepository::instance()->model(mType);
+    const bool modelAlreadyExisted = mItemsTreeModel != nullptr;
+    if (!mItemsTreeModel) {
+        mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
+    }
 
-    connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
-    connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)), this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));
-    connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
-    connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
+    if (!modelAlreadyExisted) {
+        connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)),
+                this, SLOT(slotRowsInserted(QModelIndex,int,int)));
+        connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)),
+                this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));
+        connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)),
+                this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
+    }
+    connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+            this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     mFilter->setSourceModel(mItemsTreeModel);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
-    ModelRepository::instance()->setModel(mType, mItemsTreeModel);
+    if (!modelAlreadyExisted) {
+        ModelRepository::instance()->setModel(mType, mItemsTreeModel);
+    }
 
     emit modelCreated(mItemsTreeModel); // give it to the reports page
 }

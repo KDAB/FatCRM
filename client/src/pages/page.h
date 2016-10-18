@@ -68,6 +68,9 @@ public:
     void printReport();
     KJob *clearTimestamp();
 
+    virtual void setupModel();
+
+
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
     void statusMessage(const QString &);
@@ -96,7 +99,6 @@ protected:
     }
     void setFilter(FilterProxyModel *filter);
 
-    virtual void setupModel();
 
     void insertFilterWidget(QWidget *widget);
 

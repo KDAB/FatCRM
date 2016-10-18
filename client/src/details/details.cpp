@@ -193,6 +193,10 @@ void Details::setEnumDefinitions(const EnumDefinitions &enums)
 
 void Details::setCollectionManager(CollectionManager *collectionManager)
 {
+    if (!collectionManager) {
+        return;
+    }
+
     Akonadi::Collection::Id coll = collectionManager->collectionIdForType(mType);
     //qDebug() << typeToString(mType) << coll << collectionManager->supportedFields(coll);
     setSupportedFields(collectionManager->supportedFields(coll));

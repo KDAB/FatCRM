@@ -57,6 +57,11 @@ public:
 
     ~MainWindow() override;
 
+    // HACK to expose functionality
+    static MainWindow* self() { return s_instance; }
+    // HACK to expose functionality
+    void addPage(Page *page);
+
     bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
 
 Q_SIGNALS:
@@ -103,7 +108,6 @@ private:
     void createActions();
     void setupActions();
     void createTabs();
-    void addPage(Page *page);
     void updateWindowTitle(bool online);
 
     Page *currentPage() const;
@@ -143,7 +147,7 @@ private:
     QStringList mPendingImportPaths;
     LoadingOverlay *mLoadingOverlay;
 
-
+    static MainWindow* s_instance;
 };
 
 #endif

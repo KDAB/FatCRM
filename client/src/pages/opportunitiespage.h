@@ -37,6 +37,10 @@ public:
 
     ~OpportunitiesPage() override;
 
+    OpportunityFilterProxyModel *filterModel() const { return mOppFilterProxyModel; }
+
+    void hideFilterWidget();
+
     void setupModel() Q_DECL_OVERRIDE;
 
 protected:

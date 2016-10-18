@@ -28,10 +28,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="KeyPressEventListView" name="opportunitiesListView">
-        <property name="editTriggers">
-         <set>QAbstractItemView::NoEditTriggers</set>
-        </property>
+       <widget class="OpportunitiesPage" name="opportunitiesPage">
        </widget>
       </item>
      </layout>
@@ -67,6 +64,11 @@
    <class>KeyPressEventListView</class>
    <extends>QListView</extends>
    <header>utilities/keypresseventlistview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>OpportunitiesPage</class>
+   <extends>QWidget</extends>
+   <header>opportunitiespage.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

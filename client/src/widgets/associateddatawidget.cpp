@@ -21,6 +21,8 @@
 #include "associateddatawidget.h"
 #include "ui_associateddatawidget.h"
 
+#include "mainwindow.h"
+
 #include <QStringListModel>
 
 AssociatedDataWidget::AssociatedDataWidget(QWidget *parent) :
@@ -28,10 +30,17 @@ AssociatedDataWidget::AssociatedDataWidget(QWidget *parent) :
     mUi(new Ui::AssociatedDataWidget)
 {
     mUi->setupUi(this);
-    connect(mUi->opportunitiesListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editItem(QModelIndex)));
-    connect(mUi->opportunitiesListView, SIGNAL(returnPressed(QModelIndex)), this, SLOT(editItem(QModelIndex)));
+
     connect(mUi->contactsListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editItem(QModelIndex)));
     connect(mUi->contactsListView, SIGNAL(returnPressed(QModelIndex)), this, SLOT(editItem(QModelIndex)));
+
+    // HACK: The page needs
+    // - the collection manager + linked items repository
+    // - online status tracking, etc.
+    MainWindow::self()->addPage(mUi->opportunitiesPage);
+    mUi->opportunitiesPage->setupModel();
+
+    mUi->opportunitiesPage->hideFilterWidget();
 }
 
 AssociatedDataWidget::~AssociatedDataWidget()
@@ -42,22 +51,20 @@ AssociatedDataWidget::~AssociatedDataWidget()
 void AssociatedDataWidget::hideOpportunityGui()
 {
     mUi->opportunitiesLabel->hide();
-    mUi->opportunitiesListView->hide();
+    mUi->opportunitiesPage->hide();
 }
 
 void AssociatedDataWidget::setContactsModel(QStringListModel *model)
 {
     mUi->contactsListView->setModel(model);
-
 }
 
-void AssociatedDataWidget::setOpportunitiesModel(QStringListModel *model)
+OpportunitiesPage *AssociatedDataWidget::opportunitiesPage() const
 {
-    mUi->opportunitiesListView->setModel(model);
+    return mUi->opportunitiesPage;
 }
 
 void AssociatedDataWidget::editItem(const QModelIndex &index)
 {
     emit openItem(index.data(Qt::DisplayRole).toString());
-
 }

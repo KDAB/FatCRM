@@ -24,6 +24,9 @@
 #include "associateddatawidget.h"
 #include "clientsettings.h"
 #include "itemstreemodel.h"
+#include "opportunityfilterproxymodel.h"
+#include "opportunityfiltersettings.h"
+#include "opportunitiespage.h"
 #include "modelrepository.h"
 #include "simpleitemeditwidget.h"
 #include "sugaraccount.h"
@@ -118,39 +121,40 @@ void TabbedItemEditWidget::initialize()
 int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsType type)
 {
     ItemsTreeModel *model = ModelRepository::instance()->model(type);
-    const int count = model->rowCount();
-    QStringListModel *listModel = new QStringListModel(this);
-    QStringList list;
-    for (int i = 0; i < count; ++i) {
-        const QModelIndex index = model->index(i, 0);
-        const Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
-        if (type == Opportunity) {
-            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
-            if (opportunity.accountId() == accountId) {
-                list << opportunity.name();
-                mItemsMap.insert(opportunity.name(), qMakePair(item, Opportunity));
-            }
-        } else if (type == Contact) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-            if (addressee.custom("FATCRM", "X-AccountId")  == accountId) {
-                list << addressee.assembledName();
-                mItemsMap.insert(addressee.assembledName(), qMakePair(item, Contact));
-            }
-        } else {
-            Q_ASSERT(0);
-        }
-    }
-
-    listModel->setStringList(list);
 
     if (type == Opportunity) {
-        mUi->associatedDataTab->setOpportunitiesModel(listModel);
+        OpportunityFilterSettings filterSettings;
+        filterSettings.setAccountId(accountId);
+
+        auto opportunitiesPage = mUi->associatedDataTab->opportunitiesPage();
+        opportunitiesPage->filterModel()->setFilter(filterSettings);
+        return opportunitiesPage->filterModel()->rowCount();
     } else if (type == Contact) {
+        const int count = model->rowCount();
+        QStringListModel *listModel = new QStringListModel(this);
+        QStringList list;
+        for (int i = 0; i < count; ++i) {
+            const QModelIndex index = model->index(i, 0);
+            const Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
+            if (type == Contact) {
+                const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+                if (addressee.custom("FATCRM", "X-AccountId")  == accountId) {
+                    list << addressee.assembledName();
+                    mItemsMap.insert(addressee.assembledName(), qMakePair(item, Contact));
+                }
+            } else {
+                Q_ASSERT(0);
+            }
+        }
+        listModel->setStringList(list);
+
         mUi->associatedDataTab->setContactsModel(listModel);
-    } else {
-        Q_ASSERT(0);
+        return list.count();
     }
-    return list.count();
+
+
+    Q_ASSERT(0);
+    return 0;
 }
 
 void TabbedItemEditWidget::openWidget(const QString &itemKey)
