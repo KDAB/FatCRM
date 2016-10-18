@@ -93,6 +93,9 @@ void ItemsTreeView::keyPressEvent(QKeyEvent *event)
 
 void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
 {
+    if (!mItemsTreeModel)
+        return;
+
     const int section = header()->logicalIndexAt(point);
 
     QMenu menu;
