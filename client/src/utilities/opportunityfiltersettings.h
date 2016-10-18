@@ -39,6 +39,8 @@ public:
     OpportunityFilterSettings();
     // default copy ctor and operator= are wanted.
 
+    void setAccountId(const QString &accountId);
+    QString accountId() const { return mAccountId; }
     void setAssignees(const QStringList &assignees, const QString &assigneeGroup);
     QStringList assignees() const { return mAssignees; }
     QString assigneeGroup() const { return mAssigneeGroup; }
@@ -66,6 +68,7 @@ public:
     void load(const QSettings &settings, const QString &prefix);
 
 private:
+    QString mAccountId;
     QStringList mAssignees; // no filtering if empty
     QStringList mCountries; // no filtering if empty
     QString mAssigneeGroup; // user-visible description for <assignee>

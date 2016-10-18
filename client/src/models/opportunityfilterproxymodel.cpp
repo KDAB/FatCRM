@@ -110,6 +110,10 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     Q_ASSERT(item.hasPayload<SugarOpportunity>());
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
+    if (!d->settings.accountId().isEmpty() && d->settings.accountId() != opportunity.accountId()) {
+        return false;
+    }
+
     const QStringList assignees = d->settings.assignees();
     if (!assignees.isEmpty() && !assignees.contains(opportunity.assignedUserName()))
         return false;

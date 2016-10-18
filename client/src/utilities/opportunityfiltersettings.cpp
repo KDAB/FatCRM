@@ -34,6 +34,11 @@ OpportunityFilterSettings::OpportunityFilterSettings()
 {
 }
 
+void OpportunityFilterSettings::setAccountId(const QString &accountId)
+{
+    mAccountId = accountId;
+}
+
 void OpportunityFilterSettings::setAssignees(const QStringList &assignees, const QString &assigneeGroup)
 {
     mAssignees = assignees;
