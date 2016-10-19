@@ -57,7 +57,7 @@ int main(int argc, char **argv)
 
     QMimeDatabase db;
     if (!db.mimeTypeForName("application/x-vnd.kdab.crm.opportunity").isValid()) {
-        KMessageBox::error(0, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
+        KMessageBox::error(nullptr, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
         return 1;
     }
 

@@ -38,7 +38,7 @@ class ConflictHandler::Private
     ConflictHandler *const q;
 public:
     Private(ConflictHandler *parent, ConflictType type)
-        : q(parent), mType(type), mDiffInterface(0), mWindowId(0),
+        : q(parent), mType(type), mDiffInterface(nullptr), mWindowId(0),
           mSession(new Session(Session::defaultSession()->sessionId() + "-conflicthandler", parent))
     {
     }
@@ -134,7 +134,7 @@ void ConflictHandler::Private::createDuplicate(const Item &item)
 void ConflictHandler::Private::duplicateLocalItemResult(KJob *job)
 {
     ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
-    Q_ASSERT(createJob != 0);
+    Q_ASSERT(createJob != nullptr);
 
     const Item item = createJob->item();
 
@@ -168,7 +168,7 @@ void ConflictHandler::setConflictingItems(const Item &changedItem, const Item &c
 
 void ConflictHandler::setDifferencesInterface(DifferencesAlgorithmInterface *interface)
 {
-    Q_ASSERT(interface != 0);
+    Q_ASSERT(interface != nullptr);
     d->mDiffInterface = interface;
 }
 

@@ -643,7 +643,7 @@ ContactsHandler::ContactsHandler(SugarSession *session)
     mAccessors->insert(KDCRMFields::dateEntered(),
                        new ContactAccessorPair(getDateCreated, setDateCreated, QString()));
     mAccessors->insert(KDCRMFields::id(),
-                       new ContactAccessorPair(0, setContactId, QString()));
+                       new ContactAccessorPair(nullptr, setContactId, QString()));
     mAccessors->insert(KDCRMFields::createdByName(),
                        new ContactAccessorPair(getCreatedByName, setCreatedByName, QString()));
     mAccessors->insert(KDCRMFields::createdBy(),
@@ -708,7 +708,7 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
     ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if ((*it)->getter == 0) {
+        if ((*it)->getter == nullptr) {
             continue;
         }
         KDSoapGenerated::TNS__Name_value field;
@@ -908,7 +908,7 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
-        if ((*it)->getter == 0) {
+        if ((*it)->getter == nullptr) {
             continue;
         }
 

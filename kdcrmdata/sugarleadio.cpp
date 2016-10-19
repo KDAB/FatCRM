@@ -35,7 +35,7 @@ SugarLeadIO::SugarLeadIO()
 
 bool SugarLeadIO::readSugarLead(QIODevice *device, SugarLead &lead)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -81,7 +81,7 @@ void SugarLeadIO::readLead(SugarLead &lead)
 
 bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

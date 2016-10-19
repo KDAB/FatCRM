@@ -40,7 +40,7 @@ class SimpleItemEditWidget : public ItemEditWidgetBase
 {
     Q_OBJECT
 public:
-    explicit SimpleItemEditWidget(Details *details, QWidget *parent = 0);
+    explicit SimpleItemEditWidget(Details *details, QWidget *parent = nullptr);
 
     ~SimpleItemEditWidget() override;
 

@@ -69,8 +69,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     : ResourceBase(id),
       mPasswordHandler(new PasswordHandler(id, this)),
       mSession(new SugarSession(mPasswordHandler, this)),
-      mCurrentJob(0),
-      mLoginJob(0),
+      mCurrentJob(nullptr),
+      mLoginJob(nullptr),
       mDebugInterface(new ResourceDebugInterface(this)),
       mModuleHandlers(new ModuleHandlerHash),
       mModuleDebugInterfaces(new ModuleDebugInterfaceHash),
@@ -197,11 +197,11 @@ void SugarCRMResource::doSetOnline(bool online)
             // Abort current job, given that the resource scheduler aborted the current task
             if (mCurrentJob) {
                 mCurrentJob->kill(KJob::Quietly);
-                mCurrentJob = 0;
+                mCurrentJob = nullptr;
             }
             if (mLoginJob) {
                 mLoginJob->kill(KJob::Quietly);
-                mLoginJob = 0;
+                mLoginJob = nullptr;
             }
 
             // "Log out", but no point in trying to tell the server, we're offline.
@@ -384,7 +384,7 @@ void SugarCRMResource::startExplicitLogin()
 void SugarCRMResource::explicitLoginResult(KJob *job)
 {
     Q_ASSERT(mLoginJob == job);
-    mLoginJob = 0;
+    mLoginJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
@@ -417,7 +417,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 void SugarCRMResource::listModulesResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
 
     if (handleLoginError(job)) {
         return;
@@ -434,7 +434,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
     }
 
     ListModulesJob *listJob = qobject_cast<ListModulesJob *>(job);
-    Q_ASSERT(listJob != 0);
+    Q_ASSERT(listJob != nullptr);
 
     Collection::List collections;
 
@@ -501,7 +501,7 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
 
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
@@ -573,7 +573,7 @@ void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
     if (job->error()) {
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
 
     // Commit attribute changes
     ListDeletedEntriesJob *listDelEntriesJob = static_cast<ListDeletedEntriesJob *>(job);
@@ -588,7 +588,7 @@ void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
 void SugarCRMResource::createEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
@@ -604,7 +604,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
     }
 
     CreateEntryJob *createJob = qobject_cast<CreateEntryJob *>(job);
-    Q_ASSERT(createJob != 0);
+    Q_ASSERT(createJob != nullptr);
 
     changeCommitted(createJob->item());
     status(Idle);
@@ -617,7 +617,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
 void SugarCRMResource::deleteEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
@@ -633,7 +633,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
     }
 
     DeleteEntryJob *deleteJob = qobject_cast<DeleteEntryJob *>(job);
-    Q_ASSERT(deleteJob != 0);
+    Q_ASSERT(deleteJob != nullptr);
 
     changeCommitted(deleteJob->item());
     status(Idle);
@@ -642,7 +642,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 void SugarCRMResource::fetchEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
@@ -658,7 +658,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
     }
 
     FetchEntryJob *fetchJob = qobject_cast<FetchEntryJob *>(job);
-    Q_ASSERT(fetchJob != 0);
+    Q_ASSERT(fetchJob != nullptr);
 
     itemRetrieved(fetchJob->item());
     status(Idle);
@@ -667,13 +667,13 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
 void SugarCRMResource::updateEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
-    mCurrentJob = 0;
+    mCurrentJob = nullptr;
     if (handleLoginError(job)) {
         return;
     }
 
     UpdateEntryJob *updateJob = qobject_cast<UpdateEntryJob *>(job);
-    Q_ASSERT(updateJob != 0);
+    Q_ASSERT(updateJob != nullptr);
 
     if (job->error() != 0) {
         if (job->error() != UpdateEntryJob::ConflictError) {
@@ -734,7 +734,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
         // check if we have a corresponding module handler already
         // if not see if we can create one
         ModuleHandler* handler = mModuleHandlers->value(module);
-        if (handler == 0) {
+        if (handler == nullptr) {
             if (module == QLatin1String("Contacts")) {
                 handler = new ContactsHandler(mSession);
             } else if (module == QLatin1String("Accounts")) {
@@ -787,7 +787,7 @@ bool SugarCRMResource::handleLoginError(KJob *job)
         setOnline( false );
         emit status( Broken, job->errorText() );
         // if this is any other job than an explicit login, defer to next attempt
-        if (qobject_cast<LoginJob *>(job) == 0) {
+        if (qobject_cast<LoginJob *>(job) == nullptr) {
             deferTask();
         } else {
             taskDone();

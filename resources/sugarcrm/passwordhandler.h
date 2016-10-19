@@ -33,7 +33,7 @@ public:
     explicit PasswordHandler(const QString &resourceId, QObject *parent = Q_NULLPTR);
 
     bool isPasswordAvailable();
-    QString password( bool *userRejected = 0 );
+    QString password( bool *userRejected = nullptr );
     void setPassword( const QString &password );
 
 Q_SIGNALS:

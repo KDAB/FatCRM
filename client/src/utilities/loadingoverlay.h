@@ -30,7 +30,7 @@ class LoadingOverlay : public QWidget
 {
     Q_OBJECT
 public:
-    explicit LoadingOverlay(QWidget *parent = 0);
+    explicit LoadingOverlay(QWidget *parent = nullptr);
     ~LoadingOverlay() override;
 
     void setMessage(const QString &message);

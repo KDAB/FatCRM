@@ -39,7 +39,7 @@ class TabbedItemEditWidget : public ItemEditWidgetBase
     Q_OBJECT
 
 public:
-    explicit TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent = 0);
+    explicit TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent = nullptr);
     ~TabbedItemEditWidget() override;
 
     // check if that can be protected instead

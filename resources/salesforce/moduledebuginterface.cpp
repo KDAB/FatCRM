@@ -40,7 +40,7 @@ ModuleDebugInterface::~ModuleDebugInterface()
 QStringList ModuleDebugInterface::availableFields() const
 {
     SalesforceModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
-    if (handler != 0) {
+    if (handler != nullptr) {
         return handler->availableFields();
     }
 
@@ -50,7 +50,7 @@ QStringList ModuleDebugInterface::availableFields() const
 QStringList ModuleDebugInterface::supportedFields() const
 {
     SalesforceModuleHandler *handler = (*mResource->mModuleHandlers)[ mModuleName ];
-    if (handler != 0) {
+    if (handler != nullptr) {
         return handler->supportedFields();
     }
 
