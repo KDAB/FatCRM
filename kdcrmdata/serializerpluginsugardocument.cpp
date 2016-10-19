@@ -63,4 +63,3 @@ void SerializerPluginSugarDocument::serialize(const Item &item, const QByteArray
 
 //Q_EXPORT_PLUGIN2(akonadi_serializer_sugardocument, Akonadi::SerializerPluginSugarDocument)
 
-#include "serializerpluginsugardocument.moc"

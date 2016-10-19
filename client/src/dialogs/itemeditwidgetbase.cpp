@@ -103,4 +103,3 @@ Details *ItemEditWidgetBase::createDetailsForType(DetailsType type)
     return 0;
 }
 
-#include "itemeditwidgetbase.moc"

@@ -149,4 +149,3 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
     return true;
 }
 
-#include "itemtransferinterface.moc"
