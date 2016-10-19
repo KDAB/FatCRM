@@ -71,7 +71,7 @@ void DBusWinIdProvider::Private::tryRegister()
 DBusWinIdProvider::DBusWinIdProvider(QWidget *referenceWindow)
     : QObject(referenceWindow), d(new Private(this, referenceWindow))
 {
-    Q_ASSERT(referenceWindow != 0);
+    Q_ASSERT(referenceWindow != nullptr);
 
     QDBusServiceWatcher *watcher =
         new QDBusServiceWatcher(QLatin1String("org.freedesktop.akonaditray"),

@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     KApplication app;
 
     if (!KMimeType::mimeType("application/x-vnd.kdab.crm.opportunity")) {
-        KMessageBox::error(0, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
+        KMessageBox::error(nullptr, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
         return 1;
     }
 

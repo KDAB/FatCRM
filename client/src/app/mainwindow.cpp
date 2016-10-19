@@ -68,11 +68,11 @@ using namespace Akonadi;
 
 MainWindow::MainWindow(bool displayOverlay)
     : QMainWindow(),
-      mProgressBar(0),
-      mProgressBarHideTimer(0),
+      mProgressBar(nullptr),
+      mProgressBarHideTimer(nullptr),
       mCollectionManager(new CollectionManager(this)),
       mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
-      mContactsModel(0),
+      mContactsModel(nullptr),
       mInitialLoadingDone(false),
       mDisplayOverlay(displayOverlay)
 {
@@ -223,7 +223,7 @@ void MainWindow::createActions()
 void MainWindow::setupActions()
 {
     const QIcon reloadIcon =
-        (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, 0)
+        (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, nullptr)
          : QIcon());
     if (!reloadIcon.isNull()) {
         mUi.actionSynchronize->setIcon(reloadIcon);
@@ -647,7 +647,7 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
         const QVector<ContactsSet> contacts = importer.contacts();
         // non modal so that we can use FatCRM to search for accounts/contacts.
         // no parent widget so it can be minimized separately, shows up separate in the taskbar, etc.
-        ContactsImportWizard *importWizard = new ContactsImportWizard(0);
+        ContactsImportWizard *importWizard = new ContactsImportWizard(nullptr);
         importWizard->setAccountCollection(mAccountPage->collection());
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);
@@ -666,7 +666,7 @@ Page *MainWindow::currentPage() const
     const int index = mUi.tabWidget->currentIndex();
     if (index >= 0 && index <= mPages.count())
         return mPages[ index ];
-    return 0;
+    return nullptr;
 }
 
 AgentInstance MainWindow::currentResource() const
@@ -706,7 +706,7 @@ Page *MainWindow::pageForType(DetailsType type) const
             return page;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 void MainWindow::processPendingImports()

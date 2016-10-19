@@ -36,7 +36,7 @@ SugarAccountIO::SugarAccountIO()
 
 bool SugarAccountIO::readSugarAccount(QIODevice *device, SugarAccount &account)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -81,7 +81,7 @@ void SugarAccountIO::readAccount(SugarAccount &account)
 
 bool SugarAccountIO::writeSugarAccount(const SugarAccount &account, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

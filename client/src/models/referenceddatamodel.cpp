@@ -32,7 +32,7 @@ class ReferencedDataModel::Private
 
 public:
     Private(ReferencedDataModel *parent)
-        : q(parent), mData(0)
+        : q(parent), mData(nullptr)
     {
     }
 

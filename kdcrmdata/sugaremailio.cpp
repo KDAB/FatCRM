@@ -36,7 +36,7 @@ SugarEmailIO::SugarEmailIO()
 
 bool SugarEmailIO::readSugarEmail(QIODevice *device, SugarEmail &email)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -81,7 +81,7 @@ void SugarEmailIO::readEmail(SugarEmail &email)
 
 bool SugarEmailIO::writeSugarEmail(const SugarEmail &email, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

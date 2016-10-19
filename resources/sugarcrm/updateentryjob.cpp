@@ -50,7 +50,7 @@ public:
     };
 
     explicit Private(UpdateEntryJob *parent, const Item &item)
-        : q(parent), mItem(item), mHandler(0), mStage(Init)
+        : q(parent), mItem(item), mHandler(nullptr), mStage(Init)
     {
     }
 
@@ -243,7 +243,7 @@ Item UpdateEntryJob::conflictItem() const
 void UpdateEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
-    Q_ASSERT(d->mHandler != 0);
+    Q_ASSERT(d->mHandler != nullptr);
 
     d->mStage = Private::GetEntry;
 

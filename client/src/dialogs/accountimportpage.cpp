@@ -151,7 +151,7 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         PendingAccount pendingAccount;
         pendingAccount.buttonGroup = buttonGroup;
         pendingAccount.groupBox = container;
-        pendingAccount.createButton = 0;
+        pendingAccount.createButton = nullptr;
         pendingAccount.contactsSet = contacts.at(row);
         pendingAccount.idBeingCreated = 0;
         mPendingAccounts.append(pendingAccount);

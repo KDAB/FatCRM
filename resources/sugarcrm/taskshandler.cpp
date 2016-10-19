@@ -189,7 +189,7 @@ static QString getDateDue( const KCalCore::Todo &todo )
 
 static void setDateDue( const QString &value, KCalCore::Todo &todo )
 {
-    todo.setDtDue( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", 0, true ) );
+    todo.setDtDue( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", nullptr, true ) );
 }
 
 static QString getDateStartFlag( const KCalCore::Todo &todo )
@@ -210,7 +210,7 @@ static QString getDateStart( const KCalCore::Todo &todo )
 
 static void setDateStart( const QString &value, KCalCore::Todo &todo )
 {
-    todo.setDtStart( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", 0, true ) );
+    todo.setDtStart( KDateTime::fromString( value, "%Y-%m-%d %H:%M:%S", nullptr, true ) );
 }
 
 static QString getParentType( const KCalCore::Todo &todo )
@@ -371,7 +371,7 @@ bool TasksHandler::setEntry( const Akonadi::Item &item )
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( (*it)->getter == 0 ) {
+        if ( (*it)->getter == nullptr ) {
             continue;
         }
         TNS__Name_value field;
@@ -443,7 +443,7 @@ void TasksHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     AccessorHash::const_iterator endIt = mAccessors->constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( (*it)->getter == 0 ) {
+        if ( (*it)->getter == nullptr ) {
             continue;
         }
 

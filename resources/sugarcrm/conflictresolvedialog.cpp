@@ -129,7 +129,7 @@ class ConflictResolveDialog::Private
     ConflictResolveDialog *const q;
 public:
     explicit Private(ConflictResolveDialog *parent)
-        : q(parent), mStrategy(ConflictHandler::UseLocalItem), mDiffInterface(0), mView(0)
+        : q(parent), mStrategy(ConflictHandler::UseLocalItem), mDiffInterface(nullptr), mView(nullptr)
     {
     }
 
@@ -170,7 +170,7 @@ void ConflictResolveDialog::Private::useBothItems()
 
 void ConflictResolveDialog::Private::createReport()
 {
-    Q_ASSERT(mDiffInterface != 0);
+    Q_ASSERT(mDiffInterface != nullptr);
 
     HtmlDifferencesReporter reporter;
 

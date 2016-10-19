@@ -49,7 +49,7 @@ class SimpleItemEditWidget::Private
 public:
     explicit Private(Details *details, SimpleItemEditWidget *parent)
         : q(parent), mDetails(details),
-          mButtonBox(0), mIsModified(false)
+          mButtonBox(nullptr), mIsModified(false)
     {
     }
 
@@ -130,7 +130,7 @@ void SimpleItemEditWidget::Private::saveClicked()
     Item item = mItem;
     mDetails->updateItem(item, data());
 
-    Job *job = 0;
+    Job *job = nullptr;
     if (item.isValid()) {
         kDebug() << "Item modify";
         job = new ItemModifyJob(item, q);

@@ -65,7 +65,7 @@ bool PasswordHandler::isPasswordAvailable()
 
 QString PasswordHandler::password(bool *userRejected)
 {
-    if (userRejected != 0) {
+    if (userRejected != nullptr) {
         *userRejected = false;
     }
 
@@ -87,7 +87,7 @@ QString PasswordHandler::password(bool *userRejected)
                 savePassword();
             }
         }
-    } else if (userRejected != 0) {
+    } else if (userRejected != nullptr) {
         *userRejected = true;
     }
 #else

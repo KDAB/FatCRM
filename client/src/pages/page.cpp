@@ -159,17 +159,17 @@ void Page::setFilter(FilterProxyModel *filter)
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
     delete mChangeRecorder;
-    mChangeRecorder = 0;
+    mChangeRecorder = nullptr;
     mCollection = Collection();
     mResourceIdentifier = identifier;
 
     // cleanup from last time (useful when switching resources)
     ModelRepository::instance()->removeModel(mType);
-    mFilter->setSourceModel(0);
-    mUi.treeView->setModel(0);
+    mFilter->setSourceModel(nullptr);
+    mUi.treeView->setModel(nullptr);
 
     delete mItemsTreeModel;
-    mItemsTreeModel = 0;
+    mItemsTreeModel = nullptr;
 
     retrieveResourceUrl();
     mUi.reloadPB->setEnabled(false);
@@ -387,7 +387,7 @@ void Page::initialize()
     connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
     connect(mUi.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotItemContextMenuRequested(QPoint)));
 
-    const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
+    const QIcon icon = (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
         mUi.reloadPB->setIcon(icon);
     }

@@ -196,7 +196,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     kDebug() << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForOpportunity(oppId);
     kDebug() << emails.count() << "emails found for opp" << oppId;
-    NotesWindow *dlg = new NotesWindow(0);
+    NotesWindow *dlg = new NotesWindow(nullptr);
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
@@ -212,7 +212,7 @@ void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(0);
+    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

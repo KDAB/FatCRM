@@ -105,7 +105,7 @@ void AccountDetails::on_viewNotesButton_clicked()
     kDebug() << notes.count() << "notes found for account" << accountId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForAccount(accountId);
     kDebug() << emails.count() << "emails found for account" << accountId;
-    NotesWindow *dlg = new NotesWindow(0);
+    NotesWindow *dlg = new NotesWindow(nullptr);
     dlg->setWindowTitle(i18n("Notes for account %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
@@ -121,7 +121,7 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(0);
+    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

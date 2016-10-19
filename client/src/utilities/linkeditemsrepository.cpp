@@ -33,7 +33,7 @@
 
 LinkedItemsRepository::LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent) :
     QObject(parent),
-    mMonitor(0),
+    mMonitor(nullptr),
     mNotesLoaded(0),
     mEmailsLoaded(0),
     mDocumentsLoaded(0),
@@ -55,7 +55,7 @@ void LinkedItemsRepository::clear()
     mAccountDocumentsHash.clear();
     mOpportunityDocumentsHash.clear();
     delete mMonitor;
-    mMonitor = 0;
+    mMonitor = nullptr;
 }
 
 void LinkedItemsRepository::setNotesCollection(const Akonadi::Collection &collection)

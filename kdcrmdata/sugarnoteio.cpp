@@ -34,7 +34,7 @@ SugarNoteIO::SugarNoteIO()
 
 bool SugarNoteIO::readSugarNote(QIODevice *device, SugarNote &note)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -78,7 +78,7 @@ void SugarNoteIO::readNote(SugarNote &note)
 
 bool SugarNoteIO::writeSugarNote(const SugarNote &note, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

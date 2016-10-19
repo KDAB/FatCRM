@@ -35,8 +35,8 @@ class AssociatedDataWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit AssociatedDataWidget(QWidget *parent = 0);
-    ~AssociatedDataWidget();
+    explicit AssociatedDataWidget(QWidget *parent = nullptr);
+    ~AssociatedDataWidget() override;
 
     void hideOpportunityGui();
     void setContactsModel(QStringListModel *model);

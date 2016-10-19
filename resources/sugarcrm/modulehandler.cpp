@@ -47,7 +47,7 @@ ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
       mParsedEnumDefinitions(false),
       mHasEnumDefinitions(false)
 {
-    Q_ASSERT(mSession != 0);
+    Q_ASSERT(mSession != nullptr);
 
     static bool initDone = false;
     if (!initDone) {

@@ -100,7 +100,7 @@ Details *ItemEditWidgetBase::createDetailsForType(DetailsType type)
     case Campaign: return new CampaignDetails;
     }
 
-    return 0;
+    return nullptr;
 }
 
 #include "itemeditwidgetbase.moc"

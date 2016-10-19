@@ -46,7 +46,7 @@ class ResourceConfigDialog::Private
     ResourceConfigDialog *const q;
 
 public:
-    Private(ResourceConfigDialog *parent) : q(parent), mApplyButton(0) {}
+    Private(ResourceConfigDialog *parent) : q(parent), mApplyButton(nullptr) {}
 
 public:
     Ui::ResourceConfigDialog mUi;

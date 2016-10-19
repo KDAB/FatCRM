@@ -43,7 +43,7 @@ class FetchEntryJob::Private
 
 public:
     explicit Private(FetchEntryJob *parent, const Item &item)
-        : q(parent), mItem(item), mHandler(0)
+        : q(parent), mItem(item), mHandler(nullptr)
     {
     }
 
@@ -115,7 +115,7 @@ Item FetchEntryJob::item() const
 void FetchEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
-    Q_ASSERT(d->mHandler != 0);
+    Q_ASSERT(d->mHandler != nullptr);
 
     if (!d->mHandler->getEntry(d->mItem)) {
         setError(SugarJob::InvalidContextError);

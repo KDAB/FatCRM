@@ -106,7 +106,7 @@ int main(int argc, char **argv)
     recorder.setMimeTypeMonitored(SugarOpportunity::mimeType());
     recorder.itemFetchScope().fetchFullPayload(true);
 
-    QTreeView *tree = new QTreeView(0);
+    QTreeView *tree = new QTreeView(nullptr);
     tree->resize(900, 900);
     tree->show();
 

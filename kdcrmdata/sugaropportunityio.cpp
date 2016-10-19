@@ -39,7 +39,7 @@ SugarOpportunityIO::SugarOpportunityIO()
 
 bool SugarOpportunityIO::readSugarOpportunity(QIODevice *device, SugarOpportunity &opportunity)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -89,7 +89,7 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
 
 bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportunity, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

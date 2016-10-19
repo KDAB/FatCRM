@@ -376,7 +376,7 @@ void ContactDetails::on_viewNotesButton_clicked()
     kDebug() << notes.count() << "notes found for contact" << contactId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
     kDebug() << emails.count() << "emails found for contact" << contactId;
-    NotesWindow *dlg = new NotesWindow(0);
+    NotesWindow *dlg = new NotesWindow(nullptr);
     dlg->setWindowTitle(i18n("Notes for contact %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
