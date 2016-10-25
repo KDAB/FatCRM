@@ -45,6 +45,7 @@ public:
     ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
 
 private Q_SLOTS:
+    void slotVisitWebsite();
     void slotBillingAddressCountryEditingFinished();
     void slotShippingAddressCountryEditingFinished();
     void on_viewNotesButton_clicked();

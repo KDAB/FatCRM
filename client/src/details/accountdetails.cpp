@@ -33,6 +33,8 @@
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 
+#include <QDesktopServices>
+
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
 {
@@ -140,6 +142,12 @@ void AccountDetails::initialize()
 
     connect(mUi->billing_address_country, SIGNAL(editingFinished()), SLOT(slotBillingAddressCountryEditingFinished()));
     connect(mUi->shipping_address_country, SIGNAL(editingFinished()), SLOT(slotShippingAddressCountryEditingFinished()));
+    connect(mUi->visitWebsiteButton, SIGNAL(clicked()), this, SLOT(slotVisitWebsite()));
+}
+
+void AccountDetails::slotVisitWebsite()
+{
+    QDesktopServices::openUrl(QUrl::fromUserInput(mUi->website->text()));
 }
 
 QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const

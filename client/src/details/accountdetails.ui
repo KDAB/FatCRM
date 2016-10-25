@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>569</width>
+    <width>750</width>
     <height>524</height>
    </rect>
   </property>
@@ -20,13 +20,10 @@
       <string>Details</string>
      </property>
      <layout class="QFormLayout" name="formLayout">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::ExpandingFieldsGrow</enum>
-      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Na&amp;me:</string>
+         <string>&amp;Name:</string>
         </property>
         <property name="buddy">
          <cstring>name</cstring>
@@ -47,7 +44,21 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="website"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="website"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="visitWebsiteButton">
+          <property name="text">
+           <string>Visit</string>
+          </property>
+          <property name="icon">
+           <iconset theme="internet-web-browser"/>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_3">
@@ -104,7 +115,7 @@
       <item row="6" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Type:</string>
+         <string>&amp;Type:</string>
         </property>
         <property name="buddy">
          <cstring>account_type</cstring>
@@ -117,7 +128,7 @@
       <item row="7" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Assigned to:</string>
+         <string>Assi&amp;gned to:</string>
         </property>
         <property name="buddy">
          <cstring>assigned_user_id</cstring>
@@ -332,7 +343,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_19">
         <property name="text">
-         <string>City:</string>
+         <string>Cit&amp;y:</string>
         </property>
         <property name="buddy">
          <cstring>billing_address_city</cstring>
@@ -371,7 +382,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_22">
         <property name="text">
-         <string>Country:</string>
+         <string>Co&amp;untry:</string>
         </property>
         <property name="buddy">
          <cstring>billing_address_country</cstring>
