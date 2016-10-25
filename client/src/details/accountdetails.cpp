@@ -143,9 +143,12 @@ void AccountDetails::initialize()
 
     connect(mUi->billing_address_country, SIGNAL(editingFinished()), SLOT(slotBillingAddressCountryEditingFinished()));
     connect(mUi->shipping_address_country, SIGNAL(editingFinished()), SLOT(slotShippingAddressCountryEditingFinished()));
-    connect(mUi->visitWebsiteButton, &QPushButton::clicked, this, [this](){
-        QDesktopServices::openUrl(QUrl(mUi->website->text()));
-    });
+    connect(mUi->visitWebsiteButton, SIGNAL(clicked()), this, SLOT(slotVisitWebsite()));
+}
+
+void AccountDetails::slotVisitWebsite()
+{
+    QDesktopServices::openUrl(QUrl::fromUserInput(mUi->website->text()));
 }
 
 QMap<QString, QString> AccountDetails::data(const Akonadi::Item &item) const
