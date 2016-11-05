@@ -69,6 +69,7 @@ public:
     QString mSalesStage;
     QString mProbability;
     QMap<QString, QString> mCustomFields;
+    QString mShownPriority;
 };
 
 SugarOpportunity::SugarOpportunity()

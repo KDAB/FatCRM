@@ -145,6 +145,12 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     if (d->settings.modifiedBefore().isValid() && opportunity.dateModified().date() > d->settings.modifiedBefore())
         return false;
 
+    QString shownPriority = d->settings.shownPriority();
+    if (shownPriority == "Not set") // "Not set" is much clearer to me than just a blank space (like the WebUI has)
+        shownPriority = "";
+    if (shownPriority != "-" && opportunity.opportunityPriority().toUpper() != shownPriority)
+        return false;
+
     const QString filterStr = filterString();
     if (filterStr.isEmpty()) {
         return true;
