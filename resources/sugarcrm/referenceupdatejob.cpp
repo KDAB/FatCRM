@@ -32,6 +32,7 @@ ReferenceUpdateJob::ReferenceUpdateJob(const Akonadi::Collection &collection, QO
 
 void ReferenceUpdateJob::start()
 {
+    kDebug() << "Listing collection" << mCollection.id();
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mCollection, this);
     job->fetchScope().setCacheOnly(true);
     job->fetchScope().fetchFullPayload(true);
@@ -41,6 +42,7 @@ void ReferenceUpdateJob::start()
 
 void ReferenceUpdateJob::slotItemsReceived(const Akonadi::Item::List &items)
 {
+    kDebug() << "Collection listing got" << items.count() << "items";
     Akonadi::Item::List modifiedItems;
     foreach (const Akonadi::Item &item, items) {
         // My kingdom for a C++ std::function here instead of a virtual
@@ -50,6 +52,7 @@ void ReferenceUpdateJob::slotItemsReceived(const Akonadi::Item::List &items)
         }
     }
     if (!modifiedItems.isEmpty()) {
+        kDebug() << "Storing" << modifiedItems.count() << "modified items";
         // This method can be called multiple times, so we can create multiple modify jobs
         Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(modifiedItems, this);
         addSubjob(modifyJob);
@@ -58,9 +61,10 @@ void ReferenceUpdateJob::slotItemsReceived(const Akonadi::Item::List &items)
 
 void ReferenceUpdateJob::slotResult(KJob *job)
 {
+    kDebug() << job;
     KCompositeJob::slotResult(job); // does error handling
 
-    if (!job->error() && qobject_cast<Akonadi::ItemModifyJob *>(job)) {
+    if (!job->error()) {
         if (subjobs().isEmpty()) {
             emitResult();
         }

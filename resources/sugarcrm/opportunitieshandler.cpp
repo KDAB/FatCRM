@@ -278,7 +278,7 @@ private:
 
 void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
 {
-    kDebug() << "Fixing opp to set account_id:" << accountName << accountId;
+    kDebug() << "Looking for opps for setting account_id:" << accountName << accountId;
     OppAccountModifyJob *job = new OppAccountModifyJob(collection(), this);
     job->setAccountName(accountName);
     job->setAccountId(accountId);
