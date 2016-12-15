@@ -33,6 +33,8 @@
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
 
+#include <AkonadiCore/ChangeRecorder>
+
 #include <QIcon>
 #include <KIconLoader>
 #include <KLocalizedString>

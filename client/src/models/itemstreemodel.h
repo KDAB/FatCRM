@@ -29,7 +29,7 @@
 #include "accountrepository.h"
 
 namespace KContacts { class Addressee; }
-
+namespace Akonadi { class ChangeRecorder; }
 
 /**
  * A model for sugar items.
