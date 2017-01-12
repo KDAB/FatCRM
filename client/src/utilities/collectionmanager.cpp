@@ -216,7 +216,7 @@ QList<KJob *> CollectionManager::clearTimestamps()
         Q_ASSERT(!coll.resource().isEmpty());
         Q_ASSERT(coll.id() == it.key());
         EntityAnnotationsAttribute *newAnnotationsAttribute =
-                coll.attribute<EntityAnnotationsAttribute>(Entity::AddIfMissing);
+                coll.attribute<EntityAnnotationsAttribute>(Collection::AddIfMissing);
         newAnnotationsAttribute->insert(s_timeStampKey, QString());
         Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
         jobs << modJob;
