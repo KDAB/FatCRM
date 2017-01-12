@@ -40,6 +40,13 @@ namespace Akonadi
     class ItemFetchScope;
 }
 
+/**
+ * The LinkedItemsRepository class stores the Documents, Notes and Emails (abstracted as "items" in this class)
+ * associated with Accounts, Contacts and Opportunities (the main objects in FatCRM).
+ *
+ * The repository monitors the Documents, Notes and Emails folders in order to update itself automatically.
+ * It does not emit signals when this happens, since the GUI simply queries for linked items when opening a dialog.
+ */
 class LinkedItemsRepository : public QObject
 {
     Q_OBJECT
