@@ -46,7 +46,7 @@ NotesWindow::NotesWindow(QWidget *parent) :
     ui->textEdit->setReadOnly(true);
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-    ui->newNoteDescription->setPlaceHolderText(i18n("Type here for the detailed description of the new note..."));
+    ui->newNoteDescription->setPlaceholderText(i18n("Type here for the detailed description of the new note..."));
 #endif
     ClientSettings::self()->restoreWindowSize("NotesWindow", this);
 }
