@@ -36,7 +36,7 @@ class ReferenceUpdateJob : public KCompositeJob
 public:
     explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = 0);
 
-    void start() Q_DECL_OVERRIDE;
+    void start() override;
 
 protected:
     virtual bool updateItem(Akonadi::Item &item) = 0;
@@ -45,7 +45,7 @@ signals:
 
 private slots:
     void slotItemsReceived(const Akonadi::Item::List &items);
-    void slotResult( KJob *job ) Q_DECL_OVERRIDE;
+    void slotResult( KJob *job ) override;
 
 private:
     Akonadi::Collection mCollection;

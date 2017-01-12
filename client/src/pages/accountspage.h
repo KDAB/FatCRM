@@ -36,11 +36,11 @@ public:
     ~AccountsPage() override;
 
 protected:
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
-    QString reportTitle() const Q_DECL_OVERRIDE;
-    void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
-    void handleRemovedRows(int start, int end, bool initialLoadingDone) Q_DECL_OVERRIDE;
-    void handleItemChanged(const Akonadi::Item &item) Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const override;
+    QString reportTitle() const override;
+    void handleNewRows(int start, int end, bool emitChanges) override;
+    void handleRemovedRows(int start, int end, bool initialLoadingDone) override;
+    void handleItemChanged(const Akonadi::Item &item) override;
 
 private:
     AccountDataExtractor *mDataExtractor;

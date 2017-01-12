@@ -43,7 +43,7 @@ public:
     ~ConfigurationDialog() override;
 
 public Q_SLOTS:
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
 private Q_SLOTS:
     void slotCurrentAssigneeChanged(const QModelIndex &idx);

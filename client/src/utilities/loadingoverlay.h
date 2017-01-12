@@ -36,8 +36,8 @@ public:
     void setMessage(const QString &message);
 
 protected:
-    bool eventFilter(QObject *obj, QEvent *event) Q_DECL_OVERRIDE;
-    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *obj, QEvent *event) override;
+    void paintEvent(QPaintEvent *) override;
 
 private:
     QString mMessage;

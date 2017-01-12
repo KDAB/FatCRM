@@ -91,15 +91,15 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mFilter(Q_NULLPTR),
-      mChangeRecorder(Q_NULLPTR),
-      mItemsTreeModel(Q_NULLPTR),
+      mFilter(nullptr),
+      mChangeRecorder(nullptr),
+      mItemsTreeModel(nullptr),
       mCollection(),
-      mCollectionManager(Q_NULLPTR),
-      mLinkedItemsRepository(Q_NULLPTR),
+      mCollectionManager(nullptr),
+      mLinkedItemsRepository(nullptr),
       mOnline(false),
       mInitialLoadingDone(false),
-      mJobProgressTracker(Q_NULLPTR)
+      mJobProgressTracker(nullptr)
 {
     mUi.setupUi(this);
     mUi.treeView->setViewName(typeToString(type));

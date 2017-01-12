@@ -57,8 +57,8 @@ public:
     QString filterDescription() const;
 
 protected:
-    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const Q_DECL_OVERRIDE;
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
+    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const override;
+    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
     class Private;

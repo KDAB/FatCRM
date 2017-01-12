@@ -259,7 +259,7 @@ public:
     }
 
 protected:
-    bool updateItem(Akonadi::Item &item) Q_DECL_OVERRIDE
+    bool updateItem(Akonadi::Item &item) override
     {
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();

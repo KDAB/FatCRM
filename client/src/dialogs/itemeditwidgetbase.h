@@ -57,8 +57,8 @@ protected Q_SLOTS:
     virtual void accept() = 0;
 
 protected:
-    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
-    void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
+    void closeEvent(QCloseEvent *event) override;
+    void keyPressEvent(QKeyEvent *e) override;
 };
 
 #endif // ITEMEDITWIDGETBASE_H

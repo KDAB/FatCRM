@@ -65,7 +65,7 @@ public:
     void addNote(const SugarNote &note);
     void addEmail(const SugarEmail &email);
 
-    void setVisible(bool visible) Q_DECL_OVERRIDE;
+    void setVisible(bool visible) override;
 
 private slots:
     void on_buttonBox_rejected();

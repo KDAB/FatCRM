@@ -49,7 +49,7 @@ static QDate lastDayOfMonth(const QDate &date)
 ReportPage::ReportPage(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ReportPage),
-    mOppModel(Q_NULLPTR)
+    mOppModel(nullptr)
 {
     ui->setupUi(this);
 
@@ -160,7 +160,7 @@ void ReportPage::on_calculateCreatedWonLostReport_clicked()
 
     const QChar newline('\n');
 
-    QTableWidgetItem *item = Q_NULLPTR;
+    QTableWidgetItem *item = nullptr;
     for (int month = 0; month < numMonths; ++month) {
         const QString monthName = monthStart.toString("MMM yyyy");
         monthStart = monthStart.addMonths(1);
@@ -294,7 +294,7 @@ void ReportPage::on_calculateOpenPerCountryReport_clicked()
     ui->table->setVerticalHeaderLabels(labels);
 
     QDate monthStart = monthFrom;
-    QTableWidgetItem *item = Q_NULLPTR;
+    QTableWidgetItem *item = nullptr;
 
     for (int month = 0; month < numMonths; ++month) {
         const QString monthName = monthStart.toString("MMM yyyy");

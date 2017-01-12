@@ -36,7 +36,7 @@
 #include <QDesktopServices>
 
 AccountDetails::AccountDetails(QWidget *parent)
-    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
+    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(nullptr)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);

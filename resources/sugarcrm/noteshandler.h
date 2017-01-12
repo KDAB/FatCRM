@@ -35,21 +35,21 @@ public:
 
     ~NotesHandler();
 
-    Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
+    Akonadi::Collection handlerCollection() const override;
 
-    bool setEntry(const Akonadi::Item &item) Q_DECL_OVERRIDE;
+    bool setEntry(const Akonadi::Item &item) override;
 
-    QString queryStringForListing() const Q_DECL_OVERRIDE;
-    QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
-    QStringList supportedCRMFields() const Q_DECL_OVERRIDE;
+    QString queryStringForListing() const override;
+    QString orderByForListing() const override;
+    QStringList supportedSugarFields() const override;
+    QStringList supportedCRMFields() const override;
 
-    int expectedContentsVersion() const Q_DECL_OVERRIDE;
+    int expectedContentsVersion() const override;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
-                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
 private:
     SugarNote::AccessorHash mAccessors;

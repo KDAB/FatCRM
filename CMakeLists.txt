@@ -68,24 +68,6 @@ macro(assert_min_ver version)
   endif()
 endmacro()
 
-if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  # using Clang >= 3.3
-  assert_min_ver("3.3")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-  # using GCC >= 4.8
-  assert_min_ver("4.8")
-  add_definitions(-DQ_DECL_OVERRIDE=override)
-  add_definitions(-DQ_DECL_FINAL=final)
-  add_definitions(-DQ_NULLPTR=nullptr)
-else()
-  add_definitions(-DQ_DECL_OVERRIDE=)
-  add_definitions(-DQ_DECL_FINAL=)
-  add_definitions(-DQ_NULLPTR=0)
-endif()
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

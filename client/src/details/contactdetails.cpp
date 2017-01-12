@@ -43,7 +43,7 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
+    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this)), mLinkedItemsRepository(nullptr)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);

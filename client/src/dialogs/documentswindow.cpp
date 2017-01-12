@@ -131,7 +131,7 @@ bool DocumentWidget::isModified() const
 DocumentsWindow::DocumentsWindow(QWidget *parent)
     : QWidget(parent),
       ui(new Ui::DocumentsWindow),
-      mLinkedItemsRepository(Q_NULLPTR),
+      mLinkedItemsRepository(nullptr),
       mIsNotModifiedOverride(false),
       mLinkedItemType(Account),
       mPendingJobCount(0)

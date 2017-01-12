@@ -43,7 +43,7 @@ class DocumentWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DocumentWidget(EnumDefinitions *definitions, QWidget *parent = Q_NULLPTR);
+    explicit DocumentWidget(EnumDefinitions *definitions, QWidget *parent = nullptr);
 
     void setDocument(const SugarDocument &document);
     SugarDocument document() const;
@@ -76,7 +76,7 @@ class DocumentsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit DocumentsWindow(QWidget *parent = Q_NULLPTR);
+    explicit DocumentsWindow(QWidget *parent = nullptr);
     ~DocumentsWindow() override;
 
     void setResourceIdentifier(const QString &identifier);
@@ -91,7 +91,7 @@ public:
     void loadDocumentsFor(const QString &id, LinkedItemType itemType);
 
 protected:
-    void closeEvent(QCloseEvent *event) Q_DECL_OVERRIDE;
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_buttonBox_accepted();

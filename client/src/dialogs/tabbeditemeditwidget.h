@@ -43,15 +43,15 @@ public:
     ~TabbedItemEditWidget() override;
 
     // check if that can be protected instead
-    Akonadi::Item item() const Q_DECL_OVERRIDE;
-    bool isModified() const Q_DECL_OVERRIDE;
-    QString title() const Q_DECL_OVERRIDE;
-    QString detailsName() const Q_DECL_OVERRIDE;
+    Akonadi::Item item() const override;
+    bool isModified() const override;
+    QString title() const override;
+    QString detailsName() const override;
 
 private Q_SLOTS:
     void openWidget(const QString &itemKey);
     void dataChanged();
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
 private:
     void initialize();

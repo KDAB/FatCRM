@@ -49,14 +49,14 @@ public:
 
     // Implementation
 
-    int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
 
-    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
-    QModelIndex parent(const QModelIndex &child) const Q_DECL_OVERRIDE;
+    QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override;
+    QModelIndex parent(const QModelIndex &child) const override;
 
-    QModelIndex mapFromSource(const QModelIndex & sourceIndex) const Q_DECL_OVERRIDE;
-    QModelIndex mapToSource(const QModelIndex & proxyIndex) const Q_DECL_OVERRIDE;
+    QModelIndex mapFromSource(const QModelIndex & sourceIndex) const override;
+    QModelIndex mapToSource(const QModelIndex & proxyIndex) const override;
 
 private:
     int proxyColumnForSourceColumn(int sourceColumn) const;

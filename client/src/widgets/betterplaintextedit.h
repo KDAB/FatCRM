@@ -36,8 +36,8 @@ class BetterPlainTextEdit : public QPlainTextEdit
 public:
     explicit BetterPlainTextEdit(QWidget *parent = 0);
 
-    QSize minimumSizeHint() const Q_DECL_OVERRIDE;
-    QSize sizeHint() const Q_DECL_OVERRIDE;
+    QSize minimumSizeHint() const override;
+    QSize sizeHint() const override;
 
 signals:
 

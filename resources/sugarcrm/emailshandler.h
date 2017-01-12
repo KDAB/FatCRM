@@ -37,24 +37,24 @@ public:
 
     ~EmailsHandler();
 
-    Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
+    Akonadi::Collection handlerCollection() const override;
 
     bool setEntry(const Akonadi::Item &item);
 
-    QString queryStringForListing() const Q_DECL_OVERRIDE;
-    QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
-    QStringList supportedCRMFields() const Q_DECL_OVERRIDE;
+    QString queryStringForListing() const override;
+    QString orderByForListing() const override;
+    QStringList supportedSugarFields() const override;
+    QStringList supportedCRMFields() const override;
 
-    int expectedContentsVersion() const Q_DECL_OVERRIDE;
+    int expectedContentsVersion() const override;
 
-    virtual bool needsExtraInformation() const Q_DECL_OVERRIDE { return true; }
-    virtual void getExtraInformation(Akonadi::Item::List &items) Q_DECL_OVERRIDE;
+    virtual bool needsExtraInformation() const override { return true; }
+    virtual void getExtraInformation(Akonadi::Item::List &items) override;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
-                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
 private:
     SugarEmail::AccessorHash mAccessors;

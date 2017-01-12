@@ -58,7 +58,7 @@ public:
 
     ~MainWindow() override;
 
-    bool eventFilter(QObject *object, QEvent *event) Q_DECL_OVERRIDE;
+    bool eventFilter(QObject *object, QEvent *event) override;
 
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);

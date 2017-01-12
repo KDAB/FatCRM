@@ -29,7 +29,7 @@ class DBusInvokerInterface : public QObject
     Q_CLASSINFO("D-Bus Interface", "org.kde.fatcrm.invoker")
 
 public:
-    explicit DBusInvokerInterface(QObject *parent = Q_NULLPTR);
+    explicit DBusInvokerInterface(QObject *parent = nullptr);
 
 public Q_SLOTS:
     Q_SCRIPTABLE void importCsvFile(const QString &filePath);

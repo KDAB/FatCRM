@@ -53,7 +53,7 @@ Q_SIGNALS:
     void selectedItem(const QString &itemId);
 
 protected:
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
 private Q_SLOTS:
     void slotItemSelected(const Akonadi::Item &item);
