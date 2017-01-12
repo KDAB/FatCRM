@@ -1,4 +1,4 @@
- The FatCRM software is Copyright (C) 2010-2016 Klaralvdalens Datakonsult AB.
+ The FatCRM software is Copyright (C) 2010-2017 Klaralvdalens Datakonsult AB.
 
  You may use, distribute and copy the FatCRM software under the terms of
  the GNU General Public License version 2 or under the terms of GNU General

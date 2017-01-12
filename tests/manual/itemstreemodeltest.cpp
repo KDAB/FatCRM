@@ -97,7 +97,7 @@ int main(int argc, char **argv)
     QApplication app(argc, argv);
     KAboutData about(QStringLiteral("itemstreemodeltest"), i18n("ItemsTreeModel test"),
                      QStringLiteral("0.1"), i18n("Interactive test program for ItemsTreeModel"),
-                     KAboutLicense::GPL_V2, i18n("(C) 2015-2016 KDAB"),
+                     KAboutLicense::GPL_V2, i18n("(C) 2015-2017 KDAB"),
                      QString(), QStringLiteral("david.faure@kdab.com"));
 
     QCommandLineParser parser;
