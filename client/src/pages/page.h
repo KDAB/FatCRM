@@ -66,7 +66,6 @@ public:
     bool queryClose();
     void openWidget(const QString &id);
     void printReport();
-    KJob *clearTimestamp();
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);

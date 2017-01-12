@@ -29,6 +29,7 @@
 
 #include <Akonadi/CollectionFetchJob>
 #include <Akonadi/CollectionFetchScope>
+#include <Akonadi/CollectionModifyJob>
 #include <Akonadi/EntityAnnotationsAttribute>
 
 #include <KABC/Addressee>
@@ -75,6 +76,7 @@ EnumDefinitions CollectionManager::enumDefinitions(Akonadi::Collection::Id colle
     return mCollectionData.value(collectionId).enumDefinitions;
 }
 
+// Called by Page -- note that this means it's never called for Documents, Notes, Emails. If needed one day, then add ChangeRecorders somewhere.
 void CollectionManager::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
     if (attributeNames.contains("entityannotations")) {
@@ -82,6 +84,9 @@ void CollectionManager::slotCollectionChanged(const Akonadi::Collection &collect
     }
     if (attributeNames.contains("CRM-enumdefinitions")) { // EnumDefinitionAttribute::type()
         readEnumDefinitionAttributes(collection);
+    }
+    if (mCollectionData.contains(collection.id())) {
+        mCollectionData[collection.id()].mCollection = collection;
     }
 }
 
@@ -126,10 +131,8 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
 {
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob *>(job);
 
-    QVector<Collection> collections;
-    Q_FOREACH (const Collection &collection, fetchJob->collections()) {
-        collections.append(collection);
-
+    Collection::List collections = fetchJob->collections();
+    Q_FOREACH (const Collection &collection, collections) {
         const QString contentMimeType = collection.contentMimeTypes().at(0);
         if (contentMimeType == QLatin1String("inode/directory")) {
             continue;
@@ -148,6 +151,8 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
         //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
         readSupportedFields(collection);
         readEnumDefinitionAttributes(collection);
+
+        mCollectionData[collection.id()].mCollection = collection;
     }
 
     qSort(collections.begin(), collections.end(), collectionLessThan);
@@ -158,8 +163,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
     }
 }
 
-// duplicated in listentriesjob.cpp
-static const char s_supportedFieldsKey[] = "supportedFields";
+static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in listentriesjob.cpp
 
 void CollectionManager::readSupportedFields(const Collection &collection)
 {
@@ -199,4 +203,23 @@ void CollectionManager::readEnumDefinitionAttributes(const Collection &collectio
             QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of enumeration values for '%1' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", collection.name()));
         }
     }
+}
+
+static const char s_timeStampKey[] = "timestamp"; // duplicated in listentriesjob.cpp
+
+QList<KJob *> CollectionManager::clearTimestamps()
+{
+    QList<KJob *> jobs;
+    jobs.reserve(mCollectionData.count());
+    for (auto it = mCollectionData.begin(); it != mCollectionData.end(); ++it) {
+        Collection coll = it.value().mCollection;
+        Q_ASSERT(!coll.resource().isEmpty());
+        Q_ASSERT(coll.id() == it.key());
+        EntityAnnotationsAttribute *newAnnotationsAttribute =
+                coll.attribute<EntityAnnotationsAttribute>(Entity::AddIfMissing);
+        newAnnotationsAttribute->insert(s_timeStampKey, QString());
+        Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
+        jobs << modJob;
+    }
+    return jobs;
 }

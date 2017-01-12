@@ -340,11 +340,9 @@ void MainWindow::slotFullReload()
 {
     // Kick off one collection-modify job per collection, to clear the timestamp attribute
     // Once all these jobs are done, we'll trigger a resource synchronization
-    mClearTimestampJobs.clear();
-    Q_FOREACH (Page *page, mPages) {
-        KJob *modJob = page->clearTimestamp();
+    mClearTimestampJobs = mCollectionManager->clearTimestamps();
+    Q_FOREACH (KJob *modJob, mClearTimestampJobs) {
         connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotClearTimestampResult(KJob*)));
-        mClearTimestampJobs.append(modJob);
     }
 }
 
