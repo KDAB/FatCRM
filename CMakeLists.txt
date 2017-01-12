@@ -26,20 +26,10 @@ set(FATCRM_VERSION "${FATCRM_VERSION_MAJOR}.${FATCRM_VERSION_MINOR}.${FATCRM_VER
 set(FATCRM_VERSION_STRING "${FATCRM_VERSION}")
 set(FATCRM_SOVERSION "0.3.0") # for libkdcrmdata
 
+include(GetGitRevisionDescription)
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
-  find_package(Git)
-  #TODO: FeatureSummary requires modern CMake
-  #include(FeatureSummary)
-  #set_package_properties(Git PROPERTIES TYPE OPTIONAL PURPOSE "Determine exact build version.")
-  if(GIT_FOUND)
-    execute_process(
-      COMMAND ${GIT_EXECUTABLE} rev-parse --short HEAD
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      OUTPUT_VARIABLE _git_revision
-    )
-    string(REGEX REPLACE "\n" "" _git_revision "${_git_revision}")
-    set(FATCRM_VERSION_STRING "${FATCRM_VERSION_STRING} (revision: ${_git_revision})")
-  endif()
+  git_describe(GIT_DESC --tags)
+  set(FATCRM_VERSION_STRING "${FATCRM_VERSION_STRING} (revision: ${GIT_DESC})")
 endif()
 
 configure_file(
