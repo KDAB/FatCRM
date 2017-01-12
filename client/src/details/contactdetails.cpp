@@ -91,6 +91,13 @@ ContactDetails::~ContactDetails()
     delete mUi;
 }
 
+void ContactDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
+{
+    mLinkedItemsRepository = repo;
+    connect(mLinkedItemsRepository, SIGNAL(contactModified(QString)),
+            this, SLOT(slotLinkedItemsModified(QString)));
+}
+
 void ContactDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
@@ -338,6 +345,16 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     item.setPayload<KABC::Addressee>(addressee);
 }
 
+void ContactDetails::updateLinkedItemsButtons()
+{
+    const QString contactId = id();
+    {
+        const int notes = contactId.isEmpty() ? 0 : mLinkedItemsRepository->notesForContact(contactId).count() + mLinkedItemsRepository->emailsForContact(contactId).count();
+        const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
+        mUi->viewNotesButton->setText(buttonText);
+    }
+}
+
 void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->salutation, KDCRMFields::salutation());
@@ -354,13 +371,7 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
     connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
     connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
 
-    const QString contactId = id();
-    {
-        const int notes = contactId.isEmpty() ? 0 : mLinkedItemsRepository->notesForContact(contactId).count() + mLinkedItemsRepository->emailsForContact(contactId).count();
-        mUi->viewNotesButton->setEnabled(notes > 0);
-        const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
-        mUi->viewNotesButton->setText(buttonText);
-    }
+    updateLinkedItemsButtons();
 }
 
 void ContactDetails::on_buttonOpenAccount_clicked()
@@ -377,6 +388,9 @@ void ContactDetails::on_viewNotesButton_clicked()
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
     kDebug() << emails.count() << "emails found for contact" << contactId;
     NotesWindow *dlg = new NotesWindow(nullptr);
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->setLinkedTo(contactId, type());
     dlg->setWindowTitle(i18n("Notes for contact %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
@@ -451,4 +465,11 @@ void ContactDetails::slotMailToPrimary()
 void ContactDetails::slotMailToOther()
 {
     QDesktopServices::openUrl(QUrl("mailto:" + mUi->email2->text()));
+}
+
+void ContactDetails::slotLinkedItemsModified(const QString &contactId)
+{
+    if (contactId == id()) {
+        updateLinkedItemsButtons();
+    }
 }

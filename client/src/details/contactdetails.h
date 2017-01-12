@@ -46,10 +46,9 @@ public:
 
     ~ContactDetails() override;
 
-    void setLinkedItemsRepository(LinkedItemsRepository *repo) override { mLinkedItemsRepository = repo; }
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) override;
     ItemDataExtractor *itemDataExtractor() const override;
     void setItemsTreeModel(ItemsTreeModel *model) override;
-
 
 private:
     Ui::ContactDetails *mUi;
@@ -76,10 +75,12 @@ private Q_SLOTS:
     void slotEnableMailToOther();
     void slotMailToPrimary();
     void slotMailToOther();
+    void slotLinkedItemsModified(const QString &contactId);
 
 private:
     ContactDataExtractor *mDataExtractor;
     LinkedItemsRepository *mLinkedItemsRepository;
+    void updateLinkedItemsButtons();
 };
 
 #endif /* CONTACTDETAILS_H */

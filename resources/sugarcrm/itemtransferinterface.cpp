@@ -146,6 +146,8 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
         return false;
     }
 
+    kDebug() << "Link Item result:" << result.created() << "created," << result.deleted() << "deleted," << result.failed() << "failed.";
+
     return true;
 }
 

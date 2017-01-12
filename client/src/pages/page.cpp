@@ -612,7 +612,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     // Don't set a parent, so that the widgets can be minimized/restored independently
     SimpleItemEditWidget *widget = new SimpleItemEditWidget(details);
     widget->setOnline(mOnline);
-    if (item.isValid()) // no need for new widget
+    if (item.isValid()) // no need to call setItem for "New <Item>" widget
         widget->setItem(item);
 
     // in case of changes while the widget is up

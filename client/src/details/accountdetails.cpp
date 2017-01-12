@@ -83,6 +83,13 @@ AccountDetails::~AccountDetails()
     delete mUi;
 }
 
+void AccountDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
+{
+    mLinkedItemsRepository = repo;
+    connect(mLinkedItemsRepository, SIGNAL(accountModified(QString)),
+            this, SLOT(slotLinkedItemsModified(QString)));
+}
+
 ItemDataExtractor *AccountDetails::itemDataExtractor() const
 {
     return mDataExtractor;
@@ -106,6 +113,9 @@ void AccountDetails::on_viewNotesButton_clicked()
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForAccount(accountId);
     kDebug() << emails.count() << "emails found for account" << accountId;
     NotesWindow *dlg = new NotesWindow(nullptr);
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->setLinkedTo(accountId, type());
     dlg->setWindowTitle(i18n("Notes for account %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
@@ -130,6 +140,13 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     dlg->show();
+}
+
+void AccountDetails::slotLinkedItemsModified(const QString &accountId)
+{
+    if (accountId == id()) {
+        updateLinkedItemsButtons();
+    }
 }
 
 void AccountDetails::initialize()
@@ -176,6 +193,21 @@ void AccountDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     item.setPayload<SugarAccount>(account);
 }
 
+void AccountDetails::updateLinkedItemsButtons()
+{
+    const QString accountId = id();
+    {
+        const int notes = accountId.isEmpty() ? 0 : mLinkedItemsRepository->notesForAccount(accountId).count() + mLinkedItemsRepository->emailsForAccount(accountId).count();
+        const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
+        mUi->viewNotesButton->setText(buttonText);
+    }
+    {
+        const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
+        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
+        mUi->viewDocumentsButton->setText(buttonText);
+    }
+}
+
 void AccountDetails::setDataInternal(const QMap<QString, QString> &)
 {
     fillComboBox(mUi->industry, KDCRMFields::industry());
@@ -184,16 +216,5 @@ void AccountDetails::setDataInternal(const QMap<QString, QString> &)
     if (url.isValid())
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Account in Web Browser</a>").arg(url.toString()));
 
-    const QString accountId = id();
-    {
-        const int notes = accountId.isEmpty() ? 0 : mLinkedItemsRepository->notesForAccount(accountId).count() + mLinkedItemsRepository->emailsForAccount(accountId).count();
-        mUi->viewNotesButton->setEnabled(notes > 0);
-        const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
-        mUi->viewNotesButton->setText(buttonText);
-    }
-    {
-        const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
-        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
-        mUi->viewDocumentsButton->setText(buttonText);
-    }
+    updateLinkedItemsButtons();
 }

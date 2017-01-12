@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>496</width>
-    <height>333</height>
+    <height>437</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,9 +18,33 @@
     <widget class="KTextEdit" name="textEdit"/>
    </item>
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>&amp;Add new note:</string>
+     </property>
+     <property name="buddy">
+      <cstring>newNoteDescription</cstring>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLineEdit" name="newNoteSubject">
+     <property name="placeholderText">
+      <string>Type note subject here...</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="KTextEdit" name="newNoteDescription">
+     <property name="acceptRichText">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
      </property>
     </widget>
    </item>

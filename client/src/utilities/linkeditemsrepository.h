@@ -45,7 +45,6 @@ namespace Akonadi
  * associated with Accounts, Contacts and Opportunities (the main objects in FatCRM).
  *
  * The repository monitors the Documents, Notes and Emails folders in order to update itself automatically.
- * It does not emit signals when this happens, since the GUI simply queries for linked items when opening a dialog.
  */
 class LinkedItemsRepository : public QObject
 {
@@ -56,6 +55,7 @@ public:
     void clear();
 
     void setNotesCollection(const Akonadi::Collection &collection);
+    Akonadi::Collection notesCollection() const;
     void setEmailsCollection(const Akonadi::Collection &collection);
     void setDocumentsCollection(const Akonadi::Collection &collection);
     Akonadi::Collection documentsCollection() const;
@@ -82,6 +82,13 @@ signals:
     void emailsLoaded(int count);
     void documentsLoaded(int count);
 
+    // Emitted when notes, emails or documents for this account have been modified.
+    void accountModified(const QString &accountId);
+    // Emitted when notes, emails or documents for this opportunity have been modified.
+    void opportunityModified(const QString &oppId);
+    // Emitted when notes, emails or documents for this contact have been modified.
+    void contactModified(const QString &contactId);
+
 private Q_SLOTS:
     void slotNotesReceived(const Akonadi::Item::List &items);
     void slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection);
@@ -92,11 +99,11 @@ private Q_SLOTS:
     void slotDocumentsReceived(const Akonadi::Item::List &items);
 
 private:
-    void storeNote(const Akonadi::Item &item);
+    void storeNote(const Akonadi::Item &item, bool emitSignals);
     void removeNote(const QString &id);
-    void storeEmail(const Akonadi::Item &item);
+    void storeEmail(const Akonadi::Item &item, bool emitSignals);
     void removeEmail(const QString &id);
-    void storeDocument(const Akonadi::Item &item);
+    void storeDocument(const Akonadi::Item &item, bool emitSignals);
     void removeDocument(const QString &id);
     void configureItemFetchScope(Akonadi::ItemFetchScope &scope);
     void updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection);

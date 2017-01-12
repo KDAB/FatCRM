@@ -209,7 +209,7 @@ void DocumentsWindow::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-void DocumentsWindow::on_buttonBox_accepted()
+void DocumentsWindow::on_buttonBox_accepted() // "Save"
 {
     if (isModified())
         saveChanges();
@@ -379,10 +379,14 @@ void DocumentsWindow::saveChanges()
 
                 QDBusPendingReply<bool> linkReply = transferInterface.linkItem(documentId, "Documents", mLinkedItemId, linkedItemModuleName);
                 linkReply.waitForFinished();
+                if (linkReply.isError()) {
+                    qWarning() << "Unable to link document" << documentId << ":" << linkReply.error().message();
+                    continue;
+                }
 
                 const bool ok = linkReply.value();
                 if (!ok) {
-                    qWarning() << "Unable to link document";
+                    qWarning() << "Unable to link document" << documentId << ", see resource logs for details";
                     continue;
                 }
 

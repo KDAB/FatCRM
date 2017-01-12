@@ -43,7 +43,7 @@ public:
 
     ~OpportunityDetails() override;
 
-    void setLinkedItemsRepository(LinkedItemsRepository *repo) override { mLinkedItemsRepository = repo; }
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) override;
     ItemDataExtractor *itemDataExtractor() const override;
     void setItemsTreeModel(ItemsTreeModel *model) override;
 
@@ -53,6 +53,7 @@ private Q_SLOTS:
     void slotSelectAccount();
     void slotAccountSelected(const QString &accountId);
     void slotCloseDateChanged(const QDate &date);
+    void slotLinkedItemsModified(const QString &oppId);
 
     void on_viewNotesButton_clicked();
     void on_viewDocumentsButton_clicked();
@@ -71,6 +72,7 @@ private:
     OpportunityDataExtractor *mDataExtractor;
     QDate mOriginalCloseDate;
     bool mCloseDateChangedByUser;
+    void updateLinkedItemsButtons();
 };
 
 #endif /* OPPORTUNITYDETAILS_H */

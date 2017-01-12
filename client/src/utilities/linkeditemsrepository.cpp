@@ -93,25 +93,32 @@ void LinkedItemsRepository::slotNotesReceived(const Akonadi::Item::List &items)
 {
     mNotesLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
-        storeNote(item);
+        storeNote(item, false);
     }
     //kDebug() << "loaded" << mNotesLoaded << "notes";
     if (mNotesLoaded == mNotesCollection.statistics().count())
         emit notesLoaded(mNotesLoaded);
 }
 
-void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
+void LinkedItemsRepository::storeNote(const Akonadi::Item &item, bool emitSignals)
 {
     if (item.hasPayload<SugarNote>()) {
         SugarNote note = item.payload<SugarNote>();
         const QString id = note.id();
-        Q_ASSERT(!id.isEmpty());
+        if (id.isEmpty()) {
+            // We just created a note in akonadi, and it hasn't been synced to Sugar yet. We can't store it yet.
+            // Once it's created slotItemChanged will be called and we'll come here again to store it for real.
+            return;
+        }
         removeNote(id); // handle change of parent
         const QString parentId = note.parentId();
         if (note.parentType() == QLatin1String("Accounts")) {
             if (!parentId.isEmpty()) {
                 mAccountNotesHash[parentId].append(note);
                 mNotesAccountIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit accountModified(parentId);
+                }
             } else {
                 mNotesAccountIdHash.remove(id);
             }
@@ -119,6 +126,9 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
             if (!parentId.isEmpty()) {
                 mContactNotesHash[parentId].append(note);
                 mNotesContactIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit contactModified(parentId);
+                }
             } else {
                 mNotesContactIdHash.remove(id);
             }
@@ -126,6 +136,9 @@ void LinkedItemsRepository::storeNote(const Akonadi::Item &item)
             if (!parentId.isEmpty()) {
                 mOpportunityNotesHash[parentId].append(note);
                 mNotesOpportunityIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit opportunityModified(parentId);
+                }
             } else {
                 mNotesOpportunityIdHash.remove(id);
             }
@@ -236,7 +249,7 @@ void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
 {
     mEmailsLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
-        storeEmail(item);
+        storeEmail(item, false);
     }
     //kDebug() << "loaded" << mEmailsLoaded << "emails";
     if (mEmailsLoaded == mEmailsCollection.statistics().count()) {
@@ -244,7 +257,7 @@ void LinkedItemsRepository::slotEmailsReceived(const Akonadi::Item::List &items)
     }
 }
 
-void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
+void LinkedItemsRepository::storeEmail(const Akonadi::Item &item, bool emitSignals)
 {
     if (item.hasPayload<SugarEmail>()) {
         SugarEmail email = item.payload<SugarEmail>();
@@ -256,6 +269,9 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
             if (!parentId.isEmpty()) {
                 mAccountEmailsHash[parentId].append(email);
                 mEmailsAccountIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit accountModified(parentId);
+                }
             } else {
                 mEmailsAccountIdHash.remove(id);
             }
@@ -263,6 +279,10 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
             if (!parentId.isEmpty()) {
                 mContactEmailsHash[parentId].append(email);
                 mEmailsContactIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit contactModified(parentId);
+                }
+
             } else {
                 mEmailsContactIdHash.remove(id);
             }
@@ -270,6 +290,9 @@ void LinkedItemsRepository::storeEmail(const Akonadi::Item &item)
             if (!parentId.isEmpty()) {
                 mOpportunityEmailsHash[parentId].append(email);
                 mEmailsOpportunityIdHash.insert(id, parentId);
+                if (emitSignals) {
+                    emit opportunityModified(parentId);
+                }
             } else {
                 mEmailsOpportunityIdHash.remove(id);
             }
@@ -368,14 +391,14 @@ void LinkedItemsRepository::slotDocumentsReceived(const Akonadi::Item::List &ite
 {
     mDocumentsLoaded += items.count();
     foreach(const Akonadi::Item &item, items) {
-        storeDocument(item);
+        storeDocument(item, false);
     }
 
     if (mDocumentsLoaded == mDocumentsCollection.statistics().count())
         emit documentsLoaded(mDocumentsLoaded);
 }
 
-void LinkedItemsRepository::storeDocument(const Akonadi::Item &item)
+void LinkedItemsRepository::storeDocument(const Akonadi::Item &item, bool emitSignals)
 {
     if (item.hasPayload<SugarDocument>()) {
         SugarDocument document = item.payload<SugarDocument>();
@@ -390,11 +413,17 @@ void LinkedItemsRepository::storeDocument(const Akonadi::Item &item)
         Q_FOREACH (const QString &accountId, document.linkedAccountIds()) {
             mAccountDocumentsHash[accountId].append(document);
             mDocumentsAccountIdHash[id].insert(accountId);
+            if (emitSignals) {
+                emit accountModified(accountId);
+            }
         }
 
         Q_FOREACH (const QString &opportunityId, document.linkedOpportunityIds()) {
             mOpportunityDocumentsHash[opportunityId].append(document);
             mDocumentsOpportunityIdHash[id].insert(opportunityId);
+            if (emitSignals) {
+                emit opportunityModified(opportunityId);
+            }
         }
 
         mDocumentItems[id] = item;
@@ -440,14 +469,19 @@ void LinkedItemsRepository::configureItemFetchScope(Akonadi::ItemFetchScope &sco
 void LinkedItemsRepository::updateItem(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
     if (collection == mNotesCollection) {
-        storeNote(item);
+        storeNote(item, true);
     } else if (collection == mEmailsCollection) {
-        storeEmail(item);
+        storeEmail(item, true);
     } else if (collection == mDocumentsCollection) {
-        storeDocument(item);
+        storeDocument(item, true);
     } else {
         kWarning() << "Unexpected collection" << collection << ", expected" << mNotesCollection.id() << "," << mEmailsCollection.id() << "or" << mDocumentsCollection.id();
     }
+}
+
+Akonadi::Collection LinkedItemsRepository::notesCollection() const
+{
+    return mNotesCollection;
 }
 
 void LinkedItemsRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
@@ -474,7 +508,9 @@ void LinkedItemsRepository::slotItemRemoved(const Akonadi::Item &item)
 
 void LinkedItemsRepository::slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers)
 {
-    // I get only REMOTEREVISION even when changing the parentid in the SugarEmail...
+    // I get only REMOTEREVISION when changing the parentid in the SugarNote or SugarEmail.
+    // I also get REMOTEID when creating a note.
+    // But anyway we handle all cases in updateItem().
     //kDebug() << item.id() << partIdentifiers;
     Q_UNUSED(partIdentifiers);
 

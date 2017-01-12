@@ -41,8 +41,9 @@ public:
 
     ~AccountDetails() override;
 
-    void setLinkedItemsRepository(LinkedItemsRepository *repo) override { mLinkedItemsRepository = repo; }
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) override;
     ItemDataExtractor *itemDataExtractor() const override;
+
 
 private Q_SLOTS:
     void slotVisitWebsite();
@@ -50,15 +51,17 @@ private Q_SLOTS:
     void slotShippingAddressCountryEditingFinished();
     void on_viewNotesButton_clicked();
     void on_viewDocumentsButton_clicked();
-
-private:
-    Ui::AccountDetails *mUi;
+    void slotLinkedItemsModified(const QString &accountId);
 
 private:
     void initialize();
+    void updateLinkedItemsButtons();
     QMap<QString, QString> data(const Akonadi::Item &item) const override;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
     void setDataInternal(const QMap<QString, QString> &data) override;
+
+private:
+    Ui::AccountDetails *mUi;
     AccountDataExtractor *mDataExtractor;
     LinkedItemsRepository *mLinkedItemsRepository;
 };
