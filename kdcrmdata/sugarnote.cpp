@@ -25,6 +25,7 @@
 
 #include <QSharedData>
 #include <QString>
+#include <QDebug>
 
 #include <KLocale>
 
@@ -407,4 +408,10 @@ contact_name
                                           i18nc("@item:intable", "Description")));
     }
     return accessors;
+}
+
+QDebug operator<<(QDebug stream, const SugarNote &note)
+{
+    stream << "Note:" << note.data();
+    return stream;
 }
