@@ -46,9 +46,9 @@ public:
 
     ~ContactDetails() override;
 
-    void setLinkedItemsRepository(LinkedItemsRepository *repo) Q_DECL_OVERRIDE { mLinkedItemsRepository = repo; }
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
-    void setItemsTreeModel(ItemsTreeModel *model) Q_DECL_OVERRIDE;
+    void setLinkedItemsRepository(LinkedItemsRepository *repo) override { mLinkedItemsRepository = repo; }
+    ItemDataExtractor *itemDataExtractor() const override;
+    void setItemsTreeModel(ItemsTreeModel *model) override;
 
 
 private:
@@ -56,9 +56,9 @@ private:
 
 private:
     void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
+    QMap<QString, QString> data(const Akonadi::Item &item) const override;
+    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
+    void setDataInternal(const QMap<QString, QString> &data) override;
 
     QMap<QString, QString> contactData(const KContacts::Addressee &contact) const;
 

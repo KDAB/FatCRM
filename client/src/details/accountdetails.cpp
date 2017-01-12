@@ -37,7 +37,7 @@
 #include <QDesktopServices>
 
 AccountDetails::AccountDetails(QWidget *parent)
-    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
+    : Details(Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this)), mLinkedItemsRepository(nullptr)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -106,7 +106,7 @@ void AccountDetails::on_viewNotesButton_clicked()
     qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for account" << accountId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForAccount(accountId);
     qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for account" << accountId;
-    NotesWindow *dlg = new NotesWindow(0);
+    NotesWindow *dlg = new NotesWindow(nullptr);
     dlg->setWindowTitle(i18n("Notes for account %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);
@@ -122,7 +122,7 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(0);
+    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

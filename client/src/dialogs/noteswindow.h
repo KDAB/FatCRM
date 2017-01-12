@@ -59,13 +59,13 @@ class NotesWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit NotesWindow(QWidget *parent = Q_NULLPTR);
+    explicit NotesWindow(QWidget *parent = nullptr);
     ~NotesWindow() override;
 
     void addNote(const SugarNote &note);
     void addEmail(const SugarEmail &email);
 
-    void setVisible(bool visible) Q_DECL_OVERRIDE;
+    void setVisible(bool visible) override;
 
 private slots:
     void on_buttonBox_rejected();

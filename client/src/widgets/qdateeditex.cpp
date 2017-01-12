@@ -46,7 +46,7 @@
 
 class QDateEditEx::Private {
 public:
-    Private( QDateEditEx* qq ) : q(qq),  clearButton(0), null(false), nullable(false) {}
+    Private( QDateEditEx* qq ) : q(qq),  clearButton(nullptr), null(false), nullable(false) {}
 
     QDateEditEx* const q;
 
@@ -199,7 +199,7 @@ void QDateEditEx::setNullable(bool enable)
     } else if (d->clearButton) {
         disconnect(d->clearButton,SIGNAL(clicked()),this,SLOT(clearButtonClicked()));
         delete d->clearButton;
-        d->clearButton = 0;
+        d->clearButton = nullptr;
     }
 
     update();

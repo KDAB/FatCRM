@@ -55,7 +55,7 @@ public:
     explicit Private(ListEntriesJob *parent, const Akonadi::Collection &collection)
         : q(parent),
           mCollection(collection),
-          mHandler(0),
+          mHandler(nullptr),
           mStage(GetCount),
           mCollectionAttributesChanged(false)
     {
@@ -273,7 +273,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
 void ListEntriesJob::startSugarTask()
 {
     Q_ASSERT(d->mCollection.isValid());
-    Q_ASSERT(d->mHandler != 0);
+    Q_ASSERT(d->mHandler != nullptr);
 
     switch (d->mStage) {
     case Private::GetCount:

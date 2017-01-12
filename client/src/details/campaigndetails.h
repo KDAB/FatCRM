@@ -40,7 +40,7 @@ public:
 
     ~CampaignDetails() override;
 
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const override;
 
 private Q_SLOTS:
     void slotSetStartDate();
@@ -50,9 +50,9 @@ private Q_SLOTS:
 
 private:
     void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &) Q_DECL_OVERRIDE;
+    QMap<QString, QString> data(const Akonadi::Item &item) const override;
+    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
+    void setDataInternal(const QMap<QString, QString> &) override;
 
     Ui::CampaignDetails *mUi;
     CampaignDataExtractor *mDataExtractor;

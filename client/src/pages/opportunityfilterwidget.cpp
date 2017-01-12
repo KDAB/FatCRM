@@ -69,6 +69,7 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
     connect(ui->modifiedBefore, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
+    connect(ui->cbPriority, SIGNAL(currentIndexChanged(QString)), this, SLOT(filterChanged()));
 
 
     connect(ClientSettings::self(), SIGNAL(assigneeFiltersChanged()), this, SLOT(setupFromConfig()));
@@ -105,6 +106,7 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->rbAll->setChecked(true); // unless one of the two below gets checked
     ui->rbAssignedTo->setChecked(!settings.assignees().isEmpty());
     ui->rbCountry->setChecked(!settings.countries().isEmpty());
+    ui->cbPriority->setCurrentIndex(qMax(0, ui->cbPriority->findText(settings.shownPriority())));
     filterChanged();
 }
 
@@ -177,6 +179,7 @@ void OpportunityFilterWidget::filterChanged()
     filterSettings.setModifiedAfter(ui->modifiedAfter->date());
     filterSettings.setModifiedBefore(ui->modifiedBefore->date());
     filterSettings.setCustomMaxDate(mCustomMaxNextStepDate);
+    filterSettings.setShownPriority(ui->cbPriority->currentText());
 
     if (ui->cbMaxNextStepDate->currentIndex() == indexForOther()) {
         QCalendarWidget *calendar = new QCalendarWidget();

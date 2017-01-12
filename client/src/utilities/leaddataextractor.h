@@ -35,8 +35,8 @@ public:
     ~LeadDataExtractor() override;
 
 protected:
-    QString itemAddress() const Q_DECL_OVERRIDE;
-    QString idForItem(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
+    QString itemAddress() const override;
+    QString idForItem(const Akonadi::Item &item) const override;
 };
 
 #endif // LEADDATAEXTRACTOR_H

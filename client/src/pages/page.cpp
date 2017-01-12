@@ -93,15 +93,15 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
       mMimeType(mimeType),
       mType(type),
-      mFilter(Q_NULLPTR),
-      mChangeRecorder(Q_NULLPTR),
-      mItemsTreeModel(Q_NULLPTR),
+      mFilter(nullptr),
+      mChangeRecorder(nullptr),
+      mItemsTreeModel(nullptr),
       mCollection(),
-      mCollectionManager(Q_NULLPTR),
-      mLinkedItemsRepository(Q_NULLPTR),
+      mCollectionManager(nullptr),
+      mLinkedItemsRepository(nullptr),
       mOnline(false),
       mInitialLoadingDone(false),
-      mJobProgressTracker(Q_NULLPTR)
+      mJobProgressTracker(nullptr)
 {
     mUi.setupUi(this);
     mUi.treeView->setViewName(typeToString(type));
@@ -161,17 +161,17 @@ void Page::setFilter(FilterProxyModel *filter)
 void Page::slotResourceSelectionChanged(const QByteArray &identifier)
 {
     delete mChangeRecorder;
-    mChangeRecorder = 0;
+    mChangeRecorder = nullptr;
     mCollection = Collection();
     mResourceIdentifier = identifier;
 
     // cleanup from last time (useful when switching resources)
     ModelRepository::instance()->removeModel(mType);
-    mFilter->setSourceModel(0);
-    mUi.treeView->setModel(0);
+    mFilter->setSourceModel(nullptr);
+    mUi.treeView->setModel(nullptr);
 
     delete mItemsTreeModel;
-    mItemsTreeModel = 0;
+    mItemsTreeModel = nullptr;
 
     retrieveResourceUrl();
     mUi.reloadPB->setEnabled(false);
@@ -391,7 +391,7 @@ void Page::initialize()
     connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
     connect(mUi.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotItemContextMenuRequested(QPoint)));
 
-    const QIcon icon = (style() != 0 ? style()->standardIcon(QStyle::SP_BrowserReload, 0, mUi.reloadPB) : QIcon());
+    const QIcon icon = (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
         mUi.reloadPB->setIcon(icon);
     }

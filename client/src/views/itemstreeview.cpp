@@ -32,7 +32,7 @@
 
 ItemsTreeView::ItemsTreeView(QWidget *parent) :
     Akonadi::EntityTreeView(parent),
-    mItemsTreeModel(0)
+    mItemsTreeModel(nullptr)
 {
     setRootIsDecorated(false);
     setContextMenuPolicy(Qt::CustomContextMenu);

@@ -165,12 +165,12 @@ QString formattedAddress(const KContacts::Address &address)
 } // namespace
 
 MergeWidget::UpdateCheckBoxes::UpdateCheckBoxes()
-    : prefix(Q_NULLPTR)
-    , givenName(Q_NULLPTR)
-    , familyName(Q_NULLPTR)
-    , emailAddress(Q_NULLPTR)
-    , phoneNumber(Q_NULLPTR),
-      jobTitle(Q_NULLPTR)
+    : prefix(nullptr)
+    , givenName(nullptr)
+    , familyName(nullptr)
+    , emailAddress(nullptr)
+    , phoneNumber(nullptr),
+      jobTitle(nullptr)
 {
 }
 
@@ -502,8 +502,8 @@ bool ContactsImportPage::openContactsAfterImport() const
 void ContactsImportPage::setChosenContacts(const QVector<ContactsSet> &contacts)
 {
     {
-        QLayoutItem *layoutItem = Q_NULLPTR;
-        while ((layoutItem = mUi->mainLayout->takeAt(0)) != Q_NULLPTR) {
+        QLayoutItem *layoutItem = nullptr;
+        while ((layoutItem = mUi->mainLayout->takeAt(0)) != nullptr) {
             delete layoutItem->widget();
             delete layoutItem;
         }

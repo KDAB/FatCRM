@@ -52,7 +52,7 @@ class MergeWidget : public QWidget
 public:
     MergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                 const QVector<MatchPair> &possibleMatches,
-                QWidget *parent = Q_NULLPTR);
+                QWidget *parent = nullptr);
 
     bool skipItem() const;
     Akonadi::Item finalItem(const QString &descriptionText);
@@ -93,14 +93,14 @@ class ContactsImportPage : public QWizardPage
     Q_OBJECT
 
 public:
-    explicit ContactsImportPage(QWidget *parent = Q_NULLPTR);
+    explicit ContactsImportPage(QWidget *parent = nullptr);
     ~ContactsImportPage() override;
 
     void setContactsModel(ItemsTreeModel *model);
 
     void cleanup();
 
-    bool validatePage() Q_DECL_OVERRIDE;
+    bool validatePage() override;
 
     bool openContactsAfterImport() const;
 

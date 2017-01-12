@@ -297,7 +297,7 @@ void SalesforceResource::itemRemoved(const Akonadi::Item &item)
 
 void SalesforceResource::connectSoapProxy()
 {
-    Q_ASSERT(mSoap != 0);
+    Q_ASSERT(mSoap != nullptr);
 
     connect(mSoap, SIGNAL(loginDone(TNS__LoginResponse)), this, SLOT(loginDone(TNS__LoginResponse)));
     connect(mSoap, SIGNAL(loginError(KDSoapMessage)), this, SLOT(loginError(KDSoapMessage)));
@@ -726,7 +726,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
             collection.setParentCollection(mTopLevelCollection);
             collections << collection;
         } else {
-            SalesforceModuleHandler *handler = 0;
+            SalesforceModuleHandler *handler = nullptr;
             if (module == QLatin1String("Contact")) {
                 handler = new SalesforceContactsHandler;
                 unknownModules << module;

@@ -35,7 +35,7 @@ SugarCampaignIO::SugarCampaignIO()
 
 bool SugarCampaignIO::readSugarCampaign(QIODevice *device, SugarCampaign &campaign)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -81,7 +81,7 @@ void SugarCampaignIO::readCampaign(SugarCampaign &campaign)
 
 bool SugarCampaignIO::writeSugarCampaign(const SugarCampaign &campaign, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

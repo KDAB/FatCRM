@@ -57,6 +57,8 @@ public:
     void setShowOpenClosed(bool showOpen, bool showClosed);
     bool showOpen() const { return mShowOpen; }
     bool showClosed() const { return mShowClosed; }
+    void setShownPriority(const QString &shownPriority);
+    QString shownPriority() const { return mShownPriority; }
 
     QString filterDescription() const;
 
@@ -70,6 +72,7 @@ private:
     QStringList mCountries; // no filtering if empty
     QString mAssigneeGroup; // user-visible description for <assignee>
     QString mCountryGroup; // user-visible description for <countries>
+    QString mShownPriority;
     QDate mMaxDate;
     QDate mCustomMaxDate;
     QDate mModifiedBefore, mModifiedAfter;

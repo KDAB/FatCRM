@@ -73,6 +73,11 @@ void OpportunityFilterSettings::setShowOpenClosed(bool showOpen, bool showClosed
     mShowClosed = showClosed;
 }
 
+void OpportunityFilterSettings::setShownPriority(const QString &shownPriority)
+{
+    mShownPriority = shownPriority;
+}
+
 QString OpportunityFilterSettings::filterDescription() const
 {
     QString openOrClosed;
@@ -127,6 +132,7 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
     settings.setValue(prefix + "/showOpen", mShowOpen);
     settings.setValue(prefix + "/showClosed", mShowClosed);
+    settings.setValue(prefix + "/shownPriority", mShownPriority);
 }
 
 void OpportunityFilterSettings::load(const QSettings &settings, const QString &prefix)
@@ -142,4 +148,5 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     QVariant val = settings.value(prefix + "/showOpen");
     mShowOpen = val.isValid() ? val.toBool() : true;
     mShowClosed = settings.value(prefix + "/showClosed").toBool();
+    mShownPriority = settings.value(prefix + "/shownPriority").toString();
 }

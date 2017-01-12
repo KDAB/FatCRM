@@ -40,7 +40,7 @@ public:
 
     ~LeadDetails() override;
 
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const override;
 
 private Q_SLOTS:
     void slotSetBirthDate();
@@ -51,9 +51,9 @@ private:
 
 private:
     void initialize();
-    QMap<QString, QString> data(const Akonadi::Item &item) const Q_DECL_OVERRIDE;
-    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const Q_DECL_OVERRIDE;
-    void setDataInternal(const QMap<QString, QString> &data) Q_DECL_OVERRIDE;
+    QMap<QString, QString> data(const Akonadi::Item &item) const override;
+    void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
+    void setDataInternal(const QMap<QString, QString> &data) override;
     LeadDataExtractor *mDataExtractor;
 };
 

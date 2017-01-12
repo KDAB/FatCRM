@@ -35,7 +35,7 @@ class ReportPage : public QWidget
     Q_OBJECT
 
 public:
-    explicit ReportPage(QWidget *parent = Q_NULLPTR);
+    explicit ReportPage(QWidget *parent = nullptr);
     ~ReportPage() override;
 
     void setOppModel(ItemsTreeModel *model);

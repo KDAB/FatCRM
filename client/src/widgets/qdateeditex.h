@@ -31,7 +31,7 @@ class FATCRMPRIVATE_EXPORT QDateEditEx : public QDateEdit
 
     Q_PROPERTY(bool nullable READ isNullable WRITE setNullable)
 public:
-    explicit QDateEditEx(QWidget *parent = Q_NULLPTR);
+    explicit QDateEditEx(QWidget *parent = nullptr);
     ~QDateEditEx() override;
 
     QDateTime dateTime() const;
@@ -44,7 +44,7 @@ public:
     QSize sizeHint() const Q_DECL_OVERRIDE;
     QSize minimumSizeHint() const Q_DECL_OVERRIDE;
 
-    void clear() Q_DECL_OVERRIDE;
+    void clear() override;
 
 protected:
     void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;

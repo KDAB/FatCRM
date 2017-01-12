@@ -50,7 +50,7 @@ public:
     explicit Private(ListDeletedEntriesJob *parent, const Akonadi::Collection &collection)
         : q(parent),
           mCollection(collection),
-          mHandler(0),
+          mHandler(nullptr),
           mCollectionAttributesChanged(false)
     {
     }
@@ -237,7 +237,7 @@ QString ListDeletedEntriesJob::latestTimestamp(const Akonadi::Collection &collec
 void ListDeletedEntriesJob::startSugarTask()
 {
     Q_ASSERT(d->mCollection.isValid());
-    Q_ASSERT(d->mHandler != 0);
+    Q_ASSERT(d->mHandler != nullptr);
 
     d->mHandler->listEntries(d->mListScope);
 }

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>819</width>
-    <height>103</height>
+    <height>107</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -78,11 +78,11 @@
    <item row="2" column="0">
     <widget class="QRadioButton" name="rbCountry">
      <property name="text">
-      <string>In country</string>
+      <string>I&amp;n country</string>
      </property>
     </widget>
    </item>
-   <item row="2" column="8">
+   <item row="2" column="9">
     <spacer name="horizontalSpacer_2">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -125,17 +125,20 @@
      </property>
     </spacer>
    </item>
-   <item row="2" column="7">
+   <item row="2" column="8">
     <widget class="QDateEditEx" name="modifiedBefore">
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
     </widget>
    </item>
+   <item row="1" column="1">
+    <widget class="QComboBox" name="cbAssignee"/>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QRadioButton" name="rbAll">
      <property name="text">
-      <string>All opportunities</string>
+      <string>A&amp;ll opportunities</string>
      </property>
     </widget>
    </item>
@@ -146,9 +149,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
-    <widget class="QComboBox" name="cbAssignee"/>
-   </item>
    <item row="2" column="4">
     <widget class="QLabel" name="label_2">
      <property name="text">
@@ -156,10 +156,46 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="6">
+   <item row="2" column="7" alignment="Qt::AlignHCenter">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>and before</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="8">
+    <widget class="QComboBox" name="cbPriority">
+     <item>
+      <property name="text">
+       <string>-</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>A</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>B</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>C</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Not set</string>
+      </property>
+     </item>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Show priority</string>
      </property>
     </widget>
    </item>

@@ -46,8 +46,8 @@ public:
     void setImportedContacts(const QVector<ContactsSet> &contacts);
     void setContactsModel(ItemsTreeModel *model);
 
-    void accept() Q_DECL_OVERRIDE;
-    void reject() Q_DECL_OVERRIDE;
+    void accept() override;
+    void reject() override;
 
 signals:
     void openFutureContact(Akonadi::Item::Id id);

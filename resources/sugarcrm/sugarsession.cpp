@@ -43,7 +43,7 @@ class SugarSession::Private
 {
 public:
     explicit Private(PasswordHandler *passwordHandler)
-        : mSoap(0),
+        : mSoap(nullptr),
           mPasswordHandler(passwordHandler)
     {
     }
@@ -70,7 +70,7 @@ SugarSession::~SugarSession()
 SugarSession::RequiredAction SugarSession::setSessionParameters(const QString &username, const QString &password, const QString &host)
 {
     RequiredAction result = None;
-    if (d->mSoap != 0) {
+    if (d->mSoap != nullptr) {
         if (host != d->mHost || username != d->mUserName) {
             result = NewLogin;
         } else if (password != d->mPassword) {
@@ -135,7 +135,7 @@ bool SugarSession::readPassword()
 
 void SugarSession::logout()
 {
-    if (!d->mSessionId.isEmpty() && d->mSoap != 0) {
+    if (!d->mSessionId.isEmpty() && d->mSoap != nullptr) {
         KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
         if (errorValue.number() != QLatin1String("0"))
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();

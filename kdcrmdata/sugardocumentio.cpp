@@ -37,7 +37,7 @@ SugarDocumentIO::SugarDocumentIO()
 
 bool SugarDocumentIO::readSugarDocument(QIODevice *device, SugarDocument &document)
 {
-    if (device == 0 || !device->isReadable()) {
+    if (device == nullptr || !device->isReadable()) {
         return false;
     }
 
@@ -90,7 +90,7 @@ void SugarDocumentIO::readDocument(SugarDocument &document)
 
 bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevice *device)
 {
-    if (device == 0 || !device->isWritable()) {
+    if (device == nullptr || !device->isWritable()) {
         return false;
     }
 

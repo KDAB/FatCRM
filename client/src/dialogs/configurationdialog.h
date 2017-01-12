@@ -39,11 +39,11 @@ class ConfigurationDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ConfigurationDialog(QWidget *parent = Q_NULLPTR);
+    explicit ConfigurationDialog(QWidget *parent = nullptr);
     ~ConfigurationDialog() override;
 
 public Q_SLOTS:
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
 private Q_SLOTS:
     void slotCurrentAssigneeChanged(const QModelIndex &idx);

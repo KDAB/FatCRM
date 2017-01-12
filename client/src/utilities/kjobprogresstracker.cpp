@@ -29,7 +29,7 @@
 KJobProgressTracker::KJobProgressTracker(QWidget *parentWidget, QObject *parent)
     : QObject(parent)
     , mParentWidget(parentWidget)
-    , mProgressDialog(Q_NULLPTR)
+    , mProgressDialog(nullptr)
 {
 }
 
@@ -82,6 +82,6 @@ void KJobProgressTracker::jobFinished(KJob *job)
         emit finished();
 
         mProgressDialog->deleteLater();
-        mProgressDialog = Q_NULLPTR;
+        mProgressDialog = nullptr;
     }
 }

@@ -45,7 +45,7 @@
 #define KABC KContacts
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this)), mLinkedItemsRepository(Q_NULLPTR)
+    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this)), mLinkedItemsRepository(nullptr)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -378,7 +378,7 @@ void ContactDetails::on_viewNotesButton_clicked()
     qDebug() << notes.count() << "notes found for contact" << contactId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
     qDebug() << emails.count() << "emails found for contact" << contactId;
-    NotesWindow *dlg = new NotesWindow(0);
+    NotesWindow *dlg = new NotesWindow(nullptr);
     dlg->setWindowTitle(i18n("Notes for contact %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);

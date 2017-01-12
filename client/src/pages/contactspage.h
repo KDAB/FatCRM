@@ -39,11 +39,11 @@ public slots:
     void slotOpenFutureContact(Akonadi::Item::Id id);
 
 protected:
-    QString reportTitle() const Q_DECL_OVERRIDE;
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
+    QString reportTitle() const override;
+    ItemDataExtractor *itemDataExtractor() const override;
 
-    void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
-    void handleItemChanged(const Akonadi::Item &item) Q_DECL_OVERRIDE;
+    void handleNewRows(int start, int end, bool emitChanges) override;
+    void handleItemChanged(const Akonadi::Item &item) override;
 
 private:
     ContactDataExtractor *mDataExtractor;

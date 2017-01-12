@@ -34,9 +34,9 @@ class KeyPressEventListView : public QListView
     Q_OBJECT
 
 public:
-    explicit KeyPressEventListView(QWidget *parent = 0);
+    explicit KeyPressEventListView(QWidget *parent = nullptr);
 
-    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    void keyPressEvent(QKeyEvent *event) override;
 
 signals:
     void returnPressed(const QModelIndex &index);

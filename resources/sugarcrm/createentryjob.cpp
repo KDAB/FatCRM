@@ -48,7 +48,7 @@ public:
     };
 
     explicit Private(CreateEntryJob *parent, const Item &item)
-        : q(parent), mItem(item), mHandler(0), mStage(Init)
+        : q(parent), mItem(item), mHandler(nullptr), mStage(Init)
     {
     }
 
@@ -157,7 +157,7 @@ Item CreateEntryJob::item() const
 void CreateEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
-    Q_ASSERT(d->mHandler != 0);
+    Q_ASSERT(d->mHandler != nullptr);
 
     d->mStage = Private::CreateEntry;
 

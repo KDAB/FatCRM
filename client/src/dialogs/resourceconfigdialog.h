@@ -71,7 +71,7 @@ public:
     {
         setDynamicSortFilter(true);
     }
-    bool filterAcceptsRow(int source_row, const QModelIndex &) const Q_DECL_OVERRIDE;
+    bool filterAcceptsRow(int source_row, const QModelIndex &) const override;
 };
 
 #endif

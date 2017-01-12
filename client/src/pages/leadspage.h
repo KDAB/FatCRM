@@ -36,9 +36,9 @@ public:
     ~LeadsPage() override;
 
 protected:
-    ItemDataExtractor *itemDataExtractor() const Q_DECL_OVERRIDE;
-    QString reportTitle() const Q_DECL_OVERRIDE;
-    void handleNewRows(int start, int end, bool emitChanges) Q_DECL_OVERRIDE;
+    ItemDataExtractor *itemDataExtractor() const override;
+    QString reportTitle() const override;
+    void handleNewRows(int start, int end, bool emitChanges) override;
 
 private:
     LeadDataExtractor *mDataExtractor;

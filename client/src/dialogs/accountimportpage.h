@@ -44,7 +44,7 @@ class AccountImportPage : public QWizardPage
     Q_OBJECT
 
 public:
-    explicit AccountImportPage(QWidget *parent = Q_NULLPTR);
+    explicit AccountImportPage(QWidget *parent = nullptr);
     ~AccountImportPage() override;
 
     // intput
@@ -56,8 +56,8 @@ public:
 
     void cleanup();
 
-    bool isComplete() const Q_DECL_OVERRIDE;
-    bool validatePage() Q_DECL_OVERRIDE;
+    bool isComplete() const override;
+    bool validatePage() override;
 
 signals:
     void chosenContactsAvailable(const QVector<ContactsSet> &contacts);

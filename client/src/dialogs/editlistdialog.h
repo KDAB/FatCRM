@@ -34,7 +34,7 @@ class EditListDialog : public QDialog
 {
     Q_OBJECT
 public:
-    explicit EditListDialog(const QString &labelText, QWidget *parent = 0);
+    explicit EditListDialog(const QString &labelText, QWidget *parent = nullptr);
     ~EditListDialog() override;
 
     void setItems(const QStringList &items);

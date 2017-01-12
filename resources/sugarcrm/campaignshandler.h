@@ -31,17 +31,17 @@ class CampaignsHandler : public ModuleHandler
 public:
     explicit CampaignsHandler(SugarSession *session);
 
-    Akonadi::Collection handlerCollection() const Q_DECL_OVERRIDE;
+    Akonadi::Collection handlerCollection() const override;
 
-    QString orderByForListing() const Q_DECL_OVERRIDE;
-    QStringList supportedSugarFields() const Q_DECL_OVERRIDE;
+    QString orderByForListing() const override;
+    QStringList supportedSugarFields() const override;
 
-    bool setEntry(const Akonadi::Item &item) Q_DECL_OVERRIDE;
+    bool setEntry(const Akonadi::Item &item) override;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) Q_DECL_OVERRIDE;
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
-                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) Q_DECL_OVERRIDE;
+                 const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 private:
     SugarCampaign::AccessorHash mAccessors;
 };

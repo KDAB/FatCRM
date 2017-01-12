@@ -40,16 +40,16 @@ class SimpleItemEditWidget : public ItemEditWidgetBase
 {
     Q_OBJECT
 public:
-    explicit SimpleItemEditWidget(Details *details, QWidget *parent = 0);
+    explicit SimpleItemEditWidget(Details *details, QWidget *parent = nullptr);
 
     ~SimpleItemEditWidget() override;
 
-    void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) Q_DECL_OVERRIDE;
-    bool isModified() const Q_DECL_OVERRIDE;
-    QString title() const Q_DECL_OVERRIDE;
-    QString detailsName() const Q_DECL_OVERRIDE;
+    void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) override;
+    bool isModified() const override;
+    QString title() const override;
+    QString detailsName() const override;
     void hideButtonBox();
-    Akonadi::Item item() const Q_DECL_OVERRIDE;
+    Akonadi::Item item() const override;
 
     Details *details();
 
@@ -57,7 +57,7 @@ public Q_SLOTS:
     void setItem(const Akonadi::Item &item);
     void updateItem(const Akonadi::Item &item);
     void setOnline(bool online);
-    void accept() Q_DECL_OVERRIDE;
+    void accept() override;
 
 private:
     class Private;
