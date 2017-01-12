@@ -23,12 +23,15 @@
 
 #include <QWidget>
 #include <QDateTime>
+#include "enums.h"
 
 namespace Ui {
 class NotesWindow;
 }
 class SugarEmail;
 class SugarNote;
+class KJob;
+class LinkedItemsRepository;
 
 // internal. Generic representation for notes and emails, to sort them by date.
 struct NoteText
@@ -62,17 +65,38 @@ public:
     explicit NotesWindow(QWidget *parent = nullptr);
     ~NotesWindow() override;
 
+    void setResourceIdentifier(const QString &resourceIdentifier);
+    void setLinkedItemsRepository(LinkedItemsRepository *repository);
+
+    void setLinkedTo(const QString &id, DetailsType itemType);
+
     void addNote(const SugarNote &note);
     void addEmail(const SugarEmail &email);
 
     void setVisible(bool visible) override;
 
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private slots:
     void on_buttonBox_rejected();
+    void on_buttonBox_accepted();
+
+    void slotJobResult(KJob *job);
 
 private:
+    bool isModified() const;
+    void saveChanges();
+
     QVector<NoteText> m_notes;
     Ui::NotesWindow *ui;
+    QString mResourceIdentifier;
+    LinkedItemsRepository *mLinkedItemsRepository;
+    bool mIsNotModifiedOverride;
+
+    QString mLinkedItemId;
+    DetailsType mLinkedItemType;
 };
 
 #endif // NotesWindow_H

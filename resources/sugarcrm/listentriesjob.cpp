@@ -104,8 +104,8 @@ void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
     }
 }
 
-static const char s_timeStampKey[] = "timestamp";
-static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in page.cpp
+static const char s_timeStampKey[] = "timestamp"; // duplicated in collectionmanager.cpp
+static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in collectionmanager.cpp
 
 // When the resource evolves and can store more things (or if e.g. encoding bugs are fixed)
 // then increasing the expected version ensures that old caches are thrown out.
@@ -244,6 +244,7 @@ int ListEntriesJob::currentContentsVersion(const Collection &collection)
     return 0;
 }
 
+// static
 QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler)
 {
     EntityAnnotationsAttribute *annotationsAttribute =

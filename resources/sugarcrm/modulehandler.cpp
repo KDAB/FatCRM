@@ -202,11 +202,7 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
         // Opportunities: opportunity_type, lead_source, sales_stage
         // Emails: type, status
         // Notes: <none>
-#ifdef AKONADI_OLD_API
-        EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Entity::AddIfMissing);
-#else
         EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);
-#endif
         const QString serialized = mEnumDefinitions.toString();
         if (attr->value() != serialized) {
             attr->setValue(serialized);

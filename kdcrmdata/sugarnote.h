@@ -226,6 +226,8 @@ private:
     QSharedDataPointer<Private> d;
 };
 
+KDCRMDATA_EXPORT QDebug operator<<(QDebug stream, const SugarNote &note);
+
 Q_DECLARE_METATYPE(SugarNote)
 
 #endif /* SUGARNOTE_H */

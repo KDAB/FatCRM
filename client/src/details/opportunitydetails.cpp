@@ -73,6 +73,13 @@ OpportunityDetails::~OpportunityDetails()
     delete mUi;
 }
 
+void OpportunityDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
+{
+    mLinkedItemsRepository = repo;
+    connect(mLinkedItemsRepository, SIGNAL(opportunityModified(QString)),
+            this, SLOT(slotLinkedItemsModified(QString)));
+}
+
 void OpportunityDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
@@ -129,6 +136,13 @@ void OpportunityDetails::slotCloseDateChanged(const QDate &newCloseDate)
     mCloseDateChangedByUser = (newCloseDate != mOriginalCloseDate);
 }
 
+void OpportunityDetails::slotLinkedItemsModified(const QString &oppId)
+{
+    if (oppId == id()) {
+        updateLinkedItemsButtons();
+    }
+}
+
 QMap<QString, QString> OpportunityDetails::data(const Akonadi::Item &item) const
 {
     Q_ASSERT(item.isValid());
@@ -149,6 +163,21 @@ void OpportunityDetails::updateItem(Akonadi::Item &item, const QMap<QString, QSt
     item.setPayload<SugarOpportunity>(opportunity);
 }
 
+void OpportunityDetails::updateLinkedItemsButtons()
+{
+    const QString oppId = id();
+    {
+        const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
+        const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
+        mUi->viewNotesButton->setText(buttonText);
+    }
+    {
+        const int documents = oppId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForOpportunity(oppId).count();
+        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
+        mUi->viewDocumentsButton->setText(buttonText);
+    }
+}
+
 void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
 {
     fillComboBox(mUi->opportunity_type, KDCRMFields::opportunityType());
@@ -163,18 +192,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     else
         mUi->urllabel->clear();
 
-    const QString oppId = id();
-    {
-        const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
-        mUi->viewNotesButton->setEnabled(notes > 0);
-        const QString buttonText = (notes == 0) ? i18n("View Notes") : i18np("View 1 Note", "View %1 Notes", notes);
-        mUi->viewNotesButton->setText(buttonText);
-    }
-    {
-        const int documents = oppId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForOpportunity(oppId).count();
-        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
-        mUi->viewDocumentsButton->setText(buttonText);
-    }
+    updateLinkedItemsButtons();
 
     mOriginalCloseDate = KDCRMUtils::dateFromString(data.value(KDCRMFields::dateClosed()));
 
@@ -198,6 +216,9 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForOpportunity(oppId);
     qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for opp" << oppId;
     NotesWindow *dlg = new NotesWindow(nullptr);
+    dlg->setResourceIdentifier(resourceIdentifier());
+    dlg->setLinkedItemsRepository(mLinkedItemsRepository);
+    dlg->setLinkedTo(oppId, type());
     dlg->setWindowTitle(i18n("Notes for opportunity %1", name()));
     foreach(const SugarNote &note, notes) {
         dlg->addNote(note);

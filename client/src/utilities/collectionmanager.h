@@ -29,7 +29,7 @@
 
 #include "enums.h"
 #include "enumdefinitions.h"
-#include <AkonadiCore/Collection> // for Id
+#include <AkonadiCore/Collection>
 
 class KJob;
 
@@ -53,6 +53,8 @@ public:
     QStringList supportedFields(Akonadi::Collection::Id collectionId) const;
     EnumDefinitions enumDefinitions(Akonadi::Collection::Id collectionId) const;
 
+    QList<KJob *> clearTimestamps();
+
 public slots:
     /// Update cached data when a collection changes.
     void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
@@ -71,6 +73,7 @@ private:
     {
         QStringList supportedFields;
         EnumDefinitions enumDefinitions;
+        Akonadi::Collection mCollection; // to keep a copy of the current attributes
     };
 
     QHash<Akonadi::Collection::Id, CollectionData> mCollectionData;

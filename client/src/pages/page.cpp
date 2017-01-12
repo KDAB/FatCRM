@@ -47,8 +47,7 @@
 
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/CollectionModifyJob>
-#include <AkonadiCore/collectionstatistics.h>
+#include <AkonadiCore/CollectionStatistics>
 #include <AkonadiCore/EntityMimeTypeFilterModel>
 #include <AkonadiCore/Item>
 #include <AkonadiCore/ItemCreateJob>
@@ -623,7 +622,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     // Don't set a parent, so that the widgets can be minimized/restored independently
     SimpleItemEditWidget *widget = new SimpleItemEditWidget(details);
     widget->setOnline(mOnline);
-    if (item.isValid()) // no need for new widget
+    if (item.isValid()) // no need to call setItem for "New <Item>" widget
         widget->setItem(item);
 
     // in case of changes while the widget is up
@@ -818,24 +817,6 @@ void Page::retrieveResourceUrl()
     if (reply.isValid()) {
         mResourceBaseUrl = iface.host();
     }
-}
-
-// duplicated in listentriesjob.cpp
-static const char s_timeStampKey[] = "timestamp";
-
-KJob *Page::clearTimestamp()
-{
-    Collection coll(mCollection.id());
-    coll.setResource(mCollection.resource());
-    EntityAnnotationsAttribute *annotationsAttribute =
-            mCollection.attribute<EntityAnnotationsAttribute>();
-    EntityAnnotationsAttribute *newAnnotationsAttribute =
-            coll.attribute<EntityAnnotationsAttribute>(Collection::AddIfMissing);
-    if (annotationsAttribute)
-        *newAnnotationsAttribute = *annotationsAttribute;
-    newAnnotationsAttribute->insert(s_timeStampKey, QString());
-    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
-    return modJob;
 }
 
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)

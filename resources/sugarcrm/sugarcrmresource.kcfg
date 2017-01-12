@@ -15,10 +15,10 @@
     <entry name="Password" type="String">
       <label>Password</label>
     </entry>
-	<entry name="IntervalCheckTime" type="Int">
-	  <label>Check interval in minutes (-1 to disable)</label>
-	  <default>5</default>
-	</entry>
+    <entry name="IntervalCheckTime" type="Int">
+      <label>Check interval in minutes (-1 to disable)</label>
+      <default>30</default>
+    </entry>
   </group>
   <group name="Cache">
     <entry name="AvailableModules" type="StringList">

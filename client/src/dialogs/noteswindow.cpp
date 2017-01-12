@@ -2,7 +2,7 @@
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
   Copyright (C) 2016 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-  Authors: Robin Jonsson <robin.jonsson@kdab.com>
+  Authors: Robin Jonsson <robin.jonsson@kdab.com>, David Faure <david.faure@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,26 +22,50 @@
 #include "ui_noteswindow.h"
 #include "kdcrmutils.h"
 #include "clientsettings.h"
+#include "linkeditemsrepository.h"
 
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 
+#include <QCloseEvent>
+#include <QMessageBox>
 #include <QScrollBar>
+
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
 
 NotesWindow::NotesWindow(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::NotesWindow)
+    ui(new Ui::NotesWindow),
+    mLinkedItemsRepository(nullptr),
+    mIsNotModifiedOverride(false)
 {
     ui->setupUi(this);
     ui->textEdit->enableFindReplace(true);
     ui->textEdit->setAcceptRichText(true);
-    ClientSettings::self()->restoreWindowSize(QStringLiteral("NotesWindow"), this);
+    ui->textEdit->setReadOnly(true);
+
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    ui->newNoteDescription->setPlaceholderText(i18n("Type here for the detailed description of the new note..."));
+#endif
+    ClientSettings::self()->restoreWindowSize("NotesWindow", this);
 }
 
 NotesWindow::~NotesWindow()
 {
     ClientSettings::self()->saveWindowSize(QStringLiteral("NotesWindow"), this);
     delete ui;
+}
+
+void NotesWindow::setLinkedItemsRepository(LinkedItemsRepository *repository)
+{
+    mLinkedItemsRepository = repository;
+}
+
+void NotesWindow::setLinkedTo(const QString &id, DetailsType itemType)
+{
+    mLinkedItemId = id;
+    mLinkedItemType = itemType;
 }
 
 void NotesWindow::addNote(const SugarNote &note)
@@ -96,7 +120,80 @@ void NotesWindow::setVisible(bool visible)
     ui->textEdit->verticalScrollBar()->setValue(0);
 }
 
+void NotesWindow::closeEvent(QCloseEvent *event)
+{
+    if (isModified()) {
+        QMessageBox msgBox(this);
+        msgBox.setText(i18n("The list of attached documents has been modified."));
+        msgBox.setInformativeText(i18n("Do you want to save your changes?"));
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Save);
+
+        switch (msgBox.exec()) {
+        case QMessageBox::Save:
+            saveChanges();
+            event->ignore(); // postpone closing until async save operation is done
+            return;
+        case QMessageBox::Discard:
+            break;
+        default:
+            event->ignore();
+            return;
+        }
+    }
+
+    event->accept();
+}
+
 void NotesWindow::on_buttonBox_rejected()
 {
+    mIsNotModifiedOverride = true;
+    QWidget::close();
+}
+
+void NotesWindow::on_buttonBox_accepted() // "Save"
+{
+    if (isModified())
+        saveChanges();
+    else
+        QWidget::close();
+}
+
+bool NotesWindow::isModified() const
+{
+    if (mIsNotModifiedOverride)
+        return false;
+    return !ui->newNoteSubject->text().isEmpty() ||
+           !ui->newNoteDescription->document()->isEmpty();
+}
+
+void NotesWindow::saveChanges()
+{
+    SugarNote newNote;
+    newNote.setName(ui->newNoteSubject->text());
+    newNote.setDescription(ui->newNoteDescription->toPlainText());
+    // Unlike documents, a note is associated to only one item.
+    // So it's very easy, we don't need to call ComKdabSugarCRMItemTransferInterface::linkItem().
+    newNote.setParentId(mLinkedItemId);
+    const QString linkedItemModuleName = typeToString(mLinkedItemType);
+    newNote.setParentType(linkedItemModuleName);
+    Akonadi::Item item;
+    item.setMimeType(SugarNote::mimeType());
+    item.setPayload(newNote);
+    Akonadi::ItemCreateJob *createJob = new Akonadi::ItemCreateJob(item, mLinkedItemsRepository->notesCollection(), this);
+    connect(createJob, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
+}
+
+void NotesWindow::setResourceIdentifier(const QString &resourceIdentifier)
+{
+    mResourceIdentifier = resourceIdentifier;
+}
+
+void NotesWindow::slotJobResult(KJob *job)
+{
+    if (job->error())
+        qWarning() << job->errorString();
+
+    mIsNotModifiedOverride = true;
     QWidget::close();
 }
