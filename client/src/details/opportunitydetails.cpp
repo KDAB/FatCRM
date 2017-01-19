@@ -169,11 +169,13 @@ void OpportunityDetails::updateLinkedItemsButtons()
         const int notes = oppId.isEmpty() ? 0 : mLinkedItemsRepository->notesForOpportunity(oppId).count() + mLinkedItemsRepository->emailsForOpportunity(oppId).count();
         const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
         mUi->viewNotesButton->setText(buttonText);
+        mUi->viewNotesButton->setEnabled(!oppId.isEmpty());
     }
     {
         const int documents = oppId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForOpportunity(oppId).count();
         const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
         mUi->viewDocumentsButton->setText(buttonText);
+        mUi->viewDocumentsButton->setEnabled(!oppId.isEmpty());
     }
 }
 
