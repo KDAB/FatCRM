@@ -354,6 +354,7 @@ void ContactDetails::updateLinkedItemsButtons()
         const int notes = contactId.isEmpty() ? 0 : mLinkedItemsRepository->notesForContact(contactId).count() + mLinkedItemsRepository->emailsForContact(contactId).count();
         const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
         mUi->viewNotesButton->setText(buttonText);
+        mUi->viewNotesButton->setEnabled(!contactId.isEmpty());
     }
 }
 

@@ -201,11 +201,13 @@ void AccountDetails::updateLinkedItemsButtons()
         const int notes = accountId.isEmpty() ? 0 : mLinkedItemsRepository->notesForAccount(accountId).count() + mLinkedItemsRepository->emailsForAccount(accountId).count();
         const QString buttonText = (notes == 0) ? i18n("Add Note") : i18np("View 1 Note", "View %1 Notes", notes);
         mUi->viewNotesButton->setText(buttonText);
+        mUi->viewNotesButton->setEnabled(!accountId.isEmpty());
     }
     {
         const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
         const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
         mUi->viewDocumentsButton->setText(buttonText);
+        mUi->viewDocumentsButton->setEnabled(!accountId.isEmpty());
     }
 }
 

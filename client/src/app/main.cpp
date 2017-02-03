@@ -44,7 +44,7 @@ int main(int argc, char **argv)
                      version, i18n(description),
                      KAboutLicense::GPL_V2, i18n("(C) 2010-2017 KDAB"),
                      QString(), QStringLiteral("info@kdab.com"));
-   
+
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
