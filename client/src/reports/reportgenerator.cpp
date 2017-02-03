@@ -27,6 +27,7 @@
 #include <KDReportsAutoTableElement.h>
 #include <KDReportsPreviewDialog.h>
 #include <KDReportsPreviewWidget.h>
+#include <klocalizedstring.h>
 
 ReportGenerator::ReportGenerator()
 {
@@ -62,9 +63,13 @@ void ReportGenerator::addSubTitle(KDReports::Report &report, const QString &text
 void ReportGenerator::addHeader(KDReports::Report &report)
 {
     KDReports::Header& header = report.header();
-    header.setTabPositions(QList<QTextOption::Tab>() << report.rightAlignedTab());
-    header.addInlineElement(KDReports::TextElement("\t"));
+    header.setTabPositions(QList<QTextOption::Tab>() << report.rightAlignedTab()); // ## does not work, KDReports bug
     header.addVariable(KDReports::DefaultLocaleLongDate);
+    header.addInlineElement(KDReports::TextElement("\t"));
+    header.addInlineElement(KDReports::TextElement(i18n("Page ")));
+    header.addVariable(KDReports::PageNumber);
+    header.addInlineElement(KDReports::TextElement(" / "));
+    header.addVariable(KDReports::PageCount);
 }
 
 void ReportGenerator::generateListReport(QAbstractItemModel *model, const QString &title,
