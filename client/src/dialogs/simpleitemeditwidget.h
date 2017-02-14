@@ -65,6 +65,7 @@ private:
 
     Q_PRIVATE_SLOT(d, void saveClicked())
     Q_PRIVATE_SLOT(d, void dataModified())
+    Q_PRIVATE_SLOT(d, void descriptionModificationChanged(bool))
     Q_PRIVATE_SLOT(d, void saveResult(KJob *job))
 };
 

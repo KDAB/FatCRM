@@ -68,6 +68,7 @@ public:
 public: // slots
     void saveClicked();
     void dataModified();
+    void descriptionModificationChanged(bool changed);
     void saveResult(KJob *job);
 };
 
@@ -142,6 +143,14 @@ void SimpleItemEditWidget::Private::saveClicked()
     QObject::connect(job, SIGNAL(result(KJob*)), q, SLOT(saveResult(KJob*)));
 }
 
+void SimpleItemEditWidget::Private::descriptionModificationChanged(bool changed)
+{
+    // TODO: KF5: Make this inline, i.e. turn into a lambda inside connect(...)
+    if (changed) {
+        dataModified();
+    }
+}
+
 void SimpleItemEditWidget::Private::dataModified()
 {
     mIsModified = true;
@@ -213,7 +222,10 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
 
     connect(d->mDetails, SIGNAL(modified()), this, SLOT(dataModified()));
 
-    connect(d->mUi.description, SIGNAL(textChanged()), this,  SLOT(dataModified()));
+    // connect to document's modificationChanged instead of QTextEdit's textChanged(),
+    // to ignore notifications triggered by the syntax highlighter
+    // cf. http://stackoverflow.com/questions/22685463/qt5-tell-qplaintextedit-to-ignore-syntax-highlighting-changes
+    connect(d->mUi.description->document(), SIGNAL(modificationChanged(bool)), this, SLOT(descriptionModificationChanged(bool)));
 
     QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
