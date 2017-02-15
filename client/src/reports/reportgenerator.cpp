@@ -27,7 +27,8 @@
 #include <KDReportsAutoTableElement.h>
 #include <KDReportsPreviewDialog.h>
 #include <KDReportsPreviewWidget.h>
-#include <klocalizedstring.h>
+
+#include <KLocalizedString>
 
 ReportGenerator::ReportGenerator()
 {
