@@ -29,5 +29,6 @@ add_fatcrm_tests(
   test_contactsimporter
   test_enumdefinitions
   test_accountcache
+  test_accountrepository
   kdcrmutilstest
 )
