@@ -30,6 +30,7 @@ set(sugarcrmresource_SRCS
   updateentryjob.cpp
   taskshandler.cpp
   taskaccessorpair.cpp
+  main_akonadiresource.cpp
 
   # work with local implementations until available from kdepimlibs
   conflicthandler.cpp
