@@ -24,6 +24,7 @@
 #define ENUMS_H
 
 #include <QString>
+#include <QMetaType>
 
 enum DetailsType {
     Account,
@@ -44,5 +45,6 @@ enum ReferencedDataType {
     ContactRef        // contact id       => full name   (used for "reports to" combo)
 };
 
+Q_DECLARE_METATYPE(DetailsType);
 #endif /* ENUMS_H */
 
