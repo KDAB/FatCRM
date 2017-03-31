@@ -59,8 +59,8 @@ public:
     QString password() const;
     QString host() const;
 
-    QString sessionId() const;
     void setSessionId(const QString &sessionId);
+    QString sessionId() const;
     void forgetSession();
 
     PasswordHandler *passwordHandler();

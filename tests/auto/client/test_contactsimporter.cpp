@@ -23,7 +23,8 @@
 #include "contactsimporter.h"
 #include "accountrepository.h"
 
-#include <QtTest/QtTest>
+#include <QTest>
+#include <QTemporaryFile>
 
 class TestContactsImporter : public QObject
 {

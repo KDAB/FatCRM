@@ -22,7 +22,7 @@
 
 #include "kdcrmutils.h"
 
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 
 class KDCRMUtilsTest : public QObject
