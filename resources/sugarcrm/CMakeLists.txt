@@ -30,7 +30,6 @@ set(sugarcrmresource_SRCS
   updateentryjob.cpp
   taskshandler.cpp
   taskaccessorpair.cpp
-  main_akonadiresource.cpp
 
   # work with local implementations until available from kdepimlibs
   conflicthandler.cpp
@@ -53,9 +52,11 @@ kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/
 
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap41 "41")
 
-kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED ${sugarcrmresource_SRCS})
+kde4_add_executable(akonadi_sugarcrm_resource RUN_UNINSTALLED main_sugarcrmresource.cpp)
 
-target_link_libraries(akonadi_sugarcrm_resource
+kde4_add_library(akonadi_sugarcrm_resource_private ${sugarcrmresource_SRCS})
+
+target_link_libraries(akonadi_sugarcrm_resource_private
   kdcrmdata
   ${KDSoap_LIBRARIES}
   ${KDE4_AKONADI_KABC_LIBS}
@@ -66,5 +67,14 @@ target_link_libraries(akonadi_sugarcrm_resource
   ${QT_QTDBUS_LIBRARY}
   ${QT_QTCORE_LIBRARY}
 )
+
+target_link_libraries(akonadi_sugarcrm_resource_private
+  ${KDReports_LIBRARIES}
+)
+
+target_link_libraries(akonadi_sugarcrm_resource
+  akonadi_sugarcrm_resource_private
+)
+
 
 install(TARGETS akonadi_sugarcrm_resource ${INSTALL_TARGETS_DEFAULT_ARGS})
