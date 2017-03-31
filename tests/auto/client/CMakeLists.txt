@@ -1,14 +1,14 @@
 #auto tests
 
-set(_clientdir ${CMAKE_CURRENT_SOURCE_DIR}/../../client)
+set(_clientdir ${CMAKE_CURRENT_SOURCE_DIR}/../../../client)
 
 include_directories(
   ${_clientdir}/src/dialogs
   ${_clientdir}/src/models
   ${_clientdir}/src/utilities
   ${_clientdir}/src/widgets
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../kdcrmdata
-  ${CMAKE_CURRENT_SOURCE_DIR}/../..
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../kdcrmdata
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
 
 macro(add_fatcrm_tests)
