@@ -815,6 +815,4 @@ bool SugarCRMResource::handleLoginError(KJob *job)
     }
 }
 
-AKONADI_RESOURCE_MAIN(SugarCRMResource)
-
 #include "sugarcrmresource.moc"

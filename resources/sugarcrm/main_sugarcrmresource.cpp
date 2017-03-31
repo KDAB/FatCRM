@@ -20,31 +20,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ENUMS_H
-#define ENUMS_H
+#include "sugarcrmresource.h"
 
-#include <QString>
-#include <QMetaType>
-
-enum DetailsType {
-    Account,
-    Opportunity,
-    Lead,
-    Contact,
-    Campaign,
-    MaxType = Campaign
-};
-
-QString typeToString(DetailsType type);
-QString typeToTranslatedString(DetailsType type);
-
-enum ReferencedDataType {
-    AccountRef,        // account.id()     => account.name()
-    AssignedToRef,     // user id          => user name
-    //CampaignRef,       // campaign.id()    => campaign.name()
-    ContactRef        // contact id       => full name   (used for "reports to" combo)
-};
-
-Q_DECLARE_METATYPE(DetailsType);
-#endif /* ENUMS_H */
-
+AKONADI_RESOURCE_MAIN(SugarCRMResource)
