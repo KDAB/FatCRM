@@ -43,6 +43,8 @@ public:
         : q(parent), mSession(session), mTryRelogin(true)
     {
     }
+    void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
+    void loginError(int faultcode, const QString &error);
 
 public:
     SugarSession *mSession;
@@ -56,8 +58,6 @@ public: // slots
         q->startSugarTask();
     }
 
-    void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void loginError(const KDSoapMessage &fault);
     void slotPasswordAvailable();
 };
 
@@ -94,7 +94,12 @@ void SugarJob::Private::startLogin()
     mSession->setSessionId(QString());
 
     // results handled by slots loginDone() and loginError()
-    soap->asyncLogin(userAuth, QLatin1String("FatCRM"));
+    KDSoapGenerated::TNS__Set_entry_result entry_result = soap->login(userAuth, QLatin1String("FatCRM"));
+    if (entry_result.error().number() == "0") {
+        Private::loginDone(entry_result);
+    } else {
+        Private::loginError(soap->lastErrorCode(), soap->lastError());
+    }
 }
 
 void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
@@ -122,11 +127,11 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
     q->emitResult();
 }
 
-void SugarJob::Private::loginError(const KDSoapMessage &fault)
+void SugarJob::Private::loginError(int faultcode, const QString &error)
 {
     mSession->setSessionId(QString());
 
-    const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
+    //const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
     kDebug() << q << "faultcode=" << faultcode;
     if (faultcode == QNetworkReply::UnknownNetworkError ||
             faultcode == QNetworkReply::HostNotFoundError) {
@@ -135,7 +140,7 @@ void SugarJob::Private::loginError(const KDSoapMessage &fault)
         q->setError(SugarJob::LoginError);
     }
     q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
-                          mSession->userName(), mSession->host(), fault.faultAsString()));
+                          mSession->userName(), mSession->host(), error));
     q->emitResult();
 }
 

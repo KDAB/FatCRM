@@ -72,8 +72,6 @@ private:
 
     Q_PRIVATE_SLOT(d, void startLogin())
     Q_PRIVATE_SLOT(d, void startTask())
-    Q_PRIVATE_SLOT(d, void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult))
-    Q_PRIVATE_SLOT(d, void loginError(const KDSoapMessage &fault))
     Q_PRIVATE_SLOT(d, void slotPasswordAvailable())
 };
 
