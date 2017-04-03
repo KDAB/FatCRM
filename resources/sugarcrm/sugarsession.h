@@ -54,23 +54,22 @@ public:
 
     RequiredAction setSessionParameters(const QString &username, const QString &password,
                                         const QString &host);
-    PasswordHandler *passwordHandler();
-
-    void createSoapInterface();
-
-    QString sessionId() const;
 
     QString userName() const;
     QString password() const;
     QString host() const;
 
+    void setSessionId(const QString &sessionId);
+    QString sessionId() const;
+    void forgetSession();
+
+    PasswordHandler *passwordHandler();
+    void createSoapInterface();
     // read password from wallet (and store it in session), return true on success
     bool readPassword();
     void logout();
-    void forgetSession();
 
 private:
-    void setSessionId(const QString &sessionId);
     KDSoapGenerated::Sugarsoap *soap();
 
 private:

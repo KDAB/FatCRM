@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 #include "sugaraccountcache.h"
 #include <QSignalSpy>
