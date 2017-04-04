@@ -21,6 +21,7 @@
 #ifndef ITEMDATAEXTRACTOR_H
 #define ITEMDATAEXTRACTOR_H
 
+#include "fatcrmprivate_export.h"
 #include "enums.h"
 
 #include <QObject>
@@ -30,7 +31,7 @@
 /**
  * @brief Base class for type-dependent extraction of the ID from an Akonadi::Item
  */
-class ItemDataExtractor : public QObject
+class FATCRMPRIVATE_EXPORT ItemDataExtractor : public QObject
 {
     Q_OBJECT
 public:

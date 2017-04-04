@@ -21,12 +21,14 @@
 #include <QTest>
 #include <QDebug>
 #include <QSignalSpy>
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 #include "sugarlead.h"
 #include "sugarcampaign.h"
 #include "itemdataextractor.h"
+
+#define KABC KContacts
 
 Q_DECLARE_METATYPE(KABC::Address);
 

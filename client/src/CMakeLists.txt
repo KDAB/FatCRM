@@ -139,6 +139,7 @@ target_link_libraries(fatcrm
   fatcrmprivate
 )
 
+install(TARGETS fatcrmprivate ${INSTALL_TARGETS_DEFAULT_ARGS})
 install(TARGETS fatcrm ${INSTALL_TARGETS_DEFAULT_ARGS})
 
 ########### install files ###############
