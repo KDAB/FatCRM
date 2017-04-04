@@ -93,7 +93,6 @@ void SugarJob::Private::startLogin()
 
     mSession->setSessionId(QString());
 
-    // results handled by slots loginDone() and loginError()
     KDSoapGenerated::TNS__Set_entry_result entry_result = soap->login(userAuth, QLatin1String("FatCRM"));
     if (entry_result.error().number() == "0") {
         Private::loginDone(entry_result);
@@ -130,8 +129,6 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
 void SugarJob::Private::loginError(int faultcode, const QString &error)
 {
     mSession->setSessionId(QString());
-
-    //const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
     kDebug() << q << "faultcode=" << faultcode;
     if (faultcode == QNetworkReply::UnknownNetworkError ||
             faultcode == QNetworkReply::HostNotFoundError) {
