@@ -56,9 +56,11 @@ kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/
 
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap41 "41")
 
-add_executable(akonadi_sugarcrm_resource ${sugarcrmresource_SRCS})
+add_executable(akonadi_sugarcrm_resource main_sugarcrmresource.cpp)
 
-target_link_libraries(akonadi_sugarcrm_resource
+add_library(akonadi_sugarcrm_resource_private STATIC ${sugarcrmresource_SRCS})
+
+target_link_libraries(akonadi_sugarcrm_resource_private
   kdcrmdata
   ${KDSoap_LIBRARIES}
   KF5::Contacts
@@ -71,5 +73,14 @@ target_link_libraries(akonadi_sugarcrm_resource
   KF5::AkonadiAgentBase
   KF5::AkonadiContact
 )
+
+target_link_libraries(akonadi_sugarcrm_resource_private
+  ${KDReports_LIBRARIES}
+)
+
+target_link_libraries(akonadi_sugarcrm_resource
+  akonadi_sugarcrm_resource_private
+)
+
 
 install(TARGETS akonadi_sugarcrm_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

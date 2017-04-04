@@ -20,31 +20,37 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ENUMS_H
-#define ENUMS_H
+#include "kdcrmutils.h"
 
-#include <QString>
-#include <QMetaType>
+#include <QTest>
+#include <QDebug>
 
-enum DetailsType {
-    Account,
-    Opportunity,
-    Lead,
-    Contact,
-    Campaign,
-    MaxType = Campaign
+class KDCRMUtilsTest : public QObject
+{
+    Q_OBJECT
+public:
+private Q_SLOTS:
+    void testIncrementTimestamp_data()
+    {
+        QTest::addColumn<QString>("input");
+        QTest::addColumn<QString>("output");
+
+        QTest::newRow("28") << "2015-06-26 21:39:28" << "2015-06-26 21:39:29";
+        QTest::newRow("59") << "2015-06-26 21:39:59" << "2015-06-26 21:40:00";
+        QTest::newRow("midnight") << "2015-06-26 23:59:59" << "2015-06-27 00:00:00";
+        QTest::newRow("empty") << "" << "";
+    }
+
+    void testIncrementTimestamp()
+    {
+        QFETCH(QString, input);
+        QFETCH(QString, output);
+
+        QString str = input;
+        KDCRMUtils::incrementTimeStamp(str);
+        QCOMPARE(str, output);
+    }
 };
 
-QString typeToString(DetailsType type);
-QString typeToTranslatedString(DetailsType type);
-
-enum ReferencedDataType {
-    AccountRef,        // account.id()     => account.name()
-    AssignedToRef,     // user id          => user name
-    //CampaignRef,       // campaign.id()    => campaign.name()
-    ContactRef        // contact id       => full name   (used for "reports to" combo)
-};
-
-Q_DECLARE_METATYPE(DetailsType);
-#endif /* ENUMS_H */
-
+QTEST_MAIN(KDCRMUtilsTest)
+#include "kdcrmutilstest.moc"

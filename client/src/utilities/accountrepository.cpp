@@ -60,8 +60,12 @@ void AccountRepository::addAccount(const SugarAccount &account, Akonadi::Item::I
     // ## This does not handle the case of renaming accounts later on
     mKeyMap.insertMulti(account.key(), account);
     mNameMap.insertMulti(account.cleanAccountName(), account);
-    mCountries.insert(account.billingAddressCountry());
-    mCountries.insert(account.shippingAddressCountry());
+    if (!account.billingAddressCountry().isEmpty()) {
+        mCountries.insert(account.billingAddressCountry());
+    }
+    if (!account.shippingAddressCountry().isEmpty()) {
+        mCountries.insert(account.shippingAddressCountry());
+    }
     emit accountAdded(accountId, akonadiId);
 }
 
@@ -84,7 +88,9 @@ QVector<AccountRepository::Field> AccountRepository::modifyAccount(const SugarAc
         }
 
         *it = account;
-        emit accountModified(accountId, changedFields);
+        if (!changedFields.isEmpty()) {
+            emit accountModified(accountId, changedFields);
+        }
         // We don't handle changes in mKeyMap and mNameMap, hoping that this doesn't matter
         // since they are only used by the import dialog.
     } else {

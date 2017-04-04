@@ -124,7 +124,12 @@ void ResourceConfigDialog::Private::syncResources()
 {
     const QVector<AgentInstance> selectedResources = mUi.resources->selectedAgentInstances();
     Q_FOREACH (AgentInstance resource, selectedResources) {
-        resource.synchronize();
+        if (resource.isValid()) {
+            if (!resource.isOnline()) {
+                resource.setIsOnline(true);
+            }
+            resource.synchronize();
+        }
     }
 }
 

@@ -1,8 +1,13 @@
 project(FatCRM)
 
 cmake_minimum_required(VERSION 2.8.12) # Feature: PUBLIC keyword in target_link_libraries
-if (POLICY CMP0063)
-    cmake_policy(SET CMP0063 NEW)
+if(COMMAND cmake_policy)
+  if (POLICY CMP0063)
+    cmake_policy(SET CMP0003 NEW)
+  endif()
+  if(POLICY CMP0059)
+    cmake_policy(SET CMP0059 OLD) # we use DEFINITIONS as a built-in directory property
+  endif()
 endif()
 # we need some parts of the ECM CMake helpers
 find_package(ECM 5.12.0 REQUIRED NO_MODULE)
@@ -20,7 +25,7 @@ include(CheckFunctionExists)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
-include(KDECompilerSettings)
+include(KDECompilerSettings NO_POLICY_SCOPE)
 include(ECMAddAppIcon)
 include(ECMQtDeclareLoggingCategory)
 

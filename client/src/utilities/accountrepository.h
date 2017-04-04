@@ -80,4 +80,5 @@ private:
     QSet<QString> mCountries;
 };
 
+Q_DECLARE_METATYPE(QVector<AccountRepository::Field>)
 #endif // ACCOUNTREPOSITORY_H

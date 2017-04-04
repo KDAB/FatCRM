@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtTest/QtTest>
+#include <QTest>
 #include <QDebug>
 #include "sugaraccountcache.h"
 #include <QSignalSpy>
@@ -39,17 +39,23 @@ private Q_SLOTS:
 
     void shouldNotHaveIdImmediately()
     {
+        // GIVEN
         SugarAccountCache *cache = SugarAccountCache::instance();
-        cache->addPendingAccountName(QStringLiteral("KDAB"));
+        // WHEN
+        cache->addPendingAccountName("KDAB");
+        // THEN
         QCOMPARE(cache->accountIdForName("KDAB"), QString());
     }
 
     void shouldHaveIdWhenAdding()
     {
+        // GIVEN
         SugarAccountCache *cache = SugarAccountCache::instance();
         cache->addPendingAccountName(QStringLiteral("KDAB"));
         QSignalSpy spy(cache, SIGNAL(pendingAccountAdded(QString,QString)));
-        cache->addAccount(QStringLiteral("KDAB"), QStringLiteral("id_kdab"));
+        // WHEN
+        cache->addAccount("KDAB", "id_kdab");
+        // THEN
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.at(0).at(0).toString(), QString("KDAB"));
         QCOMPARE(spy.at(0).at(1).toString(), QString("id_kdab"));
@@ -58,13 +64,17 @@ private Q_SLOTS:
 
     void shouldSaveAndRestore()
     {
+        // GIVEN
         SugarAccountCache *cache = SugarAccountCache::instance();
         cache->addPendingAccountName(QStringLiteral("QTC"));
         QSignalSpy spy(cache, SIGNAL(pendingAccountAdded(QString,QString)));
+        // WHEN
         cache->save();
         cache->clear();
         cache->restore();
         cache->addAccount(QStringLiteral("QTC"), QStringLiteral("id_qtc"));
+        cache->addAccount("QTC", "id_qtc");
+        // THEN
         QCOMPARE(spy.count(), 1);
         QCOMPARE(spy.at(0).at(0).toString(), QString("QTC"));
         QCOMPARE(spy.at(0).at(1).toString(), QString("id_qtc"));

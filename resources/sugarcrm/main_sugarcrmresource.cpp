@@ -20,37 +20,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "kdcrmutils.h"
+#include "sugarcrmresource.h"
 
-#include <QtTest/QtTest>
-#include <QDebug>
-
-class KDCRMUtilsTest : public QObject
-{
-    Q_OBJECT
-public:
-private Q_SLOTS:
-    void testIncrementTimestamp_data()
-    {
-        QTest::addColumn<QString>("input");
-        QTest::addColumn<QString>("output");
-
-        QTest::newRow("28") << "2015-06-26 21:39:28" << "2015-06-26 21:39:29";
-        QTest::newRow("59") << "2015-06-26 21:39:59" << "2015-06-26 21:40:00";
-        QTest::newRow("midnight") << "2015-06-26 23:59:59" << "2015-06-27 00:00:00";
-        QTest::newRow("empty") << "" << "";
-    }
-
-    void testIncrementTimestamp()
-    {
-        QFETCH(QString, input);
-        QFETCH(QString, output);
-
-        QString str = input;
-        KDCRMUtils::incrementTimeStamp(str);
-        QCOMPARE(str, output);
-    }
-};
-
-QTEST_MAIN(KDCRMUtilsTest)
-#include "kdcrmutilstest.moc"
+AKONADI_RESOURCE_MAIN(SugarCRMResource)
