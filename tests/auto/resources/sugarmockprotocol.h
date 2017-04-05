@@ -30,6 +30,7 @@ public:
     SugarMockProtocol();
     int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
     inline void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
+    void setSession(SugarSession *session) override;
 
 private:
     bool mServerNotFound;

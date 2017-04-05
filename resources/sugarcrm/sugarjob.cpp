@@ -24,6 +24,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarsoapprotocol.h"
 #include "passwordhandler.h"
 
 using namespace KDSoapGenerated;
@@ -40,15 +41,16 @@ class SugarJob::Private
     SugarJob *const q;
 public:
     Private(SugarJob *parent, SugarSession *session)
-        : q(parent), mSession(session), mTryRelogin(true)
+        : q(parent), mSession(session), mTryRelogin(true), mProtocol(nullptr)
     {
     }
-    void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void loginError(int faultcode, const QString &error);
+    void loginDone(const QString &sessionId);
+    void loginError(int error, const QString &messageError);
 
 public:
     SugarSession *mSession;
     bool mTryRelogin;
+    SugarSoapProtocol *mProtocol;
 
 public: // slots
     void startLogin();
@@ -66,9 +68,6 @@ void SugarJob::Private::startLogin()
     kDebug() << q;
     mTryRelogin = false;
 
-    Sugarsoap *soap = mSession->soap();
-    Q_ASSERT(soap != nullptr);
-
     if (!mSession->readPassword()) {
         // this can only happen when the user forcibly closes KWallet.
         q->setError(SugarJob::LoginError);
@@ -83,29 +82,25 @@ void SugarJob::Private::startLogin()
     // might depend on SugarCRM configuration
     // would have the additional advantage of not having to save the password in clear text
 
-    //const QByteArray passwordHash = QCryptographicHash::hash( password.toUtf8(), QCryptographicHash::Md5 );
-    const QByteArray passwordHash = password.toUtf8();
-
-    KDSoapGenerated::TNS__User_auth userAuth;
-    userAuth.setUser_name(username);
-    userAuth.setPassword(QString::fromAscii(passwordHash));
-    userAuth.setVersion(QLatin1String(".01"));
-
     mSession->setSessionId(QString());
 
-    KDSoapGenerated::TNS__Set_entry_result entry_result = soap->login(userAuth, QLatin1String("FatCRM"));
-    if (entry_result.error().number() == "0") {
-        Private::loginDone(entry_result);
+    if(mProtocol == nullptr) {
+        mProtocol = new SugarSoapProtocol;
+        mProtocol->setSession(mSession);
+    }
+
+    QString sessionId;
+    QString errorMessage;
+    const int result = mProtocol->login(username, password, sessionId, errorMessage);
+    if (result == KJob::NoError) {
+        Private::loginDone(sessionId);
     } else {
-        Private::loginError(soap->lastErrorCode(), soap->lastError());
+        Private::loginError(result, errorMessage);
     }
 }
 
-void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
+void SugarJob::Private::loginDone(const QString &sessionId)
 {
-    kDebug() << q << "error=" << callResult.error().number();
-    const QString sessionId = callResult.id();
-
     QString message;
     if (sessionId.isEmpty()) {
         message = i18nc("@info:status", "server returned an empty session identifier");
@@ -126,18 +121,12 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
     q->emitResult();
 }
 
-void SugarJob::Private::loginError(int faultcode, const QString &error)
+void SugarJob::Private::loginError(int error, const QString &messageError)
 {
     mSession->setSessionId(QString());
-    kDebug() << q << "faultcode=" << faultcode;
-    if (faultcode == QNetworkReply::UnknownNetworkError ||
-            faultcode == QNetworkReply::HostNotFoundError) {
-        q->setError(SugarJob::CouldNotConnectError);
-    } else {
-        q->setError(SugarJob::LoginError);
-    }
-    q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
-                          mSession->userName(), mSession->host(), error));
+    kDebug() << q << "error=" << error;
+    q->setError(error);
+    q->setErrorText(messageError);
     q->emitResult();
 }
 
@@ -150,11 +139,6 @@ void SugarJob::Private::slotPasswordAvailable()
 SugarJob::SugarJob(SugarSession *session, QObject *parent)
     : KJob(parent), d(new Private(this, session))
 {
-    connect(session->soap(), SIGNAL(loginDone(KDSoapGenerated::TNS__Set_entry_result)),
-            this, SLOT(loginDone(KDSoapGenerated::TNS__Set_entry_result)));
-    connect(session->soap(), SIGNAL(loginError(KDSoapMessage)),
-            this, SLOT(loginError(KDSoapMessage)));
-    //kDebug() << this;
 }
 
 SugarJob::~SugarJob()

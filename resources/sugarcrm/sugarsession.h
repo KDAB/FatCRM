@@ -35,12 +35,6 @@ class SugarSession : public QObject
 {
     Q_OBJECT
 
-    friend class SugarJob;
-    friend class ItemTransferInterface;
-    friend class ResourceDebugInterface;
-    friend class ModuleDebugInterface;
-    friend class ModuleHandler;
-
 public:
     enum RequiredAction {
         None,
@@ -69,7 +63,6 @@ public:
     bool readPassword();
     void logout();
 
-private:
     KDSoapGenerated::Sugarsoap *soap();
 
 private:

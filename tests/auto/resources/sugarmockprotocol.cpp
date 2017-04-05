@@ -42,3 +42,8 @@ int SugarMockProtocol::login(const QString &user, const QString &password, QStri
         return SugarJob::Errors::CouldNotConnectError;
     }
 }
+
+void SugarMockProtocol::setSession(SugarSession *session)
+{
+    Q_UNUSED(session);
+}

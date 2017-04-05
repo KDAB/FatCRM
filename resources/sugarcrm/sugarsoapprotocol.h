@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
@@ -18,20 +18,22 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SUGARPROTOCOLBASE_H
-#define SUGARPROTOCOLBASE_H
+#ifndef SUGARSOAPPROTOCOL_H
+#define SUGARSOAPPROTOCOL_H
 
 #include <QString>
-#include <sugarsession.h>
+#include "sugarsoap.h"
+#include "sugarprotocolbase.h"
 
-class SugarProtocolBase
+
+class SugarSoapProtocol : public SugarProtocolBase
 {
 public:
-    virtual ~SugarProtocolBase();
-    virtual int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) = 0;
-    virtual void setSession(SugarSession *session) = 0;
+    SugarSoapProtocol();
+    int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
+    inline void setSession(SugarSession *session) override { mSession = session; }
+private:
+    SugarSession *mSession;
 };
 
-
-
-#endif /* SUGARPROTOCOLBASE_H */
+#endif // SUGARSOAPPROTOCOL_H
