@@ -20,6 +20,7 @@
 
 #include "sugarsoapprotocol.h"
 #include "sugarjob.h"
+#include "sugarsession.h"
 #include <QNetworkReply>
 #include <KLocalizedString>
 

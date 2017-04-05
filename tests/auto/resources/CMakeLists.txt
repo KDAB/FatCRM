@@ -27,4 +27,5 @@ endmacro()
 add_resources_tests(
   test_sugarsession
   test_sugarmockprotocol
+  test_loginjob
 )

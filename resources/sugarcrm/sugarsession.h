@@ -24,6 +24,7 @@
 #define SUGARSESSION_H
 
 #include <QObject>
+class SugarProtocolBase;
 
 namespace KDSoapGenerated
 {
@@ -62,6 +63,9 @@ public:
     // read password from wallet (and store it in session), return true on success
     bool readPassword();
     void logout();
+
+    void setProtocol(SugarProtocolBase *protocol);
+    SugarProtocolBase *protocol() const;
 
     KDSoapGenerated::Sugarsoap *soap();
 

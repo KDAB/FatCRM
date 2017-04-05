@@ -22,7 +22,8 @@
 #define SUGARPROTOCOLBASE_H
 
 #include <QString>
-#include <sugarsession.h>
+
+class SugarSession;
 
 class SugarProtocolBase
 {

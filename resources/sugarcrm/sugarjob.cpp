@@ -41,7 +41,7 @@ class SugarJob::Private
     SugarJob *const q;
 public:
     Private(SugarJob *parent, SugarSession *session)
-        : q(parent), mSession(session), mTryRelogin(true), mProtocol(nullptr)
+        : q(parent), mSession(session), mTryRelogin(true)
     {
     }
     void loginDone(const QString &sessionId);
@@ -50,7 +50,6 @@ public:
 public:
     SugarSession *mSession;
     bool mTryRelogin;
-    SugarSoapProtocol *mProtocol;
 
 public: // slots
     void startLogin();
@@ -61,6 +60,7 @@ public: // slots
     }
 
     void slotPasswordAvailable();
+
 };
 
 void SugarJob::Private::startLogin()
@@ -84,14 +84,15 @@ void SugarJob::Private::startLogin()
 
     mSession->setSessionId(QString());
 
-    if(mProtocol == nullptr) {
-        mProtocol = new SugarSoapProtocol;
-        mProtocol->setSession(mSession);
+    if(mSession->protocol() == nullptr) {
+        SugarSoapProtocol *protocol = new SugarSoapProtocol;
+        protocol->setSession(mSession);
+        mSession->setProtocol(protocol);
     }
 
     QString sessionId;
     QString errorMessage;
-    const int result = mProtocol->login(username, password, sessionId, errorMessage);
+    const int result = mSession->protocol()->login(username, password, sessionId, errorMessage);
     if (result == KJob::NoError) {
         Private::loginDone(sessionId);
     } else {
@@ -152,7 +153,7 @@ void SugarJob::start()
     d->mTryRelogin = true;
 
     if (d->mSession->sessionId().isEmpty()) {
-        if (d->mSession->passwordHandler()->isPasswordAvailable()) {
+        if (d->mSession->passwordHandler() == nullptr || d->mSession->passwordHandler()->isPasswordAvailable()) {
             QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
         } else {
             connect(d->mSession->passwordHandler(), SIGNAL(passwordAvailable()),

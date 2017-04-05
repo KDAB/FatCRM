@@ -24,6 +24,7 @@
 
 #include "sugarsoap.h"
 #include "passwordhandler.h"
+#include "sugarprotocolbase.h"
 
 using namespace KDSoapGenerated;
 #include <KUrl>
@@ -43,8 +44,14 @@ class SugarSession::Private
 public:
     explicit Private(PasswordHandler *passwordHandler)
         : mSoap(nullptr),
-          mPasswordHandler(passwordHandler)
+          mPasswordHandler(passwordHandler),
+          mProtocol(nullptr)
     {
+    }
+
+    ~Private()
+    {
+        delete mProtocol;
     }
 
 public:
@@ -54,6 +61,7 @@ public:
     QString mHost;
     Sugarsoap *mSoap;
     PasswordHandler *mPasswordHandler;
+    SugarProtocolBase *mProtocol;
 };
 
 SugarSession::SugarSession(PasswordHandler *passwordHandler, QObject *parent)
@@ -159,6 +167,16 @@ void SugarSession::setSessionId(const QString &sessionId)
 Sugarsoap *SugarSession::soap()
 {
     return d->mSoap;
+}
+
+void SugarSession::setProtocol(SugarProtocolBase *protocol)
+{
+    d->mProtocol = protocol;
+}
+
+SugarProtocolBase *SugarSession::protocol() const
+{
+    return d->mProtocol;
 }
 
 #include "sugarsession.moc"
