@@ -8,10 +8,18 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
 
+
+add_library(sugar_mock_protocol_private STATIC sugarmockprotocol.cpp)
+target_link_libraries(sugar_mock_protocol_private
+   KF5::CoreAddons
+   Qt5::Core
+)
+
 macro(add_resources_tests)
   foreach(_testname ${ARGN})
     ecm_add_test(${_testname}.cpp TEST_NAME "${_testname}" LINK_LIBRARIES
       akonadi_sugarcrm_resource_private
+      sugar_mock_protocol_private
       kdcrmdata
       Qt5::Test
       Qt5::Gui
@@ -21,4 +29,6 @@ endmacro()
 
 add_resources_tests(
   test_sugarsession
+  test_sugarmockprotocol
+  test_loginjob
 )

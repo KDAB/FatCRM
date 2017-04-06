@@ -24,6 +24,7 @@
 #define SUGARSESSION_H
 
 #include <QObject>
+class SugarProtocolBase;
 
 namespace KDSoapGenerated
 {
@@ -34,12 +35,6 @@ class PasswordHandler;
 class SugarSession : public QObject
 {
     Q_OBJECT
-
-    friend class SugarJob;
-    friend class ItemTransferInterface;
-    friend class ResourceDebugInterface;
-    friend class ModuleDebugInterface;
-    friend class ModuleHandler;
 
 public:
     enum RequiredAction {
@@ -69,7 +64,9 @@ public:
     bool readPassword();
     void logout();
 
-private:
+    void setProtocol(SugarProtocolBase *protocol);
+    SugarProtocolBase *protocol() const;
+
     KDSoapGenerated::Sugarsoap *soap();
 
 private:
