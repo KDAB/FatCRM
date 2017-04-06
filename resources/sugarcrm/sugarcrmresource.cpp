@@ -48,6 +48,8 @@
 #include "taskshandler.h"
 #include "updateentryjob.h"
 #include "passwordhandler.h"
+#include "sugarsoapprotocol.h"
+
 
 #include <Akonadi/ChangeRecorder>
 #include <Akonadi/Collection>
@@ -104,6 +106,10 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     mSession->setSessionParameters(Settings::user(), QString() /*password not read yet*/,
                                    Settings::host());
     mSession->createSoapInterface();
+
+    SugarSoapProtocol *protocol = new SugarSoapProtocol;
+    protocol->setSession(mSession);
+    mSession->setProtocol(protocol);
 
     connect(mConflictHandler, SIGNAL(commitChange(Akonadi::Item)),
             this, SLOT(commitChange(Akonadi::Item)));
