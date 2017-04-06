@@ -23,6 +23,7 @@
 
 #include <QString>
 
+class ListEntriesScope;
 class SugarSession;
 
 class SugarProtocolBase
@@ -32,6 +33,7 @@ public:
     virtual int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) = 0;
     virtual void logout() = 0;
     virtual void setSession(SugarSession *session) = 0;
+    virtual int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMssage) = 0;
 };
 
 

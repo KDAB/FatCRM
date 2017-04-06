@@ -65,6 +65,7 @@ protected:
 
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap();
+    bool getTryRelogin() const;
 
 private:
     class Private;

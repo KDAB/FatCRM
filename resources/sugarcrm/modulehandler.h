@@ -60,7 +60,7 @@ public:
     Akonadi::Collection collection();
     void modifyCollection(const Akonadi::Collection &collection);
 
-    void getEntriesCount(const ListEntriesScope &scope);
+    int getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage);
     void listEntries(const ListEntriesScope &scope);
 
     QStringList availableFields() const;

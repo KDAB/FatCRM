@@ -51,3 +51,14 @@ void SugarMockProtocol::setSession(SugarSession *session)
 {
     Q_UNUSED(session);
 }
+
+int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                       int &entriesCount, QString &errorMessage)
+{
+    Q_UNUSED(scope);
+    Q_UNUSED(moduleName);
+    Q_UNUSED(query);
+    Q_UNUSED(entriesCount);
+    Q_UNUSED(errorMessage);
+    return 0;
+}

@@ -69,22 +69,19 @@ public:
     QString mLatestTimestampFromItems;
     bool mCollectionAttributesChanged;
 
+public:
+    void getEntriesCountDone(int count);
+    void getEntriesCountError(int error, const QString &errorMessage);
+
 public: // slots
-    void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult);
-    void getEntriesCountError(const KDSoapMessage &fault);
     void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult);
     void listEntriesError(const KDSoapMessage &fault);
 };
 
-void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_result &callResult)
+void ListEntriesJob::Private::getEntriesCountDone(int count)
 {
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    const int count = callResult.result_count();
     kDebug() << q << "About to list" << count << "entries";
-    emit q->totalItems( count );
+    emit q->totalItems(count);
     if (count == 0) {
         q->emitResult();
     } else {
@@ -93,15 +90,20 @@ void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_r
     }
 }
 
-void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
+void ListEntriesJob::Private::getEntriesCountError(const int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << q << fault.faultAsString();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->getTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+        }
+    }
+        kWarning() << q << error << errorMessage;
 
         q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
+        q->setErrorText(errorMessage);
         q->emitResult();
-    }
 }
 
 static const char s_timeStampKey[] = "timestamp"; // duplicated in collectionmanager.cpp
@@ -277,8 +279,16 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT(d->mHandler != nullptr);
 
     switch (d->mStage) {
-    case Private::GetCount:
-        d->mHandler->getEntriesCount(d->mListScope);
+    case Private::GetCount: {
+            int entriesCount;
+            QString errorMessage;
+            int result = d->mHandler->getEntriesCount(d->mListScope, entriesCount, errorMessage);
+            if (result == KJob::NoError) {
+                d->getEntriesCountDone(entriesCount);
+            } else {
+                d->getEntriesCountError(result, errorMessage);
+            }
+        }
         break;
     case Private::GetExisting:
         d->mHandler->listEntries(d->mListScope);

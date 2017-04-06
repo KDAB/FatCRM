@@ -32,6 +32,8 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 
+#include "sugarprotocolbase.h"
+
 #include <Akonadi/AgentManager>
 #include <Akonadi/AttributeFactory>
 #include <Akonadi/CollectionFetchJob>
@@ -92,10 +94,10 @@ void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
 }
 
-void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)
+int ModuleHandler::getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage)
 {
     const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
-    soap()->asyncGet_entries_count(sessionId(), moduleName(), query, scope.deleted());
+    return mSession->protocol()->getEntriesCount(scope, moduleName(), query, entriesCount, errorMessage);
 }
 
 void ModuleHandler::listEntries(const ListEntriesScope &scope)

@@ -32,6 +32,7 @@ public:
     void logout() override;
     inline void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
     void setSession(SugarSession *session) override;
+    int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
 
 private:
     bool mServerNotFound;

@@ -33,6 +33,7 @@ public:
     int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
     void logout() override;
     inline void setSession(SugarSession *session) override { mSession = session; }
+    int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
 private:
     SugarSession *mSession;
 };

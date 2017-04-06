@@ -21,6 +21,7 @@
 #include "sugarsoapprotocol.h"
 #include "sugarjob.h"
 #include "sugarsession.h"
+#include "listentriesscope.h"
 #include <QNetworkReply>
 #include <KLocalizedString>
 #include <KDebug>
@@ -68,5 +69,22 @@ void SugarSoapProtocol::logout()
         }
     }
     mSession->forgetSession();
+}
+
+int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                       int &entriesCount, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Get_entries_count_result entry_result =
+            mSession->soap()->get_entries_count(mSession->sessionId(), moduleName, query, scope.deleted());
+    if (entry_result.error().number() == "0") {
+        entriesCount = entry_result.result_count();
+        return KJob::NoError;
+    } else if (entry_result.error().number() == "10"){
+        errorMessage = "getEntriesCount : CouldNotConnectError";
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = "getEntriesCount : SoapError";
+        return SugarJob::SoapError;
+    }
 }
 
