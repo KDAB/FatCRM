@@ -43,6 +43,10 @@ int SugarMockProtocol::login(const QString &user, const QString &password, QStri
     }
 }
 
+void SugarMockProtocol::logout()
+{
+}
+
 void SugarMockProtocol::setSession(SugarSession *session)
 {
     Q_UNUSED(session);

@@ -23,6 +23,7 @@
 #include "sugarsession.h"
 #include <QNetworkReply>
 #include <KLocalizedString>
+#include <KDebug>
 
 SugarSoapProtocol::SugarSoapProtocol()
 {
@@ -53,5 +54,19 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
             return SugarJob::LoginError;
         }
     }
+}
+
+void SugarSoapProtocol::logout()
+{
+    if (mSession->sessionId().isEmpty() && mSession->soap() != nullptr) {
+        KDSoapGenerated::TNS__Error_value errorValue = mSession->soap()->logout(mSession->sessionId());
+        if (errorValue.number() != "0") {
+            kDebug() << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
+        }
+        if (!mSession->soap()->lastError().isEmpty()) {
+            kDebug() << "logout had fault" << mSession->soap()->lastError();
+        }
+    }
+    mSession->forgetSession();
 }
 

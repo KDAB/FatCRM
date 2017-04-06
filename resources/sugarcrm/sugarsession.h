@@ -62,7 +62,6 @@ public:
     void createSoapInterface();
     // read password from wallet (and store it in session), return true on success
     bool readPassword();
-    void logout();
 
     void setProtocol(SugarProtocolBase *protocol);
     SugarProtocolBase *protocol() const;

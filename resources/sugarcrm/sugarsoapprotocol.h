@@ -31,6 +31,7 @@ class SugarSoapProtocol : public SugarProtocolBase
 public:
     SugarSoapProtocol();
     int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
+    void logout() override;
     inline void setSession(SugarSession *session) override { mSession = session; }
 private:
     SugarSession *mSession;

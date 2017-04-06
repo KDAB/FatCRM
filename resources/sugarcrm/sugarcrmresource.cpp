@@ -177,7 +177,7 @@ void SugarCRMResource::configure(WId windowId)
 void SugarCRMResource::aboutToQuit()
 {
     // just a curtesy to the server
-    mSession->logout();
+    mSession->protocol()->logout();
 }
 
 void SugarCRMResource::doSetOnline(bool online)

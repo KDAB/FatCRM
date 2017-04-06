@@ -28,7 +28,6 @@
 
 using namespace KDSoapGenerated;
 #include <KUrl>
-#include <KDebug>
 
 static QString endPointFromHostString(const QString &host)
 {
@@ -138,20 +137,6 @@ bool SugarSession::readPassword()
         return !userRejected;
     }
     return true;
-}
-
-void SugarSession::logout()
-{
-    if (!d->mSessionId.isEmpty() && d->mSoap != nullptr) {
-        KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
-        if (errorValue.number() != "0") {
-            kDebug() << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
-        }
-        if (!d->mSoap->lastError().isEmpty()) {
-            kDebug() << "logout had fault" << d->mSoap->lastError();
-        }
-    }
-    forgetSession();
 }
 
 void SugarSession::forgetSession()
