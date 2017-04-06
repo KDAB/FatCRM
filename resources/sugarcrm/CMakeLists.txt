@@ -30,6 +30,8 @@ set(sugarcrmresource_SRCS
   updateentryjob.cpp
   taskshandler.cpp
   taskaccessorpair.cpp
+  sugarprotocolbase.cpp
+  sugarsoapprotocol.cpp
 
   # work with local implementations until available from kdepimlibs
   conflicthandler.cpp

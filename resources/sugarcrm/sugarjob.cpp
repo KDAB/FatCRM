@@ -24,6 +24,7 @@
 
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarsoapprotocol.h"
 #include "passwordhandler.h"
 
 using namespace KDSoapGenerated;
@@ -43,6 +44,8 @@ public:
         : q(parent), mSession(session), mTryRelogin(true)
     {
     }
+    void loginDone(const QString &sessionId);
+    void loginError(int error, const QString &messageError);
 
 public:
     SugarSession *mSession;
@@ -56,18 +59,14 @@ public: // slots
         q->startSugarTask();
     }
 
-    void loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void loginError(const KDSoapMessage &fault);
     void slotPasswordAvailable();
+
 };
 
 void SugarJob::Private::startLogin()
 {
     kDebug() << q;
     mTryRelogin = false;
-
-    Sugarsoap *soap = mSession->soap();
-    Q_ASSERT(soap != nullptr);
 
     if (!mSession->readPassword()) {
         // this can only happen when the user forcibly closes KWallet.
@@ -83,25 +82,26 @@ void SugarJob::Private::startLogin()
     // might depend on SugarCRM configuration
     // would have the additional advantage of not having to save the password in clear text
 
-    //const QByteArray passwordHash = QCryptographicHash::hash( password.toUtf8(), QCryptographicHash::Md5 );
-    const QByteArray passwordHash = password.toUtf8();
-
-    KDSoapGenerated::TNS__User_auth userAuth;
-    userAuth.setUser_name(username);
-    userAuth.setPassword(QString::fromAscii(passwordHash));
-    userAuth.setVersion(QLatin1String(".01"));
-
     mSession->setSessionId(QString());
 
-    // results handled by slots loginDone() and loginError()
-    soap->asyncLogin(userAuth, QLatin1String("FatCRM"));
+    if(mSession->protocol() == nullptr) {
+        SugarSoapProtocol *protocol = new SugarSoapProtocol;
+        protocol->setSession(mSession);
+        mSession->setProtocol(protocol);
+    }
+
+    QString sessionId;
+    QString errorMessage;
+    const int result = mSession->protocol()->login(username, password, sessionId, errorMessage);
+    if (result == KJob::NoError) {
+        Private::loginDone(sessionId);
+    } else {
+        Private::loginError(result, errorMessage);
+    }
 }
 
-void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
+void SugarJob::Private::loginDone(const QString &sessionId)
 {
-    kDebug() << q << "error=" << callResult.error().number();
-    const QString sessionId = callResult.id();
-
     QString message;
     if (sessionId.isEmpty()) {
         message = i18nc("@info:status", "server returned an empty session identifier");
@@ -122,20 +122,12 @@ void SugarJob::Private::loginDone(const KDSoapGenerated::TNS__Set_entry_result &
     q->emitResult();
 }
 
-void SugarJob::Private::loginError(const KDSoapMessage &fault)
+void SugarJob::Private::loginError(int error, const QString &messageError)
 {
     mSession->setSessionId(QString());
-
-    const int faultcode = fault.childValues().child(QLatin1String("faultcode")).value().toInt();
-    kDebug() << q << "faultcode=" << faultcode;
-    if (faultcode == QNetworkReply::UnknownNetworkError ||
-            faultcode == QNetworkReply::HostNotFoundError) {
-        q->setError(SugarJob::CouldNotConnectError);
-    } else {
-        q->setError(SugarJob::LoginError);
-    }
-    q->setErrorText(i18nc("@info:status", "Login for user %1 on %2 failed: %3",
-                          mSession->userName(), mSession->host(), fault.faultAsString()));
+    kDebug() << q << "error=" << error;
+    q->setError(error);
+    q->setErrorText(messageError);
     q->emitResult();
 }
 
@@ -148,11 +140,6 @@ void SugarJob::Private::slotPasswordAvailable()
 SugarJob::SugarJob(SugarSession *session, QObject *parent)
     : KJob(parent), d(new Private(this, session))
 {
-    connect(session->soap(), SIGNAL(loginDone(KDSoapGenerated::TNS__Set_entry_result)),
-            this, SLOT(loginDone(KDSoapGenerated::TNS__Set_entry_result)));
-    connect(session->soap(), SIGNAL(loginError(KDSoapMessage)),
-            this, SLOT(loginError(KDSoapMessage)));
-    //kDebug() << this;
 }
 
 SugarJob::~SugarJob()
@@ -166,7 +153,7 @@ void SugarJob::start()
     d->mTryRelogin = true;
 
     if (d->mSession->sessionId().isEmpty()) {
-        if (d->mSession->passwordHandler()->isPasswordAvailable()) {
+        if (d->mSession->passwordHandler() == nullptr || d->mSession->passwordHandler()->isPasswordAvailable()) {
             QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
         } else {
             connect(d->mSession->passwordHandler(), SIGNAL(passwordAvailable()),
