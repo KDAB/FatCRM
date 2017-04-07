@@ -1,14 +1,13 @@
+cmake_minimum_required(VERSION 2.8.12) # Feature: PUBLIC keyword in target_link_libraries
 project(FatCRM)
 
-cmake_minimum_required(VERSION 2.8.12) # Feature: PUBLIC keyword in target_link_libraries
-if(COMMAND cmake_policy)
-  if (POLICY CMP0063)
-    cmake_policy(SET CMP0003 NEW)
-  endif()
-  if(POLICY CMP0059)
-    cmake_policy(SET CMP0059 OLD) # we use DEFINITIONS as a built-in directory property
-  endif()
+if(POLICY CMP0063)
+  cmake_policy(SET CMP0063 NEW)
 endif()
+if(POLICY CMP0059)
+  cmake_policy(SET CMP0059 OLD) # we use DEFINITIONS as a built-in directory property
+endif()
+
 # we need some parts of the ECM CMake helpers
 find_package(ECM 5.12.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${ECM_MODULE_PATH})
@@ -117,6 +116,11 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   endif()
   if(APPLE)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undef") #quiet lots of warnings in Boost
+  endif()
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND Qt5Core_VERSION VERSION_LESS 5.5)
+    # disable warnings about inconsistent usage of 'override' specifier for Qt <5.5
+    # only starting with 5.5 Qt started to use 'override' throughout the code base
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-inconsistent-missing-override")
   endif()
 endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
