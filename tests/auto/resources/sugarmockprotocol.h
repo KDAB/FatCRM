@@ -26,6 +26,12 @@
 #include "sugarprotocolbase.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
+#include "sugarsoap.h"
+
+namespace KDSoapGenerated
+{
+class TNS__Get_entry_list_result;
+}
 
 class SugarMockProtocol : public SugarProtocolBase
 {
@@ -36,6 +42,9 @@ public:
     inline void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
     void setSession(SugarSession *session) override;
     int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
+    int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                    const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                    QString &errorMessage) override;
 
 private:
     bool mServerNotFound;

@@ -30,6 +30,7 @@
 #include <Akonadi/Collection>
 
 #include <QStringList>
+#include "sugarprotocolbase.h"
 
 class SugarSession;
 class ListEntriesScope;
@@ -40,6 +41,7 @@ class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
 class TNS__Field_list;
+class TNS__Get_entry_list_result;
 }
 
 class ModuleHandler : public QObject, public Akonadi::DifferencesAlgorithmInterface
@@ -62,6 +64,8 @@ public:
 
     int getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage);
     void listEntries(const ListEntriesScope &scope);
+    int listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage);
+
 
     QStringList availableFields() const;
     static QStringList listAvailableFields(SugarSession *session, const QString &module);

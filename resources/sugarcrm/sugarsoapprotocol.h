@@ -34,6 +34,9 @@ public:
     void logout() override;
     inline void setSession(SugarSession *session) override { mSession = session; }
     int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
+    int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                     const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                    QString &errorMessage) override;
 private:
     SugarSession *mSession;
 };

@@ -88,3 +88,33 @@ int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
     }
 }
 
+int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                   const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                                    QString &errorMessage)
+{
+    const int offset = scope.offset();
+    const int maxResults = 100;
+    const int fetchDeleted = scope.deleted();
+
+    KDSoapGenerated::TNS__Select_fields Fields;
+    Fields.setItems(selectedFields);
+
+    KDSoapGenerated::TNS__Get_entry_list_result entry_result =
+            mSession->soap()->get_entry_list(mSession->sessionId(), moduleName, query, orderBy, offset, Fields, maxResults, fetchDeleted);
+
+    entriesListResult.entryList = entry_result.entry_list();
+    entriesListResult.fieldList = entry_result.field_list();
+    entriesListResult.nextOffset = entry_result.next_offset();
+    entriesListResult.resultCount = entry_result.result_count();
+
+    if (entry_result.error().number() == "0") {
+        return KJob::NoError;
+    } else if (entry_result.error().number() == "10"){
+        errorMessage = "getListEntries : CouldNotConnectError";
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = "getListEntries : SoapError";
+        return SugarJob::SoapError;
+    }
+}
+

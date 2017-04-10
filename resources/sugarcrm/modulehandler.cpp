@@ -114,6 +114,14 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }
 
+int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult ,QString &errorMessage)
+{
+    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
+    const QString orderBy = orderByForListing();
+
+    return mSession->protocol()->listEntries(scope, moduleName(), query, orderBy, supportedSugarFields(), entriesListResult, errorMessage);
+}
+
 QStringList ModuleHandler::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {

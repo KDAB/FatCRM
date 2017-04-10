@@ -22,9 +22,17 @@
 #define SUGARPROTOCOLBASE_H
 
 #include <QString>
+#include "sugarsoap.h"
 
 class ListEntriesScope;
 class SugarSession;
+struct EntriesListResult
+{
+    int resultCount;
+    int nextOffset;
+    KDSoapGenerated::TNS__Entry_list entryList;
+    KDSoapGenerated::TNS__Field_list fieldList;
+};
 
 class SugarProtocolBase
 {
@@ -34,6 +42,9 @@ public:
     virtual void logout() = 0;
     virtual void setSession(SugarSession *session) = 0;
     virtual int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMssage) = 0;
+    virtual int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                             const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                            QString &errorMessage) = 0;
 };
 
 

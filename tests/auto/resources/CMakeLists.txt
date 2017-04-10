@@ -4,6 +4,7 @@ set(_resourcesdir ${CMAKE_CURRENT_SOURCE_DIR}/../../../resources)
 
 include_directories(
   ${_resourcesdir}/sugarcrm
+  ${CMAKE_CURRENT_BINARY_DIR}/../../../resources/sugarcrm
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../kdcrmdata
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
@@ -15,8 +16,8 @@ macro(add_resources_tests)
   foreach(_testname ${ARGN})
     kde4_add_unit_test(${_testname} TESTNAME "${_testname}" ${_testname}.cpp)
     target_link_libraries(${_testname}
-      akonadi_sugarcrm_resource_private
       sugar_mock_protocol_private
+      akonadi_sugarcrm_resource_private
       kdcrmdata
       ${QT_QTTEST_LIBRARY}
       ${QT_QTGUI_LIBS}

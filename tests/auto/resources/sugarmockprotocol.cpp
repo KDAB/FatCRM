@@ -71,3 +71,17 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
 
     return 0;
 }
+
+int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                    const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                                   QString &errorMessage)
+{
+    Q_UNUSED(scope);
+    Q_UNUSED(moduleName);
+    Q_UNUSED(query);
+    Q_UNUSED(orderBy);
+    Q_UNUSED(selectedFields);
+    Q_UNUSED(entriesListResult);
+    Q_UNUSED(errorMessage);
+    return 0;
+}
