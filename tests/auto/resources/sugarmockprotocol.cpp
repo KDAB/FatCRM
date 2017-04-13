@@ -20,11 +20,14 @@
 
 #include "sugarmockprotocol.h"
 #include "sugarjob.h"
+#include "accountshandler.h"
+#include "opportunitieshandler.h"
 
 SugarMockProtocol::SugarMockProtocol()
     : mServerNotFound(false)
 {
-
+    mAccounts.resize(3);
+    mOpportunities.resize(2);
 }
 
 int SugarMockProtocol::login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage)
@@ -56,9 +59,15 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
                                        int &entriesCount, QString &errorMessage)
 {
     Q_UNUSED(scope);
-    Q_UNUSED(moduleName);
     Q_UNUSED(query);
-    Q_UNUSED(entriesCount);
     Q_UNUSED(errorMessage);
+    if (moduleName == "account") {
+        entriesCount = mAccounts.size();
+    } else if (moduleName == "opportunity") {
+        entriesCount = mOpportunities.size();
+    } else {
+        entriesCount = 0;
+    }
+
     return 0;
 }

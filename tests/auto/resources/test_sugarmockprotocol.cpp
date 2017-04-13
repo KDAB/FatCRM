@@ -22,6 +22,7 @@
 #include <QDebug>
 #include "sugarmockprotocol.h"
 #include "sugarjob.h"
+#include "listentriesscope.h"
 
 class TestSugarMockProtocol : public QObject
 {
@@ -66,6 +67,32 @@ private Q_SLOTS:
         int error = protocol.login("user", "password", sessionId, errorMessage);
         //THEN
         QCOMPARE(error, static_cast<int>(SugarJob::Errors::CouldNotConnectError));
+    }
+
+    void shouldCountEntriesCorrectly_data()
+    {
+        QTest::addColumn<QString>("type");
+        QTest::addColumn<int>("amount");
+
+        QTest::newRow("accounts") << "account" << 3;
+        QTest::newRow("opportunities") << "opportunity" << 2;
+        QTest::newRow("leads") << "lead" << 0;
+    }
+
+    void shouldCountEntriesCorrectly()
+    {
+        QFETCH(QString, type);
+        QFETCH(int, amount);
+        //GIVEN
+        SugarMockProtocol protocol;
+        //WHEN
+        int entriesCount = 0;
+        ListEntriesScope scope;
+        QString query;
+        QString errorMessage;
+        protocol.getEntriesCount(scope, type, query, entriesCount, errorMessage);
+        //THEN
+        QCOMPARE(entriesCount, amount);
     }
 };
 

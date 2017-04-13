@@ -22,7 +22,10 @@
 #define SUGARMOCKPROTOCOL_H
 
 #include <QString>
+#include <QVector>
 #include "sugarprotocolbase.h"
+#include "sugaraccount.h"
+#include "sugaropportunity.h"
 
 class SugarMockProtocol : public SugarProtocolBase
 {
@@ -36,6 +39,8 @@ public:
 
 private:
     bool mServerNotFound;
+    QVector<SugarAccount> mAccounts;
+    QVector<SugarOpportunity> mOpportunities;
 };
 
 #endif // SUGARMOCKPROTOCOL_H
