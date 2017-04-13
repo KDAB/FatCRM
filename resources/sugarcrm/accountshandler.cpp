@@ -85,6 +85,39 @@ QStringList AccountsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
+KDSoapGenerated::TNS__Name_value_list AccountsHandler::SugarAccountToNameValueList(const SugarAccount &account)
+{
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
+    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    for (; it != endIt; ++it) {
+        // check if this is a read-only field
+        if (it.key() == "id") {
+            continue;
+        }
+        const SugarAccount::valueGetter getter = (*it).getter;
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(sugarFieldFromCrmField(it.key()));
+        field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
+
+        itemList << field;
+    }
+    // plus custom fields
+    QMap<QString, QString> customFields = account.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(customSugarFieldFromCrmField(cit.key()));
+        field.setValue(KDCRMUtils::encodeXML(cit.value()));
+        itemList << field;
+    }
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems(itemList);
+
+    return valueList;
+}
+
 bool AccountsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarAccount>()) {
