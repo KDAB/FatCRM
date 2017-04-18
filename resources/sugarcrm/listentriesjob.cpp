@@ -151,7 +151,7 @@ void ListEntriesJob::Private::handlerError(int error, const QString &errorMessag
 {
     if (error == SugarJob::CouldNotConnectError) {
         // Invalid login error, meaning we need to log in again
-        if (q->getTryRelogin()) {
+        if (q->shouldTryRelogin()) {
             kDebug() << "Got error 10, probably a session timeout, let's login again";
             QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
             return;

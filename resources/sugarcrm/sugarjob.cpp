@@ -223,7 +223,7 @@ Sugarsoap *SugarJob::soap()
     return d->mSession->soap();
 }
 
-bool SugarJob::getTryRelogin() const
+bool SugarJob::shouldTryRelogin() const
 {
     return d->mTryRelogin;
 }
