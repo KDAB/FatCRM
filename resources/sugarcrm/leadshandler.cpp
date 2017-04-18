@@ -62,6 +62,29 @@ QStringList LeadsHandler::supportedSugarFields() const
     return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
+KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead) const
+{
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
+    SugarLead::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    for (; it != endIt; ++it) {
+        // check if this is a read-only field
+        if (it.key() == "id") {
+            continue;
+        }
+        const SugarLead::valueGetter getter = (*it).getter;
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(sugarFieldFromCrmField(it.key()));
+        field.setValue(KDCRMUtils::encodeXML((lead.*getter)()));
+
+        itemList << field;
+    }
+
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems(itemList);
+    return valueList;
+}
+
 bool LeadsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarLead>()) {
