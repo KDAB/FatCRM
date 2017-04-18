@@ -77,9 +77,9 @@ private Q_SLOTS:
         QTest::addColumn<QString>("type");
         QTest::addColumn<int>("amount");
 
-        QTest::newRow("accounts") << "account" << 3;
-        QTest::newRow("opportunities") << "opportunity" << 2;
-        QTest::newRow("leads") << "lead" << 0;
+        QTest::newRow("accounts") << "Accounts" << 3;
+        QTest::newRow("opportunities") << "Opportunities" << 2;
+        QTest::newRow("leads") << "Leads" << 0;
     }
 
     void shouldCountEntriesCorrectly()
@@ -103,8 +103,8 @@ private Q_SLOTS:
         QTest::addColumn<QString>("moduleName");
         QTest::addColumn<int>("amount");
 
-        QTest::newRow("accounts") << "account" << 3;
-        QTest::newRow("opportunities") << "opportunity" << 2;
+        QTest::newRow("accounts") << "Accounts" << 3;
+        QTest::newRow("opportunities") << "Opportunities" << 2;
     }
 
     void ListEntriesWork()

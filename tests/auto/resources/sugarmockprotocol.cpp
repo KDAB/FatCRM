@@ -63,9 +63,9 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
     Q_UNUSED(scope);
     Q_UNUSED(query);
     Q_UNUSED(errorMessage);
-    if (moduleName == "account") {
+    if (moduleName == "Accounts") {
         entriesCount = mAccounts.size();
-    } else if (moduleName == "opportunity") {
+    } else if (moduleName == "Opportunities") {
         entriesCount = mOpportunities.size();
     } else {
         entriesCount = 0;
@@ -80,7 +80,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccount() const
     for ( int i = 0; i < mAccounts.size(); ++i) {
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(QString::number(i));
-        entryValue.setModule_name("account");
+        entryValue.setModule_name("Accounts");
         KDSoapGenerated::TNS__Name_value_list nvl = mAccountHandler->SugarAccountToNameValueList(mAccounts.at(i));
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
@@ -94,7 +94,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listOpportunities() 
     for ( int i = 0; i < mOpportunities.size(); ++i) {
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(QString::number(i));
-        entryValue.setModule_name("opportunity");
+        entryValue.setModule_name("Opportunities");
         KDSoapGenerated::TNS__Name_value_list nvl = mOpportunityHandler->SugarOpportunityToNameValueList(mOpportunities.at(i));
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
@@ -109,10 +109,10 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
     Q_UNUSED(query); Q_UNUSED(orderBy);
     Q_UNUSED(selectedFields); Q_UNUSED(errorMessage);
 
-    if (moduleName == "account") {
+    if (moduleName == "Accounts") {
         entriesListResult.resultCount = mAccounts.size();
         entriesListResult.entryList.setItems(listAccount());
-    } else if (moduleName == "opportunity") {
+    } else if (moduleName == "Opportunities") {
         entriesListResult.resultCount = mOpportunities.size();
         entriesListResult.entryList.setItems(listOpportunities());
     }
