@@ -24,11 +24,13 @@
 #include "opportunitieshandler.h"
 
 SugarMockProtocol::SugarMockProtocol()
-    : mServerNotFound(false)
+    : mAccountHandler(0), mOpportunityHandler(0), mServerNotFound(false)
 {
     mAccounts.resize(3);
     mOpportunities.resize(2);
 }
+
+
 
 int SugarMockProtocol::login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage)
 {
@@ -72,16 +74,57 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
     return 0;
 }
 
-int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
-                                    const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
-                                   QString &errorMessage)
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccount() const
 {
-    Q_UNUSED(scope);
-    Q_UNUSED(moduleName);
-    Q_UNUSED(query);
-    Q_UNUSED(orderBy);
-    Q_UNUSED(selectedFields);
-    Q_UNUSED(entriesListResult);
-    Q_UNUSED(errorMessage);
+    QList<KDSoapGenerated::TNS__Entry_value> items;
+    for ( int i = 0; i < mAccounts.size(); ++i) {
+        KDSoapGenerated::TNS__Entry_value entryValue;
+        entryValue.setId(QString::number(i));
+        entryValue.setModule_name("account");
+        KDSoapGenerated::TNS__Name_value_list nvl = mAccountHandler->SugarAccountToNameValueList(mAccounts.at(i));
+        entryValue.setName_value_list(nvl);
+        items.push_back(entryValue);
+    }
+    return items;
+}
+
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listOpportunities() const
+{
+    QList<KDSoapGenerated::TNS__Entry_value> items;
+    for ( int i = 0; i < mOpportunities.size(); ++i) {
+        KDSoapGenerated::TNS__Entry_value entryValue;
+        entryValue.setId(QString::number(i));
+        entryValue.setModule_name("opportunity");
+        KDSoapGenerated::TNS__Name_value_list nvl = mOpportunityHandler->SugarOpportunityToNameValueList(mOpportunities.at(i));
+        entryValue.setName_value_list(nvl);
+        items.push_back(entryValue);
+    }
+    return items;
+}
+
+int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query, const QString &orderBy,
+                                   const QStringList &selectedFields, EntriesListResult &entriesListResult, QString &errorMessage)
+{
+    Q_UNUSED(scope); Q_UNUSED(moduleName);
+    Q_UNUSED(query); Q_UNUSED(orderBy);
+    Q_UNUSED(selectedFields); Q_UNUSED(errorMessage);
+
+    if (moduleName == "account") {
+        entriesListResult.resultCount = mAccounts.size();
+        entriesListResult.entryList.setItems(listAccount());
+    } else if (moduleName == "opportunity") {
+        entriesListResult.resultCount = mOpportunities.size();
+        entriesListResult.entryList.setItems(listOpportunities());
+    }
     return 0;
+}
+
+void SugarMockProtocol::setAccountsHandler(AccountsHandler *handler)
+{
+    mAccountHandler = handler;
+}
+
+void SugarMockProtocol::setOpportunitiesHandler(OpportunitiesHandler *handler)
+{
+    mOpportunityHandler = handler;
 }

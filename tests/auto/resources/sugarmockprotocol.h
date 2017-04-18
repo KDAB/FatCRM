@@ -28,6 +28,9 @@
 #include "sugaropportunity.h"
 #include "sugarsoap.h"
 
+class AccountsHandler;
+class OpportunitiesHandler;
+class ModuleHandler;
 namespace KDSoapGenerated
 {
 class TNS__Get_entry_list_result;
@@ -46,10 +49,17 @@ public:
                     const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
 
+    void setAccountsHandler(AccountsHandler *handler);
+    void setOpportunitiesHandler(OpportunitiesHandler *handler);
+
 private:
+    AccountsHandler *mAccountHandler;
+    OpportunitiesHandler *mOpportunityHandler;
     bool mServerNotFound;
     QVector<SugarAccount> mAccounts;
     QVector<SugarOpportunity> mOpportunities;
+    QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
+    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;
 };
 
 #endif // SUGARMOCKPROTOCOL_H

@@ -43,7 +43,7 @@ public:
 
     QStringList supportedCRMFields() const override;
 
-    KDSoapGenerated::TNS__Name_value_list SugarAccountToNameValueList(const SugarAccount &account);
+    KDSoapGenerated::TNS__Name_value_list SugarAccountToNameValueList(const SugarAccount &account) const;
     bool setEntry(const Akonadi::Item &item) override;
 
     int expectedContentsVersion() const override;

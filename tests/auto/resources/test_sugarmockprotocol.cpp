@@ -23,6 +23,9 @@
 #include "sugarmockprotocol.h"
 #include "sugarjob.h"
 #include "listentriesscope.h"
+#include "accountshandler.h"
+#include "opportunitieshandler.h"
+#include "sugarsession.h"
 
 class TestSugarMockProtocol : public QObject
 {
@@ -93,6 +96,37 @@ private Q_SLOTS:
         protocol.getEntriesCount(scope, type, query, entriesCount, errorMessage);
         //THEN
         QCOMPARE(entriesCount, amount);
+    }
+
+    void ListEntriesWork_data()
+    {
+        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<int>("amount");
+
+        QTest::newRow("accounts") << "account" << 3;
+        QTest::newRow("opportunities") << "opportunity" << 2;
+    }
+
+    void ListEntriesWork()
+    {
+        QFETCH(QString, moduleName);
+        QFETCH(int, amount);
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol protocol;
+        AccountsHandler accountsHandler(&session);
+        protocol.setAccountsHandler(&accountsHandler);
+        OpportunitiesHandler opportunitiesHandler(&session);
+        protocol.setOpportunitiesHandler(&opportunitiesHandler);
+        //WHEN
+        ListEntriesScope scope;
+        EntriesListResult result;
+        QStringList selectedFields;
+        QString query, orderBy, errorMessage;
+        protocol.listEntries(scope, moduleName, query, orderBy, selectedFields, result, errorMessage);
+        //THEN
+        QCOMPARE(result.resultCount, amount);
+        QCOMPARE(result.entryList.items().size(), amount);
     }
 };
 
