@@ -61,6 +61,29 @@ QStringList CampaignsHandler::supportedSugarFields() const
     return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
+KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign) const
+{
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
+    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    for (; it != endIt; ++it) {
+        // check if this is a read-only field
+        if (it.key() == "id") {
+            continue;
+        }
+        const SugarCampaign::valueGetter getter = (*it).getter;
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(sugarFieldFromCrmField(it.key()));
+        field.setValue(KDCRMUtils::encodeXML((campaign.*getter)()));
+
+        itemList << field;
+    }
+
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems(itemList);
+    return valueList;
+}
+
 bool CampaignsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarCampaign>()) {
