@@ -682,6 +682,56 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
     return contactCollection;
 }
 
+
+KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KABC::Addressee &addressee) const
+{
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
+    ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
+    ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
+    for (; it != endIt; ++it) {
+        // check if this is a read-only field
+        if ((*it)->getter == nullptr) {
+            continue;
+        }
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(sugarFieldFromCrmField(it.key()));
+        const QString value = KDCRMUtils::encodeXML((*it)->getter(addressee));
+        field.setValue(value);
+
+        itemList << field;
+    }
+
+    // add custom sugar fields
+    const QStringList customAddresseeFields = addressee.customs();
+
+    const static QString customFieldPrefix("FATCRM-X-Custom-");
+
+    QStringList customSugarFields;
+    std::copy_if(customAddresseeFields.begin(), customAddresseeFields.end(), std::back_inserter(customSugarFields),
+                 [](const QString &custom) { return custom.startsWith(customFieldPrefix); });
+
+    for (const QString &custom : customSugarFields) {
+        const int pos = custom.indexOf(':');
+        if (pos == -1)
+            continue;
+
+        const QString name = custom.mid(customFieldPrefix.size(), pos - customFieldPrefix.size());
+        const QString value = custom.mid(pos + 1);
+
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(customSugarFieldFromCrmField(name));
+        field.setValue(KDCRMUtils::encodeXML(value));
+
+        itemList << field;
+    }
+
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems(itemList);
+
+    return  valueList;
+}
+
+
 bool ContactsHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<KABC::Addressee>()) {
