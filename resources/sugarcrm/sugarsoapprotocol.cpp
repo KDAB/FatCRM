@@ -80,10 +80,13 @@ int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, const QStr
         entriesCount = entry_result.result_count();
         return KJob::NoError;
     } else if (entry_result.error().number() == "10"){
-        errorMessage = "getEntriesCount : CouldNotConnectError";
+        errorMessage = entry_result.error().description();
+        kDebug() << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
         return SugarJob::CouldNotConnectError;
     } else {
-        errorMessage = "getEntriesCount : SoapError";
+        errorMessage = entry_result.error().description();
+        kDebug() << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
+                                                           << " Soap error:" << mSession->soap()->lastError();;
         return SugarJob::SoapError;
     }
 }
@@ -110,10 +113,13 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString 
     if (entry_result.error().number() == "0") {
         return KJob::NoError;
     } else if (entry_result.error().number() == "10"){
-        errorMessage = "getListEntries : CouldNotConnectError";
+        errorMessage = entry_result.error().description();
+        kDebug() << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
         return SugarJob::CouldNotConnectError;
     } else {
-        errorMessage = "getListEntries : SoapError";
+        errorMessage = entry_result.error().description();
+        kDebug() << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
+                                                           << " Soap error:" << mSession->soap()->lastError();
         return SugarJob::SoapError;
     }
 }
