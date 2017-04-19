@@ -61,6 +61,11 @@ QStringList CampaignsHandler::supportedSugarFields() const
     return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
+QStringList CampaignsHandler::supportedCRMFields() const
+{
+    return sugarFieldsToCrmFields(availableFields());
+}
+
 KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign) const
 {
     QList<KDSoapGenerated::TNS__Name_value> itemList;

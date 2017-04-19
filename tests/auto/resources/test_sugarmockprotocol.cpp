@@ -25,6 +25,10 @@
 #include "listentriesscope.h"
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
+#include "campaignshandler.h"
+#include "leadshandler.h"
+#include "contactshandler.h"
+
 #include "sugarsession.h"
 
 class TestSugarMockProtocol : public QObject
@@ -79,7 +83,9 @@ private Q_SLOTS:
 
         QTest::newRow("accounts") << "Accounts" << 3;
         QTest::newRow("opportunities") << "Opportunities" << 2;
-        QTest::newRow("leads") << "Leads" << 0;
+        QTest::newRow("leads") << "Leads" << 1;
+        QTest::newRow("campaign") << "Campaigns" << 1;
+        QTest::newRow("contact") << "Contacts" << 1;
     }
 
     void shouldCountEntriesCorrectly()
@@ -105,6 +111,9 @@ private Q_SLOTS:
 
         QTest::newRow("accounts") << "Accounts" << 3;
         QTest::newRow("opportunities") << "Opportunities" << 2;
+        QTest::newRow("leads") << "Leads" << 1;
+        QTest::newRow("campaigns") << "Campaigns" << 1;
+        QTest::newRow("contacts") << "Contacts" << 1;
     }
 
     void ListEntriesWork()
@@ -118,6 +127,13 @@ private Q_SLOTS:
         protocol.setAccountsHandler(&accountsHandler);
         OpportunitiesHandler opportunitiesHandler(&session);
         protocol.setOpportunitiesHandler(&opportunitiesHandler);
+        CampaignsHandler campaignHandler(&session);
+        protocol.setCampaignsHandler(&campaignHandler);
+        LeadsHandler leadsHandler(&session);
+        protocol.setLeadsHandler(&leadsHandler);
+        ContactsHandler contactHandler(&session);
+        protocol.setContactsHandler(&contactHandler);
+
         //WHEN
         ListEntriesScope scope;
         EntriesListResult result;

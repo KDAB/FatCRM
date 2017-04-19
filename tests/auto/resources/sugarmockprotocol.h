@@ -26,10 +26,17 @@
 #include "sugarprotocolbase.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
+#include "sugarcampaign.h"
+#include "sugarlead.h"
+#include <KABC/Addressee>
+
 #include "sugarsoap.h"
 
 class AccountsHandler;
 class OpportunitiesHandler;
+class CampaignsHandler;
+class LeadsHandler;
+class ContactsHandler;
 class ModuleHandler;
 namespace KDSoapGenerated
 {
@@ -51,15 +58,28 @@ public:
 
     void setAccountsHandler(AccountsHandler *handler);
     void setOpportunitiesHandler(OpportunitiesHandler *handler);
+    void setCampaignsHandler(CampaignsHandler *handler);
+    void setLeadsHandler(LeadsHandler *handler);
+    void setContactsHandler(ContactsHandler *handler);
 
 private:
     AccountsHandler *mAccountHandler;
     OpportunitiesHandler *mOpportunityHandler;
+    CampaignsHandler *mCampaignHandler;
+    LeadsHandler *mLeadHandler;
+    ContactsHandler *mContactHandler;
     bool mServerNotFound;
     QVector<SugarAccount> mAccounts;
     QVector<SugarOpportunity> mOpportunities;
+    QVector<SugarCampaign> mCampaigns;
+    QVector<SugarLead> mLeads;
+    QVector<KABC::Addressee> mContacts;
+
     QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
     QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;
+    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns() const;
+    QList<KDSoapGenerated::TNS__Entry_value> listLeads() const;
+    QList<KDSoapGenerated::TNS__Entry_value> listContacts() const;
 };
 
 #endif // SUGARMOCKPROTOCOL_H

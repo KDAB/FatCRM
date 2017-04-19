@@ -62,7 +62,7 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
-KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::SugarOpportunityToNameValueList(const SugarOpportunity &opp) const
+KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp) const
 {
     QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();

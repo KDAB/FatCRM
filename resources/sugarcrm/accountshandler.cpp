@@ -85,7 +85,7 @@ QStringList AccountsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list AccountsHandler::SugarAccountToNameValueList(const SugarAccount &account) const
+KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account) const
 {
     QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();

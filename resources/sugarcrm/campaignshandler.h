@@ -36,6 +36,8 @@ public:
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;
 
+    QStringList supportedCRMFields() const override;
+
     KDSoapGenerated::TNS__Name_value_list sugarCampaignToNameValueList(const SugarCampaign &campaign) const;
     bool setEntry(const Akonadi::Item &item) override;
 

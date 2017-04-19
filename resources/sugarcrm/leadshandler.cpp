@@ -62,6 +62,11 @@ QStringList LeadsHandler::supportedSugarFields() const
     return sugarFieldsFromCrmFields(mAccessors.keys());
 }
 
+QStringList LeadsHandler::supportedCRMFields() const
+{
+    return sugarFieldsToCrmFields(availableFields());
+}
+
 KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead) const
 {
     QList<KDSoapGenerated::TNS__Name_value> itemList;
