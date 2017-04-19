@@ -139,3 +139,18 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString 
     }
 }
 
+int SugarSoapProtocol::setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Set_entry_result result = mSession->soap()->set_entry(mSession->sessionId(), module_name, name_value_list);
+    if (result.error().number() == "0") {
+        id = result.id();
+        return KJob::NoError;
+    } else if (result.error().number() == "10"){
+        errorMessage = result.error().description();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = result.error().description();
+        return SugarJob::SoapError;
+    }
+}
+

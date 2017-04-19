@@ -70,7 +70,7 @@ public:
     QStringList availableFields() const;
     static QStringList listAvailableFields(SugarSession *session, const QString &module);
 
-    virtual bool setEntry(const Akonadi::Item &item) = 0;
+    virtual bool setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) = 0;
     virtual int expectedContentsVersion() const { return 0; }
 
     bool getEntry(const Akonadi::Item &item);

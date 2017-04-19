@@ -197,6 +197,11 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
     return 0;
 }
 
+int SugarMockProtocol::setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage)
+{
+    return 0;
+}
+
 void SugarMockProtocol::setAccountsHandler(AccountsHandler *handler)
 {
     mAccountHandler = handler;
