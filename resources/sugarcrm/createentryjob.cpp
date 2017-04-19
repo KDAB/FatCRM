@@ -59,21 +59,19 @@ public:
     Stage mStage;
 
 public: // slots
-    void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void setEntryError(const KDSoapMessage &fault);
+    void setEntryHandle(int result, const QString &id, const QString &errorMessage);
+    void setEntryDone(const QString &id);
+    void setEntryError(int error, const QString &errorMessage);
     void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
     void getEntryError(const KDSoapMessage &fault);
 };
 
-void CreateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
+void CreateEntryJob::Private::setEntryDone(const QString &id)
 {
     Q_ASSERT(mStage == CreateEntry);
-    if (q->handleError(callResult.error())) {
-        return;
-    }
 
-    kDebug() << "Created entry" << callResult.id() << "in module" << mHandler->moduleName();
-    mItem.setRemoteId(callResult.id());
+    kDebug() << "Created entry" << id << "in module" << mHandler->moduleName();
+    mItem.setRemoteId(id);
 
     mStage = Private::GetEntry;
 
@@ -83,17 +81,23 @@ void CreateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
     }
 }
 
-void CreateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
+void CreateEntryJob::Private::setEntryError(int error, const QString &errorMessage)
 {
     Q_ASSERT(mStage == CreateEntry);
 
-    if (!q->handleLoginError(fault)) {
-        kWarning() << "Create Entry Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
@@ -161,12 +165,17 @@ void CreateEntryJob::startSugarTask()
     Q_ASSERT(d->mHandler != nullptr);
 
     d->mStage = Private::CreateEntry;
-
-    if (!d->mHandler->setEntry(d->mItem)) {
+    QString id, errorMessage;
+    int result = d->mHandler->setEntry(d->mItem, id, errorMessage);
+    if (result == KJob::NoError) {
+        d->setEntryDone(id);
+    } else if (result == -1) {
         setError(SugarJob::InvalidContextError);
         setErrorText(i18nc("@info:status", "Attempting to add malformed item to folder %1",
                            d->mHandler->moduleName()));
         emitResult();
+    } else {
+        d->setEntryError(result, errorMessage);
     }
 }
 
