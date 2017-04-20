@@ -43,7 +43,7 @@ public:
     Akonadi::Collection handlerCollection() const override;
 
     KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee) const;
-    bool setEntry(const Akonadi::Item &item) override;
+    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
 
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;

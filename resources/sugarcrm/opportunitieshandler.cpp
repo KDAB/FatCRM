@@ -97,12 +97,12 @@ KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNa
     return valueList;
 }
 
-bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
+int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
-        return false;
+        return -1;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -146,9 +146,8 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 int OpportunitiesHandler::expectedContentsVersion() const

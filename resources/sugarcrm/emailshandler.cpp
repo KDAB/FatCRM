@@ -145,7 +145,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
     }
 }
 
-bool EmailsHandler::setEntry(const Akonadi::Item &item)
+int EmailsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<SugarEmail>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
@@ -187,9 +187,8 @@ bool EmailsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

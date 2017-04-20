@@ -732,12 +732,12 @@ KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(
 }
 
 
-bool ContactsHandler::setEntry(const Akonadi::Item &item)
+int ContactsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<KABC::Addressee>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
-        return false;
+        return -1;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -795,9 +795,8 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 QString ContactsHandler::orderByForListing() const

@@ -118,12 +118,12 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
     return valueList;
 }
 
-bool AccountsHandler::setEntry(const Akonadi::Item &item)
+int AccountsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<SugarAccount>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
-        return false;
+        return -1;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -167,9 +167,8 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 int AccountsHandler::expectedContentsVersion() const

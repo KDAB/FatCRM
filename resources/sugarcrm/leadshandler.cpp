@@ -90,12 +90,12 @@ KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(con
     return valueList;
 }
 
-bool LeadsHandler::setEntry(const Akonadi::Item &item)
+int LeadsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<SugarLead>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Lead payload";
-        return false;
+        return -1;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -127,9 +127,8 @@ bool LeadsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

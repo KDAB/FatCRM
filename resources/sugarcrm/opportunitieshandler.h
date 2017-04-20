@@ -43,7 +43,7 @@ public:
 
     int expectedContentsVersion() const override;
 
-    bool setEntry(const Akonadi::Item &item) override;
+    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
 
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;

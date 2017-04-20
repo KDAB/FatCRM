@@ -89,12 +89,12 @@ KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValue
     return valueList;
 }
 
-bool CampaignsHandler::setEntry(const Akonadi::Item &item)
+int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
 {
     if (!item.hasPayload<SugarCampaign>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Campaign payload";
-        return false;
+        return -1;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -127,9 +127,8 @@ bool CampaignsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

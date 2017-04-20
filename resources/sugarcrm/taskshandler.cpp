@@ -346,12 +346,12 @@ QStringList TasksHandler::supportedCRMFields() const
     return mAccessors->keys();
 }
 
-bool TasksHandler::setEntry( const Akonadi::Item &item )
+int TasksHandler::setEntry(const Akonadi::Item &item , QString &id, QString &errorMessage)
 {
     if ( !item.hasPayload<KCalCore::Todo::Ptr>() ) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Todo payload";
-        return false;
+        return -1;
     }
 
     QList<TNS__Name_value> itemList;
@@ -383,9 +383,8 @@ bool TasksHandler::setEntry( const Akonadi::Item &item )
 
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
-    soap()->asyncSet_entry( sessionId(), moduleName(), valueList );
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
 }
 
 Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
