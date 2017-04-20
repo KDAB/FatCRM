@@ -62,11 +62,12 @@ public:
 
     Stage mStage;
 
+    void setEntryError(int error, const QString &errorMessage);
+    void setEntryDone(const QString &id);
+
 public: // slots
     void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
     void getEntryError(const KDSoapMessage &fault);
-    void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void setEntryError(const KDSoapMessage &fault);
     void getRevisionDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
     void getRevisionError(const KDSoapMessage &fault);
 };
@@ -118,7 +119,13 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     } else {
         mStage = UpdateEntry;
 
-        mHandler->setEntry(mItem);
+        QString id, errorMessage;
+        int result = mHandler->setEntry(mItem, id, errorMessage);
+        if(result == KJob::NoError) {
+            setEntryDone(remoteItem.remoteId());
+        } else {
+            setEntryError(result, errorMessage);
+        }
     }
 }
 
@@ -138,14 +145,10 @@ void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
     }
 }
 
-void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
+void UpdateEntryJob::Private::setEntryDone(const QString &id)
 {
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    kDebug() << "Updated entry" << callResult.id() << "in module" << mHandler->moduleName();
-    mItem.setRemoteId(callResult.id());
+    kDebug() << "Updated entry" << id << "in module" << mHandler->moduleName();
+    mItem.setRemoteId(id);
 
     mStage = Private::GetRevision;
 
@@ -155,15 +158,21 @@ void UpdateEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry
     q->soap()->asyncGet_entry(q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields);
 }
 
-void UpdateEntryJob::Private::setEntryError(const KDSoapMessage &fault)
+void UpdateEntryJob::Private::setEntryError(int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
