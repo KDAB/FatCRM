@@ -66,29 +66,20 @@ public:
     void setEntryDone(const QString &id);
 
 public: // slots
-    void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
-    void getEntryError(const KDSoapMessage &fault);
-    void getRevisionDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
+    void getEntryDone(const TNS__Entry_value entryValue);
+    void getEntryError(int error, const QString &errorMessage);
+    void getRevisionDone(const TNS__Entry_value &entryValue);
     void getRevisionError(const KDSoapMessage &fault);
 };
 
-void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
+void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value entryValue)
 {
     // check if this is our signal
     if (mStage != GetEntry) {
         return;
     }
 
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
-    if (entries.count() != 1) {
-        qWarning() << "Got" << entries.count() << "entries";
-        Q_ASSERT(entries.count() == 1);
-    }
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
 
     kDebug() << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
@@ -120,6 +111,7 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
         mStage = UpdateEntry;
 
         QString id, errorMessage;
+        id = entryValue.id();
         int result = mHandler->setEntry(mItem, id, errorMessage);
         if(result == KJob::NoError) {
             setEntryDone(remoteItem.remoteId());
@@ -129,20 +121,26 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     }
 }
 
-void UpdateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
+void UpdateEntryJob::Private::getEntryError(int error, const QString &errorMessage)
 {
     // check if this is our signal
     if (mStage != GetEntry) {
         return;
     }
 
-    if (!q->handleLoginError(fault)) {
-        kWarning() << "Update Entry Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 void UpdateEntryJob::Private::setEntryDone(const QString &id)
@@ -155,7 +153,19 @@ void UpdateEntryJob::Private::setEntryDone(const QString &id)
     KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems(QStringList() << QLatin1String("date_modified"));
 
-    q->soap()->asyncGet_entry(q->sessionId(), mHandler->moduleName(), mItem.remoteId(), selectedFields);
+    KDSoapGenerated::TNS__Entry_value entryValue;
+    QString errorMessage;
+    int result = mHandler->getEntry(mItem, entryValue, errorMessage);
+    if (result == KJob::NoError) {
+        getRevisionDone(entryValue);
+    } else if (result == -1) {
+        q->setError(SugarJob::InvalidContextError);
+        q->setErrorText(i18nc("@info:status", "Attempting to modify a malformed item in folder %1",
+                           mHandler->moduleName()));
+        q->emitResult();
+    } else {
+        getEntryError(result, errorMessage);
+    }
 }
 
 void UpdateEntryJob::Private::setEntryError(int error, const QString &errorMessage)
@@ -175,16 +185,14 @@ void UpdateEntryJob::Private::setEntryError(int error, const QString &errorMessa
     q->emitResult();
 }
 
-void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
+void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Entry_value &entryValue)
 {
     // check if this is our signal
     if (mStage != GetRevision) {
         return;
     }
 
-    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
-    Q_ASSERT(entries.count() == 1);
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
 
     mItem.setRemoteRevision(remoteItem.remoteRevision());
     kDebug() << "Got remote revision" << mItem.remoteRevision();
@@ -208,20 +216,7 @@ void UpdateEntryJob::Private::getRevisionError(const KDSoapMessage &fault)
 UpdateEntryJob::UpdateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, item))
 {
-    connect(soap(), SIGNAL(get_entryDone(KDSoapGenerated::TNS__Get_entry_result)),
-            this,  SLOT(getEntryDone(KDSoapGenerated::TNS__Get_entry_result)));
-    connect(soap(), SIGNAL(get_entryError(KDSoapMessage)),
-            this,  SLOT(getEntryError(KDSoapMessage)));
 
-    connect(soap(), SIGNAL(set_entryDone(KDSoapGenerated::TNS__Set_entry_result)),
-            this,  SLOT(setEntryDone(KDSoapGenerated::TNS__Set_entry_result)));
-    connect(soap(), SIGNAL(set_entryError(KDSoapMessage)),
-            this,  SLOT(setEntryError(KDSoapMessage)));
-
-    connect(soap(), SIGNAL(get_entryDone(KDSoapGenerated::TNS__Get_entry_result)),
-            this,  SLOT(getRevisionDone(KDSoapGenerated::TNS__Get_entry_result)));
-    connect(soap(), SIGNAL(get_entryError(KDSoapMessage)),
-            this,  SLOT(getRevisionError(KDSoapMessage)));
 }
 
 UpdateEntryJob::~UpdateEntryJob()
@@ -256,11 +251,18 @@ void UpdateEntryJob::startSugarTask()
 
     d->mStage = Private::GetEntry;
 
-    if (!d->mHandler->getEntry(d->mItem)) {
+    KDSoapGenerated::TNS__Entry_value entryValue;
+    QString errorMessage;
+    int result = d->mHandler->getEntry(d->mItem, entryValue, errorMessage);
+    if (result == KJob::NoError) {
+        d->getEntryDone(entryValue);
+    } else if (result == -1) {
         setError(SugarJob::InvalidContextError);
         setErrorText(i18nc("@info:status", "Attempting to modify a malformed item in folder %1",
                            d->mHandler->moduleName()));
         emitResult();
+    } else {
+        d->getEntryError(result, errorMessage);
     }
 }
 
