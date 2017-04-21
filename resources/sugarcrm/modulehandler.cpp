@@ -165,19 +165,16 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
     return availableFields;
 }
 
-bool ModuleHandler::getEntry(const Akonadi::Item &item)
+bool ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
     if (item.remoteId().isEmpty()) {
         kError() << "Item remoteId is empty. id=" << item.id();
-        return false;
+        return -1;
     }
 
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(supportedSugarFields());
-
-    soap()->asyncGet_entry(sessionId(), mModuleName, item.remoteId(), selectedFields);
-    return true;
+    return mSession->protocol()->getEntry(mModuleName, item.remoteId(), supportedSugarFields(), entryValue, errorMessage);
 }
+
 
 bool ModuleHandler::hasEnumDefinitions()
 {

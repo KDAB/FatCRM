@@ -73,7 +73,7 @@ public:
     virtual int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) = 0;
     virtual int expectedContentsVersion() const { return 0; }
 
-    bool getEntry(const Akonadi::Item &item);
+    bool getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage);
 
     // Return true if the handler wants to fetch extra information on listed items
     // (e.g. email text)
