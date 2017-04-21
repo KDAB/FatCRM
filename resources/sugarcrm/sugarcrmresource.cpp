@@ -291,7 +291,7 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
     error(message);
     cancelTask(message);
 #else
-    SugarJob *job = new DeleteEntryJob(item, mSession, this);
+    SugarJob *job = new DeleteEntryJob(item, mSession, collection.remoteId(), this);
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteEntryResult(KJob*)));

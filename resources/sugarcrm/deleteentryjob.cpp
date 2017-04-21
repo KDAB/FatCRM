@@ -24,6 +24,7 @@
 
 #include "modulehandler.h"
 #include "sugarsoap.h"
+#include "sugarsession.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
@@ -42,49 +43,46 @@ class DeleteEntryJob::Private
     DeleteEntryJob *const q;
 
 public:
-    explicit Private(DeleteEntryJob *parent, const Item &item)
-        : q(parent), mItem(item)
+    explicit Private(DeleteEntryJob *parent, const Item &item, const QString &moduleName)
+        : q(parent), mItem(item), mModuleName(moduleName)
     {
     }
 
 public:
     const Item mItem;
-
-public: // slots
-    void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult);
-    void setEntryError(const KDSoapMessage &fault);
+    const QString mModuleName;
+    void setEntryDone();
+    void setEntryError(int error, const QString &errorMessage);
 };
 
-void DeleteEntryJob::Private::setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult)
+void DeleteEntryJob::Private::setEntryDone()
 {
-    Q_UNUSED(callResult);
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
     kDebug() << "Entry" << mItem.remoteId() << "deleted from module"
              << mItem.parentCollection().remoteId();
     q->emitResult();
 }
 
-void DeleteEntryJob::Private::setEntryError(const KDSoapMessage &fault)
+void DeleteEntryJob::Private::setEntryError(int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << "Delete Entry Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
-DeleteEntryJob::DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent)
-    : SugarJob(session, parent), d(new Private(this, item))
+DeleteEntryJob::DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, const QString &moduleName, QObject *parent)
+    : SugarJob(session, parent), d(new Private(this, item, moduleName))
 {
-    connect(soap(), SIGNAL(set_entryDone(KDSoapGenerated::TNS__Set_entry_result)),
-            this,  SLOT(setEntryDone(KDSoapGenerated::TNS__Set_entry_result)));
-    connect(soap(), SIGNAL(set_entryError(KDSoapMessage)),
-            this,  SLOT(setEntryError(KDSoapMessage)));
+
 }
 
 DeleteEntryJob::~DeleteEntryJob()
@@ -100,7 +98,7 @@ Item DeleteEntryJob::item() const
 void DeleteEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
-    Q_ASSERT(d->mItem.parentCollection().isValid());
+    //Q_ASSERT(d->mItem.parentCollection().isValid());
 
     // delete just required identifier and "deleted" field
     // no need for type specific code
@@ -115,7 +113,14 @@ void DeleteEntryJob::startSugarTask()
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField);
 
-    soap()->asyncSet_entry(sessionId(), d->mItem.parentCollection().remoteId(), valueList);
+    QString id, errorMessage;
+    id = d->mItem.remoteId();
+    int result = session()->protocol()->setEntry(d->mModuleName, valueList, id, errorMessage);
+    if (result == KJob::NoError) {
+        d->setEntryDone();
+    } else {
+        d->setEntryError(result, errorMessage);
+    }
 }
 
 #include "deleteentryjob.moc"
