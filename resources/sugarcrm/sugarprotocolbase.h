@@ -34,6 +34,9 @@ struct EntriesListResult
     KDSoapGenerated::TNS__Field_list fieldList;
 };
 Q_DECLARE_METATYPE(EntriesListResult)
+namespace Akonadi {
+    class Item;
+}
 
 class SugarProtocolBase
 {
@@ -47,6 +50,8 @@ public:
                              const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                             QString &errorMessage) = 0;
     virtual int setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
+    virtual int getEntry(const QString &moduleName, const QString &remoteId,  const QStringList &selectedFields,
+                         KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) = 0;
 };
 
 

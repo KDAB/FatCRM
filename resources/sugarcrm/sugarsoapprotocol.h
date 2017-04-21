@@ -38,6 +38,8 @@ public:
                      const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
     int setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) override;
+    int getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields,
+                 KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
 private:
     SugarSession *mSession;
 };
