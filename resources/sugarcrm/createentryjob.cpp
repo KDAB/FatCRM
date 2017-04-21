@@ -62,8 +62,8 @@ public: // slots
     void setEntryHandle(int result, const QString &id, const QString &errorMessage);
     void setEntryDone(const QString &id);
     void setEntryError(int error, const QString &errorMessage);
-    void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
-    void getEntryError(const KDSoapMessage &fault);
+    void getEntryDone(const TNS__Entry_value entryValue);
+    void getEntryError(int error, const QString &errorMessage);
 };
 
 void CreateEntryJob::Private::setEntryDone(const QString &id)
@@ -75,9 +75,17 @@ void CreateEntryJob::Private::setEntryDone(const QString &id)
 
     mStage = Private::GetEntry;
 
-    if (!mHandler->getEntry(mItem)) {
+    KDSoapGenerated::TNS__Entry_value entryValue;
+    QString errorMessage;
+    int result = mHandler->getEntry(mItem, entryValue, errorMessage);
+
+    if (result == KJob::NoError) {
+        getEntryDone(entryValue);
+    } else if (result == -1) {
         // the item has been added we just don't have a server side datetime
         q->emitResult();
+    } else {
+        getEntryError(result, errorMessage);
     }
 }
 
@@ -100,17 +108,9 @@ void CreateEntryJob::Private::setEntryError(int error, const QString &errorMessa
     q->emitResult();
 }
 
-void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
+void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value entryValue)
 {
-    Q_ASSERT(mStage == GetEntry);
-
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
-    Q_ASSERT(entries.count() == 1);
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
 
     Item item = remoteItem;
     item.setId(mItem.id());
@@ -121,13 +121,20 @@ void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry
     q->emitResult();
 }
 
-void CreateEntryJob::Private::getEntryError(const KDSoapMessage &fault)
+void CreateEntryJob::Private::getEntryError(int error, const QString &errorMessage)
 {
-    Q_ASSERT(mStage == GetEntry);
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
+    }
+    kWarning() << q << error << errorMessage;
 
-    kWarning() << "Error when getting remote version:" << fault.faultAsString();
-
-    // the item has been added we just don't have a server side datetime
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
     q->emitResult();
 }
 
