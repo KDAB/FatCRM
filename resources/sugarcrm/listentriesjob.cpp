@@ -167,16 +167,6 @@ void ListEntriesJob::Private::handlerError(int error, const QString &errorMessag
 ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, collection))
 {
-    connect(soap(), SIGNAL(get_entries_countDone(KDSoapGenerated::TNS__Get_entries_count_result)),
-            this, SLOT(getEntriesCountDone(KDSoapGenerated::TNS__Get_entries_count_result)));
-    connect(soap(), SIGNAL(get_entries_countError(KDSoapMessage)),
-            this, SLOT(getEntriesCountError(KDSoapMessage)));
-
-    connect(soap(), SIGNAL(get_entry_listDone(KDSoapGenerated::TNS__Get_entry_list_result)),
-            this,  SLOT(listEntriesDone(KDSoapGenerated::TNS__Get_entry_list_result)));
-    connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
-            this,  SLOT(listEntriesError(KDSoapMessage)));
-
     d->mStage = Private::GetCount;
     //kDebug() << this;
 }
