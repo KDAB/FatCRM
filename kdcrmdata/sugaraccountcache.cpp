@@ -76,3 +76,8 @@ void SugarAccountCache::clear()
 {
     mPendingAccountNames.clear();
 }
+
+int SugarAccountCache::size() const
+{
+    return mPendingAccountNames.size();
+}
