@@ -135,7 +135,6 @@ private Q_SLOTS:
 
         delete session;
         delete handler;
-        delete job;
     }
 
     void shouldReturnCorrectListAccounts()

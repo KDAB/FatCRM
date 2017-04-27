@@ -13,11 +13,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
 endif()
-#TODO: support a real debugfull, like in KDE
-string(TOLOWER ${CMAKE_BUILD_TYPE} _lower)
-if(${_lower} MATCHES "debugfull")
-  set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
-endif()
 
 enable_testing()
 
