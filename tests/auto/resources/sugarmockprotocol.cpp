@@ -29,6 +29,7 @@
 #include "campaignshandler.h"
 #include "leadshandler.h"
 #include "contactshandler.h"
+#include "listentriesscope.h"
 
 SugarMockProtocol::SugarMockProtocol()
     : mAccountHandler(0), mOpportunityHandler(0), mCampaignHandler(0), mLeadHandler(0), mContactHandler(0), mServerNotFound(false)
@@ -163,27 +164,31 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts() const
 int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query, const QString &orderBy,
                                    const QStringList &selectedFields, EntriesListResult &entriesListResult, QString &errorMessage)
 {
-    Q_UNUSED(scope); Q_UNUSED(moduleName);
+    Q_UNUSED(moduleName);
     Q_UNUSED(query); Q_UNUSED(orderBy);
     Q_UNUSED(selectedFields); Q_UNUSED(errorMessage);
 
-    if (moduleName == "Accounts") {
-        entriesListResult.resultCount = mAccounts.size();
-        entriesListResult.entryList.setItems(listAccount());
-    } else if (moduleName == "Opportunities") {
-        entriesListResult.resultCount = mOpportunities.size();
-        entriesListResult.entryList.setItems(listOpportunities());
-    } else if (moduleName == "Campaigns") {
-        entriesListResult.resultCount = mCampaigns.size();
-        entriesListResult.entryList.setItems(listCampaigns());
-    } else if (moduleName == "Leads") {
-        entriesListResult.resultCount = mLeads.size();
-        entriesListResult.entryList.setItems(listLeads());
-    } else if (moduleName == "Contacts") {
-        entriesListResult.resultCount = mContacts.size();
-        entriesListResult.entryList.setItems(listContacts());
+    if (scope.offset() > 0) {
+        entriesListResult.resultCount = 0;
     } else {
-        entriesListResult.resultCount = -1;
+        if (moduleName == "Accounts") {
+            entriesListResult.resultCount = mAccounts.size();
+            entriesListResult.entryList.setItems(listAccount());
+        } else if (moduleName == "Opportunities") {
+            entriesListResult.resultCount = mOpportunities.size();
+            entriesListResult.entryList.setItems(listOpportunities());
+        } else if (moduleName == "Campaigns") {
+            entriesListResult.resultCount = mCampaigns.size();
+            entriesListResult.entryList.setItems(listCampaigns());
+        } else if (moduleName == "Leads") {
+            entriesListResult.resultCount = mLeads.size();
+            entriesListResult.entryList.setItems(listLeads());
+        } else if (moduleName == "Contacts") {
+            entriesListResult.resultCount = mContacts.size();
+            entriesListResult.entryList.setItems(listContacts());
+        } else {
+            entriesListResult.resultCount = -1;
+        }
     }
     return 0;
 }
