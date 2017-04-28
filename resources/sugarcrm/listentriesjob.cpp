@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -25,6 +26,7 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 #include "listentriesscope.h"
+#include "sugarprotocolbase.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -69,38 +71,21 @@ public:
     QString mLatestTimestampFromItems;
     bool mCollectionAttributesChanged;
 
-public: // slots
-    void getEntriesCountDone(const KDSoapGenerated::TNS__Get_entries_count_result &callResult);
-    void getEntriesCountError(const KDSoapMessage &fault);
-    void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult);
-    void listEntriesError(const KDSoapMessage &fault);
+public:
+    void getEntriesCountDone(int count);
+    void listEntriesDone(const EntriesListResult &callResult);
+    void handlerError(int error, const QString &errorMessage);
 };
 
-void ListEntriesJob::Private::getEntriesCountDone(const TNS__Get_entries_count_result &callResult)
+void ListEntriesJob::Private::getEntriesCountDone(int count)
 {
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    const int count = callResult.result_count();
     kDebug() << q << "About to list" << count << "entries";
-    emit q->totalItems( count );
+    emit q->totalItems(count);
     if (count == 0) {
         q->emitResult();
     } else {
         mStage = GetExisting;
         q->startSugarTask(); // proceed to next stage
-    }
-}
-
-void ListEntriesJob::Private::getEntriesCountError(const KDSoapMessage &fault)
-{
-    if (!q->handleLoginError(fault)) {
-        kWarning() << q << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
     }
 }
 
@@ -111,17 +96,13 @@ static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in c
 // then increasing the expected version ensures that old caches are thrown out.
 static const char s_contentsVersionKey[] = "contentsVersion";
 
-void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
+void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResult)
 {
-    kDebug() << q << "stage" << mStage << "error" << callResult.error().number();
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-    if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
-        mCollectionAttributesChanged = mHandler->parseFieldList(mCollection, callResult.field_list());
+    if (callResult.resultCount > 0) { // result_count is the size of entry_list, e.g. 100.
+        mCollectionAttributesChanged = mHandler->parseFieldList(mCollection, callResult.fieldList);
 
         Item::List items =
-            mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
+            mHandler->itemsFromListEntriesResponse(callResult.entryList, mCollection, &mLatestTimestampFromItems);
 
         if (mHandler->needsExtraInformation())
             mHandler->getExtraInformation(items);
@@ -129,8 +110,16 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
                  << "received" << items.count() << "items.";
 
         emit q->itemsReceived(items, mListScope.isUpdateScope());
-        mListScope.setOffset(callResult.next_offset());
-        mHandler->listEntries(mListScope);
+        mListScope.setOffset(callResult.nextOffset);
+
+        QString errorMessage;
+        EntriesListResult entriesListResult;
+        int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
+        if (result == KJob::NoError) {
+            listEntriesDone(entriesListResult);
+        } else {
+            handlerError(result, errorMessage);
+        }
     } else {
         kDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
@@ -166,30 +155,26 @@ void ListEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_en
     }
 }
 
-void ListEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
+void ListEntriesJob::Private::handlerError(int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << q << "List Entries Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 ListEntriesJob::ListEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, collection))
 {
-    connect(soap(), SIGNAL(get_entries_countDone(KDSoapGenerated::TNS__Get_entries_count_result)),
-            this, SLOT(getEntriesCountDone(KDSoapGenerated::TNS__Get_entries_count_result)));
-    connect(soap(), SIGNAL(get_entries_countError(KDSoapMessage)),
-            this, SLOT(getEntriesCountError(KDSoapMessage)));
-
-    connect(soap(), SIGNAL(get_entry_listDone(KDSoapGenerated::TNS__Get_entry_list_result)),
-            this,  SLOT(listEntriesDone(KDSoapGenerated::TNS__Get_entry_list_result)));
-    connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
-            this,  SLOT(listEntriesError(KDSoapMessage)));
-
     d->mStage = Private::GetCount;
     //kDebug() << this;
 }
@@ -276,13 +261,28 @@ void ListEntriesJob::startSugarTask()
     Q_ASSERT(d->mCollection.isValid());
     Q_ASSERT(d->mHandler != nullptr);
 
+    QString errorMessage;
     switch (d->mStage) {
-    case Private::GetCount:
-        d->mHandler->getEntriesCount(d->mListScope);
+    case Private::GetCount: {
+        int entriesCount;
+        int result = d->mHandler->getEntriesCount(d->mListScope, entriesCount, errorMessage);
+        if (result == KJob::NoError) {
+            d->getEntriesCountDone(entriesCount);
+        } else {
+            d->handlerError(result, errorMessage);
+        }
         break;
-    case Private::GetExisting:
-        d->mHandler->listEntries(d->mListScope);
+    }
+    case Private::GetExisting: {
+        EntriesListResult entriesListResult;
+        int result = d->mHandler->listEntries(d->mListScope, entriesListResult, errorMessage);
+        if (result == KJob::NoError) {
+            d->listEntriesDone(entriesListResult);
+        } else {
+            d->handlerError(result, errorMessage);
+        }
         break;
+    }
     }
 }
 

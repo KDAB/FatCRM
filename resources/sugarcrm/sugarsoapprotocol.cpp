@@ -21,8 +21,10 @@
 #include "sugarsoapprotocol.h"
 #include "sugarjob.h"
 #include "sugarsession.h"
+#include "listentriesscope.h"
 #include <QNetworkReply>
 #include <KLocalizedString>
+#include <KDebug>
 
 SugarSoapProtocol::SugarSoapProtocol()
 {
@@ -52,6 +54,73 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
         } else {
             return SugarJob::LoginError;
         }
+    }
+}
+
+void SugarSoapProtocol::logout()
+{
+    if (mSession->sessionId().isEmpty() && mSession->soap() != nullptr) {
+        KDSoapGenerated::TNS__Error_value errorValue = mSession->soap()->logout(mSession->sessionId());
+        if (errorValue.number() != "0") {
+            kDebug() << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
+        }
+        if (!mSession->soap()->lastError().isEmpty()) {
+            kDebug() << "logout had fault" << mSession->soap()->lastError();
+        }
+    }
+    mSession->forgetSession();
+}
+
+int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                       int &entriesCount, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Get_entries_count_result entry_result =
+            mSession->soap()->get_entries_count(mSession->sessionId(), moduleName, query, scope.deleted());
+    if (entry_result.error().number() == "0") {
+        entriesCount = entry_result.result_count();
+        return KJob::NoError;
+    } else if (entry_result.error().number() == "10"){
+        errorMessage = entry_result.error().description();
+        kDebug() << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = entry_result.error().description();
+        kDebug() << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
+                                                           << " Soap error:" << mSession->soap()->lastError();;
+        return SugarJob::SoapError;
+    }
+}
+
+int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+                                   const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
+                                    QString &errorMessage)
+{
+    const int offset = scope.offset();
+    const int maxResults = 100;
+    const int fetchDeleted = scope.deleted();
+
+    KDSoapGenerated::TNS__Select_fields Fields;
+    Fields.setItems(selectedFields);
+
+    KDSoapGenerated::TNS__Get_entry_list_result entry_result =
+            mSession->soap()->get_entry_list(mSession->sessionId(), moduleName, query, orderBy, offset, Fields, maxResults, fetchDeleted);
+
+    entriesListResult.entryList = entry_result.entry_list();
+    entriesListResult.fieldList = entry_result.field_list();
+    entriesListResult.nextOffset = entry_result.next_offset();
+    entriesListResult.resultCount = entry_result.result_count();
+
+    if (entry_result.error().number() == "0") {
+        return KJob::NoError;
+    } else if (entry_result.error().number() == "10"){
+        errorMessage = entry_result.error().description();
+        kDebug() << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = entry_result.error().description();
+        kDebug() << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
+                                                           << " Soap error:" << mSession->soap()->lastError();
+        return SugarJob::SoapError;
     }
 }
 

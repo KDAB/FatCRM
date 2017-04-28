@@ -49,6 +49,8 @@ public:
 
     void clear(); // for the unittest
 
+    int size() const; // for the unittest
+
 signals:
     void pendingAccountAdded(const QString &accountName, const QString &accountId);
 
