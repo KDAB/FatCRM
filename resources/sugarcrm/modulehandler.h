@@ -63,7 +63,7 @@ public:
     void modifyCollection(const Akonadi::Collection &collection);
 
     int getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage);
-    void listEntries(const ListEntriesScope &scope);
+    void listEntries(const ListEntriesScope &scope); //Depreciated
     int listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage);
 
 

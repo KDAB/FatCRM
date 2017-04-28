@@ -165,11 +165,12 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listLeads() const
 QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts() const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
-    for (int i = 0; i < mContacts.size(); ++i) {
+    for (const KABC::Addressee &contact : mContacts) {
         KDSoapGenerated::TNS__Entry_value entryValue;
-        entryValue.setId(QString::number(i));
+        const QString id = contact.custom("FATCRM", "X-ContactId");
+        entryValue.setId(id);
         entryValue.setModule_name("Contacts");
-        KDSoapGenerated::TNS__Name_value_list nvl = mContactHandler->addresseeToNameValueList(mContacts.at(i));
+        KDSoapGenerated::TNS__Name_value_list nvl = mContactHandler->addresseeToNameValueList(contact);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }

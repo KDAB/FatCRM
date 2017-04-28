@@ -137,6 +137,10 @@ QStringList ModuleHandler::availableFields() const
 // static (also used by debug handler for modules without a handler)
 QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QString &module)
 {
+    if (session->soap() == nullptr) {
+        return QStringList();
+    }
+
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {

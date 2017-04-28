@@ -35,15 +35,15 @@
 class TestListEntriesJob : public QObject
 {
     Q_OBJECT
-public Q_SLOTS:
-    void slotItemsReceived(const Akonadi::Item::List &items, bool isUpdateJob)
-    {
-        qDebug() << "test";
-    }
 
 private Q_SLOTS:
 
-    void shouldSetHandler()
+    void  initTestCase()
+    {
+        qRegisterMetaType<Akonadi::Item::List>("Akonadi::Item::List");
+    }
+
+    void shouldSetModule()
     {
         //GIVEN
         Akonadi::Collection collection;
@@ -71,23 +71,10 @@ private Q_SLOTS:
         QVERIFY(lej.collection() != collection2);
     }
 
-    /*void changed()
-    {
-        //GIVEN
-        Akonadi::Collection c;
-
-        SugarSession s(nullptr);
-        ListEntriesJob lej(c, &s);
-        //WHEN
-
-        //THEN
-        QVERIFY(lej.collectionAttributesChanged());
-    }*/
-
     void shouldReturnCorrectCount_data()
     {
         QTest::addColumn<QString>("moduleName");
-        QTest::addColumn<int>("correctCount");
+        QTest::addColumn<int>("expectedCount");
 
         QTest::newRow("Accounts") << "Accounts" << 3;
         QTest::newRow("Opportunities") << "Opportunities" << 2;
@@ -97,7 +84,7 @@ private Q_SLOTS:
     void shouldReturnCorrectCount()
     {
         QFETCH(QString, moduleName);
-        QFETCH(int, correctCount);
+        QFETCH(int, expectedCount);
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
@@ -131,7 +118,7 @@ private Q_SLOTS:
         //THEN
         QCOMPARE(spy.count(), 1);
         const QList<QVariant> arguments = spy.at(0);
-        QCOMPARE(arguments.at(0).toInt(), correctCount);
+        QCOMPARE(arguments.at(0).toInt(), expectedCount);
 
         delete session;
         delete handler;
@@ -145,17 +132,14 @@ private Q_SLOTS:
         Akonadi::Collection collection;
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
-        SugarSession *session = new SugarSession (nullptr);
-        protocol->setSession(session);
-        session->setProtocol(protocol);
-        session->setSessionParameters("user", "password", "hosttest");
-        session->createSoapInterface();
-        AccountsHandler *handler = new AccountsHandler(session);
-        protocol->setAccountsHandler(handler);
-        handler->initialCheck();
-        ListEntriesJob *job = new ListEntriesJob(collection, session);
-        job->setModule(handler);
-        qRegisterMetaType<Akonadi::Item::List>("Akonadi::Item::List");
+        SugarSession session(nullptr);
+        protocol->setSession(&session);
+        session.setProtocol(protocol);
+        session.setSessionParameters("user", "password", "hosttest");
+        AccountsHandler handler(&session);
+        protocol->setAccountsHandler(&handler);
+        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
         job->start();
@@ -165,7 +149,7 @@ private Q_SLOTS:
         const QList<QVariant> arguments = spy.at(0);
         const QString id[3] = {"0", "1", "2"};
         const QString name[3] = {"accountZero", "accountOne", "accountTwo"};
-        Akonadi::Item::List lItems = arguments.at(0).value<Akonadi::Item::List>();
+        const Akonadi::Item::List lItems = arguments.at(0).value<Akonadi::Item::List>();
         QCOMPARE(lItems.size(), 3);
         for(int i = 0; i < 3; i++)
         {
@@ -173,9 +157,6 @@ private Q_SLOTS:
             QCOMPARE(sa.id(), id[i]);
             QCOMPARE(sa.name(), name[i]);
         }
-
-        delete session;
-        delete handler;
     }
 
     //Depending on shouldReturnCorrectListAccounts()
@@ -187,17 +168,14 @@ private Q_SLOTS:
         Akonadi::Collection collection;
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
-        SugarSession *session = new SugarSession (nullptr);
-        protocol->setSession(session);
-        session->setProtocol(protocol);
-        session->setSessionParameters("user", "password", "hosttest");
-        session->createSoapInterface();
-        OpportunitiesHandler *handler = new OpportunitiesHandler(session);
-        protocol->setOpportunitiesHandler(handler);
-        handler->initialCheck();
-        ListEntriesJob *job = new ListEntriesJob(collection, session);
-        job->setModule(handler);
-        qRegisterMetaType<Akonadi::Item::List>("Akonadi::Item::List");
+        SugarSession session(nullptr);
+        protocol->setSession(&session);
+        session.setProtocol(protocol);
+        session.setSessionParameters("user", "password", "hosttest");
+        OpportunitiesHandler handler(&session);
+        protocol->setOpportunitiesHandler(&handler);
+        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
         job->start();
@@ -218,9 +196,6 @@ private Q_SLOTS:
             QCOMPARE(so.accountId(), accountId[i]);
         }
         QCOMPARE(cache->size(), 1);
-
-        delete session;
-        delete handler;
     }
 };
 

@@ -111,7 +111,15 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
 
         emit q->itemsReceived(items, mListScope.isUpdateScope());
         mListScope.setOffset(callResult.nextOffset);
-        mHandler->listEntries(mListScope);
+
+        QString errorMessage;
+        EntriesListResult entriesListResult;
+        int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
+        if (result == KJob::NoError) {
+            listEntriesDone(entriesListResult);
+        } else {
+            handlerError(result, errorMessage);
+        }
     } else {
         kDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
