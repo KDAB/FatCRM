@@ -62,6 +62,41 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
+KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp) const
+{
+    QList<KDSoapGenerated::TNS__Name_value> itemList;
+    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
+    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    for (; it != endIt; ++it) {
+        // check if this is a read-only field
+        if (it.key() == "id") {
+            continue;
+        }
+        const SugarOpportunity::valueGetter getter = (*it).getter;
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(sugarFieldFromCrmField(it.key()));
+        field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
+
+        itemList << field;
+    }
+
+    // plus custom fields
+    const QMap<QString, QString> customFields = opp.customFields();
+    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
+    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
+    for ( ; cit != end ; ++cit ) {
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(customSugarFieldFromCrmField(cit.key()));
+        field.setValue(KDCRMUtils::encodeXML(cit.value()));
+        itemList << field;
+    }
+
+    KDSoapGenerated::TNS__Name_value_list valueList;
+    valueList.setItems(itemList);
+
+    return valueList;
+}
+
 bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
 {
     if (!item.hasPayload<SugarOpportunity>()) {

@@ -22,6 +22,14 @@
 #include <QDebug>
 #include "sugarmockprotocol.h"
 #include "sugarjob.h"
+#include "listentriesscope.h"
+#include "accountshandler.h"
+#include "opportunitieshandler.h"
+#include "campaignshandler.h"
+#include "leadshandler.h"
+#include "contactshandler.h"
+
+#include "sugarsession.h"
 
 class TestSugarMockProtocol : public QObject
 {
@@ -66,6 +74,75 @@ private Q_SLOTS:
         int error = protocol.login("user", "password", sessionId, errorMessage);
         //THEN
         QCOMPARE(error, static_cast<int>(SugarJob::Errors::CouldNotConnectError));
+    }
+
+    void shouldCountEntriesCorrectly_data()
+    {
+        QTest::addColumn<QString>("type");
+        QTest::addColumn<int>("amount");
+
+        QTest::newRow("accounts") << "Accounts" << 3;
+        QTest::newRow("opportunities") << "Opportunities" << 2;
+        QTest::newRow("leads") << "Leads" << 1;
+        QTest::newRow("campaign") << "Campaigns" << 1;
+        QTest::newRow("contact") << "Contacts" << 1;
+    }
+
+    void shouldCountEntriesCorrectly()
+    {
+        QFETCH(QString, type);
+        QFETCH(int, amount);
+        //GIVEN
+        SugarMockProtocol protocol;
+        //WHEN
+        int entriesCount = 0;
+        ListEntriesScope scope;
+        QString query;
+        QString errorMessage;
+        protocol.getEntriesCount(scope, type, query, entriesCount, errorMessage);
+        //THEN
+        QCOMPARE(entriesCount, amount);
+    }
+
+    void ListEntriesWork_data()
+    {
+        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<int>("amount");
+
+        QTest::newRow("accounts") << "Accounts" << 3;
+        QTest::newRow("opportunities") << "Opportunities" << 2;
+        QTest::newRow("leads") << "Leads" << 1;
+        QTest::newRow("campaigns") << "Campaigns" << 1;
+        QTest::newRow("contacts") << "Contacts" << 1;
+    }
+
+    void ListEntriesWork()
+    {
+        QFETCH(QString, moduleName);
+        QFETCH(int, amount);
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol protocol;
+        AccountsHandler accountsHandler(&session);
+        protocol.setAccountsHandler(&accountsHandler);
+        OpportunitiesHandler opportunitiesHandler(&session);
+        protocol.setOpportunitiesHandler(&opportunitiesHandler);
+        CampaignsHandler campaignHandler(&session);
+        protocol.setCampaignsHandler(&campaignHandler);
+        LeadsHandler leadsHandler(&session);
+        protocol.setLeadsHandler(&leadsHandler);
+        ContactsHandler contactHandler(&session);
+        protocol.setContactsHandler(&contactHandler);
+
+        //WHEN
+        ListEntriesScope scope;
+        EntriesListResult result;
+        QStringList selectedFields;
+        QString query, orderBy, errorMessage;
+        protocol.listEntries(scope, moduleName, query, orderBy, selectedFields, result, errorMessage);
+        //THEN
+        QCOMPARE(result.resultCount, amount);
+        QCOMPARE(result.entryList.items().size(), amount);
     }
 };
 

@@ -141,20 +141,6 @@ bool SugarSession::readPassword()
     return true;
 }
 
-void SugarSession::logout()
-{
-    if (!d->mSessionId.isEmpty() && d->mSoap != nullptr) {
-        KDSoapGenerated::TNS__Error_value errorValue = d->mSoap->logout(d->mSessionId);
-        if (errorValue.number() != QLatin1String("0")) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
-        }
-        if (!d->mSoap->lastError().isEmpty()) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout had fault" << d->mSoap->lastError();
-        }
-    }
-    forgetSession();
-}
-
 void SugarSession::forgetSession()
 {
     d->mSessionId = QString();

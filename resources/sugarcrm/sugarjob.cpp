@@ -222,4 +222,10 @@ Sugarsoap *SugarJob::soap()
 {
     return d->mSession->soap();
 }
+
+bool SugarJob::shouldTryRelogin() const
+{
+    return d->mTryRelogin;
+}
+
 #include "moc_sugarjob.cpp"

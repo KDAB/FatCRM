@@ -33,6 +33,8 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 
+#include "sugarprotocolbase.h"
+
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/AttributeFactory>
 #include <AkonadiCore/CollectionFetchJob>
@@ -93,10 +95,10 @@ void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
 }
 
-void ModuleHandler::getEntriesCount(const ListEntriesScope &scope)
+int ModuleHandler::getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage)
 {
     const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
-    soap()->asyncGet_entries_count(sessionId(), moduleName(), query, scope.deleted());
+    return mSession->protocol()->getEntriesCount(scope, moduleName(), query, entriesCount, errorMessage);
 }
 
 void ModuleHandler::listEntries(const ListEntriesScope &scope)
@@ -111,6 +113,14 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     selectedFields.setItems(supportedSugarFields());
 
     soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+}
+
+int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult ,QString &errorMessage)
+{
+    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
+    const QString orderBy = orderByForListing();
+
+    return mSession->protocol()->listEntries(scope, moduleName(), query, orderBy, supportedSugarFields(), entriesListResult, errorMessage);
 }
 
 QStringList ModuleHandler::availableFields() const
@@ -128,6 +138,10 @@ QStringList ModuleHandler::availableFields() const
 // static (also used by debug handler for modules without a handler)
 QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QString &module)
 {
+    if (session->soap() == nullptr) {
+        return QStringList();
+    }
+
     KDSoapGenerated::Sugarsoap *soap = session->soap();
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
