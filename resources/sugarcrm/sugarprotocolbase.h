@@ -29,7 +29,7 @@ class SugarSession;
 struct EntriesListResult
 {
     int resultCount;
-    int nextOffset;
+    int nextOffset = 0;
     KDSoapGenerated::TNS__Entry_list entryList;
     KDSoapGenerated::TNS__Field_list fieldList;
 };
