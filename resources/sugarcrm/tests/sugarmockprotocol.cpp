@@ -190,18 +190,23 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
         if (moduleName == "Accounts") {
             entriesListResult.resultCount = mAccounts.size();
             entriesListResult.entryList.setItems(listAccount());
+            mAccounts.clear();
         } else if (moduleName == "Opportunities") {
             entriesListResult.resultCount = mOpportunities.size();
             entriesListResult.entryList.setItems(listOpportunities());
+            mOpportunities.clear();
         } else if (moduleName == "Campaigns") {
             entriesListResult.resultCount = mCampaigns.size();
             entriesListResult.entryList.setItems(listCampaigns());
+            mCampaigns.clear();
         } else if (moduleName == "Leads") {
             entriesListResult.resultCount = mLeads.size();
             entriesListResult.entryList.setItems(listLeads());
+            mLeads.clear();
         } else if (moduleName == "Contacts") {
             entriesListResult.resultCount = mContacts.size();
             entriesListResult.entryList.setItems(listContacts());
+            mContacts.clear();
         } else {
             entriesListResult.resultCount = -1;
         }
