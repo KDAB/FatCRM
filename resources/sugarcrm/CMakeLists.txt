@@ -80,3 +80,6 @@ target_link_libraries(akonadi_sugarcrm_resource
 
 
 install(TARGETS akonadi_sugarcrm_resource ${INSTALL_TARGETS_DEFAULT_ARGS})
+
+add_subdirectory(tests)
+

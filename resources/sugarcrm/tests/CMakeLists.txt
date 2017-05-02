@@ -1,10 +1,10 @@
 #auto tests
 
-set(_resourcesdir ${CMAKE_CURRENT_SOURCE_DIR}/../../../resources)
+set(_resourcesdir ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 
 include_directories(
   ${_resourcesdir}/sugarcrm
-  ${CMAKE_CURRENT_BINARY_DIR}/../../../resources/sugarcrm
+  ${CMAKE_CURRENT_BINARY_DIR}/..
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../kdcrmdata
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
