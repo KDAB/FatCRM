@@ -234,3 +234,11 @@ void SugarMockProtocol::setContactsHandler(ContactsHandler *handler)
 {
     mContactHandler = handler;
 }
+
+void SugarMockProtocol::addAccount(const QString &name, const QString &id)
+{
+    SugarAccount account;
+    account.setName(name);
+    account.setId(id);
+    mAccounts.push_back(account);
+}
