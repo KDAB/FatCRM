@@ -78,14 +78,11 @@ SugarSession::~SugarSession()
 SugarSession::RequiredAction SugarSession::setSessionParameters(const QString &username, const QString &password, const QString &host)
 {
     RequiredAction result = None;
-    if (d->mSoap != nullptr) {
-        if (host != d->mHost || username != d->mUserName) {
-            result = NewLogin;
-        } else if (password != d->mPassword) {
-            result = ReLogin;
-        }
-    } else {
+
+    if (host != d->mHost || username != d->mUserName) {
         result = NewLogin;
+    } else if (password != d->mPassword) {
+        result = ReLogin;
     }
 
     d->mUserName = username;
