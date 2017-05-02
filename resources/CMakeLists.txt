@@ -14,6 +14,7 @@ if(KDSoap_CODEGENERATOR)
               ${_wsdl}
       DEPENDS ${_wsdl}
     )
+    add_custom_target(generate_${_name}_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${_name}.h)
     add_custom_command(
       OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${_name}.cpp
       COMMAND ${KDSoap_CODEGENERATOR} -o ${_name}.cpp -namespace KDSoapGenerated${_namespaceSuffix} -impl ${_name}.h

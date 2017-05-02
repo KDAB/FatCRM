@@ -31,3 +31,5 @@ add_resources_tests(
   test_loginjob
   test_listentriesjob
 )
+
+add_dependencies(test_listentriesjob generate_sugarsoap_h)
