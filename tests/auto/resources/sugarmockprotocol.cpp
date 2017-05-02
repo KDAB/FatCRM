@@ -206,6 +206,7 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
             entriesListResult.resultCount = -1;
         }
     }
+    entriesListResult.nextOffset += entriesListResult.resultCount;
     return 0;
 }
 
