@@ -63,7 +63,6 @@ private Q_SLOTS:
         QFETCH(QString, host);
         QFETCH(SugarSession::RequiredAction, correctReturn);
         SugarSession session(nullptr);
-        session.createSoapInterface();
         session.setSessionParameters("usertest", "passwordtest", "hosttest");
         //WHEN
         SugarSession::RequiredAction rA = session.setSessionParameters(username, password, host);

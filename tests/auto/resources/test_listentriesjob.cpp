@@ -93,7 +93,6 @@ private Q_SLOTS:
         protocol->setSession(session);
         session->setProtocol(protocol);
         session->setSessionParameters("user", "password", "hosttest");
-        session->createSoapInterface();
         ModuleHandler *handler = 0;
         if (moduleName == "Accounts") {
             AccountsHandler *h = new AccountsHandler(session);
