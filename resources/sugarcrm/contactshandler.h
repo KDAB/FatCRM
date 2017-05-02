@@ -26,6 +26,7 @@
 #include "modulehandler.h"
 
 class ContactAccessorPair;
+#define KABC KContacts
 namespace KABC
 {
 class Addressee;

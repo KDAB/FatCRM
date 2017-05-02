@@ -9,9 +9,13 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
 
+include_directories(${KDSoap_INCLUDE_DIR})
 
 add_library(sugar_mock_protocol_private STATIC sugarmockprotocol.cpp)
 target_link_libraries(sugar_mock_protocol_private
+   KF5::Contacts
+   kdcrmdata
+   ${KDSoap_LIBRARIES}
    KF5::CoreAddons
    Qt5::Core
 )
@@ -22,6 +26,7 @@ macro(add_resources_tests)
       sugar_mock_protocol_private
       akonadi_sugarcrm_resource_private
       kdcrmdata
+      ${KDSoap_LIBRARIES}
       Qt5::Test
       Qt5::Gui
     )

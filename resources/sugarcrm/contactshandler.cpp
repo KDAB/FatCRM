@@ -40,6 +40,8 @@ using namespace KDSoapGenerated;
 
 #include <QHash>
 
+#define KABC KContacts
+
 typedef QString(*valueGetter)(const KContacts::Addressee &);
 typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
 typedef void (*addressSetter)(const QString &, KContacts::Address &);

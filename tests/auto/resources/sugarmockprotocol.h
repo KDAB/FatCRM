@@ -28,7 +28,7 @@
 #include "sugaropportunity.h"
 #include "sugarcampaign.h"
 #include "sugarlead.h"
-#include <KABC/Addressee>
+#include <KContacts/Addressee>
 
 #include "sugarsoap.h"
 
@@ -73,7 +73,7 @@ private:
     QVector<SugarOpportunity> mOpportunities;
     QVector<SugarCampaign> mCampaigns;
     QVector<SugarLead> mLeads;
-    QVector<KABC::Addressee> mContacts;
+    QVector<KContacts::Addressee> mContacts;
 
     QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
     QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;

@@ -203,6 +203,7 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
             entriesListResult.resultCount = mContacts.size();
             entriesListResult.entryList.setItems(listContacts());
         } else {
+            qWarning() << "listEntries called for unknown module" << moduleName;
             entriesListResult.resultCount = -1;
         }
     }
