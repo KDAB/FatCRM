@@ -197,11 +197,6 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
     return 0;
 }
 
-int SugarMockProtocol::setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage)
-{
-    return 0;
-}
-
 int SugarMockProtocol::getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
     Q_UNUSED(selectedFields);
@@ -227,6 +222,82 @@ int SugarMockProtocol::getEntry(const QString &moduleName, const QString &remote
         }
     }
     return found ? KJob::NoError : SugarJob::SoapError;
+}
+
+int SugarMockProtocol::setEntry(const QString& moduleName, const KDSoapGenerated::TNS__Name_value_list& nameValueList, QString &idItemCreate, QString &errorMessage)
+{
+    Q_UNUSED(errorMessage);
+    QList<KDSoapGenerated::TNS__Name_value> list = nameValueList.items();
+    bool deleted = false;
+    for (int i = 0; i < list.size() && !deleted; ++i) {
+        if (list.at(i).name() == "deleted" && list.at(i).value() == "1") {
+            deleted = true;
+        }
+    }
+
+    QString id;
+    for (int i = 0; i < list.size() && id.isEmpty(); ++i) {
+        if (list.at(i).name() == "id") {
+            id = list.at(i).value();
+        }
+    }
+
+    if (moduleName == "Accounts") {
+        SugarAccount account = mAccountHandler->nameValueListToSugarAccount(nameValueList,id);
+        if (!id.isEmpty()) {
+            bool found = false;
+            for (int i = 0; i < mAccounts.size() && !found; ++i) {
+                if (mAccounts.at(i).id() == id) {
+                    found = true;
+                    if (deleted) {
+                        mAccounts.remove(i);
+                    } else {
+                        account.setId(mAccounts.at(i).id());
+                        mAccounts[i] = account;
+                    }
+                }
+            }
+            if (!found) {
+                return SugarJob::SoapError;
+            }
+        } else {
+            if (!deleted) {
+                account.setId(QString::number(mCounterId));
+                mAccounts.push_back(account);
+                idItemCreate = QString::number(mCounterId++);
+            } else {
+                return SugarJob::SoapError;
+            }
+        }
+    } else if (moduleName == "Opportunities") {
+        SugarOpportunity opp = mOpportunityHandler->nameValueListToSugarOpportunity(nameValueList,id);
+        if (!id.isEmpty()) {
+            bool found = false;
+            for (int i = 0; i < mOpportunities.size() && !found; ++i) {
+                if (mOpportunities.at(i).id() == id) {
+                    found = true;
+                    if (deleted) {
+                        mOpportunities.remove(i);
+                    } else {
+                        opp.setId(mOpportunities.at(i).id());
+                        mOpportunities[i] = opp;
+                    }
+                }
+            }
+            if (!found) {
+                return SugarJob::SoapError;
+            }
+        } else {
+            if (!deleted) {
+                opp.setId(QString::number(mCounterId));
+                mOpportunities.push_back(opp);
+                idItemCreate = QString::number(mCounterId++);
+            } else {
+                return SugarJob::SoapError;
+            }
+        }
+    }
+    return KJob::NoError;
 }
 
 void SugarMockProtocol::setAccountsHandler(AccountsHandler *handler)
