@@ -204,7 +204,29 @@ int SugarMockProtocol::setEntry(const QString& module_name, const KDSoapGenerate
 
 int SugarMockProtocol::getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
-    return 0;
+    Q_UNUSED(selectedFields);
+    Q_UNUSED(errorMessage);
+    bool found = false;
+    if (moduleName == "Accounts") {
+        for (int i = 0; i < mAccounts.size() && !found; ++i) {
+            if (mAccounts.at(i).id() == remoteId) {
+                found = true;
+                entryValue.setId(mAccounts.at(i).id());
+                KDSoapGenerated::TNS__Name_value_list nvl = mAccountHandler->sugarAccountToNameValueList(mAccounts.at(i));
+                entryValue.setName_value_list(nvl);
+            }
+        }
+    } else if (moduleName == "Opportunities") {
+        for (int i = 0; i < mOpportunities.size() && !found; ++i) {
+            if (mOpportunities.at(i).id() == remoteId) {
+                found = true;
+                entryValue.setId(mOpportunities.at(i).id());
+                KDSoapGenerated::TNS__Name_value_list nvl = mOpportunityHandler->sugarOpportunityToNameValueList(mOpportunities.at(i));
+                entryValue.setName_value_list(nvl);
+            }
+        }
+    }
+    return found ? KJob::NoError : SugarJob::SoapError;
 }
 
 void SugarMockProtocol::setAccountsHandler(AccountsHandler *handler)
