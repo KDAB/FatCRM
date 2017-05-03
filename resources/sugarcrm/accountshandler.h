@@ -53,6 +53,7 @@ public:
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
+    SugarAccount nameValueListToSugarAccount(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 private Q_SLOTS:
     void slotItemsReceived(const Akonadi::Item::List &items);
     void slotUpdateJobResult(KJob *job);

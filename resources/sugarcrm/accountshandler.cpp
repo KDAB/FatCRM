@@ -179,6 +179,25 @@ int AccountsHandler::expectedContentsVersion() const
     return 3;
 }
 
+SugarAccount AccountsHandler::nameValueListToSugarAccount(const KDSoapGenerated::TNS__Name_value_list & valueList, const QString &id)
+{
+    SugarAccount account;
+    account.setId(id);
+    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
+        if (accessIt == mAccessors.constEnd()) {
+            const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
+            account.setCustomField(crmCustomFieldName, value);
+            continue;
+        }
+
+        (account.*(accessIt.value().setter))(value);
+    }
+    return account;
+}
+
 Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;
@@ -193,20 +212,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarAccount::mimeType());
 
-    SugarAccount account;
-    account.setId(entry.id());
-    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
-            const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
-            account.setCustomField(crmCustomFieldName, value);
-            continue;
-        }
-
-        (account.*(accessIt.value().setter))(value);
-    }
+    SugarAccount account = nameValueListToSugarAccount(entry.name_value_list(), entry.id());
 
     SugarAccountCache *cache = SugarAccountCache::instance();
     cache->addAccount(account.name(), account.id());
