@@ -174,6 +174,25 @@ QStringList OpportunitiesHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::accountId();
 }
 
+SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list & valueList, const QString &id)
+{
+    SugarOpportunity opportunity;
+    opportunity.setId(id);
+    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
+        if (accessIt == mAccessors.constEnd()) {
+            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
+            opportunity.setCustomField(customCrmFieldName, value);
+            continue;
+        }
+
+        (opportunity.*(accessIt.value().setter))(value);
+    }
+    return opportunity;
+}
+
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;
@@ -188,20 +207,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarOpportunity::mimeType());
 
-    SugarOpportunity opportunity;
-    opportunity.setId(entry.id());
-    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
-            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
-            opportunity.setCustomField(customCrmFieldName, value);
-            continue;
-        }
-
-        (opportunity.*(accessIt.value().setter))(value);
-    }
+    SugarOpportunity opportunity = nameValueListToSugarOpportunity(entry.name_value_list(), entry.id());
 
     if (opportunity.accountId().isEmpty()) {
         // Resolve account id using name, since Sugar doesn't do that

@@ -57,6 +57,7 @@ public:
     KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp) const;
 
     ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
+    SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 private Q_SLOTS:
     void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
     void slotUpdateJobResult(KJob *job);
