@@ -146,6 +146,42 @@ private Q_SLOTS:
         QCOMPARE(result.resultCount, amount);
         QCOMPARE(result.entryList.items().size(), amount);
     }
+
+    void getEntryShouldReturnEntry_data()
+    {
+        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<QString>("remoteId");
+        QTest::addColumn<int>("expectedResult");
+
+        QTest::newRow("correctAccount") << "Accounts" << "0" << static_cast<int>(KJob::NoError);
+        QTest::newRow("incorrectAccount") << "Accounts" << "100" << static_cast<int>(SugarJob::SoapError);
+        QTest::newRow("correctOpportunity") << "Opportunities" << "100" << static_cast<int>(KJob::NoError);
+        QTest::newRow("incorectOpportunity") << "Opportunities" << "0" << static_cast<int>(SugarJob::SoapError);
+    }
+
+    void getEntryShouldReturnEntry()
+    {
+        QFETCH(QString, moduleName);
+        QFETCH(QString, remoteId);
+        QFETCH(int, expectedResult);
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol protocol;
+        protocol.addData();
+        AccountsHandler accountsHandler(&session);
+        protocol.setAccountsHandler(&accountsHandler);
+        OpportunitiesHandler opportunitiesHandler(&session);
+        protocol.setOpportunitiesHandler(&opportunitiesHandler);
+        //WHEN
+        KDSoapGenerated::TNS__Entry_value entryValue;
+        QString errorMessage;
+        int result = protocol.getEntry(moduleName, remoteId, QStringList(), entryValue, errorMessage);
+        //THEN
+        QCOMPARE(result, expectedResult);
+        if (result == 0) {
+            QCOMPARE(entryValue.id(), remoteId);
+        }
+    }
 };
 
 QTEST_MAIN(TestSugarMockProtocol)
