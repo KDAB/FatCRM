@@ -34,25 +34,7 @@
 SugarMockProtocol::SugarMockProtocol()
     : mAccountHandler(0), mOpportunityHandler(0), mCampaignHandler(0), mLeadHandler(0), mContactHandler(0), mServerNotFound(false)
 {
-    mAccounts.resize(3);
-    mAccounts[0].setName("accountZero");
-    mAccounts[0].setId("0");
-    mAccounts[1].setName("accountOne");
-    mAccounts[1].setId("1");
-    mAccounts[2].setName("accountTwo");
-    mAccounts[2].setId("2");
 
-    mOpportunities.resize(2);
-    mOpportunities[0].setId("100");
-    mOpportunities[0].setName("validOpp");
-    mOpportunities[0].setTempAccountName("accountZero");
-    mOpportunities[1].setId("101");
-    mOpportunities[1].setName("oppWithNonExistingAccount");
-    mOpportunities[1].setTempAccountName("test");
-
-    mCampaigns.resize(1);
-    mLeads.resize(1);
-    mContacts.resize(1);
 }
 
 
@@ -190,18 +172,23 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, const QString 
         if (moduleName == "Accounts") {
             entriesListResult.resultCount = mAccounts.size();
             entriesListResult.entryList.setItems(listAccount());
+            mAccounts.clear();
         } else if (moduleName == "Opportunities") {
             entriesListResult.resultCount = mOpportunities.size();
             entriesListResult.entryList.setItems(listOpportunities());
+            mOpportunities.clear();
         } else if (moduleName == "Campaigns") {
             entriesListResult.resultCount = mCampaigns.size();
             entriesListResult.entryList.setItems(listCampaigns());
+            mCampaigns.clear();
         } else if (moduleName == "Leads") {
             entriesListResult.resultCount = mLeads.size();
             entriesListResult.entryList.setItems(listLeads());
+            mLeads.clear();
         } else if (moduleName == "Contacts") {
             entriesListResult.resultCount = mContacts.size();
             entriesListResult.entryList.setItems(listContacts());
+            mContacts.clear();
         } else {
             entriesListResult.resultCount = -1;
         }
@@ -233,4 +220,44 @@ void SugarMockProtocol::setLeadsHandler(LeadsHandler *handler)
 void SugarMockProtocol::setContactsHandler(ContactsHandler *handler)
 {
     mContactHandler = handler;
+}
+
+void SugarMockProtocol::addAccounts()
+{
+    mAccounts.resize(3);
+    mAccounts[0].setName("accountZero");
+    mAccounts[0].setId("0");
+    mAccounts[1].setName("accountOne");
+    mAccounts[1].setId("1");
+    mAccounts[2].setName("accountTwo");
+    mAccounts[2].setId("2");
+}
+
+void SugarMockProtocol::addOpportunities()
+{
+    mOpportunities.resize(2);
+    mOpportunities[0].setId("100");
+    mOpportunities[0].setName("validOpp");
+    mOpportunities[0].setTempAccountName("accountZero");
+    mOpportunities[1].setId("101");
+    mOpportunities[1].setName("oppWithNonExistingAccount");
+    mOpportunities[1].setTempAccountName("accountTest");
+}
+
+void SugarMockProtocol::addData()
+{
+    addAccounts();
+    addOpportunities();
+
+    mCampaigns.resize(1);
+    mLeads.resize(1);
+    mContacts.resize(1);
+}
+
+void SugarMockProtocol::addAccount(const QString &name, const QString &id)
+{
+    SugarAccount account;
+    account.setName(name);
+    account.setId(id);
+    mAccounts.push_back(account);
 }

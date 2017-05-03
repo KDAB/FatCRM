@@ -24,9 +24,9 @@
 #include <Akonadi/ItemFetchScope>
 #include <Akonadi/ItemModifyJob>
 
-ReferenceUpdateJob::ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent) :
+ReferenceUpdateJob::ReferenceUpdateJob(const Akonadi::Collection &collection, ReferenceUpdateFunction updateItem, QObject *parent) :
     KCompositeJob(parent),
-    mCollection(collection)
+    mCollection(collection), mUpdateFunction(updateItem)
 {
 }
 
@@ -47,7 +47,7 @@ void ReferenceUpdateJob::slotItemsReceived(const Akonadi::Item::List &items)
     foreach (const Akonadi::Item &item, items) {
         // My kingdom for a C++ std::function here instead of a virtual
         Akonadi::Item copy = item;
-        if (updateItem(copy)) {
+        if (mUpdateFunction(copy)) {
             modifiedItems.append(copy);
         }
     }

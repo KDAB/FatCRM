@@ -94,6 +94,7 @@ private Q_SLOTS:
         QFETCH(int, amount);
         //GIVEN
         SugarMockProtocol protocol;
+        protocol.addData();
         //WHEN
         int entriesCount = 0;
         ListEntriesScope scope;
@@ -123,6 +124,7 @@ private Q_SLOTS:
         //GIVEN
         SugarSession session(nullptr);
         SugarMockProtocol protocol;
+        protocol.addData();
         AccountsHandler accountsHandler(&session);
         protocol.setAccountsHandler(&accountsHandler);
         OpportunitiesHandler opportunitiesHandler(&session);
