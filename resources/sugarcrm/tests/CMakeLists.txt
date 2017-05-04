@@ -30,6 +30,7 @@ add_resources_tests(
   test_sugarmockprotocol
   test_loginjob
   test_listentriesjob
+  test_createentryjob
 )
 
 add_dependencies(test_listentriesjob generate_sugarsoap_h)

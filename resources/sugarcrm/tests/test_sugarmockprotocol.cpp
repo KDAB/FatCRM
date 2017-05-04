@@ -182,6 +182,54 @@ private Q_SLOTS:
             QCOMPARE(entryValue.id(), remoteId);
         }
     }
+
+    void setEntryShouldCorrectlySet_data()
+    {
+        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<QString>("id");
+        QTest::addColumn<QString>("expectedId");
+        QTest::addColumn<int>("expectedResult");
+
+        QTest::newRow("addAccount") << "Accounts" << "" << "1000" << int(KJob::NoError);
+        QTest::newRow("updateAccount") << "Accounts" << "1" << "1" << int(KJob::NoError);
+        QTest::newRow("updateNonexistentAccount") << "Accounts" << "100" << "100" << int(SugarJob::SoapError);
+        QTest::newRow("addOpportunity") << "Opportunities" << "" << "1000" << int(KJob::NoError);
+        QTest::newRow("updateOpportunity") << "Opportunities" << "100" << "100" << int(KJob::NoError);
+        QTest::newRow("updateNonexistentOpportunity") << "Opportunities" << "0" << "0" << int(SugarJob::SoapError);
+    }
+
+    void setEntryShouldCorrectlySet()
+    {
+        QFETCH(QString, moduleName);
+        QFETCH(QString, id);
+        QFETCH(QString, expectedId);
+        QFETCH(int, expectedResult);
+
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol protocol;
+        protocol.addData();
+        AccountsHandler accountsHandler(&session);
+        protocol.setAccountsHandler(&accountsHandler);
+        OpportunitiesHandler opportunitiesHandler(&session);
+        protocol.setOpportunitiesHandler(&opportunitiesHandler);
+        KDSoapGenerated::TNS__Name_value_list nvl;
+        if (moduleName == "Accounts") {
+            SugarAccount account;
+            account.setId(id);
+            nvl = accountsHandler.sugarAccountToNameValueList(account);
+        } else if (moduleName == "Opportunities") {
+            SugarOpportunity opp;
+            opp.setId(id);
+            nvl = opportunitiesHandler.sugarOpportunityToNameValueList(opp);
+        }
+        //WHEN
+        QString errorMessage;
+        const int result = protocol.setEntry(moduleName, nvl, id, errorMessage);
+        //THEN
+        QCOMPARE(result, expectedResult);
+        QCOMPARE(id, expectedId);
+    }
 };
 
 QTEST_MAIN(TestSugarMockProtocol)
