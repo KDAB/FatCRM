@@ -278,45 +278,27 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
     }
 }
 
-
-// Resolve account name to account id in pending opp
-class OppAccountModifyJob : public ReferenceUpdateJob
+ReferenceUpdateFunction OpportunitiesHandler::getOppAccountModifyFunction(const QString &name, const QString &id) const
 {
-public:
-    OppAccountModifyJob(const Akonadi::Collection &coll, QObject *parent)
-        : ReferenceUpdateJob(coll, parent) {}
-
-    void setAccountName(const QString &accountName) {
-        mAccountName = accountName;
-    }
-    void setAccountId(const QString &accountId) {
-        mAccountId = accountId;
-    }
-
-protected:
-    bool updateItem(Akonadi::Item &item) override
-    {
+    return [name,id](Akonadi::Item &item) {
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
-        if (opp.tempAccountName() == mAccountName) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updating opp" << opp.name() << "from" << mAccountName << "to" << mAccountId;
-            opp.setAccountId(mAccountId);
+        if (opp.tempAccountName() == name) {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updating opp" << opp.name() << "from" << name << "to" << id;
+            opp.setAccountId(id);
             item.setPayload(opp);
             return true;
         }
         return false;
-    }
-private:
-    QString mAccountName;
-    QString mAccountId;
-};
+    };
+}
 
 void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
 {
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fixing opp to set account_id:" << accountName << accountId;
-    OppAccountModifyJob *job = new OppAccountModifyJob(collection(), this);
-    job->setAccountName(accountName);
-    job->setAccountId(accountId);
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Looking for opps for setting account_id:" << accountName << accountId;
+
+    ReferenceUpdateFunction updateItem = getOppAccountModifyFunction(accountName, accountId);
+    ReferenceUpdateJob *job = new ReferenceUpdateJob(collection(), updateItem, this);
     connect(job, SIGNAL(result(KJob*)), this, SLOT(slotUpdateJobResult(KJob*)));
     job->start();
 }
@@ -327,4 +309,3 @@ void OpportunitiesHandler::slotUpdateJobResult(KJob *job)
         qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }
-

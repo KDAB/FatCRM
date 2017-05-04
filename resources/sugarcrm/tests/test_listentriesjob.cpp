@@ -35,10 +35,22 @@
 class TestListEntriesJob : public QObject
 {
     Q_OBJECT
+private:
+
+    void verifyOpportunities(const Akonadi::Item::List &lItems,const QList<QString> &id, const QList<QString> &name, const QList<QString> &accountId)
+    {
+        for (int i = 0; i < lItems.size(); i++)
+        {
+            SugarOpportunity so = lItems.at(i).payload<SugarOpportunity>();
+            QCOMPARE(so.id(), id[i]);
+            QCOMPARE(so.name(), name[i]);
+            QCOMPARE(so.accountId(), accountId[i]);
+        }
+    }
 
 private Q_SLOTS:
 
-    void  initTestCase()
+    void initTestCase()
     {
         qRegisterMetaType<Akonadi::Item::List>("Akonadi::Item::List");
     }
@@ -89,6 +101,7 @@ private Q_SLOTS:
         Akonadi::Collection collection;
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->addData();
         SugarSession *session = new SugarSession (nullptr);
         protocol->setSession(session);
         session->setProtocol(protocol);
@@ -131,6 +144,7 @@ private Q_SLOTS:
         Akonadi::Collection collection;
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->addAccounts();
         SugarSession session(nullptr);
         protocol->setSession(&session);
         session.setProtocol(protocol);
@@ -167,6 +181,7 @@ private Q_SLOTS:
         Akonadi::Collection collection;
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->addOpportunities();
         SugarSession session(nullptr);
         protocol->setSession(&session);
         session.setProtocol(protocol);
@@ -182,19 +197,35 @@ private Q_SLOTS:
         //THEN
         QCOMPARE(spy.count(), 1);
         const QList<QVariant> arguments = spy.at(0);
-        const QString id[2] = {"100", "101"};
-        const QString name[2] = {"validOpp", "oppWithNonExistingAccount"};
-        const QString accountId[2] = {"0", ""};
-        const Akonadi::Item::List lItems = arguments.at(0).value<Akonadi::Item::List>();
+        const QList<QString> id = {"100", "101"};
+        const QList<QString> name = {"validOpp", "oppWithNonExistingAccount"};
+        QList<QString> accountId = {"0", ""};
+        Akonadi::Item::List lItems = arguments.at(0).value<Akonadi::Item::List>();
         QCOMPARE(lItems.size(), 2);
-        for(int i = 0; i < 2; i++)
-        {
-            SugarOpportunity so = lItems[i].payload<SugarOpportunity>();
-            QCOMPARE(so.id(), id[i]);
-            QCOMPARE(so.name(), name[i]);
-            QCOMPARE(so.accountId(), accountId[i]);
-        }
+        verifyOpportunities(lItems, id, name, accountId);
         QCOMPARE(cache->size(), 1);
+
+        //GIVEN
+        protocol->addAccount("accountTest","3");
+        AccountsHandler accountHandler(&session);
+        protocol->setAccountsHandler(&accountHandler);
+        ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
+        accountListJob->setModule(&accountHandler);
+        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        //WHEN
+        accountListJob->start();
+        QVERIFY(accountListJob->exec());
+        //THEN
+        QCOMPARE(accountSpy.count(), 1);
+        const QList<QVariant> accountArguments = accountSpy.at(0);
+        const Akonadi::Item::List accountLItems = accountArguments.at(0).value<Akonadi::Item::List>();
+        QCOMPARE(accountLItems.size(), 1);
+        ReferenceUpdateFunction updateItem = handler.getOppAccountModifyFunction("accountTest", "3");
+        for (Akonadi::Item &item : lItems) {
+            updateItem(item);
+        }
+        accountId[1] = "3";
+        verifyOpportunities(lItems, id, name, accountId);
     }
 };
 

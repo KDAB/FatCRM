@@ -25,6 +25,8 @@
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/Item>
 
+typedef std::function<bool(Akonadi::Item &)> ReferenceUpdateFunction;
+
 /**
  * @brief The reference update job goes through a collection and changes
  * all references from A to B. Example: resolving the account name to an
@@ -34,12 +36,9 @@ class ReferenceUpdateJob : public KCompositeJob
 {
     Q_OBJECT
 public:
-    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, QObject *parent = Q_NULLPTR);
+    explicit ReferenceUpdateJob(const Akonadi::Collection &collection, ReferenceUpdateFunction updateItem, QObject *parent = 0);
 
     void start() override;
-
-protected:
-    virtual bool updateItem(Akonadi::Item &item) = 0;
 
 signals:
 
@@ -49,6 +48,7 @@ private slots:
 
 private:
     Akonadi::Collection mCollection;
+    ReferenceUpdateFunction mUpdateFunction;
 };
 
 #endif // REFERENCEUPDATEJOB_H

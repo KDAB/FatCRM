@@ -25,10 +25,11 @@
 
 #include "modulehandler.h"
 #include "kdcrmdata/sugaropportunity.h"
+#include <functional>
 
+typedef std::function<bool(Akonadi::Item &)> ReferenceUpdateFunction;
 
 template <typename U, typename V> class QHash;
-
 class OpportunitiesHandler : public ModuleHandler
 {
     Q_OBJECT
@@ -53,6 +54,8 @@ public:
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
     KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp) const;
+
+    ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
 private Q_SLOTS:
     void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
     void slotUpdateJobResult(KJob *job);

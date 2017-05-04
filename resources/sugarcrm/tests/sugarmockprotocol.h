@@ -62,6 +62,11 @@ public:
     void setLeadsHandler(LeadsHandler *handler);
     void setContactsHandler(ContactsHandler *handler);
 
+    void addData();
+    void addAccounts();
+    void addOpportunities();
+    void addAccount(const QString &name, const QString &id);
+
 private:
     AccountsHandler *mAccountHandler;
     OpportunitiesHandler *mOpportunityHandler;
