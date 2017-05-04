@@ -364,3 +364,13 @@ void SugarMockProtocol::addAccount(const QString &name, const QString &id)
     account.setId(id);
     mAccounts.push_back(account);
 }
+
+QVector<SugarAccount> SugarMockProtocol::accounts() const
+{
+    return mAccounts;
+}
+
+QVector<SugarOpportunity> SugarMockProtocol::opportunities() const
+{
+    return mOpportunities;
+}

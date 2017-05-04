@@ -70,6 +70,9 @@ public:
     void addOpportunities();
     void addAccount(const QString &name, const QString &id);
 
+    QVector<SugarAccount> accounts() const;
+    QVector<SugarOpportunity> opportunities() const;
+
 private:
     AccountsHandler *mAccountHandler;
     OpportunitiesHandler *mOpportunityHandler;
