@@ -111,9 +111,8 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
         mStage = UpdateEntry;
 
         QString id, errorMessage;
-        id = entryValue.id();
         int result = mHandler->setEntry(mItem, id, errorMessage);
-        if(result == KJob::NoError) {
+        if (result == KJob::NoError) {
             setEntryDone(remoteItem.remoteId());
         } else {
             setEntryError(result, errorMessage);
