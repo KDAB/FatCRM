@@ -21,7 +21,7 @@ Compiling from sources, on Linux
 
 Install the package for kdepimlibs development based on Qt4: libkdepimlibs4-devel (OpenSuSE), kdepimlib5-dev (Debian/Ubuntu).
 
-* Install KDSoap (version 1.5.1 or higher)
+* Install KDSoap (version 1.6.0 or higher)
 
 ```
 git clone https://github.com/KDAB/KDSoap.git
