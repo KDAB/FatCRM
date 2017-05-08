@@ -43,7 +43,7 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>Fi&amp;le</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionCRMAccounts"/>
     <addaction name="separator"/>
