@@ -113,9 +113,8 @@ void DeleteEntryJob::startSugarTask()
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField);
 
-    QString id, errorMessage;
-    id = d->mItem.remoteId();
-    int result = session()->protocol()->setEntry(d->mModuleName, valueList, id, errorMessage);
+    QString newId, errorMessage;
+    int result = session()->protocol()->setEntry(d->mModuleName, valueList, newId, errorMessage);
     if (result == KJob::NoError) {
         d->setEntryDone();
     } else {
