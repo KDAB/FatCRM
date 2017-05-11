@@ -54,12 +54,9 @@ private Q_SLOTS:
         QFETCH(QString, expectedName);
         QFETCH(bool, expectedResult);
 
-        SugarAccount account;
-        account.setId(id);
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(id);
-        item.setPayload<SugarAccount>(account);
         SugarMockProtocol *protocol = new SugarMockProtocol;
         protocol->addAccounts();
         SugarSession session(nullptr);
@@ -75,9 +72,9 @@ private Q_SLOTS:
         QCOMPARE(result, expectedResult);
         //THEN
         if (result) {
-            SugarAccount accountFind = job.item().payload<SugarAccount>();
-            QCOMPARE(accountFind.id(), expectedId);
-            QCOMPARE(accountFind.name(), expectedName);
+            SugarAccount finalAccount = job.item().payload<SugarAccount>();
+            QCOMPARE(finalAccount.id(), expectedId);
+            QCOMPARE(finalAccount.name(), expectedName);
         }
     }
 
@@ -100,12 +97,9 @@ private Q_SLOTS:
         QFETCH(QString, expectedName);
         QFETCH(bool, expectedResult);
 
-        SugarOpportunity opp;
-        opp.setId(id);
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(id);
-        item.setPayload<SugarOpportunity>(opp);
         SugarMockProtocol *protocol = new SugarMockProtocol;
         protocol->addOpportunities();
         SugarSession session(nullptr);
@@ -125,6 +119,50 @@ private Q_SLOTS:
             QCOMPARE(oppFind.id(), expectedId);
             QCOMPARE(oppFind.name(), expectedName);
         }
+    }
+
+    void shouldHandleInvalidContextError()
+    {
+        //GIVEN
+        Akonadi::Item item;
+        item.setId(0);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->addAccounts();
+        SugarSession session(nullptr);
+        session.setSessionParameters("user", "password", "hosttest");
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        AccountsHandler handler(&session);
+        protocol->setAccountsHandler(&handler);
+        FetchEntryJob job(item, &session);
+        job.setModule(&handler);
+        //WHEN
+        QVERIFY(!job.exec());
+        //THEN
+        QCOMPARE(job.error(), int(SugarJob::InvalidContextError));
+    }
+
+    void shouldHandleCouldNotConnectError()
+    {
+        //GIVEN
+        Akonadi::Item item;
+        item.setId(0);
+        item.setRemoteId("0");
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->setServerNotFound(true);
+        protocol->addAccounts();
+        SugarSession session(nullptr);
+        session.setSessionParameters("user", "password", "hosttest");
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        AccountsHandler handler(&session);
+        protocol->setAccountsHandler(&handler);
+        FetchEntryJob job(item, &session);
+        job.setModule(&handler);
+        //WHEN
+        QVERIFY(!job.exec());
+        //THEN
+        QCOMPARE(job.error(), int(SugarJob::CouldNotConnectError));
     }
 };
 

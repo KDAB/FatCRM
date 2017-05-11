@@ -35,7 +35,7 @@ class TestDeleteEntryJob : public QObject
     Q_OBJECT
 private Q_SLOTS:
 
-    void shouldCorectlyDeleteAccount_data()
+    void shouldCorrectlyDeleteAccount_data()
     {
         QTest::addColumn<QString>("remoteId");
         QTest::addColumn<bool>("exist");
@@ -44,7 +44,7 @@ private Q_SLOTS:
         QTest::newRow("nonexistingAccount") << "5" << false;
     }
 
-    void shouldCorectlyDeleteAccount()
+    void shouldCorrectlyDeleteAccount()
     {
         QFETCH(QString, remoteId);
         QFETCH(bool, exist);
@@ -79,7 +79,7 @@ private Q_SLOTS:
     }
 
 
-    void shouldCorectlyDeleteOpportunity_data()
+    void shouldCorrectlyDeleteOpportunity_data()
     {
         QTest::addColumn<QString>("remoteId");
         QTest::addColumn<bool>("exist");
@@ -88,7 +88,7 @@ private Q_SLOTS:
         QTest::newRow("nonexistingOpportunity") << "5" << false;
     }
 
-    void shouldCorectlyDeleteOpportunity()
+    void shouldCorrectlyDeleteOpportunity()
     {
         QFETCH(QString, remoteId);
         QFETCH(bool, exist);
@@ -120,6 +120,34 @@ private Q_SLOTS:
             QCOMPARE(protocol->opportunities().size(), 2);
         }
     }
+
+    void shouldHandleCouldNotConnectError()
+    {
+        //GIVEN
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->setServerNotFound(true);
+        SugarSession session(nullptr);
+        session.setSessionParameters("user", "password", "hosttest");
+        protocol->addAccounts();
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+
+        SugarAccount account;
+        QString remoteId = "1";
+        account.setId(remoteId);
+        Akonadi::Item item;
+        item.setId(0);
+        item.setRemoteId(remoteId);
+        item.setPayload<SugarAccount>(account);
+        DeleteEntryJob job(item, &session, "Accounts");
+        AccountsHandler handler(&session);
+        protocol->setAccountsHandler(&handler);
+        //WHEN
+        QVERIFY(!job.exec());
+        //THEN
+        QCOMPARE(job.error(), int(SugarJob::CouldNotConnectError));
+    }
+
 };
 
 QTEST_MAIN(TestDeleteEntryJob)

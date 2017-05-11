@@ -96,6 +96,58 @@ private Q_SLOTS:
         QCOMPARE(newOppFromJob.name(), QString("updateOpp"));
         QCOMPARE(newOppFromJob.id(), QString("100"));
     }
+
+    void shouldHandleInvalidContextError()
+    {
+        //GIVEN
+        SugarAccount account;
+        account.setName("updateAccount");
+        account.setId("1");
+        Akonadi::Item item;
+        item.setId(0);
+        item.setPayload<SugarAccount>(account);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        SugarSession session(nullptr);
+        session.setSessionParameters("user", "password", "hosttest");
+        protocol->addData();
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        UpdateEntryJob job(item, &session);
+        AccountsHandler handler(&session);
+        job.setModule(&handler);
+        protocol->setAccountsHandler(&handler);
+        //WHEN
+        QVERIFY(!job.exec());
+        //THEN
+        QCOMPARE(job.error(), int(SugarJob::InvalidContextError));
+    }
+
+    void shouldHandleCouldNotConnectError()
+    {
+        //GIVEN
+        SugarAccount account;
+        account.setName("updateAccount");
+        account.setId("1");
+        Akonadi::Item item;
+        item.setId(0);
+        item.setRemoteId("1");
+        item.setPayload<SugarAccount>(account);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        protocol->setServerNotFound(true);
+        SugarSession session(nullptr);
+        session.setSessionParameters("user", "password", "hosttest");
+        protocol->addData();
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        UpdateEntryJob job(item, &session);
+        AccountsHandler handler(&session);
+        job.setModule(&handler);
+        protocol->setAccountsHandler(&handler);
+        //WHEN
+        QVERIFY(!job.exec());
+        //THEN
+        QCOMPARE(job.error(), int(SugarJob::CouldNotConnectError));
+    }
 };
 
 QTEST_MAIN(TestUpdateEntryJob)
