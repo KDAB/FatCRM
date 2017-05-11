@@ -36,7 +36,7 @@ public:
     QStringList supportedSugarFields() const override;
     QStringList supportedCRMFields() const override;
 
-    int setEntry( const Akonadi::Item &item, QString &id, QString &errorMessage) override;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     Akonadi::Item itemFromEntry( const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection ) override;
 

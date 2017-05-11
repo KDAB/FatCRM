@@ -42,8 +42,8 @@ public:
 
     Akonadi::Collection handlerCollection() const override;
 
-    KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee) const;
-    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
+    KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;

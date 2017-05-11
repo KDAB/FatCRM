@@ -23,6 +23,7 @@
 #include "leadshandler.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -67,9 +68,8 @@ QStringList LeadsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead) const
+KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead, QList<TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarLead::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -90,12 +90,12 @@ KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(con
     return valueList;
 }
 
-int LeadsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
+int LeadsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarLead>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Lead payload";
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -110,25 +110,10 @@ int LeadsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &erro
     }
 
     const SugarLead lead = item.payload<SugarLead>();
-    SugarLead::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == "id") {
-            continue;
-        }
-        const SugarLead::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((lead.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarLeadToNameValueList(lead, itemList);
 
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-
-    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

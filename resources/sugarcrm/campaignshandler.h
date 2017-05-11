@@ -38,8 +38,8 @@ public:
 
     QStringList supportedCRMFields() const override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarCampaignToNameValueList(const SugarCampaign &campaign) const;
-    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
+    KDSoapGenerated::TNS__Name_value_list sugarCampaignToNameValueList(const SugarCampaign &campaign, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
 

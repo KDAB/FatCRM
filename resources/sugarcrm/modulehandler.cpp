@@ -165,11 +165,11 @@ QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QStr
     return availableFields;
 }
 
-bool ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
+int ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
     if (item.remoteId().isEmpty()) {
         kError() << "Item remoteId is empty. id=" << item.id();
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     return mSession->protocol()->getEntry(mModuleName, item.remoteId(), supportedSugarFields(), entryValue, errorMessage);

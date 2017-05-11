@@ -25,6 +25,7 @@ using namespace KDSoapGenerated;
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
+#include "sugarjob.h"
 
 #include <KCalCore/Todo>
 using namespace KCalCore;
@@ -346,12 +347,12 @@ QStringList TasksHandler::supportedCRMFields() const
     return mAccessors->keys();
 }
 
-int TasksHandler::setEntry(const Akonadi::Item &item , QString &id, QString &errorMessage)
+int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if ( !item.hasPayload<KCalCore::Todo::Ptr>() ) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Todo payload";
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     QList<TNS__Name_value> itemList;
@@ -384,7 +385,7 @@ int TasksHandler::setEntry(const Akonadi::Item &item , QString &id, QString &err
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )

@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,8 +44,8 @@ public:
 
     QStringList supportedCRMFields() const override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarAccountToNameValueList(const SugarAccount &account) const;
-    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
+    KDSoapGenerated::TNS__Name_value_list sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     int expectedContentsVersion() const override;
 

@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@
 #include "kdcrmfields.h"
 #include "sugaraccountcache.h"
 #include "referenceupdatejob.h"
+#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 
@@ -62,9 +64,8 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
-KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp) const
+KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -97,12 +98,12 @@ KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNa
     return valueList;
 }
 
-int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
+int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -118,36 +119,10 @@ int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &id, QStri
     }
 
     const SugarOpportunity opp = item.payload<SugarOpportunity>();
-    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == "id") {
-            continue;
-        }
-        const SugarOpportunity::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarOpportunityToNameValueList(opp, itemList);
 
-    // plus custom fields
-    const QMap<QString, QString> customFields = opp.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(cit.key()));
-        field.setValue(KDCRMUtils::encodeXML(cit.value()));
-        itemList << field;
-    }
-
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-
-    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 int OpportunitiesHandler::expectedContentsVersion() const

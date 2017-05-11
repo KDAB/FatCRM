@@ -37,7 +37,7 @@ public:
 
     Akonadi::Collection handlerCollection() const override;
 
-    int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) override;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString queryStringForListing() const override;
     QString orderByForListing() const override;

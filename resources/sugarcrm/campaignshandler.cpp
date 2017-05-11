@@ -25,6 +25,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
@@ -66,9 +67,8 @@ QStringList CampaignsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign) const
+KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -89,12 +89,12 @@ KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValue
     return valueList;
 }
 
-int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
+int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarCampaign>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Campaign payload";
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -110,25 +110,10 @@ int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &
     }
 
     const SugarCampaign campaign = item.payload<SugarCampaign>();
-    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == "id") {
-            continue;
-        }
-        const SugarCampaign::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((campaign.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarCampaignToNameValueList(campaign, itemList);
 
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-
-    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

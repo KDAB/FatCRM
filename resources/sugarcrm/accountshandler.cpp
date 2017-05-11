@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@
 #include "sugaraccountcache.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmdata/sugaraccount.h"
@@ -85,9 +87,8 @@ QStringList AccountsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account) const
+KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -118,12 +119,12 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
     return valueList;
 }
 
-int AccountsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage)
+int AccountsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarAccount>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
-        return -1;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -139,36 +140,10 @@ int AccountsHandler::setEntry(const Akonadi::Item &item, QString &id, QString &e
     }
 
     const SugarAccount account = item.payload<SugarAccount>();
-    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == "id") {
-            continue;
-        }
-        const SugarAccount::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarAccountToNameValueList(account, itemList);
 
-    // plus custom fields
-    QMap<QString, QString> customFields = account.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(cit.key()));
-        field.setValue(KDCRMUtils::encodeXML(cit.value()));
-        itemList << field;
-    }
-
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-
-    return mSession->protocol()->setEntry(moduleName(), valueList, id, errorMessage);
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 int AccountsHandler::expectedContentsVersion() const
