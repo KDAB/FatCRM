@@ -66,13 +66,13 @@ public:
     void setEntryDone(const QString &id);
 
 public: // slots
-    void getEntryDone(const TNS__Entry_value entryValue);
+    void getEntryDone(const TNS__Entry_value &entryValue);
     void getEntryError(int error, const QString &errorMessage);
     void getRevisionDone(const TNS__Entry_value &entryValue);
     void getRevisionError(const KDSoapMessage &fault);
 };
 
-void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value entryValue)
+void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value &entryValue)
 {
     // check if this is our signal
     if (mStage != GetEntry) {
@@ -255,8 +255,8 @@ void UpdateEntryJob::startSugarTask()
     int result = d->mHandler->getEntry(d->mItem, entryValue, errorMessage);
     if (result == KJob::NoError) {
         d->getEntryDone(entryValue);
-    } else if (result == -1) {
-        setError(SugarJob::InvalidContextError);
+    } else if (result == SugarJob::InvalidContextError) {
+        setError(result);
         setErrorText(i18nc("@info:status", "Attempting to modify a malformed item in folder %1",
                            d->mHandler->moduleName()));
         emitResult();

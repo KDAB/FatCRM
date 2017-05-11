@@ -90,10 +90,7 @@ void FetchEntryJob::Private::getEntryError(int error, QString &errorMessage)
 FetchEntryJob::FetchEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, item))
 {
-    connect(soap(), SIGNAL(get_entryDone(KDSoapGenerated::TNS__Get_entry_result)),
-            this,  SLOT(getEntryDone(KDSoapGenerated::TNS__Get_entry_result)));
-    connect(soap(), SIGNAL(get_entryError(KDSoapMessage)),
-            this,  SLOT(getEntryError(KDSoapMessage)));
+
 }
 
 FetchEntryJob::~FetchEntryJob()
@@ -121,8 +118,8 @@ void FetchEntryJob::startSugarTask()
     int result = d->mHandler->getEntry(d->mItem, entryValue, errorMessage);
     if (result == KJob::NoError) {
         d->getEntryDone(entryValue);
-    } else if (result == -1) {
-        setError(SugarJob::InvalidContextError);
+    } else if (result == SugarJob::InvalidContextError) {
+        setError(result);
         setErrorText(i18nc("@info:status", "Attempting to fetch a malformed item from folder %1",
                            d->mHandler->moduleName()));
         emitResult();

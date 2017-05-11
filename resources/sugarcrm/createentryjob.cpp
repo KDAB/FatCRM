@@ -49,14 +49,13 @@ public:
     };
 
     explicit Private(CreateEntryJob *parent, const Item &item)
-        : q(parent), mItem(item), mHandler(nullptr), mStage(Init)
+        : q(parent), mItem(item), mHandler(nullptr)
     {
     }
 
 public:
     Item mItem;
     ModuleHandler *mHandler;
-    Stage mStage;
 
 public: // slots
     void setEntryHandle(int result, const QString &id, const QString &errorMessage);
@@ -68,12 +67,8 @@ public: // slots
 
 void CreateEntryJob::Private::setEntryDone(const QString &id)
 {
-    Q_ASSERT(mStage == CreateEntry);
-
     kDebug() << "Created entry" << id << "in module" << mHandler->moduleName();
     mItem.setRemoteId(id);
-
-    mStage = Private::GetEntry;
 
     KDSoapGenerated::TNS__Entry_value entryValue;
     QString errorMessage;
@@ -81,7 +76,7 @@ void CreateEntryJob::Private::setEntryDone(const QString &id)
 
     if (result == KJob::NoError) {
         getEntryDone(entryValue);
-    } else if (result == -1) {
+    } else if (result == SugarJob::InvalidContextError) {
         // the item has been added we just don't have a server side datetime
         q->emitResult();
     } else {
@@ -91,8 +86,6 @@ void CreateEntryJob::Private::setEntryDone(const QString &id)
 
 void CreateEntryJob::Private::setEntryError(int error, const QString &errorMessage)
 {
-    Q_ASSERT(mStage == CreateEntry);
-
     if (error == SugarJob::CouldNotConnectError) {
         // Invalid login error, meaning we need to log in again
         if (q->shouldTryRelogin()) {
@@ -141,14 +134,6 @@ void CreateEntryJob::Private::getEntryError(int error, const QString &errorMessa
 CreateEntryJob::CreateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, item))
 {
-    connect(soap(), SIGNAL(set_entryDone(KDSoapGenerated::TNS__Set_entry_result)),
-            this,  SLOT(setEntryDone(KDSoapGenerated::TNS__Set_entry_result)));
-    connect(soap(), SIGNAL(set_entryError(KDSoapMessage)),
-            this,  SLOT(setEntryError(KDSoapMessage)));
-    connect(soap(), SIGNAL(get_entryDone(KDSoapGenerated::TNS__Get_entry_result)),
-            this,  SLOT(getEntryDone(KDSoapGenerated::TNS__Get_entry_result)));
-    connect(soap(), SIGNAL(get_entryError(KDSoapMessage)),
-            this,  SLOT(getEntryError(KDSoapMessage)));
 }
 
 CreateEntryJob::~CreateEntryJob()
@@ -171,13 +156,12 @@ void CreateEntryJob::startSugarTask()
     Q_ASSERT(d->mItem.isValid());
     Q_ASSERT(d->mHandler != nullptr);
 
-    d->mStage = Private::CreateEntry;
-    QString id, errorMessage;
-    int result = d->mHandler->setEntry(d->mItem, id, errorMessage);
+    QString newId, errorMessage;
+    int result = d->mHandler->setEntry(d->mItem, newId, errorMessage);
     if (result == KJob::NoError) {
-        d->setEntryDone(id);
-    } else if (result == -1) {
-        setError(SugarJob::InvalidContextError);
+        d->setEntryDone(newId);
+    } else if (result == SugarJob::InvalidContextError) {
+        setError(result);
         setErrorText(i18nc("@info:status", "Attempting to add malformed item to folder %1",
                            d->mHandler->moduleName()));
         emitResult();

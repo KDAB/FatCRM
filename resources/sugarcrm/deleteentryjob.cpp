@@ -98,7 +98,6 @@ Item DeleteEntryJob::item() const
 void DeleteEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
-    //Q_ASSERT(d->mItem.parentCollection().isValid());
 
     // delete just required identifier and "deleted" field
     // no need for type specific code
