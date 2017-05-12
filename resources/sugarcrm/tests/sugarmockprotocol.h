@@ -85,7 +85,7 @@ private:
     QVector<SugarCampaign> mCampaigns;
     QVector<SugarLead> mLeads;
     QVector<KABC::Addressee> mContacts;
-    int mCounterId = 1000;
+    int mNextId = 1000;
 
     QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
     QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;

@@ -221,32 +221,25 @@ int SugarMockProtocol::getEntry(const QString &moduleName, const QString &remote
             }
         }
     }
-    return found ? KJob::NoError : SugarJob::SoapError;
+    return found ? int(KJob::NoError) : int(SugarJob::SoapError);
 }
 
-int SugarMockProtocol::setEntry(const QString& moduleName, const KDSoapGenerated::TNS__Name_value_list& nameValueList, QString &idItemCreate, QString &errorMessage)
+int SugarMockProtocol::setEntry(const QString& moduleName, const KDSoapGenerated::TNS__Name_value_list& nameValueList, QString &newId, QString &errorMessage)
 {
     Q_UNUSED(errorMessage);
     QList<KDSoapGenerated::TNS__Name_value> list = nameValueList.items();
-    bool deleted = false;
-    for (int i = 0; i < list.size() && !deleted; ++i) {
-        if (list.at(i).name() == "deleted" && list.at(i).value() == "1") {
-            deleted = true;
-        }
-    }
-
+    bool deleted = std::any_of(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "deleted" && nv.value() == "1";});
     QString id;
-    for (int i = 0; i < list.size() && id.isEmpty(); ++i) {
-        if (list.at(i).name() == "id") {
-            id = list.at(i).value();
-        }
+    auto result = std::find_if(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "id";});
+    if (result != list.end()) {
+        id = result->value();
     }
 
     if (moduleName == "Accounts") {
         SugarAccount account = mAccountHandler->nameValueListToSugarAccount(nameValueList,id);
         if (!id.isEmpty()) {
             bool found = false;
-            for (int i = 0; i < mAccounts.size() && !found; ++i) {
+            for (int i = 0; i < mAccounts.size(); ++i) {
                 if (mAccounts.at(i).id() == id) {
                     found = true;
                     if (deleted) {
@@ -255,16 +248,17 @@ int SugarMockProtocol::setEntry(const QString& moduleName, const KDSoapGenerated
                         account.setId(mAccounts.at(i).id());
                         mAccounts[i] = account;
                     }
+                    break;
                 }
             }
             if (!found) {
                 return SugarJob::SoapError;
             }
-        } else {
+        } else { // create an account
             if (!deleted) {
-                account.setId(QString::number(mCounterId));
+                account.setId(QString::number(mNextId++));
                 mAccounts.push_back(account);
-                idItemCreate = QString::number(mCounterId++);
+                newId = account.id();
             } else {
                 return SugarJob::SoapError;
             }
@@ -282,16 +276,17 @@ int SugarMockProtocol::setEntry(const QString& moduleName, const KDSoapGenerated
                         opp.setId(mOpportunities.at(i).id());
                         mOpportunities[i] = opp;
                     }
+                    break;
                 }
             }
             if (!found) {
                 return SugarJob::SoapError;
             }
-        } else {
+        } else { // create an opp
             if (!deleted) {
-                opp.setId(QString::number(mCounterId));
+                opp.setId(QString::number(mNextId++));
                 mOpportunities.push_back(opp);
-                idItemCreate = QString::number(mCounterId++);
+                newId = opp.id();
             } else {
                 return SugarJob::SoapError;
             }

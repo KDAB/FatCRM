@@ -159,11 +159,12 @@ int SugarSoapProtocol::getEntry(const QString &moduleName, const QString &remote
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(selectedFields);
     KDSoapGenerated::TNS__Get_entry_result result = mSession->soap()->get_entry(mSession->sessionId(), moduleName, remoteId, fields);
-    if (result.error().number() == "0") {
+    QString error = result.error().number();
+    if (error == "0") {
         entryValue = result.entry_list().items().at(0);
         return KJob::NoError;
-    } else if (result.error().number() == "10"){
-        errorMessage = result.error().description();
+    } else if (error == "10") {
+        errorMessage = mSession->soap()->lastError();
         return SugarJob::CouldNotConnectError;
     } else {
         errorMessage = result.error().description();

@@ -172,9 +172,9 @@ private Q_SLOTS:
         protocol.setAccountsHandler(&accountsHandler);
         OpportunitiesHandler opportunitiesHandler(&session);
         protocol.setOpportunitiesHandler(&opportunitiesHandler);
-        //WHEN
         KDSoapGenerated::TNS__Entry_value entryValue;
         QString errorMessage;
+        //WHEN
         int result = protocol.getEntry(moduleName, remoteId, QStringList(), entryValue, errorMessage);
         //THEN
         QCOMPARE(result, expectedResult);
@@ -214,21 +214,20 @@ private Q_SLOTS:
         OpportunitiesHandler opportunitiesHandler(&session);
         protocol.setOpportunitiesHandler(&opportunitiesHandler);
         KDSoapGenerated::TNS__Name_value_list nvl;
-        if (moduleName == "Accounts") {
-            SugarAccount account;
-            account.setId(id);
-            nvl = accountsHandler.sugarAccountToNameValueList(account);
-        } else if (moduleName == "Opportunities") {
-            SugarOpportunity opp;
-            opp.setId(id);
-            nvl = opportunitiesHandler.sugarOpportunityToNameValueList(opp);
-        }
+        QList<KDSoapGenerated::TNS__Name_value> itemList;
+        KDSoapGenerated::TNS__Name_value field;
+        field.setName(QLatin1String("id"));
+        field.setValue(id);
+        itemList << field;
+        nvl.setItems(itemList);
+        QString errorMessage, newId;
         //WHEN
-        QString errorMessage;
-        const int result = protocol.setEntry(moduleName, nvl, id, errorMessage);
+        const int result = protocol.setEntry(moduleName, nvl, newId, errorMessage);
         //THEN
         QCOMPARE(result, expectedResult);
-        QCOMPARE(id, expectedId);
+        if (id.isEmpty()) {
+            QCOMPARE(newId, expectedId);
+        }
     }
 };
 
