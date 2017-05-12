@@ -37,6 +37,8 @@ public:
 
     ~AccountsHandler() override;
 
+    void fillAccountsCache();
+
     Akonadi::Collection handlerCollection() const override;
 
     QString orderByForListing() const override;

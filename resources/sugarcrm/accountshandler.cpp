@@ -47,16 +47,21 @@ AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),
       mAccessors(SugarAccount::accessorHash())
 {
+
+}
+
+AccountsHandler::~AccountsHandler()
+{
+}
+
+void AccountsHandler::fillAccountsCache()
+{
     // Load a cache of all accounts from the database
     // This is used to resolve account_name to account_id in opportunities.
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection(), this);
     job->fetchScope().setCacheOnly(true);
     job->fetchScope().fetchFullPayload(true);
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(slotItemsReceived(Akonadi::Item::List)));
-}
-
-AccountsHandler::~AccountsHandler()
-{
 }
 
 Akonadi::Collection AccountsHandler::handlerCollection() const

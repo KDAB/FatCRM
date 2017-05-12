@@ -124,7 +124,6 @@ private Q_SLOTS:
         job->setModule(handler);
         QSignalSpy spy(job, SIGNAL(totalItems(int)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -154,7 +153,6 @@ private Q_SLOTS:
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -191,7 +189,6 @@ private Q_SLOTS:
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -213,7 +210,6 @@ private Q_SLOTS:
         accountListJob->setModule(&accountHandler);
         QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        accountListJob->start();
         QVERIFY(accountListJob->exec());
         //THEN
         QCOMPARE(accountSpy.count(), 1);

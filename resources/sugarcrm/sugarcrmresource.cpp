@@ -745,7 +745,9 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             if (module == QLatin1String("Contacts")) {
                 handler = new ContactsHandler(mSession);
             } else if (module == QLatin1String("Accounts")) {
-                handler = new AccountsHandler(mSession);
+                AccountsHandler *accountsHandler = new AccountsHandler(mSession);
+                accountsHandler->fillAccountsCache();
+                handler = accountsHandler;
             } else if (module == QLatin1String("Opportunities")) {
                 handler = new OpportunitiesHandler(mSession);
 #if 0 // we don't use this, so skip it
