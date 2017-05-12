@@ -25,6 +25,7 @@
 #include <QNetworkReply>
 #include <KLocalizedString>
 #include <KDebug>
+#include <QEventLoop>
 
 SugarSoapProtocol::SugarSoapProtocol()
 {
@@ -102,8 +103,22 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString 
     KDSoapGenerated::TNS__Select_fields Fields;
     Fields.setItems(selectedFields);
 
-    KDSoapGenerated::TNS__Get_entry_list_result entry_result =
-            mSession->soap()->get_entry_list(mSession->sessionId(), moduleName, query, orderBy, offset, Fields, maxResults, fetchDeleted);
+    KDSoapGenerated::Get_entry_listJob *job = new KDSoapGenerated::Get_entry_listJob(mSession->soap());
+    job->setSession(mSession->sessionId());
+    job->setModule_name(moduleName);
+    job->setQuery(query);
+    job->setOrder_by(orderBy);
+    job->setOffset(offset);
+    job->setSelect_fields(Fields);
+    job->setMax_results(maxResults);
+    job->setDeleted(fetchDeleted);
+
+    QEventLoop eventLoop;
+    QObject::connect(job, SIGNAL(finished(KDSoapJob*)), &eventLoop, SLOT(quit()));
+    job->start();
+    eventLoop.exec();
+
+    const KDSoapGenerated::TNS__Get_entry_list_result entry_result = job->return_();
 
     entriesListResult.entryList = entry_result.entry_list();
     entriesListResult.fieldList = entry_result.field_list();

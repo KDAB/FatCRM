@@ -72,7 +72,7 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT(d, void listEntriesDone(const EntriesListResult &cal lResult))
+    Q_PRIVATE_SLOT(d, void listNextEntries())
 };
 
 #endif
