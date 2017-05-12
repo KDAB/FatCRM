@@ -34,7 +34,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 DocumentsHandler::DocumentsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Documents"), session),
+    : ModuleHandler(Module::Documents, session),
       mAccessors(SugarDocument::accessorHash())
 {
 }
@@ -46,7 +46,7 @@ DocumentsHandler::~DocumentsHandler()
 Akonadi::Collection DocumentsHandler::handlerCollection() const
 {
     Akonadi::Collection documentCollection;
-    documentCollection.setRemoteId(moduleName());
+    documentCollection.setRemoteId(moduleToName(module()));
     documentCollection.setContentMimeTypes(QStringList() << SugarDocument::mimeType());
     documentCollection.setName(i18nc("@item folder name", "Documents"));
     documentCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -127,7 +127,7 @@ int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 bool DocumentsHandler::needsExtraInformation() const

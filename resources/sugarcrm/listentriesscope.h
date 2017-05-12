@@ -24,6 +24,7 @@
 #define LISTENTRIESSCOPE_H
 
 #include <QString>
+#include "modulename.h"
 
 class ListEntriesScope
 {
@@ -42,7 +43,7 @@ public:
 
     int deleted() const;
 
-    QString query(const QString &filter, const QString &moduleName) const;
+    QString query(const QString &filter, Module moduleName) const;
 
 private:
     int mOffset;

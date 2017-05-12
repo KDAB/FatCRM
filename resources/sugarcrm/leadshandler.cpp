@@ -36,7 +36,7 @@ using namespace KDSoapGenerated;
 #include <KLocale>
 
 LeadsHandler::LeadsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Leads"), session),
+    : ModuleHandler(Module::Leads, session),
       mAccessors(SugarLead::accessorHash())
 {
 }
@@ -113,7 +113,7 @@ int LeadsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarLeadToNameValueList(lead, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

@@ -36,7 +36,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 EmailsHandler::EmailsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Emails"), session),
+    : ModuleHandler(Module::Emails, session),
       mAccessors(SugarEmail::accessorHash())
 {
 }
@@ -48,7 +48,7 @@ EmailsHandler::~EmailsHandler()
 Akonadi::Collection EmailsHandler::handlerCollection() const
 {
     Akonadi::Collection emailCollection;
-    emailCollection.setRemoteId(moduleName());
+    emailCollection.setRemoteId(moduleToName(module()));
     emailCollection.setContentMimeTypes(QStringList() << SugarEmail::mimeType());
     emailCollection.setName(i18nc("@item folder name", "Emails"));
     emailCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -189,7 +189,7 @@ int EmailsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

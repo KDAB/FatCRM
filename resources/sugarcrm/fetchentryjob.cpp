@@ -63,7 +63,7 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_valu
     item.setId(mItem.id());
     item.setRevision(mItem.revision());
     mItem = item;
-    kDebug() << "Fetched" << mHandler->moduleName()
+    kDebug() << "Fetched" << mHandler->module()
              << "Entry" << mItem.remoteId()
              << "with revision" << mItem.remoteRevision();
 
@@ -121,7 +121,7 @@ void FetchEntryJob::startSugarTask()
     } else if (result == SugarJob::InvalidContextError) {
         setError(result);
         setErrorText(i18nc("@info:status", "Attempting to fetch a malformed item from folder %1",
-                           d->mHandler->moduleName()));
+                           moduleToName(d->mHandler->module())));
         emitResult();
     } else {
         d->getEntryError(result, errorMessage);

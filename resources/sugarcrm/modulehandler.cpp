@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -43,9 +44,9 @@ using namespace KDSoapGenerated;
 
 #include <QVector>
 
-ModuleHandler::ModuleHandler(const QString &moduleName, SugarSession *session)
+ModuleHandler::ModuleHandler(const Module moduleName, SugarSession *session)
     : mSession(session),
-      mModuleName(moduleName),
+      mModule(moduleName),
       mParsedEnumDefinitions(false),
       mHasEnumDefinitions(false)
 {
@@ -62,9 +63,9 @@ ModuleHandler::~ModuleHandler()
 {
 }
 
-QString ModuleHandler::moduleName() const
+Module ModuleHandler::module() const
 {
-    return mModuleName;
+    return mModule;
 }
 
 void ModuleHandler::initialCheck()
@@ -82,7 +83,7 @@ Akonadi::Collection ModuleHandler::collection()
 {
     if (!mCollection.isValid()) {
         mCollection = handlerCollection();
-        mCollection.setRemoteId(moduleName());
+        mCollection.setRemoteId(moduleToName(module()));
     }
     return mCollection;
 }
@@ -96,13 +97,13 @@ void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 
 int ModuleHandler::getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage)
 {
-    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
-    return mSession->protocol()->getEntriesCount(scope, moduleName(), query, entriesCount, errorMessage);
+    const QString query = scope.query(queryStringForListing(), mModule);
+    return mSession->protocol()->getEntriesCount(scope, module(), query, entriesCount, errorMessage);
 }
 
 void ModuleHandler::listEntries(const ListEntriesScope &scope)
 {
-    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
+    const QString query = scope.query(queryStringForListing(), mModule);
     const QString orderBy = orderByForListing();
     const int offset = scope.offset();
     const int maxResults = 100;
@@ -111,24 +112,24 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems(supportedSugarFields());
 
-    soap()->asyncGet_entry_list(sessionId(), moduleName(), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+    soap()->asyncGet_entry_list(sessionId(), moduleToName(module()), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }
 
 int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult ,QString &errorMessage)
 {
-    const QString query = scope.query(queryStringForListing(), mModuleName.toLower());
+    const QString query = scope.query(queryStringForListing(), mModule);
     const QString orderBy = orderByForListing();
 
-    return mSession->protocol()->listEntries(scope, moduleName(), query, orderBy, supportedSugarFields(), entriesListResult, errorMessage);
+    return mSession->protocol()->listEntries(scope, module(), query, orderBy, supportedSugarFields(), entriesListResult, errorMessage);
 }
 
 QStringList ModuleHandler::availableFields() const
 {
     if (mAvailableFields.isEmpty()) {
-        kDebug() << "Available Fields for " << mModuleName
+        kDebug() << "Available Fields for " << mModule
                  << "not fetched yet, getting them now";
 
-        mAvailableFields = listAvailableFields(mSession, mModuleName);
+        mAvailableFields = listAvailableFields(mSession, moduleToName(mModule));
     }
 
     return mAvailableFields;
@@ -172,7 +173,7 @@ int ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Ent
         return SugarJob::InvalidContextError;
     }
 
-    return mSession->protocol()->getEntry(mModuleName, item.remoteId(), supportedSugarFields(), entryValue, errorMessage);
+    return mSession->protocol()->getEntry(mModule, item.remoteId(), supportedSugarFields(), entryValue, errorMessage);
 }
 
 
@@ -206,7 +207,7 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
                 mEnumDefinitions.append(definition);
             }
         }
-        kDebug() << moduleName() << "found enum definitions:" << mEnumDefinitions.toString();
+        kDebug() << module() << "found enum definitions:" << mEnumDefinitions.toString();
         // Accounts: account_type, industry
         // Contacts: salutation, lead_source, portal_user_type
         // Opportunities: opportunity_type, lead_source, sales_stage
@@ -488,7 +489,7 @@ void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &col
     Akonadi::Collection collection = collections.at(0);
     if (ListEntriesJob::currentContentsVersion(collection) != expectedContentsVersion()) {
         // the contents need to be relisted, do this right now before users get a chance to view bad data
-        kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModuleName << "because"
+        kDebug() << "Forcing a reload of" << collection.name() << "in module" << mModule << "because"
                  << ListEntriesJob::currentContentsVersion(collection) << "!="
                  << expectedContentsVersion();
         Akonadi::AgentManager::self()->synchronizeCollection(collection);

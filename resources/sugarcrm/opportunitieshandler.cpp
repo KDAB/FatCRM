@@ -40,7 +40,7 @@ using namespace KDSoapGenerated;
 #include <KDebug>
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Opportunities"), session),
+    : ModuleHandler(Module::Opportunities, session),
       mAccessors(SugarOpportunity::accessorHash())
 {
     SugarAccountCache *cache = SugarAccountCache::instance();
@@ -122,7 +122,7 @@ int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &newId, QS
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarOpportunityToNameValueList(opp, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 int OpportunitiesHandler::expectedContentsVersion() const

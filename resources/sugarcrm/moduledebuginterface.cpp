@@ -30,8 +30,8 @@
 using namespace KDSoapGenerated;
 #include <QStringList>
 
-ModuleDebugInterface::ModuleDebugInterface(const QString &moduleName, SugarCRMResource *resource)
-    : QObject(resource), mModuleName(moduleName), mResource(resource)
+ModuleDebugInterface::ModuleDebugInterface(Module module, SugarCRMResource *resource)
+    : QObject(resource), mModule(module), mResource(resource)
 {
 }
 
@@ -41,12 +41,12 @@ ModuleDebugInterface::~ModuleDebugInterface()
 
 QStringList ModuleDebugInterface::availableFields() const
 {
-    return ModuleHandler::listAvailableFields(mResource->mSession, mModuleName);
+    return ModuleHandler::listAvailableFields(mResource->mSession, moduleToName(mModule));
 }
 
 QStringList ModuleDebugInterface::supportedFields() const
 {
-    ModuleHandler *handler = (*mResource->mModuleHandlers).value(mModuleName);
+    ModuleHandler *handler = (*mResource->mModuleHandlers).value(moduleToName(mModule));
     if (handler != nullptr) {
         return handler->supportedSugarFields();
     }
