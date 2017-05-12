@@ -33,6 +33,7 @@ struct EntriesListResult
     KDSoapGenerated::TNS__Entry_list entryList;
     KDSoapGenerated::TNS__Field_list fieldList;
 };
+Q_DECLARE_METATYPE(EntriesListResult)
 
 class SugarProtocolBase
 {
