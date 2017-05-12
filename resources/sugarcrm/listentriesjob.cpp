@@ -61,6 +61,7 @@ public:
           mStage(GetCount),
           mCollectionAttributesChanged(false)
     {
+        qRegisterMetaType<EntriesListResult>();
     }
 
 public:
@@ -116,7 +117,7 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
         EntriesListResult entriesListResult;
         int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
         if (result == KJob::NoError) {
-            listEntriesDone(entriesListResult);
+            QMetaObject::invokeMethod(q, "listEntriesDone", Qt::QueuedConnection, Q_ARG(EntriesListResult, entriesListResult));
         } else {
             handlerError(result, errorMessage);
         }
