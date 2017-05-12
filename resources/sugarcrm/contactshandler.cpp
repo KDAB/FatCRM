@@ -26,6 +26,7 @@
 #include "sugarsoap.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
+#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/kabc/contactparts.h> //krazy:exclude=camelcase
@@ -683,9 +684,8 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 }
 
 
-KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KABC::Addressee &addressee) const
+KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
     ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
     for (; it != endIt; ++it) {
@@ -732,12 +732,12 @@ KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(
 }
 
 
-bool ContactsHandler::setEntry(const Akonadi::Item &item)
+int ContactsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<KABC::Addressee>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Addressee payload";
-        return false;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -754,50 +754,10 @@ bool ContactsHandler::setEntry(const Akonadi::Item &item)
 
     // add regular sugar fields
     const KABC::Addressee addressee = item.payload<KABC::Addressee>();
-    ContactAccessorHash::const_iterator it    = mAccessors->constBegin();
-    ContactAccessorHash::const_iterator endIt = mAccessors->constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if ((*it)->getter == nullptr) {
-            continue;
-        }
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        const QString value = KDCRMUtils::encodeXML((*it)->getter(addressee));
-        field.setValue(value);
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = addresseeToNameValueList(addressee, itemList);
 
-    // add custom sugar fields
-    const QStringList customAddresseeFields = addressee.customs();
-
-    const static QString customFieldPrefix("FATCRM-X-Custom-");
-
-    QStringList customSugarFields;
-    std::copy_if(customAddresseeFields.begin(), customAddresseeFields.end(), std::back_inserter(customSugarFields),
-                 [](const QString &custom) { return custom.startsWith(customFieldPrefix); });
-
-    for (const QString &custom : customSugarFields) {
-        const int pos = custom.indexOf(':');
-        if (pos == -1)
-            continue;
-
-        const QString name = custom.mid(customFieldPrefix.size(), pos - customFieldPrefix.size());
-        const QString value = custom.mid(pos + 1);
-
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(name));
-        field.setValue(KDCRMUtils::encodeXML(value));
-
-        itemList << field;
-    }
-
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
-
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 QString ContactsHandler::orderByForListing() const

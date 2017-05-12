@@ -139,3 +139,37 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, const QString 
     }
 }
 
+int SugarSoapProtocol::setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Set_entry_result result = mSession->soap()->set_entry(mSession->sessionId(), module_name, name_value_list);
+    if (result.error().number() == "0") {
+        id = result.id();
+        return KJob::NoError;
+    } else if (result.error().number() == "10"){
+        errorMessage = result.error().description();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = result.error().description();
+        return SugarJob::SoapError;
+    }
+}
+
+int SugarSoapProtocol::getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Select_fields fields;
+    fields.setItems(selectedFields);
+    KDSoapGenerated::TNS__Get_entry_result result = mSession->soap()->get_entry(mSession->sessionId(), moduleName, remoteId, fields);
+    QString error = result.error().number();
+    if (error == "0") {
+        entryValue = result.entry_list().items().at(0);
+        return KJob::NoError;
+    } else if (error == "10") {
+        errorMessage = mSession->soap()->lastError();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = result.error().description();
+        return SugarJob::SoapError;
+    }
+}
+
+

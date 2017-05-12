@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@
 #include "sugaraccountcache.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmdata/sugaraccount.h"
@@ -45,16 +47,21 @@ AccountsHandler::AccountsHandler(SugarSession *session)
     : ModuleHandler(QLatin1String("Accounts"), session),
       mAccessors(SugarAccount::accessorHash())
 {
+
+}
+
+AccountsHandler::~AccountsHandler()
+{
+}
+
+void AccountsHandler::fillAccountsCache()
+{
     // Load a cache of all accounts from the database
     // This is used to resolve account_name to account_id in opportunities.
     Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection(), this);
     job->fetchScope().setCacheOnly(true);
     job->fetchScope().fetchFullPayload(true);
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(slotItemsReceived(Akonadi::Item::List)));
-}
-
-AccountsHandler::~AccountsHandler()
-{
 }
 
 Akonadi::Collection AccountsHandler::handlerCollection() const
@@ -85,9 +92,8 @@ QStringList AccountsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account) const
+KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -118,12 +124,12 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
     return valueList;
 }
 
-bool AccountsHandler::setEntry(const Akonadi::Item &item)
+int AccountsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarAccount>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Account payload";
-        return false;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -139,37 +145,10 @@ bool AccountsHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarAccount account = item.payload<SugarAccount>();
-    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == "id") {
-            continue;
-        }
-        const SugarAccount::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarAccountToNameValueList(account, itemList);
 
-    // plus custom fields
-    QMap<QString, QString> customFields = account.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(cit.key()));
-        field.setValue(KDCRMUtils::encodeXML(cit.value()));
-        itemList << field;
-    }
-
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
-
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 int AccountsHandler::expectedContentsVersion() const
@@ -178,6 +157,25 @@ int AccountsHandler::expectedContentsVersion() const
     // version 2 = ensure we get trimmed names (no trailing spaces)
     // version 3 = renaming of custom fields
     return 3;
+}
+
+SugarAccount AccountsHandler::nameValueListToSugarAccount(const KDSoapGenerated::TNS__Name_value_list & valueList, const QString &id)
+{
+    SugarAccount account;
+    account.setId(id);
+    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
+        if (accessIt == mAccessors.constEnd()) {
+            const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
+            account.setCustomField(crmCustomFieldName, value);
+            continue;
+        }
+
+        (account.*(accessIt.value().setter))(value);
+    }
+    return account;
 }
 
 Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -194,20 +192,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarAccount::mimeType());
 
-    SugarAccount account;
-    account.setId(entry.id());
-    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
-            const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
-            account.setCustomField(crmCustomFieldName, value);
-            continue;
-        }
-
-        (account.*(accessIt.value().setter))(value);
-    }
+    SugarAccount account = nameValueListToSugarAccount(entry.name_value_list(), entry.id());
 
     SugarAccountCache *cache = SugarAccountCache::instance();
     cache->addAccount(account.name(), account.id());

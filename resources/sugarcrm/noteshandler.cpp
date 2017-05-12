@@ -25,6 +25,7 @@
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
@@ -84,12 +85,12 @@ int NotesHandler::expectedContentsVersion() const
     return 2;
 }
 
-bool NotesHandler::setEntry(const Akonadi::Item &item)
+int NotesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarNote>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Note payload";
-        return false;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -122,9 +123,8 @@ bool NotesHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

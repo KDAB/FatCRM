@@ -23,6 +23,7 @@
 #include "kdcrmutils.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
+#include "sugarjob.h"
 using namespace KDSoapGenerated;
 
 #include <akonadi/abstractdifferencesreporter.h> //krazy:exclude=camelcase
@@ -75,12 +76,12 @@ int DocumentsHandler::expectedContentsVersion() const
     return 0;
 }
 
-bool DocumentsHandler::setEntry(const Akonadi::Item &item)
+int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarDocument>()) {
         kError() << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Document payload";
-        return false;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -125,9 +126,8 @@ bool DocumentsHandler::setEntry(const Akonadi::Item &item)
 
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
 
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 bool DocumentsHandler::needsExtraInformation() const

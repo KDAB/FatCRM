@@ -51,20 +51,13 @@ public:
     Item mItem;
     ModuleHandler *mHandler;
 
-public: // slots
-    void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult);
-    void getEntryError(const KDSoapMessage &fault);
+    void getEntryDone(const TNS__Entry_value &entryValue);
+    void getEntryError(int error, QString &errorMessage);
 };
 
-void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult)
+void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value &entryValue)
 {
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-
-    const QList<KDSoapGenerated::TNS__Entry_value> entries = callResult.entry_list().items();
-    Q_ASSERT(entries.count() == 1);
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entries.first(), mItem.parentCollection());
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
 
     Item item = remoteItem;
     item.setId(mItem.id());
@@ -77,24 +70,27 @@ void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Get_entry_
     q->emitResult();
 }
 
-void FetchEntryJob::Private::getEntryError(const KDSoapMessage &fault)
+void FetchEntryJob::Private::getEntryError(int error, QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << "Fetch Entry Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    kWarning() << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 FetchEntryJob::FetchEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, item))
 {
-    connect(soap(), SIGNAL(get_entryDone(KDSoapGenerated::TNS__Get_entry_result)),
-            this,  SLOT(getEntryDone(KDSoapGenerated::TNS__Get_entry_result)));
-    connect(soap(), SIGNAL(get_entryError(KDSoapMessage)),
-            this,  SLOT(getEntryError(KDSoapMessage)));
+
 }
 
 FetchEntryJob::~FetchEntryJob()
@@ -117,11 +113,18 @@ void FetchEntryJob::startSugarTask()
     Q_ASSERT(d->mItem.isValid());
     Q_ASSERT(d->mHandler != nullptr);
 
-    if (!d->mHandler->getEntry(d->mItem)) {
-        setError(SugarJob::InvalidContextError);
+    KDSoapGenerated::TNS__Entry_value entryValue;
+    QString errorMessage;
+    int result = d->mHandler->getEntry(d->mItem, entryValue, errorMessage);
+    if (result == KJob::NoError) {
+        d->getEntryDone(entryValue);
+    } else if (result == SugarJob::InvalidContextError) {
+        setError(result);
         setErrorText(i18nc("@info:status", "Attempting to fetch a malformed item from folder %1",
                            d->mHandler->moduleName()));
         emitResult();
+    } else {
+        d->getEntryError(result, errorMessage);
     }
 }
 

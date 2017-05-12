@@ -55,6 +55,9 @@ public:
     int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
                     const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
+    int setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
+    int getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields,
+                 KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
 
     void setAccountsHandler(AccountsHandler *handler);
     void setOpportunitiesHandler(OpportunitiesHandler *handler);
@@ -66,6 +69,9 @@ public:
     void addAccounts();
     void addOpportunities();
     void addAccount(const QString &name, const QString &id);
+
+    QVector<SugarAccount> accounts() const;
+    QVector<SugarOpportunity> opportunities() const;
 
 private:
     AccountsHandler *mAccountHandler;
@@ -79,6 +85,7 @@ private:
     QVector<SugarCampaign> mCampaigns;
     QVector<SugarLead> mLeads;
     QVector<KABC::Addressee> mContacts;
+    int mNextId = 1000;
 
     QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
     QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;

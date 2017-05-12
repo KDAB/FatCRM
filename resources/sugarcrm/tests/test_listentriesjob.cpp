@@ -37,7 +37,7 @@ class TestListEntriesJob : public QObject
     Q_OBJECT
 private:
 
-    void verifyOpportunities(const Akonadi::Item::List &lItems,const QList<QString> &id, const QList<QString> &name, const QList<QString> &accountId)
+    void verifyOpportunities(const Akonadi::Item::List &lItems, const QList<QString> &id, const QList<QString> &name, const QList<QString> &accountId)
     {
         for (int i = 0; i < lItems.size(); i++)
         {
@@ -120,12 +120,10 @@ private Q_SLOTS:
             protocol->setCampaignsHandler(h);
             handler = h;
         }
-        handler->initialCheck();
         ListEntriesJob *job = new ListEntriesJob(collection, session);
         job->setModule(handler);
         QSignalSpy spy(job, SIGNAL(totalItems(int)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -155,7 +153,6 @@ private Q_SLOTS:
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -192,7 +189,6 @@ private Q_SLOTS:
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        job->start();
         QVERIFY(job->exec());
         //THEN
         QCOMPARE(spy.count(), 1);
@@ -205,6 +201,7 @@ private Q_SLOTS:
         verifyOpportunities(lItems, id, name, accountId);
         QCOMPARE(cache->size(), 1);
 
+        cache->clear(); // Do not trigger UpdateReferenceJob (which starts Akonadi)
         //GIVEN
         protocol->addAccount("accountTest","3");
         AccountsHandler accountHandler(&session);
@@ -213,7 +210,6 @@ private Q_SLOTS:
         accountListJob->setModule(&accountHandler);
         QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
         //WHEN
-        accountListJob->start();
         QVERIFY(accountListJob->exec());
         //THEN
         QCOMPARE(accountSpy.count(), 1);

@@ -70,10 +70,10 @@ public:
     QStringList availableFields() const;
     static QStringList listAvailableFields(SugarSession *session, const QString &module);
 
-    virtual bool setEntry(const Akonadi::Item &item) = 0;
+    virtual int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) = 0;
     virtual int expectedContentsVersion() const { return 0; }
 
-    bool getEntry(const Akonadi::Item &item);
+    int getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage);
 
     // Return true if the handler wants to fetch extra information on listed items
     // (e.g. email text)
