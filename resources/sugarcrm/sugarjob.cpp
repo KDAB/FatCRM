@@ -213,6 +213,11 @@ bool SugarJob::handleLoginError(const KDSoapMessage &fault)
     return false;
 }
 
+SugarSession *SugarJob::session() const
+{
+    return d->mSession;
+}
+
 QString SugarJob::sessionId() const
 {
     return d->mSession->sessionId();

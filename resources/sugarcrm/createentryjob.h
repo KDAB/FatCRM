@@ -56,11 +56,6 @@ protected:
 private:
     class Private;
     Private *const d;
-
-    Q_PRIVATE_SLOT(d, void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult))
-    Q_PRIVATE_SLOT(d, void setEntryError(const KDSoapMessage &fault))
-    Q_PRIVATE_SLOT(d, void getEntryDone(const KDSoapGenerated::TNS__Get_entry_result &callResult))
-    Q_PRIVATE_SLOT(d, void getEntryError(const KDSoapMessage &fault))
 };
 
 #endif

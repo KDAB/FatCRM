@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,6 +37,8 @@ public:
 
     ~AccountsHandler() override;
 
+    void fillAccountsCache();
+
     Akonadi::Collection handlerCollection() const override;
 
     QString orderByForListing() const override;
@@ -43,8 +46,8 @@ public:
 
     QStringList supportedCRMFields() const override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarAccountToNameValueList(const SugarAccount &account) const;
-    bool setEntry(const Akonadi::Item &item) override;
+    KDSoapGenerated::TNS__Name_value_list sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     int expectedContentsVersion() const override;
 
@@ -53,6 +56,7 @@ public:
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
+    SugarAccount nameValueListToSugarAccount(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 private Q_SLOTS:
     void slotItemsReceived(const Akonadi::Item::List &items);
     void slotUpdateJobResult(KJob *job);

@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -42,7 +43,7 @@ public:
 
     int expectedContentsVersion() const override;
 
-    bool setEntry(const Akonadi::Item &item) override;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;
@@ -53,9 +54,10 @@ public:
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp) const;
+    KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
 
     ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
+    SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 private Q_SLOTS:
     void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
     void slotUpdateJobResult(KJob *job);

@@ -40,7 +40,7 @@ class DeleteEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
+    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, const QString &moduleName, QObject *parent = 0);
 
     ~DeleteEntryJob() override;
 
@@ -52,9 +52,6 @@ protected:
 private:
     class Private;
     Private *const d;
-
-    Q_PRIVATE_SLOT(d, void setEntryDone(const KDSoapGenerated::TNS__Set_entry_result &callResult))
-    Q_PRIVATE_SLOT(d, void setEntryError(const KDSoapMessage &fault))
 };
 
 #endif

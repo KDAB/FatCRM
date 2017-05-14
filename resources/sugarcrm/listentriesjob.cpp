@@ -29,6 +29,8 @@
 #include "sugarprotocolbase.h"
 using namespace KDSoapGenerated;
 
+#include <QTimer>
+
 #include "kdcrmdata/kdcrmutils.h"
 
 #include <KDSoapClient/KDSoapMessage.h>
@@ -61,6 +63,7 @@ public:
           mStage(GetCount),
           mCollectionAttributesChanged(false)
     {
+        qRegisterMetaType<EntriesListResult>();
     }
 
 public:
@@ -75,6 +78,7 @@ public:
     void getEntriesCountDone(int count);
     void listEntriesDone(const EntriesListResult &callResult);
     void handlerError(int error, const QString &errorMessage);
+    void listNextEntries();
 };
 
 void ListEntriesJob::Private::getEntriesCountDone(int count)
@@ -96,6 +100,18 @@ static const char s_supportedFieldsKey[] = "supportedFields"; // duplicated in c
 // then increasing the expected version ensures that old caches are thrown out.
 static const char s_contentsVersionKey[] = "contentsVersion";
 
+void ListEntriesJob::Private::listNextEntries()
+{
+    QString errorMessage;
+    EntriesListResult entriesListResult;
+    int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
+    if (result == KJob::NoError) {
+        listEntriesDone(entriesListResult);
+    } else {
+        handlerError(result, errorMessage);
+    }
+}
+
 void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResult)
 {
     if (callResult.resultCount > 0) { // result_count is the size of entry_list, e.g. 100.
@@ -112,14 +128,8 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
         emit q->itemsReceived(items, mListScope.isUpdateScope());
         mListScope.setOffset(callResult.nextOffset);
 
-        QString errorMessage;
-        EntriesListResult entriesListResult;
-        int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
-        if (result == KJob::NoError) {
-            listEntriesDone(entriesListResult);
-        } else {
-            handlerError(result, errorMessage);
-        }
+        // Avoid double recursion
+        QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
     } else {
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 

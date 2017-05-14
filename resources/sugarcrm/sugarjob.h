@@ -63,6 +63,7 @@ protected:
     bool handleError(const KDSoapGenerated::TNS__Error_value &errorValue);
     bool handleLoginError(const KDSoapMessage &fault);
 
+    SugarSession *session() const;
     QString sessionId() const;
     KDSoapGenerated::Sugarsoap *soap();
     bool shouldTryRelogin() const;

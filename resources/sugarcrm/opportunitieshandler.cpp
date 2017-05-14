@@ -5,6 +5,7 @@
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
+           Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,6 +29,7 @@
 #include "kdcrmfields.h"
 #include "sugaraccountcache.h"
 #include "referenceupdatejob.h"
+#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 
@@ -62,9 +64,8 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
-KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp) const
+KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList) const
 {
-    QList<KDSoapGenerated::TNS__Name_value> itemList;
     SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
     SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
     for (; it != endIt; ++it) {
@@ -97,12 +98,12 @@ KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNa
     return valueList;
 }
 
-bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
+int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
 {
     if (!item.hasPayload<SugarOpportunity>()) {
         qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
                  << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
-        return false;
+        return SugarJob::InvalidContextError;
     }
 
     QList<KDSoapGenerated::TNS__Name_value> itemList;
@@ -118,37 +119,10 @@ bool OpportunitiesHandler::setEntry(const Akonadi::Item &item)
     }
 
     const SugarOpportunity opp = item.payload<SugarOpportunity>();
-    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
-    for (; it != endIt; ++it) {
-        // check if this is a read-only field
-        if (it.key() == QLatin1String("id")) {
-            continue;
-        }
-        const SugarOpportunity::valueGetter getter = (*it).getter;
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((opp.*getter)()));
 
-        itemList << field;
-    }
+    KDSoapGenerated::TNS__Name_value_list valueList = sugarOpportunityToNameValueList(opp, itemList);
 
-    // plus custom fields
-    const QMap<QString, QString> customFields = opp.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
-        KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(cit.key()));
-        field.setValue(KDCRMUtils::encodeXML(cit.value()));
-        itemList << field;
-    }
-
-    KDSoapGenerated::TNS__Name_value_list valueList;
-    valueList.setItems(itemList);
-    soap()->asyncSet_entry(sessionId(), moduleName(), valueList);
-
-    return true;
+    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
 }
 
 int OpportunitiesHandler::expectedContentsVersion() const
@@ -175,6 +149,25 @@ QStringList OpportunitiesHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::accountId();
 }
 
+SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list & valueList, const QString &id)
+{
+    SugarOpportunity opportunity;
+    opportunity.setId(id);
+    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
+        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString value = KDCRMUtils::decodeXML(namedValue.value());
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
+        if (accessIt == mAccessors.constEnd()) {
+            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
+            opportunity.setCustomField(customCrmFieldName, value);
+            continue;
+        }
+
+        (opportunity.*(accessIt.value().setter))(value);
+    }
+    return opportunity;
+}
+
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
 {
     Akonadi::Item item;
@@ -189,20 +182,7 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarOpportunity::mimeType());
 
-    SugarOpportunity opportunity;
-    opportunity.setId(entry.id());
-    Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
-        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
-            const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
-            opportunity.setCustomField(customCrmFieldName, value);
-            continue;
-        }
-
-        (opportunity.*(accessIt.value().setter))(value);
-    }
+    SugarOpportunity opportunity = nameValueListToSugarOpportunity(entry.name_value_list(), entry.id());
 
     if (opportunity.accountId().isEmpty()) {
         // Resolve account id using name, since Sugar doesn't do that
