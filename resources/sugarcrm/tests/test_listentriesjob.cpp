@@ -151,7 +151,7 @@ private Q_SLOTS:
         protocol->setAccountsHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -187,7 +187,7 @@ private Q_SLOTS:
         protocol->setOpportunitiesHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -208,7 +208,7 @@ private Q_SLOTS:
         protocol->setAccountsHandler(&accountHandler);
         ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
         accountListJob->setModule(&accountHandler);
-        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(accountListJob->exec());
         //THEN
@@ -220,7 +220,7 @@ private Q_SLOTS:
         for (Akonadi::Item &item : lItems) {
             updateItem(item);
         }
-        accountId[1] = "3";
+        accountId[1] = '3';
         verifyOpportunities(lItems, id, name, accountId);
     }
 };

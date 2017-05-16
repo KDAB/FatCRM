@@ -132,7 +132,7 @@ private Q_SLOTS:
         protocol->setSession(&session);
 
         SugarAccount account;
-        QString remoteId = "1";
+        QString remoteId('1');
         account.setId(remoteId);
         Akonadi::Item item;
         item.setId(0);

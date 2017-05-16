@@ -25,10 +25,6 @@
 #include "campaignshandler.h"
 #include "leadshandler.h"
 #include "contactshandler.h"
-
-#include "campaignshandler.h"
-#include "leadshandler.h"
-#include "contactshandler.h"
 #include "listentriesscope.h"
 
 SugarMockProtocol::SugarMockProtocol()
@@ -43,7 +39,7 @@ int SugarMockProtocol::login(const QString &user, const QString &password, QStri
 {
     if (!mServerNotFound) {
         if (user == "user" && password == "password") {
-            sessionId = "1";
+            sessionId = '1';
             return KJob::NoError;
         } else {
             int error = SugarJob::Errors::LoginError;
