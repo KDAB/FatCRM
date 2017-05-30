@@ -43,14 +43,14 @@ class DeleteEntryJob::Private
     DeleteEntryJob *const q;
 
 public:
-    explicit Private(DeleteEntryJob *parent, const Item &item, const QString &moduleName)
-        : q(parent), mItem(item), mModuleName(moduleName)
+    explicit Private(DeleteEntryJob *parent, const Item &item, Module moduleName)
+        : q(parent), mItem(item), mModule(moduleName)
     {
     }
 
 public:
     const Item mItem;
-    const QString mModuleName;
+    const Module mModule;
     void setEntryDone();
     void setEntryError(int error, const QString &errorMessage);
 };
@@ -79,7 +79,7 @@ void DeleteEntryJob::Private::setEntryError(int error, const QString &errorMessa
     q->emitResult();
 }
 
-DeleteEntryJob::DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, const QString &moduleName, QObject *parent)
+DeleteEntryJob::DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, Module moduleName, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, item, moduleName))
 {
 
@@ -113,7 +113,7 @@ void DeleteEntryJob::startSugarTask()
     valueList.setItems(QList<KDSoapGenerated::TNS__Name_value>() << idField << deletedField);
 
     QString newId, errorMessage;
-    int result = session()->protocol()->setEntry(d->mModuleName, valueList, newId, errorMessage);
+    int result = session()->protocol()->setEntry(d->mModule, valueList, newId, errorMessage);
     if (result == KJob::NoError) {
         d->setEntryDone();
     } else {

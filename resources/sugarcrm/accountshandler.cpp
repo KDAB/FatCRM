@@ -44,7 +44,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Accounts"), session),
+    : ModuleHandler(Module::Accounts, session),
       mAccessors(SugarAccount::accessorHash())
 {
 
@@ -148,7 +148,7 @@ int AccountsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarAccountToNameValueList(account, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 int AccountsHandler::expectedContentsVersion() const

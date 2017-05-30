@@ -24,6 +24,7 @@
 #define DELETEENTRYJOB_H
 
 #include "sugarjob.h"
+#include "modulename.h"
 
 namespace Akonadi
 {
@@ -41,7 +42,7 @@ class DeleteEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, const QString &moduleName, QObject *parent = 0);
+    DeleteEntryJob(const Akonadi::Item &item, SugarSession *session, Module moduleName, QObject *parent = 0);
 
     ~DeleteEntryJob() override;
 

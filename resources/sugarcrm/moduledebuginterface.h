@@ -25,6 +25,7 @@
 
 #include <QObject>
 #include <QStringList>
+#include "modulename.h"
 
 class SugarCRMResource;
 
@@ -34,7 +35,7 @@ class ModuleDebugInterface : public QObject
     Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ModuleDebug")
 
 public:
-    ModuleDebugInterface(const QString &moduleName, SugarCRMResource *resource);
+    ModuleDebugInterface(Module moduleName, SugarCRMResource *resource);
     ~ModuleDebugInterface() override;
 
 public Q_SLOTS:
@@ -42,7 +43,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE QStringList supportedFields() const;
 
 private:
-    const QString mModuleName;
+    const Module mModule;
     SugarCRMResource *const mResource;
 };
 

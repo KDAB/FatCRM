@@ -34,7 +34,7 @@ using namespace KDSoapGenerated;
 #include <KLocale>
 
 CampaignsHandler::CampaignsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Campaigns"), session),
+    : ModuleHandler(Module::Campaigns, session),
       mAccessors(SugarCampaign::accessorHash())
 {
 }
@@ -42,7 +42,7 @@ CampaignsHandler::CampaignsHandler(SugarSession *session)
 Akonadi::Collection CampaignsHandler::handlerCollection() const
 {
     Akonadi::Collection campaignCollection;
-    campaignCollection.setRemoteId(moduleName());
+    campaignCollection.setRemoteId(moduleToName(module()));
     campaignCollection.setContentMimeTypes(QStringList() << SugarCampaign::mimeType());
     campaignCollection.setName(i18nc("@item folder name", "Campaigns"));
     campaignCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -113,7 +113,7 @@ int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarCampaignToNameValueList(campaign, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)

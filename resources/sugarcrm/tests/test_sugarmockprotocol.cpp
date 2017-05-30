@@ -28,8 +28,11 @@
 #include "campaignshandler.h"
 #include "leadshandler.h"
 #include "contactshandler.h"
+#include "modulename.h"
 
 #include "sugarsession.h"
+
+Q_DECLARE_METATYPE(Module);
 
 class TestSugarMockProtocol : public QObject
 {
@@ -78,19 +81,19 @@ private Q_SLOTS:
 
     void shouldCountEntriesCorrectly_data()
     {
-        QTest::addColumn<QString>("type");
+        QTest::addColumn<Module>("type");
         QTest::addColumn<int>("amount");
 
-        QTest::newRow("accounts") << "Accounts" << 3;
-        QTest::newRow("opportunities") << "Opportunities" << 2;
-        QTest::newRow("leads") << "Leads" << 1;
-        QTest::newRow("campaign") << "Campaigns" << 1;
-        QTest::newRow("contact") << "Contacts" << 1;
+        QTest::newRow("accounts") << Module::Accounts << 3;
+        QTest::newRow("opportunities") << Module::Opportunities << 2;
+        QTest::newRow("leads") << Module::Leads << 1;
+        QTest::newRow("campaign") << Module::Campaigns << 1;
+        QTest::newRow("contact") << Module::Contacts << 1;
     }
 
     void shouldCountEntriesCorrectly()
     {
-        QFETCH(QString, type);
+        QFETCH(Module, type);
         QFETCH(int, amount);
         //GIVEN
         SugarMockProtocol protocol;
@@ -107,19 +110,19 @@ private Q_SLOTS:
 
     void ListEntriesWork_data()
     {
-        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<Module>("module");
         QTest::addColumn<int>("amount");
 
-        QTest::newRow("accounts") << "Accounts" << 3;
-        QTest::newRow("opportunities") << "Opportunities" << 2;
-        QTest::newRow("leads") << "Leads" << 1;
-        QTest::newRow("campaigns") << "Campaigns" << 1;
-        QTest::newRow("contacts") << "Contacts" << 1;
+        QTest::newRow("accounts") << Module::Accounts << 3;
+        QTest::newRow("opportunities") << Module::Opportunities << 2;
+        QTest::newRow("leads") << Module::Leads << 1;
+        QTest::newRow("campaigns") << Module::Campaigns << 1;
+        QTest::newRow("contacts") << Module::Contacts << 1;
     }
 
     void ListEntriesWork()
     {
-        QFETCH(QString, moduleName);
+        QFETCH(Module, module);
         QFETCH(int, amount);
         //GIVEN
         SugarSession session(nullptr);
@@ -141,7 +144,7 @@ private Q_SLOTS:
         EntriesListResult result;
         QStringList selectedFields;
         QString query, orderBy, errorMessage;
-        protocol.listEntries(scope, moduleName, query, orderBy, selectedFields, result, errorMessage);
+        protocol.listEntries(scope, module, query, orderBy, selectedFields, result, errorMessage);
         //THEN
         QCOMPARE(result.resultCount, amount);
         QCOMPARE(result.entryList.items().size(), amount);
@@ -149,19 +152,19 @@ private Q_SLOTS:
 
     void getEntryShouldReturnEntry_data()
     {
-        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<Module>("module");
         QTest::addColumn<QString>("remoteId");
         QTest::addColumn<int>("expectedResult");
 
-        QTest::newRow("correctAccount") << "Accounts" << "0" << static_cast<int>(KJob::NoError);
-        QTest::newRow("incorrectAccount") << "Accounts" << "100" << static_cast<int>(SugarJob::SoapError);
-        QTest::newRow("correctOpportunity") << "Opportunities" << "100" << static_cast<int>(KJob::NoError);
-        QTest::newRow("incorectOpportunity") << "Opportunities" << "0" << static_cast<int>(SugarJob::SoapError);
+        QTest::newRow("correctAccount") << Module::Accounts << "0" << static_cast<int>(KJob::NoError);
+        QTest::newRow("incorrectAccount") << Module::Accounts << "100" << static_cast<int>(SugarJob::SoapError);
+        QTest::newRow("correctOpportunity") << Module::Opportunities << "100" << static_cast<int>(KJob::NoError);
+        QTest::newRow("incorectOpportunity") << Module::Opportunities << "0" << static_cast<int>(SugarJob::SoapError);
     }
 
     void getEntryShouldReturnEntry()
     {
-        QFETCH(QString, moduleName);
+        QFETCH(Module, module);
         QFETCH(QString, remoteId);
         QFETCH(int, expectedResult);
         //GIVEN
@@ -175,7 +178,7 @@ private Q_SLOTS:
         KDSoapGenerated::TNS__Entry_value entryValue;
         QString errorMessage;
         //WHEN
-        int result = protocol.getEntry(moduleName, remoteId, QStringList(), entryValue, errorMessage);
+        int result = protocol.getEntry(module, remoteId, QStringList(), entryValue, errorMessage);
         //THEN
         QCOMPARE(result, expectedResult);
         if (result == 0) {
@@ -185,22 +188,22 @@ private Q_SLOTS:
 
     void setEntryShouldCorrectlySet_data()
     {
-        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<Module>("module");
         QTest::addColumn<QString>("id");
         QTest::addColumn<QString>("expectedId");
         QTest::addColumn<int>("expectedResult");
 
-        QTest::newRow("addAccount") << "Accounts" << "" << "1000" << int(KJob::NoError);
-        QTest::newRow("updateAccount") << "Accounts" << "1" << "1" << int(KJob::NoError);
-        QTest::newRow("updateNonexistentAccount") << "Accounts" << "100" << "100" << int(SugarJob::SoapError);
-        QTest::newRow("addOpportunity") << "Opportunities" << "" << "1000" << int(KJob::NoError);
-        QTest::newRow("updateOpportunity") << "Opportunities" << "100" << "100" << int(KJob::NoError);
-        QTest::newRow("updateNonexistentOpportunity") << "Opportunities" << "0" << "0" << int(SugarJob::SoapError);
+        QTest::newRow("addAccount") << Module::Accounts << "" << "1000" << int(KJob::NoError);
+        QTest::newRow("updateAccount") << Module::Accounts << "1" << "1" << int(KJob::NoError);
+        QTest::newRow("updateNonexistentAccount") << Module::Accounts << "100" << "100" << int(SugarJob::SoapError);
+        QTest::newRow("addOpportunity") << Module::Opportunities << "" << "1000" << int(KJob::NoError);
+        QTest::newRow("updateOpportunity") << Module::Opportunities << "100" << "100" << int(KJob::NoError);
+        QTest::newRow("updateNonexistentOpportunity") << Module::Opportunities << "0" << "0" << int(SugarJob::SoapError);
     }
 
     void setEntryShouldCorrectlySet()
     {
-        QFETCH(QString, moduleName);
+        QFETCH(Module, module);
         QFETCH(QString, id);
         QFETCH(QString, expectedId);
         QFETCH(int, expectedResult);
@@ -222,7 +225,7 @@ private Q_SLOTS:
         nvl.setItems(itemList);
         QString errorMessage, newId;
         //WHEN
-        const int result = protocol.setEntry(moduleName, nvl, newId, errorMessage);
+        const int result = protocol.setEntry(module, nvl, newId, errorMessage);
         //THEN
         QCOMPARE(result, expectedResult);
         if (id.isEmpty()) {

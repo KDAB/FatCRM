@@ -545,7 +545,7 @@ public:
 };
 
 ContactsHandler::ContactsHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Contacts"), session),
+    : ModuleHandler(Module::Contacts, session),
       mAccessors(new ContactAccessorHash)
 {
     mAccessors->insert(KDCRMFields::firstName(),
@@ -673,7 +673,7 @@ ContactsHandler::~ContactsHandler()
 Akonadi::Collection ContactsHandler::handlerCollection() const
 {
     Akonadi::Collection contactCollection;
-    contactCollection.setRemoteId(moduleName());
+    contactCollection.setRemoteId(moduleToName(module()));
     contactCollection.setContentMimeTypes(QStringList() << KABC::Addressee::mimeType());
     contactCollection.setName(i18nc("@item folder name", "Contacts"));
     contactCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -757,7 +757,7 @@ int ContactsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString
 
     KDSoapGenerated::TNS__Name_value_list valueList = addresseeToNameValueList(addressee, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 QString ContactsHandler::orderByForListing() const

@@ -122,7 +122,7 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
 
         if (mHandler->needsExtraInformation())
             mHandler->getExtraInformation(items);
-        kDebug() << "List Entries for" << mHandler->moduleName()
+        kDebug() << "List Entries for" << mHandler->module()
                  << "received" << items.count() << "items.";
 
         emit q->itemsReceived(items, mListScope.isUpdateScope());
@@ -131,7 +131,7 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
         // Avoid double recursion
         QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
     } else {
-        kDebug() << q << "List Entries for" << mHandler->moduleName() << "done. Latest timestamp=" << mLatestTimestampFromItems;
+        kDebug() << q << "List Entries for" << mHandler->module() << "done. Latest timestamp=" << mLatestTimestampFromItems;
 
         // Store timestamp into DB, to persist it across restarts
         // Add one second, so we don't get the same stuff all over again every time
@@ -248,7 +248,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
         const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();
         const int expected = handler->expectedContentsVersion();
         if (contentsVersion != expected) {
-            kDebug() << handler->moduleName() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
+            kDebug() << handler->module() << ": contents version" << contentsVersion << "expected" << expected << "-> we'll download all items again";
             return QString();
         }
 
@@ -256,7 +256,7 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
 
         // If we don't have enum definitions, go back a little to get some update
         if (!handler->hasEnumDefinitions()) {
-            kDebug() << handler->moduleName() << "no enum definitions, going back a bit to get something";
+            kDebug() << handler->module() << "no enum definitions, going back a bit to get something";
             KDCRMUtils::decrementTimeStamp(timeStamp);
         }
         return timeStamp;

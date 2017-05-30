@@ -66,7 +66,7 @@ int ListEntriesScope::deleted() const
     return mGetDeleted ? 1 : 0;
 }
 
-QString ListEntriesScope::query(const QString &filter, const QString &moduleName) const
+QString ListEntriesScope::query(const QString &filter, Module moduleName) const
 {
     QString queryStr = filter;
 
@@ -81,5 +81,5 @@ QString ListEntriesScope::query(const QString &filter, const QString &moduleName
     if (!queryStr.isEmpty())
         queryStr = QLatin1String("( ") + queryStr + QLatin1String(" ) AND ");
 
-    return queryStr + moduleName + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
+    return queryStr + moduleToName(moduleName).toLower() + QLatin1String(".date_modified >= '") + mUpdateTimestamp + QLatin1String("'");
 }

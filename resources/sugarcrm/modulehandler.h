@@ -31,6 +31,7 @@
 
 #include <QStringList>
 #include "sugarprotocolbase.h"
+#include "modulename.h"
 
 class SugarSession;
 class ListEntriesScope;
@@ -49,11 +50,11 @@ class ModuleHandler : public QObject, public Akonadi::DifferencesAlgorithmInterf
     Q_OBJECT
     Q_INTERFACES(Akonadi::DifferencesAlgorithmInterface) // just to silence moc
 public:
-    explicit ModuleHandler(const QString &moduleName, SugarSession *session);
+    explicit ModuleHandler(const Module module, SugarSession *session);
 
     ~ModuleHandler() override;
 
-    QString moduleName() const;
+    Module module() const;
 
     void initialCheck();
 
@@ -104,7 +105,7 @@ public:
 
 protected:
     SugarSession *mSession;
-    QString mModuleName;
+    Module mModule;
     QString mLatestTimestamp;
     Akonadi::Collection mCollection;
 

@@ -271,7 +271,7 @@ static void setPriority( const QString &value, KCalCore::Todo &todo )
 }
 
 TasksHandler::TasksHandler( SugarSession *session )
-    : ModuleHandler( QLatin1String( "Tasks" ), session ),
+    : ModuleHandler(Module::Tasks, session ),
       mAccessors( new AccessorHash )
 {
     mAccessors->insert( KDCRMFields::id(),
@@ -385,7 +385,7 @@ int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     TNS__Name_value_list valueList;
     valueList.setItems( itemList );
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )

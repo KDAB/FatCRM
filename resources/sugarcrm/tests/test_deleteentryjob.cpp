@@ -29,7 +29,6 @@
 #include "opportunitieshandler.h"
 #include "deleteentryjob.h"
 
-
 class TestDeleteEntryJob : public QObject
 {
     Q_OBJECT
@@ -62,7 +61,7 @@ private Q_SLOTS:
         item.setId(0);
         item.setRemoteId(remoteId);
         item.setPayload<SugarAccount>(account);
-        DeleteEntryJob job(item, &session, "Accounts");
+        DeleteEntryJob job(item, &session, Module::Accounts);
         AccountsHandler handler(&session);
         protocol->setAccountsHandler(&handler);
         //WHEN
@@ -106,7 +105,7 @@ private Q_SLOTS:
         item.setId(0);
         item.setRemoteId(remoteId);
         item.setPayload<SugarOpportunity>(opp);
-        DeleteEntryJob job(item, &session, "Opportunities");
+        DeleteEntryJob job(item, &session, Module::Opportunities);
         OpportunitiesHandler handler(&session);
         protocol->setOpportunitiesHandler(&handler);
         //WHEN
@@ -139,7 +138,7 @@ private Q_SLOTS:
         item.setId(0);
         item.setRemoteId(remoteId);
         item.setPayload<SugarAccount>(account);
-        DeleteEntryJob job(item, &session, "Accounts");
+        DeleteEntryJob job(item, &session, Module::Accounts);
         AccountsHandler handler(&session);
         protocol->setAccountsHandler(&handler);
         //WHEN

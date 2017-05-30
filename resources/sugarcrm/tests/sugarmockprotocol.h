@@ -51,12 +51,12 @@ public:
     void logout() override;
     inline void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
     void setSession(SugarSession *session) override;
-    int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
-    int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+    int getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
+    int listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
                     const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
-    int setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
-    int getEntry(const QString &moduleName, const QString &remoteId, const QStringList &selectedFields,
+    int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
+    int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
 
     void setAccountsHandler(AccountsHandler *handler);

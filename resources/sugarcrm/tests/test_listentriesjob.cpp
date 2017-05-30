@@ -30,7 +30,7 @@
 #include <QSignalSpy>
 #include <Akonadi/Item>
 
-
+Q_DECLARE_METATYPE(Module);
 
 class TestListEntriesJob : public QObject
 {
@@ -85,17 +85,17 @@ private Q_SLOTS:
 
     void shouldReturnCorrectCount_data()
     {
-        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<Module>("moduleName");
         QTest::addColumn<int>("expectedCount");
 
-        QTest::newRow("Accounts") << "Accounts" << 3;
-        QTest::newRow("Opportunities") << "Opportunities" << 2;
-        QTest::newRow("Campaigns") << "Campaigns" << 1;
+        QTest::newRow("Accounts") << Module::Accounts << 3;
+        QTest::newRow("Opportunities") << Module::Opportunities << 2;
+        QTest::newRow("Campaigns") << Module::Campaigns << 1;
     }
 
     void shouldReturnCorrectCount()
     {
-        QFETCH(QString, moduleName);
+        QFETCH(Module, moduleName);
         QFETCH(int, expectedCount);
         //GIVEN
         Akonadi::Collection collection;
@@ -107,15 +107,15 @@ private Q_SLOTS:
         session->setProtocol(protocol);
         session->setSessionParameters("user", "password", "hosttest");
         ModuleHandler *handler = 0;
-        if (moduleName == "Accounts") {
+        if (moduleName == Module::Accounts) {
             AccountsHandler *h = new AccountsHandler(session);
             protocol->setAccountsHandler(h);
             handler = h;
-        } else if (moduleName == "Opportunities") {
+        } else if (moduleName == Module::Opportunities) {
             OpportunitiesHandler *h = new OpportunitiesHandler(session);
             protocol->setOpportunitiesHandler(h);
             handler = h;
-        } else if (moduleName == "Campaigns") {
+        } else if (moduleName == Module::Campaigns) {
             CampaignsHandler *h = new CampaignsHandler(session);
             protocol->setCampaignsHandler(h);
             handler = h;

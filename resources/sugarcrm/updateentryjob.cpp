@@ -87,13 +87,13 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
     if (mItem.remoteRevision().isEmpty()) {
         kWarning() << "local item (id=" << mItem.id()
                    << ", remoteId=" << mItem.remoteId()
-                   << ") in collection=" << mHandler->moduleName()
+                   << ") in collection=" << mHandler->module()
                    << "does not have remoteRevision";
         hasConflict = !remoteItem.remoteRevision().isEmpty();
     } else if (remoteItem.remoteRevision().isEmpty()) {
         kWarning() << "remote item (id=" << remoteItem.id()
                    << ", remoteId=" << remoteItem.remoteId()
-                   << ") in collection=" << mHandler->moduleName()
+                   << ") in collection=" << mHandler->module()
                    << "does not have remoteRevision";
     } else {
         // remoteRevision is an ISO date, so string comparisons are accurate for < or >
@@ -105,7 +105,7 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
         q->setError(UpdateEntryJob::ConflictError);
         q->setErrorText(i18nc("info:status parameter is module name",
                               "%1 entry on server is newer than the one the local update was based on",
-                              mHandler->moduleName()));
+                              moduleToName(mHandler->module())));
         q->emitResult();
     } else {
         mStage = UpdateEntry;
@@ -144,7 +144,7 @@ void UpdateEntryJob::Private::getEntryError(int error, const QString &errorMessa
 
 void UpdateEntryJob::Private::setEntryDone(const QString &id)
 {
-    kDebug() << "Updated entry" << id << "in module" << mHandler->moduleName();
+    kDebug() << "Updated entry" << id << "in module" << mHandler->module();
     mItem.setRemoteId(id);
 
     mStage = Private::GetRevision;
@@ -160,7 +160,7 @@ void UpdateEntryJob::Private::setEntryDone(const QString &id)
     } else if (result == -1) {
         q->setError(SugarJob::InvalidContextError);
         q->setErrorText(i18nc("@info:status", "Attempting to modify a malformed item in folder %1",
-                           mHandler->moduleName()));
+                           moduleToName(mHandler->module())));
         q->emitResult();
     } else {
         getEntryError(result, errorMessage);
@@ -258,7 +258,7 @@ void UpdateEntryJob::startSugarTask()
     } else if (result == SugarJob::InvalidContextError) {
         setError(result);
         setErrorText(i18nc("@info:status", "Attempting to modify a malformed item in folder %1",
-                           d->mHandler->moduleName()));
+                           moduleToName(d->mHandler->module())));
         emitResult();
     } else {
         d->getEntryError(result, errorMessage);

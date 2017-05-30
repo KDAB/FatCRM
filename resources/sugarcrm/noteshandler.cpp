@@ -36,7 +36,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 NotesHandler::NotesHandler(SugarSession *session)
-    : ModuleHandler(QLatin1String("Notes"), session),
+    : ModuleHandler(Module::Notes, session),
       mAccessors(SugarNote::accessorHash())
 {
 }
@@ -48,7 +48,7 @@ NotesHandler::~NotesHandler()
 Akonadi::Collection NotesHandler::handlerCollection() const
 {
     Akonadi::Collection noteCollection;
-    noteCollection.setRemoteId(moduleName());
+    noteCollection.setRemoteId(moduleToName(module()));
     noteCollection.setContentMimeTypes(QStringList() << SugarNote::mimeType());
     noteCollection.setName(i18nc("@item folder name", "Notes"));
     noteCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -124,7 +124,7 @@ int NotesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
