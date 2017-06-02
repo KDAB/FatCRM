@@ -172,4 +172,18 @@ int SugarSoapProtocol::getEntry(Module moduleName, const QString &remoteId, cons
     }
 }
 
-
+int SugarSoapProtocol::listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage)
+{
+    KDSoapGenerated::TNS__Module_list result = mSession->soap()->get_available_modules(mSession->sessionId());
+    QString error = result.error().number();
+    if (error == "0") {
+        selectFields = result.modules();
+        return KJob::NoError;
+    } else if (error == "10") {
+        errorMessage = mSession->soap()->lastError();
+        return SugarJob::CouldNotConnectError;
+    } else {
+        errorMessage = result.error().description();
+        return SugarJob::SoapError;
+    }
+}

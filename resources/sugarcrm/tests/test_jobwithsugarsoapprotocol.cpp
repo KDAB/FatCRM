@@ -30,6 +30,7 @@
 #include "updateentryjob.h"
 #include "deleteentryjob.h"
 #include "fetchentryjob.h"
+#include "listmodulesjob.h"
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
 
@@ -45,6 +46,7 @@ public:
 
 private:
     SugarSession mSession;
+    SugarSoapProtocol *mProtocol;
     SugarAccount mNewAccount;
     SugarOpportunity mNewOpp;
     QString mRemoteRevision;
@@ -74,6 +76,10 @@ private Q_SLOTS:
         }
         mSession.setSessionParameters(userName, mPassword, mHost);
         mSession.createSoapInterface();
+
+        mProtocol = new SugarSoapProtocol;
+        mSession.setProtocol(mProtocol);
+        mProtocol->setSession(&mSession);
     }
 
     void shouldAddAccount()
@@ -84,9 +90,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarAccount>(account);
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         CreateEntryJob job(item, &mSession);
         AccountsHandler handler(&mSession);
         job.setModule(&handler);
@@ -102,9 +105,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         AccountsHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
@@ -127,9 +127,6 @@ private Q_SLOTS:
         item.setRemoteId(mNewAccount.id());
         item.setRemoteRevision(mRemoteRevision);
         item.setPayload<SugarAccount>(account);
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         UpdateEntryJob job(item, &mSession);
         AccountsHandler handler(&mSession);
         job.setModule(&handler);
@@ -147,9 +144,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         DeleteEntryJob job(item, &mSession, Module::Accounts);
         //WHEN
         job.exec(); // Triggers a soap error but the account is removed, the fetch after shows that.
@@ -161,9 +155,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         AccountsHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
@@ -183,9 +174,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarOpportunity>(opp);
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         CreateEntryJob job(item, &mSession);
         OpportunitiesHandler handler(&mSession);
         job.setModule(&handler);
@@ -201,9 +189,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         OpportunitiesHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
@@ -226,9 +211,6 @@ private Q_SLOTS:
         item.setRemoteId(mNewOpp.id());
         item.setRemoteRevision(mRemoteRevision);
         item.setPayload<SugarOpportunity>(opp);
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         UpdateEntryJob job(item, &mSession);
         OpportunitiesHandler handler(&mSession);
         job.setModule(&handler);
@@ -246,9 +228,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         DeleteEntryJob job(item, &mSession, Module::Opportunities);
         //WHEN
         job.exec(); // Triggers a soap error but the opportunity is removed, the fetch after shows that.
@@ -260,9 +239,6 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
-        mSession.setProtocol(protocol);
-        protocol->setSession(&mSession);
         OpportunitiesHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
@@ -272,6 +248,20 @@ private Q_SLOTS:
         SugarOpportunity oppFind = job.item().payload<SugarOpportunity>();
         QCOMPARE(oppFind.id(), mNewOpp.id());
         QCOMPARE(oppFind.name(), QString());
+    }
+
+    void shouldCorrectlyListModules()
+    {
+        //GIVEN
+        ListModulesJob job(&mSession);
+        //WHEN
+        QVERIFY(job.exec());
+        //THEN
+        QVERIFY(job.modules().contains(moduleToName(Module::Accounts)));
+        QVERIFY(job.modules().contains(moduleToName(Module::Opportunities)));
+        QVERIFY(job.modules().contains(moduleToName(Module::Documents)));
+        QVERIFY(job.modules().contains(moduleToName(Module::Contacts)));
+        QVERIFY(job.modules().contains(moduleToName(Module::Emails)));
     }
 };
 

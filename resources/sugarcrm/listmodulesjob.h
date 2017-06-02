@@ -44,14 +44,11 @@ public:
     QStringList modules() const;
 
 protected:
-    void startSugarTask();
+    void startSugarTask() override;
 
 private:
     class Private;
     Private *const d;
-
-    Q_PRIVATE_SLOT(d, void listModulesDone(const KDSoapGenerated::TNS__Module_list &callResult))
-    Q_PRIVATE_SLOT(d, void listModulesError(const KDSoapMessage &fault))
 };
 
 #endif
