@@ -115,11 +115,11 @@ protected:
 
     virtual Akonadi::Collection handlerCollection() const = 0;
 
-    QString sugarFieldToCrmField(const QString &sugarFieldName) const;
-    virtual QString customSugarFieldToCrmField(const QString &sugarFieldName) const;
+    static QString sugarFieldToCrmField(const QString &sugarFieldName);
+    static QString customSugarFieldToCrmField(const QString &sugarFieldName);
     QStringList sugarFieldsToCrmFields(const QStringList &sugarFieldNames) const;
-    QString sugarFieldFromCrmField(const QString &crmFieldName) const;
-    virtual QString customSugarFieldFromCrmField(const QString &crmFieldName) const;
+    static QString sugarFieldFromCrmField(const QString &crmFieldName);
+    static QString customSugarFieldFromCrmField(const QString &crmFieldName);
     QStringList sugarFieldsFromCrmFields(const QStringList &crmFieldNames) const;
 
     QString sessionId() const;
@@ -130,7 +130,7 @@ private Q_SLOTS:
     void slotCollectionsReceived(const Akonadi::Collection::List &collections);
 
 private:
-    const QMap<QString, QString>& fieldNamesMapping() const;
+    static const QMap<QString, QString>& fieldNamesMapping();
 
     mutable QStringList mAvailableFields;
 

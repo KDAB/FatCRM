@@ -257,13 +257,13 @@ QByteArray ModuleHandler::partIdFromPayloadPart(const char *part)
     return QByteArray("PLD:") + part;
 }
 
-QString ModuleHandler::sugarFieldToCrmField(const QString &sugarFieldName) const
+QString ModuleHandler::sugarFieldToCrmField(const QString &sugarFieldName)
 {
     const QMap<QString, QString> &map = fieldNamesMapping();
     return map.key(sugarFieldName, QString());
 }
 
-QString ModuleHandler::customSugarFieldToCrmField(const QString &sugarFieldName) const
+QString ModuleHandler::customSugarFieldToCrmField(const QString &sugarFieldName)
 {
     if (sugarFieldName.endsWith(QLatin1String("_c")))
         return sugarFieldName.left(sugarFieldName.size() - 2);
@@ -288,13 +288,13 @@ QStringList ModuleHandler::sugarFieldsToCrmFields(const QStringList &sugarFieldN
     return crmFieldNames;
 }
 
-QString ModuleHandler::sugarFieldFromCrmField(const QString &crmFieldName) const
+QString ModuleHandler::sugarFieldFromCrmField(const QString &crmFieldName)
 {
     const QMap<QString, QString> &map = fieldNamesMapping();
     return map.value(crmFieldName, QString());
 }
 
-QString ModuleHandler::customSugarFieldFromCrmField(const QString &crmFieldName) const
+QString ModuleHandler::customSugarFieldFromCrmField(const QString &crmFieldName)
 {
     return crmFieldName + QLatin1String("_c");
 }
@@ -316,7 +316,7 @@ QStringList ModuleHandler::sugarFieldsFromCrmFields(const QStringList &crmFieldN
     return sugarFieldNames;
 }
 
-const QMap<QString, QString>& ModuleHandler::fieldNamesMapping() const
+const QMap<QString, QString>& ModuleHandler::fieldNamesMapping()
 {
     static QMap<QString, QString> mapping;
     if (mapping.isEmpty()) {

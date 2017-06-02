@@ -33,5 +33,5 @@ public:
 public:
     taskValueGetter getter;
     taskValueSetter setter;
-    const QString diffName;
+    QString diffName;
 };

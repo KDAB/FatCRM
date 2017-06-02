@@ -62,8 +62,6 @@ private Q_SLOTS:
         item.setRemoteId(remoteId);
         item.setPayload<SugarAccount>(account);
         DeleteEntryJob job(item, &session, Module::Accounts);
-        AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         //WHEN
         bool result = job.exec();
         //THEN
@@ -106,8 +104,6 @@ private Q_SLOTS:
         item.setRemoteId(remoteId);
         item.setPayload<SugarOpportunity>(opp);
         DeleteEntryJob job(item, &session, Module::Opportunities);
-        OpportunitiesHandler handler(&session);
-        protocol->setOpportunitiesHandler(&handler);
         //WHEN
         bool result = job.exec();
         //THEN
@@ -139,8 +135,6 @@ private Q_SLOTS:
         item.setRemoteId(remoteId);
         item.setPayload<SugarAccount>(account);
         DeleteEntryJob job(item, &session, Module::Accounts);
-        AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         //WHEN
         QVERIFY(!job.exec());
         //THEN
