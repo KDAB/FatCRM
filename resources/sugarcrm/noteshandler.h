@@ -50,9 +50,6 @@ public:
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
-
-private:
-    SugarNote::AccessorHash mAccessors;
 };
 
 #endif

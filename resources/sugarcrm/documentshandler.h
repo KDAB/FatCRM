@@ -51,9 +51,6 @@ public:
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
-
-private:
-    SugarDocument::AccessorHash mAccessors;
 };
 
 #endif

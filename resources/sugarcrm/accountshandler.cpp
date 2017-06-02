@@ -44,8 +44,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 AccountsHandler::AccountsHandler(SugarSession *session)
-    : ModuleHandler(Module::Accounts, session),
-      mAccessors(SugarAccount::accessorHash())
+    : ModuleHandler(Module::Accounts, session)
 {
 
 }
@@ -92,10 +91,11 @@ QStringList AccountsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList) const
+KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
-    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
+    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
@@ -103,7 +103,7 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
         }
         const SugarAccount::valueGetter getter = (*it).getter;
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(sugarFieldFromCrmField(it.key()));
+        field.setName(ModuleHandler::sugarFieldFromCrmField(it.key()));
         field.setValue(KDCRMUtils::encodeXML((account.*getter)()));
 
         itemList << field;
@@ -114,7 +114,7 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
     const QMap<QString, QString>::const_iterator end = customFields.constEnd();
     for ( ; cit != end ; ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
-        field.setName(customSugarFieldFromCrmField(cit.key()));
+        field.setName(ModuleHandler::customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
         itemList << field;
     }
@@ -163,11 +163,12 @@ SugarAccount AccountsHandler::nameValueListToSugarAccount(const KDSoapGenerated:
 {
     SugarAccount account;
     account.setId(id);
+    const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
-        const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
+        const QString crmFieldName = ModuleHandler::sugarFieldToCrmField(namedValue.name());
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarAccount::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarAccount::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
             account.setCustomField(crmCustomFieldName, value);
             continue;
@@ -224,8 +225,9 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenBillingAddress = false;
     bool seenShippingAddress = false;
 
-    SugarAccount::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
+    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {

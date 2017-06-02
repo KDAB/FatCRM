@@ -42,8 +42,4 @@ public:
 
     void compare( Akonadi::AbstractDifferencesReporter *reporter,
                   const Akonadi::Item &leftItem, const Akonadi::Item &rightItem ) override;
-
-private:
-    typedef QHash<QString, TaskAccessorPair*> AccessorHash;
-    AccessorHash *mAccessors;
 };

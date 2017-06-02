@@ -38,7 +38,7 @@ public:
 
     QStringList supportedCRMFields() const override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarLeadToNameValueList(const SugarLead &lead, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    static KDSoapGenerated::TNS__Name_value_list sugarLeadToNameValueList(const SugarLead &lead, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
     int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
@@ -59,8 +59,6 @@ private:
     {
         return value.startsWith(QString("primaryAddress"));
     }
-
-    SugarLead::AccessorHash mAccessors;
 };
 
 #endif /* LEADSHANDLER_H */

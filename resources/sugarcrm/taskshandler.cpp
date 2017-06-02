@@ -270,54 +270,61 @@ static void setPriority( const QString &value, KCalCore::Todo &todo )
     }
 }
 
-TasksHandler::TasksHandler( SugarSession *session )
-    : ModuleHandler(Module::Tasks, session ),
-      mAccessors( new AccessorHash )
+typedef QHash<QString, TaskAccessorPair> AccessorHash;
+Q_GLOBAL_STATIC(AccessorHash, s_accessors)
+static AccessorHash accessorHash()
 {
-    mAccessors->insert( KDCRMFields::id(),
-                        new TaskAccessorPair( getId, setId, QString() ) );
-    mAccessors->insert( KDCRMFields::name(),
-                        new TaskAccessorPair( getSummary, setSummary, i18nc( "@item:intable TODO title", "Title" ) ) );
-    mAccessors->insert( KDCRMFields::dateEntered(),
-                        new TaskAccessorPair( getDateEntered, setDateEntered, i18nc( "@item:intable", "Creation Date" ) ) );
-    mAccessors->insert( KDCRMFields::dateModified(),
-                        new TaskAccessorPair( getDateModified, setDateModified, i18nc( "@item:intable", "Modification Date" ) ) );
-    mAccessors->insert( KDCRMFields::modifiedUserId(),
-                        new TaskAccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
-    mAccessors->insert( KDCRMFields::createdBy(),
-                        new TaskAccessorPair( getCreatedBy, setCreatedBy, QString() ) );
-    mAccessors->insert( KDCRMFields::description(),
-                        new TaskAccessorPair( getDescription, setDescription, i18nc( "@item:intable", "Description" ) ) );
-    mAccessors->insert( KDCRMFields::deleted(),
-                        new TaskAccessorPair( getDeleted, setDeleted, QString() ) );
-    mAccessors->insert( KDCRMFields::assignedUserId(),
-                        new TaskAccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
-    mAccessors->insert( KDCRMFields::assignedUserName(),
-                        new TaskAccessorPair( getAssignedUserName, setAssignedUserName, QString() ) );
-    mAccessors->insert( KDCRMFields::status(),
-                        new TaskAccessorPair( getStatus, setStatus, i18nc( "@item:intable", "Status" ) ) );
-    mAccessors->insert( KDCRMFields::dateDueFlag(),
-                        new TaskAccessorPair( getDateDueFlag, setDateDueFlag, QString() ) );
-    mAccessors->insert( KDCRMFields::dateDue(),
-                        new TaskAccessorPair( getDateDue, setDateDue, i18nc( "@item:intable", "Due Date" ) ) );
-    mAccessors->insert( KDCRMFields::dateStartFlag(),
-                        new TaskAccessorPair( getDateStartFlag, setDateStartFlag, QString() ) );
-    mAccessors->insert( KDCRMFields::dateStart(),
-                        new TaskAccessorPair( getDateStart, setDateStart, i18nc( "@item:intable", "Start Date" ) ) );
-    mAccessors->insert( KDCRMFields::parentType(),
-                        new TaskAccessorPair( getParentType, setParentType, QString() ) );
-    mAccessors->insert( KDCRMFields::parentId(),
-                        new TaskAccessorPair( getParentId, setParentId, QString() ) );
-    mAccessors->insert( KDCRMFields::contactId(),
-                        new TaskAccessorPair( getContactId, setContactId, QString() ) );
-    mAccessors->insert( KDCRMFields::priority(),
-                        new TaskAccessorPair( getPriority, setPriority, i18nc( "@item:intable", "Priority" ) ) );
+    AccessorHash &accessors = *s_accessors();
+    if (accessors.isEmpty()) {
+        accessors.insert( KDCRMFields::id(),
+                            TaskAccessorPair( getId, setId, QString() ) );
+        accessors.insert( KDCRMFields::name(),
+                            TaskAccessorPair( getSummary, setSummary, i18nc( "@item:intable TODO title", "Title" ) ) );
+        accessors.insert( KDCRMFields::dateEntered(),
+                            TaskAccessorPair( getDateEntered, setDateEntered, i18nc( "@item:intable", "Creation Date" ) ) );
+        accessors.insert( KDCRMFields::dateModified(),
+                            TaskAccessorPair( getDateModified, setDateModified, i18nc( "@item:intable", "Modification Date" ) ) );
+        accessors.insert( KDCRMFields::modifiedUserId(),
+                            TaskAccessorPair( getModifiedUserId, setModifiedUserId, QString() ) );
+        accessors.insert( KDCRMFields::createdBy(),
+                            TaskAccessorPair( getCreatedBy, setCreatedBy, QString() ) );
+        accessors.insert( KDCRMFields::description(),
+                            TaskAccessorPair( getDescription, setDescription, i18nc( "@item:intable", "Description" ) ) );
+        accessors.insert( KDCRMFields::deleted(),
+                            TaskAccessorPair( getDeleted, setDeleted, QString() ) );
+        accessors.insert( KDCRMFields::assignedUserId(),
+                            TaskAccessorPair( getAssignedUserId, setAssignedUserId, QString() ) );
+        accessors.insert( KDCRMFields::assignedUserName(),
+                            TaskAccessorPair( getAssignedUserName, setAssignedUserName, QString() ) );
+        accessors.insert( KDCRMFields::status(),
+                            TaskAccessorPair( getStatus, setStatus, i18nc( "@item:intable", "Status" ) ) );
+        accessors.insert( KDCRMFields::dateDueFlag(),
+                            TaskAccessorPair( getDateDueFlag, setDateDueFlag, QString() ) );
+        accessors.insert( KDCRMFields::dateDue(),
+                            TaskAccessorPair( getDateDue, setDateDue, i18nc( "@item:intable", "Due Date" ) ) );
+        accessors.insert( KDCRMFields::dateStartFlag(),
+                            TaskAccessorPair( getDateStartFlag, setDateStartFlag, QString() ) );
+        accessors.insert( KDCRMFields::dateStart(),
+                            TaskAccessorPair( getDateStart, setDateStart, i18nc( "@item:intable", "Start Date" ) ) );
+        accessors.insert( KDCRMFields::parentType(),
+                            TaskAccessorPair( getParentType, setParentType, QString() ) );
+        accessors.insert( KDCRMFields::parentId(),
+                            TaskAccessorPair( getParentId, setParentId, QString() ) );
+        accessors.insert( KDCRMFields::contactId(),
+                            TaskAccessorPair( getContactId, setContactId, QString() ) );
+        accessors.insert( KDCRMFields::priority(),
+                            TaskAccessorPair( getPriority, setPriority, i18nc( "@item:intable", "Priority" ) ) );
+    }
+    return accessors;
+}
+
+TasksHandler::TasksHandler( SugarSession *session )
+    : ModuleHandler(Module::Tasks, session )
+{
 }
 
 TasksHandler::~TasksHandler()
 {
-    qDeleteAll( *mAccessors );
-    delete mAccessors;
 }
 
 Akonadi::Collection TasksHandler::handlerCollection() const
@@ -339,12 +346,12 @@ QString TasksHandler::orderByForListing() const
 
 QStringList TasksHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors->keys());
+    return sugarFieldsFromCrmFields(accessorHash().keys());
 }
 
 QStringList TasksHandler::supportedCRMFields() const
 {
-    return mAccessors->keys();
+    return accessorHash().keys();
 }
 
 int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
@@ -368,16 +375,17 @@ int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     }
 
     const KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    const AccessorHash accessors = accessorHash();
+    AccessorHash::const_iterator it    = accessors.constBegin();
+    AccessorHash::const_iterator endIt = accessors.constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( (*it)->getter == nullptr ) {
+        if ( (*it).getter == nullptr ) {
             continue;
         }
         TNS__Name_value field;
         field.setName(sugarFieldFromCrmField(it.key()));
-        field.setValue(KDCRMUtils::encodeXML((*it)->getter(*todo)));
+        field.setValue(KDCRMUtils::encodeXML((*it).getter(*todo)));
 
         itemList << field;
     }
@@ -405,15 +413,16 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
     KCalCore::Todo::Ptr todo( new KCalCore::Todo );
     todo->setUid( entry.id() );
 
+    const AccessorHash accessors = accessorHash();
     Q_FOREACH( const TNS__Name_value &namedValue, valueList ) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const AccessorHash::const_iterator accessIt = mAccessors->constFind(crmFieldName);
-        if ( accessIt == mAccessors->constEnd() ) {
+        const AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if ( accessIt == accessors.constEnd() ) {
             // no accessor for field
             continue;
         }
 
-        (*accessIt)->setter(KDCRMUtils::decodeXML(namedValue.value()), *todo );
+        (*accessIt).setter(KDCRMUtils::decodeXML(namedValue.value()), *todo );
     }
 
     item.setPayload<KCalCore::Todo::Ptr>( todo );
@@ -439,18 +448,19 @@ void TasksHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
         i18nc( "@title:column", "Serverside Task: modified by %1 on %2",
                modifiedBy, modifiedOn ) );
 
-    AccessorHash::const_iterator it    = mAccessors->constBegin();
-    AccessorHash::const_iterator endIt = mAccessors->constEnd();
+    const AccessorHash accessors = accessorHash();
+    AccessorHash::const_iterator it    = accessors.constBegin();
+    AccessorHash::const_iterator endIt = accessors.constEnd();
     for ( ; it != endIt; ++it ) {
         // check if this is a read-only field
-        if ( (*it)->getter == nullptr ) {
+        if ( (*it).getter == nullptr ) {
             continue;
         }
 
-        QString leftValue = (*it)->getter( *leftTask );
-        QString rightValue = (*it)->getter( *rightTask );
+        QString leftValue = (*it).getter( *leftTask );
+        QString rightValue = (*it).getter( *rightTask );
 
-        QString diffName = (*it)->diffName;
+        QString diffName = (*it).diffName;
         if ( diffName.isEmpty() ) {
             // TODO might need override for Status and Priority
             // internal field, skip
