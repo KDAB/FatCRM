@@ -53,6 +53,7 @@ public:
     virtual int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
     virtual int getEntry(Module moduleName, const QString &remoteId,  const QStringList &selectedFields,
                          KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) = 0;
+    virtual int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) = 0;
 };
 
 

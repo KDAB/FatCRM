@@ -40,6 +40,7 @@ public:
     int setEntry(Module moduleName, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) override;
     int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
+    int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) override;
 private:
     SugarSession *mSession;
 };

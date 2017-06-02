@@ -232,6 +232,27 @@ private Q_SLOTS:
             QCOMPARE(newId, expectedId);
         }
     }
+
+    void shouldCorrectlyListModules()
+    {
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        KDSoapGenerated::TNS__Select_fields selectFields;
+        QString errorMessage;
+        //WHEN
+        protocol->listModules(selectFields,errorMessage);
+        //THEN
+        QStringList modules = selectFields.items();
+        QCOMPARE(modules.size(), 5);
+        QVERIFY(modules.contains(moduleToName(Module::Accounts)));
+        QVERIFY(modules.contains(moduleToName(Module::Opportunities)));
+        QVERIFY(modules.contains(moduleToName(Module::Contacts)));
+        QVERIFY(modules.contains(moduleToName(Module::Documents)));
+        QVERIFY(modules.contains(moduleToName(Module::Emails)));
+    }
 };
 
 QTEST_MAIN(TestSugarMockProtocol)
