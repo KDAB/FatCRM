@@ -108,17 +108,11 @@ private Q_SLOTS:
         session->setSessionParameters("user", "password", "hosttest");
         ModuleHandler *handler = 0;
         if (moduleName == Module::Accounts) {
-            AccountsHandler *h = new AccountsHandler(session);
-            protocol->setAccountsHandler(h);
-            handler = h;
+            handler = new AccountsHandler(session);
         } else if (moduleName == Module::Opportunities) {
-            OpportunitiesHandler *h = new OpportunitiesHandler(session);
-            protocol->setOpportunitiesHandler(h);
-            handler = h;
+            handler = new OpportunitiesHandler(session);
         } else if (moduleName == Module::Campaigns) {
-            CampaignsHandler *h = new CampaignsHandler(session);
-            protocol->setCampaignsHandler(h);
-            handler = h;
+            handler = new CampaignsHandler(session);
         }
         ListEntriesJob *job = new ListEntriesJob(collection, session);
         job->setModule(handler);
@@ -148,7 +142,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
@@ -184,7 +177,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         OpportunitiesHandler handler(&session);
-        protocol->setOpportunitiesHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
@@ -205,7 +197,6 @@ private Q_SLOTS:
         //GIVEN
         protocol->addAccount("accountTest","3");
         AccountsHandler accountHandler(&session);
-        protocol->setAccountsHandler(&accountHandler);
         ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
         accountListJob->setModule(&accountHandler);
         QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));

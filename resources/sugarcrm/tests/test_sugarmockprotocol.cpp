@@ -128,16 +128,6 @@ private Q_SLOTS:
         SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
-        AccountsHandler accountsHandler(&session);
-        protocol.setAccountsHandler(&accountsHandler);
-        OpportunitiesHandler opportunitiesHandler(&session);
-        protocol.setOpportunitiesHandler(&opportunitiesHandler);
-        CampaignsHandler campaignHandler(&session);
-        protocol.setCampaignsHandler(&campaignHandler);
-        LeadsHandler leadsHandler(&session);
-        protocol.setLeadsHandler(&leadsHandler);
-        ContactsHandler contactHandler(&session);
-        protocol.setContactsHandler(&contactHandler);
 
         //WHEN
         ListEntriesScope scope;
@@ -171,10 +161,6 @@ private Q_SLOTS:
         SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
-        AccountsHandler accountsHandler(&session);
-        protocol.setAccountsHandler(&accountsHandler);
-        OpportunitiesHandler opportunitiesHandler(&session);
-        protocol.setOpportunitiesHandler(&opportunitiesHandler);
         KDSoapGenerated::TNS__Entry_value entryValue;
         QString errorMessage;
         //WHEN
@@ -212,10 +198,6 @@ private Q_SLOTS:
         SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
-        AccountsHandler accountsHandler(&session);
-        protocol.setAccountsHandler(&accountsHandler);
-        OpportunitiesHandler opportunitiesHandler(&session);
-        protocol.setOpportunitiesHandler(&opportunitiesHandler);
         KDSoapGenerated::TNS__Name_value_list nvl;
         QList<KDSoapGenerated::TNS__Name_value> itemList;
         KDSoapGenerated::TNS__Name_value field;

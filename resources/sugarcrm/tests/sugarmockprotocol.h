@@ -76,11 +76,6 @@ public:
     QVector<SugarOpportunity> opportunities() const;
 
 private:
-    AccountsHandler *mAccountHandler;
-    OpportunitiesHandler *mOpportunityHandler;
-    CampaignsHandler *mCampaignHandler;
-    LeadsHandler *mLeadHandler;
-    ContactsHandler *mContactHandler;
     bool mServerNotFound;
     QVector<SugarAccount> mAccounts;
     QVector<SugarOpportunity> mOpportunities;

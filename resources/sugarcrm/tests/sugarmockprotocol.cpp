@@ -29,7 +29,7 @@
 #include "modulename.h"
 
 SugarMockProtocol::SugarMockProtocol()
-    : mAccountHandler(0), mOpportunityHandler(0), mCampaignHandler(0), mLeadHandler(0), mContactHandler(0), mServerNotFound(false)
+    :mServerNotFound(false)
 {
 
 }
@@ -91,7 +91,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccount() const
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(acc.id());
         entryValue.setModule_name(moduleToName(Module::Accounts));
-        KDSoapGenerated::TNS__Name_value_list nvl = mAccountHandler->sugarAccountToNameValueList(acc);
+        KDSoapGenerated::TNS__Name_value_list nvl = AccountsHandler::sugarAccountToNameValueList(acc);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }
@@ -105,7 +105,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listOpportunities() 
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(opp.id());
         entryValue.setModule_name(moduleToName(Module::Opportunities));
-        KDSoapGenerated::TNS__Name_value_list nvl = mOpportunityHandler->sugarOpportunityToNameValueList(opp);
+        KDSoapGenerated::TNS__Name_value_list nvl = OpportunitiesHandler::sugarOpportunityToNameValueList(opp);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }
@@ -120,7 +120,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listCampaigns() cons
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(cam.id());
         entryValue.setModule_name(moduleToName(Module::Campaigns));
-        KDSoapGenerated::TNS__Name_value_list nvl = mCampaignHandler->sugarCampaignToNameValueList(cam);
+        KDSoapGenerated::TNS__Name_value_list nvl = CampaignsHandler::sugarCampaignToNameValueList(cam);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }
@@ -134,7 +134,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listLeads() const
         KDSoapGenerated::TNS__Entry_value entryValue;
         entryValue.setId(lead.id());
         entryValue.setModule_name(moduleToName(Module::Leads));
-        KDSoapGenerated::TNS__Name_value_list nvl = mLeadHandler->sugarLeadToNameValueList(lead);
+        KDSoapGenerated::TNS__Name_value_list nvl = LeadsHandler::sugarLeadToNameValueList(lead);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }
@@ -149,7 +149,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts() const
         const QString id = contact.custom("FATCRM", "X-ContactId");
         entryValue.setId(id);
         entryValue.setModule_name("Contacts");
-        KDSoapGenerated::TNS__Name_value_list nvl = mContactHandler->addresseeToNameValueList(contact);
+        KDSoapGenerated::TNS__Name_value_list nvl = ContactsHandler::addresseeToNameValueList(contact);
         entryValue.setName_value_list(nvl);
         items.push_back(entryValue);
     }
@@ -203,7 +203,7 @@ int SugarMockProtocol::getEntry(Module moduleName, const QString &remoteId, cons
             if (mAccounts.at(i).id() == remoteId) {
                 found = true;
                 entryValue.setId(mAccounts.at(i).id());
-                KDSoapGenerated::TNS__Name_value_list nvl = mAccountHandler->sugarAccountToNameValueList(mAccounts.at(i));
+                KDSoapGenerated::TNS__Name_value_list nvl = AccountsHandler::sugarAccountToNameValueList(mAccounts.at(i));
                 entryValue.setName_value_list(nvl);
             }
         }
@@ -212,7 +212,7 @@ int SugarMockProtocol::getEntry(Module moduleName, const QString &remoteId, cons
             if (mOpportunities.at(i).id() == remoteId) {
                 found = true;
                 entryValue.setId(mOpportunities.at(i).id());
-                KDSoapGenerated::TNS__Name_value_list nvl = mOpportunityHandler->sugarOpportunityToNameValueList(mOpportunities.at(i));
+                KDSoapGenerated::TNS__Name_value_list nvl = OpportunitiesHandler::sugarOpportunityToNameValueList(mOpportunities.at(i));
                 entryValue.setName_value_list(nvl);
             }
         }
@@ -232,7 +232,7 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
     }
 
     if (moduleName == Module::Accounts) {
-        SugarAccount account = mAccountHandler->nameValueListToSugarAccount(nameValueList,id);
+        SugarAccount account = AccountsHandler::nameValueListToSugarAccount(nameValueList,id);
         if (!id.isEmpty()) {
             bool found = false;
             for (int i = 0; i < mAccounts.size(); ++i) {
@@ -260,7 +260,7 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
             }
         }
     } else if (moduleName == Module::Opportunities) {
-        SugarOpportunity opp = mOpportunityHandler->nameValueListToSugarOpportunity(nameValueList,id);
+        SugarOpportunity opp = OpportunitiesHandler::nameValueListToSugarOpportunity(nameValueList,id);
         if (!id.isEmpty()) {
             bool found = false;
             for (int i = 0; i < mOpportunities.size() && !found; ++i) {
@@ -289,31 +289,6 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
         }
     }
     return KJob::NoError;
-}
-
-void SugarMockProtocol::setAccountsHandler(AccountsHandler *handler)
-{
-    mAccountHandler = handler;
-}
-
-void SugarMockProtocol::setOpportunitiesHandler(OpportunitiesHandler *handler)
-{
-    mOpportunityHandler = handler;
-}
-
-void SugarMockProtocol::setCampaignsHandler(CampaignsHandler *handler)
-{
-    mCampaignHandler = handler;
-}
-
-void SugarMockProtocol::setLeadsHandler(LeadsHandler *handler)
-{
-    mLeadHandler = handler;
-}
-
-void SugarMockProtocol::setContactsHandler(ContactsHandler *handler)
-{
-    mContactHandler = handler;
 }
 
 void SugarMockProtocol::addAccounts()
