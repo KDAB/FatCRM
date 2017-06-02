@@ -41,6 +41,7 @@ class ModuleHandler;
 namespace KDSoapGenerated
 {
 class TNS__Get_entry_list_result;
+class TNS__Select_fields;
 }
 
 class SugarMockProtocol : public SugarProtocolBase
@@ -58,6 +59,7 @@ public:
     int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
     int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
+    int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) override;
 
     void setAccountsHandler(AccountsHandler *handler);
     void setOpportunitiesHandler(OpportunitiesHandler *handler);

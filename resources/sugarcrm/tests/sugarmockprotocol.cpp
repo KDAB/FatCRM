@@ -26,6 +26,7 @@
 #include "leadshandler.h"
 #include "contactshandler.h"
 #include "listentriesscope.h"
+#include "modulename.h"
 
 SugarMockProtocol::SugarMockProtocol()
     : mAccountHandler(0), mOpportunityHandler(0), mCampaignHandler(0), mLeadHandler(0), mContactHandler(0), mServerNotFound(false)
@@ -363,4 +364,17 @@ QVector<SugarAccount> SugarMockProtocol::accounts() const
 QVector<SugarOpportunity> SugarMockProtocol::opportunities() const
 {
     return mOpportunities;
+}
+
+int SugarMockProtocol::listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage)
+{
+    Q_UNUSED(errorMessage);
+    QStringList modules;
+    modules << moduleToName(Module::Accounts)
+            << moduleToName(Module::Opportunities)
+            << moduleToName(Module::Contacts)
+            << moduleToName(Module::Documents)
+            << moduleToName(Module::Emails);
+    selectFields.setItems(modules);
+    return KJob::NoError;
 }
