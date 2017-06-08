@@ -251,7 +251,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
         if (!handler->needBackendChange(item, parts)) {
-            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Handler for module" << handler->moduleName()
+            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Handler for module" << handler->module()
                        << "indicates that backend change for item id=" << item.id()
                        << ", remoteId=" << item.remoteId()
                        << "is not required for given modified parts: " << parts;
@@ -290,7 +290,7 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
     error(message);
     cancelTask(message);
 #else
-    SugarJob *job = new DeleteEntryJob(item, mSession, collection.remoteId(), this);
+    SugarJob *job = new DeleteEntryJob(item, mSession, nameToModule(collection.remoteId()), this);
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
     connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteEntryResult(KJob*)));
@@ -736,32 +736,33 @@ void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *hand
 
 void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 {
-    Q_FOREACH(const QString &module, availableModules) {
+    Q_FOREACH(const QString &name, availableModules) {
+        Module module = nameToModule(name);
         // check if we have a corresponding module handler already
         // if not see if we can create one
-        ModuleHandler* handler = mModuleHandlers->value(module);
+        ModuleHandler* handler = mModuleHandlers->value(moduleToName(module));
         if (handler == nullptr) {
-            if (module == QLatin1String("Contacts")) {
+            if (module == Module::Contacts) {
                 handler = new ContactsHandler(mSession);
-            } else if (module == QLatin1String("Accounts")) {
+            } else if (module == Module::Accounts) {
                 AccountsHandler *accountsHandler = new AccountsHandler(mSession);
                 accountsHandler->fillAccountsCache();
                 handler = accountsHandler;
-            } else if (module == QLatin1String("Opportunities")) {
+            } else if (module == Module::Opportunities) {
                 handler = new OpportunitiesHandler(mSession);
 #if 0 // we don't use this, so skip it
-            } else if (module == QLatin1String("Leads")) {
+            } else if (module == ModuleName::Leads) {
                 handler = new LeadsHandler(mSession);
-            } else if (module == QLatin1String("Campaigns")) {
+            } else if (module == ModuleName::Campaigns) {
                 handler = new CampaignsHandler(mSession);
-            } else if (module == QLatin1String("Tasks")) {
+            } else if (module == ModuleName::Tasks) {
                 handler = new TasksHandler(mSession);
 #endif
-            } else if (module == QLatin1String("Notes")) {
+            } else if (module == Module::Notes) {
                 handler = new NotesHandler(mSession);
-            } else if (module == QLatin1String("Emails")) {
+            } else if (module == Module::Emails) {
                 handler = new EmailsHandler(mSession);
-            } else if (module == QLatin1String("Documents")) {
+            } else if (module == Module::Documents) {
                 handler = new DocumentsHandler(mSession);
             } else {
                 //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for" << module;
@@ -770,16 +771,16 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
             handler->initialCheck();
 
-            mModuleHandlers->insert(module, handler);
+            mModuleHandlers->insert(moduleToName(module), handler);
 
             // create a debug interface for the module, if we haven't done so already
-            ModuleDebugInterface *debugInterface = mModuleDebugInterfaces->value(module);
+            ModuleDebugInterface *debugInterface = mModuleDebugInterfaces->value(moduleToName(module));
             if (!debugInterface) {
                 debugInterface = new ModuleDebugInterface(module, this);
-                QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug/modules/") + module,
+                QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMDebug/modules/") + moduleToName(module),
                                                              debugInterface,
                                                              QDBusConnection::ExportScriptableSlots);
-                mModuleDebugInterfaces->insert(module, debugInterface);
+                mModuleDebugInterfaces->insert(moduleToName(module), debugInterface);
             }
         }
     }

@@ -36,8 +36,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 NotesHandler::NotesHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Notes"), session),
-      mAccessors(SugarNote::accessorHash())
+    : ModuleHandler(Module::Notes, session)
 {
 }
 
@@ -48,7 +47,7 @@ NotesHandler::~NotesHandler()
 Akonadi::Collection NotesHandler::handlerCollection() const
 {
     Akonadi::Collection noteCollection;
-    noteCollection.setRemoteId(moduleName());
+    noteCollection.setRemoteId(moduleToName(module()));
     noteCollection.setContentMimeTypes(QStringList() << SugarNote::mimeType());
     noteCollection.setName(i18nc("@item folder name", "Notes"));
     noteCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -70,12 +69,12 @@ QString NotesHandler::orderByForListing() const
 
 QStringList NotesHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors.keys());
+    return sugarFieldsFromCrmFields(SugarNote::accessorHash().keys());
 }
 
 QStringList NotesHandler::supportedCRMFields() const
 {
-    return mAccessors.keys();
+    return SugarNote::accessorHash().keys();
 }
 
 int NotesHandler::expectedContentsVersion() const
@@ -106,8 +105,9 @@ int NotesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     }
 
     const SugarNote note = item.payload<SugarNote>();
-    SugarNote::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarNote::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
+    SugarNote::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarNote::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
@@ -124,7 +124,7 @@ int NotesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -143,10 +143,11 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     SugarNote note;
     note.setId(entry.id());
+    const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const SugarNote::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarNote::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             // no accessor for field
             continue;
         }
@@ -176,8 +177,9 @@ void NotesHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         i18nc("@title:column", "Serverside Note: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    SugarNote::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarNote::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
+    SugarNote::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarNote::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {

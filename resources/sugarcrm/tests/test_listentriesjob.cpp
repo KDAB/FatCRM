@@ -30,7 +30,7 @@
 #include <QSignalSpy>
 #include <AkonadiCore/Item>
 
-
+Q_DECLARE_METATYPE(Module);
 
 class TestListEntriesJob : public QObject
 {
@@ -85,17 +85,17 @@ private Q_SLOTS:
 
     void shouldReturnCorrectCount_data()
     {
-        QTest::addColumn<QString>("moduleName");
+        QTest::addColumn<Module>("moduleName");
         QTest::addColumn<int>("expectedCount");
 
-        QTest::newRow("Accounts") << "Accounts" << 3;
-        QTest::newRow("Opportunities") << "Opportunities" << 2;
-        QTest::newRow("Campaigns") << "Campaigns" << 1;
+        QTest::newRow("Accounts") << Module::Accounts << 3;
+        QTest::newRow("Opportunities") << Module::Opportunities << 2;
+        QTest::newRow("Campaigns") << Module::Campaigns << 1;
     }
 
     void shouldReturnCorrectCount()
     {
-        QFETCH(QString, moduleName);
+        QFETCH(Module, moduleName);
         QFETCH(int, expectedCount);
         //GIVEN
         Akonadi::Collection collection;
@@ -107,18 +107,12 @@ private Q_SLOTS:
         session->setProtocol(protocol);
         session->setSessionParameters("user", "password", "hosttest");
         ModuleHandler *handler = 0;
-        if (moduleName == "Accounts") {
-            AccountsHandler *h = new AccountsHandler(session);
-            protocol->setAccountsHandler(h);
-            handler = h;
-        } else if (moduleName == "Opportunities") {
-            OpportunitiesHandler *h = new OpportunitiesHandler(session);
-            protocol->setOpportunitiesHandler(h);
-            handler = h;
-        } else if (moduleName == "Campaigns") {
-            CampaignsHandler *h = new CampaignsHandler(session);
-            protocol->setCampaignsHandler(h);
-            handler = h;
+        if (moduleName == Module::Accounts) {
+            handler = new AccountsHandler(session);
+        } else if (moduleName == Module::Opportunities) {
+            handler = new OpportunitiesHandler(session);
+        } else if (moduleName == Module::Campaigns) {
+            handler = new CampaignsHandler(session);
         }
         ListEntriesJob *job = new ListEntriesJob(collection, session);
         job->setModule(handler);
@@ -148,10 +142,9 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -184,10 +177,9 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         OpportunitiesHandler handler(&session);
-        protocol->setOpportunitiesHandler(&handler);
         ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -205,10 +197,9 @@ private Q_SLOTS:
         //GIVEN
         protocol->addAccount("accountTest","3");
         AccountsHandler accountHandler(&session);
-        protocol->setAccountsHandler(&accountHandler);
         ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
         accountListJob->setModule(&accountHandler);
-        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List, bool)));
+        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
         QVERIFY(accountListJob->exec());
         //THEN
@@ -220,7 +211,7 @@ private Q_SLOTS:
         for (Akonadi::Item &item : lItems) {
             updateItem(item);
         }
-        accountId[1] = "3";
+        accountId[1] = '3';
         verifyOpportunities(lItems, id, name, accountId);
     }
 };

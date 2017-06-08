@@ -36,8 +36,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 EmailsHandler::EmailsHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Emails"), session),
-      mAccessors(SugarEmail::accessorHash())
+    : ModuleHandler(Module::Emails, session)
 {
 }
 
@@ -48,7 +47,7 @@ EmailsHandler::~EmailsHandler()
 Akonadi::Collection EmailsHandler::handlerCollection() const
 {
     Akonadi::Collection emailCollection;
-    emailCollection.setRemoteId(moduleName());
+    emailCollection.setRemoteId(moduleToName(module()));
     emailCollection.setContentMimeTypes(QStringList() << SugarEmail::mimeType());
     emailCollection.setName(i18nc("@item folder name", "Emails"));
     emailCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -70,12 +69,12 @@ QString EmailsHandler::orderByForListing() const
 
 QStringList EmailsHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors.keys());
+    return sugarFieldsFromCrmFields(SugarEmail::accessorHash().keys());
 }
 
 QStringList EmailsHandler::supportedCRMFields() const
 {
-    return mAccessors.keys();
+    return SugarEmail::accessorHash().keys();
 }
 
 int EmailsHandler::expectedContentsVersion() const
@@ -169,8 +168,9 @@ int EmailsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &
     }
 
     const SugarEmail email = item.payload<SugarEmail>();
-    SugarEmail::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
+    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
@@ -191,7 +191,7 @@ int EmailsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -210,10 +210,11 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
 
     SugarEmail email;
     email.setId(entry.id());
+    const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const SugarEmail::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarEmail::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             // no accessor for field
             continue;
         }
@@ -243,8 +244,9 @@ void EmailsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         i18nc("@title:column", "Serverside Email: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    SugarEmail::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
+    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {

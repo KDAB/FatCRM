@@ -40,8 +40,7 @@ using namespace KDSoapGenerated;
 #include "sugarcrmresource_debug.h"
 
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Opportunities"), session),
-      mAccessors(SugarOpportunity::accessorHash())
+    : ModuleHandler(Module::Opportunities, session)
 {
     SugarAccountCache *cache = SugarAccountCache::instance();
     connect(cache, SIGNAL(pendingAccountAdded(QString,QString)),
@@ -64,10 +63,11 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
     return myCollection;
 }
 
-KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList) const
+KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
-    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
+    SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarOpportunity::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
@@ -122,7 +122,7 @@ int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &newId, QS
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarOpportunityToNameValueList(opp, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 int OpportunitiesHandler::expectedContentsVersion() const
@@ -153,11 +153,12 @@ SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDS
 {
     SugarOpportunity opportunity;
     opportunity.setId(id);
+    const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList.items()) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarOpportunity::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarOpportunity::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             const QString customCrmFieldName = customSugarFieldToCrmField(namedValue.name());
             opportunity.setCustomField(customCrmFieldName, value);
             continue;
@@ -217,8 +218,9 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
         i18nc("@title:column", "Serverside Opportunity: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    SugarOpportunity::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
+    SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarOpportunity::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {

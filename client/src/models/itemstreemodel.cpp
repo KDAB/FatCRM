@@ -263,6 +263,8 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
             return account.email1();
         case CreatedBy:
             return account.createdByName();
+        case PostalCode:
+            return account.postalCodeForGui();
         default:
             return QVariant();
         }
@@ -551,6 +553,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
         columns << ItemsTreeModel::Name
                 << ItemsTreeModel::Street
                 << ItemsTreeModel::City
+                << ItemsTreeModel::PostalCode
                 << ItemsTreeModel::Country
                 << ItemsTreeModel::Phone
                 << ItemsTreeModel::Email

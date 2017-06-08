@@ -35,8 +35,7 @@ using namespace KDSoapGenerated;
 #include <QHash>
 
 DocumentsHandler::DocumentsHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Documents"), session),
-      mAccessors(SugarDocument::accessorHash())
+    : ModuleHandler(Module::Documents, session)
 {
 }
 
@@ -47,7 +46,7 @@ DocumentsHandler::~DocumentsHandler()
 Akonadi::Collection DocumentsHandler::handlerCollection() const
 {
     Akonadi::Collection documentCollection;
-    documentCollection.setRemoteId(moduleName());
+    documentCollection.setRemoteId(moduleToName(module()));
     documentCollection.setContentMimeTypes(QStringList() << SugarDocument::mimeType());
     documentCollection.setName(i18nc("@item folder name", "Documents"));
     documentCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -64,12 +63,12 @@ QString DocumentsHandler::orderByForListing() const
 
 QStringList DocumentsHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors.keys());
+    return sugarFieldsFromCrmFields(SugarDocument::accessorHash().keys());
 }
 
 QStringList DocumentsHandler::supportedCRMFields() const
 {
-    return mAccessors.keys();
+    return SugarDocument::accessorHash().keys();
 }
 
 int DocumentsHandler::expectedContentsVersion() const
@@ -98,8 +97,9 @@ int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
     }
 
     const SugarDocument document = item.payload<SugarDocument>();
-    SugarDocument::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
+    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
@@ -128,7 +128,7 @@ int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
     KDSoapGenerated::TNS__Name_value_list valueList;
     valueList.setItems(itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 bool DocumentsHandler::needsExtraInformation() const
@@ -194,11 +194,12 @@ Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
 
     SugarDocument document;
     document.setId(entry.id());
+    const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
-        const SugarDocument::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarDocument::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             const QString crmCustomFieldName = customSugarFieldToCrmField(namedValue.name());
             document.setCustomField(crmCustomFieldName, value);
             continue;
@@ -229,8 +230,9 @@ void DocumentsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         i18nc("@title:column", "Serverside Document: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    SugarDocument::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
+    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {

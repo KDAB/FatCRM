@@ -43,7 +43,7 @@ public:
 
     Akonadi::Collection handlerCollection() const override;
 
-    KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    static KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
     int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString orderByForListing() const override;
@@ -72,9 +72,6 @@ private:
     {
         return value.startsWith(QStringLiteral("primaryAddress"));
     }
-
-    typedef QHash<QString, ContactAccessorPair *> ContactAccessorHash;
-    ContactAccessorHash *mAccessors;
 };
 
 #endif

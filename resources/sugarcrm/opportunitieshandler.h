@@ -54,10 +54,10 @@ public:
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
-    KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList = {}) const;
+    static KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
 
     ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
-    SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
+    static SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 private Q_SLOTS:
     void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
     void slotUpdateJobResult(KJob *job);

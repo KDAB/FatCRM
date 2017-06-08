@@ -34,15 +34,14 @@ using namespace KDSoapGenerated;
 #include <KLocalizedString>
 
 CampaignsHandler::CampaignsHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Campaigns"), session),
-      mAccessors(SugarCampaign::accessorHash())
+    : ModuleHandler(Module::Campaigns, session)
 {
 }
 
 Akonadi::Collection CampaignsHandler::handlerCollection() const
 {
     Akonadi::Collection campaignCollection;
-    campaignCollection.setRemoteId(moduleName());
+    campaignCollection.setRemoteId(moduleToName(module()));
     campaignCollection.setContentMimeTypes(QStringList() << SugarCampaign::mimeType());
     campaignCollection.setName(i18nc("@item folder name", "Campaigns"));
     campaignCollection.setRights(Akonadi::Collection::CanChangeItem |
@@ -59,7 +58,7 @@ QString CampaignsHandler::orderByForListing() const
 
 QStringList CampaignsHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors.keys());
+    return sugarFieldsFromCrmFields(SugarCampaign::accessorHash().keys());
 }
 
 QStringList CampaignsHandler::supportedCRMFields() const
@@ -67,10 +66,11 @@ QStringList CampaignsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign, QList<KDSoapGenerated::TNS__Name_value> itemList) const
+KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
-    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
+    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
@@ -113,7 +113,7 @@ int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarCampaignToNameValueList(campaign, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -132,10 +132,11 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
 
     SugarCampaign campaign;
     campaign.setId(entry.id());
+    const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const SugarCampaign::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarCampaign::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             // no accessor for field
             continue;
         }
@@ -165,8 +166,9 @@ void CampaignsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
         i18nc("@title:column", "Serverside Campaign: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
-    SugarCampaign::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
+    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {

@@ -1,10 +1,8 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
-  Authors: David Faure <david.faure@kdab.com>
-           Michel Boyer de la Giroday <michel.giroday@kdab.com>
-           Kevin Krammer <kevin.krammer@kdab.com>
+  Copyright (C) 2017 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Authors: Jeremy Entressangle <jeremy.entressangle@kdab.com>
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -20,35 +18,28 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LISTMODULESJOB_H
-#define LISTMODULESJOB_H
+#ifndef MODULENAME
+#define MODULENAME
 
-#include "sugarjob.h"
+#include <QString>
 
-class QStringList;
-
-namespace KDSoapGenerated
-{
-class TNS__Module_list;
-}
-
-class ListModulesJob : public SugarJob
-{
-    Q_OBJECT
-
-public:
-    explicit ListModulesJob(SugarSession *session, QObject *parent = Q_NULLPTR);
-
-    ~ListModulesJob() override;
-
-    QStringList modules() const;
-
-protected:
-    void startSugarTask() override;
-
-private:
-    class Private;
-    Private *const d;
+enum Module {
+    Accounts,
+    Opportunities,
+    Campaigns,
+    Leads,
+    Contacts,
+    Documents,
+    Emails,
+    Notes,
+    Tasks,
+    Error,
 };
 
+QString moduleToName(Module moduleName);
+Module nameToModule(const QString &name);
+
+QDebug operator<<(QDebug dbg, Module module);
+
 #endif
+

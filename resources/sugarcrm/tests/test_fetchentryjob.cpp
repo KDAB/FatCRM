@@ -64,7 +64,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         protocol->setSession(&session);
         AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         FetchEntryJob job(item, &session);
         job.setModule(&handler);
         //WHEN
@@ -107,7 +106,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         protocol->setSession(&session);
         OpportunitiesHandler handler(&session);
-        protocol->setOpportunitiesHandler(&handler);
         FetchEntryJob job(item, &session);
         job.setModule(&handler);
         //WHEN
@@ -133,7 +131,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         protocol->setSession(&session);
         AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         FetchEntryJob job(item, &session);
         job.setModule(&handler);
         //WHEN
@@ -156,7 +153,6 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         protocol->setSession(&session);
         AccountsHandler handler(&session);
-        protocol->setAccountsHandler(&handler);
         FetchEntryJob job(item, &session);
         job.setModule(&handler);
         //WHEN

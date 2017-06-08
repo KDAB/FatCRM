@@ -23,6 +23,7 @@
 
 #include <QString>
 #include "sugarsoap.h"
+#include "modulename.h"
 
 class ListEntriesScope;
 class SugarSession;
@@ -45,13 +46,14 @@ public:
     virtual int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) = 0;
     virtual void logout() = 0;
     virtual void setSession(SugarSession *session) = 0;
-    virtual int getEntriesCount(const ListEntriesScope &scope, const QString &moduleName, const QString &query, int &entriesCount, QString &errorMssage) = 0;
-    virtual int listEntries(const ListEntriesScope &scope, const QString &moduleName, const QString &query,
+    virtual int getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query, int &entriesCount, QString &errorMssage) = 0;
+    virtual int listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
                              const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                             QString &errorMessage) = 0;
-    virtual int setEntry(const QString& module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
-    virtual int getEntry(const QString &moduleName, const QString &remoteId,  const QStringList &selectedFields,
+    virtual int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
+    virtual int getEntry(Module moduleName, const QString &remoteId,  const QStringList &selectedFields,
                          KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) = 0;
+    virtual int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) = 0;
 };
 
 

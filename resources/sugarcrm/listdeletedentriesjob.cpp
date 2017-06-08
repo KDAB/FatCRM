@@ -85,7 +85,7 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
     if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
         Item::List items =
             mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "List Entries for" << mHandler->moduleName() << "since" << mLatestTimestampFromItems
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "List Entries for" << mHandler->module() << "since" << mLatestTimestampFromItems
                  << "received" << items.count() << "deletes";
         mPendingDeletedItems += items;
         mListScope.setOffset(callResult.next_offset());

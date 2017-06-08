@@ -142,7 +142,9 @@ static bool accountMatchesFilter(const SugarAccount &account, const QString &fil
     if (account.phoneOffice().contains(filter, Qt::CaseInsensitive)) {
         return true;
     }
-
+    if (account.postalCodeForGui().contains(filter, Qt::CaseInsensitive)) {
+        return true;
+    }
     return false;
 }
 

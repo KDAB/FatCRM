@@ -54,7 +54,6 @@ private Q_SLOTS:
         UpdateEntryJob job(item, &session);
         AccountsHandler handler(&session);
         job.setModule(&handler);
-        protocol->setAccountsHandler(&handler);
         //WHEN
         QVERIFY(job.exec());
         //THEN
@@ -85,7 +84,6 @@ private Q_SLOTS:
         UpdateEntryJob job(item, &session);
         OpportunitiesHandler handler(&session);
         job.setModule(&handler);
-        protocol->setOpportunitiesHandler(&handler);
         //WHEN
         QVERIFY(job.exec());
         //THEN
@@ -115,7 +113,6 @@ private Q_SLOTS:
         UpdateEntryJob job(item, &session);
         AccountsHandler handler(&session);
         job.setModule(&handler);
-        protocol->setAccountsHandler(&handler);
         //WHEN
         QVERIFY(!job.exec());
         //THEN
@@ -142,7 +139,6 @@ private Q_SLOTS:
         UpdateEntryJob job(item, &session);
         AccountsHandler handler(&session);
         job.setModule(&handler);
-        protocol->setAccountsHandler(&handler);
         //WHEN
         QVERIFY(!job.exec());
         //THEN

@@ -23,7 +23,8 @@
 #include "listmodulesjob.h"
 
 #include "sugarsoap.h"
-
+#include "sugarsession.h"
+#include "sugarprotocolbase.h"
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
@@ -43,17 +44,13 @@ public:
 public:
     QStringList mModules;
 
-public: // slots
-    void listModulesDone(const KDSoapGenerated::TNS__Module_list &callResult);
-    void listModulesError(const KDSoapMessage &fault);
+public:
+    void listModulesDone(const TNS__Select_fields &moduleNames);
+    void listModulesError(int error, const QString &errorMessage);
 };
 
-void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module_list &callResult)
+void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Select_fields &moduleNames)
 {
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-    const KDSoapGenerated::TNS__Select_fields moduleNames = callResult.modules();
     mModules = moduleNames.items();
 
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << mModules.count() << "available modules";
@@ -62,15 +59,21 @@ void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Module
     q->emitResult();
 }
 
-void ListModulesJob::Private::listModulesError(const KDSoapMessage &fault)
+void ListModulesJob::Private::listModulesError(int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "List Modules Error:" << fault.faultAsString();
-
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
     }
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << error << errorMessage;
+
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
 }
 
 ListModulesJob::ListModulesJob(SugarSession *session, QObject *parent)
@@ -94,7 +97,14 @@ QStringList ListModulesJob::modules() const
 
 void ListModulesJob::startSugarTask()
 {
-    soap()->asyncGet_available_modules(sessionId());
+    KDSoapGenerated::TNS__Select_fields selectFields;
+    QString errorMessage;
+    int result = session()->protocol()->listModules(selectFields, errorMessage);
+    if (result == KJob::NoError) {
+        d->listModulesDone(selectFields);
+    } else {
+        d->listModulesError(result, errorMessage);
+    }
 }
 
 #include "moc_listmodulesjob.cpp"

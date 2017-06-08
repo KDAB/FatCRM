@@ -38,8 +38,7 @@ using namespace KDSoapGenerated;
 #include <KLocalizedString>
 
 LeadsHandler::LeadsHandler(SugarSession *session)
-    : ModuleHandler(QStringLiteral("Leads"), session),
-      mAccessors(SugarLead::accessorHash())
+    : ModuleHandler(Module::Leads, session)
 {
 }
 
@@ -62,7 +61,7 @@ QString LeadsHandler::orderByForListing() const
 
 QStringList LeadsHandler::supportedSugarFields() const
 {
-    return sugarFieldsFromCrmFields(mAccessors.keys());
+    return sugarFieldsFromCrmFields(SugarLead::accessorHash().keys());
 }
 
 QStringList LeadsHandler::supportedCRMFields() const
@@ -70,10 +69,11 @@ QStringList LeadsHandler::supportedCRMFields() const
     return sugarFieldsToCrmFields(availableFields());
 }
 
-KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead, QList<TNS__Name_value> itemList) const
+KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead, QList<TNS__Name_value> itemList)
 {
-    SugarLead::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
+    SugarLead::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
@@ -115,7 +115,7 @@ int LeadsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
 
     KDSoapGenerated::TNS__Name_value_list valueList = sugarLeadToNameValueList(lead, itemList);
 
-    return mSession->protocol()->setEntry(moduleName(), valueList, newId, errorMessage);
+    return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
 Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
@@ -134,10 +134,11 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
 
     SugarLead lead;
     lead.setId(entry.id());
+    const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
     Q_FOREACH (const KDSoapGenerated::TNS__Name_value &namedValue, valueList) {
         const QString crmFieldName = sugarFieldToCrmField(namedValue.name());
-        const SugarLead::AccessorHash::const_iterator accessIt = mAccessors.constFind(crmFieldName);
-        if (accessIt == mAccessors.constEnd()) {
+        const SugarLead::AccessorHash::const_iterator accessIt = accessors.constFind(crmFieldName);
+        if (accessIt == accessors.constEnd()) {
             // no accessor for field
             continue;
         }
@@ -169,8 +170,9 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
 
     bool seenPrimaryAddress = false;
     bool seenOtherAddress = false;
-    SugarLead::AccessorHash::const_iterator it    = mAccessors.constBegin();
-    SugarLead::AccessorHash::const_iterator endIt = mAccessors.constEnd();
+    const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
+    SugarLead::AccessorHash::const_iterator it    = accessors.constBegin();
+    SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
     for (; it != endIt; ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {

@@ -66,7 +66,7 @@ public: // slots
 
 void CreateEntryJob::Private::setEntryDone(const QString &id)
 {
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Created entry" << id << "in module" << mHandler->moduleName();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Created entry" << id << "in module" << mHandler->module();
     mItem.setRemoteId(id);
 
     KDSoapGenerated::TNS__Entry_value entryValue;
@@ -162,7 +162,7 @@ void CreateEntryJob::startSugarTask()
     } else if (result == SugarJob::InvalidContextError) {
         setError(result);
         setErrorText(i18nc("@info:status", "Attempting to add malformed item to folder %1",
-                           d->mHandler->moduleName()));
+                           moduleToName(d->mHandler->module())));
         emitResult();
     } else {
         d->setEntryError(result, errorMessage);
