@@ -34,6 +34,7 @@ set(sugarcrmresource_SRCS
   taskaccessorpair.cpp
   sugarprotocolbase.cpp
   sugarsoapprotocol.cpp
+  tests/sugarmockprotocol.cpp
   modulename.cpp
 
   # work with local implementations until available from kdepimlibs

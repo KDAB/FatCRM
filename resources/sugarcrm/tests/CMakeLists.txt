@@ -11,19 +11,9 @@ include_directories(
 
 include_directories(${KDSoap_INCLUDE_DIR})
 
-add_library(sugar_mock_protocol_private STATIC sugarmockprotocol.cpp)
-target_link_libraries(sugar_mock_protocol_private
-   KF5::Contacts
-   kdcrmdata
-   ${KDSoap_LIBRARIES}
-   KF5::CoreAddons
-   Qt5::Core
-)
-
 macro(add_resources_tests)
   foreach(_testname ${ARGN})
     ecm_add_test(${_testname}.cpp TEST_NAME "${_testname}" LINK_LIBRARIES
-      sugar_mock_protocol_private
       akonadi_sugarcrm_resource_private
       kdcrmdata
       ${KDSoap_LIBRARIES}

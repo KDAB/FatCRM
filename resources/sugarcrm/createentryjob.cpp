@@ -72,7 +72,6 @@ void CreateEntryJob::Private::setEntryDone(const QString &id)
     KDSoapGenerated::TNS__Entry_value entryValue;
     QString errorMessage;
     int result = mHandler->getEntry(mItem, entryValue, errorMessage);
-
     if (result == KJob::NoError) {
         getEntryDone(entryValue);
     } else if (result == SugarJob::InvalidContextError) {

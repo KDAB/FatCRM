@@ -19,6 +19,10 @@
       <label>Check interval in minutes (-1 to disable)</label>
       <default>30</default>
     </entry>
+    <entry name="Protocol" type="String">
+      <label>Protocol</label>
+      <default>Soap</default>
+    </entry>
   </group>
   <group name="Cache">
     <entry name="AvailableModules" type="StringList">

@@ -1,0 +1,8 @@
+[Cache]
+AvailableModules=Accounts,Contacts,Opportunities,Documents,Emails,Campaigns,Leads,Tags,Project,Cases,Bugs,iFrames,Feeds,Calls,Meetings,Tasks,Notes,Prospects,ProspectLists,AOS_Contracts,AOS_Invoices,AOS_PDF_Templates,AOS_Products,AOS_Quotes,FP_events,FP_Event_Locations,AOS_Product_Categories,jjwg_Maps,jjwg_Markers,jjwg_Areas,jjwg_Address_Cache,AOR_Reports,AOW_WorkFlow,AOBH_BusinessHours,Spots,AM_ProjectTemplates,AOK_Knowledge_Base_Categories,AOK_KnowledgeBase,AOR_Scheduled_Reports,SecurityGroups,Administration,Currencies,EditCustomFields,Trackers,Employees,Releases,Users,Roles,EmailMarketing,MergeRecords,EmailAddresses,EmailText,Schedulers,CampaignTrackers,CampaignLog,EmailMan,Groups,InboundEmail,ACLActions,ACLRoles,DocumentRevisions,ProjectTask,UserPreferences,SavedSearch,SugarFeed,EAPM,OAuthKeys,OAuthTokens,AM_TaskTemplates,Reminders,Reminders_Invitees,AOD_IndexEvent,AOD_Index,AOP_Case_Events,AOP_Case_Updates,AOR_Fields,AOR_Charts,AOR_Conditions,AOS_Products_Quotes,AOS_Line_Item_Groups,AOW_Actions,AOW_Processed,AOW_Conditions,Calls_Reschedule,OutboundEmailAccounts,TemplateSectionLine,AM_ProjectHolidays,Alerts,EmailTemplates,Favorites
+
+[General]
+Host=hosttest
+IntervalCheckTime=60
+User=user
+Protocol=Mock

@@ -60,17 +60,20 @@
 
 #include <KContacts/Addressee>
 
-#include <KLocalizedString>
+#include <QDebug>
+#include <KLocale>
+
 #include <KWindowSystem>
 
 #include <QtDBus/QDBusConnection>
+
+#include <tests/sugarmockprotocol.h>
 
 using namespace Akonadi;
 
 SugarCRMResource::SugarCRMResource(const QString &id)
     : ResourceBase(id),
       mPasswordHandler(new PasswordHandler(id, this)),
-      mSession(new SugarSession(mPasswordHandler, this)),
       mCurrentJob(nullptr),
       mLoginJob(nullptr),
       mDebugInterface(new ResourceDebugInterface(this)),
@@ -102,11 +105,30 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     // make sure these call have the collection available as well
     changeRecorder()->fetchCollection(true);
 
-    mSession->setSessionParameters(Settings::user(), QString() /*password not read yet*/,
-                                   Settings::host());
-    mSession->createSoapInterface();
+    QString selectedProtocol = Settings::protocol();
 
-    SugarSoapProtocol *protocol = new SugarSoapProtocol;
+    SugarProtocolBase *protocol;
+    if (selectedProtocol == "Mock") {
+        SugarMockProtocol *p = new SugarMockProtocol;
+        p->addData();
+        protocol = p;
+        mSession = new SugarSession(nullptr, this);
+        mSession->setSessionParameters("user", "password", "hosttest");
+    } else if (selectedProtocol == "Empty Mock") {
+        protocol = new SugarMockProtocol;
+        mSession = new SugarSession(nullptr, this);
+        mSession->setSessionParameters("user", "password", "hosttest");
+    } else {
+        mSession = new SugarSession(mPasswordHandler, this);
+        mSession->setSessionParameters(Settings::user(), QString() /*password not read yet*/,
+                                       Settings::host());
+        mSession->createSoapInterface();
+        protocol = new SugarSoapProtocol;
+        if (selectedProtocol != "Soap") {
+            qWarning() << "protocol name incorrect:" << selectedProtocol << "is an invalid protocol name";
+        }
+    }
+
     protocol->setSession(mSession);
     mSession->setProtocol(protocol);
 
