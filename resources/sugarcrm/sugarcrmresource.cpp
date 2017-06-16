@@ -64,6 +64,8 @@
 
 #include <QtDBus/QDBusConnection>
 
+#include <tests/sugarmockprotocol.h>
+
 using namespace Akonadi;
 
 SugarCRMResource::SugarCRMResource(const QString &id)
@@ -107,7 +109,22 @@ SugarCRMResource::SugarCRMResource(const QString &id)
                                    Settings::host());
     mSession->createSoapInterface();
 
-    SugarSoapProtocol *protocol = new SugarSoapProtocol;
+    QString selectedProtocol = Settings::protocol();
+
+    SugarProtocolBase *protocol;
+    if (selectedProtocol == "Mock") {
+        SugarMockProtocol *p = new SugarMockProtocol;
+        p->addData();
+        protocol = p;
+    } else if (selectedProtocol == "Empty Mock") {
+        protocol = new SugarMockProtocol;
+    } else {
+        protocol = new SugarSoapProtocol;
+        if (selectedProtocol != "Soap") {
+            qWarning() << "protocol name incorrect:" << selectedProtocol << "is an invalid protocol name";
+        }
+    }
+
     protocol->setSession(mSession);
     mSession->setProtocol(protocol);
 
