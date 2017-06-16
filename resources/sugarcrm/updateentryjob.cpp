@@ -24,6 +24,7 @@
 
 #include "modulehandler.h"
 #include "sugarsoap.h"
+#include "sugaraccount.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>

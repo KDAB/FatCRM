@@ -29,6 +29,7 @@
 #include "sugarcampaign.h"
 #include "sugarlead.h"
 #include <KABC/Addressee>
+#include <QObject>
 
 #include "sugarsoap.h"
 
@@ -44,8 +45,10 @@ class TNS__Get_entry_list_result;
 class TNS__Select_fields;
 }
 
-class SugarMockProtocol : public SugarProtocolBase
+class SugarMockProtocol : public QObject, public SugarProtocolBase
 {
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.Mock")
 public:
     SugarMockProtocol();
     int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
@@ -70,10 +73,22 @@ public:
     void addData();
     void addAccounts();
     void addOpportunities();
-    void addAccount(const QString &name, const QString &id);
+
+
 
     QVector<SugarAccount> accounts() const;
     QVector<SugarOpportunity> opportunities() const;
+
+public Q_SLOTS:
+    Q_SCRIPTABLE void addAccount(const QString &name, const QString &id);
+    Q_SCRIPTABLE void deleteAccount(const QString &id);
+    Q_SCRIPTABLE void updateAccount(const QString &name, const QString &id);
+    Q_SCRIPTABLE void addOpportunity(const QString &name, const QString &id);
+    Q_SCRIPTABLE void deleteOpportunity(const QString &id);
+    Q_SCRIPTABLE void updateOpportunity(const QString &name, const QString &id);
+
+    Q_SCRIPTABLE bool accountExists(const QString &name, const QString &id);
+    Q_SCRIPTABLE bool opportunityExists(const QString &name, const QString &id);
 
 private:
     bool mServerNotFound;

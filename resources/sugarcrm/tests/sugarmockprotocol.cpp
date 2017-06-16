@@ -27,11 +27,14 @@
 #include "contactshandler.h"
 #include "listentriesscope.h"
 #include "modulename.h"
+#include <QtDBus/QDBusConnection>
 
 SugarMockProtocol::SugarMockProtocol()
     :mServerNotFound(false)
 {
-
+    QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMMock"),
+            this,
+            QDBusConnection::ExportScriptableSlots);
 }
 
 
@@ -168,23 +171,18 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
         if (moduleName == Module::Accounts) {
             entriesListResult.resultCount = mAccounts.size();
             entriesListResult.entryList.setItems(listAccount());
-            mAccounts.clear();
         } else if (moduleName == Module::Opportunities) {
             entriesListResult.resultCount = mOpportunities.size();
             entriesListResult.entryList.setItems(listOpportunities());
-            mOpportunities.clear();
         } else if (moduleName == Module::Campaigns) {
             entriesListResult.resultCount = mCampaigns.size();
             entriesListResult.entryList.setItems(listCampaigns());
-            mCampaigns.clear();
         } else if (moduleName == Module::Leads) {
             entriesListResult.resultCount = mLeads.size();
             entriesListResult.entryList.setItems(listLeads());
-            mLeads.clear();
         } else if (moduleName == Module::Contacts) {
             entriesListResult.resultCount = mContacts.size();
             entriesListResult.entryList.setItems(listContacts());
-            mContacts.clear();
         } else {
             entriesListResult.resultCount = -1;
         }
@@ -329,6 +327,69 @@ void SugarMockProtocol::addAccount(const QString &name, const QString &id)
     account.setName(name);
     account.setId(id);
     mAccounts.push_back(account);
+}
+
+void SugarMockProtocol::deleteAccount(const QString &id)
+{
+    auto result = std::find_if(mAccounts.begin(), mAccounts.end(), [id](const SugarAccount &account) {return account.id() == id;});
+    if (result != mAccounts.end()) {
+        mAccounts.erase(result);
+    } else {
+        qDebug() << "error: non-existent id";
+    }
+}
+
+void SugarMockProtocol::updateAccount(const QString &name, const QString &id)
+{
+    auto result = std::find_if(mAccounts.begin(), mAccounts.end(), [id](const SugarAccount &account) {return account.id() == id;});
+    if (result != mAccounts.end()) {
+        result->setName(name);
+    } else {
+        qDebug() << "error: non-existent id";
+    }
+}
+
+bool SugarMockProtocol::accountExists(const QString &name, const QString &id)
+{
+    auto result = std::find_if(mAccounts.begin(), mAccounts.end(),
+                               [id, name](const SugarAccount &account) {return account.id() == id && account.name() == name;});
+    return result != mAccounts.end();
+
+}
+
+void SugarMockProtocol::addOpportunity(const QString &name, const QString &id)
+{
+    SugarOpportunity opp;
+    opp.setName(name);
+    opp.setId(id);
+    mOpportunities.push_back(opp);
+}
+
+void SugarMockProtocol::deleteOpportunity(const QString &id)
+{
+    auto result = std::find_if(mOpportunities.begin(), mOpportunities.end(), [id](const SugarOpportunity &opp) {return opp.id() == id;});
+    if (result != mOpportunities.end()) {
+        mOpportunities.erase(result);
+    } else {
+        qDebug() << "error: non-existent id";
+    }
+}
+
+void SugarMockProtocol::updateOpportunity(const QString &name, const QString &id)
+{
+    auto result = std::find_if(mOpportunities.begin(), mOpportunities.end(), [id](const SugarOpportunity &opp) {return opp.id() == id;});
+    if (result != mOpportunities.end()) {
+        result->setName(name);
+    } else {
+        qDebug() << "error: non-existent id";
+    }
+}
+
+bool SugarMockProtocol::opportunityExists(const QString &name, const QString &id)
+{
+    auto result = std::find_if(mOpportunities.begin(), mOpportunities.end(),
+                               [id, name](const SugarOpportunity &opp) {return opp.id() == id && opp.name() == name;});
+    return result != mOpportunities.end();
 }
 
 QVector<SugarAccount> SugarMockProtocol::accounts() const

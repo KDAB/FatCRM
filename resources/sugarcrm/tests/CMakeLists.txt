@@ -10,13 +10,10 @@ include_directories(
 )
 
 
-kde4_add_library(sugar_mock_protocol_private sugarmockprotocol.cpp)
-
 macro(add_resources_tests)
   foreach(_testname ${ARGN})
     kde4_add_unit_test(${_testname} TESTNAME "${_testname}" ${_testname}.cpp)
     target_link_libraries(${_testname}
-      sugar_mock_protocol_private
       akonadi_sugarcrm_resource_private
       kdcrmdata
       ${QT_QTTEST_LIBRARY}
