@@ -79,10 +79,7 @@ void ListModulesJob::Private::listModulesError(int error, const QString &errorMe
 ListModulesJob::ListModulesJob(SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this))
 {
-    connect(soap(), SIGNAL(get_available_modulesDone(KDSoapGenerated::TNS__Module_list)),
-            this,  SLOT(listModulesDone(KDSoapGenerated::TNS__Module_list)));
-    connect(soap(), SIGNAL(get_available_modulesError(KDSoapMessage)),
-            this,  SLOT(listModulesError(KDSoapMessage)));
+
 }
 
 ListModulesJob::~ListModulesJob()
