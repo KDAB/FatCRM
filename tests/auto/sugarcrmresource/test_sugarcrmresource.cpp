@@ -40,7 +40,6 @@
 #include <QDBusReply>
 #include <sugaraccount.h>
 #include <sugaropportunity.h>
-#include "kwaitforsignal.h"
 #include <unistd.h>
 
 using namespace Akonadi;
@@ -146,9 +145,7 @@ private:
         AgentManager::self()->synchronizeCollection(collection);
 
         QSignalSpy spy(&monitor, signal);
-        QVERIFY2(kWaitForSignal(&monitor, signal, 2000), "error: TimeOut");
-
-
+        QVERIFY(spy.wait());
         QCOMPARE(spy.count(), 1);
         arguments = spy.at(0);
     }
@@ -171,8 +168,8 @@ private:
         QSignalSpy spyAdded(&monitor, SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)));
         QSignalSpy spyChanged(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
 
-        QVERIFY(kWaitForSignal(&monitor, SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)), 5000));
-        QVERIFY(kWaitForSignal(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), 5000));
+        QVERIFY(spyAdded.wait());
+        QVERIFY(spyChanged.wait());
 
 //        for (int i = 0; i < spyAdded.count(); i++) {
 //            const QList<QVariant> arguments = spyAdded.at(i);
@@ -188,13 +185,12 @@ private:
 //        }
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
-        QVERIFY(kWaitForSignal(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), 5000));
         QCOMPARE(spyAdded.count(), 1);
 
         const QList<QVariant> arguments = spyAdded.at(0);
         compareToExpectedResult<T>(arguments, name, "");
 
-        QCOMPARE(spyChanged.count(), 2);
+        QTRY_COMPARE(spyChanged.count(), 2);
 
 
         const QList<QVariant> argumentsUpdate = spyChanged.at(spyChanged.count()-1);
@@ -207,7 +203,7 @@ private:
 
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
         QDBusReply<bool> reply = mock.call(operationName, name, id);
-        QVERIFY(reply.value());
+        QVERIFY2(reply.value(), qPrintable(QString(operationName + " failed")));
     }
 
     template<typename T>
@@ -229,7 +225,8 @@ private:
         Monitor monitor;
         monitorInit(monitor, collection);
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
-        kWaitForSignal(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), 5000);
+        QVERIFY(spy.wait());
+#if 0
         QTest::qWait(2000);
         for (int i = 0; i < spy.count(); i++) {
             const QList<QVariant> arguments = spy.at(i);
@@ -237,6 +234,7 @@ private:
             T inst = item.payload<T>();
             qDebug() << "UPDATE ////" << "changed" << i << "name:" << inst.name() << "id:" << inst.id() << "remoteId:" << item.remoteId();
         }
+#endif
 
         const QList<QVariant> arguments = spy.at(0);
         compareToExpectedResult<T>(arguments, name, id);
@@ -265,7 +263,8 @@ private:
         Monitor monitor;
         monitor.setCollectionMonitored(collection);
         configureItemFetchScope(monitor.itemFetchScope());
-        kWaitForSignal(&monitor, SIGNAL(itemRemoved(Akonadi::Item)), 5000);
+        QSignalSpy spyRemoved(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+        QVERIFY(spyRemoved.wait());
 
         fetchAndCompareItems<T>(collection, std::move(expected));
     }
