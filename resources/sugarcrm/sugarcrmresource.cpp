@@ -558,7 +558,7 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     arg.collectionAttributesChanged = listEntriesJob->collectionAttributesChanged();
     arg.isUpdateJob = listEntriesJob->isUpdateJob();
     arg.fullSyncTimestamp = listEntriesJob->newTimestamp();
-    kDebug() << "Scheduling listDeletedItems" << arg.collection.name();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Scheduling listDeletedItems" << arg.collection.name();
     scheduleCustomTask(this, "listDeletedItems", QVariant::fromValue(arg));
 
     status(Idle);
@@ -573,7 +573,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
     ldeJob->setLatestTimestamp(ListDeletedEntriesJob::latestTimestamp(arg.collection));
 
     if (!arg.isUpdateJob) {
-        kDebug() << "Not an update job";
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Not an update job";
         // Set initial timestamp for "deleted items" based on the time of the full sync
         // (no need to get all old deletions). No need to even run the job either, in that case.
         ldeJob->setInitialTimestamp(arg.fullSyncTimestamp);
@@ -589,7 +589,7 @@ void SugarCRMResource::listDeletedItems(const QVariant &val)
         return;
     }
 
-    kDebug() << "Update job, running the job";
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Update job, running the job";
     connect(ldeJob, SIGNAL(result(KJob*)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
     mCurrentJob = ldeJob;
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()

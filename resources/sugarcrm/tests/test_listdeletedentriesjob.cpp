@@ -28,7 +28,7 @@
 #include "sugarsession.h"
 #include "sugaraccountcache.h"
 #include <QSignalSpy>
-#include <Akonadi/Item>
+#include <AkonadiCore/Item>
 
 Q_DECLARE_METATYPE(Module)
 

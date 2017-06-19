@@ -114,7 +114,7 @@ void ListDeletedEntriesJob::Private::listEntriesError(int error, const QString &
     if (error == SugarJob::CouldNotConnectError) {
         // Invalid login error, meaning we need to log in again
         if (q->shouldTryRelogin()) {
-            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
             QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
             return;
         }
