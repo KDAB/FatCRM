@@ -340,12 +340,12 @@ private Q_SLOTS:
 
     void shouldCreateAccount()
     {
-        createSugarItem<SugarAccount>("newAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"newAccount", "1000"}}, "accountExist");
+        createSugarItem<SugarAccount>("newAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"newAccount", "1000"}}, "accountExists");
     }
 
     void shouldUpdateAccount()
     {
-        updateSugarItem<SugarAccount>("updateAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"updateAccount", "1000"}}, "accountExist");
+        updateSugarItem<SugarAccount>("updateAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"updateAccount", "1000"}}, "accountExists");
     }
 
     void shouldDeleteAccount()
@@ -397,12 +397,12 @@ private Q_SLOTS:
 
     void shouldCreateOpportunity()
     {
-        createSugarItem<SugarOpportunity>("newOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"newOpportunity", "1001"}}, "opportunityExist");
+        createSugarItem<SugarOpportunity>("newOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"newOpportunity", "1001"}}, "opportunityExists");
     }
 
     void shouldUpdateOpportunity()
     {
-        updateSugarItem<SugarOpportunity>("updateOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updateOpportunity", "1001"}}, "opportunityExist");
+        updateSugarItem<SugarOpportunity>("updateOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updateOpportunity", "1001"}}, "opportunityExists");
     }
 
     void shouldDeleteOpportunity()
