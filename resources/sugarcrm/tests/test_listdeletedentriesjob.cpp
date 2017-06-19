@@ -184,4 +184,4 @@ private Q_SLOTS:
 };
 
 QTEST_MAIN(TestListDeletedEntriesJob)
-#include "test_listDeletedentriesjob.moc"
+#include "test_listdeletedentriesjob.moc"
