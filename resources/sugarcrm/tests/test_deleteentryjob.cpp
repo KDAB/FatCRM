@@ -66,13 +66,11 @@ private Q_SLOTS:
         bool result = job.exec();
         //THEN
         QCOMPARE(result, exist);
-        if (exist) {
-            QCOMPARE(protocol->accounts().size(), 2);
-            QCOMPARE(protocol->accounts().at(0).id(), QString("0"));
-            QCOMPARE(protocol->accounts().at(1).id(), QString("2"));
-        } else {
-            QCOMPARE(protocol->accounts().size(), 3);
-        }
+        QCOMPARE(protocol->accounts().size(), 3);
+        QCOMPARE(protocol->accounts().at(0).id(), QString("0"));
+        QCOMPARE(protocol->accounts().at(1).id(), QString("1"));
+        QCOMPARE(protocol->accounts().at(2).id(), QString("2"));
+        QCOMPARE(protocol->accounts().at(1).deleted(), exist ? QString("1") : QString());
     }
 
 
@@ -108,12 +106,10 @@ private Q_SLOTS:
         bool result = job.exec();
         //THEN
         QCOMPARE(result, exist);
-        if (exist) {
-            QCOMPARE(protocol->opportunities().size(), 1);
-            QCOMPARE(protocol->opportunities().at(0).id(), QString("100"));
-        } else {
-            QCOMPARE(protocol->opportunities().size(), 2);
-        }
+        QCOMPARE(protocol->opportunities().size(), 2);
+        QCOMPARE(protocol->opportunities().at(0).id(), QString("100"));
+        QCOMPARE(protocol->opportunities().at(1).id(), QString("101"));
+        QCOMPARE(protocol->opportunities().at(1).deleted(), exist ? QString("1") : QString());
     }
 
     void shouldHandleCouldNotConnectError()

@@ -99,11 +99,11 @@ private:
     QVector<KContacts::Addressee> mContacts;
     int mNextId = 1000;
 
-    QList<KDSoapGenerated::TNS__Entry_value> listAccount() const;
-    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities() const;
-    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns() const;
-    QList<KDSoapGenerated::TNS__Entry_value> listLeads() const;
-    QList<KDSoapGenerated::TNS__Entry_value> listContacts() const;
+    QList<KDSoapGenerated::TNS__Entry_value> listAccount(bool deleted) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities(bool deleted) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns(bool deleted) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listLeads(bool deleted) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listContacts(bool deleted) const;
 };
 
 #endif // SUGARMOCKPROTOCOL_H

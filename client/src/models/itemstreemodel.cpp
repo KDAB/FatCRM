@@ -500,7 +500,7 @@ QVariant ItemsTreeModel::accountToolTip(const Item &item) const
         toolTipOutput.append(i18n("<p><b>Country</b><br>%1</p>", accountCountry));
     }
 
-    QDateTime dateModified = KDCRMUtils::dateTimeFromString(account.dateModified());
+    QDateTime dateModified = KDCRMUtils::dateTimeFromString(account.dateModifiedRaw());
     if (dateModified.isValid()) {
         toolTipOutput.append(i18n("<p><b>Last Modified</b><br>%1 (%2)</p>", dateModified.toString(Qt::SystemLocaleShortDate), account.modifiedByName()));
     }

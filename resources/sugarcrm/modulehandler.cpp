@@ -116,7 +116,7 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     soap()->asyncGet_entry_list(sessionId(), moduleToName(module()), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
 }
 
-int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult ,QString &errorMessage)
+int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage)
 {
     const QString query = scope.query(queryStringForListing(), mModule);
     const QString orderBy = orderByForListing();

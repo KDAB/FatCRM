@@ -148,7 +148,7 @@ public:
     /**
       Set Creation date.
      */
-    void setDateEntered(const QString &name);
+    void setDateEntered(const QString &date);
     /**
       Return Creation date.
      */
@@ -157,16 +157,18 @@ public:
     /**
       Set Modification date.
      */
-    void setDateModified(const QString &name);
+    void setDateModifiedRaw(const QString &dateStr);
+    void setDateModified(const QDateTime &date);
     /**
       Return Modification date.
      */
-    QString dateModified() const;
+    QString dateModifiedRaw() const;
+    QDateTime dateModified() const;
 
     /**
       Set Modified User id.
      */
-    void setModifiedUserId(const QString &name);
+    void setModifiedUserId(const QString &value);
     /**
       Return Modified User id.
      */

@@ -77,7 +77,7 @@ public:
 public:
     void getEntriesCountDone(int count);
     void listEntriesDone(const EntriesListResult &callResult);
-    void handlerError(int error, const QString &errorMessage);
+    void handleError(int error, const QString &errorMessage);
     void listNextEntries();
 };
 
@@ -108,7 +108,7 @@ void ListEntriesJob::Private::listNextEntries()
     if (result == KJob::NoError) {
         listEntriesDone(entriesListResult);
     } else {
-        handlerError(result, errorMessage);
+        handleError(result, errorMessage);
     }
 }
 
@@ -165,7 +165,7 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
     }
 }
 
-void ListEntriesJob::Private::handlerError(int error, const QString &errorMessage)
+void ListEntriesJob::Private::handleError(int error, const QString &errorMessage)
 {
     if (error == SugarJob::CouldNotConnectError) {
         // Invalid login error, meaning we need to log in again
@@ -279,20 +279,13 @@ void ListEntriesJob::startSugarTask()
         if (result == KJob::NoError) {
             d->getEntriesCountDone(entriesCount);
         } else {
-            d->handlerError(result, errorMessage);
+            d->handleError(result, errorMessage);
         }
         break;
     }
-    case Private::GetExisting: {
-        EntriesListResult entriesListResult;
-        int result = d->mHandler->listEntries(d->mListScope, entriesListResult, errorMessage);
-        if (result == KJob::NoError) {
-            d->listEntriesDone(entriesListResult);
-        } else {
-            d->handlerError(result, errorMessage);
-        }
+    case Private::GetExisting:
+        d->listNextEntries();
         break;
-    }
     }
 }
 #include "moc_listentriesjob.cpp"

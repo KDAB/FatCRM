@@ -29,7 +29,6 @@ class KDSoapMessage;
 class SugarSession;
 namespace KDSoapGenerated
 {
-class Sugarsoap;
 class TNS__Set_entry_result;
 class TNS__Error_value;
 }
@@ -65,7 +64,6 @@ protected:
 
     SugarSession *session() const;
     QString sessionId() const;
-    KDSoapGenerated::Sugarsoap *soap();
     bool shouldTryRelogin() const;
 
 private:

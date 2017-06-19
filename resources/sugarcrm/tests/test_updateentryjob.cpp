@@ -28,7 +28,7 @@
 #include "updateentryjob.h"
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
-
+#include <kdcrmdata/kdcrmutils.h>
 
 class TestUpdateEntryJob : public QObject
 {
@@ -38,19 +38,21 @@ private Q_SLOTS:
     void shouldUpdateAccount()
     {
         //GIVEN
-        SugarAccount account;
-        account.setName("updateAccount");
-        account.setId("1");
-        Akonadi::Item item;
-        item.setId(0);
-        item.setRemoteId("1");
-        item.setPayload<SugarAccount>(account);
         SugarMockProtocol *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addData();
         session.setProtocol(protocol);
         protocol->setSession(&session);
+        SugarAccount account;
+        account.setName("updateAccount");
+        account.setId("1");
+        account.setDateModified(QDateTime::currentDateTime());
+        Akonadi::Item item;
+        item.setId(0);
+        item.setRemoteId("1");
+        item.setPayload<SugarAccount>(account);
+        item.setRemoteRevision(account.dateModifiedRaw());
         UpdateEntryJob job(item, &session);
         AccountsHandler handler(&session);
         job.setModule(&handler);
@@ -68,19 +70,21 @@ private Q_SLOTS:
     void shouldUpdateOpportunity()
     {
         //GIVEN
-        SugarOpportunity opp;
-        opp.setName("updateOpp");
-        opp.setId("100");
-        Akonadi::Item item;
-        item.setId(0);
-        item.setRemoteId("100");
-        item.setPayload<SugarOpportunity>(opp);
         SugarMockProtocol *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addData();
         session.setProtocol(protocol);
         protocol->setSession(&session);
+        SugarOpportunity opp;
+        opp.setName("updateOpp");
+        opp.setId("100");
+        opp.setDateModified(QDateTime::currentDateTime());
+        Akonadi::Item item;
+        item.setId(0);
+        item.setRemoteId("100");
+        item.setPayload<SugarOpportunity>(opp);
+        item.setRemoteRevision(opp.dateModifiedRaw());
         UpdateEntryJob job(item, &session);
         OpportunitiesHandler handler(&session);
         job.setModule(&handler);

@@ -27,6 +27,7 @@
 #include "contactshandler.h"
 #include "listentriesscope.h"
 #include "modulename.h"
+#include "kdcrmdata/kdcrmutils.h"
 #include <QtDBus/QDBusConnection>
 
 SugarMockProtocol::SugarMockProtocol()
@@ -87,74 +88,83 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, Module mod
     return 0;
 }
 
-QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccount() const
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccount(bool deleted) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const SugarAccount &acc : mAccounts) {
-        KDSoapGenerated::TNS__Entry_value entryValue;
-        entryValue.setId(acc.id());
-        entryValue.setModule_name(moduleToName(Module::Accounts));
-        KDSoapGenerated::TNS__Name_value_list nvl = AccountsHandler::sugarAccountToNameValueList(acc);
-        entryValue.setName_value_list(nvl);
-        items.push_back(entryValue);
+        if ((acc.deleted() == "1") == deleted) {
+            KDSoapGenerated::TNS__Entry_value entryValue;
+            entryValue.setId(acc.id());
+            entryValue.setModule_name(moduleToName(Module::Accounts));
+            KDSoapGenerated::TNS__Name_value_list nvl = AccountsHandler::sugarAccountToNameValueList(acc);
+            entryValue.setName_value_list(nvl);
+            items.push_back(entryValue);
+        }
     }
     return items;
 }
 
-QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listOpportunities() const
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listOpportunities(bool deleted) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const SugarOpportunity &opp : mOpportunities) {
-        KDSoapGenerated::TNS__Entry_value entryValue;
-        entryValue.setId(opp.id());
-        entryValue.setModule_name(moduleToName(Module::Opportunities));
-        KDSoapGenerated::TNS__Name_value_list nvl = OpportunitiesHandler::sugarOpportunityToNameValueList(opp);
-        entryValue.setName_value_list(nvl);
-        items.push_back(entryValue);
+        if ((opp.deleted() == "1") == deleted) {
+            KDSoapGenerated::TNS__Entry_value entryValue;
+            entryValue.setId(opp.id());
+            entryValue.setModule_name(moduleToName(Module::Opportunities));
+            KDSoapGenerated::TNS__Name_value_list nvl = OpportunitiesHandler::sugarOpportunityToNameValueList(opp);
+            entryValue.setName_value_list(nvl);
+            items.push_back(entryValue);
+        }
     }
     return items;
 }
 
-QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listCampaigns() const
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listCampaigns(bool deleted) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
-    for (const SugarCampaign &cam : mCampaigns)
-    for ( int i = 0; i < mCampaigns.size(); ++i) {
-        KDSoapGenerated::TNS__Entry_value entryValue;
-        entryValue.setId(cam.id());
-        entryValue.setModule_name(moduleToName(Module::Campaigns));
-        KDSoapGenerated::TNS__Name_value_list nvl = CampaignsHandler::sugarCampaignToNameValueList(cam);
-        entryValue.setName_value_list(nvl);
-        items.push_back(entryValue);
+    for (const SugarCampaign &cam : mCampaigns) {
+        if ((cam.deleted() == "1") == deleted) {
+            KDSoapGenerated::TNS__Entry_value entryValue;
+            entryValue.setId(cam.id());
+            entryValue.setModule_name(moduleToName(Module::Campaigns));
+            KDSoapGenerated::TNS__Name_value_list nvl = CampaignsHandler::sugarCampaignToNameValueList(cam);
+            entryValue.setName_value_list(nvl);
+            items.push_back(entryValue);
+        }
     }
     return items;
 }
 
-QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listLeads() const
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listLeads(bool deleted) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const SugarLead &lead : mLeads) {
-        KDSoapGenerated::TNS__Entry_value entryValue;
-        entryValue.setId(lead.id());
-        entryValue.setModule_name(moduleToName(Module::Leads));
-        KDSoapGenerated::TNS__Name_value_list nvl = LeadsHandler::sugarLeadToNameValueList(lead);
-        entryValue.setName_value_list(nvl);
-        items.push_back(entryValue);
+        if ((lead.deleted() == "1") == deleted) {
+            KDSoapGenerated::TNS__Entry_value entryValue;
+            entryValue.setId(lead.id());
+            entryValue.setModule_name(moduleToName(Module::Leads));
+            KDSoapGenerated::TNS__Name_value_list nvl = LeadsHandler::sugarLeadToNameValueList(lead);
+            entryValue.setName_value_list(nvl);
+            items.push_back(entryValue);
+        }
     }
     return items;
 }
 
-QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts() const
+QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts(bool deleted) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const KABC::Addressee &contact : mContacts) {
-        KDSoapGenerated::TNS__Entry_value entryValue;
-        const QString id = contact.custom("FATCRM", "X-ContactId");
-        entryValue.setId(id);
-        entryValue.setModule_name("Contacts");
-        KDSoapGenerated::TNS__Name_value_list nvl = ContactsHandler::addresseeToNameValueList(contact);
-        entryValue.setName_value_list(nvl);
-        items.push_back(entryValue);
+        if ((!contact.custom("FATCRM", "X-Deleted").isEmpty()) == deleted) {
+            KDSoapGenerated::TNS__Entry_value entryValue;
+            const QString id = contact.custom("FATCRM", "X-ContactId");
+            entryValue.setId(id);
+            entryValue.setModule_name("Contacts");
+            KDSoapGenerated::TNS__Name_value_list nvl = ContactsHandler::addresseeToNameValueList(contact);
+            entryValue.setName_value_list(nvl);
+            items.push_back(entryValue);
+        }
     }
     return items;
 }
@@ -170,19 +180,19 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     } else {
         if (moduleName == Module::Accounts) {
             entriesListResult.resultCount = mAccounts.size();
-            entriesListResult.entryList.setItems(listAccount());
+            entriesListResult.entryList.setItems(listAccount(scope.deleted()));
         } else if (moduleName == Module::Opportunities) {
             entriesListResult.resultCount = mOpportunities.size();
-            entriesListResult.entryList.setItems(listOpportunities());
+            entriesListResult.entryList.setItems(listOpportunities(scope.deleted()));
         } else if (moduleName == Module::Campaigns) {
             entriesListResult.resultCount = mCampaigns.size();
-            entriesListResult.entryList.setItems(listCampaigns());
+            entriesListResult.entryList.setItems(listCampaigns(scope.deleted()));
         } else if (moduleName == Module::Leads) {
             entriesListResult.resultCount = mLeads.size();
-            entriesListResult.entryList.setItems(listLeads());
+            entriesListResult.entryList.setItems(listLeads(scope.deleted()));
         } else if (moduleName == Module::Contacts) {
             entriesListResult.resultCount = mContacts.size();
-            entriesListResult.entryList.setItems(listContacts());
+            entriesListResult.entryList.setItems(listContacts(scope.deleted()));
         } else {
             qWarning() << "listEntries called for unknown module" << moduleName;
             entriesListResult.resultCount = -1;
@@ -223,7 +233,7 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
 {
     Q_UNUSED(errorMessage);
     QList<KDSoapGenerated::TNS__Name_value> list = nameValueList.items();
-    bool deleted = std::any_of(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "deleted" && nv.value() == "1";});
+    const bool deleted = std::any_of(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "deleted" && nv.value() == "1";});
     QString id;
     auto result = std::find_if(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "id";});
     if (result != list.end()) {
@@ -237,12 +247,8 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
             for (int i = 0; i < mAccounts.size(); ++i) {
                 if (mAccounts.at(i).id() == id) {
                     found = true;
-                    if (deleted) {
-                        mAccounts.remove(i);
-                    } else {
-                        account.setId(mAccounts.at(i).id());
-                        mAccounts[i] = account;
-                    }
+                    account.setId(mAccounts.at(i).id());
+                    mAccounts[i] = account;
                     break;
                 }
             }
@@ -265,12 +271,8 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
             for (int i = 0; i < mOpportunities.size() && !found; ++i) {
                 if (mOpportunities.at(i).id() == id) {
                     found = true;
-                    if (deleted) {
-                        mOpportunities.remove(i);
-                    } else {
-                        opp.setId(mOpportunities.at(i).id());
-                        mOpportunities[i] = opp;
-                    }
+                    opp.setId(mOpportunities.at(i).id());
+                    mOpportunities[i] = opp;
                     break;
                 }
             }
@@ -299,6 +301,10 @@ void SugarMockProtocol::addAccounts()
     mAccounts[1].setId("1");
     mAccounts[2].setName("accountTwo");
     mAccounts[2].setId("2");
+    const QDateTime now = QDateTime::currentDateTime();
+    for (int i = 0; i < mAccounts.size(); ++i) {
+        mAccounts[i].setDateModifiedRaw(KDCRMUtils::dateTimeToString(now));
+    }
 }
 
 void SugarMockProtocol::addOpportunities()
@@ -310,6 +316,10 @@ void SugarMockProtocol::addOpportunities()
     mOpportunities[1].setId("101");
     mOpportunities[1].setName("oppWithNonExistingAccount");
     mOpportunities[1].setTempAccountName("accountTest");
+    const QDateTime now = QDateTime::currentDateTime();
+    for (int i = 0; i < mOpportunities.size(); ++i) {
+        mOpportunities[i].setDateModifiedRaw(KDCRMUtils::dateTimeToString(now));
+    }
 }
 
 void SugarMockProtocol::addData()
@@ -334,7 +344,7 @@ void SugarMockProtocol::deleteAccount(const QString &id)
 {
     auto result = std::find_if(mAccounts.begin(), mAccounts.end(), [id](const SugarAccount &account) {return account.id() == id;});
     if (result != mAccounts.end()) {
-        mAccounts.erase(result);
+        (*result).setDeleted("1");
     } else {
         qDebug() << "error: non-existent id";
     }
@@ -370,7 +380,7 @@ void SugarMockProtocol::deleteOpportunity(const QString &id)
 {
     auto result = std::find_if(mOpportunities.begin(), mOpportunities.end(), [id](const SugarOpportunity &opp) {return opp.id() == id;});
     if (result != mOpportunities.end()) {
-        mOpportunities.erase(result);
+        (*result).setDeleted("1");
     } else {
         qDebug() << "error: non-existent id";
     }

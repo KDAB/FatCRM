@@ -200,7 +200,7 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     // when renaming an account we'll have oldname->id and newname->id, shouldn't harm
 
     item.setPayload<SugarAccount>(account);
-    item.setRemoteRevision(account.dateModified());
+    item.setRemoteRevision(account.dateModifiedRaw());
 
     return item;
 }
@@ -215,7 +215,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const SugarAccount rightAccount = rightItem.payload<SugarAccount>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(rightAccount.dateModified());
+    const QString modifiedOn = formatDate(rightAccount.dateModifiedRaw());
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Account"));
     reporter->setRightPropertyValueTitle(
