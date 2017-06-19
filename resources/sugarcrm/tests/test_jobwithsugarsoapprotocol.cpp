@@ -58,23 +58,23 @@ private Q_SLOTS:
         qApp->setOrganizationName("KDAB");
         QSettings settings;
         settings.beginGroup("SugarAuthentication");
-        QString userName = settings.value("username", QString()).toString();
-        QString mPassword = settings.value("password", QString()).toString();
-        QString mHost = settings.value("host", QString()).toString();
+        const QString userName = settings.value("username", QString()).toString();
+        const QString password = settings.value("password", QString()).toString();
+        const QString host = settings.value("host", QString()).toString();
 
-        if (userName.isEmpty() || mPassword.isEmpty() || mHost.isEmpty()) { // Create a template file
+        if (userName.isEmpty() || password.isEmpty() || host.isEmpty()) { // Create a template file
             if (userName.isEmpty()) {
                 settings.setValue("username", QString());
             }
-            if (mPassword.isEmpty()) {
+            if (password.isEmpty()) {
                 settings.setValue("password", QString());
             }
-            if (mHost.isEmpty()) {
+            if (host.isEmpty()) {
                 settings.setValue("host", QString());
             }
-            QSKIP(qPrintable(QString("Missing authentication information for a test SugarCRM server, please edit %1 to write your username, password, and host. Do NOT use a production server!").arg(settings.fileName())),SkipAll);
+            QSKIP(qPrintable(QString("Missing authentication information for a test SugarCRM server, please edit %1 to write your username, password, and scheme+host. Do NOT use a production server!").arg(settings.fileName())),SkipAll);
         }
-        mSession.setSessionParameters(userName, mPassword, mHost);
+        mSession.setSessionParameters(userName, password, host);
         mSession.createSoapInterface();
 
         mProtocol = new SugarSoapProtocol;
