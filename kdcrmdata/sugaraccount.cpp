@@ -269,10 +269,10 @@ QString SugarAccount::name() const
     return d->mName;
 }
 
-void SugarAccount::setDateEntered(const QString &value)
+void SugarAccount::setDateEntered(const QString &date)
 {
     d->mEmpty = false;
-    d->mDateEntered = value;
+    d->mDateEntered = date;
 }
 
 QString SugarAccount::dateEntered() const
@@ -280,15 +280,26 @@ QString SugarAccount::dateEntered() const
     return d->mDateEntered;
 }
 
-void SugarAccount::setDateModified(const QString &value)
+void SugarAccount::setDateModifiedRaw(const QString &dateStr)
 {
     d->mEmpty = false;
-    d->mDateModified = value;
+    d->mDateModified = dateStr;
 }
 
-QString SugarAccount::dateModified() const
+void SugarAccount::setDateModified(const QDateTime &date)
+{
+    d->mEmpty = false;
+    d->mDateModified = KDCRMUtils::dateTimeToString(date);
+}
+
+QString SugarAccount::dateModifiedRaw() const
 {
     return d->mDateModified;
+}
+
+QDateTime SugarAccount::dateModified() const
+{
+    return KDCRMUtils::dateTimeFromString(d->mDateModified);
 }
 
 void SugarAccount::setModifiedUserId(const QString &value)
@@ -759,7 +770,7 @@ SugarAccount::AccessorHash SugarAccount::accessorHash()
         accessors.insert(KDCRMFields::dateEntered(),
                           AccountAccessorPair(&SugarAccount::dateEntered, &SugarAccount::setDateEntered, QString()));
         accessors.insert(KDCRMFields::dateModified(),
-                          AccountAccessorPair(&SugarAccount::dateModified, &SugarAccount::setDateModified, QString()));
+                          AccountAccessorPair(&SugarAccount::dateModifiedRaw, &SugarAccount::setDateModifiedRaw, QString()));
         accessors.insert(KDCRMFields::modifiedUserId(),
                           AccountAccessorPair(&SugarAccount::modifiedUserId, &SugarAccount::setModifiedUserId, QString()));
         accessors.insert(KDCRMFields::modifiedByName(),

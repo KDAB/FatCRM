@@ -143,10 +143,15 @@ QDateTime SugarOpportunity::dateModified() const
     return d->mDateModified;
 }
 
-void SugarOpportunity::setDateModifiedRaw(const QString &value)
+void SugarOpportunity::setDateModified(const QDateTime &date)
 {
     d->mEmpty = false;
-    d->mDateModified = KDCRMUtils::dateTimeFromString(value);
+    d->mDateModified = date;
+}
+
+void SugarOpportunity::setDateModifiedRaw(const QString &value)
+{
+    setDateModified(KDCRMUtils::dateTimeFromString(value));
 }
 
 QString SugarOpportunity::dateModifiedRaw() const

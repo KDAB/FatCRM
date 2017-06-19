@@ -64,10 +64,9 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT(d, void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult))
-    Q_PRIVATE_SLOT(d, void listEntriesError(const KDSoapMessage &fault))
     Q_PRIVATE_SLOT(d, void slotResolvedDeletedItems(KJob *))
     Q_PRIVATE_SLOT(d, void slotDeleteJobResult(KJob *))
+    Q_PRIVATE_SLOT(d, void listNextEntries())
 };
 
 #endif

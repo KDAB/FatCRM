@@ -21,7 +21,7 @@
 #include <QTest>
 #include <QDebug>
 #include "sugarmockprotocol.h"
-#include "listentriesjob.h"
+#include "listdeletedentriesjob.h"
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
 #include "campaignshandler.h"
@@ -32,7 +32,7 @@
 
 Q_DECLARE_METATYPE(Module)
 
-class TestListEntriesJob : public QObject
+class TestListDeletedEntriesJob : public QObject
 {
     Q_OBJECT
 private:
@@ -60,7 +60,7 @@ private Q_SLOTS:
         //GIVEN
         Akonadi::Collection collection;
         SugarSession session(nullptr);
-        ListEntriesJob listEntries(collection, &session);
+        ListDeletedEntriesJob listEntries(collection, &session);
         AccountsHandler module(&session);
         //WHEN
         listEntries.setModule(&module);
@@ -77,7 +77,7 @@ private Q_SLOTS:
         collection2.setId(1);
         SugarSession session(nullptr);
         //WHEN
-        ListEntriesJob lej(collection1, &session);
+        ListDeletedEntriesJob lej(collection1, &session);
         //THEN
         QVERIFY(lej.collection() == collection1);
         QVERIFY(lej.collection() != collection2);
@@ -93,41 +93,7 @@ private Q_SLOTS:
         QTest::newRow("Campaigns") << Module::Campaigns << 1;
     }
 
-    void shouldReturnCorrectCount()
-    {
-        QFETCH(Module, moduleName);
-        QFETCH(int, expectedCount);
-        //GIVEN
-        Akonadi::Collection collection;
-        collection.setId(1);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
-        protocol->addData();
-        SugarSession *session = new SugarSession (nullptr);
-        protocol->setSession(session);
-        session->setProtocol(protocol);
-        session->setSessionParameters("user", "password", "hosttest");
-        ModuleHandler *handler = 0;
-        if (moduleName == Module::Accounts) {
-            handler = new AccountsHandler(session);
-        } else if (moduleName == Module::Opportunities) {
-            handler = new OpportunitiesHandler(session);
-        } else if (moduleName == Module::Campaigns) {
-            handler = new CampaignsHandler(session);
-        }
-        ListEntriesJob *job = new ListEntriesJob(collection, session);
-        job->setModule(handler);
-        QSignalSpy spy(job, SIGNAL(totalItems(int)));
-        //WHEN
-        QVERIFY(job->exec());
-        //THEN
-        QCOMPARE(spy.count(), 1);
-        const QList<QVariant> arguments = spy.at(0);
-        QCOMPARE(arguments.at(0).toInt(), expectedCount);
-
-        delete session;
-        delete handler;
-    }
-
+#if 0 // ListDeletedEntriesJob does not emit the items, it resolves them with akonadi, which would fail here.
     void shouldReturnCorrectListAccounts()
     {
         SugarAccountCache *cache = SugarAccountCache::instance();
@@ -142,7 +108,7 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         AccountsHandler handler(&session);
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        ListDeletedEntriesJob *job = new ListDeletedEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
@@ -177,7 +143,7 @@ private Q_SLOTS:
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         OpportunitiesHandler handler(&session);
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        ListDeletedEntriesJob *job = new ListDeletedEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
@@ -197,7 +163,7 @@ private Q_SLOTS:
         //GIVEN
         protocol->addAccount("accountTest","3");
         AccountsHandler accountHandler(&session);
-        ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
+        ListDeletedEntriesJob *accountListJob = new ListDeletedEntriesJob(collection, &session);
         accountListJob->setModule(&accountHandler);
         QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
@@ -214,7 +180,8 @@ private Q_SLOTS:
         accountId[1] = '3';
         verifyOpportunities(lItems, id, name, accountId);
     }
+#endif
 };
 
-QTEST_MAIN(TestListEntriesJob)
-#include "test_listentriesjob.moc"
+QTEST_MAIN(TestListDeletedEntriesJob)
+#include "test_listDeletedentriesjob.moc"

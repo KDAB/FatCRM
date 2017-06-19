@@ -27,6 +27,7 @@ add_resources_tests(
   test_sugarmockprotocol
   test_loginjob
   test_listentriesjob
+  test_listdeletedentriesjob
   test_createentryjob
   test_updateentryjob
   test_fetchentryjob

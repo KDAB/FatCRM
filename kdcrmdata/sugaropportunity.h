@@ -103,6 +103,7 @@ public:
       Return Modification date.
      */
     QDateTime dateModified() const;
+    void setDateModified(const QDateTime &date);
 
     void setDateModifiedRaw(const QString &name);
     QString dateModifiedRaw() const;

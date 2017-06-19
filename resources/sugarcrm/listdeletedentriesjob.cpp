@@ -67,29 +67,30 @@ public:
     QString mLatestTimestampFromItems;
     bool mCollectionAttributesChanged;
 
+    void listEntriesDone(const EntriesListResult &callResult);
+    void listEntriesError(int error, const QString &errorMessage);
+    void listNextEntries();
+
 public: // slots
-    void listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult);
-    void listEntriesError(const KDSoapMessage &fault);
     void slotResolvedDeletedItems(KJob *);
     void slotDeleteJobResult(KJob *job);
 
     void updateAnnotationAttribute();
 };
 
-void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS__Get_entry_list_result &callResult)
+void ListDeletedEntriesJob::Private::listEntriesDone(const EntriesListResult &callResult)
 {
-    //kDebug() << q << "error" << callResult.error().number();
-    if (q->handleError(callResult.error())) {
-        return;
-    }
-    if (callResult.result_count() > 0) { // result_count is the size of entry_list, e.g. 100.
+    if (callResult.resultCount > 0) { // result_count is the size of entry_list, e.g. 100.
         Item::List items =
-            mHandler->itemsFromListEntriesResponse(callResult.entry_list(), mCollection, &mLatestTimestampFromItems);
+            mHandler->itemsFromListEntriesResponse(callResult.entryList, mCollection, &mLatestTimestampFromItems);
         kDebug() << "List Entries for" << mHandler->module() << "since" << mLatestTimestampFromItems
                  << "received" << items.count() << "deletes";
         mPendingDeletedItems += items;
-        mListScope.setOffset(callResult.next_offset());
-        mHandler->listEntries(mListScope);
+        mListScope.setOffset(callResult.nextOffset);
+
+        // Avoid double recursion
+        QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
+
     } else {
         if (!mPendingDeletedItems.isEmpty()) {
             kDebug() << "Resolving" << mPendingDeletedItems.count() << "deleted items";
@@ -108,20 +109,40 @@ void ListDeletedEntriesJob::Private::listEntriesDone(const KDSoapGenerated::TNS_
     }
 }
 
-void ListDeletedEntriesJob::Private::listEntriesError(const KDSoapMessage &fault)
+void ListDeletedEntriesJob::Private::listEntriesError(int error, const QString &errorMessage)
 {
-    if (!q->handleLoginError(fault)) {
-        kWarning() << q << "List Entries Error:" << fault.faultAsString();
+    if (error == SugarJob::CouldNotConnectError) {
+        // Invalid login error, meaning we need to log in again
+        if (q->shouldTryRelogin()) {
+            kDebug() << "Got error 10, probably a session timeout, let's login again";
+            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
+            return;
+        }
+    }
+    kWarning() << q << error << errorMessage;
 
-        q->setError(SugarJob::SoapError);
-        q->setErrorText(fault.faultAsString());
-        q->emitResult();
+    q->setError(SugarJob::SoapError);
+    q->setErrorText(errorMessage);
+    q->emitResult();
+}
+
+void ListDeletedEntriesJob::Private::listNextEntries()
+{
+    QString errorMessage;
+    EntriesListResult entriesListResult;
+    int result = mHandler->listEntries(mListScope, entriesListResult, errorMessage);
+    if (result == KJob::NoError) {
+        listEntriesDone(entriesListResult);
+    } else {
+        listEntriesError(result, errorMessage);
     }
 }
 
 void ListDeletedEntriesJob::Private::slotResolvedDeletedItems(KJob *job)
 {
     mPendingDeletedItems.clear();
+
+    qDebug() << job->errorString();
 
     if (job->error()) {
         // Update attribute even on error, because the most common error is "item already deleted locally"
@@ -173,11 +194,6 @@ void ListDeletedEntriesJob::Private::slotDeleteJobResult(KJob *job)
 ListDeletedEntriesJob::ListDeletedEntriesJob(const Akonadi::Collection &collection, SugarSession *session, QObject *parent)
     : SugarJob(session, parent), d(new Private(this, collection))
 {
-    connect(soap(), SIGNAL(get_entry_listDone(KDSoapGenerated::TNS__Get_entry_list_result)),
-            this,  SLOT(listEntriesDone(KDSoapGenerated::TNS__Get_entry_list_result)));
-    connect(soap(), SIGNAL(get_entry_listError(KDSoapMessage)),
-            this,  SLOT(listEntriesError(KDSoapMessage)));
-
     //kDebug() << this;
 }
 
@@ -238,8 +254,7 @@ void ListDeletedEntriesJob::startSugarTask()
 {
     Q_ASSERT(d->mCollection.isValid());
     Q_ASSERT(d->mHandler != nullptr);
-
-    d->mHandler->listEntries(d->mListScope);
+    d->listNextEntries();
 }
 
 #include "listdeletedentriesjob.moc"

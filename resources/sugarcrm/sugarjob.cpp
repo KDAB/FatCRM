@@ -223,11 +223,6 @@ QString SugarJob::sessionId() const
     return d->mSession->sessionId();
 }
 
-Sugarsoap *SugarJob::soap()
-{
-    return d->mSession->soap();
-}
-
 bool SugarJob::shouldTryRelogin() const
 {
     return d->mTryRelogin;
