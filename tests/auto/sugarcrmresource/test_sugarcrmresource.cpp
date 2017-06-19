@@ -43,6 +43,8 @@
 #include "kwaitforsignal.h"
 #include <unistd.h>
 
+Q_DECLARE_METATYPE(QSet<QByteArray>)
+
 using namespace Akonadi;
 
 static const char s_dbusInterfaceName[] = "com.kdab.SugarCRM.Mock";
@@ -63,7 +65,7 @@ struct ItemData {
     bool operator<(const ItemData &other) const { return id < other.id; }
 };
 
-QString serviceName()
+static QString serviceName()
 {
     QString serviceName = "org.freedesktop.Akonadi.Agent.akonadi_sugarcrm_resource_0.testrunner-";
     serviceName += QString::fromLocal8Bit(qgetenv("AKONADI_TESTRUNNER_PID"));
@@ -270,6 +272,7 @@ private Q_SLOTS:
         AkonadiTest::checkTestIsIsolated();
         qRegisterMetaType<Akonadi::Item>();
         qRegisterMetaType<Akonadi::Collection>();
+        qRegisterMetaType<QSet<QByteArray> >();
     }
 
     void shouldFetchCollection()
