@@ -40,7 +40,10 @@
 #include <QDBusReply>
 #include <sugaraccount.h>
 #include <sugaropportunity.h>
+
+#ifndef Q_OS_WIN
 #include <unistd.h>
+#endif
 
 Q_DECLARE_METATYPE(QSet<QByteArray>)
 
@@ -322,7 +325,7 @@ private Q_SLOTS:
     }
 
     void shouldCorrectlySynchronizeExternalAccountUpdate()
-    {        
+    {
         QList<QVariant> arguments;
         externalOperation(mAccountsCollection, "updateAccount", "nameTest2", "idTest", SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), arguments);
 
