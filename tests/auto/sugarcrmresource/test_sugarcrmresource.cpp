@@ -40,7 +40,6 @@
 #include <QDBusReply>
 #include <sugaraccount.h>
 #include <sugaropportunity.h>
-#include <unistd.h>
 
 Q_DECLARE_METATYPE(QSet<QByteArray>)
 
