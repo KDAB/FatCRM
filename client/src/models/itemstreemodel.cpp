@@ -343,6 +343,12 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.phoneNumber(KABC::PhoneNumber::Cell).number();
         case Country:
             return countryForContact(addressee);
+        case CreationDate: {
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated")));
+            if (role == Qt::DisplayRole)
+                return KDCRMUtils::formatDate(dt.date());
+            return dt; // for sorting
+        }
         case LastModifiedDate:
         {
             const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom("FATCRM", "X-DateModified"));
@@ -566,6 +572,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
                 << ItemsTreeModel::PreferredEmail
                 << ItemsTreeModel::PhoneWork
                 << ItemsTreeModel::PhoneMobile
+                << ItemsTreeModel::CreationDate
                 << ItemsTreeModel::LastModifiedDate;
         break;
     case Lead:
@@ -713,6 +720,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Contact:
         // too wide and too seldom filled in
         columns.removeAll(ItemsTreeModel::Title);
+        columns.removeAll(ItemsTreeModel::CreationDate);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         break;
     case Lead:
