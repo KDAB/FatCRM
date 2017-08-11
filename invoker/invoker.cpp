@@ -54,7 +54,7 @@ void Invoker::invokeRunningInstance(const QString &serviceName)
 {
     QDBusInterface iface(serviceName, QStringLiteral("/InvokerInterface"));
     if (!iface.isValid()) {
-        qWarning() << "Unable to access invoker interface of fatcrm:" << iface.lastError().message();
+        qWarning() << "Unable to access invoker interface of" << serviceName << ":" << iface.lastError().message();
         return;
     }
 
@@ -66,7 +66,7 @@ void Invoker::invokeNewInstance()
     QString errorMessage;
     QString serviceName;
 
-    const int result = KToolInvocation::startServiceByDesktopName(QStringLiteral("fatcrm"), QStringList(), &errorMessage, &serviceName);
+    const int result = KToolInvocation::startServiceByDesktopName(QStringLiteral("org.kde.fatcrm"), QStringList(), &errorMessage, &serviceName);
     if (result != 0) {
         qWarning() << "Unable to start fatcrm:" << errorMessage;
         return;

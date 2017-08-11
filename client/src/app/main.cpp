@@ -23,8 +23,8 @@
 #include "mainwindow.h"
 #include <config-fatcrm-version.h>
 
-
 #include <KAboutData>
+#include <KDBusService>
 
 #include <QApplication>
 #include <KLocalizedString>
@@ -60,6 +60,8 @@ int main(int argc, char **argv)
         KMessageBox::error(nullptr, i18n("Mimetype application/x-vnd.kdab.crm.opportunity not found, please check your FatCRM installation"));
         return 1;
     }
+
+    KDBusService service(KDBusService::Multiple);
 
     MainWindow *window = new MainWindow(!parser.isSet(noOverlayOption));
     window->setAttribute(Qt::WA_DeleteOnClose);

@@ -126,6 +126,7 @@ target_link_libraries(fatcrmprivate
   KF5::AkonadiWidgets
   KF5::Contacts
   KF5::KDELibs4Support
+  KF5::DBusAddons
   )
 
 

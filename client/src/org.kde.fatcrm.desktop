@@ -43,4 +43,6 @@ Icon=fatcrm
 Type=Application
 X-DocPath=fatcrm/index.html
 GenericName=Desktop application for SugarCRM
+# This is needed for fatcrminvoker
 X-DBUS-ServiceName=org.kde.fatcrm
+X-DBUS-StartupType=Multi
