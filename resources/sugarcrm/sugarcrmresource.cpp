@@ -356,6 +356,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
                 : i18nc("@info:status", "Retrieving contents of folder %1", collection.name());
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
+        emit percent(0);
 
         connect(job, SIGNAL(totalItems(int)),
                 this, SLOT(slotTotalItems(int)));
