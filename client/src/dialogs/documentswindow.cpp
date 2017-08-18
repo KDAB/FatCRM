@@ -31,12 +31,12 @@
 #include <AkonadiCore/ItemModifyJob>
 
 #include <KLocalizedString>
-#include <KMimeType>
 #include <KRun>
 
 #include <QComboBox>
 #include <QFileDialog>
 #include <QLabel>
+#include <QMimeType>
 #include <QMessageBox>
 #include <QPlainTextEdit>
 #include <QScrollBar>
@@ -239,9 +239,11 @@ void DocumentsWindow::urlClicked(const QString &url)
         const QString filePath = reply.value();
         if (!filePath.isEmpty()) {
             const QUrl localFile = QUrl::fromLocalFile(filePath);
-            const KMimeType::Ptr mimeType = KMimeType::findByUrl(localFile);
 
-            KRun::runUrl(localFile, mimeType ? mimeType->name() : QString(), this, true, false);
+            QMimeDatabase db;
+            const auto mimeType = db.mimeTypeForUrl(localFile);
+
+            KRun::runUrl(localFile, mimeType.isValid() ? mimeType.name() : QString(), this, true, false);
 
             return;
         }

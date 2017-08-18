@@ -69,7 +69,7 @@ target_link_libraries(akonadi_sugarcrm_resource_private
   ${KDSoap_LIBRARIES}
   KF5::Contacts
   KF5::CalendarCore
-  KF5::KDELibs4Support
+  KF5::KDELibs4Support # b/c of KDateTime; KF5::CalendarCore uses it
   Qt5::DBus
   Qt5::Core
   KF5::CalendarCore
