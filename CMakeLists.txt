@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8.12) # Feature: PUBLIC keyword in target_link_libraries
 project(FatCRM)
 
+if(POLICY CMP0028)
+  cmake_policy(SET CMP0028 NEW) # CMP0028: Double colon in target name means ALIAS or IMPORTED target.
+endif()
 if(POLICY CMP0063)
   cmake_policy(SET CMP0063 NEW)
 endif()
