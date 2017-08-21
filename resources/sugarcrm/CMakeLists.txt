@@ -72,12 +72,15 @@ target_link_libraries(akonadi_sugarcrm_resource_private
   KF5::KDELibs4Support
   Qt5::DBus
   Qt5::Core
-  KF5::Wallet
   KF5::CalendarCore
   KF5::AkonadiAgentBase
   KF5::AkonadiContact
 )
-
+if(USE_KWALLET)
+  target_link_libraries(akonadi_sugarcrm_resource_private
+    KF5::Wallet
+  )
+endif()
 target_link_libraries(akonadi_sugarcrm_resource_private
   ${KDReports_LIBRARIES}
 )
