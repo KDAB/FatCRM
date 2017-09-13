@@ -34,12 +34,12 @@
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
 
-class TestJobWithSugarMockProtocol : public QObject
+class TestJobWithSugarSoapProtocol : public QObject
 {
     Q_OBJECT
 
 public:
-    TestJobWithSugarMockProtocol()
+    TestJobWithSugarSoapProtocol()
         : mSession(nullptr)
     {
     }
@@ -94,7 +94,7 @@ private Q_SLOTS:
         AccountsHandler handler(&mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         mNewAccount = job.item().payload<SugarAccount>();
         mRemoteRevision = job.item().remoteRevision();
     }
@@ -109,7 +109,7 @@ private Q_SLOTS:
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarAccount foundAccount = job.item().payload<SugarAccount>();
         QCOMPARE(foundAccount.id(), mNewAccount.id());
@@ -265,5 +265,5 @@ private Q_SLOTS:
     }
 };
 
-QTEST_MAIN(TestJobWithSugarMockProtocol)
+QTEST_MAIN(TestJobWithSugarSoapProtocol)
 #include "test_jobwithsugarsoapprotocol.moc"
