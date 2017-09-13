@@ -130,7 +130,7 @@ private:
         configureItemFetchScope(monitor.itemFetchScope());
     }
 
-    void externalOperation(Collection &collection, const QString &opperationName, const QString &name, const QString &id,
+    void externalOperation(Collection &collection, const QString &operationName, const QString &name, const QString &id,
                            const char * signal, QList<QVariant> &arguments)
     {
         Monitor monitor;
@@ -138,9 +138,9 @@ private:
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
         QDBusReply<void> reply;
         if (name.isEmpty()) {
-            reply = mock.call(opperationName, id);
+            reply = mock.call(operationName, id);
         } else {
-            reply = mock.call(opperationName, name, id);
+            reply = mock.call(operationName, name, id);
         }
         QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
         AgentManager::self()->synchronizeCollection(collection);
@@ -321,7 +321,7 @@ private Q_SLOTS:
     }
 
     void shouldCorrectlySynchronizeExternalAccountUpdate()
-    {        
+    {
         QList<QVariant> arguments;
         externalOperation(mAccountsCollection, "updateAccount", "nameTest2", "idTest", SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)), arguments);
 
