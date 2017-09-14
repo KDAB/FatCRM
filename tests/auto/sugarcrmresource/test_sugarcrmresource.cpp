@@ -80,6 +80,16 @@ private:
 
     Item::Id mNewId;
 
+    static QString sessionId()
+    {
+        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
+        QDBusReply<QString> reply = mock.call("sessionId");
+        if (!reply.isValid()) {
+            return "ERROR : " + reply.error().message().toLatin1();
+        }
+        return reply.value();
+    }
+
     template<typename T>
     static void fetchItems(Collection &col, QList<ItemData> &result)
     {
@@ -204,6 +214,7 @@ private:
 
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
         QDBusReply<bool> reply = mock.call(operationName, name, id);
+        QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
         QVERIFY2(reply.value(), qPrintable(QString(operationName + " failed")));
     }
 
@@ -243,11 +254,9 @@ private:
         fetchAndCompareItems<T>(collection, std::move(expected));
 
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
-        QDBusReply<bool> reply;
-        reply = mock.call(operationName, name, id);
-        QVERIFY(reply.value());
-
+        QDBusReply<bool> reply = mock.call(operationName, name, id);
         QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
+        QVERIFY(reply.value());
     }
 
     template<typename T>
@@ -309,6 +318,8 @@ private Q_SLOTS:
         fetchAndCompareItems<SugarAccount>(mAccountsCollection, std::move(expected));
     }
 
+    // When an account created "on the server" (which we do via a DBus call to the mock object)
+    // then synchronizing should make the new account appear.
     void shouldCorrectlySynchronizeExternalAccountCreation()
     {
         QList<QVariant> arguments;
@@ -353,6 +364,28 @@ private Q_SLOTS:
     void shouldDeleteAccount()
     {
         deleteSugarItem<SugarAccount>("1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}});
+    }
+
+    void shouldForgetSessionWhenInvalid()
+    {
+        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
+        QDBusReply<void> reply = mock.call("setNextSoapError", "The session ID is invalid");
+        QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
+        QCOMPARE(sessionId(), QString("1"));
+
+        // WHEN
+        AgentManager::self()->synchronizeCollection(mAccountsCollection); // should fail
+
+        // THEN the session id should be forgotten
+        QTRY_COMPARE(sessionId(), QString());
+
+        // ... and the next attempt should succeed
+        QList<QVariant> arguments;
+        externalOperation(mAccountsCollection, "addAccount", "nameTestSession", "idTestSession", SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)), arguments);
+        QList<ItemData> expected{{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"nameTestSession", "idTestSession"}};
+        fetchAndCompareItems<SugarAccount>(mAccountsCollection, std::move(expected));
+        compareToExpectedResult<SugarAccount>(arguments, "nameTestSession", "idTestSession");
+        QCOMPARE(sessionId(), QString("2")); // with a new session ID
     }
 
     //OPPORTUNITIES

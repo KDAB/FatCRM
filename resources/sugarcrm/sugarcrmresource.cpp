@@ -838,6 +838,11 @@ bool SugarCRMResource::handleLoginError(KJob *job)
     case SugarJob::SoapError: // this could be transient too, e.g. capturing portal. Or it could be real...
         if (job->errorString() == QLatin1String("You do not have access")) // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
             return false;
+        if (job->errorString() == QLatin1String("The session ID is invalid")) {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Forgetting invalid session ID, the next attempt will login again";
+            mSession->forgetSession();
+            return false;
+        }
         emit status( Idle, job->errorString() );
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
         deferTask();

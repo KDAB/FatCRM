@@ -53,7 +53,7 @@ public:
     SugarMockProtocol();
     int login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage) override;
     void logout() override;
-    inline void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
+    void setServerNotFound(bool serverNotFound) { mServerNotFound = serverNotFound; }
     void setSession(SugarSession *session) override;
     int getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
     int listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
@@ -80,6 +80,7 @@ public:
     QVector<SugarOpportunity> opportunities() const;
 
 public Q_SLOTS:
+    Q_SCRIPTABLE void setNextSoapError(const QString &soapError) { mNextSoapError = soapError; }
     Q_SCRIPTABLE void addAccount(const QString &name, const QString &id);
     Q_SCRIPTABLE void deleteAccount(const QString &id);
     Q_SCRIPTABLE void updateAccount(const QString &name, const QString &id);
@@ -89,9 +90,12 @@ public Q_SLOTS:
 
     Q_SCRIPTABLE bool accountExists(const QString &name, const QString &id);
     Q_SCRIPTABLE bool opportunityExists(const QString &name, const QString &id);
+    Q_SCRIPTABLE QString sessionId();
 
 private:
     bool mServerNotFound;
+    SugarSession *mSession;
+    QString mNextSoapError;
     QVector<SugarAccount> mAccounts;
     QVector<SugarOpportunity> mOpportunities;
     QVector<SugarCampaign> mCampaigns;

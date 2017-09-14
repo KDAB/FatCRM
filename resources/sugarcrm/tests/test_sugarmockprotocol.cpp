@@ -225,8 +225,9 @@ private Q_SLOTS:
         KDSoapGenerated::TNS__Select_fields selectFields;
         QString errorMessage;
         //WHEN
-        protocol->listModules(selectFields,errorMessage);
+        int error = protocol->listModules(selectFields, errorMessage);
         //THEN
+        QCOMPARE(error, int(KJob::NoError));
         QStringList modules = selectFields.items();
         QCOMPARE(modules.size(), 5);
         QVERIFY(modules.contains(moduleToName(Module::Accounts)));
@@ -234,6 +235,23 @@ private Q_SLOTS:
         QVERIFY(modules.contains(moduleToName(Module::Contacts)));
         QVERIFY(modules.contains(moduleToName(Module::Documents)));
         QVERIFY(modules.contains(moduleToName(Module::Emails)));
+    }
+
+    void shouldFailToListModules()
+    {
+        //GIVEN
+        SugarSession session(nullptr);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        session.setProtocol(protocol);
+        protocol->setSession(&session);
+        KDSoapGenerated::TNS__Select_fields selectFields;
+        QString errorMessage;
+        //WHEN
+        protocol->setNextSoapError("FAIL");
+        int error = protocol->listModules(selectFields, errorMessage);
+        //THEN
+        QCOMPARE(errorMessage, QString("FAIL"));
+        QCOMPARE(error, int(SugarJob::SoapError));
     }
 };
 

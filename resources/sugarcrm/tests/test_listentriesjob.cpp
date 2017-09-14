@@ -102,19 +102,19 @@ private Q_SLOTS:
         collection.setId(1);
         SugarMockProtocol *protocol = new SugarMockProtocol;
         protocol->addData();
-        SugarSession *session = new SugarSession (nullptr);
-        protocol->setSession(session);
-        session->setProtocol(protocol);
-        session->setSessionParameters("user", "password", "hosttest");
+        SugarSession session(nullptr);
+        protocol->setSession(&session);
+        session.setProtocol(protocol);
+        session.setSessionParameters("user", "password", "hosttest");
         ModuleHandler *handler = 0;
         if (moduleName == Module::Accounts) {
-            handler = new AccountsHandler(session);
+            handler = new AccountsHandler(&session);
         } else if (moduleName == Module::Opportunities) {
-            handler = new OpportunitiesHandler(session);
+            handler = new OpportunitiesHandler(&session);
         } else if (moduleName == Module::Campaigns) {
-            handler = new CampaignsHandler(session);
+            handler = new CampaignsHandler(&session);
         }
-        ListEntriesJob *job = new ListEntriesJob(collection, session);
+        ListEntriesJob *job = new ListEntriesJob(collection, &session);
         job->setModule(handler);
         QSignalSpy spy(job, SIGNAL(totalItems(int)));
         //WHEN
@@ -124,7 +124,6 @@ private Q_SLOTS:
         const QList<QVariant> arguments = spy.at(0);
         QCOMPARE(arguments.at(0).toInt(), expectedCount);
 
-        delete session;
         delete handler;
     }
 
@@ -213,6 +212,27 @@ private Q_SLOTS:
         }
         accountId[1] = '3';
         verifyOpportunities(lItems, id, name, accountId);
+    }
+
+    void shouldReturnSoapError()
+    {
+        Akonadi::Collection collection;
+        collection.setId(1);
+        SugarMockProtocol *protocol = new SugarMockProtocol;
+        SugarSession session(nullptr);
+        protocol->setSession(&session);
+        session.setProtocol(protocol);
+        session.setSessionParameters("user", "password", "hosttest");
+        ModuleHandler *handler = new AccountsHandler(&session);
+        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        job->setModule(handler);
+        const QString errStr = "The session ID is invalid";
+        //WHEN
+        protocol->setNextSoapError(errStr);
+        QVERIFY(!job->exec());
+        // THEN
+        QCOMPARE(job->error(), int(SugarJob::SoapError));
+        QCOMPARE(job->errorString(), errStr);
     }
 };
 

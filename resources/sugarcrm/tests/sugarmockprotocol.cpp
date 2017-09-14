@@ -27,11 +27,12 @@
 #include "contactshandler.h"
 #include "listentriesscope.h"
 #include "modulename.h"
+#include "sugarsession.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include <QtDBus/QDBusConnection>
 
 SugarMockProtocol::SugarMockProtocol()
-    :mServerNotFound(false)
+    : mServerNotFound(false), mSession(nullptr)
 {
     QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMMock"),
             this,
@@ -44,7 +45,8 @@ int SugarMockProtocol::login(const QString &user, const QString &password, QStri
 {
     if (!mServerNotFound) {
         if (user == "user" && password == "password") {
-            sessionId = '1';
+            static int s_lastId = 1;
+            sessionId = QString::number(s_lastId++);
             return KJob::NoError;
         } else {
             int error = SugarJob::Errors::LoginError;
@@ -62,15 +64,24 @@ void SugarMockProtocol::logout()
 
 void SugarMockProtocol::setSession(SugarSession *session)
 {
-    Q_UNUSED(session);
+    mSession = session;
+}
+
+QString SugarMockProtocol::sessionId()
+{
+    return mSession->sessionId();
 }
 
 int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query,
                                        int &entriesCount, QString &errorMessage)
 {
+    if (!mNextSoapError.isEmpty()) {
+        errorMessage = mNextSoapError;
+        mNextSoapError.clear();
+        return SugarJob::SoapError;
+    }
     Q_UNUSED(scope);
     Q_UNUSED(query);
-    Q_UNUSED(errorMessage);
     if (moduleName == Module::Accounts) {
         entriesCount = mAccounts.size();
     } else if (moduleName == Module::Opportunities) {
@@ -173,7 +184,8 @@ int SugarMockProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
                                    const QStringList &selectedFields, EntriesListResult &entriesListResult, QString &errorMessage)
 {
     Q_UNUSED(query); Q_UNUSED(orderBy);
-    Q_UNUSED(selectedFields); Q_UNUSED(errorMessage);
+    Q_UNUSED(selectedFields);
+    Q_UNUSED(errorMessage);
 
     if (scope.offset() > 0) {
         entriesListResult.resultCount = 0;
@@ -415,7 +427,11 @@ QVector<SugarOpportunity> SugarMockProtocol::opportunities() const
 
 int SugarMockProtocol::listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage)
 {
-    Q_UNUSED(errorMessage);
+    if (!mNextSoapError.isEmpty()) {
+        errorMessage = mNextSoapError;
+        mNextSoapError.clear();
+        return SugarJob::SoapError;
+    }
     QStringList modules;
     modules << moduleToName(Module::Accounts)
             << moduleToName(Module::Opportunities)
