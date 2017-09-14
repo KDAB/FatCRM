@@ -50,7 +50,7 @@ install(TARGETS kdcrmdata ${INSTALL_TARGETS_DEFAULT_ARGS})
 ### next target
 set(akonadi_serializer_sugaraccount_PART_SRCS serializerpluginsugaraccount.cpp)
 add_library(akonadi_serializer_sugaraccount
- MODULE 
+ MODULE
   ${akonadi_serializer_sugaraccount_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaraccount
@@ -62,7 +62,7 @@ install(TARGETS akonadi_serializer_sugaraccount DESTINATION ${PLUGIN_INSTALL_DIR
 ### next target
 set(akonadi_serializer_sugaropportunity_PART_SRCS serializerpluginsugaropportunity.cpp)
 add_library(akonadi_serializer_sugaropportunity
- MODULE 
+ MODULE
   ${akonadi_serializer_sugaropportunity_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaropportunity
@@ -74,7 +74,7 @@ install(TARGETS akonadi_serializer_sugaropportunity DESTINATION ${PLUGIN_INSTALL
 ### next target
 set(akonadi_serializer_sugarlead_PART_SRCS serializerpluginsugarlead.cpp)
 add_library(akonadi_serializer_sugarlead
- MODULE 
+ MODULE
   ${akonadi_serializer_sugarlead_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarlead
@@ -86,7 +86,7 @@ install(TARGETS akonadi_serializer_sugarlead DESTINATION ${PLUGIN_INSTALL_DIR})
 ### next target
 set(akonadi_serializer_sugarcampaign_PART_SRCS serializerpluginsugarcampaign.cpp)
 add_library(akonadi_serializer_sugarcampaign
- MODULE 
+ MODULE
   ${akonadi_serializer_sugarcampaign_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarcampaign
@@ -98,7 +98,7 @@ install(TARGETS akonadi_serializer_sugarcampaign DESTINATION ${PLUGIN_INSTALL_DI
 ### next target
 set(akonadi_serializer_sugarnote_PART_SRCS serializerpluginsugarnote.cpp)
 add_library(akonadi_serializer_sugarnote
- MODULE 
+ MODULE
   ${akonadi_serializer_sugarnote_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugarnote
@@ -110,7 +110,7 @@ install(TARGETS akonadi_serializer_sugarnote DESTINATION ${PLUGIN_INSTALL_DIR})
 ### next target
 set(akonadi_serializer_sugaremail_PART_SRCS serializerpluginsugaremail.cpp)
 add_library(akonadi_serializer_sugaremail
- MODULE 
+ MODULE
   ${akonadi_serializer_sugaremail_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugaremail
@@ -121,12 +121,11 @@ install(TARGETS akonadi_serializer_sugaremail DESTINATION ${PLUGIN_INSTALL_DIR})
 
 ### next target
 set(akonadi_serializer_sugardocument_PART_SRCS serializerpluginsugardocument.cpp)
-kde4_add_plugin(akonadi_serializer_sugardocument
+add_library(akonadi_serializer_sugardocument MODULE
   ${akonadi_serializer_sugardocument_PART_SRCS}
 )
 target_link_libraries(akonadi_serializer_sugardocument
   kdcrmdata
-  ${KDE4_KDECORE_LIBS}
   ${KDEPIMLIBS_AKONADI_LIBS}
 )
 install(TARGETS akonadi_serializer_sugardocument DESTINATION ${PLUGIN_INSTALL_DIR})

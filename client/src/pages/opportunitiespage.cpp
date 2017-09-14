@@ -27,12 +27,14 @@
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
 #include "referenceddata.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include "fatcrm_client_debug.h"
+#include <KLocalizedString>
+
 #include <QStyledItemDelegate>
 
 using namespace Akonadi;

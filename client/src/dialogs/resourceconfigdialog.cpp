@@ -23,6 +23,7 @@
 #include "resourceconfigdialog.h"
 
 #include "ui_resourceconfigdialog.h"
+#include "fatcrm_client_debug.h"
 
 #include <AkonadiCore/AgentFilterProxyModel>
 #include <AkonadiCore/AgentInstance>
@@ -35,7 +36,7 @@
 #include <AkonadiWidgets/controlgui.h>
 using namespace Akonadi;
 
-#include "fatcrm_client_debug.h"
+#include <KLocalizedString>
 
 #include <QAbstractItemView>
 #include <QItemSelectionModel>

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12) # Feature: PUBLIC keyword in target_link_libraries
+cmake_minimum_required(VERSION 3.0)
 project(FatCRM)
 
 if(POLICY CMP0028)
@@ -24,6 +24,7 @@ include(ECMMarkNonGuiExecutable)
 include(CMakePackageConfigHelpers)
 include(FeatureSummary)
 include(CheckFunctionExists)
+include(GenerateExportHeader)
 
 include(KDEInstallDirs)
 include(KDECMakeSettings)
@@ -51,6 +52,10 @@ endif()
 find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5AkonadiContact CONFIG REQUIRED)
+find_package(KF5I18n CONFIG REQUIRED)
+find_package(KF5IconThemes CONFIG REQUIRED)
+find_package(KF5TextWidgets CONFIG REQUIRED)
+find_package(KF5KDELibs4Support CONFIG REQUIRED)
 
 # Version setup
 set(FATCRM_VERSION_MAJOR "1")
@@ -77,7 +82,6 @@ find_package(Boost REQUIRED)
 find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
-include(MacroLibrary)
 include(CheckIncludeFiles)
 
 # Stolen from zanshin

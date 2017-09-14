@@ -25,7 +25,10 @@
 #include "itemstreemodel.h"
 
 #include <AkonadiCore/ItemCreateJob>
+
 #include <KJobUiDelegate>
+#include <KLocalizedString>
+
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>

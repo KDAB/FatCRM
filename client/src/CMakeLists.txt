@@ -78,7 +78,7 @@ set(app_SRCS
 )
 ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
 
-ki18n_wrap_ui(app_SRCS
+qt5_wrap_ui(app_SRCS
   app/mainwindow.ui
   pages/page.ui
   pages/reportpage.ui

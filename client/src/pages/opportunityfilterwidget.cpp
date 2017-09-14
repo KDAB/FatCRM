@@ -25,10 +25,12 @@
 #include "clientsettings.h"
 #include "opportunityfilterproxymodel.h"
 #include "opportunityfiltersettings.h"
+#include "fatcrm_client_debug.h"
+
+#include <KLocalizedString>
 
 #include <QCalendarWidget>
 #include <QDate>
-#include "fatcrm_client_debug.h"
 
 enum MaxNextStepDate {
     NoDate,

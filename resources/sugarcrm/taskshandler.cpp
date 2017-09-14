@@ -27,15 +27,16 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "sugarjob.h"
 
+#include <kcalcore_version.h>
 #include <KCalCore/Todo>
 using namespace KCalCore;
 
 #include <AkonadiCore/abstractdifferencesreporter.h>
 #include <AkonadiCore/Collection>
 
-#include <KDateTime>
 #include <KLocalizedString>
 
+#include <QDateTime>
 #include <QHash>
 
 static QString getId( const KCalCore::Todo &todo )
@@ -55,7 +56,11 @@ static QString getDateEntered( const KCalCore::Todo &todo )
 
 static void setDateEntered( const QString &value, KCalCore::Todo &todo )
 {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 41)
+    todo.setCreated( QDateTime::fromString(value, QStringLiteral("%Y-%m-%d %H:%M:%S")) );
+#else
     todo.setCreated( KDateTime::fromString(value, QStringLiteral("%Y-%m-%d %H:%M:%S")) );
+#endif
 }
 
 static QString getDateModified( const KCalCore::Todo &todo )
@@ -184,13 +189,21 @@ static void setDateDueFlag( const QString &value, KCalCore::Todo &todo )
 
 static QString getDateDue( const KCalCore::Todo &todo )
 {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 41)
+    QDateTime dateDue = todo.dtDue();
+#else
     KDateTime dateDue = todo.dtDue();
+#endif
     return dateDue.toString( QStringLiteral("%Y-%m-%d %H:%M:%S") );
 }
 
 static void setDateDue( const QString &value, KCalCore::Todo &todo )
 {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 41)
+    todo.setDtDue( QDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S") ) );
+#else
     todo.setDtDue( KDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S"), nullptr, true ) );
+#endif
 }
 
 static QString getDateStartFlag( const KCalCore::Todo &todo )
@@ -205,13 +218,21 @@ static void setDateStartFlag( const QString &value, KCalCore::Todo &todo )
 
 static QString getDateStart( const KCalCore::Todo &todo )
 {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 41)
+    QDateTime dateStart = todo.dtStart();
+#else
     KDateTime dateStart = todo.dtStart();
+#endif
     return dateStart.toString( QStringLiteral("%Y-%m-%d %H:%M:%S") );
 }
 
 static void setDateStart( const QString &value, KCalCore::Todo &todo )
 {
+#if KCALCORE_VERSION >= QT_VERSION_CHECK(5, 6, 41)
+    todo.setDtStart( QDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S") ) );
+#else
     todo.setDtStart( KDateTime::fromString( value, QStringLiteral("%Y-%m-%d %H:%M:%S"), nullptr, true ) );
+#endif
 }
 
 static QString getParentType( const KCalCore::Todo &todo )

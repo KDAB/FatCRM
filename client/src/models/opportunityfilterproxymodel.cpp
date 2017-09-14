@@ -32,6 +32,8 @@
 
 #include <AkonadiCore/EntityTreeModel>
 
+#include <KLocalizedString>
+
 #include <QDate>
 
 using namespace Akonadi;
@@ -180,4 +182,3 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
     }
     return FilterProxyModel::lessThan(left, right);
 }
-

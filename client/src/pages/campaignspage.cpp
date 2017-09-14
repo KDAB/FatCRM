@@ -29,6 +29,8 @@
 
 #include "kdcrmdata/sugarcampaign.h"
 
+#include <KLocalizedString>
+
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)

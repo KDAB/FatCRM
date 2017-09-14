@@ -27,10 +27,11 @@
 #include "leaddataextractor.h"
 #include "referenceddata.h"
 #include "sugaropportunity.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugarlead.h"
 
-#include "fatcrm_client_debug.h"
+#include <KLocalizedString>
 
 using namespace Akonadi;
 

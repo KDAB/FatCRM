@@ -29,6 +29,8 @@
 
 #include <AkonadiCore/ItemDeleteJob>
 #include <AkonadiCore/ItemModifyJob>
+
+#include <KLocalizedString>
 #include <KMimeType>
 #include <KRun>
 

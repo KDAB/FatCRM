@@ -41,6 +41,7 @@
 #include "referenceddata.h"
 #include "reportpage.h"
 #include "resourceconfigdialog.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
@@ -53,6 +54,8 @@
 #include <AkonadiCore/ServerManager>
 using namespace Akonadi;
 
+#include <KLocalizedString>
+
 #include <QCheckBox>
 #include <QCloseEvent>
 #include <QComboBox>
@@ -63,8 +66,6 @@ using namespace Akonadi;
 #include <QProgressBar>
 #include <QTimer>
 #include <QToolBar>
-
-#include "fatcrm_client_debug.h"
 
 MainWindow::MainWindow(bool displayOverlay)
     : QMainWindow(),

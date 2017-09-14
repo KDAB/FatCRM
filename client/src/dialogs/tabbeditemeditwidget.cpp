@@ -31,6 +31,8 @@
 
 #include <KContacts/Addressee>
 
+#include <KLocalizedString>
+
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QStringListModel>

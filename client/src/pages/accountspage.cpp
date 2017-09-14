@@ -25,10 +25,11 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "referenceddata.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include "fatcrm_client_debug.h"
+#include <KLocalizedString>
 
 using namespace Akonadi;
 

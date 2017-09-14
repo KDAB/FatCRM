@@ -26,6 +26,7 @@
 #include "ui_simpleitemeditwidget.h"
 #include "clientsettings.h"
 #include "referenceddatamodel.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -36,13 +37,12 @@
 #include <AkonadiCore/ItemModifyJob>
 
 #include <KEmailAddress>
+#include <KLocalizedString>
 
 #include <QMessageBox>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QVBoxLayout>
-
-#include "fatcrm_client_debug.h"
 
 using namespace Akonadi;
 

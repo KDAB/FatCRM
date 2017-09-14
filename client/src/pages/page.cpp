@@ -38,6 +38,7 @@
 #include "sugarresourcesettings.h"
 #include "tabbeditemeditwidget.h"
 #include "collectionmanager.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaraccount.h"
@@ -59,12 +60,12 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
-#include "fatcrm_client_debug.h"
-#include <QInputDialog>
+#include <KLocalizedString>
 
 #include <QClipboard>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QShortcut>

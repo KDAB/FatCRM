@@ -34,6 +34,8 @@
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 
+#include <KLocalizedString>
+
 #include <QDesktopServices>
 
 AccountDetails::AccountDetails(QWidget *parent)

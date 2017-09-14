@@ -24,12 +24,13 @@
 #include "editlistdialog.h"
 #include "clientsettings.h"
 #include "ui_configurationdialog.h"
+#include "fatcrm_client_debug.h"
+
+#include <KLocalizedString>
 
 #include <QInputDialog>
 #include <QListView>
 #include <QModelIndex>
-
-#include "fatcrm_client_debug.h"
 
 ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
     QDialog(parent),

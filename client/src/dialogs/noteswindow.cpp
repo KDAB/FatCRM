@@ -27,12 +27,14 @@
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+
+#include <KLocalizedString>
+
 #include <QCloseEvent>
 #include <QMessageBox>
 #include <QScrollBar>
-
-#include <AkonadiCore/Item>
-#include <AkonadiCore/ItemCreateJob>
 
 NotesWindow::NotesWindow(QWidget *parent) :
     QWidget(parent),

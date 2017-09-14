@@ -25,8 +25,10 @@
 #include "accountrepository.h"
 #include "fatcrm_client_debug.h"
 
-#include <KJobUiDelegate>
 #include <AkonadiCore/ItemCreateJob>
+
+#include <KJobUiDelegate>
+#include <KLocalizedString>
 
 #include <QGroupBox>
 #include <QLabel>

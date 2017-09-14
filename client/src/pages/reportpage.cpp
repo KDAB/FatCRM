@@ -31,6 +31,8 @@
 #include <AkonadiCore/EntityTreeModel>
 #include <AkonadiCore/Item>
 
+#include <KLocalizedString>
+
 #include <QDate>
 #include <QFile>
 #include <QFileDialog>

@@ -29,6 +29,8 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
+#include <KLocalizedString>
+
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)

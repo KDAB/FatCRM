@@ -38,6 +38,8 @@
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
+#include <KLocalizedString>
+
 #include <QCompleter>
 #include <QDesktopServices>
 #include <QMessageBox>
