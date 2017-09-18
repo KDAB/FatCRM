@@ -1,0 +1,4 @@
+<config>
+  <datahome>xdglocal</datahome>
+  <agent synchronize="true">akonadi_sugarcrm_resource</agent>
+</config>
