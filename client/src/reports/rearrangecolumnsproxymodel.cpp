@@ -90,6 +90,15 @@ QModelIndex RearrangeColumnsProxyModel::mapToSource(const QModelIndex &proxyInde
     return QIdentityProxyModel::mapToSource(fakeIndex);
 }
 
+QVariant RearrangeColumnsProxyModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    if (orientation == Qt::Horizontal) {
+        const int sourceSection = sourceColumnForProxyColumn(section);
+        return QIdentityProxyModel::headerData(sourceSection, orientation, role);
+    }
+    return QIdentityProxyModel::headerData(section, orientation, role);
+}
+
 int RearrangeColumnsProxyModel::proxyColumnForSourceColumn(int sourceColumn) const
 {
     // ### for performance we could add a second QVector with index=logical_source_column value=desired_pos_in_proxy.

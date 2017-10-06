@@ -58,6 +58,8 @@ public:
     QModelIndex mapFromSource(const QModelIndex & sourceIndex) const override;
     QModelIndex mapToSource(const QModelIndex & proxyIndex) const override;
 
+    QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
+
 private:
     int proxyColumnForSourceColumn(int sourceColumn) const;
     int sourceColumnForProxyColumn(int proxyColumn) const;
