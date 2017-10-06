@@ -29,6 +29,7 @@
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QTableView>
 
 ItemsTreeView::ItemsTreeView(QWidget *parent) :
     Akonadi::EntityTreeView(parent),
@@ -37,6 +38,13 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     setRootIsDecorated(false);
     setContextMenuPolicy(Qt::CustomContextMenu);
     setWordWrap(false);
+
+    // This is an awful awful workaround for the first column not being movable
+    // due to the broken fix for https://bugreports.qt.io/browse/QTBUG-332.
+    QTableView unused;
+    unused.setHorizontalHeader(header());
+    header()->setParent(this);
+    unused.setHorizontalHeader(new QHeaderView(Qt::Horizontal));
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(header(), SIGNAL(customContextMenuRequested(QPoint)),
