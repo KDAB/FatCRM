@@ -130,7 +130,7 @@ private:
 
     enum ItemEditWidgetType { Simple, TabWidget };
     ItemEditWidgetBase *createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget = false);
-    ItemEditWidgetBase *openedWidgetForItem(const Akonadi::Item &item);
+    ItemEditWidgetBase *openedWidgetForItem(Akonadi::Item::Id id);
 
 private:
     QString mMimeType;

@@ -125,18 +125,18 @@ int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsTy
     QStringList list;
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = model->index(i, 0);
-        const Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
+        const Akonadi::Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (type == Opportunity) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
             if (opportunity.accountId() == accountId) {
                 list << opportunity.name();
-                mItemsMap.insert(opportunity.name(), qMakePair(item, Opportunity));
+                mItemsMap.insert(opportunity.name(), qMakePair(index, Opportunity));
             }
         } else if (type == Contact) {
             const KABC::Addressee addressee = item.payload<KABC::Addressee>();
             if (addressee.custom("FATCRM", "X-AccountId")  == accountId) {
                 list << addressee.assembledName();
-                mItemsMap.insert(addressee.assembledName(), qMakePair(item, Contact));
+                mItemsMap.insert(addressee.assembledName(), qMakePair(index, Contact));
             }
         } else {
             Q_ASSERT(0);
@@ -157,7 +157,12 @@ int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsTy
 
 void TabbedItemEditWidget::openWidget(const QString &itemKey)
 {
-    emit openWidgetForItem(mItemsMap.value(itemKey).first, mItemsMap.value(itemKey).second);
+    DetailsType type = mItemsMap.value(itemKey).second;
+    ItemsTreeModel *model = ModelRepository::instance()->model(type);
+    // Look up the item from the model again, in case it changed since we added it to the map
+    const QModelIndex index = mItemsMap.value(itemKey).first;
+    const Akonadi::Item item = model->data(index, EntityTreeModel::ItemRole).value<Item>();
+    emit openWidgetForItem(item, type);
 }
 
 void TabbedItemEditWidget::dataChanged()

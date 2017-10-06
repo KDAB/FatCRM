@@ -48,7 +48,6 @@ void AssociatedDataWidget::hideOpportunityGui()
 void AssociatedDataWidget::setContactsModel(QStringListModel *model)
 {
     mUi->contactsListView->setModel(model);
-
 }
 
 void AssociatedDataWidget::setOpportunitiesModel(QStringListModel *model)

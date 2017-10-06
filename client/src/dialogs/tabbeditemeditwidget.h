@@ -59,7 +59,7 @@ private:
 
     SimpleItemEditWidget * mItemEditWidget;
     DetailsType mType;
-    QMap<QString, QPair<Akonadi::Item, DetailsType> > mItemsMap;
+    QMap<QString, QPair<QPersistentModelIndex, DetailsType> > mItemsMap;
     Ui::TabbedItemEditWidget *mUi;
 };
 

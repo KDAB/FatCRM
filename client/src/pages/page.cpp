@@ -133,7 +133,7 @@ void Page::openWidget(const QString &id)
 
 void Page::openWidgetForItem(const Item &item, DetailsType itemType)
 {
-    ItemEditWidgetBase *widget = openedWidgetForItem(item);
+    ItemEditWidgetBase *widget = openedWidgetForItem(item.id());
 
     if (!widget) {
         widget = createItemEditWidget(item, itemType);
@@ -662,11 +662,11 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     }
 }
 
-ItemEditWidgetBase *Page::openedWidgetForItem(const Item &item)
+ItemEditWidgetBase *Page::openedWidgetForItem(Item::Id id)
 {
     QSet<ItemEditWidgetBase*> itemEditWidgets = OpenedWidgetsRepository::instance()->openedWidgets();
     auto it = std::find_if(itemEditWidgets.constBegin(), itemEditWidgets.constEnd(),
-                           [&](ItemEditWidgetBase *widget) { return item.id() == widget->item().id(); });
+                           [&](ItemEditWidgetBase *widget) { return id == widget->item().id(); });
     if (it == itemEditWidgets.constEnd()) {
         return nullptr;
     }

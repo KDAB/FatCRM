@@ -109,6 +109,9 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
     const Akonadi::Item item =
         index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
+    if (!item.hasPayload<SugarOpportunity>()) {
+        qWarning() << "item" << item.id() << item.remoteId() << item.mimeType() << "is not a SugarOpportunity";
+    }
     Q_ASSERT(item.hasPayload<SugarOpportunity>());
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
