@@ -34,11 +34,13 @@ add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 target_link_libraries(akonadi_salesforce_resource
   ${KDSoap_LIBRARIES}
   KF5::Contacts
-  KF5::KDELibs4Support
   Qt5::DBus
   Qt5::Core
   KF5::AkonadiCore
   KF5::AkonadiAgentBase
+  KF5::I18n
+  KF5::KIOWidgets
+  KF5::WindowSystem
 )
 
 install(TARGETS akonadi_salesforce_resource ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -26,7 +26,7 @@
 #include "sugarcrmresource.h"
 
 #include <KCodecs>
-#include <KTempDir>
+#include <QTemporaryDir>
 
 #include <QFile>
 
@@ -47,10 +47,10 @@ QString ItemTransferInterface::downloadDocumentRevision(const QString &documentR
     const KDSoapGenerated::TNS__Return_document_revision result = soap->get_document_revision(sessionId, documentRevisionId);
     const KDSoapGenerated::TNS__Document_revision revision = result.document_revision();
 
-    KTempDir tempDir;
+    QTemporaryDir tempDir;
     tempDir.setAutoRemove(false);
 
-    const QString fullPath(tempDir.name() + revision.filename());
+    const QString fullPath(tempDir.path() + QLatin1Char('/') + revision.filename());
     QFile file(fullPath);
     if (!file.open(QIODevice::WriteOnly)) {
         tempDir.setAutoRemove(true);

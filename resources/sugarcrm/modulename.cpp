@@ -1,7 +1,8 @@
+#include "modulename.h"
+
+#include <QDebug>
 #include <QString>
 #include <QMap>
-#include <KDebug>
-#include "modulename.h"
 
 struct ModuleEntry {
     const char* name;

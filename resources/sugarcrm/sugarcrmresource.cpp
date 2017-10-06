@@ -61,8 +61,8 @@
 #include <KContacts/Addressee>
 
 #include <QDebug>
-#include <KLocale>
 
+#include <KLocalizedString>
 #include <KWindowSystem>
 
 #include <QtDBus/QDBusConnection>
