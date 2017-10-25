@@ -17,8 +17,9 @@ include_directories(
 
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
-set(KDEPIMLIBS_RUN_ISOLATED_TESTS TRUE)
-set(KDEPIMLIBS_RUN_SQLITE_ISOLATED_TESTS TRUE)
+#use these variables to control the Akonadi-based tests. by default all backends are run
+#set(AKONADI_RUN_SQLITE_ISOLATED_TESTS TRUE)
+#set(AKONADI_RUN_MYSQL_ISOLATED_TESTS FALSE)
 
 #find the akonaditest that matches the version we are building with
 set(CMAKE_PROGRAM_PATH "${AKONADI_INSTALL_DIR}/bin")
