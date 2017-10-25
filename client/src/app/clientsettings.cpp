@@ -137,6 +137,16 @@ ClientSettings::GroupFilters ClientSettings::countryFilters() const
     return ret;
 }
 
+QString ClientSettings::defaultResourceId() const
+{
+    return m_settings->value(QStringLiteral("defaultResourceId"), QString()).toString();
+}
+
+void ClientSettings::setDefaultResourceId(const QString &id)
+{
+    m_settings->setValue(QStringLiteral("defaultResourceId"), id);
+}
+
 QString ClientSettings::GroupFilters::toString() const
 {
     QString ret;

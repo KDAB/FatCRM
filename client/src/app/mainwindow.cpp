@@ -257,6 +257,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
     }
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
+        ClientSettings::self()->setDefaultResourceId(agent.identifier());
         const QByteArray identifier = agent.identifier().toLatin1();
         emit resourceSelected(identifier);
         slotResourceOnline(agent, agent.isOnline());
@@ -680,6 +681,18 @@ void MainWindow::initialResourceSelection()
         mLoadingOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
         showResourceDialog();
     } else {
+        QString defaultResourceId = ClientSettings::self()->defaultResourceId();
+        if (!defaultResourceId.isEmpty()) {
+            for (int index = 0; index < mResourceSelector->count(); ++index) {
+                const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
+                if (agent.isValid() && (agent.identifier() == defaultResourceId)) {
+                    slotResourceSelectionChanged(index);
+                    mResourceDialog->hide();
+                    return;
+                }
+            }
+        }
+
         mResourceSelector->setCurrentIndex(-1);
         mLoadingOverlay->setMessage(i18n("Choose a SugarCRM resource."));
         showResourceDialog();
