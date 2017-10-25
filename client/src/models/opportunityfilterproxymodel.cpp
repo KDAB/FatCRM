@@ -173,7 +173,7 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
         return false;
     }
 
-    // fallback the values are equal
+    // fallback if the values are equal
     const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
     const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
     const int newSortColumn = (sortColumn() == nextStepDateColumn ?
