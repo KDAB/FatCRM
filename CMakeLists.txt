@@ -57,6 +57,29 @@ find_package(KF5IconThemes CONFIG REQUIRED)
 find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5KDELibs4Support CONFIG REQUIRED)
 
+find_package(PhoneNumber)
+set_package_properties(PhoneNumber PROPERTIES
+  URL "https://github.com/googlei18n/libphonenumber"
+  DESCRIPTION "Google's common Java, C++ and JavaScript library for parsing, formatting, and validating international phone numbers."
+  TYPE OPTIONAL
+  PURPOSE "Required to parse phone numbers and extract coutry names"
+)
+
+find_package(ICU COMPONENTS uc)
+set_package_properties(ICU PROPERTIES
+  URL "http://site.icu-project.org/"
+  DESCRIPTION "ICU is a mature, widely used set of C/C++ and Java libraries providing Unicode and Globalization support for software applications."
+  TYPE OPTIONAL
+  PURPOSE "Required to localize country names"
+)
+
+if(PhoneNumber_FOUND AND ICU_FOUND)
+    set(USE_PHONENUMBER 1)
+else()
+    set(USE_PHONENUMBER 0)
+endif()
+configure_file(config-phonenumber.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-phonenumber.h)
+
 # Version setup
 set(FATCRM_VERSION_MAJOR "1")
 set(FATCRM_VERSION_MINOR "3")
