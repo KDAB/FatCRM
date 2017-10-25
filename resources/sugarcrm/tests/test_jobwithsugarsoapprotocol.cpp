@@ -131,7 +131,7 @@ private Q_SLOTS:
         AccountsHandler handler(&mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarAccount accountUpdate = job.item().payload<SugarAccount>();
         QCOMPARE(accountUpdate.name(), QString("updateAccount"));
@@ -146,7 +146,7 @@ private Q_SLOTS:
         item.setRemoteId(mNewAccount.id());
         DeleteEntryJob job(item, &mSession, Module::Accounts);
         //WHEN
-        job.exec(); // Triggers a soap error but the account is removed, the fetch after shows that.
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
     }
 
     void shouldNotFetchAccount()
@@ -159,7 +159,7 @@ private Q_SLOTS:
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarAccount accountFind = job.item().payload<SugarAccount>();
         QCOMPARE(accountFind.id(), mNewAccount.id());
@@ -178,7 +178,7 @@ private Q_SLOTS:
         OpportunitiesHandler handler(&mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         mNewOpp = job.item().payload<SugarOpportunity>();
         mRemoteRevision = job.item().remoteRevision();
     }
@@ -193,7 +193,7 @@ private Q_SLOTS:
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarOpportunity oppFind = job.item().payload<SugarOpportunity>();
         QCOMPARE(oppFind.id(), mNewOpp.id());
@@ -215,7 +215,7 @@ private Q_SLOTS:
         OpportunitiesHandler handler(&mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarOpportunity oppUpdate = job.item().payload<SugarOpportunity>();
         QCOMPARE(oppUpdate.name(), QString("updateOpportunity"));
@@ -230,7 +230,7 @@ private Q_SLOTS:
         item.setRemoteId(mNewOpp.id());
         DeleteEntryJob job(item, &mSession, Module::Opportunities);
         //WHEN
-        job.exec(); // Triggers a soap error but the opportunity is removed, the fetch after shows that.
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
     }
 
     void shouldNotFetchOpportunity()
@@ -243,7 +243,7 @@ private Q_SLOTS:
         FetchEntryJob job(item, &mSession);
         job.setModule(&handler);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         SugarOpportunity oppFind = job.item().payload<SugarOpportunity>();
         QCOMPARE(oppFind.id(), mNewOpp.id());
@@ -255,7 +255,7 @@ private Q_SLOTS:
         //GIVEN
         ListModulesJob job(&mSession);
         //WHEN
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
         QVERIFY(job.modules().contains(moduleToName(Module::Accounts)));
         QVERIFY(job.modules().contains(moduleToName(Module::Opportunities)));
