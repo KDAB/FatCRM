@@ -183,5 +183,21 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
             return leftDt < rightDt;
         }
     }
-    return FilterProxyModel::lessThan(left, right);
+
+    if (FilterProxyModel::lessThan(left, right)) {
+        return true;
+    } else {
+        QVariant l = (left.model() ? left.model()->data(left, sortRole()) : QVariant());
+        QVariant r = (right.model() ? right.model()->data(right, sortRole()) : QVariant());
+
+        // if itens are equal sort by creation date
+        if (l == r) {
+            const int lastModifiedDateColumn = columns.indexOf(ItemsTreeModel::CreationDate);
+            QDate leftDt = left.sibling(left.row(), lastModifiedDateColumn).data(sortRole()).toDate();
+            QDate rightDt = right.sibling(right.row(), lastModifiedDateColumn).data(sortRole()).toDate();
+            return leftDt < rightDt;
+        } else {
+            return false;
+        }
+    }
 }
