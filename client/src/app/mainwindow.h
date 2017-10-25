@@ -115,6 +115,7 @@ private:
     void initialLoadingDone();
     void processPendingImports();
     void showResourceDialog();
+    int resourceIndexFor(const QString &id) const;
 
     QList<Page *> mPages;
 

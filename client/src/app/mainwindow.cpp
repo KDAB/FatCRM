@@ -686,16 +686,12 @@ void MainWindow::initialResourceSelection()
         mLoadingOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
         showResourceDialog();
     } else {
-        QString defaultResourceId = ClientSettings::self()->defaultResourceId();
-        if (!defaultResourceId.isEmpty()) {
-            for (int index = 0; index < mResourceSelector->count(); ++index) {
-                const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
-                if (agent.isValid() && (agent.identifier() == defaultResourceId)) {
-                    slotResourceSelectionChanged(index);
-                    mResourceDialog->hide();
-                    return;
-                }
-            }
+        const int resourceIndex = resourceIndexFor(ClientSettings::self()->defaultResourceId());
+        if (resourceIndex != -1) {
+            mResourceSelector->setCurrentIndex(resourceIndex);
+            slotResourceSelectionChanged(resourceIndex);
+            mResourceDialog->hide();
+            return;
         }
 
         mResourceSelector->setCurrentIndex(-1);
@@ -710,6 +706,21 @@ void MainWindow::showResourceDialog()
     // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
     // This is part of the "mResourceDialog has no parent" workaround
     QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
+}
+
+int MainWindow::resourceIndexFor(const QString &id) const
+{
+    if (id.isEmpty())
+        return -1;
+
+    for (int index = 0; index < mResourceSelector->count(); ++index) {
+        const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
+        if (agent.isValid() && (agent.identifier() == id)) {
+            return index;
+        }
+    }
+
+    return -1;
 }
 
 Page *MainWindow::pageForType(DetailsType type) const
