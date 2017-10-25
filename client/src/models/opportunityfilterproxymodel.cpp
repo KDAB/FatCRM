@@ -166,22 +166,21 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
 bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
+    if (FilterProxyModel::lessThan(left, right)) {
+        return true;
+    }
+    if (FilterProxyModel::lessThan(right, left)) {
+        return false;
+    }
+
+    // fallback if the values are equal
     const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
     const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
-    if (sortColumn() == nextStepDateColumn) {
-        QVariant l = (left.model() ? left.model()->data(left, sortRole()) : QVariant());
-        QVariant r = (right.model() ? right.model()->data(right, sortRole()) : QVariant());
-        if (l.userType() == QVariant::Date) {
-            QDate leftDt = l.toDate();
-            QDate rightDt = r.toDate();
-            if (leftDt == rightDt) {
-                // compare last modified dates
-                const int lastModifiedDateColumn = columns.indexOf(ItemsTreeModel::LastModifiedDate);
-                leftDt = left.sibling(left.row(), lastModifiedDateColumn).data(sortRole()).toDate();
-                rightDt = right.sibling(right.row(), lastModifiedDateColumn).data(sortRole()).toDate();
-            }
-            return leftDt < rightDt;
-        }
-    }
-    return FilterProxyModel::lessThan(left, right);
+    const int newSortColumn = (sortColumn() == nextStepDateColumn ?
+                             columns.indexOf(ItemsTreeModel::LastModifiedDate) :
+                             columns.indexOf(ItemsTreeModel::CreationDate));
+
+    const QDate leftDt = left.sibling(left.row(), newSortColumn).data(sortRole()).toDate();
+    const QDate rightDt = right.sibling(right.row(), newSortColumn).data(sortRole()).toDate();
+    return leftDt < rightDt;
 }
