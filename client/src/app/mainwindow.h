@@ -116,7 +116,7 @@ private:
     void processPendingImports();
     void showResourceDialog();
     int resourceIndexFor(const QString &id) const;
-    void raiseWidget(QWidget *widget);
+    void raiseMainWindowAndDialog(QWidget *dialog);
 
     QList<Page *> mPages;
 
