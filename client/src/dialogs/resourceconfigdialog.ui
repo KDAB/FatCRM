@@ -24,7 +24,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Select the resource that should be used on startup</string>
+      <string>Select the CRM account that should be used on startup</string>
      </property>
     </widget>
    </item>
