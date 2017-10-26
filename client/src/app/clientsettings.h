@@ -86,6 +86,9 @@ public:
     void setCountryFilters(const GroupFilters &filters);
     GroupFilters countryFilters() const;
 
+    void setDefaultResourceId(const QString &id);
+    QString defaultResourceId() const;
+
     ClientSettings();
     ~ClientSettings();
 

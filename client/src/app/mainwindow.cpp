@@ -134,7 +134,7 @@ void MainWindow::slotDelayedInit()
     mResourceDialog = new ResourceConfigDialog;
 
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
-            this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
+            this, SLOT(slotDialogResourceSelected(Akonadi::AgentInstance)));
 
     connect(mCollectionManager, SIGNAL(collectionResult(QString,Akonadi::Collection)),
             this, SLOT(slotCollectionResult(QString,Akonadi::Collection)));
@@ -287,6 +287,12 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
             return;
         }
     }
+}
+
+void MainWindow::slotDialogResourceSelected(const AgentInstance &resource)
+{
+    ClientSettings::self()->setDefaultResourceId(resource.identifier());
+    slotResourceSelected(resource);
 }
 
 void MainWindow::slotServerStarted()
@@ -680,6 +686,14 @@ void MainWindow::initialResourceSelection()
         mLoadingOverlay->setMessage(i18n("Configure a SugarCRM resource in order to use FatCRM."));
         showResourceDialog();
     } else {
+        const int resourceIndex = resourceIndexFor(ClientSettings::self()->defaultResourceId());
+        if (resourceIndex != -1) {
+            mResourceSelector->setCurrentIndex(resourceIndex);
+            slotResourceSelectionChanged(resourceIndex);
+            mResourceDialog->hide();
+            return;
+        }
+
         mResourceSelector->setCurrentIndex(-1);
         mLoadingOverlay->setMessage(i18n("Choose a SugarCRM resource."));
         showResourceDialog();
@@ -692,6 +706,21 @@ void MainWindow::showResourceDialog()
     // delay mResourceDialog->raise() so it happens after MainWindow::show() (from main.cpp)
     // This is part of the "mResourceDialog has no parent" workaround
     QMetaObject::invokeMethod(mResourceDialog, "raise", Qt::QueuedConnection);
+}
+
+int MainWindow::resourceIndexFor(const QString &id) const
+{
+    if (id.isEmpty())
+        return -1;
+
+    for (int index = 0; index < mResourceSelector->count(); ++index) {
+        const AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
+        if (agent.isValid() && (agent.identifier() == id)) {
+            return index;
+        }
+    }
+
+    return -1;
 }
 
 Page *MainWindow::pageForType(DetailsType type) const
