@@ -58,12 +58,14 @@ find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5KDELibs4Support CONFIG REQUIRED)
 
 # Version setup
-set(FATCRM_VERSION_MAJOR "1")
-set(FATCRM_VERSION_MINOR "3")
-set(FATCRM_VERSION_PATCH "2")
+# 1.x was Qt4/kdelisbs4-based
+# 2.x is Qt5/KF5-based
+set(FATCRM_VERSION_MAJOR "2")
+set(FATCRM_VERSION_MINOR "0")
+set(FATCRM_VERSION_PATCH "0")
 set(FATCRM_VERSION "${FATCRM_VERSION_MAJOR}.${FATCRM_VERSION_MINOR}.${FATCRM_VERSION_PATCH}")
 set(FATCRM_VERSION_STRING "${FATCRM_VERSION}")
-set(FATCRM_SOVERSION "0.3.0") # for libkdcrmdata
+set(FATCRM_SOVERSION "1.0.0") # for libkdcrmdata
 
 include(GetGitRevisionDescription)
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
