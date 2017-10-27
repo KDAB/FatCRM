@@ -78,9 +78,6 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/config-fatcrm-version.h
 )
 
-# search packages used by KDE
-find_package(Boost REQUIRED)
-
 find_package(Xsltproc REQUIRED)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
@@ -122,9 +119,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   if(CMAKE_SYSTEM_NAME MATCHES Linux OR CMAKE_SYSTEM_NAME STREQUAL GNU)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_XOPEN_SOURCE=500 -D_DEFAULT_SOURCE -D_GNU_SOURCE")
   endif()
-  if(APPLE)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undef") #quiet lots of warnings in Boost
-  endif()
   if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND Qt5Core_VERSION VERSION_LESS 5.5)
     # disable warnings about inconsistent usage of 'override' specifier for Qt <5.5
     # only starting with 5.5 Qt started to use 'override' throughout the code base
@@ -134,10 +128,6 @@ endif()
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Qunused-arguments")
 endif()
-
-include_directories(
-  ${Boost_INCLUDE_DIR}
-)
 
 add_subdirectory(kdcrmdata)
 add_subdirectory(client)
