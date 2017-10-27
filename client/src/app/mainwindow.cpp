@@ -656,6 +656,7 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
         connect(importWizard, SIGNAL(openFutureContact(Akonadi::Item::Id)),
                 mContactsPage, SLOT(slotOpenFutureContact(Akonadi::Item::Id)));
         importWizard->show();
+        raiseMainWindowAndDialog(importWizard);
     } else {
         QMessageBox::warning(this, i18nc("@title:window", "Failed to import CSV file"),
                              i18n("Error importing %1", filePath));
@@ -721,6 +722,15 @@ int MainWindow::resourceIndexFor(const QString &id) const
     }
 
     return -1;
+}
+
+void MainWindow::raiseMainWindowAndDialog(QWidget *dialog)
+{
+    setWindowState(windowState() & ~Qt::WindowMinimized);
+    raise();
+
+    dialog->raise();
+    dialog->activateWindow();
 }
 
 Page *MainWindow::pageForType(DetailsType type) const
