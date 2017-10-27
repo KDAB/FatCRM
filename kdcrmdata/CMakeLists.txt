@@ -126,7 +126,7 @@ add_library(akonadi_serializer_sugardocument MODULE
 )
 target_link_libraries(akonadi_serializer_sugardocument
   kdcrmdata
-  ${KDEPIMLIBS_AKONADI_LIBS}
+  KF5::AkonadiCore
 )
 install(TARGETS akonadi_serializer_sugardocument DESTINATION ${PLUGIN_INSTALL_DIR})
 
