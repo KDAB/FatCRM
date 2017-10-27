@@ -39,13 +39,13 @@ public:
 
     QStringList supportedFields() const override;
 
-    virtual void setDescriptionResult(const KDSoapGenerated::TNS__DescribeSObjectResult &description) override;
+    void setDescriptionResult(const KDSoapGenerated::TNS__DescribeSObjectResult &description) override;
 
     Akonadi::Collection collection() const override;
 
-    virtual void listEntries(const KDSoapGenerated::TNS__QueryLocator &locator, KDSoapGenerated::SforceService *soap) override;
+    void listEntries(const KDSoapGenerated::TNS__QueryLocator &locator, KDSoapGenerated::SforceService *soap) override;
 
-    virtual bool setEntry(const Akonadi::Item &item, KDSoapGenerated::SforceService *soap) override;
+    bool setEntry(const Akonadi::Item &item, KDSoapGenerated::SforceService *soap) override;
 
     virtual Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__QueryResult &queryResult,
             const Akonadi::Collection &parentCollection) override;

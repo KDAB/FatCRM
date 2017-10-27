@@ -54,11 +54,11 @@ public:
 
     void setFilter(const OpportunityFilterSettings &settings);
 
-    QString filterDescription() const Q_DECL_OVERRIDE;
+    QString filterDescription() const override;
 
 protected:
-    virtual bool filterAcceptsRow(int row, const QModelIndex &parent) const override;
-    virtual bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
+    bool filterAcceptsRow(int row, const QModelIndex &parent) const override;
+    bool lessThan(const QModelIndex &left, const QModelIndex &right) const override;
 
 private:
     class Private;

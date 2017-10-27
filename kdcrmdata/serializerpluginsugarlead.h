@@ -36,8 +36,8 @@ class SerializerPluginSugarLead : public QObject, public ItemSerializerPlugin
     Q_INTERFACES(Akonadi::ItemSerializerPlugin)
     Q_PLUGIN_METADATA(IID "org.kde.akonadi.SerializerPluginSugarLead")
 public:
-    bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version) Q_DECL_OVERRIDE;
-    void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version) Q_DECL_OVERRIDE;
+    bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version) override;
+    void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version) override;
 };
 
 }

@@ -48,7 +48,7 @@ public:
     Akonadi::Item item() const;
 
 protected:
-    void startSugarTask() Q_DECL_OVERRIDE;
+    void startSugarTask() override;
 
 private:
     class Private;

@@ -50,13 +50,13 @@ public:
 
     ~SugarJob() override;
 
-    void start() Q_DECL_OVERRIDE;
+    void start() override;
 
 public Q_SLOTS:
     void restart();
 
 protected:
-    bool doKill() Q_DECL_OVERRIDE;
+    bool doKill() override;
     virtual void startSugarTask() = 0;
 
     bool handleError(const KDSoapGenerated::TNS__Error_value &errorValue);

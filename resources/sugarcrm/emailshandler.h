@@ -38,7 +38,7 @@ public:
 
     Akonadi::Collection handlerCollection() const override;
 
-    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) Q_DECL_OVERRIDE;
+    int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString queryStringForListing() const override;
     QString orderByForListing() const override;
@@ -48,7 +48,7 @@ public:
     int expectedContentsVersion() const override;
 
     virtual bool needsExtraInformation() const override { return true; }
-    virtual void getExtraInformation(Akonadi::Item::List &items) override;
+    void getExtraInformation(Akonadi::Item::List &items) override;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
 

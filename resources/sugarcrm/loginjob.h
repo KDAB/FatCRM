@@ -35,7 +35,7 @@ public:
     ~LoginJob() override;
 
 protected:
-    void startSugarTask() Q_DECL_OVERRIDE;
+    void startSugarTask() override;
 };
 
 #endif
