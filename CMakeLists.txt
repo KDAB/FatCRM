@@ -56,6 +56,7 @@ find_package(KF5I18n CONFIG REQUIRED)
 find_package(KF5IconThemes CONFIG REQUIRED)
 find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5KDELibs4Support CONFIG REQUIRED)
+find_package(KF5WidgetsAddons CONFIG REQUIRED)
 
 # Version setup
 # 1.x was Qt4/kdelisbs4-based

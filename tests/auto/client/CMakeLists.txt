@@ -24,7 +24,7 @@ endmacro()
 
 add_fatcrm_tests(
   referenceddatatest
-  qdateeditextest
+  nullabledatecomboboxtest
   test_contactsimporter
   test_enumdefinitions
   test_accountcache

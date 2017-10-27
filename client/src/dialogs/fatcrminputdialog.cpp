@@ -21,7 +21,7 @@
 #include "fatcrminputdialog.h"
 
 #include "referenceddatamodel.h"
-#include "widgets/qdateeditex.h"
+#include "widgets/nullabledatecombobox.h"
 
 #include <QComboBox>
 #include <QDialog>
@@ -75,7 +75,7 @@ QDate FatCRMInputDialog::getDate(const QString &caption, const QString &labelTex
     QLabel *label = new QLabel(&dialog);
     label->setText(labelText);
 
-    QDateEditEx *dateEdit = new QDateEditEx(&dialog);
+    NullableDateComboBox *dateEdit = new NullableDateComboBox(&dialog);
     dateEdit->setCalendarPopup(true);
     dateEdit->setDate(value);
 
