@@ -78,7 +78,7 @@ configure_file(
   ${CMAKE_CURRENT_BINARY_DIR}/config-fatcrm-version.h
 )
 
-find_package(Xsltproc REQUIRED)
+find_package(Xsltproc)
 set_package_properties(Xsltproc PROPERTIES DESCRIPTION "XSLT processor from libxslt" TYPE REQUIRED PURPOSE "Required to generate D-Bus interfaces.")
 
 include(CheckIncludeFiles)
