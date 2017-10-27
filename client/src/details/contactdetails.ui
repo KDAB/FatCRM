@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1052</width>
-    <height>524</height>
+    <height>614</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -342,15 +342,9 @@
       <item row="6" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLineEdit" name="birthdate"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="clearDateButton">
-          <property name="text">
-           <string>Clear</string>
-          </property>
-          <property name="icon">
-           <iconset theme="edit-clear"/>
+         <widget class="QLineEdit" name="birthdate">
+          <property name="clearButtonEnabled">
+           <bool>true</bool>
           </property>
          </widget>
         </item>
@@ -360,7 +354,8 @@
            <string>&amp;Edit</string>
           </property>
           <property name="icon">
-           <iconset theme="edit-entry"/>
+           <iconset theme="edit-entry">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -577,7 +572,6 @@
   <tabstop>phone_other</tabstop>
   <tabstop>do_not_call</tabstop>
   <tabstop>birthdate</tabstop>
-  <tabstop>clearDateButton</tabstop>
   <tabstop>calendarButton</tabstop>
   <tabstop>assistant</tabstop>
   <tabstop>phoneAssistant</tabstop>

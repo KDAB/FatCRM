@@ -63,7 +63,6 @@ private:
 
 private Q_SLOTS:
     void slotSetBirthday();
-    void slotClearDate();
     void slotAccountActivated();
     void on_buttonOpenAccount_clicked();
     void on_viewNotesButton_clicked();

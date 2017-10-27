@@ -109,7 +109,6 @@ void ContactDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->reports_to_id, ContactRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
-    connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
     connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
             this, SLOT(slotSetBirthday()));
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
@@ -130,11 +129,6 @@ void ContactDetails::slotSetBirthday()
     mUi->birthdate->setText(KDCRMUtils::dateToString(mUi->calendarButton->calendarWidget()->selectedDate()));
     mUi->calendarButton->calendarWidget()->setSelectedDate(QDate::currentDate());
     mUi->calendarButton->calendarDialog()->close();
-}
-
-void ContactDetails::slotClearDate()
-{
-    mUi->birthdate->clear();
 }
 
 void ContactDetails::slotAccountActivated()
