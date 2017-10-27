@@ -64,7 +64,7 @@ public:
     void append(const Enum &e) { mDefinitions.push_back(e); }
     EnumDefinitions &operator<<(const Enum &e) { mDefinitions.push_back(e); return *this; }
 
-    int count() const { return mDefinitions.size(); }
+    int count() const { return static_cast<int>(mDefinitions.size()); }
     const Enum & at(int i) const { return mDefinitions.at(i); }
     int indexOf(const QString &enumName) const;
 
