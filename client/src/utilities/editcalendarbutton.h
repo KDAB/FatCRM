@@ -30,7 +30,7 @@ class EditCalendarButton : public QToolButton
 {
     Q_OBJECT
 public:
-    explicit EditCalendarButton(QWidget *parent = Q_NULLPTR);
+    explicit EditCalendarButton(QWidget *parent = nullptr);
 
     ~EditCalendarButton() override;
 

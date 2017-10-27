@@ -50,7 +50,7 @@ class LinkedItemsRepository : public QObject
 {
     Q_OBJECT
 public:
-    explicit LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent = Q_NULLPTR);
+    explicit LinkedItemsRepository(CollectionManager *collectionManager, QObject *parent = nullptr);
 
     void clear();
 

@@ -43,7 +43,7 @@ public:
         NewLogin
     };
 
-    explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = Q_NULLPTR);
+    explicit SugarSession(PasswordHandler *passwordHandler, QObject *parent = nullptr);
 
     ~SugarSession() override;
 

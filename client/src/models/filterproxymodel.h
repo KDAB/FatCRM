@@ -46,7 +46,7 @@ public:
      * @param DetailsType the type of CRM object
      * @param parent The parent object.
      */
-    explicit FilterProxyModel(DetailsType type, QObject *parent = Q_NULLPTR);
+    explicit FilterProxyModel(DetailsType type, QObject *parent = nullptr);
 
     /**
      * Destroys the filter proxy model.

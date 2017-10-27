@@ -33,7 +33,7 @@ class OpportunitiesPage : public Page
 {
     Q_OBJECT
 public:
-    explicit OpportunitiesPage(QWidget *parent = Q_NULLPTR);
+    explicit OpportunitiesPage(QWidget *parent = nullptr);
 
     ~OpportunitiesPage() override;
 

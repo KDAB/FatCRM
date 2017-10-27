@@ -40,7 +40,7 @@ class CollectionManager : public QObject
 {
     Q_OBJECT
 public:
-    explicit CollectionManager(QObject *parent = Q_NULLPTR);
+    explicit CollectionManager(QObject *parent = nullptr);
 
     /// This is what triggers the collection finding
     void setResource(const QByteArray &identifier);

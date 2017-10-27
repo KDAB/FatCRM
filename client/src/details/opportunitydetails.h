@@ -39,7 +39,7 @@ class OpportunityDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit OpportunityDetails(QWidget *parent = Q_NULLPTR);
+    explicit OpportunityDetails(QWidget *parent = nullptr);
 
     ~OpportunityDetails() override;
 

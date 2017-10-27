@@ -42,7 +42,7 @@ class CreateEntryJob : public SugarJob
     Q_OBJECT
 
 public:
-    CreateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
+    CreateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = nullptr);
 
     ~CreateEntryJob() override;
 

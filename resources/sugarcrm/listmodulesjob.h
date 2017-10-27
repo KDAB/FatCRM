@@ -37,7 +37,7 @@ class ListModulesJob : public SugarJob
     Q_OBJECT
 
 public:
-    explicit ListModulesJob(SugarSession *session, QObject *parent = Q_NULLPTR);
+    explicit ListModulesJob(SugarSession *session, QObject *parent = nullptr);
 
     ~ListModulesJob() override;
 

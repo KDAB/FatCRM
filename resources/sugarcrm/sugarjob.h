@@ -46,7 +46,7 @@ public:
         TaskError
     };
 
-    explicit SugarJob(SugarSession *session, QObject *parent = Q_NULLPTR);
+    explicit SugarJob(SugarSession *session, QObject *parent = nullptr);
 
     ~SugarJob() override;
 

@@ -46,7 +46,7 @@ public:
         ConflictError = SugarJob::TaskError + 1
     };
 
-    UpdateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = Q_NULLPTR);
+    UpdateEntryJob(const Akonadi::Item &item, SugarSession *session, QObject *parent = nullptr);
 
     ~UpdateEntryJob() override;
 

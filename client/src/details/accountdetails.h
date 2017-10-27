@@ -37,7 +37,7 @@ class AccountDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit AccountDetails(QWidget *parent = Q_NULLPTR);
+    explicit AccountDetails(QWidget *parent = nullptr);
 
     ~AccountDetails() override;
 

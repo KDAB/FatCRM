@@ -36,7 +36,7 @@ class LeadDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit LeadDetails(QWidget *parent = Q_NULLPTR);
+    explicit LeadDetails(QWidget *parent = nullptr);
 
     ~LeadDetails() override;
 

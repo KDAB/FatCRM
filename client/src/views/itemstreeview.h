@@ -30,7 +30,7 @@ class ItemsTreeView : public Akonadi::EntityTreeView
 {
     Q_OBJECT
 public:
-    explicit ItemsTreeView(QWidget *parent = Q_NULLPTR);
+    explicit ItemsTreeView(QWidget *parent = nullptr);
 
     void setViewName(const QString &name);
 

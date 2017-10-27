@@ -42,7 +42,7 @@ class ContactDetails : public Details
 {
     Q_OBJECT
 public:
-    explicit ContactDetails(QWidget *parent = Q_NULLPTR);
+    explicit ContactDetails(QWidget *parent = nullptr);
 
     ~ContactDetails() override;
 

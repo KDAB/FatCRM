@@ -43,7 +43,7 @@ class Details : public QWidget
     Q_OBJECT
 
 public:
-    explicit Details(DetailsType type, QWidget *parent = Q_NULLPTR);
+    explicit Details(DetailsType type, QWidget *parent = nullptr);
 
     ~Details() override;
 

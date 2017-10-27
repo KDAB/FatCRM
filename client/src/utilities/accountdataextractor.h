@@ -30,7 +30,7 @@ class AccountDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    explicit AccountDataExtractor(QObject *parent = Q_NULLPTR);
+    explicit AccountDataExtractor(QObject *parent = nullptr);
 
     ~AccountDataExtractor() override;
 

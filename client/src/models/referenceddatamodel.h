@@ -33,7 +33,7 @@ class FATCRMPRIVATE_EXPORT ReferencedDataModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = Q_NULLPTR);
+    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = nullptr);
 
     ~ReferencedDataModel() override;
 

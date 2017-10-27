@@ -49,7 +49,7 @@ public:
     static ItemDataExtractor *createDataExtractor(DetailsType type, QObject *parent);
 
 protected:
-    explicit ItemDataExtractor(QObject *parent = Q_NULLPTR);
+    explicit ItemDataExtractor(QObject *parent = nullptr);
 
 private:
     // Returns the part of the URL query that is type-dependent

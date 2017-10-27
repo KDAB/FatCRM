@@ -55,7 +55,7 @@ signals:
     void pendingAccountAdded(const QString &accountName, const QString &accountId);
 
 private:
-    explicit SugarAccountCache(QObject *parent = Q_NULLPTR);
+    explicit SugarAccountCache(QObject *parent = nullptr);
 
     QHash<QString /*id*/, QString /*name*/> mAccountIdForName;
 

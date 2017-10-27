@@ -34,7 +34,7 @@ class BetterPlainTextEdit : public QPlainTextEdit
 {
     Q_OBJECT
 public:
-    explicit BetterPlainTextEdit(QWidget *parent = Q_NULLPTR);
+    explicit BetterPlainTextEdit(QWidget *parent = nullptr);
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;

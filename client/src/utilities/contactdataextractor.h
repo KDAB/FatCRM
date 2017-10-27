@@ -29,7 +29,7 @@ class ContactDataExtractor : public ItemDataExtractor
 {
     Q_OBJECT
 public:
-    explicit ContactDataExtractor(QObject *parent = Q_NULLPTR);
+    explicit ContactDataExtractor(QObject *parent = nullptr);
 
     ~ContactDataExtractor() override;
 

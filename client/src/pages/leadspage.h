@@ -31,7 +31,7 @@ class LeadsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit LeadsPage(QWidget *parent = Q_NULLPTR);
+    explicit LeadsPage(QWidget *parent = nullptr);
 
     ~LeadsPage() override;
 

@@ -39,7 +39,7 @@ class RearrangeColumnsProxyModel : public QIdentityProxyModel
 {
     Q_OBJECT
 public:
-    explicit RearrangeColumnsProxyModel(QObject *parent = Q_NULLPTR);
+    explicit RearrangeColumnsProxyModel(QObject *parent = nullptr);
 
     // API
 
