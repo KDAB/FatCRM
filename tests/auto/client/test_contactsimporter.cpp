@@ -26,6 +26,8 @@
 #include <QTest>
 #include <QTemporaryFile>
 
+#include "config-phonenumber.h"
+
 class TestContactsImporter : public QObject
 {
     Q_OBJECT
@@ -124,6 +126,57 @@ private Q_SLOTS:
         QCOMPARE(account.billingAddressPostalcode(), QString::fromUtf8("84000"));
         QCOMPARE(account.billingAddressState(), QString());
     }
+
+#if USE_PHONENUMBER
+    void testImportingAccountsParsingPhoneNumber_data()
+    {
+        QTest::addColumn<QString>("csv");
+        QTest::addColumn<QLocale>("locale");
+        QTest::addColumn<QString>("expectedCountry");
+
+        // auto fill country based on phone number
+        QTest::newRow("without_country") << "David,Faure,Mr,+331454532 45,david.faure@kdab.com,KDAB,\"32, street name\",,,,,FR 12345"
+                                         << QLocale()
+                                         << QStringLiteral("France");
+
+        // Make sure that the country name is still in English even if the app Locale is not
+        QTest::newRow("with_different_locale") << "Norris,Chuck,Mr,+1 6502530000,chuck.norris@hollywood.com,,,,,,,"
+                                               << QLocale(QLocale::Portuguese, QLocale::Brazil)
+                                               << QStringLiteral("United States");
+
+        // country field has priority over phone number country
+        QTest::newRow("with_different_country") << "David,Faure,Mr,+1 6502530000,david.faure@kdab.com,KDAB,\"32, street name\",Vedène,84000,,France,FR 12345"
+                                                << QLocale()
+                                                << QStringLiteral("France");
+
+        // no country information
+        QTest::newRow("with_local_phone_number") << "David,Faure,Mr,9427030155,david.faure@kdab.com,KDAB,\"32, street name\",Vedène,84000,,,"
+                                                 << QLocale()
+                                                 << QStringLiteral();
+        QTest::newRow("without_phone_number") << "David,Faure,Mr,,david.faure@kdab.com,KDAB,\"32, street name\",Vedène,84000,,,"
+                                              << QLocale()
+                                              << QStringLiteral();
+    }
+
+    void testImportingAccountsParsingPhoneNumber()
+    {
+        QFETCH(QString, csv);
+        QFETCH(QLocale, locale);
+        QFETCH(QString, expectedCountry);
+
+        QLocale::setDefault(locale);
+        ContactsImporter importer;
+        QTemporaryFile file;
+        writeTempFile(file, csv.toUtf8());
+        QVERIFY(importer.importFile(file.fileName()));
+
+        const QVector<ContactsSet> contacts = importer.contacts();
+        QCOMPARE(contacts.size(), 1);
+
+        const SugarAccount account = contacts.at(0).account;
+        QCOMPARE(account.billingAddressCountry(), expectedCountry);
+    }
+#endif // USE_PHONENUMBER
 
 private:
     void writeTempFile(QTemporaryFile &file, const QByteArray& data) {
