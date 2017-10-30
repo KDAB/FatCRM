@@ -75,7 +75,7 @@ void KJobProgressTracker::jobFinished(KJob *job)
 
     if (job->error()) {
         const QString errorMessage = job->property("__errorMessage").toString();
-        KMessageBox::error(mParentWidget, errorMessage.arg(job->errorString()));
+        KMessageBox::error(mParentWidget, errorMessage + '\n' + job->errorString());
     }
 
     if (mJobs.isEmpty()) {

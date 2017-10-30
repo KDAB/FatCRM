@@ -789,13 +789,13 @@ void Page::slotChangeFields()
     QString errorMessage;
     switch (mType) {
     case Account:
-        errorMessage = i18n("Failed to change account: %1");
+        errorMessage = i18n("Failed to change account:");
         break;
     case Opportunity:
-        errorMessage = i18n("Failed to change opportunity: %1");
+        errorMessage = i18n("Failed to change opportunity:");
         break;
     case Contact:
-        errorMessage = i18n("Failed to change contact: %1");
+        errorMessage = i18n("Failed to change contact:");
         break;
     default:
         break;

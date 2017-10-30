@@ -105,12 +105,12 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
         if (item.isValid()) {
             Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
 
-            const QString errorMessage = i18n("Unable to update contact %1: %2", contact.realName());
+            const QString errorMessage = i18n("Unable to update contact %1:", contact.realName());
             tracker->addJob(job, errorMessage);
         } else {
             Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, mContactsCollection, this);
 
-            const QString errorMessage = i18n("Unable to create contact %1: %2", contact.realName());
+            const QString errorMessage = i18n("Unable to create contact %1:", contact.realName());
             if (mContactsImportPage->openContactsAfterImport()) {
                 connect(job, SIGNAL(result(KJob*)), this, SLOT(slotContactCreated(KJob*)));
             }
