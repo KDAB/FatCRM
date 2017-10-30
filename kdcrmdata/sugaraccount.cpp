@@ -26,6 +26,7 @@
 
 #include <KLocalizedString>
 
+#include <QDebug>
 #include <QHash>
 #include <QMap>
 #include <QSharedData>
@@ -155,14 +156,18 @@ SugarAccount &SugarAccount::operator=(const SugarAccount &other)
 // The code below will try adding a dot, and prepending a comma
 static const char* s_extensions[] = {
     "Inc", "LLC", "Ltd", "Limited", // USA, UK
-    "GmbH", "GmbH & Co. KG", // Germany
+    "GmbH & Co. KG", "GmbH + Co. KG", "GmbH", "e.V", // Germany
     "S.A.S", "SAS", "S.A", "SA", // France
-    "S.p.A", // Italy
+    "S.A.U", // Spain
+    "S.p.A", "Spa", // Italy
     "AB", // Sweden
     "AG", // Switzerland
-    "BV", "B.V", // Netherlands
+    "BV", "B.V", "BVBA", // Netherlands
     "N.V", // Belgium
-    "AS" // Norway
+    "AS", // Norway
+    "Oy", // Finland
+    "Lda", // Portugal
+    "(individual)" // Anywhere ;)
 };
 static const int s_extensionCount = sizeof(s_extensions) / sizeof(*s_extensions);
 

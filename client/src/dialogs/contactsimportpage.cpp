@@ -431,7 +431,7 @@ void MergeWidget::updateFinalContact()
         }
 
         if (mUpdateCheckBoxes.emailAddress && mUpdateCheckBoxes.emailAddress->isChecked()) {
-            if (mFinalContact.preferredEmail() != mImportedAddressee.preferredEmail()) {
+            if (QString::compare(mFinalContact.preferredEmail(), mImportedAddressee.preferredEmail(), Qt::CaseInsensitive) != 0) {
                 emailAddressFlags = (mFinalContact.preferredEmail().isEmpty() ? IsNew : IsModified);
                 mFinalContact.setEmails(QStringList());
                 mFinalContact.insertEmail(mImportedAddressee.preferredEmail(), true);
