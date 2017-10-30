@@ -20,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "qdateeditex.h"
+#include "nullabledatecombobox.h"
 
 #include <QtTest/QtTestGui>
 #include <QDebug>
@@ -30,38 +30,14 @@
 #include <QLineEdit>
 #include <QPushButton>
 
-class QDateEditExTest : public QObject
+class NullableDateComboBoxTest : public QObject
 {
     Q_OBJECT
 public:
 private Q_SLOTS:
-    void testSpecialValue()
-    {
-        QDateEdit w;
-        w.setSpecialValueText(QStringLiteral(" "));
-        w.setDate(w.minimumDate());
-        QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
-        QVERIFY(spy.isValid());
-        QCOMPARE(w.text(), QString(" "));
-        QCOMPARE(spy.count(), 0);
-        w.show();
-        QCOMPARE(w.text(), QString(" "));
-        QCOMPARE(spy.count(), 0);
-    }
-
-    void testSpecialValueInvalid()
-    {
-        QDateEdit w;
-        w.setMinimumDate(QDate());
-        //qDebug() << w.minimumDate(); // still 1752
-        w.setSpecialValueText(QStringLiteral(" "));
-        w.setDate(QDate());
-        //QCOMPARE(w.text(), QString(" ")); // fails
-    }
-
     void testNullDate()
     {
-        QDateEditEx w;
+        NullableDateComboBox w;
         w.setNullable(true);
         w.setDate(QDate());
         QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
@@ -69,9 +45,8 @@ private Q_SLOTS:
         QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);
         w.show();
-        QPushButton *clearButton = w.findChild<QPushButton *>();
-        QVERIFY(clearButton);
-        QVERIFY(!clearButton->isVisible());
+        QTRY_VERIFY(!w.isClearButtonVisible());
+
         QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);
         QTest::qWait(500);
@@ -79,14 +54,14 @@ private Q_SLOTS:
         QCOMPARE(spy.count(), 0);
 
         w.setDate(QDate::currentDate());
-        QVERIFY(clearButton->isVisible());
+        QTRY_VERIFY(w.isClearButtonVisible());
     }
 
     void focusOutFromNullDateShouldNotShowDate()
     {
         QWidget top;
         QVBoxLayout *layout = new QVBoxLayout(&top);
-        QDateEditEx *w = new QDateEditEx(&top);
+        NullableDateComboBox *w = new NullableDateComboBox(&top);
         layout->addWidget(w);
         QLineEdit *other = new QLineEdit(&top);
         layout->addWidget(other);
@@ -110,5 +85,5 @@ private Q_SLOTS:
 private:
 };
 
-QTEST_MAIN(QDateEditExTest)
-#include "qdateeditextest.moc"
+QTEST_MAIN(NullableDateComboBoxTest)
+#include "nullabledatecomboboxtest.moc"

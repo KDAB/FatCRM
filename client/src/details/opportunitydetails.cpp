@@ -48,9 +48,7 @@ OpportunityDetails::OpportunityDetails(QWidget *parent)
     mUi->setupUi(this);
 
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
-    mUi->next_call_date->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
     mUi->next_call_date->setNullable(true);
-    mUi->date_closed->calendarWidget()->setVerticalHeaderFormat(QCalendarWidget::ISOWeekNumbers);
 
     mUi->name->setObjectName(KDCRMFields::name());
     mUi->account_id->setObjectName(KDCRMFields::accountId());

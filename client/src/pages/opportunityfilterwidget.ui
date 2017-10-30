@@ -59,7 +59,7 @@
     </widget>
    </item>
    <item row="2" column="5">
-    <widget class="QDateEditEx" name="modifiedAfter">
+    <widget class="NullableDateComboBox" name="modifiedAfter">
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
@@ -126,7 +126,7 @@
     </spacer>
    </item>
    <item row="2" column="8">
-    <widget class="QDateEditEx" name="modifiedBefore">
+    <widget class="NullableDateComboBox" name="modifiedBefore">
      <property name="calendarPopup">
       <bool>true</bool>
      </property>
@@ -203,9 +203,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QDateEditEx</class>
-   <extends>QDateEdit</extends>
-   <header>qdateeditex.h</header>
+   <class>NullableDateComboBox</class>
+   <extends>QComboBox</extends>
+   <header>nullabledatecombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

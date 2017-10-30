@@ -27,7 +27,7 @@
 #include "collectionmanager.h"
 #include "kdcrmfields.h"
 #include "kdcrmutils.h"
-#include "qdateeditex.h"
+#include "nullabledatecombobox.h"
 #include "referenceddatamodel.h"
 #include "referenceddata.h"
 #include "itemdataextractor.h"
@@ -73,6 +73,13 @@ static QStringList storedProperties()
     return props;
 }
 
+static bool isQtPrivateObject(const QString &objectName)
+{
+    return (objectName.startsWith(QLatin1String("qt_")) ||
+            objectName.startsWith(QLatin1String("_qt_")));
+}
+
+
 Details::Details(DetailsType type, QWidget *parent)
     : QWidget(parent), mItemsTreeModel(nullptr), mType(type)
 {
@@ -103,7 +110,7 @@ void Details::doConnects()
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
         connect(w, SIGNAL(valueChanged(double)), this, SIGNAL(modified()));
-    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>())
+    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>())
         connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
 }
 
@@ -166,7 +173,7 @@ void Details::clear()
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         w->clear();
     }
-    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
+    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
         w->setDate(QDate());
     }
     Q_FOREACH (const QString &prop, storedProperties()) {
@@ -227,7 +234,7 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
     Q_FOREACH (QLineEdit *w, lineEdits) {
         key = w->objectName();
-        if (key.startsWith(QLatin1String("qt_"))) {
+        if (isQtPrivateObject(key)) {
             continue; // skip internal lineedits (e.g. in spinbox)
         }
         hideIfUnsupported(w);
@@ -236,8 +243,8 @@ void Details::setData(const QMap<QString, QString> &data,
     QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
     Q_FOREACH (QComboBox *cb, comboBoxes) {
         key = cb->objectName();
-        if (key.startsWith(QLatin1String("qt_"))) {
-            continue; // skip internal combos (e.g. in QDateEditEx)
+        if (isQtPrivateObject(key)) {
+            continue; // skip internal combos (e.g. in NullableDateComboBox)
         }
         hideIfUnsupported(cb);
         const int idx = cb->findData(data.value(key));
@@ -273,7 +280,7 @@ void Details::setData(const QMap<QString, QString> &data,
 
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
         key = w->objectName();
-        if (key.startsWith(QLatin1String("qt_"))) {
+        if (isQtPrivateObject(key)) {
             continue; // skip internal widgets (e.g. in QCalendarWidget)
         }
         hideIfUnsupported(w);
@@ -289,7 +296,7 @@ void Details::setData(const QMap<QString, QString> &data,
             w->setSuffix(data.value(KDCRMFields::currencySymbol()));
     }
 
-    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
+    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
         key = w->objectName();
         hideIfUnsupported(w);
         //qCDebug(FATCRM_CLIENT_LOG) << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
@@ -367,7 +374,7 @@ const QMap<QString, QString> Details::getData() const
         currentData[key] = QString::number(w->value());
     }
 
-    Q_FOREACH (QDateEditEx *w, findChildren<QDateEditEx *>()) {
+    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));

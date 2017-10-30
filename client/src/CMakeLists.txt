@@ -74,7 +74,7 @@ set(app_SRCS
   views/itemstreeview.cpp
   widgets/associateddatawidget.cpp
   widgets/betterplaintextedit.cpp
-  widgets/qdateeditex.cpp
+  widgets/nullabledatecombobox.cpp
 )
 ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
 
@@ -127,6 +127,7 @@ target_link_libraries(fatcrmprivate
   KF5::Contacts
   KF5::DBusAddons
   KF5::KIOWidgets
+  KF5::WidgetsAddons
   Qt5::PrintSupport
 )
 
