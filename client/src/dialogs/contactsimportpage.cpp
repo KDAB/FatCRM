@@ -302,19 +302,37 @@ bool MergeWidget::skipItem() const
     return (index == ExcludeContact);
 }
 
+static QString assemble(const QString &old, const QString &addition) {
+    QString ret = old;
+    if (!addition.isEmpty()) {
+        if (!ret.isEmpty() && !ret.endsWith('\n'))
+            ret += '\n';
+        ret += addition;
+    }
+    return ret;
+}
+
+static const char s_descriptionMarker[] = "COMMON_DESCRIPTION";
+
 Akonadi::Item MergeWidget::finalItem(const QString &descriptionText)
 {
     const QAbstractButton *button = mButtonGroup->checkedButton();
     const int index = button->property("__index").toInt();
 
-    QString description = mFinalContact.note();
-    if (!descriptionText.isEmpty() && !description.contains(descriptionText)) {
-        if (!description.isEmpty()) {
-            description += '\n';
+    QString note = mFinalContact.note();
+    Q_ASSERT(note.contains(QLatin1String(s_descriptionMarker)));
+    // Add the description that applies to all contacts
+    if (note.contains(descriptionText)) {
+        note.remove(QLatin1String(s_descriptionMarker) + '\n'); // in case it's followed by a newline
+        note.remove(QLatin1String(s_descriptionMarker));        // just in case it's not
+    } else {
+        QString commonDescription = descriptionText;
+        if (!commonDescription.isEmpty()) {
+            commonDescription += '\n';
         }
-        description += descriptionText;
-        mFinalContact.setNote(description);
+        note.replace(QLatin1String(s_descriptionMarker), commonDescription);
     }
+    mFinalContact.setNote(note);
 
     if (index == ExcludeContact) {
         Q_ASSERT(false); // should never be called
@@ -348,6 +366,7 @@ void MergeWidget::updateFinalContact()
         // do nothing
     } else if (index == CreateNewContact) {
         mFinalContact = KContacts::Addressee();
+        mFinalContact.setNote(assemble(QLatin1String(s_descriptionMarker), mImportedAddressee.note())); // marker for lineedit description, followed by note coming from the CSV
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             prefixFlags = IsNew;
@@ -401,6 +420,9 @@ void MergeWidget::updateFinalContact()
         mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
     } else {
         mFinalContact = mPossibleMatches.at(index).contact;
+
+        mFinalContact.setNote(assemble(mFinalContact.note(), QLatin1String(s_descriptionMarker))); // add marker for the lineedit description
+        mFinalContact.setNote(assemble(mFinalContact.note(), mImportedAddressee.note())); // add description coming from the CSV
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             if (mFinalContact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")) != mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"))) {

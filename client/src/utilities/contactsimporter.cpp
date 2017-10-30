@@ -133,6 +133,10 @@ bool ContactsImporter::importFile(const QString &fileName)
         if (!jobTitle.isEmpty())
             addressee.setTitle(jobTitle);
 
+        const QString contactDescription = builder.data(row, 15).trimmed();
+        if (!contactDescription.isEmpty())
+            addressee.setNote(contactDescription);
+
         if (accountData.value(KDCRMFields::name()).trimmed().isEmpty()) {
             const QString identifier = ((!givenName.isEmpty() || !familyName.isEmpty()) ? QStringLiteral("%1 %2").arg(givenName, familyName).trimmed() : emailAddress);
             accountData.insert(KDCRMFields::name(), QStringLiteral("%1 (individual)").arg(identifier));
