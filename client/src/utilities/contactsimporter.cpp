@@ -31,6 +31,44 @@
 #include <QFile>
 #include "fatcrm_client_debug.h"
 #include <QTextCodec>
+#include <QLocale>
+#include <QStringList>
+#include <QString>
+
+#include "config-phonenumber.h"
+
+#if USE_PHONENUMBER
+
+#include <phonenumbers/phonenumberutil.h>
+#include <phonenumbers/region_code.h>
+#include <phonenumbers/geocoding/phonenumber_offline_geocoder.h>
+#include <unicode/locid.h>
+
+static QString extractCountryFromPhoneNumber(const QString &phone)
+{
+    if (phone.isEmpty()) {
+        return QString();
+    }
+
+    auto phoneUtil = i18n::phonenumbers::PhoneNumberUtil::GetInstance();
+    i18n::phonenumbers::PhoneNumber number;
+    if (phoneUtil->Parse(phone.toStdString(), i18n::phonenumbers::RegionCode::ZZ(), &number) == i18n::phonenumbers::PhoneNumberUtil::NO_PARSING_ERROR) {
+        // use ZZ region to make sure that GetDescriptionForNumber will always return a country name
+        const std::string description = i18n::phonenumbers::PhoneNumberOfflineGeocoder().GetDescriptionForNumber(number,
+                                                                                                                 icu::Locale("en", "US"),
+                                                                                                                 i18n::phonenumbers::RegionCode::ZZ());
+        std::size_t startIndex = description.find_last_of(',');
+        if (startIndex == std::string::npos)
+            startIndex = 0;
+
+        return QString::fromStdString(description.substr(startIndex)).trimmed();
+    } else {
+        qWarning() << "Fail to parse number" << phone;
+    }
+    return QString();
+}
+
+#endif /* USE_PHONENUMBER */
 
 static const int COLUMN_COUNTRY = 10;
 
@@ -122,7 +160,11 @@ bool ContactsImporter::importFile(const QString &fileName)
         if (!workState.isEmpty())
             workAddress.setRegion(workState);
 
-        const QString workCountry = builder.data(row, 10).trimmed();
+        QString workCountry = builder.data(row, 10).trimmed();
+#if USE_PHONENUMBER
+        if (workCountry.isEmpty())
+            workCountry = extractCountryFromPhoneNumber(phoneNumber);
+#endif
         if (!workCountry.isEmpty())
             workAddress.setCountry(workCountry);
 
@@ -141,6 +183,15 @@ bool ContactsImporter::importFile(const QString &fileName)
             const QString identifier = ((!givenName.isEmpty() || !familyName.isEmpty()) ? QStringLiteral("%1 %2").arg(givenName, familyName).trimmed() : emailAddress);
             accountData.insert(KDCRMFields::name(), QStringLiteral("%1 (individual)").arg(identifier));
         }
+
+        if (accountData.value(KDCRMFields::billingAddressCity()).isEmpty())
+            accountData.insert(KDCRMFields::billingAddressCity(), workCity);
+
+        if (accountData.value(KDCRMFields::billingAddressState()).isEmpty())
+            accountData.insert(KDCRMFields::billingAddressState(), workState);
+
+        if (accountData.value(KDCRMFields::billingAddressCountry()).isEmpty())
+            accountData.insert(KDCRMFields::billingAddressCountry(), workCountry);
 
         SugarAccount newAccount;
         newAccount.setData(accountData);

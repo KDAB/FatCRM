@@ -131,10 +131,18 @@ target_link_libraries(fatcrmprivate
   Qt5::PrintSupport
 )
 
-
 target_link_libraries(fatcrmprivate
   ${KDReports_LIBRARIES}
 )
+
+if (PhoneNumber_FOUND AND ICU_FOUND)
+    target_link_libraries(fatcrmprivate
+        ${PhoneNumber_LIBRARIES}
+        ${PhoneNumberGeoCoding_LIBRARIES}
+        ICU::uc
+     )
+endif()
+
 
 add_executable(fatcrm app/main.cpp)
 

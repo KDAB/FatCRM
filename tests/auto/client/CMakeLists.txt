@@ -9,6 +9,7 @@ include_directories(
   ${_clientdir}/src/widgets
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../kdcrmdata
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
+  ${CMAKE_BINARY_DIR}
 )
 
 macro(add_fatcrm_tests)
