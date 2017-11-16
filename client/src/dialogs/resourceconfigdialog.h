@@ -61,17 +61,4 @@ private:
     Q_PRIVATE_SLOT(d, void agentInstanceChanged(const Akonadi::AgentInstance &))
 };
 
-
-// Workaround for AgentFilterProxyModel not being able to filter on capabilities
-// when mimetypes is empty, which was fixed in 5968a044321b (kdepimlibs v4.14.7)
-class WorkaroundFilterProxyModel : public QSortFilterProxyModel
-{
-public:
-    explicit WorkaroundFilterProxyModel(QObject *parent) : QSortFilterProxyModel(parent)
-    {
-        setDynamicSortFilter(true);
-    }
-    bool filterAcceptsRow(int source_row, const QModelIndex &) const override;
-};
-
 #endif

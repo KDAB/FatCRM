@@ -468,12 +468,7 @@ void MainWindow::setupResourcesCombo()
     agentFilterModel->addCapabilityFilter(QStringLiteral("KDCRM").toLatin1());
     agentFilterModel->setSourceModel(agentModel);
 
-    // Remove this and use agentFilterModel on the last line when everyone has kdepimlibs >= 4.14.7
-#if 1
-    WorkaroundFilterProxyModel *workaround = new WorkaroundFilterProxyModel(this);
-    workaround->setSourceModel(agentFilterModel);
-    mResourceSelector->setModel(workaround);
-#endif
+    mResourceSelector->setModel(agentFilterModel);
 
     connect(mResourceSelector, SIGNAL(activated(int)),
             this, SLOT(slotResourceSelectionChanged(int)));

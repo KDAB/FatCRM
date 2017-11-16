@@ -180,13 +180,7 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
 
     AgentFilterProxyModel *filterModel = d->mUi.resources->agentFilterProxyModel();
     filterModel->addCapabilityFilter(QStringLiteral("KDCRM"));
-
-    // Remove this and use filterModel on the last line when everyone has kdepimlibs >= 4.14.7
-#if 1
-    WorkaroundFilterProxyModel *workaround = new WorkaroundFilterProxyModel(this);
-    workaround->setSourceModel(filterModel);
-    d->mUi.resources->view()->setModel(workaround);
-#endif
+    d->mUi.resources->view()->setModel(filterModel);
 
     connect(d->mUi.resources->view()->selectionModel(),
             SIGNAL(selectionChanged(QItemSelection,QItemSelection)),
@@ -240,13 +234,6 @@ void ResourceConfigDialog::resourceSelectionChanged(const AgentInstance &resourc
             }
         }
     }
-}
-
-bool WorkaroundFilterProxyModel::filterAcceptsRow(int source_row, const QModelIndex &) const
-{
-    const QModelIndex index = sourceModel()->index(source_row, 0);
-    const QStringList capabilities = index.data(Akonadi::AgentTypeModel::CapabilitiesRole).toStringList();
-    return capabilities.contains(QStringLiteral("KDCRM"));
 }
 
 #include "moc_resourceconfigdialog.cpp"
