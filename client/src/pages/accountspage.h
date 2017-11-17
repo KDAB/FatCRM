@@ -35,12 +35,19 @@ public:
 
     ~AccountsPage() override;
 
+signals:
+    void requestNewOpportunity(const QString &accountId);
+
 protected:
     ItemDataExtractor *itemDataExtractor() const override;
     QString reportTitle() const override;
     void handleNewRows(int start, int end, bool emitChanges) override;
     void handleRemovedRows(int start, int end, bool initialLoadingDone) override;
     void handleItemChanged(const Akonadi::Item &item) override;
+    QMenu *handleContextMenu(const QPoint &pos) override;
+
+private slots:
+    void createNewOpportunityForSelectedAccount();
 
 private:
     AccountDataExtractor *mDataExtractor;

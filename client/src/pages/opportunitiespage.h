@@ -39,6 +39,9 @@ public:
 
     void setupModel() override;
 
+public slots:
+    void createOpportunity(const QString &accountId = QString());
+
 protected:
     QMap<QString, QString> dataForNewObject() override;
     ItemDataExtractor *itemDataExtractor() const override;
@@ -49,6 +52,7 @@ private:
     OpportunityFilterWidget *mFilterUiWidget;
     OpportunityFilterProxyModel *mOppFilterProxyModel;
     OpportunityDataExtractor *mDataExtractor;
+    QString m_createOpportinyFor;
 };
 
 #endif /* OPPORTUNITIESPAGE_H */

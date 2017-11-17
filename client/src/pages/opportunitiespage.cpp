@@ -82,6 +82,16 @@ void OpportunitiesPage::setupModel()
     treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }
 
+void OpportunitiesPage::createOpportunity(const QString &accountId)
+{
+    if (!m_createOpportinyFor.isEmpty()) {
+        qWarning() << "There is a pending request on the queue already";
+        return;
+    }
+    m_createOpportinyFor = accountId;
+    createNewItem();
+}
+
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 {
     QMap<QString, QString> initialData;
@@ -89,6 +99,10 @@ QMap<QString, QString> OpportunitiesPage::dataForNewObject()
     initialData.insert(KDCRMFields::probability(), QStringLiteral("10"));
     initialData.insert(KDCRMFields::dateClosed(), KDCRMUtils::dateToString(QDate::currentDate().addMonths(12)));
     initialData.insert(KDCRMFields::nextCallDate(), KDCRMUtils::dateToString(QDate::currentDate().addDays(14)));
+    if (!m_createOpportinyFor.isEmpty()) {
+        initialData.insert(KDCRMFields::accountId(), m_createOpportinyFor);
+        m_createOpportinyFor.clear();
+    }
     return initialData;
 }
 

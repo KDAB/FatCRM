@@ -428,6 +428,8 @@ void MainWindow::createTabs()
     mUi.tabWidget->addTab(page, i18n("&Opportunities"));
 
     connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
+    connect(static_cast<AccountsPage*>(mAccountPage), &AccountsPage::requestNewOpportunity,
+            static_cast<OpportunitiesPage*>(page), &OpportunitiesPage::createOpportunity);
 
 #if 0
     page = new LeadsPage(this);
