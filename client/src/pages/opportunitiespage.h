@@ -39,6 +39,9 @@ public:
 
     void setupModel() override;
 
+public slots:
+    void createOpportunity(const QString &accountId);
+
 protected:
     QMap<QString, QString> dataForNewObject() override;
     ItemDataExtractor *itemDataExtractor() const override;

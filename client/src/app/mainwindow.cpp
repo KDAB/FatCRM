@@ -423,14 +423,15 @@ void MainWindow::createTabs()
     addPage(mAccountPage);
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
-    Page *page = new OpportunitiesPage(this);
-    addPage(page);
-    mUi.tabWidget->addTab(page, i18n("&Opportunities"));
+    OpportunitiesPage *opportunitiesPage = new OpportunitiesPage(this);
+    addPage(opportunitiesPage);
+    mUi.tabWidget->addTab(opportunitiesPage, i18n("&Opportunities"));
 
-    connect(page, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
+    connect(mAccountPage, &AccountsPage::requestNewOpportunity, opportunitiesPage, &OpportunitiesPage::createOpportunity);
+    connect(opportunitiesPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
 
 #if 0
-    page = new LeadsPage(this);
+    Page *page = new LeadsPage(this);
     addPage(page);
     mUi.tabWidget->addTab(page, i18n("&Leads"));
 #endif

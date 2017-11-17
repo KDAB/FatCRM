@@ -30,6 +30,7 @@
 #include "kdcrmdata/sugaraccount.h"
 
 #include <KLocalizedString>
+#include <QMenu>
 
 using namespace Akonadi;
 
@@ -107,6 +108,31 @@ void AccountsPage::handleItemChanged(const Item &item)
     }
     if (updateNameRef)
         ReferencedData::instance(AccountRef)->setReferencedData(id, account.name());
+}
+
+QMenu *AccountsPage::createContextMenu(const QPoint &pos)
+{
+    QMenu *menu = Page::createContextMenu(pos);
+    if (!menu) {
+        return nullptr;
+    }
+
+    if (treeView()->selectionModel()->selectedRows().size() == 1) {
+        menu->addSeparator();
+        menu->addAction(i18n("Create new Opportunity"), this, &AccountsPage::createNewOpportunityForSelectedAccount);
+    }
+
+    return menu;
+}
+
+void AccountsPage::createNewOpportunityForSelectedAccount()
+{
+    QModelIndex selectedAccount = treeView()->selectionModel()->selectedRows().at(0);
+    if (selectedAccount.isValid()) {
+        const Item item = selectedAccount.data(EntityTreeModel::ItemRole).value<Item>();
+        const SugarAccount account = item.payload<SugarAccount>();
+        emit requestNewOpportunity(account.id());
+    }
 }
 
 ItemDataExtractor *AccountsPage::itemDataExtractor() const
