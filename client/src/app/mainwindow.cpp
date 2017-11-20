@@ -407,6 +407,10 @@ void MainWindow::initialLoadingDone()
     mLinkedItemsRepository->monitorChanges();
     slotShowMessage(i18n("Ready"));
 
+    // Now is a good time to synchronize data from the server,
+    // so that users don't start working on outdated data for the next 30 minutes.
+    slotSynchronize();
+
     processPendingImports();
 }
 
