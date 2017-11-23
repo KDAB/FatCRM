@@ -169,6 +169,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
             const int idx = std::distance(notes.constBegin(), it);
             kDebug() << "Removing note at" << idx;
             notes.remove(idx);
+            emit accountModified(oldAccountId);
         }
     }
 
@@ -182,6 +183,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
             const int idx = std::distance(notes.constBegin(), it);
             kDebug() << "Removing note at" << idx;
             notes.remove(idx);
+            emit contactModified(oldContactId);
         }
     }
 
@@ -195,6 +197,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
             const int idx = std::distance(notes.constBegin(), it);
             qDebug() << "Removing note at" << idx;
             notes.remove(idx);
+            emit opportunityModified(oldOpportunityId);
         }
     }
 }
@@ -323,6 +326,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
             const int idx = std::distance(emails.constBegin(), it);
             kDebug() << "Removing email at" << idx;
             emails.remove(idx);
+            emit accountModified(oldAccountId);
         }
     }
 
@@ -336,6 +340,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
             const int idx = std::distance(emails.constBegin(), it);
             kDebug() << "Removing email at" << idx;
             emails.remove(idx);
+            emit contactModified(oldContactId);
         }
     }
 
@@ -349,6 +354,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
             const int idx = std::distance(emails.constBegin(), it);
             qDebug() << "Removing email at" << idx;
             emails.remove(idx);
+            emit opportunityModified(oldOpportunityId);
         }
     }
 }
@@ -446,6 +452,7 @@ void LinkedItemsRepository::removeDocument(const QString &id)
             const int idx = std::distance(documents.constBegin(), it);
             qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
             documents.remove(idx);
+            emit accountModified(oldLinkedAccountId);
         }
     }
 
@@ -457,6 +464,7 @@ void LinkedItemsRepository::removeDocument(const QString &id)
             const int idx = std::distance(documents.constBegin(), it);
             qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
             documents.remove(idx);
+            emit opportunityModified(oldLinkedOpportunityId);
         }
     }
 
