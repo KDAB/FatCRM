@@ -153,7 +153,8 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    DocumentsWindow *dlg = new DocumentsWindow(isOnline(), nullptr);
+    connect(this, &AccountDetails::onlineStatusChanged, dlg, &DocumentsWindow::setCreateNewEnabled);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

@@ -72,9 +72,13 @@ public:
     QString currentAccountId() const;
     void assignToMe();
 
+    bool isOnline() const;
+    void setOnline(bool isOnline);
+
 Q_SIGNALS:
     void modified();
     void openObject(DetailsType type, const QString &id);
+    void onlineStatusChanged(bool isOnline);
 
 protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }
@@ -100,6 +104,7 @@ private:
     QString mResourceBaseUrl;
     QStringList mKeys;
     EnumDefinitions mEnumDefinitions;
+    bool m_isOnline;
 };
 
 #endif /* DETAILS_H */

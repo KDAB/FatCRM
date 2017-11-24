@@ -76,7 +76,7 @@ class DocumentsWindow : public QWidget
     Q_OBJECT
 
 public:
-    explicit DocumentsWindow(QWidget *parent = nullptr);
+    explicit DocumentsWindow(bool allowCreateDocs, QWidget *parent = nullptr);
     ~DocumentsWindow() override;
 
     void setResourceIdentifier(const QString &identifier);
@@ -89,6 +89,9 @@ public:
     };
 
     void loadDocumentsFor(const QString &id, LinkedItemType itemType);
+
+public slots:
+    void setCreateNewEnabled(bool enabled);
 
 protected:
     void closeEvent(QCloseEvent *event) override;

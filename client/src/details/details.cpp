@@ -85,7 +85,7 @@ static bool isQtPrivateObject(const QString &objectName)
 
 
 Details::Details(DetailsType type, QWidget *parent)
-    : QWidget(parent), mItemsTreeModel(nullptr), mType(type)
+    : QWidget(parent), mItemsTreeModel(nullptr), mType(type), m_isOnline(false)
 {
     // delayed init, wait for subclasses to create GUI
     QMetaObject::invokeMethod(this, "doConnects", Qt::QueuedConnection);
@@ -452,6 +452,11 @@ void Details::assignToMe()
     }
 }
 
+bool Details::isOnline() const
+{
+    return m_isOnline;
+}
+
 QString Details::name() const
 {
     if (mType == Contact) {
@@ -515,4 +520,12 @@ void Details::copyAddressFromGroup(QGroupBox *box)
                        .arg(address.value(QStringLiteral("city")))
                        .arg(address.value(QStringLiteral("state")))
                        .arg(address.value(QStringLiteral("country"))));
+}
+
+void Details::setOnline(bool isOnline)
+{
+    if (m_isOnline != isOnline) {
+        m_isOnline = isOnline;
+        Q_EMIT onlineStatusChanged(m_isOnline);
+    }
 }
