@@ -265,11 +265,7 @@ void DocumentsWindow::deleteDocument()
     if (answer == QMessageBox::No)
         return;
 
-    auto it = std::find_if(mDocuments.constBegin(), mDocuments.constEnd(), [&documentId](const SugarDocument &document) { return document.id() == documentId; });
-    if (it != mDocuments.constEnd()) {
-        mDocuments.remove(std::distance(mDocuments.constBegin(), it));
-    }
-
+    // Remove the document from the view (mDocumentWidgets). Keep in mDocuments so that saveChanges() sees it and triggers deletion.
     mDocumentWidgets.remove(mDocumentWidgets.indexOf(widget));
 
     widget->deleteLater();
