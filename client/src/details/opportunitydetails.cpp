@@ -234,7 +234,8 @@ void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
 
-    auto *dlg = new DocumentsWindow(nullptr);
+    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    connect(dlg, &DocumentsWindow::documentsCreated, this, &OpportunityDetails::syncRequired);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());
@@ -285,3 +286,4 @@ void OpportunityDetails::setItemsTreeModel(ItemsTreeModel *model)
     mUi->next_step->setCompleter(nextStepCompleter);
     Details::setItemsTreeModel(model);
 }
+

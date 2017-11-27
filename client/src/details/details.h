@@ -75,6 +75,7 @@ public:
 Q_SIGNALS:
     void modified();
     void openObject(DetailsType type, const QString &id);
+    void syncRequired();
 
 protected:
     QByteArray resourceIdentifier() const { return mResourceIdentifier; }

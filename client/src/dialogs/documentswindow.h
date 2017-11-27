@@ -90,6 +90,9 @@ public:
 
     void loadDocumentsFor(const QString &id, LinkedItemType itemType);
 
+signals:
+    void documentsCreated();
+
 protected:
     void closeEvent(QCloseEvent *event) override;
 
