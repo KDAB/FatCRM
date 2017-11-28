@@ -34,6 +34,7 @@
 class CollectionManager;
 class QComboBox;
 class QCompleter;
+class QGroupBox;
 class LinkedItemsRepository;
 class ItemDataExtractor;
 class ItemsTreeModel;
@@ -84,6 +85,8 @@ protected:
 
     virtual void setDataInternal(const QMap<QString, QString> &) {}
     QString id() const;
+    void copyAddressFromGroup(QGroupBox *box);
+    virtual QMap<QString, QString> fillAddressFieldsMap(QGroupBox *box) const;
     ItemsTreeModel *mItemsTreeModel;
 
 private Q_SLOTS:
@@ -98,4 +101,5 @@ private:
     QStringList mKeys;
     EnumDefinitions mEnumDefinitions;
 };
+
 #endif /* DETAILS_H */

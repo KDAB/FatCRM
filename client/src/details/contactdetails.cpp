@@ -116,6 +116,12 @@ void ContactDetails::initialize()
 
     connect(mUi->primaryAddressCountry, SIGNAL(editingFinished()), SLOT(slotPrimaryAddressCountryEditingFinished()));
     connect(mUi->altAddressCountry, SIGNAL(editingFinished()), SLOT(slotOtherAddressCountryEditingFinished()));
+    connect(mUi->copyPrimaryAddressButton, &QPushButton::clicked, this, [this]() {
+        copyAddressFromGroup(mUi->primaryAddressGroupBox);
+    });
+    connect(mUi->copyOtherAddressButton, &QPushButton::clicked, this, [this]() {
+        copyAddressFromGroup(mUi->otherAddressGroupBox);
+    });
 }
 
 ItemDataExtractor *ContactDetails::itemDataExtractor() const
@@ -264,6 +270,27 @@ QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &a
     data.insert(KDCRMFields::deleted(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted")));
     data.insert(KDCRMFields::createdBy(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedById")));
     return data;
+}
+
+QMap<QString, QString> ContactDetails::fillAddressFieldsMap(QGroupBox *box) const
+{
+    QMap<QString, QString> map;
+
+    if (box == mUi->primaryAddressGroupBox) {
+        map.insert("street", KDCRMFields::primaryAddressStreet());
+        map.insert("city", KDCRMFields::primaryAddressCity());
+        map.insert("state", KDCRMFields::primaryAddressState());
+        map.insert("postalcode", KDCRMFields::primaryAddressPostalcode());
+        map.insert("country", KDCRMFields::primaryAddressCountry());
+    } else if (box == mUi->otherAddressGroupBox) {
+        map.insert("street", KDCRMFields::altAddressStreet());
+        map.insert("city", KDCRMFields::altAddressCity());
+        map.insert("state", KDCRMFields::altAddressState());
+        map.insert("postalcode", KDCRMFields::altAddressPostalcode());
+        map.insert("country", KDCRMFields::altAddressCountry());
+    }
+
+    return map;
 }
 
 void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const

@@ -43,6 +43,10 @@
 #include <QPlainTextEdit>
 #include <QSpinBox>
 #include <QTextEdit>
+#include <QGroupBox>
+#include <QMap>
+#include <QGuiApplication>
+#include <QClipboard>
 
 #include "fatcrm_client_debug.h"
 
@@ -461,6 +465,12 @@ QString Details::id() const
     return property("id").toString();
 }
 
+QMap<QString, QString> Details::fillAddressFieldsMap(QGroupBox *) const
+{
+    qWarning() << "Missing fillAddressFieldsMap implementation";
+    Q_ASSERT(false);
+}
+
 QCompleter *Details::createCountriesCompleter()
 {
     QCompleter *completer = new QCompleter(AccountRepository::instance()->countries(), this);
@@ -472,4 +482,36 @@ void Details::setItemsTreeModel(ItemsTreeModel *model)
 {
     // keep the member - could be useful later
     mItemsTreeModel = model;
+}
+
+void Details::copyAddressFromGroup(QGroupBox *box)
+{
+    QMap<QString, QString> fieldNames = fillAddressFieldsMap(box);
+
+    QMap<QString, QString> address;
+    for (auto it = fieldNames.constBegin(); it != fieldNames.constEnd(); ++it) {
+        QWidget *field = box->findChild<QWidget*>(it.value());
+        if (field) {
+            QPlainTextEdit *plainTextEdit = qobject_cast<QPlainTextEdit*>(field);
+            if (plainTextEdit) {
+                address.insert(it.key(), plainTextEdit->toPlainText());
+                continue;
+            }
+            QLineEdit *lineEdit = qobject_cast<QLineEdit*>(field);
+            if (lineEdit) {
+                address.insert(it.key(), lineEdit->text());
+                continue;
+            }
+            qWarning() << "Failed to retrieve value from field:" << it.value();
+        } else {
+            qWarning() << "Failed to find widget for object name:" << it.value();
+        }
+    }
+    QClipboard *clipboard = QGuiApplication::clipboard();
+    clipboard->setText(QString("%1\n%2 %3 %4\n%5")
+                       .arg(address.value(QStringLiteral("street")))
+                       .arg(address.value(QStringLiteral("postalcode")))
+                       .arg(address.value(QStringLiteral("city")))
+                       .arg(address.value(QStringLiteral("state")))
+                       .arg(address.value(QStringLiteral("country"))));
 }
