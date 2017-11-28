@@ -341,6 +341,7 @@ bool DocumentsWindow::isModified() const
 
 void DocumentsWindow::saveChanges()
 {
+    int errors = 0;
     foreach (const SugarDocument &oldDocument, mDocuments) {
         const QString id = oldDocument.id();
 
@@ -369,8 +370,15 @@ void DocumentsWindow::saveChanges()
                 uploadReply.waitForFinished();
 
                 const QString documentId = uploadReply.value();
+                if (documentId.startsWith("ERROR:")) {
+                    const QString errorMessage = documentId.mid(6);
+                    qWarning() << errorMessage;
+                    QMessageBox::warning(this, i18n("Unable to upload Document"), i18n("Could not upload the document:") + QLatin1Char('\n') + errorMessage);
+                    ++errors;
+                    continue;
+                }
                 if (documentId.isEmpty()) {
-                    qWarning() << "Unable to upload new document";
+                    qWarning() << "Unable to upload new document, but no error message provided";
                     continue;
                 }
 
@@ -381,6 +389,8 @@ void DocumentsWindow::saveChanges()
                 linkReply.waitForFinished();
                 if (linkReply.isError()) {
                     qWarning() << "Unable to link document" << documentId << ":" << linkReply.error().message();
+                    QMessageBox::warning(this, i18n("Unable to link Document"), i18n("Could not link the document:") + QLatin1Char('\n') + linkReply.error().message());
+                    ++errors;
                     continue;
                 }
 
@@ -404,7 +414,7 @@ void DocumentsWindow::saveChanges()
         }
     }
 
-    if (mPendingJobCount == 0) {
+    if (mPendingJobCount == 0 && errors == 0) {
         mIsNotModifiedOverride = true;
         QWidget::close();
     }

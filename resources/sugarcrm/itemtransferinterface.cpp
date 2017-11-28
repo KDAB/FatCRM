@@ -110,9 +110,14 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
 
     result = soap->set_document_revision(sessionId, documentRevision);
 
+    if (!soap->lastError().isEmpty()) { // got a SOAP fault as reply
+        qWarning() << soap->lastError();
+        return QStringLiteral("ERROR:") + soap->lastError();
+    }
+
     if (result.error().number() != QLatin1String("0")) {
-        qWarning() << "Unable to create document revision:" << result.error().name() << result.error().description();
-        return QString();
+        qWarning() << "Unable to create document revision:" << result.error().number() << result.error().name() << result.error().description();
+        return QStringLiteral("ERROR:") + result.error().name() + " " + result.error().description();
     }
 
     return documentId;
