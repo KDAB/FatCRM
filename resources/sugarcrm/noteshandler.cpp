@@ -155,7 +155,7 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
         (note.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarNote>(note);
-    item.setRemoteRevision(note.dateModified());
+    item.setRemoteRevision(note.dateModifiedRaw());
 
     return item;
 }
@@ -170,7 +170,7 @@ void NotesHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const SugarNote rightNote = rightItem.payload<SugarNote>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(rightNote.dateModified());
+    const QString modifiedOn = KDCRMUtils::formatDateTime(rightNote.dateModified());
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Note"));
     reporter->setRightPropertyValueTitle(

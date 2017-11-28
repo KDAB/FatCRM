@@ -41,7 +41,7 @@ public:
 
     QString mId;
     QString mDateEntered;
-    QString mDateModified;
+    QDateTime mDateModified;
     QString mModifiedUserId;
     QString mModifiedByName;
     QString mCreatedBy;
@@ -126,15 +126,25 @@ QString SugarDocument::dateEntered() const
     return d->mDateEntered;
 }
 
-void SugarDocument::setDateModified(const QString &value)
+void SugarDocument::setDateModified(const QDateTime &date)
 {
     d->mEmpty = false;
-    d->mDateModified = value;
+    d->mDateModified = date;
 }
 
-QString SugarDocument::dateModified() const
+void SugarDocument::setDateModifiedRaw(const QString &date)
+{
+    setDateModified(KDCRMUtils::dateTimeFromString(date));
+}
+
+QDateTime SugarDocument::dateModified() const
 {
     return d->mDateModified;
+}
+
+QString SugarDocument::dateModifiedRaw() const
+{
+    return KDCRMUtils::dateTimeToString(d->mDateModified);
 }
 
 void SugarDocument::setModifiedUserId(const QString &value)
@@ -482,7 +492,7 @@ SugarDocument::AccessorHash SugarDocument::accessorHash()
         accessors.insert(KDCRMFields::dateEntered(),
                          DocumentAccessorPair(&SugarDocument::dateEntered, &SugarDocument::setDateEntered, QString()));
         accessors.insert(KDCRMFields::dateModified(),
-                          DocumentAccessorPair(&SugarDocument::dateModified, &SugarDocument::setDateModified, QString()));
+                          DocumentAccessorPair(&SugarDocument::dateModifiedRaw, &SugarDocument::setDateModifiedRaw, QString()));
         accessors.insert(KDCRMFields::modifiedUserId(),
                           DocumentAccessorPair(&SugarDocument::modifiedUserId, &SugarDocument::setModifiedUserId, QString()));
         accessors.insert(KDCRMFields::modifiedByName(),

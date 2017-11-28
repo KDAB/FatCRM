@@ -72,7 +72,7 @@ void NotesWindow::setLinkedTo(const QString &id, DetailsType itemType)
 
 void NotesWindow::addNote(const SugarNote &note)
 {
-    const QDateTime modified = KDCRMUtils::dateTimeFromString(note.dateModified());
+    const QDateTime modified(note.dateModified());
     QString htmlHeader;
     htmlHeader += (QStringLiteral("<html><h1>Note by %1, last modified %2:</h1>\n").arg(note.createdByName()).arg(KDCRMUtils::formatDateTime(modified)));
     htmlHeader += "<h2>" + note.name() + "</h2>\n"; // called "Subject" in the web gui

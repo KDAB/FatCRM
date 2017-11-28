@@ -222,7 +222,7 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
         (email.*(accessIt.value().setter))(KDCRMUtils::decodeXML(namedValue.value()));
     }
     item.setPayload<SugarEmail>(email);
-    item.setRemoteRevision(email.dateModified());
+    item.setRemoteRevision(email.dateModifiedRaw());
 
     return item;
 }
@@ -237,7 +237,8 @@ void EmailsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const SugarEmail rightEmail = rightItem.payload<SugarEmail>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(rightEmail.dateModified());
+    const QString modifiedOn = KDCRMUtils::formatDateTime(rightEmail.dateModified());
+
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Email"));
     reporter->setRightPropertyValueTitle(

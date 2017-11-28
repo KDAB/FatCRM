@@ -22,6 +22,7 @@
 
 #include "sugaremail.h"
 #include "kdcrmfields.h"
+#include "kdcrmutils.h"
 
 #include <QSharedData>
 #include <QString>
@@ -42,7 +43,7 @@ public:
     QString mId;
     QString mName;
     QString mDateEntered;
-    QString mDateModified;
+    QDateTime mDateModified;
     QString mModifiedUserId;
     QString mModifiedByName;
     QString mCreatedBy;
@@ -129,15 +130,25 @@ QString SugarEmail::dateEntered() const
     return d->mDateEntered;
 }
 
-void SugarEmail::setDateModified(const QString &value)
+void SugarEmail::setDateModified(const QDateTime &date)
 {
     d->mEmpty = false;
-    d->mDateModified = value;
+    d->mDateModified = date;
 }
 
-QString SugarEmail::dateModified() const
+void SugarEmail::setDateModifiedRaw(const QString &date)
+{
+    setDateModified(KDCRMUtils::dateTimeFromString(date));
+}
+
+QDateTime SugarEmail::dateModified() const
 {
     return d->mDateModified;
+}
+
+QString SugarEmail::dateModifiedRaw() const
+{
+    return KDCRMUtils::dateTimeToString(d->mDateModified);
 }
 
 void SugarEmail::setModifiedUserId(const QString &value)
@@ -433,7 +444,7 @@ KDCRMFields::deleted() = "0"
         accessors.insert(KDCRMFields::dateEntered(),
                          EmailAccessorPair(&SugarEmail::dateEntered, &SugarEmail::setDateEntered, QString()));
         accessors.insert(KDCRMFields::dateModified(),
-                         EmailAccessorPair(&SugarEmail::dateModified, &SugarEmail::setDateModified, QString()));
+                         EmailAccessorPair(&SugarEmail::dateModifiedRaw, &SugarEmail::setDateModifiedRaw, QString()));
         accessors.insert(KDCRMFields::modifiedUserId(),
                          EmailAccessorPair(&SugarEmail::modifiedUserId, &SugarEmail::setModifiedUserId, QString()));
         accessors.insert(KDCRMFields::modifiedByName(),

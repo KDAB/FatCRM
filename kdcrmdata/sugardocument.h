@@ -109,11 +109,13 @@ public:
     /**
       Set Modification date.
      */
-    void setDateModified(const QString &name);
+    void setDateModified(const QDateTime &date);
+    void setDateModifiedRaw(const QString &date);
     /**
       Return Modification date.
      */
-    QString dateModified() const;
+    QDateTime dateModified() const;
+    QString dateModifiedRaw() const;
 
     /**
       Set Modified User id.
