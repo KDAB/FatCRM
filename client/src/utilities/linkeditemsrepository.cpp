@@ -450,7 +450,7 @@ void LinkedItemsRepository::removeDocument(const QString &id)
         auto it = std::find_if(documents.constBegin(), documents.constEnd(), [&id](const SugarDocument &document) { return document.id() == id; });
         if (it != documents.constEnd()) {
             const int idx = std::distance(documents.constBegin(), it);
-            qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
+            qCDebug(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
             documents.remove(idx);
             emit accountModified(oldLinkedAccountId);
         }
@@ -462,7 +462,7 @@ void LinkedItemsRepository::removeDocument(const QString &id)
         auto it = std::find_if(documents.constBegin(), documents.constEnd(), [&id](const SugarDocument &document) { return document.id() == id; });
         if (it != documents.constEnd()) {
             const int idx = std::distance(documents.constBegin(), it);
-            qCWarning(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
+            qCDebug(FATCRM_CLIENT_LOG) << "Removing document at" << idx;
             documents.remove(idx);
             emit opportunityModified(oldLinkedOpportunityId);
         }
@@ -498,13 +498,13 @@ Akonadi::Collection LinkedItemsRepository::notesCollection() const
 
 void LinkedItemsRepository::slotItemAdded(const Akonadi::Item &item, const Akonadi::Collection &collection)
 {
-    qCWarning(FATCRM_CLIENT_LOG) << item.id() << item.mimeType();
+    qCDebug(FATCRM_CLIENT_LOG) << item.id() << item.mimeType();
     updateItem(item, collection);
 }
 
 void LinkedItemsRepository::slotItemRemoved(const Akonadi::Item &item)
 {
-    qCWarning(FATCRM_CLIENT_LOG) << item.id();
+    qCDebug(FATCRM_CLIENT_LOG) << item.id();
     const Akonadi::Collection collection = item.parentCollection();
     // Don't use the payload to handle removals (no payload anymore on removal)
     if (collection == mNotesCollection) {
