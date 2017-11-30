@@ -82,6 +82,13 @@ void OpportunitiesPage::setupModel()
     treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }
 
+void OpportunitiesPage::createOpportunity(const QString &accountId)
+{
+    QMap<QString, QString> opportunityData;
+    opportunityData.insert(KDCRMFields::accountId(), accountId);
+    createNewItem(opportunityData);
+}
+
 QMap<QString, QString> OpportunitiesPage::dataForNewObject()
 {
     QMap<QString, QString> initialData;

@@ -43,6 +43,7 @@ class Page;
 class ReportPage;
 class LoadingOverlay;
 class ContactsPage;
+class AccountsPage;
 
 namespace Akonadi
 {
@@ -133,7 +134,7 @@ private:
     CollectionManager *mCollectionManager;
     LinkedItemsRepository *mLinkedItemsRepository;
 
-    Page *mAccountPage;
+    AccountsPage *mAccountPage;
     ContactsPage *mContactsPage;
     ItemsTreeModel *mContactsModel;
 

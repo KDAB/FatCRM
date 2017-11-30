@@ -267,13 +267,7 @@ bool Page::queryClose()
 
 void Page::slotNewClicked()
 {
-    const QMap<QString, QString> data = dataForNewObject();
-    Item item;
-    ItemEditWidgetBase *widget = createItemEditWidget(item, mType, true); // create a simple widget type
-    item.setParentCollection(mCollection);
-    widget->showNewItem(data, mCollection);
-    widget->show();
-    // cppcheck-suppress memleak as widget deletes itself
+    createNewItem();
 }
 
 QString Page::reportSubTitle(int count) const
@@ -419,13 +413,22 @@ void Page::initialize()
 
 void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
+    QMenu *menu = createContextMenu(pos);
+    if (menu) {
+        menu->exec(mUi.treeView->mapToGlobal(pos));
+        menu->deleteLater();
+    }
+}
+
+QMenu *Page::createContextMenu(const QPoint &)
+{
     const QModelIndex idx = treeView()->selectionModel()->currentIndex();
     if (idx.isValid()) {
         const Item item = treeView()->model()->data(idx, EntityTreeModel::ItemRole).value<Item>();
         ItemDataExtractor *dataExtractor = itemDataExtractor();
         if (!dataExtractor) {
             mCurrentItemUrl = QUrl();
-            return;
+            return nullptr;
         }
         mCurrentItemUrl = dataExtractor->itemUrl(mResourceBaseUrl, item);
     }
@@ -444,21 +447,21 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
         }
     }
 
-    QMenu contextMenu;
+    QMenu *contextMenu = new QMenu(this);
 
-    contextMenu.addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
+    contextMenu->addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
 
     if (mCurrentItemUrl.isValid()) {
-        contextMenu.addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
-        contextMenu.addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+        contextMenu->addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+        contextMenu->addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
     }
 
     if (!mSelectedEmails.isEmpty()) {
-        contextMenu.addAction(i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
+        contextMenu->addAction(i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
     }
 
     if (!selectedIndexes.isEmpty() && (mType == Account || mType == Opportunity || mType == Contact)) {
-        QMenu *changeMenu = contextMenu.addMenu(i18n("Change..."));
+        QMenu *changeMenu = contextMenu->addMenu(i18n("Change..."));
         if (mType == Account || mType == Contact) {
             QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
             cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
@@ -474,11 +477,12 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
         }
     }
 
-    if (contextMenu.actions().isEmpty()) {
-        return;
+    if (contextMenu->actions().isEmpty()) {
+        delete contextMenu;
+        return nullptr;
     }
 
-    contextMenu.exec(mUi.treeView->mapToGlobal(pos));
+    return contextMenu;
 }
 
 void Page::slotOpenUrl()
@@ -519,6 +523,20 @@ void Page::setupModel()
 void Page::insertFilterWidget(QWidget *widget)
 {
     mUi.verticalLayout->insertWidget(0, widget);
+}
+
+void Page::createNewItem(const QMap<QString, QString> &data)
+{
+    QMap<QString, QString> moreData = dataForNewObject();
+
+    moreData.unite(data);
+
+    Item item;
+    ItemEditWidgetBase *widget = createItemEditWidget(item, mType, true); // create a simple widget type
+    item.setParentCollection(mCollection);
+    widget->showNewItem(moreData, mCollection);
+    widget->show();
+    // cppcheck-suppress memleak as widget deletes itself
 }
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)

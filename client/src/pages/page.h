@@ -66,6 +66,7 @@ public:
     bool queryClose();
     void openWidget(const QString &id);
     void printReport();
+    void createNewItem(const QMap<QString, QString> &data = QMap<QString, QString>());
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
@@ -86,6 +87,7 @@ protected:
     virtual void handleNewRows(int start, int end, bool emitChanges) = 0;
     virtual void handleRemovedRows(int start, int end, bool initialLoadingDone);
     virtual void handleItemChanged(const Akonadi::Item &item);
+    virtual QMenu *createContextMenu(const QPoint &pos);
 
     inline Akonadi::EntityTreeView *treeView() {
         return mUi.treeView;
