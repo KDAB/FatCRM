@@ -22,6 +22,7 @@
 
 #include "sugarnote.h"
 #include "kdcrmfields.h"
+#include "kdcrmutils.h"
 
 #include <QSharedData>
 #include <QString>
@@ -43,7 +44,7 @@ public:
     QString mId;
     QString mName;
     QString mDateEntered;
-    QString mDateModified;
+    QDateTime mDateModified;
     QString mModifiedUserId;
     QString mModifiedByName;
     QString mCreatedBy;
@@ -128,15 +129,25 @@ QString SugarNote::dateEntered() const
     return d->mDateEntered;
 }
 
-void SugarNote::setDateModified(const QString &value)
+void SugarNote::setDateModified(const QDateTime &date)
 {
     d->mEmpty = false;
-    d->mDateModified = value;
+    d->mDateModified = date;
 }
 
-QString SugarNote::dateModified() const
+void SugarNote::setDateModifiedRaw(const QString &date)
+{
+    setDateModified(KDCRMUtils::dateTimeFromString(date));
+}
+
+QDateTime SugarNote::dateModified() const
 {
     return d->mDateModified;
+}
+
+QString SugarNote::dateModifiedRaw() const
+{
+    return KDCRMUtils::dateTimeToString(d->mDateModified);
 }
 
 void SugarNote::setModifiedUserId(const QString &value)
@@ -375,7 +386,7 @@ contact_name
         accessors.insert(KDCRMFields::dateEntered(),
                          NoteAccessorPair(&SugarNote::dateEntered, &SugarNote::setDateEntered, QString()));
         accessors.insert(KDCRMFields::dateModified(),
-                         NoteAccessorPair(&SugarNote::dateModified, &SugarNote::setDateModified, QString()));
+                         NoteAccessorPair(&SugarNote::dateModifiedRaw, &SugarNote::setDateModifiedRaw, QString()));
         accessors.insert(KDCRMFields::modifiedUserId(),
                          NoteAccessorPair(&SugarNote::modifiedUserId, &SugarNote::setModifiedUserId, QString()));
         accessors.insert(KDCRMFields::modifiedByName(),

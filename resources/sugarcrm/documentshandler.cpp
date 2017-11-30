@@ -208,7 +208,7 @@ Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
         (document.*(accessIt.value().setter))(KDCRMUtils::decodeXML(value));
     }
     item.setPayload<SugarDocument>(document);
-    item.setRemoteRevision(document.dateModified());
+    item.setRemoteRevision(document.dateModifiedRaw());
 
     return item;
 }
@@ -223,7 +223,7 @@ void DocumentsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const SugarDocument rightDocument = rightItem.payload<SugarDocument>();
 
     const QString modifiedBy = mSession->userName();
-    const QString modifiedOn = formatDate(rightDocument.dateModified());
+    const QString modifiedOn = KDCRMUtils::formatDateTime(rightDocument.dateModified());
 
     reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Document"));
     reporter->setRightPropertyValueTitle(
