@@ -29,6 +29,7 @@
 
 #include <AkonadiCore/ItemDeleteJob>
 #include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/ServerManager>
 
 #include <KLocalizedString>
 #include <KRun>
@@ -129,7 +130,6 @@ bool DocumentWidget::isModified() const
     return false;
 }
 
-
 DocumentsWindow::DocumentsWindow(QWidget *parent)
     : QWidget(parent),
       ui(new Ui::DocumentsWindow),
@@ -213,10 +213,11 @@ void DocumentsWindow::closeEvent(QCloseEvent *event)
 
 void DocumentsWindow::on_buttonBox_accepted() // "Save"
 {
-    if (isModified())
+    if (isModified()) {
         saveChanges();
-    else
+    } else {
         QWidget::close();
+    }
 }
 
 void DocumentsWindow::on_buttonBox_rejected()
@@ -229,7 +230,10 @@ void DocumentsWindow::urlClicked(const QString &url)
 {
     const QString documentRevisionId = QUrl(url).path().mid(1); // strip leading '/' from path
 
-    ComKdabSugarCRMItemTransferInterface transferInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
+    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource,
+                                                                  mResourceIdentifier);
+
+    ComKdabSugarCRMItemTransferInterface transferInterface(service, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
 
     QDBusPendingReply<QString> reply = transferInterface.downloadDocumentRevision(documentRevisionId);
     reply.waitForFinished();
@@ -303,7 +307,7 @@ void DocumentsWindow::slotJobResult(KJob *job)
     }
 }
 
-DocumentWidget* DocumentsWindow::addDocument(const SugarDocument &document)
+DocumentWidget *DocumentsWindow::addDocument(const SugarDocument &document)
 {
     mDocuments.append(document);
 
@@ -357,12 +361,14 @@ void DocumentsWindow::saveChanges()
         }
     }
 
+    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource,
+                                                                  mResourceIdentifier);
     foreach (DocumentWidget *widget, mDocumentWidgets) {
         if (widget->isModified()) {
             const SugarDocument document = widget->document();
             const SugarDocument modifiedDocument = widget->modifiedDocument();
             if (document.id().startsWith(QLatin1String("__temp"))) {
-                ComKdabSugarCRMItemTransferInterface transferInterface(QLatin1String("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
+                ComKdabSugarCRMItemTransferInterface transferInterface(service, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
 
                 // create new document instance
                 QDBusPendingReply<QString> uploadReply = transferInterface.uploadDocument(modifiedDocument.documentName(), modifiedDocument.statusId(),
