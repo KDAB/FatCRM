@@ -44,6 +44,8 @@ public:
     void setLinkedItemsRepository(LinkedItemsRepository *repo) override;
     ItemDataExtractor *itemDataExtractor() const override;
 
+protected:
+    QMap<QString, QString> fillAddressFieldsMap(QGroupBox *box) const override;
 
 private Q_SLOTS:
     void slotVisitWebsite();

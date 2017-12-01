@@ -60,6 +60,7 @@ private:
     void setDataInternal(const QMap<QString, QString> &data) override;
 
     QMap<QString, QString> contactData(const KContacts::Addressee &contact) const;
+    QMap<QString, QString> fillAddressFieldsMap(QGroupBox *box) const override;
 
 private Q_SLOTS:
     void slotSetBirthday();

@@ -98,6 +98,25 @@ ItemDataExtractor *AccountDetails::itemDataExtractor() const
     return mDataExtractor;
 }
 
+QMap<QString, QString> AccountDetails::fillAddressFieldsMap(QGroupBox *box) const
+{
+    QMap<QString, QString> map;
+    if (box == mUi->billingAddressGroupBox) {
+        map.insert("street", KDCRMFields::billingAddressStreet());
+        map.insert("city", KDCRMFields::billingAddressCity());
+        map.insert("state", KDCRMFields::billingAddressState());
+        map.insert("postalcode", KDCRMFields::billingAddressPostalcode());
+        map.insert("country", KDCRMFields::billingAddressCountry());
+    } else if (box == mUi->officeAddressGroupBox) {
+        map.insert("street", KDCRMFields::shippingAddressStreet());
+        map.insert("city", KDCRMFields::shippingAddressCity());
+        map.insert("state", KDCRMFields::shippingAddressState());
+        map.insert("postalcode", KDCRMFields::shippingAddressPostalcode());
+        map.insert("country", KDCRMFields::shippingAddressCountry());
+    }
+    return map;
+}
+
 void AccountDetails::slotBillingAddressCountryEditingFinished()
 {
     mUi->billing_address_country->setText(KDCRMUtils::canonicalCountryName(mUi->billing_address_country->text()));
@@ -163,6 +182,12 @@ void AccountDetails::initialize()
     connect(mUi->billing_address_country, SIGNAL(editingFinished()), SLOT(slotBillingAddressCountryEditingFinished()));
     connect(mUi->shipping_address_country, SIGNAL(editingFinished()), SLOT(slotShippingAddressCountryEditingFinished()));
     connect(mUi->visitWebsiteButton, SIGNAL(clicked()), this, SLOT(slotVisitWebsite()));
+    connect(mUi->copyBillingAddressButton, &QPushButton::clicked, this, [this]() {
+        copyAddressFromGroup(mUi->billingAddressGroupBox);
+    });
+    connect(mUi->copyOfficeAddressButton, &QPushButton::clicked, this, [this]() {
+        copyAddressFromGroup(mUi->officeAddressGroupBox);
+    });
 }
 
 void AccountDetails::slotVisitWebsite()
