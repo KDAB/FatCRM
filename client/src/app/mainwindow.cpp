@@ -134,7 +134,7 @@ void MainWindow::slotDelayedInit()
     mResourceDialog = new ResourceConfigDialog;
 
     connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
-            this, SLOT(slotDialogResourceSelected(Akonadi::AgentInstance)));
+            this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
 
     connect(mCollectionManager, SIGNAL(collectionResult(QString,Akonadi::Collection)),
             this, SLOT(slotCollectionResult(QString,Akonadi::Collection)));
@@ -258,6 +258,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
     AgentInstance agent = mResourceSelector->itemData(index, AgentInstanceModel::InstanceRole).value<AgentInstance>();
     if (agent.isValid()) {
         const QByteArray identifier = agent.identifier().toLatin1();
+        ClientSettings::self()->setDefaultResourceId(identifier);
         emit resourceSelected(identifier);
         slotResourceOnline(agent, agent.isOnline());
         mUi.actionSynchronize->setEnabled(true);
@@ -287,12 +288,6 @@ void MainWindow::slotResourceSelected(const Akonadi::AgentInstance &resource)
             return;
         }
     }
-}
-
-void MainWindow::slotDialogResourceSelected(const AgentInstance &resource)
-{
-    ClientSettings::self()->setDefaultResourceId(resource.identifier());
-    slotResourceSelected(resource);
 }
 
 void MainWindow::slotServerStarted()

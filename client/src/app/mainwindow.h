@@ -76,7 +76,6 @@ private Q_SLOTS:
     void slotFullReload();
     void slotResourceSelectionChanged(int index);
     void slotResourceSelected(const Akonadi::AgentInstance &resource);
-    void slotDialogResourceSelected(const Akonadi::AgentInstance &resource);
     void slotResourceCountChanged();
     void slotServerStarted();
     void slotShowMessage(const QString &);
