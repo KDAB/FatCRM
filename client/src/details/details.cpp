@@ -469,6 +469,7 @@ QMap<QString, QString> Details::fillAddressFieldsMap(QGroupBox *) const
 {
     qWarning() << "Missing fillAddressFieldsMap implementation";
     Q_ASSERT(false);
+    return QMap<QString, QString>();
 }
 
 QCompleter *Details::createCountriesCompleter()
