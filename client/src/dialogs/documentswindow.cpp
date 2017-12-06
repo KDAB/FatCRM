@@ -86,7 +86,7 @@ void DocumentWidget::setDocument(const SugarDocument &document)
 {
     mDocument = document;
 
-    mNameLabel->setText(QString::fromLatin1("<a href=\"document:///%1\">%2</a>").arg(mDocument.documentRevisionId(), Qt::escape(mDocument.documentName())));
+    mNameLabel->setText(QString::fromLatin1("<a href=\"document:///%1\">%2</a>").arg(mDocument.documentRevisionId(), mDocument.documentName().toHtmlEscaped()));
     mStatusBox->setCurrentIndex(mStatusBox->findText(mDocument.statusId()));
     mDescriptionEdit->setPlainText(mDocument.description());
 }

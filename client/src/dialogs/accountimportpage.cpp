@@ -145,7 +145,7 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         QString contactsInfo;
         foreach (const KContacts::Addressee &addressee, contacts.at(row).addressees) {
             qCDebug(FATCRM_CLIENT_LOG) << addressee.familyName() << " " << addressee.fullEmail();
-            contactsInfo += Qt::escape(addressee.fullEmail()) + '\n';
+            contactsInfo += addressee.fullEmail().toHtmlEscaped() + '\n';
         }
         if (!contactsInfo.isEmpty()) {
             accountLineEdit->setToolTip(contactsInfo);

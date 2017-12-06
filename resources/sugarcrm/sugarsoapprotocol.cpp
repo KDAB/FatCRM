@@ -39,7 +39,7 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
 
     KDSoapGenerated::TNS__User_auth userAuth;
     userAuth.setUser_name(user);
-    userAuth.setPassword(QString::fromAscii(passwordHash));
+    userAuth.setPassword(QString::fromLatin1(passwordHash));
     userAuth.setVersion(QLatin1String(".01"));
 
     KDSoapGenerated::TNS__Set_entry_result entry_result = mSession->soap()->login(userAuth, QLatin1String("FatCRM"));

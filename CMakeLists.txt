@@ -39,8 +39,7 @@ set(KF5_VERSION "5.12.0")
 set(KCONTACTS_LIB_VERSION "4.89.0")
 set(KCALENDARCORE_LIB_VERSION "4.81.0")
 
-find_package(Qt5Test ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
-find_package(Qt5Sql ${QT_REQUIRED_VERSION} CONFIG REQUIRED)
+find_package(Qt5 ${QT_REQUIRED_VERSION} CONFIG REQUIRED COMPONENTS Test Network Sql PrintSupport)
 
 find_package(KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
 find_package(KF5Akonadi "5.1" CONFIG QUIET)
@@ -53,10 +52,13 @@ find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5CalendarCore ${KCALENDARCORE_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5AkonadiContact CONFIG REQUIRED)
 find_package(KF5I18n CONFIG REQUIRED)
+find_package(KF5KIO CONFIG REQUIRED)
 find_package(KF5IconThemes CONFIG REQUIRED)
 find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5KDELibs4Support CONFIG REQUIRED)
 find_package(KF5WidgetsAddons CONFIG REQUIRED)
+find_package(KF5WindowSystem CONFIG REQUIRED)
+find_package(KF5Wallet CONFIG REQUIRED)
 
 find_package(PhoneNumber)
 set_package_properties(PhoneNumber PROPERTIES
