@@ -13,20 +13,20 @@ and providing a desktop application to search, view, and edit this data.
 
 Dependencies
 ============
-FatCRM uses Qt4, KDSoap, KDReports, Akonadi, and kdepimlibs4+kdelibs4.
+FatCRM uses Qt5, KDSoap, KDReports, Akonadi, and KF5.
 
 Compiling from sources, on Linux
 ================================
 * Prerequisites
 
-Install the package for kdepimlibs development based on Qt4: libkdepimlibs4-devel (OpenSuSE), kdepimlib5-dev (Debian/Ubuntu).
+Install the packages: kcalcore-devel akonadi-contact-devel (OpenSuSE), TODO (Debian/Ubuntu).
 
 * Install KDSoap (version 1.6.0 or higher)
 
 ```
 git clone https://github.com/KDAB/KDSoap.git
 cd KDSoap
-cmake . -DKDSoap_ENFORCE_QT4_BUILD=true -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDSoap-Qt4
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDSoap-Qt5
 make
 sudo make install
 cd ..
@@ -37,7 +37,7 @@ cd ..
 ```
 git clone https://github.com/KDAB/KDReports.git
 cd KDReports
-cmake . -DKDReports_ENFORCE_QT4_BUILD=true -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDReports-Qt4
+cmake . -DCMAKE_INSTALL_PREFIX=/usr/local/KDAB/KDReports-Qt5
 make
 sudo make install
 cd ..
@@ -48,8 +48,8 @@ cd ..
 ```
 git clone https://github.com/KDAB/FatCRM
 cd FatCRM ; mkdir build ; cd build
-export CMAKE_PREFIX_PATH=/usr/local/KDAB/KDSoap-Qt4:/usr/local/KDAB/KDReports-Qt4:$CMAKE_PREFIX_PATH
-cmake .. -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix`
+export CMAKE_PREFIX_PATH=/usr/local/KDAB/KDSoap-Qt5:/usr/local/KDAB/KDReports-Qt5:$CMAKE_PREFIX_PATH
+cmake .. -DCMAKE_INSTALL_PREFIX=`kf5-config --prefix`
 make
 sudo make install
 ```
