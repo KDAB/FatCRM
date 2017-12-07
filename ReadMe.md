@@ -19,7 +19,7 @@ Compiling from sources, on Linux
 ================================
 * Prerequisites
 
-Install the packages: kcalcore-devel akonadi-contact-devel (OpenSuSE), TODO (Debian/Ubuntu).
+Install the packages: kcalcore-devel akonadi-contact-devel (OpenSuSE), libkf5akonadicontact-dev extra-cmake-modules (Debian/Ubuntu).
 
 * Install KDSoap (version 1.6.0 or higher)
 
