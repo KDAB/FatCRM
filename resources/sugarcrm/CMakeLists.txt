@@ -69,7 +69,6 @@ target_link_libraries(akonadi_sugarcrm_resource_private
   ${KDSoap_LIBRARIES}
   KF5::Contacts
   KF5::CalendarCore
-  KF5::KDELibs4Support # b/c of KDateTime; KF5::CalendarCore uses it
   Qt5::DBus
   Qt5::Core
   Qt5::Network
@@ -78,6 +77,11 @@ target_link_libraries(akonadi_sugarcrm_resource_private
   KF5::AkonadiContact
   KF5::WindowSystem
 )
+if(KCALENDARCORE_REQUIRES_KDE4SUPPORT)
+  target_link_libraries(akonadi_sugarcrm_resource_private
+    KF5::KDELibs4Support
+  )
+endif()
 if(USE_KWALLET)
   target_link_libraries(akonadi_sugarcrm_resource_private
     KF5::Wallet
