@@ -31,12 +31,15 @@
 #include <KConfigGroup>
 #include <KWindowConfig>
 
+#include <QLabel>
+#include <QDir>
 #include <QTextBrowser>
 #include <QPushButton>
 #include <QWindow>
 #include <QScreen>
 #include <QVBoxLayout>
-#include <QDialogButtonBox>
+#include <QDesktopServices>
+#include <QTemporaryFile>
 
 using namespace Akonadi;
 
@@ -55,6 +58,11 @@ public:
     QString toHtml() const
     {
         return header() + mContent + footer();
+    }
+
+    QString plainText() const
+    {
+        return mTextContent;
     }
 
     void setPropertyNameTitle(const QString &title) override
@@ -80,22 +88,26 @@ public:
                             .arg(name)
                             .arg(textToHTML(leftValue))
                             .arg(textToHTML(rightValue)));
+            mTextContent.append(QStringLiteral("%1:\n%2\n%3\n\n").arg(name, leftValue, rightValue));
             break;
         case ConflictMode:
             mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#ff8686\">%2</td><td></td><td bgcolor=\"#ff8686\">%3</td></tr>")
                             .arg(name)
                             .arg(textToHTML(leftValue))
                             .arg(textToHTML(rightValue)));
+            mTextContent.append(QStringLiteral("%1:\n%2\n%3\n\n").arg(name, leftValue, rightValue));
             break;
         case AdditionalLeftMode:
             mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td bgcolor=\"#9cff83\">%2</td><td></td><td></td></tr>")
                             .arg(name)
                             .arg(textToHTML(leftValue)));
+            mTextContent.append(QStringLiteral("%1:\n%2\n\n").arg(name, leftValue));
             break;
         case AdditionalRightMode:
             mContent.append(QStringLiteral("<tr><td align=\"right\"><b>%1:</b></td><td></td><td></td><td bgcolor=\"#9cff83\">%2</td></tr>")
                             .arg(name)
                             .arg(textToHTML(rightValue)));
+            mTextContent.append(QStringLiteral("%1:\n%2\n\n").arg(name, rightValue));
             break;
         }
     }
@@ -127,6 +139,7 @@ private:
     QString mNameTitle;
     QString mLeftTitle;
     QString mRightTitle;
+    QString mTextContent;
 };
 
 class ConflictResolveDialog::Private
@@ -147,11 +160,13 @@ public:
     DifferencesAlgorithmInterface *mDiffInterface;
 
     QTextBrowser *mView;
+    QString mTextContent;
 
 public: // slots
     void useLocalItem();
     void useOtherItem();
     void useBothItems();
+    void openEditor();
     void createReport();
 };
 
@@ -182,6 +197,19 @@ void ConflictResolveDialog::Private::createReport()
     mDiffInterface->compare(&reporter, mLocalItem, mOtherItem);
 
     mView->setHtml(reporter.toHtml());
+    mTextContent = reporter.plainText();
+}
+
+void ConflictResolveDialog::Private::openEditor()
+{
+    QTemporaryFile file(QDir::tempPath() + "/FatCRM-XXXXXX.txt");
+    if (file.open()) {
+        file.setAutoRemove(false);
+        file.write(mTextContent.toLocal8Bit());
+        const QString fileName = file.fileName();
+        file.close();
+        QDesktopServices::openUrl(QUrl::fromLocalFile(fileName));
+    }
 }
 
 ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
@@ -190,29 +218,43 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     QVBoxLayout *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
 
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(this);
-    QPushButton *user1Button = new QPushButton;
-    buttonBox->addButton(user1Button, QDialogButtonBox::ActionRole);
-    QPushButton *user2Button = new QPushButton;
-    buttonBox->addButton(user2Button, QDialogButtonBox::ActionRole);
-    QPushButton *user3Button = new QPushButton;
-    buttonBox->addButton(user3Button, QDialogButtonBox::ActionRole);
-    user2Button->setText(i18nc("@action:button", "Take right one"));
-    user3Button->setText(i18nc("@action:button", "Take left one"));
-    user1Button->setText(i18nc("@action:button", "Keep both"));
+    // Don't use QDialogButtonBox, order is very important (left on the left, right on the right)
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+    QPushButton *takeLeftButton = new QPushButton(this);
+    takeLeftButton->setText(i18nc("@action:button", "Take my version"));
+    connect(takeLeftButton, SIGNAL(clicked()), this, SLOT(useLocalItem()));
+    buttonLayout->addWidget(takeLeftButton);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    QPushButton *takeRightButton = new QPushButton(this);
+    takeRightButton->setText(i18nc("@action:button", "Take their version"));
+    connect(takeRightButton, SIGNAL(clicked()), this, SLOT(useOtherItem()));
+    buttonLayout->addWidget(takeRightButton);
 
-    user3Button->setDefault(true);
-    connect(user1Button, SIGNAL(clicked()), this, SLOT(useBothItems()));
-    connect(user2Button, SIGNAL(clicked()), this, SLOT(useOtherItem()));
-    connect(user3Button, SIGNAL(clicked()), this, SLOT(useLocalItem()));
+    QPushButton *keepBothButton = new QPushButton(this);
+    keepBothButton->setText(i18nc("@action:button", "Keep both versions"));
+    buttonLayout->addWidget(keepBothButton);
+    connect(keepBothButton, SIGNAL(clicked()), this, SLOT(useBothItems()));
+
+    keepBothButton->setDefault(true);
 
     d->mView = new QTextBrowser(this);
     d->mView->setOpenLinks(false);
+
+    QLabel *docuLabel = new QLabel(i18n("Your changes conflict with those made by someone else meanwhile.\n"
+                "Unless one version can just be thrown away, you will have to integrate those changes manually.\n"
+                "Click on \"Open text editor\" to keep a copy of the texts, then select which version is most correct, then re-open it and modify it again to add what's missing."));
+    // TODO it would be even better if this was a clickable link in the label...
+    QPushButton *openEditorButton = new QPushButton(this);
+    openEditorButton->setText(i18nc("@action:button", "Open text editor"));
+    connect(openEditorButton, SIGNAL(clicked()), this, SLOT(openEditor()));
+    QHBoxLayout *separateLayout = new QHBoxLayout;
+    separateLayout->addWidget(openEditorButton);
+    separateLayout->addStretch();
+
     mainLayout->addWidget(d->mView);
-    mainLayout->addWidget(buttonBox);
+    mainLayout->addWidget(docuLabel);
+    mainLayout->addLayout(separateLayout);
+    mainLayout->addLayout(buttonLayout);
 
     // default size is tiny, and there's usually lots of text, so make it much bigger
     winId(); // ensure there's a window created

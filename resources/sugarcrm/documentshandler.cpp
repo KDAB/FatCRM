@@ -225,9 +225,9 @@ void DocumentsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = KDCRMUtils::formatDateTime(rightDocument.dateModified());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Document"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Document"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Document: modified by %1 on %2",
+        i18nc("@title:column", "Their Document: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();

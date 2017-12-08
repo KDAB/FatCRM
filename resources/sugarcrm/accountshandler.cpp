@@ -217,9 +217,9 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate(rightAccount.dateModifiedRaw());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Account"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Account"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Account: modified by %1 on %2",
+        i18nc("@title:column", "Their Account: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     bool seenBillingAddress = false;

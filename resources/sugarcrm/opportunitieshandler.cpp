@@ -213,9 +213,9 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = KDCRMUtils::formatDateTime(rightOpportunity.dateModified());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Opportunity"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My version of the Opportunity"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Opportunity: modified by %1 on %2",
+        i18nc("@title:column", "Their version of the Opportunity: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();

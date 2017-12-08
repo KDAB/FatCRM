@@ -918,9 +918,9 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate(getDateModified(rightContact));
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Contact"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Contact"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Contact: modified by %1 on %2",
+        i18nc("@title:column", "Their Contact: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     bool seenPrimaryAddress = false;

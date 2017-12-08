@@ -161,9 +161,9 @@ void CampaignsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate(rightCampaign.dateModified());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Campaign"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Campaign"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Campaign: modified by %1 on %2",
+        i18nc("@title:column", "Their Campaign: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();

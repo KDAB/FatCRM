@@ -67,6 +67,7 @@ private:
     Q_PRIVATE_SLOT(d, void useLocalItem())
     Q_PRIVATE_SLOT(d, void useOtherItem())
     Q_PRIVATE_SLOT(d, void useBothItems())
+    Q_PRIVATE_SLOT(d, void openEditor())
     Q_PRIVATE_SLOT(d, void createReport())
 };
 

@@ -163,9 +163,9 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate(rightLead.dateModified());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Lead"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Lead"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Lead: modified by %1 on %2",
+        i18nc("@title:column", "Their Lead: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     bool seenPrimaryAddress = false;

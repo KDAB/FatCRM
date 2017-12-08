@@ -240,9 +240,9 @@ void EmailsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedOn = KDCRMUtils::formatDateTime(rightEmail.dateModified());
 
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Email"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Email"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Email: modified by %1 on %2",
+        i18nc("@title:column", "Their Email: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();

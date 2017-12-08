@@ -464,9 +464,9 @@ void TasksHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = formatDate( getDateModified( *rightTask ) );
 
-    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "Local Task" ) );
+    reporter->setLeftPropertyValueTitle( i18nc( "@title:column", "My Task" ) );
     reporter->setRightPropertyValueTitle(
-        i18nc( "@title:column", "Serverside Task: modified by %1 on %2",
+        i18nc( "@title:column", "Their Task: modified by %1 on %2",
                modifiedBy, modifiedOn ) );
 
     const AccessorHash accessors = accessorHash();

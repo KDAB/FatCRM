@@ -172,9 +172,9 @@ void NotesHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     const QString modifiedBy = mSession->userName();
     const QString modifiedOn = KDCRMUtils::formatDateTime(rightNote.dateModified());
 
-    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "Local Note"));
+    reporter->setLeftPropertyValueTitle(i18nc("@title:column", "My Note"));
     reporter->setRightPropertyValueTitle(
-        i18nc("@title:column", "Serverside Note: modified by %1 on %2",
+        i18nc("@title:column", "Their Note: modified by %1 on %2",
               modifiedBy, modifiedOn));
 
     const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
