@@ -235,7 +235,11 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     buttonLayout->addWidget(keepBothButton);
     connect(keepBothButton, SIGNAL(clicked()), this, SLOT(useBothItems()));
 
-    keepBothButton->setDefault(true);
+    //keepBothButton->setDefault(true);
+    // Don't make "Keep both" available in FatCRM.
+    // Keeping two accounts makes a mess, and if the user then cleans up and deletes the wrong
+    // one, it breaks the associations with opps and contacts.
+    keepBothButton->hide();
 
     d->mView = new QTextBrowser(this);
     d->mView->setOpenLinks(false);
