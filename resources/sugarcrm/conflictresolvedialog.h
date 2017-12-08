@@ -60,6 +60,8 @@ public:
      */
     ConflictHandler::ResolveStrategy resolveStrategy() const;
 
+    void reject() override;
+
 private:
     class Private;
     Private *const d;

@@ -261,7 +261,7 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     mainLayout->addLayout(buttonLayout);
 
     // default size is tiny, and there's usually lots of text, so make it much bigger
-    winId(); // ensure there's a window created
+    create(); // ensure there's a window created
     const QSize availableSize = windowHandle()->screen()->availableSize();
     windowHandle()->resize(availableSize.width() * 0.7, availableSize.height() * 0.5);
     KWindowConfig::restoreWindowSize(windowHandle(), KSharedConfig::openConfig()->group("FatCRMConflictResolveDialog"));
@@ -291,6 +291,11 @@ void ConflictResolveDialog::setDifferencesInterface(DifferencesAlgorithmInterfac
 ConflictHandler::ResolveStrategy ConflictResolveDialog::resolveStrategy() const
 {
     return d->mStrategy;
+}
+
+void ConflictResolveDialog::reject()
+{
+    // Do nothing, don't allow rejecting the dialog. The user must make a choice.
 }
 
 #include "moc_conflictresolvedialog.cpp"
