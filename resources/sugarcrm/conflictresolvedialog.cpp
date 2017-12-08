@@ -28,11 +28,14 @@
 
 #include <KColorScheme>
 #include <KLocalizedString>
+#include <KConfigGroup>
+#include <KWindowConfig>
+
 #include <QTextBrowser>
 #include <QPushButton>
-
+#include <QWindow>
+#include <QScreen>
 #include <QVBoxLayout>
-#include <KConfigGroup>
 #include <QDialogButtonBox>
 
 using namespace Akonadi;
@@ -211,11 +214,20 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     mainLayout->addWidget(d->mView);
     mainLayout->addWidget(buttonBox);
 
+    // default size is tiny, and there's usually lots of text, so make it much bigger
+    winId(); // ensure there's a window created
+    const QSize availableSize = windowHandle()->screen()->availableSize();
+    windowHandle()->resize(availableSize.width() * 0.7, availableSize.height() * 0.5);
+    KWindowConfig::restoreWindowSize(windowHandle(), KSharedConfig::openConfig()->group("FatCRMConflictResolveDialog"));
+    resize(windowHandle()->size()); // workaround for QTBUG-40584
+
     QMetaObject::invokeMethod(this, "createReport", Qt::QueuedConnection);
 }
 
 ConflictResolveDialog::~ConflictResolveDialog()
 {
+    KConfigGroup group(KSharedConfig::openConfig()->group("FatCRMConflictResolveDialog"));
+    KWindowConfig::saveWindowSize(windowHandle(), group);
     delete d;
 }
 
