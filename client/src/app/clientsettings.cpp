@@ -23,6 +23,8 @@
 #include "clientsettings.h"
 #include "opportunityfiltersettings.h"
 
+#include <algorithm>
+
 #include <KLocalizedString>
 
 #include <QWidget>
@@ -232,4 +234,78 @@ OpportunityFilterSettings ClientSettings::filterSettings() const
     OpportunityFilterSettings settings;
     settings.load(*m_settings, QStringLiteral("defaultOppFilter"));
     return settings;
+}
+
+void ClientSettings::saveSearch(const OpportunityFilterSettings &settings, QString prefix)
+{
+    const QVector<QString> savedSearches = self()->savedSearches();
+    if (std::none_of(savedSearches.begin(),
+                     savedSearches.end(),
+                     [this, prefix](const QString &selectedSearchName){ return (searchPrefixFromName(selectedSearchName) == prefix); })) {
+        // Prefix does not exist so create a new search
+        incrementSearchIndex();
+        prefix = "savedSearch-" + QString::number(searchIndex());
+    }
+    settings.save(*m_settings, prefix);
+}
+
+void ClientSettings::loadSavedSearch(OpportunityFilterSettings &settings, const QString &prefix)
+{
+    settings.load(*m_settings, prefix);
+}
+
+QVector<QString> ClientSettings::savedSearches() const
+{
+    return OpportunityFilterSettings::savedSearches(*m_settings);
+}
+
+QString ClientSettings::searchPrefixFromName(const QString &name) const
+{
+    return OpportunityFilterSettings::searchPrefixFromName(*m_settings, name);
+}
+
+QString ClientSettings::searchNameFromPrefix(const QString &prefix) const
+{
+    return m_settings->value(prefix + "/searchName").toString();
+}
+
+void ClientSettings::incrementSearchIndex()
+{
+    m_settings->setValue("savedSearches/searchesIndex", QString::number(searchIndex() + 1));
+}
+
+int ClientSettings::searchIndex() const
+{
+    return m_settings->value("savedSearches/searchesIndex").toInt();
+}
+
+void ClientSettings::removeSearch(const QString &searchName)
+{
+    m_settings->remove(searchPrefixFromName(searchName));
+
+    QList<QVariant> recentlyUsedSearches = this->recentlyUsedSearches();
+    auto it = std::find_if(recentlyUsedSearches.begin(),
+                 recentlyUsedSearches.end(),
+                 [searchName](const QVariant &search){ return search.toString() == searchName; });
+    if (it != recentlyUsedSearches.end()) {
+        recentlyUsedSearches.erase(it);
+    }
+    setRecentlyUsedSearches(recentlyUsedSearches);
+}
+
+void ClientSettings::setRecentlyUsedSearches(const QList<QVariant> &useOrder)
+{
+    m_settings->setValue("savedSearches/useOrder", useOrder);
+    emit recentSearchesUpdated();
+}
+
+QString ClientSettings::searchText(const QString &searchName) const
+{
+    const QString prefix = searchPrefixFromName(searchName);
+    return m_settings->value(prefix + "/searchText").toString();
+}
+
+QList<QVariant> ClientSettings::recentlyUsedSearches() const
+{
+    return m_settings->value("savedSearches/useOrder").toList();
 }

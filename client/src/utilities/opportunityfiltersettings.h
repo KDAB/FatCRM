@@ -59,6 +59,10 @@ public:
     bool showClosed() const { return mShowClosed; }
     void setShownPriority(const QString &shownPriority);
     QString shownPriority() const { return mShownPriority; }
+    void setSearchName(const QString &searchName);
+    QString searchName() const { return mSearchName; }
+    void setSearchText(const QString &searchText);
+    QString searchText() const { return mSearchText; }
 
     QString filterDescription() const;
 
@@ -66,6 +70,8 @@ public:
 
     void save(QSettings &settings, const QString &prefix) const;
     void load(const QSettings &settings, const QString &prefix);
+    static QVector<QString> savedSearches(const QSettings &settings);
+    static QString searchPrefixFromName(const QSettings &settings, const QString &name);
 
 private:
     QStringList mAssignees; // no filtering if empty
@@ -79,6 +85,8 @@ private:
     int mMaxDateIndex = 0;
     bool mShowOpen = true;
     bool mShowClosed = false;
+    QString mSearchName;
+    QString mSearchText;
 };
 
 #endif // OPPORTUNITYFILTERSETTINGS_H

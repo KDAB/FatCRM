@@ -27,6 +27,7 @@
 
 class OpportunityFilterWidget;
 class OpportunityFilterProxyModel;
+class OpportunityFilterSettings;
 class OpportunityDataExtractor;
 
 class OpportunitiesPage : public Page
@@ -38,6 +39,13 @@ public:
     ~OpportunitiesPage() override;
 
     void setupModel() override;
+
+    void setSearchPrefix(const QString &searchPrefix);
+    void setSearchName(const QString &searchName);
+    void setSearchText(const QString &searchText);
+
+    void saveSearch();
+    void loadSearch(const QString &searchPrefix);
 
 public slots:
     void createOpportunity(const QString &accountId);
@@ -52,6 +60,9 @@ private:
     OpportunityFilterWidget *mFilterUiWidget;
     OpportunityFilterProxyModel *mOppFilterProxyModel;
     OpportunityDataExtractor *mDataExtractor;
+
+private slots:
+    void slotDefaultOppFilterUpdated(const OpportunityFilterSettings &settings);
 };
 
 #endif /* OPPORTUNITIESPAGE_H */

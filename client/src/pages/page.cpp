@@ -832,6 +832,11 @@ void Page::retrieveResourceUrl()
     }
 }
 
+void Page::setSearchText(const QString &searchText)
+{
+    mUi.searchLE->setText(searchText);
+}
+
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"

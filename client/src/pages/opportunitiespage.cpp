@@ -28,6 +28,7 @@
 #include "opportunityfilterproxymodel.h"
 #include "referenceddata.h"
 #include "fatcrm_client_debug.h"
+#include "clientsettings.h"
 
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
@@ -36,6 +37,7 @@
 #include <KLocalizedString>
 
 #include <QStyledItemDelegate>
+#include <QSettings>
 
 using namespace Akonadi;
 
@@ -67,6 +69,8 @@ OpportunitiesPage::OpportunitiesPage(QWidget *parent)
 
     mFilterUiWidget = new OpportunityFilterWidget(mOppFilterProxyModel, this);
     insertFilterWidget(mFilterUiWidget);
+
+    connect(mFilterUiWidget, &OpportunityFilterWidget::filterUpdated, this, &OpportunitiesPage::slotDefaultOppFilterUpdated);
 }
 
 OpportunitiesPage::~OpportunitiesPage()
@@ -120,7 +124,37 @@ void OpportunitiesPage::handleNewRows(int start, int end, bool emitChanges)
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
 }
 
+void OpportunitiesPage::setSearchPrefix(const QString &searchPrefix)
+{
+    mFilterUiWidget->setSearchPrefix(searchPrefix);
+}
+
+void OpportunitiesPage::setSearchName(const QString &searchName)
+{
+    mFilterUiWidget->setSearchName(searchName);
+}
+
+void OpportunitiesPage::setSearchText(const QString &searchText)
+{
+    mFilterUiWidget->setSearchText(searchText);
+}
+
+void OpportunitiesPage::saveSearch()
+{
+    mFilterUiWidget->saveSearch();
+}
+
+void OpportunitiesPage::loadSearch(const QString &searchPrefix)
+{
+    mFilterUiWidget->loadSearch(searchPrefix);
+}
+
 ItemDataExtractor *OpportunitiesPage::itemDataExtractor() const
 {
     return mDataExtractor;
+}
+
+void OpportunitiesPage::slotDefaultOppFilterUpdated(const OpportunityFilterSettings &settings)
+{
+    ClientSettings::self()->setFilterSettings(settings);
 }

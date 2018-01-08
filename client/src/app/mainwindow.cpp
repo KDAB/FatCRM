@@ -25,6 +25,7 @@
 #include "contactspage.h"
 #include "accountspage.h"
 #include "opportunitiespage.h"
+#include "opportunityfilterwidget.h"
 
 #include "accountrepository.h"
 #include "clientsettings.h"
@@ -42,6 +43,7 @@
 #include "reportpage.h"
 #include "resourceconfigdialog.h"
 #include "fatcrm_client_debug.h"
+#include "searchesdialog.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
@@ -220,6 +222,13 @@ void MainWindow::createActions()
     connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
+
+    mSavedSearchesMenu = new QMenu(i18n("Saved Searches"), mViewMenu);
+    mViewMenu->addMenu(mSavedSearchesMenu);
+
+    populateSavedSearchesMenu();
+    connect(ClientSettings::self(), &ClientSettings::recentSearchesUpdated, this, &MainWindow::populateSavedSearchesMenu);
+    connect(mSavedSearchesMenu, &QMenu::triggered, this, &MainWindow::slotLoadSearchFromRecent);
 
     mMainToolBar = addToolBar(i18n("Main ToolBar"));
     mResourceSelector = new QComboBox(this);
@@ -435,12 +444,12 @@ void MainWindow::createTabs()
     addPage(mAccountPage);
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
-    auto *opportunitiesPage = new OpportunitiesPage(this);
-    addPage(opportunitiesPage);
-    mUi.tabWidget->addTab(opportunitiesPage, i18n("&Opportunities"));
+    mOpportunitiesPage = new OpportunitiesPage(this);
+    addPage(mOpportunitiesPage);
+    mUi.tabWidget->addTab(mOpportunitiesPage, i18n("&Opportunities"));
 
-    connect(mAccountPage, &AccountsPage::requestNewOpportunity, opportunitiesPage, &OpportunitiesPage::createOpportunity);
-    connect(opportunitiesPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotOppModelCreated(ItemsTreeModel*)));
+    connect(mAccountPage, &AccountsPage::requestNewOpportunity, mOpportunitiesPage, &OpportunitiesPage::createOpportunity);
+    connect(mOpportunitiesPage, &Page::modelCreated, this, &MainWindow::slotOppModelCreated);
 
 #if 0
     Page *page = new LeadsPage(this);
@@ -677,6 +686,17 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
     }
 }
 
+void MainWindow::slotOpenSearchesDialog()
+{
+    SearchesDialog dlg;
+    dlg.setWindowTitle(i18n("Load Saved Search"));
+    if (dlg.exec() == QDialog::Rejected) {
+        return;
+    }
+
+    loadSavedSearches(dlg.selectedItemName());
+}
+
 Page *MainWindow::currentPage() const
 {
     const int index = mUi.tabWidget->currentIndex();
@@ -768,4 +788,91 @@ void MainWindow::processPendingImports()
 void MainWindow::slotHideOverlay()
 {
     mLoadingOverlay->hide();
+}
+
+void MainWindow::loadSavedSearches(const QString &selectedItemName)
+{
+    // Make sure user is on the Opportunities Page
+    mUi.tabWidget->setCurrentIndex(1);
+
+    mLoadedSearchPrefix = ClientSettings::self()->searchPrefixFromName(selectedItemName);
+    mOpportunitiesPage->loadSearch(mLoadedSearchPrefix);
+
+    QString searchText = ClientSettings::self()->searchText(selectedItemName);
+    currentPage()->setSearchText(searchText);
+
+    mLoadedSearchName = selectedItemName;
+
+    QList<QVariant> recentlyUsedSearches = ClientSettings::self()->recentlyUsedSearches();
+    auto it = std::find_if(recentlyUsedSearches.begin(),
+                           recentlyUsedSearches.end(),
+                           [selectedItemName](const QVariant &search){ return search.toString() == selectedItemName; });
+    if (it == recentlyUsedSearches.end()) {
+        recentlyUsedSearches.prepend(selectedItemName);
+    }
+    ClientSettings::self()->setRecentlyUsedSearches(recentlyUsedSearches);
+}
+
+void MainWindow::populateSavedSearchesMenu()
+{
+    QList<QVariant> recentSearches = ClientSettings::self()->recentlyUsedSearches();
+    int count = qMin(recentSearches.count(), 5);
+
+    mSavedSearchesMenu->clear();
+    for (int x = 0; x < count; ++x) {
+        const QString searchName = recentSearches.at(x).toString();
+        QAction *searchAlternative = new QAction(searchName, this);
+        mSavedSearchesMenu->addAction(searchAlternative);
+    }
+
+    mSavedSearchesMenu->addSeparator();
+
+    mLoadedSearchName = ClientSettings::self()->searchNameFromPrefix(mLoadedSearchPrefix);
+    QString saveActionName = mLoadedSearchPrefix.isEmpty() ? i18n("Save...") : i18n("Save \"%1\"", mLoadedSearchName);
+    QAction *saveCurrentSearch = new QAction(saveActionName, this);
+    mSavedSearchesMenu->addAction(saveCurrentSearch);
+    connect(saveCurrentSearch, &QAction::triggered, this, &MainWindow::slotSaveSearch);
+    if (mLoadedSearchPrefix.isEmpty()) {
+        saveCurrentSearch->setDisabled(true);
+    }
+
+    QAction *saveSearchAs = new QAction(i18n("Save Search As..."), this);
+    mSavedSearchesMenu->addAction(saveSearchAs);
+    connect(saveSearchAs, &QAction::triggered, this, &MainWindow::slotSaveSearchAs);
+
+    QAction *manageSearches = new QAction(i18n("Load Saved Search..."), this);
+    mSavedSearchesMenu->addAction(manageSearches);
+    connect(manageSearches, &QAction::triggered, this, &MainWindow::slotOpenSearchesDialog);
+}
+
+void MainWindow::slotLoadSearchFromRecent(QAction *searchAction)
+{
+    const QList<QVariant> recentSearches = ClientSettings::self()->recentlyUsedSearches();
+    const QString selectedSearchName = searchAction->iconText();
+    auto it = std::find_if(recentSearches.begin(),
+                      recentSearches.end(),
+                      [selectedSearchName](const QVariant &recentSearchesName){ return recentSearchesName.toString() == selectedSearchName; });
+
+    if (it != recentSearches.end()) {
+        loadSavedSearches(selectedSearchName);
+    }
+}
+
+void MainWindow::slotSaveSearch()
+{
+    if (!mLoadedSearchPrefix.isEmpty()) {
+        mOpportunitiesPage->setSearchPrefix(mLoadedSearchPrefix);
+        mOpportunitiesPage->setSearchName(mLoadedSearchName);
+        mOpportunitiesPage->setSearchText(currentPage()->searchText());
+        mOpportunitiesPage->saveSearch();
+    } else {
+        slotSaveSearchAs();
+    }
+}
+
+void MainWindow::slotSaveSearchAs()
+{
+    AddSearchDialog dialog(this, false, mLoadedSearchName, currentPage()->searchText());
+    dialog.setWindowTitle(i18n("Save Search As"));
+    dialog.exec();
 }

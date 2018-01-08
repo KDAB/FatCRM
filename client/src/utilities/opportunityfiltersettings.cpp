@@ -26,6 +26,7 @@
 #include <KLocalizedString>
 
 #include <QSettings>
+#include <QDebug>
 
 OpportunityFilterSettings::OpportunityFilterSettings()
 {
@@ -73,6 +74,16 @@ void OpportunityFilterSettings::setShowOpenClosed(bool showOpen, bool showClosed
 void OpportunityFilterSettings::setShownPriority(const QString &shownPriority)
 {
     mShownPriority = shownPriority;
+}
+
+void OpportunityFilterSettings::setSearchName(const QString &searchName)
+{
+    mSearchName = searchName;
+}
+
+void OpportunityFilterSettings::setSearchText(const QString &searchText)
+{
+    mSearchText = searchText;
 }
 
 QString OpportunityFilterSettings::filterDescription() const
@@ -130,6 +141,10 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/showOpen", mShowOpen);
     settings.setValue(prefix + "/showClosed", mShowClosed);
     settings.setValue(prefix + "/shownPriority", mShownPriority);
+
+    // Allow saving searches using this function
+    settings.setValue(prefix + "/searchName", mSearchName);
+    settings.setValue(prefix + "/searchText", mSearchText);
 }
 
 void OpportunityFilterSettings::load(const QSettings &settings, const QString &prefix)
@@ -146,4 +161,33 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     mShowOpen = val.isValid() ? val.toBool() : true;
     mShowClosed = settings.value(prefix + "/showClosed").toBool();
     mShownPriority = settings.value(prefix + "/shownPriority").toString();
+
+    // Allow loading searches using this function
+    mSearchName = settings.value(prefix + "/searchName").toString();
+    mSearchText = settings.value(prefix + "/searchText").toString();
+}
+
+QVector<QString> OpportunityFilterSettings::savedSearches(const QSettings &settings)
+{
+    const QStringList allSettingsKeys = settings.allKeys();
+    QVector<QString> savedSearches;
+    for (const QString &key : allSettingsKeys) {
+        if (key.startsWith("savedSearch-") && key.endsWith("/searchName")) {
+            savedSearches.prepend(settings.value(key).toString());
+        }
+    }
+    return savedSearches;
+}
+
+QString OpportunityFilterSettings::searchPrefixFromName(const QSettings &settings, const QString &name)
+{
+    const QStringList allSettingsKeys = settings.allKeys();
+    for (const QString &key : allSettingsKeys) {
+        if (key.startsWith("savedSearch-") && key.endsWith("/searchName")) {
+            if (settings.value(key).toString() == name) {
+                return key.split("/").at(0);
+            }
+        }
+    }
+    return QString();
 }

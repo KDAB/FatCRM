@@ -59,14 +59,14 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
 
     setupFromConfig();
 
-    connect(ui->rbAll, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
-    connect(ui->rbAssignedTo, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
-    connect(ui->rbCountry, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->rbAll, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
+    connect(ui->rbAssignedTo, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
+    connect(ui->rbCountry, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(slotAssigneeSelected()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
-    connect(ui->cbOpen, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
-    connect(ui->cbClosed, SIGNAL(clicked(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbOpen, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbClosed, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(slotCountrySelected()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
@@ -83,7 +83,7 @@ OpportunityFilterWidget::~OpportunityFilterWidget()
     delete ui;
 }
 
-void OpportunityFilterWidget::setupFromConfig()
+void OpportunityFilterWidget::setupFromConfig(const OpportunityFilterSettings &settings)
 {
     ui->cbAssignee->clear();
     ui->cbAssignee->addItem(i18n("me"));
@@ -91,9 +91,6 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->cbCountry->clear();
     ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());
     ui->cbCountry->addItem(i18n("Other"));
-
-    const OpportunityFilterSettings settings = ClientSettings::self()->filterSettings();
-
     ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbAssignee->findText(settings.assigneeGroup())));
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
@@ -109,6 +106,7 @@ void OpportunityFilterWidget::setupFromConfig()
     ui->rbAssignedTo->setChecked(!settings.assignees().isEmpty());
     ui->rbCountry->setChecked(!settings.countries().isEmpty());
     ui->cbPriority->setCurrentIndex(qMax(0, ui->cbPriority->findText(settings.shownPriority())));
+
     filterChanged();
 }
 
@@ -151,6 +149,11 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
 int OpportunityFilterWidget::indexForOther() const
 {
     return mCustomMaxNextStepDate.isValid() ? CustomDate + 1 : CustomDate;
+}
+
+void OpportunityFilterWidget::setFilterSettings(const OpportunityFilterSettings &filterSettings)
+{
+    m_filterSettings = filterSettings;
 }
 
 
@@ -196,8 +199,9 @@ void OpportunityFilterWidget::filterChanged()
     }
     filterSettings.setMaxDate(maxNextStepDate(), ui->cbMaxNextStepDate->currentIndex());
     m_oppFilterProxyModel->setFilter(filterSettings);
-    // immediate save
-    ClientSettings::self()->setFilterSettings(filterSettings);
+
+    emit filterUpdated(filterSettings);
+    setFilterSettings(filterSettings);
 }
 
 void OpportunityFilterWidget::slotResetMaxNextStepDateIndex()
@@ -219,4 +223,40 @@ void OpportunityFilterWidget::slotSetMaxNextStepCustomDate(const QDate &date)
     ui->cbMaxNextStepDate->setCurrentIndex(CustomDate);
     calendar->close(); // Qt::WA_DeleteOnClose
     filterChanged();
+}
+
+void OpportunityFilterWidget::setSearchPrefix(const QString &searchPrefix)
+{
+    mSearchPrefix = searchPrefix;
+}
+
+void OpportunityFilterWidget::setSearchName(const QString &searchName)
+{
+    mSearchName = searchName;
+}
+
+void OpportunityFilterWidget::setSearchText(const QString &searchText)
+{
+    mSearchText = searchText;
+}
+
+void OpportunityFilterWidget::saveSearch()
+{
+    filterChanged();
+
+    // Add values from filterWidget
+    m_filterSettings.setSearchName(mSearchName);
+    m_filterSettings.setSearchText(mSearchText);
+    // Save as a saved search
+    ClientSettings::self()->saveSearch(m_filterSettings, mSearchPrefix);
+}
+
+void OpportunityFilterWidget::loadSearch(const QString &searchPrefix)
+{
+    OpportunityFilterSettings settings;
+    ClientSettings::self()->loadSavedSearch(settings, searchPrefix);
+    setupFromConfig(settings);
+
+    setSearchName(settings.searchName());
+    setSearchText(settings.searchText());
 }

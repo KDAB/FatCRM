@@ -25,6 +25,10 @@
 
 #include <QDate>
 #include <QWidget>
+#include <QSettings>
+
+#include "opportunityfiltersettings.h"
+#include "clientsettings.h"
 
 namespace Ui {
 class OpportunityFilterWidget;
@@ -39,8 +43,22 @@ public:
     explicit OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel, QWidget *parent = nullptr);
     ~OpportunityFilterWidget() override;
 
+    void setSearchPrefix(const QString &searchPrefix);
+    void setSearchName(const QString &searchName);
+    QString searchName() const { return mSearchName; }
+    void setSearchText(const QString &searchText);
+    QString searchText() const { return mSearchText; }
+
+    void saveSearch();
+    void loadSearch(const QString &searchPrefix);
+
+public Q_SLOTS:
+signals:
+    void filterUpdated(const OpportunityFilterSettings &settings);
+
+
 private Q_SLOTS:
-    void setupFromConfig();
+    void setupFromConfig(const OpportunityFilterSettings &settings = ClientSettings::self()->filterSettings());
     void filterChanged();
     void slotAssigneeSelected();
     void slotCountrySelected();
@@ -50,10 +68,16 @@ private Q_SLOTS:
 private:
     QDate maxNextStepDate() const;
     int indexForOther() const;
+    void setFilterSettings(const OpportunityFilterSettings &filterSettings);
 
     QDate mCustomMaxNextStepDate;
     Ui::OpportunityFilterWidget *ui;
     OpportunityFilterProxyModel *m_oppFilterProxyModel;
+    OpportunityFilterSettings m_filterSettings;
+
+    QString mSearchPrefix;
+    QString mSearchName;
+    QString mSearchText;
 };
 
 #endif // OPPORTUNITYFILTERWIDGET_H

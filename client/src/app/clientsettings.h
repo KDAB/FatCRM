@@ -60,6 +60,9 @@ public:
     void setFilterSettings(const OpportunityFilterSettings &settings);
     OpportunityFilterSettings filterSettings() const;
 
+    void saveSearch(const OpportunityFilterSettings &settings, QString searchName);
+    void loadSavedSearch(OpportunityFilterSettings &settings, const QString &prefix);
+
     class GroupFilters
     {
     public:
@@ -89,12 +92,23 @@ public:
     void setDefaultResourceId(const QString &id);
     QString defaultResourceId() const;
 
+    QVector<QString> savedSearches() const;
+    QString searchPrefixFromName(const QString &name) const;
+    QString searchNameFromPrefix(const QString &prefix) const;
+    void incrementSearchIndex();
+    int searchIndex() const;
+    void removeSearch(const QString &searchName);
+    QList<QVariant> recentlyUsedSearches() const;
+    void setRecentlyUsedSearches(const QList<QVariant> &useOrder);
+    QString searchText(const QString &searchName) const;
+
     ClientSettings();
     ~ClientSettings();
 
 Q_SIGNALS:
     void assigneeFiltersChanged();
     void countryFiltersChanged();
+    void recentSearchesUpdated();
 
 private:
     QSettings *m_settings;

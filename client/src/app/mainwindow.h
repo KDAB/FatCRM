@@ -27,6 +27,7 @@
 #include "ui_mainwindow.h"
 #include "enums.h"
 #include "fatcrmprivate_export.h"
+#include "opportunitiespage.h"
 #include <QMainWindow>
 
 class ItemsTreeModel;
@@ -99,6 +100,11 @@ private Q_SLOTS:
     void slotTryImportCsvFile(const QString &filePath);
     void slotImportCsvFile(const QString &filePath);
     void slotHideOverlay();
+    void slotOpenSearchesDialog();
+    void populateSavedSearchesMenu();
+    void slotLoadSearchFromRecent(QAction *searchAction);
+    void slotSaveSearch();
+    void slotSaveSearchAs();
 
 private:
     void initialize(bool displayOverlay);
@@ -118,6 +124,7 @@ private:
     void showResourceDialog();
     int resourceIndexFor(const QString &id) const;
     void raiseMainWindowAndDialog(QWidget *dialog);
+    void loadSavedSearches(const QString &selectedItemName);
 
     QList<Page *> mPages;
 
@@ -138,6 +145,7 @@ private:
 
     AccountsPage *mAccountPage;
     ContactsPage *mContactsPage;
+    OpportunitiesPage *mOpportunitiesPage;
     ItemsTreeModel *mContactsModel;
 
     QToolBar *mMainToolBar;
@@ -149,7 +157,9 @@ private:
     QStringList mPendingImportPaths;
     LoadingOverlay *mLoadingOverlay;
 
-
+    QMenu *mSavedSearchesMenu;
+    QString mLoadedSearchName;
+    QString mLoadedSearchPrefix;
 };
 
 #endif

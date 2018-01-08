@@ -47,6 +47,8 @@ set(app_SRCS
   dialogs/resourceconfigdialog.cpp
   dialogs/selectitemdialog.cpp
   dialogs/tabbeditemeditwidget.cpp
+  dialogs/searchesdialog.cpp
+  dialogs/addsearchdialog.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
   utilities/accountdataextractor.cpp
@@ -97,6 +99,8 @@ qt5_wrap_ui(app_SRCS
   dialogs/selectitemdialog.ui
   dialogs/simpleitemeditwidget.ui
   dialogs/tabbeditemeditwidget.ui
+  dialogs/searchesdialog.ui
+  dialogs/addsearchdialog.ui
   widgets/associateddatawidget.ui
 )
 

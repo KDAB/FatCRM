@@ -67,6 +67,8 @@ public:
     void openWidget(const QString &id);
     void printReport();
     void createNewItem(const QMap<QString, QString> &data = QMap<QString, QString>());
+    void setSearchText(const QString &searchText);
+    QString searchText() const { return mUi.searchLE->text(); }
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
