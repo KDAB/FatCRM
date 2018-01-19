@@ -247,7 +247,7 @@ void DocumentsWindow::urlClicked(const QString &url)
             QMimeDatabase db;
             const auto mimeType = db.mimeTypeForUrl(localFile);
 
-            KRun::runUrl(localFile, mimeType.isValid() ? mimeType.name() : QString(), this, true, false);
+            KRun::runUrl(localFile, mimeType.isValid() ? mimeType.name() : QString(), this, KRun::RunFlags(KRun::DeleteTemporaryFiles));
 
             return;
         }
