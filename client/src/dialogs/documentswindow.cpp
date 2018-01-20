@@ -130,7 +130,7 @@ bool DocumentWidget::isModified() const
     return false;
 }
 
-DocumentsWindow::DocumentsWindow(QWidget *parent)
+DocumentsWindow::DocumentsWindow(bool allowCreateDocs, QWidget *parent)
     : QWidget(parent),
       ui(new Ui::DocumentsWindow),
       mLinkedItemsRepository(nullptr),
@@ -142,6 +142,7 @@ DocumentsWindow::DocumentsWindow(QWidget *parent)
     ClientSettings::self()->restoreWindowSize("DocumentsWindow", this);
 
     connect(ui->attachButton, SIGNAL(clicked()), SLOT(attachDocument()));
+    setCreateNewEnabled(allowCreateDocs);
 }
 
 DocumentsWindow::~DocumentsWindow()
@@ -184,6 +185,11 @@ void DocumentsWindow::loadDocumentsFor(const QString &id, LinkedItemType itemTyp
     foreach (const SugarDocument &document, documents) {
         addDocument(document);
     }
+}
+
+void DocumentsWindow::setCreateNewEnabled(bool enabled)
+{
+    ui->attachButton->setEnabled(enabled);
 }
 
 void DocumentsWindow::closeEvent(QCloseEvent *event)

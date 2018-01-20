@@ -634,10 +634,12 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     details->setResourceIdentifier(mResourceIdentifier, mResourceBaseUrl);
     details->setCollectionManager(mCollectionManager);
     details->setLinkedItemsRepository(mLinkedItemsRepository);
+    details->setOnline(mOnline);
     // warning, do not use any type-dependent member variable here. We could be creating a widget for another type.
 
     connect(details, SIGNAL(openObject(DetailsType,QString)),
             this, SIGNAL(openObject(DetailsType,QString)));
+    connect(this, &Page::onlineStatusChanged, details, &Details::setOnline);
     // Don't set a parent, so that the widgets can be minimized/restored independently
     SimpleItemEditWidget *widget = new SimpleItemEditWidget(details);
     widget->setOnline(mOnline);

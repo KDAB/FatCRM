@@ -234,7 +234,8 @@ void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    DocumentsWindow *dlg = new DocumentsWindow(isOnline(), nullptr);
+    connect(this, &OpportunityDetails::onlineStatusChanged, dlg, &DocumentsWindow::setCreateNewEnabled);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());
