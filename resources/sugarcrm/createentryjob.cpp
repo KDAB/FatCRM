@@ -60,7 +60,7 @@ public: // slots
     void setEntryHandle(int result, const QString &id, const QString &errorMessage);
     void setEntryDone(const QString &id);
     void setEntryError(int error, const QString &errorMessage);
-    void getEntryDone(const TNS__Entry_value entryValue);
+    void getEntryDone(const TNS__Entry_value &entryValue);
     void getEntryError(int error, const QString &errorMessage);
 };
 
@@ -99,7 +99,7 @@ void CreateEntryJob::Private::setEntryError(int error, const QString &errorMessa
     q->emitResult();
 }
 
-void CreateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value entryValue)
+void CreateEntryJob::Private::getEntryDone(const TNS__Entry_value &entryValue)
 {
     const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
 
