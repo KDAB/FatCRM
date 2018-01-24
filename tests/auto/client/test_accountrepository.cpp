@@ -252,6 +252,22 @@ private Q_SLOTS:
         QCOMPARE(arguments.at(0).toString(), QString("1"));
         QCOMPARE(arguments.at(1).toInt(), 2);
     }
+
+    void removeAccountShouldEmitSignal()
+    {
+        //GIVEN
+        AccountRepository *repository = AccountRepository::instance();
+        repository->clear();
+        SugarAccount account;
+        account.setId("1");
+        repository->addAccount(account, 2);
+        QSignalSpy spy(repository, &AccountRepository::accountRemoved);
+        //WHEN
+        repository->removeAccount(account);
+        //THEN
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.at(0).at(0).toString(), QStringLiteral("1"));
+    }
 };
 
 QTEST_MAIN(TestAccountRepository)

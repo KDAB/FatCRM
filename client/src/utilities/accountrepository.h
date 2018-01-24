@@ -70,6 +70,8 @@ signals:
 
     void accountModified(const QString &id, const QVector<AccountRepository::Field> &changedFields);
 
+    void accountRemoved(const QString &id);
+
 private:
     AccountRepository();
 

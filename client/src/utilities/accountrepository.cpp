@@ -127,6 +127,8 @@ void AccountRepository::removeAccount(const SugarAccount &account)
         }
         ++i;
     }
+
+    emit accountRemoved(id);
 }
 
 SugarAccount AccountRepository::accountById(const QString &id) const
