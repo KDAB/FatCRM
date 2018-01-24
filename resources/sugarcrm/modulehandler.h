@@ -69,7 +69,8 @@ public:
 
 
     QStringList availableFields() const;
-    static QStringList listAvailableFields(SugarSession *session, const QString &module);
+    static KDSoapGenerated::TNS__Field_list listAvailableFields(SugarSession *session, const QString &module);
+    static QStringList listAvailableFieldNames(SugarSession *session, const QString &module);
 
     virtual int setEntry(const Akonadi::Item &item, QString &id, QString &errorMessage) = 0;
     virtual int expectedContentsVersion() const { return 0; }
@@ -91,15 +92,17 @@ public:
     // and into the XML. This is then communicated to the client app.
     virtual QStringList supportedCRMFields() const = 0;
 
-    bool hasEnumDefinitions();
+    bool hasEnumDefinitions() const;
+    EnumDefinitions enumDefinitions() const; // for the unittest
 
     virtual Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry,
-                                        const Akonadi::Collection &parentCollection) = 0;
+                                        const Akonadi::Collection &parentCollection,
+                                        bool &deleted) = 0;
 
     bool parseFieldList(Akonadi::Collection &collection, const KDSoapGenerated::TNS__Field_list &fields);
 
     Akonadi::Item::List itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList,
-            const Akonadi::Collection &parentCollection, QString *lastTimestamp);
+            const Akonadi::Collection &parentCollection, Akonadi::Item::List &deletedItems, QString *lastTimestamp);
 
     virtual bool needBackendChange(const Akonadi::Item &item, const QSet<QByteArray> &modifiedParts) const;
 

@@ -13,7 +13,6 @@ set(sugarcrmresource_SRCS
   fetchentryjob.cpp
   itemtransferinterface.cpp
   leadshandler.cpp
-  listdeletedentriesjob.cpp
   listentriesjob.cpp
   listentriesscope.cpp
   listmodulesjob.cpp
@@ -23,7 +22,6 @@ set(sugarcrmresource_SRCS
   noteshandler.cpp
   opportunitieshandler.cpp
   passwordhandler.cpp
-  referenceupdatejob.cpp
   resourcedebuginterface.cpp
   sugarconfigdialog.cpp
   sugarcrmresource.cpp
@@ -56,9 +54,7 @@ qt5_add_dbus_adaptor(sugarcrmresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml settings.h Settings
 )
 
-kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar.wsdl sugarsoap "")
-
-kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap41 "41")
+kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap "")
 
 add_executable(akonadi_sugarcrm_resource main_sugarcrmresource.cpp)
 

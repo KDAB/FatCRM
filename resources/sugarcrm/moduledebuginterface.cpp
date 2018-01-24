@@ -41,7 +41,7 @@ ModuleDebugInterface::~ModuleDebugInterface()
 
 QStringList ModuleDebugInterface::availableFields() const
 {
-    return ModuleHandler::listAvailableFields(mResource->mSession, moduleToName(mModule));
+    return ModuleHandler::listAvailableFieldNames(mResource->mSession, moduleToName(mModule));
 }
 
 QStringList ModuleDebugInterface::supportedFields() const

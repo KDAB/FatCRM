@@ -41,7 +41,7 @@ public:
 
     void fetchDeleted();
 
-    int deleted() const;
+    int includeDeleted() const;
 
     QString query(const QString &filter, Module moduleName) const;
 

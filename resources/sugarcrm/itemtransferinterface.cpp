@@ -20,9 +20,10 @@
 
 #include "itemtransferinterface.h"
 
+#include "sugarcrmresource_debug.h"
+
 #include "sugarsession.h"
 #include "sugarsoap.h"
-#include "sugarsoap41.h"
 #include "sugarcrmresource.h"
 
 #include <KCodecs>
@@ -30,21 +31,25 @@
 
 #include <QFile>
 
-ItemTransferInterface::ItemTransferInterface(SugarCRMResource *resource)
-    : QObject(resource), mResource(resource)
+ItemTransferInterface::ItemTransferInterface(QObject *parent)
+    : QObject(parent)
 {
+}
+
+void ItemTransferInterface::setSession(SugarSession *session)
+{
+    mSession = session;
 }
 
 QString ItemTransferInterface::downloadDocumentRevision(const QString &documentRevisionId) const
 {
-    SugarSession *session = mResource->mSession;
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
-    const QString sessionId = session->sessionId();
+    KDSoapGenerated::Sugarsoap *soap = mSession->soap();
+    const QString sessionId = mSession->sessionId();
     if (sessionId.isEmpty()) {
         qWarning() << "No session! Need to login first.";
     }
 
-    const KDSoapGenerated::TNS__Return_document_revision result = soap->get_document_revision(sessionId, documentRevisionId);
+    const KDSoapGenerated::TNS__New_return_document_revision result = soap->get_document_revision(sessionId, documentRevisionId);
     const KDSoapGenerated::TNS__Document_revision revision = result.document_revision();
 
     QTemporaryDir tempDir;
@@ -70,9 +75,8 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
         return QString();
     }
 
-    SugarSession *session = mResource->mSession;
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
-    const QString sessionId = session->sessionId();
+    KDSoapGenerated::Sugarsoap *soap = mSession->soap();
+    const QString sessionId = mSession->sessionId();
     if (sessionId.isEmpty()) {
         qWarning() << "No session! Need to login first.";
     }
@@ -93,9 +97,9 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
     KDSoapGenerated::TNS__Name_value_list documentProperties;
     documentProperties.setItems(QList<KDSoapGenerated::TNS__Name_value>() << documentNameProperty << statusIdProperty << descriptionProperty);
 
-    KDSoapGenerated::TNS__Set_entry_result result = soap->set_entry(sessionId, "Documents", documentProperties);
-    if (result.error().number() != QLatin1String("0")) {
-        qWarning() << "Unable to create document:" << result.error().name() << result.error().description();
+    KDSoapGenerated::TNS__New_set_entry_result result = soap->set_entry(sessionId, "Documents", documentProperties);
+    if (soap->lastErrorCode() != 0) {
+        qWarning() << "Unable to create document:" << soap->lastError();
         return QString();
     }
 
@@ -111,13 +115,8 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
     result = soap->set_document_revision(sessionId, documentRevision);
 
     if (!soap->lastError().isEmpty()) { // got a SOAP fault as reply
-        qWarning() << soap->lastError();
+        qWarning() << "Unable to create document revision:" << soap->lastError();
         return QStringLiteral("ERROR:") + soap->lastError();
-    }
-
-    if (result.error().number() != QLatin1String("0")) {
-        qWarning() << "Unable to create document revision:" << result.error().number() << result.error().name() << result.error().description();
-        return QStringLiteral("ERROR:") + result.error().name() + " " + result.error().description();
     }
 
     return documentId;
@@ -126,33 +125,31 @@ QString ItemTransferInterface::uploadDocument(const QString &documentName, const
 bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString &sourceModuleName,
                                      const QString &targetItemId, const QString &targetModuleName) const
 {
-    SugarSession *session = mResource->mSession;
-    const QString sessionId = session->sessionId();
+    const QString sessionId = mSession->sessionId();
     if (sessionId.isEmpty()) {
         qWarning() << "No session! Need to login first.";
         return false;
     }
 
-    QUrl url(session->host());
+    QUrl url(mSession->host());
     url.setPath("/service/v4_1/soap.php");
     url.setQuery(QString());
 
-    KDSoapGenerated41::Sugarsoap soap;
+    KDSoapGenerated::Sugarsoap soap;
     soap.setEndPoint(url.url());
 
 
-    KDSoapGenerated41::TNS__Select_fields relatedIds;
+    KDSoapGenerated::TNS__Select_fields relatedIds;
     relatedIds.setItems(QStringList() << targetItemId);
 
-    const KDSoapGenerated41::TNS__New_set_relationship_list_result result = soap.set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated41::TNS__Name_value_list(), 0);
+    const KDSoapGenerated::TNS__New_set_relationship_list_result result = soap.set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated::TNS__Name_value_list(), 0);
 
     if (!soap.lastError().isEmpty()) {
         qWarning() << "Unable to link items:" << soap.lastError();
         return false;
     }
 
-    qDebug() << "Link Item result:" << result.created() << "created," << result.deleted() << "deleted," << result.failed() << "failed.";
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Link Item result:" << result.created() << "created," << result.deleted() << "deleted," << result.failed() << "failed.";
 
     return true;
 }
-

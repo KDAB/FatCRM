@@ -24,7 +24,6 @@
 #include "accountshandler.h"
 #include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
-#include "sugaraccountcache.h"
 #include "sugarsession.h"
 #include "sugarsoap.h"
 #include "sugarjob.h"
@@ -55,12 +54,6 @@ AccountsHandler::~AccountsHandler()
 
 void AccountsHandler::fillAccountsCache()
 {
-    // Load a cache of all accounts from the database
-    // This is used to resolve account_name to account_id in opportunities.
-    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(collection(), this);
-    job->fetchScope().setCacheOnly(true);
-    job->fetchScope().fetchFullPayload(true);
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)), this, SLOT(slotItemsReceived(Akonadi::Item::List)));
 }
 
 Akonadi::Collection AccountsHandler::handlerCollection() const
@@ -179,7 +172,7 @@ SugarAccount AccountsHandler::nameValueListToSugarAccount(const KDSoapGenerated:
     return account;
 }
 
-Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -193,14 +186,11 @@ Akonadi::Item AccountsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarAccount::mimeType());
 
-    SugarAccount account = nameValueListToSugarAccount(entry.name_value_list(), entry.id());
-
-    SugarAccountCache *cache = SugarAccountCache::instance();
-    cache->addAccount(account.name(), account.id());
-    // when renaming an account we'll have oldname->id and newname->id, shouldn't harm
-
+    const SugarAccount account = nameValueListToSugarAccount(entry.name_value_list(), entry.id());
     item.setPayload<SugarAccount>(account);
     item.setRemoteRevision(account.dateModifiedRaw());
+
+    deleted = account.deleted() == QLatin1String("1");
 
     return item;
 }
@@ -311,23 +301,5 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
             reporter->addProperty(Akonadi::AbstractDifferencesReporter::ConflictMode,
                                   diffName, leftValue, rightValue);
         }
-    }
-}
-
-void AccountsHandler::slotItemsReceived(const Akonadi::Item::List &items)
-{
-    SugarAccountCache *cache = SugarAccountCache::instance();
-    foreach (const Akonadi::Item &item, items) {
-        Q_ASSERT(item.hasPayload<SugarAccount>());
-        const SugarAccount account = item.payload<SugarAccount>();
-        cache->addAccount(account.name(), account.id());
-    }
-    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Added" << items.count() << "items into cache for" << moduleName();
-}
-
-void AccountsHandler::slotUpdateJobResult(KJob *job)
-{
-    if (job->error()) {
-        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
 }

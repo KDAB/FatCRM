@@ -27,8 +27,6 @@
 #include "sugarsoap.h"
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
-#include "sugaraccountcache.h"
-#include "referenceupdatejob.h"
 #include "sugarjob.h"
 
 using namespace KDSoapGenerated;
@@ -42,9 +40,6 @@ using namespace KDSoapGenerated;
 OpportunitiesHandler::OpportunitiesHandler(SugarSession *session)
     : ModuleHandler(Module::Opportunities, session)
 {
-    SugarAccountCache *cache = SugarAccountCache::instance();
-    connect(cache, SIGNAL(pendingAccountAdded(QString,QString)),
-            this, SLOT(slotPendingAccountAdded(QString,QString)));
 }
 
 OpportunitiesHandler::~OpportunitiesHandler()
@@ -169,7 +164,7 @@ SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDS
     return opportunity;
 }
 
-Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -183,20 +178,11 @@ Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__En
     item.setParentCollection(parentCollection);
     item.setMimeType(SugarOpportunity::mimeType());
 
-    SugarOpportunity opportunity = nameValueListToSugarOpportunity(entry.name_value_list(), entry.id());
-
-    if (opportunity.accountId().isEmpty()) {
-        // Resolve account id using name, since Sugar doesn't do that
-        SugarAccountCache *cache = SugarAccountCache::instance();
-        opportunity.setAccountId(cache->accountIdForName(opportunity.tempAccountName()));
-        if (opportunity.accountId().isEmpty()) {
-            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "Didn't find account" << opportunity.tempAccountName() << "for opp" << opportunity.name();
-            cache->addPendingAccountName(opportunity.tempAccountName());
-       }
-    }
-
+    const SugarOpportunity opportunity = nameValueListToSugarOpportunity(entry.name_value_list(), entry.id());
     item.setPayload<SugarOpportunity>(opportunity);
     item.setRemoteRevision(opportunity.dateModifiedRaw());
+
+    deleted = opportunity.deleted() == QLatin1String("1");
 
     return item;
 }
@@ -273,21 +259,4 @@ ReferenceUpdateFunction OpportunitiesHandler::getOppAccountModifyFunction(const 
         }
         return false;
     };
-}
-
-void OpportunitiesHandler::slotPendingAccountAdded(const QString &accountName, const QString &accountId)
-{
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Looking for opps for setting account_id:" << accountName << accountId;
-
-    ReferenceUpdateFunction updateItem = getOppAccountModifyFunction(accountName, accountId);
-    ReferenceUpdateJob *job = new ReferenceUpdateJob(collection(), updateItem, this);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotUpdateJobResult(KJob*)));
-    job->start();
-}
-
-void OpportunitiesHandler::slotUpdateJobResult(KJob *job)
-{
-    if (job->error()) {
-        qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
-    }
 }

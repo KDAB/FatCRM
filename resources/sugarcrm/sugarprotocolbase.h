@@ -29,10 +29,9 @@ class ListEntriesScope;
 class SugarSession;
 struct EntriesListResult
 {
-    int resultCount;
+    int resultCount = 0;
     int nextOffset = 0;
     KDSoapGenerated::TNS__Entry_list entryList;
-    KDSoapGenerated::TNS__Field_list fieldList;
 };
 Q_DECLARE_METATYPE(EntriesListResult)
 namespace Akonadi {
@@ -47,13 +46,14 @@ public:
     virtual void logout() = 0;
     virtual void setSession(SugarSession *session) = 0;
     virtual int getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query, int &entriesCount, QString &errorMssage) = 0;
+    virtual int getModuleFields(const QString &moduleName, KDSoapGenerated::TNS__Field_list& fields, QString &errorMessage) = 0;
     virtual int listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
                              const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                             QString &errorMessage) = 0;
     virtual int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
     virtual int getEntry(Module moduleName, const QString &remoteId,  const QStringList &selectedFields,
                          KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) = 0;
-    virtual int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) = 0;
+    virtual int listModules(QStringList &moduleNames, QString &errorMessage) = 0;
 };
 
 

@@ -26,7 +26,6 @@
 #include "opportunitieshandler.h"
 #include "campaignshandler.h"
 #include "sugarsession.h"
-#include "sugaraccountcache.h"
 #include <QSignalSpy>
 #include <AkonadiCore/Item>
 
@@ -127,10 +126,8 @@ private Q_SLOTS:
         delete handler;
     }
 
-    void shouldReturnCorrectListAccounts()
+    void shouldReturnCorrectAccountsList()
     {
-        SugarAccountCache *cache = SugarAccountCache::instance();
-        cache->clear();
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
@@ -159,13 +156,12 @@ private Q_SLOTS:
             QCOMPARE(sa.id(), id[i]);
             QCOMPARE(sa.name(), name[i]);
         }
+        QCOMPARE(job->deletedItems().count(), 0);
     }
 
-    //Depending on shouldReturnCorrectListAccounts()
-    void shouldReturnCorrectListOpportunities()
+    // Depends on shouldReturnCorrectAccountsList()
+    void shouldReturnCorrectOpportunitiesList()
     {
-        SugarAccountCache *cache = SugarAccountCache::instance();
-        QCOMPARE(cache->size(), 0);
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
@@ -186,32 +182,11 @@ private Q_SLOTS:
         const QList<QVariant> arguments = spy.at(0);
         const QList<QString> id = {"100", "101"};
         const QList<QString> name = {"validOpp", "oppWithNonExistingAccount"};
-        QList<QString> accountId = {"0", ""};
+        QList<QString> accountId = {"0", "doesNotExist"};
         Akonadi::Item::List lItems = arguments.at(0).value<Akonadi::Item::List>();
         QCOMPARE(lItems.size(), 2);
         verifyOpportunities(lItems, id, name, accountId);
-        QCOMPARE(cache->size(), 1);
-
-        cache->clear(); // Do not trigger UpdateReferenceJob (which starts Akonadi)
-        //GIVEN
-        protocol->addAccount("accountTest","3");
-        AccountsHandler accountHandler(&session);
-        ListEntriesJob *accountListJob = new ListEntriesJob(collection, &session);
-        accountListJob->setModule(&accountHandler);
-        QSignalSpy accountSpy(accountListJob, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
-        //WHEN
-        QVERIFY(accountListJob->exec());
-        //THEN
-        QCOMPARE(accountSpy.count(), 1);
-        const QList<QVariant> accountArguments = accountSpy.at(0);
-        const Akonadi::Item::List accountLItems = accountArguments.at(0).value<Akonadi::Item::List>();
-        QCOMPARE(accountLItems.size(), 1);
-        ReferenceUpdateFunction updateItem = handler.getOppAccountModifyFunction("accountTest", "3");
-        for (Akonadi::Item &item : lItems) {
-            updateItem(item);
-        }
-        accountId[1] = '3';
-        verifyOpportunities(lItems, id, name, accountId);
+        QCOMPARE(job->deletedItems().count(), 0);
     }
 
     void shouldReturnSoapError()
@@ -233,6 +208,7 @@ private Q_SLOTS:
         // THEN
         QCOMPARE(job->error(), int(SugarJob::SoapError));
         QCOMPARE(job->errorString(), errStr);
+        QCOMPARE(job->deletedItems().count(), 0);
     }
 };
 

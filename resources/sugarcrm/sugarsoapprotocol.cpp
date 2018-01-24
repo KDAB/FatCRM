@@ -33,22 +33,22 @@ SugarSoapProtocol::SugarSoapProtocol()
 
 int SugarSoapProtocol::login(const QString &user, const QString &password, QString &sessionId, QString &errorMessage)
 {
-    Q_ASSERT(mSession->soap() != nullptr);
+    auto* soap = mSession->soap();
+    Q_ASSERT(soap != nullptr);
 
     const QByteArray passwordHash = password.toUtf8();
 
     KDSoapGenerated::TNS__User_auth userAuth;
     userAuth.setUser_name(user);
     userAuth.setPassword(QString::fromLatin1(passwordHash));
-    userAuth.setVersion(QLatin1String(".01"));
 
-    KDSoapGenerated::TNS__Set_entry_result entry_result = mSession->soap()->login(userAuth, QLatin1String("FatCRM"));
-    if (entry_result.error().number() == "0") {
+    const auto entry_result = soap->login(userAuth, QLatin1String("FatCRM"), {});
+    if (soap->lastError() == 0) {
         sessionId = entry_result.id();
         return KJob::NoError;
     } else {
-        errorMessage = i18nc("@info:status", "Login for user %1 on %2 failed: %3", user, mSession->host(), mSession->soap()->lastError());
-        int faultcode = mSession->soap()->lastErrorCode();
+        errorMessage = i18nc("@info:status", "Login for user %1 on %2 failed: %3", user, mSession->host(), soap->lastError());
+        const int faultcode = soap->lastErrorCode();
         if (faultcode == QNetworkReply::UnknownNetworkError ||
            faultcode == QNetworkReply::HostNotFoundError) {
             return SugarJob::CouldNotConnectError;
@@ -60,50 +60,63 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
 
 void SugarSoapProtocol::logout()
 {
-    if (mSession->sessionId().isEmpty() && mSession->soap() != nullptr) {
-        KDSoapGenerated::TNS__Error_value errorValue = mSession->soap()->logout(mSession->sessionId());
-        if (errorValue.number() != "0") {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout returned error" << errorValue.number() << errorValue.name() << errorValue.description();
-        }
-        if (!mSession->soap()->lastError().isEmpty()) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout had fault" << mSession->soap()->lastError();
+    auto *soap = mSession->soap();
+    if (mSession->sessionId().isEmpty() && soap != nullptr) {
+        soap->logout(mSession->sessionId());
+        if (soap->lastErrorCode() != 0) {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "logout had fault" << soap->lastErrorCode() << soap->lastError();
         }
     }
     mSession->forgetSession();
 }
 
-int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query,
-                                       int &entriesCount, QString &errorMessage)
+static int checkError(KDSoapGenerated::Sugarsoap *soap, const char* methodName, QString &errorMessage)
 {
-    KDSoapGenerated::TNS__Get_entries_count_result entry_result =
-            mSession->soap()->get_entries_count(mSession->sessionId(), moduleToName(moduleName), query, scope.deleted());
-    if (entry_result.error().number() == "0") {
-        entriesCount = entry_result.result_count();
+    if (soap->lastErrorCode() == 0) {
         return KJob::NoError;
-    } else if (entry_result.error().number() == "10"){
-        errorMessage = entry_result.error().description();
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
+    } else if (soap->lastErrorCode() == 10){
+        errorMessage = soap->lastError();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << methodName << "returned error" << errorMessage << " -- interpreting this as CouldNotConnectError";
         return SugarJob::CouldNotConnectError;
     } else {
-        errorMessage = entry_result.error().description();
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "getEntriesCount returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
-                                                           << " Soap error:" << mSession->soap()->lastError();;
+        errorMessage = soap->lastError();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << methodName << "returned error" << soap->lastErrorCode() << soap->lastError();
         return SugarJob::SoapError;
     }
 }
 
+int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query,
+                                       int &entriesCount, QString &errorMessage)
+{
+    auto *soap = mSession->soap();
+    KDSoapGenerated::TNS__Get_entries_count_result entry_result =
+            soap->get_entries_count(mSession->sessionId(), moduleToName(moduleName), query, scope.includeDeleted());
+    entriesCount = entry_result.result_count();
+    return checkError(soap, "getEntriesCount", errorMessage);
+}
+
+int SugarSoapProtocol::getModuleFields(const QString &moduleName, KDSoapGenerated::TNS__Field_list& fields, QString &errorMessage)
+{
+    // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_module_fields/
+    auto *soap = mSession->soap();
+    const KDSoapGenerated::TNS__New_module_fields result = soap->get_module_fields(mSession->sessionId(), moduleName, {});
+    fields = result.module_fields();
+    return checkError(soap, "getModuleFields", errorMessage);
+}
+
 int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
                                    const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
-                                    QString &errorMessage)
+                                   QString &errorMessage)
 {
+    auto *soap = mSession->soap();
     const int offset = scope.offset();
     const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    const int fetchDeleted = scope.includeDeleted();
 
     KDSoapGenerated::TNS__Select_fields Fields;
     Fields.setItems(selectedFields);
 
-    KDSoapGenerated::Get_entry_listJob *job = new KDSoapGenerated::Get_entry_listJob(mSession->soap());
+    KDSoapGenerated::Get_entry_listJob *job = new KDSoapGenerated::Get_entry_listJob(soap);
     job->setSession(mSession->sessionId());
     job->setModule_name(moduleToName(moduleName));
     job->setQuery(query);
@@ -118,72 +131,46 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     job->start();
     eventLoop.exec();
 
-    const KDSoapGenerated::TNS__Get_entry_list_result entry_result = job->return_();
+    const KDSoapGenerated::TNS__Get_entry_list_result_version2 entry_result = job->return_();
 
     entriesListResult.entryList = entry_result.entry_list();
-    entriesListResult.fieldList = entry_result.field_list();
     entriesListResult.nextOffset = entry_result.next_offset();
     entriesListResult.resultCount = entry_result.result_count();
 
-    if (entry_result.error().number() == "0") {
-        return KJob::NoError;
-    } else if (entry_result.error().number() == "10"){
-        errorMessage = entry_result.error().description();
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description();
-        return SugarJob::CouldNotConnectError;
-    } else {
-        errorMessage = entry_result.error().description();
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "listEntries returned error" << entry_result.error().number() << entry_result.error().name() << entry_result.error().description()
-                                                           << " Soap error:" << mSession->soap()->lastError();
-        return SugarJob::SoapError;
-    }
+    return checkError(soap, "listEntries", errorMessage);
 }
 
 int SugarSoapProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage)
 {
-    KDSoapGenerated::TNS__Set_entry_result result = mSession->soap()->set_entry(mSession->sessionId(), moduleToName(moduleName), name_value_list);
-    if (result.error().number() == "0") {
-        id = result.id();
-        return KJob::NoError;
-    } else if (result.error().number() == "10"){
-        errorMessage = result.error().description();
-        return SugarJob::CouldNotConnectError;
-    } else {
-        errorMessage = result.error().description();
-        return SugarJob::SoapError;
-    }
+    auto *soap = mSession->soap();
+    KDSoapGenerated::TNS__New_set_entry_result result = soap->set_entry(mSession->sessionId(), moduleToName(moduleName), name_value_list);
+    id = result.id();
+    return checkError(soap, "setEntry", errorMessage);
 }
 
 int SugarSoapProtocol::getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
+    auto *soap = mSession->soap();
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(selectedFields);
-    KDSoapGenerated::TNS__Get_entry_result result = mSession->soap()->get_entry(mSession->sessionId(), moduleToName(moduleName), remoteId, fields);
-    QString error = result.error().number();
-    if (error == "0") {
+    // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_entry/
+    KDSoapGenerated::TNS__Get_entry_result_version2 result = soap->get_entry(mSession->sessionId(), moduleToName(moduleName), remoteId, fields, {} /*link_..._array*/, false /*track_view*/);
+    if (!result.entry_list().items().isEmpty()) {
         entryValue = result.entry_list().items().at(0);
-        return KJob::NoError;
-    } else if (error == "10") {
-        errorMessage = mSession->soap()->lastError();
-        return SugarJob::CouldNotConnectError;
-    } else {
-        errorMessage = result.error().description();
-        return SugarJob::SoapError;
     }
+    return checkError(soap, "getEntry", errorMessage);
 }
 
-int SugarSoapProtocol::listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage)
+int SugarSoapProtocol::listModules(QStringList &moduleNames, QString &errorMessage)
 {
-    KDSoapGenerated::TNS__Module_list result = mSession->soap()->get_available_modules(mSession->sessionId());
-    QString error = result.error().number();
-    if (error == "0") {
-        selectFields = result.modules();
-        return KJob::NoError;
-    } else if (error == "10") {
-        errorMessage = mSession->soap()->lastError();
-        return SugarJob::CouldNotConnectError;
-    } else {
-        errorMessage = result.error().description();
-        return SugarJob::SoapError;
+    auto *soap = mSession->soap();
+    const KDSoapGenerated::TNS__Module_list result = soap->get_available_modules(mSession->sessionId(), QString() /*filter*/);
+    moduleNames.clear();
+    const auto moduleItems = result.modules().items();
+    moduleNames.reserve(moduleItems.size());
+    for (const auto &module : moduleItems) {
+        //qDebug() << module.module_key() << module.module_label();
+        moduleNames << module.module_key();
     }
+    return checkError(soap, "listModules", errorMessage);
 }

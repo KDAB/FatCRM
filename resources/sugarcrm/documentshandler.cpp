@@ -150,11 +150,15 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         SugarDocument document = item.payload<SugarDocument>();
         bool update = false;
 
-        KDSoapGenerated::TNS__Get_relationships_result result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Accounts"), QString(), 0);
+        // Get the Account(s) related to this document
+        // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_relationships/
+        // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Examples/REST/PHP/Retrieving_Related_Records/
+        KDSoapGenerated::TNS__Get_entry_result_version2 result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Accounts"), {}, {},
+                                                                   {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
 
         QStringList linkedAccountIds;
-        Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
-            linkedAccountIds.append(idMod.id());
+        Q_FOREACH (const KDSoapGenerated::TNS__Entry_value& entry, result.entry_list().items()) {
+            linkedAccountIds.append(entry.id());
         }
 
         if (!linkedAccountIds.isEmpty()) {
@@ -163,9 +167,10 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         }
 
         QStringList linkedOpportunityIds;
-        result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Opportunities"), QString(), 0);
-        Q_FOREACH (const KDSoapGenerated::TNS__Id_mod &idMod, result.ids().items()) {
-            linkedOpportunityIds.append(idMod.id());
+        result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), QStringLiteral("Opportunities"), {}, {},
+                                           {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
+        Q_FOREACH (const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {
+            linkedOpportunityIds.append(entry.id());
         }
 
         if (!linkedOpportunityIds.isEmpty()) {
@@ -173,12 +178,13 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
             update = true;
         }
 
-        if (update)
+        if (update) {
             item.setPayload<SugarDocument>(document);
+        }
     }
 }
 
-Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -209,6 +215,8 @@ Akonadi::Item DocumentsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
     }
     item.setPayload<SugarDocument>(document);
     item.setRemoteRevision(document.dateModifiedRaw());
+
+    deleted = document.deleted() == QLatin1String("1");
 
     return item;
 }

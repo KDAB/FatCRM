@@ -49,7 +49,7 @@ public:
     QStringList supportedSugarFields() const override;
     QStringList supportedCRMFields() const override;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted) override;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
@@ -58,9 +58,6 @@ public:
 
     ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
     static SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
-private Q_SLOTS:
-    void slotPendingAccountAdded(const QString &accountName, const QString &accountId);
-    void slotUpdateJobResult(KJob *job);
 
 private:
     SugarOpportunity::AccessorHash mAccessors;

@@ -508,6 +508,10 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
 {
     AccessorHash &accessors = *s_accessors();
     if (accessors.isEmpty()) {
+
+        // Use this command to see the available fields:
+        // qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_0 /CRMDebug/modules/Opportunities availableFields
+
         accessors.insert(KDCRMFields::id(),
                            OpportunityAccessorPair(&SugarOpportunity::id, &SugarOpportunity::setId, QString()));
         accessors.insert(KDCRMFields::name(),
@@ -542,8 +546,6 @@ SugarOpportunity::AccessorHash SugarOpportunity::accessorHash()
         accessors.insert(KDCRMFields::accountName(),
                            OpportunityAccessorPair(&SugarOpportunity::tempAccountName, &SugarOpportunity::setTempAccountName,
                                             i18nc("@item:intable", "Account")));
-        // ### I wish this one was available, but SuiteCRM doesn't return it!
-        // (see qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_3 /CRMDebug/modules/Opportunities availableFields)
         accessors.insert(KDCRMFields::accountId(),
                            OpportunityAccessorPair(&SugarOpportunity::accountId, &SugarOpportunity::setAccountId, QString()));
         accessors.insert(KDCRMFields::campaignId(),

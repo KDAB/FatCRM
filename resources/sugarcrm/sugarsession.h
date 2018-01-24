@@ -30,6 +30,7 @@ namespace KDSoapGenerated
 {
 class Sugarsoap;
 }
+
 class PasswordHandler;
 
 class SugarSession : public QObject

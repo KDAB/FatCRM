@@ -72,6 +72,8 @@ public:
     ListEntriesScope mListScope;
     Stage mStage;
     QString mLatestTimestampFromItems;
+    Akonadi::Item::List mDeletedItems;
+    int mItemsAlreadyEmitted = 0;
     bool mCollectionAttributesChanged;
 
 public:
@@ -115,18 +117,23 @@ void ListEntriesJob::Private::listNextEntries()
 void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResult)
 {
     if (callResult.resultCount > 0) { // result_count is the size of entry_list, e.g. 100.
-        mCollectionAttributesChanged = mHandler->parseFieldList(mCollection, callResult.fieldList);
-
         Item::List items =
-            mHandler->itemsFromListEntriesResponse(callResult.entryList, mCollection, &mLatestTimestampFromItems);
+            mHandler->itemsFromListEntriesResponse(callResult.entryList, mCollection, mDeletedItems, &mLatestTimestampFromItems);
 
-        if (mHandler->needsExtraInformation())
-            mHandler->getExtraInformation(items);
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "List Entries for" << mHandler->module()
-                 << "received" << items.count() << "items.";
+                 << "received" << callResult.entryList.items().size() << "SOAP entries, processed into" << items.count() << "items and" << mDeletedItems.count() << "deleted items.";
+        if (!items.isEmpty()) {
+            if (mHandler->needsExtraInformation())
+                mHandler->getExtraInformation(items);
 
-        emit q->itemsReceived(items, mListScope.isUpdateScope());
+            emit q->itemsReceived(items, mListScope.isUpdateScope());
+        }
+        mItemsAlreadyEmitted += items.count();
+        emit q->progress(mItemsAlreadyEmitted + mDeletedItems.count());
+
         mListScope.setOffset(callResult.nextOffset);
+
+        // TODO if totalCount reached, no need to ask the server with one more roundtrip....
 
         // Avoid double recursion
         QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
@@ -213,6 +220,9 @@ ModuleHandler *ListEntriesJob::module() const
 void ListEntriesJob::setLatestTimestamp(const QString &timestamp)
 {
     d->mListScope = ListEntriesScope(timestamp);
+    if (!timestamp.isEmpty()) {
+        d->mListScope.fetchDeleted();
+    }
 }
 
 QString ListEntriesJob::newTimestamp() const
@@ -228,6 +238,11 @@ bool ListEntriesJob::collectionAttributesChanged() const
 bool ListEntriesJob::isUpdateJob() const
 {
     return d->mListScope.isUpdateScope();
+}
+
+Item::List ListEntriesJob::deletedItems() const
+{
+    return d->mDeletedItems;
 }
 
 int ListEntriesJob::currentContentsVersion(const Collection &collection)
@@ -268,14 +283,14 @@ QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, M
 // So don't reset d->mStage here, we don't want to rewind to GetCount (which confuses itemsync)
 void ListEntriesJob::startSugarTask()
 {
-    Q_ASSERT(d->mCollection.isValid());
     Q_ASSERT(d->mHandler != nullptr);
 
     QString errorMessage;
     switch (d->mStage) {
     case Private::GetCount: {
         int entriesCount;
-        int result = d->mHandler->getEntriesCount(d->mListScope, entriesCount, errorMessage);
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << "Listing entries since" << d->mListScope.timestamp() << (d->mListScope.includeDeleted() ? "including deleted items" : "without deleted items");
+        const int result = d->mHandler->getEntriesCount(d->mListScope, entriesCount, errorMessage);
         if (result == KJob::NoError) {
             d->getEntriesCountDone(entriesCount);
         } else {

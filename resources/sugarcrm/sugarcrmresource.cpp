@@ -35,7 +35,6 @@
 #include "itemtransferinterface.h"
 #include "leadshandler.h"
 #include "listentriesjob.h"
-#include "listdeletedentriesjob.h"
 #include "listmodulesjob.h"
 #include "loginjob.h"
 #include "moduledebuginterface.h"
@@ -51,12 +50,13 @@
 #include "passwordhandler.h"
 #include "sugarsoapprotocol.h"
 
-
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/CachePolicy>
+#include <AkonadiCore/ItemDeleteJob>
+#include <AkonadiCore/ItemFetchJob>
 
 #include <KContacts/Addressee>
 
@@ -91,13 +91,14 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             mDebugInterface,
             QDBusConnection::ExportScriptableSlots);
 
-    ItemTransferInterface *itemDownloadInterface = new ItemTransferInterface(this);
+    ItemTransferInterface *itemTransferInterface = new ItemTransferInterface(this);
     QDBusConnection::sessionBus().registerObject(QLatin1String("/ItemTransfer"),
-            itemDownloadInterface,
+            itemTransferInterface,
             QDBusConnection::ExportScriptableSlots);
 
     setNeedsNetwork(true);
     setDisableAutomaticItemDeliveryDone(true);
+    setAutomaticProgressReporting(false); // because our "totalItems" includes deleted items
 
     // make sure itemAdded() and itemChanged() get the full item from Akonadi before being called
     changeRecorder()->itemFetchScope().fetchFullPayload();
@@ -128,6 +129,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             qWarning() << "protocol name incorrect:" << selectedProtocol << "is an invalid protocol name";
         }
     }
+
+    itemTransferInterface->setSession(mSession);
 
     protocol->setSession(mSession);
     mSession->setProtocol(protocol);
@@ -358,13 +361,10 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         status(Running, message);
         emit percent(0);
 
-        connect(job, SIGNAL(totalItems(int)),
-                this, SLOT(slotTotalItems(int)));
-        connect(job, SIGNAL(progress(int)),
-                this, SLOT(slotProgress(int)));
-        connect(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)),
-                this, SLOT(slotItemsReceived(Akonadi::Item::List,bool)));
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
+        connect(job, &ListEntriesJob::totalItems, this, &SugarCRMResource::slotTotalItems);
+        connect(job, &ListEntriesJob::progress, this, &SugarCRMResource::slotProgress);
+        connect(job, &ListEntriesJob::itemsReceived, this, &SugarCRMResource::slotItemsReceived);
+        connect(job, &KJob::result, this, &SugarCRMResource::listEntriesResult);
         job->start();
     } else {
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
@@ -494,6 +494,12 @@ void SugarCRMResource::listModulesResult(KJob *job)
             Collection collection = handler->collection();
             collection.setParentCollection(topLevelCollection);
             collections << collection;
+
+            // Let's also get the fields for each module
+            const KDSoapGenerated::TNS__Field_list fields = handler->listAvailableFields(mSession, module);
+            if (handler->parseFieldList(collection, fields)) {
+                handler->modifyCollection(collection);
+            }
         }
     }
 
@@ -507,7 +513,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
 void SugarCRMResource::slotTotalItems(int count)
 {
     mTotalItems = count;
-    setTotalItems(count);
+    //setTotalItems(count);
 }
 
 void SugarCRMResource::slotProgress(int count)
@@ -528,6 +534,8 @@ void SugarCRMResource::slotItemsReceived(const Item::List &items, bool isUpdateJ
 void SugarCRMResource::listEntriesResult(KJob *job)
 {
     ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
+
+    emit percent(100);
 
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
@@ -552,66 +560,62 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     }
     itemsRetrievalDone();
 
-    // Next step: list deleted items (must be done outside of the ItemSync)
-    ListDeletedItemsArg arg;
-    arg.collection = listEntriesJob->collection();
-    arg.module = listEntriesJob->module();
-    arg.collectionAttributesChanged = listEntriesJob->collectionAttributesChanged();
-    arg.isUpdateJob = listEntriesJob->isUpdateJob();
-    arg.fullSyncTimestamp = listEntriesJob->newTimestamp();
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Scheduling listDeletedItems" << arg.collection.name();
-    scheduleCustomTask(this, "listDeletedItems", QVariant::fromValue(arg));
+    // Commit attribute changes
+    if (listEntriesJob->collectionAttributesChanged()) {
+        listEntriesJob->module()->modifyCollection(listEntriesJob->collection());
+    }
+
+    // Next step: handle deleted items (must be done outside of the ItemSync)
+    if (listEntriesJob->isUpdateJob() && !listEntriesJob->deletedItems().isEmpty()) {
+        HandleDeletedItemsArg arg;
+        arg.collection = listEntriesJob->collection();
+        Q_ASSERT(arg.collection.isValid());
+        arg.deletedItems = listEntriesJob->deletedItems();
+        arg.module = listEntriesJob->module();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Scheduling handleDeletedItems" << arg.collection.name();
+        scheduleCustomTask(this, "handleDeletedItems", QVariant::fromValue(arg));
+    }
 
     status(Idle);
 }
 
-void SugarCRMResource::listDeletedItems(const QVariant &val)
+void SugarCRMResource::handleDeletedItems(const QVariant &val)
 {
-    const ListDeletedItemsArg arg = val.value<ListDeletedItemsArg>();
-    ListDeletedEntriesJob *ldeJob = new ListDeletedEntriesJob(arg.collection, mSession, this);
-    ldeJob->setModule(arg.module);
-    ldeJob->setCollectionAttributesChanged(arg.collectionAttributesChanged);
-    ldeJob->setLatestTimestamp(ListDeletedEntriesJob::latestTimestamp(arg.collection));
+    const HandleDeletedItemsArg arg = val.value<HandleDeletedItemsArg>();
 
-    if (!arg.isUpdateJob) {
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Not an update job";
-        // Set initial timestamp for "deleted items" based on the time of the full sync
-        // (no need to get all old deletions). No need to even run the job either, in that case.
-        ldeJob->setInitialTimestamp(arg.fullSyncTimestamp);
-
-        // Commit attribute changes
-        if (ldeJob->collectionAttributesChanged()) {
-            ldeJob->module()->modifyCollection(ldeJob->collection());
-        }
-
-        delete ldeJob;
-        taskDone();
-        status(Idle);
-        return;
-    }
-
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Update job, running the job";
-    connect(ldeJob, SIGNAL(result(KJob*)), this, SLOT(slotListDeletedEntriesResult(KJob*)));
-    mCurrentJob = ldeJob;
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Handling" << arg.deletedItems.count() << "deleted items";
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
     const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
     status(Running, message);
-    ldeJob->start();
+
+    // Check whether those items still exist, it's an error in akonadi to delete items that don't exist anymore.
+    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(arg.deletedItems, this);
+    fetchJob->setCollection(arg.collection);
+    fetchJob->fetchScope().fetchAllAttributes(false);
+    fetchJob->fetchScope().fetchFullPayload(false);
+    fetchJob->fetchScope().setCacheOnly(true);
+    connect(fetchJob, &KJob::result, this, [this, fetchJob]() {
+        if (fetchJob->error()) {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << fetchJob->errorString();
+            taskDone();
+            status(Idle);
+        } else {
+            const Akonadi::Item::List items = fetchJob->items();
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << "Resolved to" << items.size() << "items by the fetch job";
+            Akonadi::ItemDeleteJob *deleteJob = new Akonadi::ItemDeleteJob(items, this);
+            connect(deleteJob, &KJob::result, this, &SugarCRMResource::slotDeleteEntriesResult);
+        }
+    });
 }
 
-void SugarCRMResource::slotListDeletedEntriesResult(KJob *job)
+
+void SugarCRMResource::slotDeleteEntriesResult(KJob *job)
 {
     if (job->error()) {
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
     mCurrentJob = nullptr;
-
-    // Commit attribute changes
-    ListDeletedEntriesJob *listDelEntriesJob = static_cast<ListDeletedEntriesJob *>(job);
-    if (listDelEntriesJob->collectionAttributesChanged()) {
-        listDelEntriesJob->module()->modifyCollection(listDelEntriesJob->collection());
-    }
 
     taskDone();
     status(Idle);
@@ -815,7 +819,9 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 bool SugarCRMResource::handleLoginError(KJob *job)
 {
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error();
+    if (job->error()) {
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error();
+    }
     switch (job->error()) {
     case SugarJob::LoginError:
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "LoginError! Going to Broken state";

@@ -67,6 +67,7 @@ private Q_SLOTS:
         //GIVEN
         SugarOpportunity opp;
         opp.setName("newOpportunity");
+        opp.setDateModified(QDateTime(QDate(2000, 05, 30)));
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarOpportunity>(opp);

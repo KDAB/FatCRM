@@ -39,11 +39,6 @@ class CampaignsHandler;
 class LeadsHandler;
 class ContactsHandler;
 class ModuleHandler;
-namespace KDSoapGenerated
-{
-class TNS__Get_entry_list_result;
-class TNS__Select_fields;
-}
 
 class SugarMockProtocol : public QObject, public SugarProtocolBase
 {
@@ -62,7 +57,8 @@ public:
     int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
     int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
-    int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) override;
+    int listModules(QStringList &moduleNames, QString &errorMessage) override;
+    int getModuleFields(const QString &moduleName, KDSoapGenerated::TNS__Field_list &fields, QString &errorMessage) override;
 
     void setAccountsHandler(AccountsHandler *handler);
     void setOpportunitiesHandler(OpportunitiesHandler *handler);
@@ -105,11 +101,11 @@ private:
     int mNextId = 1000;
     QDateTime mLastTimeStamp;
 
-    QList<KDSoapGenerated::TNS__Entry_value> listAccounts(bool deleted, const QDateTime &timestamp) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities(bool deleted, const QDateTime &timestamp) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns(bool deleted, const QDateTime &timestamp) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listLeads(bool deleted, const QDateTime &timestamp) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listContacts(bool deleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listAccounts(bool includeDeleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities(bool includeDeleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns(bool includeDeleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listLeads(bool includeDeleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listContacts(bool includeDeleted, const QDateTime &timestamp) const;
 };
 
 #endif // SUGARMOCKPROTOCOL_H

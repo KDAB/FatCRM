@@ -82,7 +82,8 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
         return;
     }
 
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
+    bool deleted = false;
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection(), deleted);
 
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "remote=" << remoteItem.remoteRevision()
              << "local="  << mItem.remoteRevision();
@@ -194,7 +195,8 @@ void UpdateEntryJob::Private::getRevisionDone(const KDSoapGenerated::TNS__Entry_
         return;
     }
 
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
+    bool deleted = false;
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection(), deleted);
 
     mItem.setRemoteRevision(remoteItem.remoteRevision());
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got remote revision" << mItem.remoteRevision();

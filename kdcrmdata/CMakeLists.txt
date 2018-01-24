@@ -6,7 +6,6 @@ set(kdcrmdata_LIB_SRCS
   enumdefinitions.cpp
   kdcrmutils.cpp
   kdcrmfields.cpp
-  sugaraccountcache.cpp
   sugaraccount.cpp
   sugaraccountio.cpp
   sugardocument.cpp

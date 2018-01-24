@@ -39,13 +39,11 @@ class PasswordHandler;
 
 template <typename U, typename V> class QHash;
 
-struct ListDeletedItemsArg
+struct HandleDeletedItemsArg
 {
     Akonadi::Collection collection;
+    Akonadi::Item::List deletedItems;
     ModuleHandler *module;
-    QString fullSyncTimestamp;
-    bool collectionAttributesChanged;
-    bool isUpdateJob;
 };
 
 
@@ -104,8 +102,8 @@ private Q_SLOTS:
     void slotItemsReceived(const Akonadi::Item::List &items, bool isUpdateJob);
     void listEntriesResult(KJob *job);
 
-    void listDeletedItems(const QVariant &val);
-    void slotListDeletedEntriesResult(KJob*);
+    void handleDeletedItems(const QVariant &val);
+    void slotDeleteEntriesResult(KJob*);
 
     void createEntryResult(KJob *job);
 
@@ -126,6 +124,6 @@ private:
     bool handleLoginError(KJob *job);
 };
 
-Q_DECLARE_METATYPE(ListDeletedItemsArg)
+Q_DECLARE_METATYPE(HandleDeletedItemsArg)
 
 #endif

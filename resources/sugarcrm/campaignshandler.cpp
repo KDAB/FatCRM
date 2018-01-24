@@ -116,7 +116,7 @@ int CampaignsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
-Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -145,6 +145,8 @@ Akonadi::Item CampaignsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_
     }
     item.setPayload<SugarCampaign>(campaign);
     item.setRemoteRevision(campaign.dateModified());
+
+    deleted = campaign.deleted() == QLatin1String("1");
 
     return item;
 }

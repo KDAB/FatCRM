@@ -417,7 +417,7 @@ int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
-Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection )
+Akonadi::Item TasksHandler::itemFromEntry(const TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -448,6 +448,8 @@ Akonadi::Item TasksHandler::itemFromEntry( const TNS__Entry_value &entry, const 
 
     item.setPayload<KCalCore::Todo::Ptr>( todo );
     item.setRemoteRevision( getDateModified( *todo ) );
+
+    deleted = getDeleted(*todo) == QLatin1String("1");
 
     return item;
 }

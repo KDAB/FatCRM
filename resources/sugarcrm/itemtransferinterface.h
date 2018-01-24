@@ -23,7 +23,7 @@
 
 #include <QObject>
 
-class SugarCRMResource;
+class SugarSession;
 
 class ItemTransferInterface : public QObject
 {
@@ -31,7 +31,9 @@ class ItemTransferInterface : public QObject
     Q_CLASSINFO("D-Bus Interface", "com.kdab.SugarCRM.ItemTransfer")
 
 public:
-    explicit ItemTransferInterface(SugarCRMResource *resource);
+    explicit ItemTransferInterface(QObject *parent = nullptr);
+
+    void setSession(SugarSession *session);
 
 public Q_SLOTS:
     /**
@@ -53,7 +55,7 @@ public Q_SLOTS:
                                const QString &targetItemId, const QString &targetModuleName) const;
 
 private:
-    SugarCRMResource *const mResource;
+    SugarSession *mSession;
 };
 
 #endif

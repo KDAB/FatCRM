@@ -56,6 +56,7 @@ public:
 
     bool collectionAttributesChanged() const;
     bool isUpdateJob() const;
+    Akonadi::Item::List deletedItems() const;
 
     static int currentContentsVersion(const Akonadi::Collection &collection);
     static QString latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler);

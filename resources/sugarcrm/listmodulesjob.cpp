@@ -45,13 +45,13 @@ public:
     QStringList mModules;
 
 public:
-    void listModulesDone(const TNS__Select_fields &moduleNames);
+    void listModulesDone(const QStringList &moduleNames);
     void listModulesError(int error, const QString &errorMessage);
 };
 
-void ListModulesJob::Private::listModulesDone(const KDSoapGenerated::TNS__Select_fields &moduleNames)
+void ListModulesJob::Private::listModulesDone(const QStringList &moduleNames)
 {
-    mModules = moduleNames.items();
+    mModules = moduleNames;
 
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << mModules.count() << "available modules";
     Q_ASSERT(!mModules.isEmpty()); // abort before deleting everything locally...
@@ -94,11 +94,11 @@ QStringList ListModulesJob::modules() const
 
 void ListModulesJob::startSugarTask()
 {
-    KDSoapGenerated::TNS__Select_fields selectFields;
+    QStringList modules;
     QString errorMessage;
-    int result = session()->protocol()->listModules(selectFields, errorMessage);
+    int result = session()->protocol()->listModules(modules, errorMessage);
     if (result == KJob::NoError) {
-        d->listModulesDone(selectFields);
+        d->listModulesDone(modules);
     } else {
         d->listModulesError(result, errorMessage);
     }

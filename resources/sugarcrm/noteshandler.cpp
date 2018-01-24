@@ -127,7 +127,7 @@ int NotesHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
-Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -156,6 +156,8 @@ Akonadi::Item NotesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
     }
     item.setPayload<SugarNote>(note);
     item.setRemoteRevision(note.dateModifiedRaw());
+
+    deleted = note.deleted() == QLatin1String("1");
 
     return item;
 }

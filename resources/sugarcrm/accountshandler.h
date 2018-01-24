@@ -51,15 +51,12 @@ public:
 
     int expectedContentsVersion() const override;
 
-    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection) override;
+    Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted) override;
 
     void compare(Akonadi::AbstractDifferencesReporter *reporter,
                  const Akonadi::Item &leftItem, const Akonadi::Item &rightItem) override;
 
     static SugarAccount nameValueListToSugarAccount(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
-private Q_SLOTS:
-    void slotItemsReceived(const Akonadi::Item::List &items);
-    void slotUpdateJobResult(KJob *job);
 };
 
 #endif /* ACCOUNTSHANDLER_H */

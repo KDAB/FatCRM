@@ -91,9 +91,10 @@ Akonadi::Collection ModuleHandler::collection()
 
 void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 {
-    mCollection = collection;
     Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection, this);
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
+    modJob->exec();
+    mCollection = modJob->collection();
 }
 
 int ModuleHandler::getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage)
@@ -108,12 +109,12 @@ void ModuleHandler::listEntries(const ListEntriesScope &scope)
     const QString orderBy = orderByForListing();
     const int offset = scope.offset();
     const int maxResults = 100;
-    const int fetchDeleted = scope.deleted();
+    const int fetchDeleted = scope.includeDeleted();
 
     KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems(supportedSugarFields());
 
-    soap()->asyncGet_entry_list(sessionId(), moduleToName(module()), query, orderBy, offset, selectedFields, maxResults, fetchDeleted);
+    soap()->asyncGet_entry_list(sessionId(), moduleToName(module()), query, orderBy, offset, selectedFields, {}, maxResults, fetchDeleted, false);
 }
 
 int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage)
@@ -130,41 +131,43 @@ QStringList ModuleHandler::availableFields() const
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Available Fields for " << mModule
                  << "not fetched yet, getting them now";
 
-        mAvailableFields = listAvailableFields(mSession, moduleToName(mModule));
+        mAvailableFields = listAvailableFieldNames(mSession, moduleToName(mModule));
     }
 
     return mAvailableFields;
 }
 
 // static (also used by debug handler for modules without a handler)
-QStringList ModuleHandler::listAvailableFields(SugarSession *session, const QString &module)
+QStringList ModuleHandler::listAvailableFieldNames(SugarSession *session, const QString &module)
 {
-    if (session->soap() == nullptr) {
-        return QStringList();
+    const KDSoapGenerated::TNS__Field_list fieldList = listAvailableFields(session, module);
+    QStringList availableFields;
+    availableFields.reserve(fieldList.items().count());
+    for (const auto &field : fieldList.items()) {
+        availableFields << field.name();
     }
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fields (SOAP v4.1) :" << availableFields;
 
-    KDSoapGenerated::Sugarsoap *soap = session->soap();
+    return availableFields;
+}
+
+// static (also used by debug handler for modules without a handler)
+KDSoapGenerated::TNS__Field_list ModuleHandler::listAvailableFields(SugarSession *session, const QString &module)
+{
+    KDSoapGenerated::TNS__Field_list fields;
     const QString sessionId = session->sessionId();
     if (sessionId.isEmpty()) {
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
+        return fields;
     }
 
-    const KDSoapGenerated::TNS__Module_fields response = soap->get_module_fields(sessionId, module);
-
-    QStringList availableFields;
-    const KDSoapGenerated::TNS__Error_value error = response.error();
-    if (error.number().isEmpty() || error.number() == QLatin1String("0")) {
-        const KDSoapGenerated::TNS__Field_list fieldList = response.module_fields();
-        Q_FOREACH (const KDSoapGenerated::TNS__Field &field, fieldList.items()) {
-            availableFields << field.name();
-        }
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got" << availableFields << "fields";
-    } else {
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error: number=" << error.number()
-                 << "name=" << error.name()
-                 << "description=" << error.description();
+    QString errorMessage;
+    int error = session->protocol()->getModuleFields(module, fields, errorMessage);
+    if (error != KJob::NoError) {
+       qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << errorMessage;
     }
-    return availableFields;
+
+    return fields;
 }
 
 int ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
@@ -178,9 +181,14 @@ int ModuleHandler::getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Ent
 }
 
 
-bool ModuleHandler::hasEnumDefinitions()
+bool ModuleHandler::hasEnumDefinitions() const
 {
     return mHasEnumDefinitions;
+}
+
+EnumDefinitions ModuleHandler::enumDefinitions() const
+{
+    return mEnumDefinitions;
 }
 
 bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__Field_list &fields)
@@ -224,14 +232,20 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
     return false; // no change
 }
 
-Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection, QString *lastTimestamp)
+Akonadi::Item::List ModuleHandler::itemsFromListEntriesResponse(const KDSoapGenerated::TNS__Entry_list &entryList, const Akonadi::Collection &parentCollection, Akonadi::Item::List &deletedItems, QString *lastTimestamp)
 {
     Akonadi::Item::List items;
+    items.reserve(entryList.items().size());
 
     Q_FOREACH (const KDSoapGenerated::TNS__Entry_value &entry, entryList.items()) {
-        const Akonadi::Item item = itemFromEntry(entry, parentCollection);
+        bool deleted = false;
+        const Akonadi::Item item = itemFromEntry(entry, parentCollection, deleted);
         if (!item.remoteId().isEmpty()) {
-            items << item;
+            if (deleted) {
+                deletedItems << item;
+            } else {
+                items << item;
+            }
             if (lastTimestamp->isEmpty() || item.remoteRevision() > *lastTimestamp) {
                 *lastTimestamp = item.remoteRevision();
             }
@@ -470,7 +484,7 @@ QString ModuleHandler::sessionId() const
     return mSession->sessionId();
 }
 
-Sugarsoap *ModuleHandler::soap() const
+KDSoapGenerated::Sugarsoap *ModuleHandler::soap() const
 {
     return mSession->soap();
 }

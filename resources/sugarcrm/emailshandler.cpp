@@ -111,10 +111,12 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
     }
     KDSoapGenerated::TNS__Select_fields selectedFields;
     selectedFields.setItems(QStringList() << QStringLiteral("email_id") << QStringLiteral("description") << QStringLiteral("description_html"));
+    KDSoapGenerated::TNS__Link_names_to_fields_array link_name_to_fields_array;
     // Blocking call
-    KDSoapGenerated::TNS__Get_entry_list_result result =
+    const auto result =
             soap()->get_entry_list(sessionId(), QStringLiteral("EmailText"), query, QString() /*orderBy*/,
-                                   0 /*offset*/, selectedFields, items.count() /*maxResults*/, 0 /*fetchDeleted*/);
+                                   0 /*offset*/, selectedFields, link_name_to_fields_array,
+                                   items.count() /*maxResults*/, 0 /*fetchDeleted*/, false /*favorites*/);
 
     foreach(const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {
         QString email_id, description, descriptionHtml;
@@ -194,7 +196,7 @@ int EmailsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
-Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -223,6 +225,8 @@ Akonadi::Item EmailsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_val
     }
     item.setPayload<SugarEmail>(email);
     item.setRemoteRevision(email.dateModifiedRaw());
+
+    deleted = email.deleted() == QLatin1String("1");
 
     return item;
 }

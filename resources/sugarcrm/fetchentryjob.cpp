@@ -57,7 +57,8 @@ public:
 
 void FetchEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_value &entryValue)
 {
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
+    bool deleted = false;
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection(), deleted);
 
     Item item = remoteItem;
     item.setId(mItem.id());

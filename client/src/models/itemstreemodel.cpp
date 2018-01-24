@@ -34,6 +34,9 @@
 #include <KContacts/PhoneNumber>
 
 #include <AkonadiCore/ChangeRecorder>
+#include <AkonadiCore/ItemModifyJob>
+#include <AkonadiCore/EntityDisplayAttribute>
+#include <akonadi_version.h>
 
 #include <QIcon>
 #include <KIconLoader>
@@ -69,6 +72,10 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
         // and update it again later in case of single changes (by the user or when updating from server)
         connect(AccountRepository::instance(), SIGNAL(accountModified(QString,QVector<AccountRepository::Field>)),
                 this, SLOT(slotAccountModified(QString,QVector<AccountRepository::Field>)));
+
+        // React to account removals
+        connect(AccountRepository::instance(), &AccountRepository::accountRemoved,
+                this, &ItemsTreeModel::slotAccountRemoved);
     }
 }
 
@@ -183,6 +190,36 @@ void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector
         const int lastColumn = *std::max_element(columns.constBegin(), columns.constEnd());
         qDebug() << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
         emit dataChanged(index(0, firstColumn), index(rows - 1, lastColumn));
+    }
+}
+
+void ItemsTreeModel::slotAccountRemoved(const QString &accountId)
+{
+    if (mType == Opportunity) {
+        // The opps that were using this account need to be synced explicitly, this might be the result of an account merge
+        // and SugarCRM doesn't mark the opps as modified when this happens...
+        const int rows = rowCount();
+        for (int row = 0; row < rows; ++row) {
+            const Akonadi::Item item = index(row, 0).data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
+            const SugarOpportunity opp = item.payload<SugarOpportunity>();
+            if (opp.accountId() == accountId) {
+                // force-sync this opp (this "strange" code is unittested in forceRefreshShouldCallResource)
+                qDebug() << "opp" << opp.name() << "is using deleted account" << accountId;
+
+                // Clear the payload, to force a refetch from the resource
+                Item fakeItem(item.id());
+                fakeItem.clearPayload();
+                // Workaround akonadi bug which was fixed in akonadi 5.7.3 (commit a2a85090c)
+#if AKONADI_VERSION < QT_VERSION_CHECK(5, 7, 3) || AKONADI_VERSION == QT_VERSION_CHECK(5, 7, 40)
+                fakeItem.addAttribute(new Akonadi::EntityDisplayAttribute());
+                fakeItem.removeAttribute<Akonadi::EntityDisplayAttribute>();
+#endif
+                Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(fakeItem, this);
+                connect(modifyJob, &Akonadi::ItemModifyJob::result, this, []() {
+                    qDebug() << "ItemModifyJob is done";
+                });
+            }
+        }
     }
 }
 
@@ -421,8 +458,13 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         switch (columnTypes().at(column)) {
         case OpportunityName:
             return opportunity.name();
-        case OpportunityAccountName:
-            return ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
+        case OpportunityAccountName: {
+            QString name = ReferencedData::instance(AccountRef)->referencedData(opportunity.accountId());
+            if (name.isEmpty()) {
+                name = "ERROR: unknown account! ID=" + opportunity.accountId() + "  tempAccountName=" + opportunity.tempAccountName();
+            }
+            return name;
+        }
         case SalesStage:
             return opportunity.salesStage();
         case Amount: {

@@ -846,7 +846,7 @@ int ContactsHandler::expectedContentsVersion() const
     return 3;
 }
 
-Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -892,6 +892,8 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
     addressee.insertAddress(homeAddress);
     item.setPayload<KContacts::Addressee>(addressee);
     item.setRemoteRevision(getDateModified(addressee));
+
+    deleted = getDeleted(addressee) == QLatin1String("1");
 
     return item;
 }

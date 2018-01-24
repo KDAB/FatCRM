@@ -28,7 +28,6 @@ add_fatcrm_tests(
   nullabledatecomboboxtest
   test_contactsimporter
   test_enumdefinitions
-  test_accountcache
   test_accountrepository
   test_itemdataextractor
   kdcrmutilstest

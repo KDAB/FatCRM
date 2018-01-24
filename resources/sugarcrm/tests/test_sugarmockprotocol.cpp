@@ -30,8 +30,6 @@
 #include "contactshandler.h"
 #include "modulename.h"
 
-#include "sugarsession.h"
-
 Q_DECLARE_METATYPE(Module)
 
 class TestSugarMockProtocol : public QObject
@@ -81,7 +79,7 @@ private Q_SLOTS:
 
     void shouldCountEntriesCorrectly_data()
     {
-        QTest::addColumn<Module>("type");
+        QTest::addColumn<Module>("module");
         QTest::addColumn<int>("amount");
 
         QTest::newRow("accounts") << Module::Accounts << 3;
@@ -93,7 +91,7 @@ private Q_SLOTS:
 
     void shouldCountEntriesCorrectly()
     {
-        QFETCH(Module, type);
+        QFETCH(Module, module);
         QFETCH(int, amount);
         //GIVEN
         SugarMockProtocol protocol;
@@ -103,21 +101,14 @@ private Q_SLOTS:
         ListEntriesScope scope;
         QString query;
         QString errorMessage;
-        protocol.getEntriesCount(scope, type, query, entriesCount, errorMessage);
+        protocol.getEntriesCount(scope, module, query, entriesCount, errorMessage);
         //THEN
         QCOMPARE(entriesCount, amount);
     }
 
     void listEntriesShouldWork_data()
     {
-        QTest::addColumn<Module>("module");
-        QTest::addColumn<int>("amount");
-
-        QTest::newRow("accounts") << Module::Accounts << 3;
-        QTest::newRow("opportunities") << Module::Opportunities << 2;
-        QTest::newRow("leads") << Module::Leads << 1;
-        QTest::newRow("campaigns") << Module::Campaigns << 1;
-        QTest::newRow("contacts") << Module::Contacts << 1;
+        shouldCountEntriesCorrectly_data();
     }
 
     void listEntriesShouldWork()
@@ -133,8 +124,44 @@ private Q_SLOTS:
         EntriesListResult result;
         QStringList selectedFields;
         QString query, orderBy, errorMessage;
-        protocol.listEntries(scope, module, query, orderBy, selectedFields, result, errorMessage);
+        QCOMPARE(protocol.listEntries(scope, module, query, orderBy, selectedFields, result, errorMessage), 0);
         //THEN
+        QCOMPARE(result.resultCount, amount);
+        QCOMPARE(result.entryList.items().size(), amount);
+    }
+
+    void deletedAccountShouldAffectListEntriesAndGetEntriesCount_data()
+    {
+        QTest::addColumn<bool>("fetchDeleted");
+        QTest::addColumn<int>("amount");
+
+        QTest::newRow("with_deleted") << true << 3;
+        QTest::newRow("without_deleted") << false << 2;
+    }
+
+    void deletedAccountShouldAffectListEntriesAndGetEntriesCount()
+    {
+        // GIVEN
+        QFETCH(bool, fetchDeleted);
+        QFETCH(int, amount);
+        Module module = Accounts;
+        SugarMockProtocol protocol;
+        protocol.addData();
+        protocol.deleteAccount("1");
+
+        //WHEN
+        ListEntriesScope scope;
+        if (fetchDeleted) {
+            scope.fetchDeleted();
+        }
+        EntriesListResult result;
+        QStringList selectedFields;
+        QString query, orderBy, errorMessage;
+        int entriesCount;
+        QCOMPARE(protocol.getEntriesCount(scope, module, query, entriesCount, errorMessage), 0);
+        QCOMPARE(protocol.listEntries(scope, module, query, orderBy, selectedFields, result, errorMessage), 0);
+        //THEN
+        QCOMPARE(entriesCount, amount);
         QCOMPARE(result.resultCount, amount);
         QCOMPARE(result.entryList.items().size(), amount);
     }
@@ -215,17 +242,13 @@ private Q_SLOTS:
     void shouldCorrectlyListModules()
     {
         //GIVEN
-        SugarSession session(nullptr);
         SugarMockProtocol *protocol = new SugarMockProtocol;
-        session.setProtocol(protocol);
-        protocol->setSession(&session);
-        KDSoapGenerated::TNS__Select_fields selectFields;
+        QStringList modules;
         QString errorMessage;
         //WHEN
-        int error = protocol->listModules(selectFields, errorMessage);
+        int error = protocol->listModules(modules, errorMessage);
         //THEN
         QCOMPARE(error, int(KJob::NoError));
-        QStringList modules = selectFields.items();
         QCOMPARE(modules.size(), 5);
         QVERIFY(modules.contains(moduleToName(Module::Accounts)));
         QVERIFY(modules.contains(moduleToName(Module::Opportunities)));
@@ -237,15 +260,12 @@ private Q_SLOTS:
     void shouldFailToListModules()
     {
         //GIVEN
-        SugarSession session(nullptr);
         SugarMockProtocol *protocol = new SugarMockProtocol;
-        session.setProtocol(protocol);
-        protocol->setSession(&session);
-        KDSoapGenerated::TNS__Select_fields selectFields;
+        QStringList modules;
         QString errorMessage;
         //WHEN
         protocol->setNextSoapError("FAIL");
-        int error = protocol->listModules(selectFields, errorMessage);
+        int error = protocol->listModules(modules, errorMessage);
         //THEN
         QCOMPARE(errorMessage, QString("FAIL"));
         QCOMPARE(error, int(SugarJob::SoapError));

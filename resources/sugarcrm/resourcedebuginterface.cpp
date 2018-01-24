@@ -61,7 +61,7 @@ QStringList ResourceDebugInterface::supportedModules() const
 
 QStringList ResourceDebugInterface::availableFields(const QString &module) const
 {
-    return ModuleHandler::listAvailableFields(mResource->mSession, module);
+    return ModuleHandler::listAvailableFieldNames(mResource->mSession, module);
 }
 
 int ResourceDebugInterface::getCount(const QString &module) const
@@ -82,7 +82,7 @@ int ResourceDebugInterface::getCount(const QString &module) const
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(availableFields(module));
-    KDSoapGenerated::TNS__Get_entry_list_result listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, 1 /*maxResults*/, 0 /*fetchDeleted*/);
+    const auto listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, {}, 1 /*maxResults*/, 0 /*fetchDeleted*/, false /*favorites*/);
     const QList<KDSoapGenerated::TNS__Entry_value> items = listResponse.entry_list().items();
     if (!items.isEmpty()) {
         QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();

@@ -34,13 +34,14 @@ public:
     void logout() override;
     inline void setSession(SugarSession *session) override { mSession = session; }
     int getEntriesCount(const ListEntriesScope &scope, Module moduleName, const QString &query, int &entriesCount, QString &errorMessage) override;
+    int getModuleFields(const QString &moduleName, KDSoapGenerated::TNS__Field_list &fields, QString &errorMessage) override;
     int listEntries(const ListEntriesScope &scope, Module moduleName, const QString &query,
                      const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
     int setEntry(Module moduleName, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) override;
     int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
-    int listModules(KDSoapGenerated::TNS__Select_fields &selectFields, QString &errorMessage) override;
+    int listModules(QStringList &moduleNames, QString &errorMessage) override;
 private:
     SugarSession *mSession;
 };

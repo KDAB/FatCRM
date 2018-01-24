@@ -23,30 +23,18 @@
 #include "sugarsession.h"
 
 #include "sugarsoap.h"
+#include "sugarsoap.h"
 #include "passwordhandler.h"
 #include "sugarprotocolbase.h"
-
-using namespace KDSoapGenerated;
-#include <QUrl>
 #include "sugarcrmresource_debug.h"
 
-static QString endPointFromHostString(const QString &host)
-{
-    QUrl url(host);
-    url = url.adjusted(QUrl::RemoveFilename);
-    url.setPath(url.path() + QStringLiteral("soap.php"));
-    url.setQuery(QString());
-
-    return url.url();
-}
+#include <QUrl>
 
 class SugarSession::Private
 {
 public:
     explicit Private(PasswordHandler *passwordHandler)
-        : mSoap(nullptr),
-          mPasswordHandler(passwordHandler),
-          mProtocol(nullptr)
+        : mPasswordHandler(passwordHandler)
     {
     }
 
@@ -60,9 +48,9 @@ public:
     QString mUserName;
     QString mPassword;
     QString mHost;
-    Sugarsoap *mSoap;
+    KDSoapGenerated::Sugarsoap *mSoap = nullptr;
+    SugarProtocolBase *mProtocol = nullptr;
     PasswordHandler *mPasswordHandler;
-    SugarProtocolBase *mProtocol;
 };
 
 SugarSession::SugarSession(PasswordHandler *passwordHandler, QObject *parent)
@@ -104,8 +92,11 @@ void SugarSession::createSoapInterface()
         d->mSoap->deleteLater();
     }
 
-    d->mSoap = new Sugarsoap;
-    d->mSoap->setEndPoint(endPointFromHostString(d->mHost));
+    d->mSoap = new KDSoapGenerated::Sugarsoap;
+    QUrl url(d->mHost);
+    url.setPath("/service/v4_1/soap.php");
+    url.setQuery(QString());
+    d->mSoap->setEndPoint(url.toString());
 }
 
 QString SugarSession::sessionId() const
@@ -148,7 +139,7 @@ void SugarSession::setSessionId(const QString &sessionId)
     d->mSessionId = sessionId;
 }
 
-Sugarsoap *SugarSession::soap()
+KDSoapGenerated::Sugarsoap *SugarSession::soap()
 {
     return d->mSoap;
 }

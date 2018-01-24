@@ -118,7 +118,7 @@ int LeadsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
-Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection)
+Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
 {
     Akonadi::Item item;
 
@@ -147,6 +147,8 @@ Akonadi::Item LeadsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_valu
     }
     item.setPayload<SugarLead>(lead);
     item.setRemoteRevision(lead.dateModified());
+
+    deleted = lead.deleted() == QLatin1String("1");
 
     return item;
 }

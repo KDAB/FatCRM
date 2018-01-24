@@ -119,6 +119,7 @@ public:
 
 private Q_SLOTS:
     void slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields);
+    void slotAccountRemoved(const QString &accountId);
     void slotAccountsLoaded();
 
 private:

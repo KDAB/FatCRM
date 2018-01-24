@@ -61,7 +61,7 @@ void ListEntriesScope::fetchDeleted()
     mOffset = 0;
 }
 
-int ListEntriesScope::deleted() const
+int ListEntriesScope::includeDeleted() const
 {
     return mGetDeleted ? 1 : 0;
 }

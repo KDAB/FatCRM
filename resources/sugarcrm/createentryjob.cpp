@@ -101,7 +101,8 @@ void CreateEntryJob::Private::setEntryError(int error, const QString &errorMessa
 
 void CreateEntryJob::Private::getEntryDone(const TNS__Entry_value &entryValue)
 {
-    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection());
+    bool deleted = false;
+    const Akonadi::Item remoteItem = mHandler->itemFromEntry(entryValue, mItem.parentCollection(), deleted);
 
     Item item = remoteItem;
     item.setId(mItem.id());

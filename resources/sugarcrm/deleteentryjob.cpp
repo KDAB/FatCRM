@@ -58,7 +58,7 @@ public:
 void DeleteEntryJob::Private::setEntryDone()
 {
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Entry" << mItem.remoteId() << "deleted from module"
-             << mItem.parentCollection().remoteId();
+             << moduleToName(mModule);
     q->emitResult();
 }
 
@@ -99,7 +99,7 @@ void DeleteEntryJob::startSugarTask()
 {
     Q_ASSERT(d->mItem.isValid());
 
-    // delete just required identifier and "deleted" field
+    // delete just requires identifier and "deleted" field
     // no need for type specific code
     KDSoapGenerated::TNS__Name_value idField;
     idField.setName(QStringLiteral("id"));

@@ -41,6 +41,7 @@
 #include <sugaraccount.h>
 #include <sugaropportunity.h>
 #include <akonadi_version.h>
+#include <EntityAnnotationsAttribute>
 
 Q_DECLARE_METATYPE(QSet<QByteArray>)
 
@@ -71,6 +72,11 @@ static QString serviceName()
     return serviceName;
 }
 
+/**
+ * This test uses the Akonadi API to talk to the full SugarCRM resource, *but*
+ * it uses the Mock protocol implementation behind it, so no SOAP communication happens
+ * and no SugarCRM server is necessary.
+ */
 class TestSugarCRMResource : public QObject
 {
     Q_OBJECT
@@ -173,6 +179,15 @@ private:
         return reply.value();
     }
 
+    static QString collectionTimestamp(const Collection &collection)
+    {
+        EntityAnnotationsAttribute *annotationsAttribute = collection.attribute<EntityAnnotationsAttribute>();
+        if (annotationsAttribute) {
+            return annotationsAttribute->value("timestamp");
+        }
+        return QString();
+    }
+
     template<typename T>
     void createSugarItem(const QString &name, const QString &id, Collection &collection, QList<ItemData> &&expected, const QString &operationName, Item &createdItem)
     {
@@ -185,6 +200,10 @@ private:
         item.setPayload(sugarItem);
         item.setMimeType(T::mimeType());
         ItemCreateJob *job = new ItemCreateJob(item, collection);
+
+        const QString oldTimestamp = collectionTimestamp(collection);
+        QVERIFY(!oldTimestamp.isEmpty());
+
         //WHEN
         AKVERIFYEXEC(job);
         //THEN
@@ -228,6 +247,15 @@ private:
         QDBusReply<bool> reply = mock.call(operationName, name, id);
         QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
         QVERIFY2(reply.value(), qPrintable(QString(operationName + " failed")));
+
+        // Check that the timestamp was updated
+        CollectionFetchJob *fetchJob = new CollectionFetchJob(collection, CollectionFetchJob::Base);
+        AKVERIFYEXEC(fetchJob);
+        QCOMPARE(fetchJob->collections().count(), 1);
+        collection = fetchJob->collections().at(0);
+        const QString newTimestamp = collectionTimestamp(collection);
+        QVERIFY(!newTimestamp.isEmpty());
+        QVERIFY2(newTimestamp != oldTimestamp, qPrintable(oldTimestamp));
     }
 
     // Modify the item defined by @p item to set the name @p name, in @p collection
@@ -480,6 +508,46 @@ private Q_SLOTS:
     void shouldDeleteOpportunity()
     {
         deleteSugarItem<SugarOpportunity>(mOpportunityItem, mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}});
+    }
+
+    void syncShouldNotifyOfProgress()
+    {
+        // GIVEN
+        AgentManager *agentManager = AgentManager::self();
+        AgentInstance currentAgent = agentManager->instance("akonadi_sugarcrm_resource_0");
+        QVERIFY(currentAgent.isValid());
+        QVERIFY(currentAgent.isOnline());
+
+        QSignalSpy spyProgress(agentManager, &AgentManager::instanceProgressChanged);
+
+        QStringList statusMessages;
+        QVector<int> progresses;
+        connect(agentManager, &AgentManager::instanceProgressChanged,
+                this, [&progresses, &currentAgent, &statusMessages](const AgentInstance &instance) {
+            if (instance == currentAgent) {
+                progresses << instance.progress();
+                statusMessages << instance.statusMessage();
+            }
+        });
+
+        QVector<AgentInstance::Status> statuses;
+        connect(agentManager, &AgentManager::instanceStatusChanged,
+                this, [&statuses, &currentAgent, &statusMessages](const AgentInstance &instance) {
+            if (instance == currentAgent) {
+                statuses << instance.status();
+                statusMessages << instance.statusMessage();
+            }
+        });
+
+        // WHEN
+        currentAgent.synchronize();
+
+        // THEN
+        while (!statusMessages.contains(QLatin1String("Ready"))) {
+            qDebug() << "progress" << progresses;
+            qDebug() << "status" << statuses << statusMessages;
+            spyProgress.wait();
+        }
     }
 
 };
