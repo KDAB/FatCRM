@@ -367,8 +367,8 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         connect(job, SIGNAL(result(KJob*)), this, SLOT(listEntriesResult(KJob*)));
         job->start();
     } else {
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << mModuleHandlers->keys();
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No module handler for collection" << collection;
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << mModuleHandlers->keys();
         itemsRetrieved(Item::List());
     }
 }
