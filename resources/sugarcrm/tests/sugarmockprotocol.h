@@ -91,6 +91,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE bool accountExists(const QString &name, const QString &id);
     Q_SCRIPTABLE bool opportunityExists(const QString &name, const QString &id);
     Q_SCRIPTABLE QString sessionId();
+    Q_SCRIPTABLE QDateTime nextTimeStamp();
 
 private:
     bool mServerNotFound;
@@ -102,12 +103,13 @@ private:
     QVector<SugarLead> mLeads;
     QVector<KContacts::Addressee> mContacts;
     int mNextId = 1000;
+    QDateTime mLastTimeStamp;
 
-    QList<KDSoapGenerated::TNS__Entry_value> listAccount(bool deleted) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities(bool deleted) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns(bool deleted) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listLeads(bool deleted) const;
-    QList<KDSoapGenerated::TNS__Entry_value> listContacts(bool deleted) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listAccounts(bool deleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listOpportunities(bool deleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listCampaigns(bool deleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listLeads(bool deleted, const QDateTime &timestamp) const;
+    QList<KDSoapGenerated::TNS__Entry_value> listContacts(bool deleted, const QDateTime &timestamp) const;
 };
 
 #endif // SUGARMOCKPROTOCOL_H

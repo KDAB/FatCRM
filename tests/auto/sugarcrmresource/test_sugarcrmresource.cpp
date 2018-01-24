@@ -35,11 +35,12 @@
 #include <qtest_akonadi.h>
 #include <AkonadiCore/servermanager.h>
 #include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/EntityHiddenAttribute>
+#include <AkonadiCore/EntityDisplayAttribute>
 #include <AkonadiCore/Monitor>
 #include <QDBusReply>
 #include <sugaraccount.h>
 #include <sugaropportunity.h>
+#include <akonadi_version.h>
 
 Q_DECLARE_METATYPE(QSet<QByteArray>)
 
@@ -77,8 +78,8 @@ class TestSugarCRMResource : public QObject
 private:
     Collection mAccountsCollection;
     Collection mOpportunitiesCollection;
-
-    Item::Id mNewId;
+    Item mAccountItem;
+    Item mOpportunityItem;
 
     static QString sessionId()
     {
@@ -110,6 +111,8 @@ private:
         std::sort(expected.begin(), expected.end());
         std::sort(result.begin(), result.end());
         for (int i=0; i<result.count(); ++i) {
+            QCOMPARE(result.at(i).name, expected.at(i).name);
+            QCOMPARE(result.at(i).id, expected.at(i).id);
             QCOMPARE(result.at(i), expected.at(i));
         }
     }
@@ -125,11 +128,12 @@ private:
     template<typename T>
     void compareToExpectedResult(const QList<QVariant> &arguments, const QString &expectedName, const QString &expectedId)
     {
+        QVERIFY(!expectedId.isEmpty());
         const Item item = arguments.at(0).value<Item>();
         QVERIFY(item.hasPayload<T>());
         T inst = item.payload<T>();
 
-        qDebug() << "name:" << inst.name() << "id:" << inst.id();
+        qDebug() << "name:" << inst.name() << "id:" << inst.id() << "expectedId" << expectedId;
         QCOMPARE(inst.name(), expectedName);
         QCOMPARE(inst.id(), expectedId);
     }
@@ -156,17 +160,27 @@ private:
         AgentManager::self()->synchronizeCollection(collection);
 
         QSignalSpy spy(&monitor, signal);
-        QVERIFY(spy.wait());
+        QVERIFY2(spy.wait(), (QByteArray("Signal not emitted: ") + signal).constData());
         QCOMPARE(spy.count(), 1);
         arguments = spy.at(0);
     }
 
+    QDateTime nextTimeStamp()
+    {
+        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
+        QDBusReply<QDateTime> reply = mock.call("nextTimeStamp");
+        Q_ASSERT(reply.isValid());
+        return reply.value();
+    }
+
     template<typename T>
-    void createSugarItem(const QString &name, const QString &id, Collection &collection, QList<ItemData> &&expected, const QString &operationName)
+    void createSugarItem(const QString &name, const QString &id, Collection &collection, QList<ItemData> &&expected, const QString &operationName, Item &createdItem)
     {
         //GIVEN
         T sugarItem;
+        sugarItem.setId(id);
         sugarItem.setName(name);
+        sugarItem.setDateModified(nextTimeStamp());
         Item item;
         item.setPayload(sugarItem);
         item.setMimeType(T::mimeType());
@@ -195,22 +209,20 @@ private:
 //            qDebug() << "TEST ////" << "changed" << i << "name:" << inst.name() << "id:" << inst.id() << "remoteId:" << item.remoteId();
 //        }
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
         QCOMPARE(spyAdded.count(), 1);
 
         const QList<QVariant> arguments = spyAdded.at(0);
-        compareToExpectedResult<T>(arguments, name, "");
+        compareToExpectedResult<T>(arguments, name, id);
 
         QTRY_COMPARE(spyChanged.count(), 2);
 
-
         const QList<QVariant> argumentsUpdate = spyChanged.at(spyChanged.count()-1);
         compareToExpectedResult<T>(argumentsUpdate, name, id);
-#endif
+
         fetchAndCompareItems<T>(collection, std::move(expected));
 
-        mNewId = spyChanged.at(0).at(0).value<Item>().id();
-        QVERIFY(mNewId != 0);
+        createdItem = spyChanged.at(0).at(0).value<Item>();
+        QVERIFY(createdItem.id() != 0);
 
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
         QDBusReply<bool> reply = mock.call(operationName, name, id);
@@ -218,18 +230,19 @@ private:
         QVERIFY2(reply.value(), qPrintable(QString(operationName + " failed")));
     }
 
+    // Modify the item defined by @p item to set the name @p name, in @p collection
+    // Then fetch from that collection and compare with @p expected
+    // Finally call @p operationName (e.g. "accountExists")
     template<typename T>
-    void updateSugarItem(const QString &name, const QString &id, Collection &collection, QList<ItemData> &&expected, const QString &operationName)
+    void updateSugarItem(Item &item, const QString &name, Collection &collection, QList<ItemData> &&expected, const QString &operationName)
     {
         //GIVEN
-        T sugarItem;
+        T sugarItem = item.payload<T>();
+        const QString id = sugarItem.id();
+        Q_ASSERT(!id.isEmpty());
         sugarItem.setName(name);
-        sugarItem.setId(id);
-        Item item;
-        item.setId(mNewId);
-        item.setRemoteId(id);
         item.setPayload(sugarItem);
-        item.setMimeType(T::mimeType());
+        QCOMPARE(item.mimeType(), T::mimeType());
         ItemModifyJob *job = new ItemModifyJob(item);
         //WHEN
         AKVERIFYEXEC(job);
@@ -250,6 +263,7 @@ private:
 
         const QList<QVariant> arguments = spy.at(0);
         compareToExpectedResult<T>(arguments, name, id);
+        item = spy.at(0).at(0).value<Akonadi::Item>(); // update revision, to avoid a conflict
 
         fetchAndCompareItems<T>(collection, std::move(expected));
 
@@ -260,12 +274,9 @@ private:
     }
 
     template<typename T>
-    void deleteSugarItem(const QString &id, Collection &collection, QList<ItemData> &&expected)
+    void deleteSugarItem(const Item &item, Collection &collection, QList<ItemData> &&expected)
     {
         //GIVEN
-        Item item;
-        item.setId(mNewId);
-        item.setRemoteId(id);
         ItemDeleteJob *job = new ItemDeleteJob(item);
         //WHEN
         AKVERIFYEXEC(job);
@@ -353,17 +364,17 @@ private Q_SLOTS:
 
     void shouldCreateAccount()
     {
-        createSugarItem<SugarAccount>("newAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"newAccount", "1000"}}, "accountExists");
+        createSugarItem<SugarAccount>("newAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"newAccount", "1000"}}, "accountExists", mAccountItem);
     }
 
     void shouldUpdateAccount()
     {
-        updateSugarItem<SugarAccount>("updateAccount", "1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"updateAccount", "1000"}}, "accountExists");
+        updateSugarItem<SugarAccount>(mAccountItem, "updateAccount", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}, {"updateAccount", "1000"}}, "accountExists");
     }
 
     void shouldDeleteAccount()
     {
-        deleteSugarItem<SugarAccount>("1000", mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}});
+        deleteSugarItem<SugarAccount>(mAccountItem, mAccountsCollection, {{"accountZero", "0"}, {"accountOne", "1"}, {"accountTwo", "2"}});
     }
 
     void shouldForgetSessionWhenInvalid()
@@ -432,17 +443,43 @@ private Q_SLOTS:
 
     void shouldCreateOpportunity()
     {
-        createSugarItem<SugarOpportunity>("newOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"newOpportunity", "1001"}}, "opportunityExists");
+        createSugarItem<SugarOpportunity>("newOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"newOpportunity", "1001"}}, "opportunityExists", mOpportunityItem);
     }
 
     void shouldUpdateOpportunity()
     {
-        updateSugarItem<SugarOpportunity>("updateOpportunity", "1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updateOpportunity", "1001"}}, "opportunityExists");
+        updateSugarItem<SugarOpportunity>(mOpportunityItem, "updateOpportunity", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updateOpportunity", "1001"}}, "opportunityExists");
+    }
+
+    // Forcing a resource-fetch (from the server) for an opportunity we have in cache
+    void forceRefreshShouldCallResource()
+    {
+        // Modify an opp without changing its modificationDate
+        // (Still not sure whether this can happen in real life, but just in case, we now have a workaround...)
+        const QString id = "1001";
+        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
+        QDBusReply<void> reply = mock.call("updateOpportunity", "no_touch", id);
+        QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
+
+        // Clear the payload, to force a refetch from the resource
+        Item item(mOpportunityItem.id());
+        item.clearPayload();
+        // Workaround akonadi bug which was fixed in akonadi 5.7.3 (commit a2a85090c)
+#if AKONADI_VERSION < QT_VERSION_CHECK(5, 7, 3) || AKONADI_VERSION == QT_VERSION_CHECK(5, 7, 40)
+        item.addAttribute(new Akonadi::EntityDisplayAttribute());
+        item.removeAttribute<Akonadi::EntityDisplayAttribute>();
+#endif
+        ItemModifyJob *modifyJob = new ItemModifyJob(item);
+        AKVERIFYEXEC(modifyJob);
+
+        // List opps again, we should see the new name
+        QList<ItemData> expected{{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"no_touch", "1001"}};
+        fetchAndCompareItems<SugarOpportunity>(mOpportunitiesCollection, std::move(expected));
     }
 
     void shouldDeleteOpportunity()
     {
-        deleteSugarItem<SugarOpportunity>("1001", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}});
+        deleteSugarItem<SugarOpportunity>(mOpportunityItem, mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}});
     }
 
 };
