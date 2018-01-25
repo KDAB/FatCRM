@@ -32,7 +32,7 @@
 
 #include "sugarsession.h"
 
-Q_DECLARE_METATYPE(Module);
+Q_DECLARE_METATYPE(Module)
 
 class TestSugarMockProtocol : public QObject
 {
@@ -108,7 +108,7 @@ private Q_SLOTS:
         QCOMPARE(entriesCount, amount);
     }
 
-    void ListEntriesWork_data()
+    void listEntriesShouldWork_data()
     {
         QTest::addColumn<Module>("module");
         QTest::addColumn<int>("amount");
@@ -120,12 +120,11 @@ private Q_SLOTS:
         QTest::newRow("contacts") << Module::Contacts << 1;
     }
 
-    void ListEntriesWork()
+    void listEntriesShouldWork()
     {
         QFETCH(Module, module);
         QFETCH(int, amount);
         //GIVEN
-        SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
 
@@ -158,7 +157,6 @@ private Q_SLOTS:
         QFETCH(QString, remoteId);
         QFETCH(int, expectedResult);
         //GIVEN
-        SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
         KDSoapGenerated::TNS__Entry_value entryValue;
@@ -195,7 +193,6 @@ private Q_SLOTS:
         QFETCH(int, expectedResult);
 
         //GIVEN
-        SugarSession session(nullptr);
         SugarMockProtocol protocol;
         protocol.addData();
         KDSoapGenerated::TNS__Name_value_list nvl;
