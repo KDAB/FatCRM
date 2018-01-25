@@ -50,6 +50,8 @@ private:
     SugarAccount mNewAccount;
     SugarOpportunity mNewOpp;
     QString mRemoteRevision;
+    QScopedPointer<AccountsHandler> mAccountsHandler;
+    QScopedPointer<OpportunitiesHandler> mOpportunitiesHandler;
 
 private Q_SLOTS:
 
@@ -80,6 +82,9 @@ private Q_SLOTS:
         mProtocol = new SugarSoapProtocol;
         mSession.setProtocol(mProtocol);
         mProtocol->setSession(&mSession);
+
+        mAccountsHandler.reset(new AccountsHandler(&mSession));
+        mOpportunitiesHandler.reset(new OpportunitiesHandler(&mSession));
     }
 
     void shouldAddAccount()
@@ -91,8 +96,7 @@ private Q_SLOTS:
         item.setId(0);
         item.setPayload<SugarAccount>(account);
         CreateEntryJob job(item, &mSession);
-        AccountsHandler handler(&mSession);
-        job.setModule(&handler);
+        job.setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         mNewAccount = job.item().payload<SugarAccount>();
@@ -105,9 +109,8 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        AccountsHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
-        job.setModule(&handler);
+        job.setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
@@ -128,14 +131,13 @@ private Q_SLOTS:
         item.setRemoteRevision(mRemoteRevision);
         item.setPayload<SugarAccount>(account);
         UpdateEntryJob job(item, &mSession);
-        AccountsHandler handler(&mSession);
-        job.setModule(&handler);
+        job.setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
-        SugarAccount accountUpdate = job.item().payload<SugarAccount>();
-        QCOMPARE(accountUpdate.name(), QString("updateAccount"));
-        QCOMPARE(accountUpdate.id(), mNewAccount.id());
+        SugarAccount foundAccount = job.item().payload<SugarAccount>();
+        QCOMPARE(foundAccount.name(), QString("updateAccount"));
+        QCOMPARE(foundAccount.id(), mNewAccount.id());
     }
 
     void shouldDeleteAccount()
@@ -155,15 +157,14 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        AccountsHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
-        job.setModule(&handler);
+        job.setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
-        SugarAccount accountFind = job.item().payload<SugarAccount>();
-        QCOMPARE(accountFind.id(), mNewAccount.id());
-        QCOMPARE(accountFind.name(), QString());
+        SugarAccount foundAccount = job.item().payload<SugarAccount>();
+        QCOMPARE(foundAccount.id(), mNewAccount.id());
+        QCOMPARE(foundAccount.name(), QString());
     }
 
     void shouldCreateOpportunity()
@@ -175,11 +176,11 @@ private Q_SLOTS:
         item.setId(0);
         item.setPayload<SugarOpportunity>(opp);
         CreateEntryJob job(item, &mSession);
-        OpportunitiesHandler handler(&mSession);
-        job.setModule(&handler);
+        job.setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         mNewOpp = job.item().payload<SugarOpportunity>();
+        Q_ASSERT(!mNewOpp.dateModifiedRaw().isEmpty());
         mRemoteRevision = job.item().remoteRevision();
     }
 
@@ -189,15 +190,14 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        OpportunitiesHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
-        job.setModule(&handler);
+        job.setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
-        SugarOpportunity oppFind = job.item().payload<SugarOpportunity>();
-        QCOMPARE(oppFind.id(), mNewOpp.id());
-        QCOMPARE(oppFind.name(), mNewOpp.name());
+        SugarOpportunity foundOpp = job.item().payload<SugarOpportunity>();
+        QCOMPARE(foundOpp.id(), mNewOpp.id());
+        QCOMPARE(foundOpp.name(), mNewOpp.name());
     }
 
     void shouldUpdateOpportunity()
@@ -212,14 +212,13 @@ private Q_SLOTS:
         item.setRemoteRevision(mRemoteRevision);
         item.setPayload<SugarOpportunity>(opp);
         UpdateEntryJob job(item, &mSession);
-        OpportunitiesHandler handler(&mSession);
-        job.setModule(&handler);
+        job.setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
-        SugarOpportunity oppUpdate = job.item().payload<SugarOpportunity>();
-        QCOMPARE(oppUpdate.name(), QString("updateOpportunity"));
-        QCOMPARE(oppUpdate.id(), mNewOpp.id());
+        SugarOpportunity foundOpp = job.item().payload<SugarOpportunity>();
+        QCOMPARE(foundOpp.name(), QString("updateOpportunity"));
+        QCOMPARE(foundOpp.id(), mNewOpp.id());
     }
 
     void shouldDeleteOpportunity()
@@ -239,15 +238,14 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        OpportunitiesHandler handler(&mSession);
         FetchEntryJob job(item, &mSession);
-        job.setModule(&handler);
+        job.setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job.exec(), qPrintable(job.errorString()));
         //THEN
-        SugarOpportunity oppFind = job.item().payload<SugarOpportunity>();
-        QCOMPARE(oppFind.id(), mNewOpp.id());
-        QCOMPARE(oppFind.name(), QString());
+        SugarOpportunity foundOpp = job.item().payload<SugarOpportunity>();
+        QCOMPARE(foundOpp.id(), mNewOpp.id());
+        QCOMPARE(foundOpp.name(), QString());
     }
 
     void shouldCorrectlyListModules()
