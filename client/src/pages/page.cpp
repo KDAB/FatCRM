@@ -56,6 +56,7 @@
 #include <AkonadiCore/ItemFetchScope>
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/EntityAnnotationsAttribute>
+#include <AkonadiCore/ServerManager>
 
 #include <KContacts/Address>
 #include <KContacts/Addressee>
@@ -829,8 +830,9 @@ void Page::slotChangeFields()
 
 void Page::retrieveResourceUrl()
 {
-    OrgKdeAkonadiSugarCRMSettingsInterface iface(
-                QStringLiteral("org.freedesktop.Akonadi.Resource.") + mResourceIdentifier, QStringLiteral("/Settings"), QDBusConnection::sessionBus() );
+    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource, mResourceIdentifier);
+
+    OrgKdeAkonadiSugarCRMSettingsInterface iface(service, QStringLiteral("/Settings"), QDBusConnection::sessionBus());
     QDBusPendingReply<QString> reply = iface.host();
     reply.waitForFinished();
     if (reply.isValid()) {
