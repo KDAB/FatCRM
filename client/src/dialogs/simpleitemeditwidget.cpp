@@ -232,6 +232,7 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
     connect(d->mUi.description->document(), SIGNAL(modificationChanged(bool)), this, SLOT(descriptionModificationChanged(bool)));
 
     QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);
+    saveButton->setShortcut(Qt::CTRL | Qt::Key_Return);
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
