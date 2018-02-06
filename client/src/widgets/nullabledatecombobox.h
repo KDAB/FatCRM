@@ -48,12 +48,12 @@ public:
     bool isClearButtonVisible() const;
 
 protected:
-    void showEvent(QShowEvent *event) Q_DECL_OVERRIDE;
-    void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
-    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
-    void focusInEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
-    void focusOutEvent(QFocusEvent *event) Q_DECL_OVERRIDE;
-    void assignDate(const QDate &date) Q_DECL_OVERRIDE;
+    void showEvent(QShowEvent *event) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void focusInEvent(QFocusEvent *event) override;
+    void focusOutEvent(QFocusEvent *event) override;
+    void assignDate(const QDate &date) override;
 
 private Q_SLOTS:
     void onMenuSelected(QAction *action);
