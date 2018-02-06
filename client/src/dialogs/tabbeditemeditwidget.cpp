@@ -52,6 +52,7 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     setWindowFlags(Qt::Window);
     mUi->setupUi(this);
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Save|QDialogButtonBox::Cancel, Qt::Horizontal, this);
+    buttonBox->button(QDialogButtonBox::Save)->setShortcut(Qt::CTRL | Qt::Key_Return);
     setWindowModified(false);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
