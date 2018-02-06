@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>855</width>
-    <height>328</height>
+    <height>360</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -100,7 +100,7 @@
       </item>
       <item row="5" column="1">
        <widget class="NullableDateComboBox" name="date_closed">
-        <property name="calendarPopup">
+        <property name="calendarPopup" stdset="0">
          <bool>true</bool>
         </property>
        </widget>
@@ -209,7 +209,7 @@
        <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
          <widget class="NullableDateComboBox" name="next_call_date">
-          <property name="calendarPopup">
+          <property name="calendarPopup" stdset="0">
            <bool>true</bool>
           </property>
          </widget>
@@ -299,11 +299,15 @@
  <tabstops>
   <tabstop>name</tabstop>
   <tabstop>account_id</tabstop>
+  <tabstop>buttonSelectAccount</tabstop>
   <tabstop>buttonOpenAccount</tabstop>
   <tabstop>opportunity_type</tabstop>
+  <tabstop>opportunitySize</tabstop>
   <tabstop>lead_source</tabstop>
   <tabstop>date_closed</tabstop>
   <tabstop>assigned_user_id</tabstop>
+  <tabstop>opportunityPriority</tabstop>
+  <tabstop>urgent</tabstop>
   <tabstop>amount</tabstop>
   <tabstop>next_step</tabstop>
   <tabstop>next_call_date</tabstop>
@@ -311,6 +315,7 @@
   <tabstop>sales_stage</tabstop>
   <tabstop>probability</tabstop>
   <tabstop>viewNotesButton</tabstop>
+  <tabstop>viewDocumentsButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
