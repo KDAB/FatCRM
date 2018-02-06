@@ -63,14 +63,14 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     connect(mItemEditWidget, SIGNAL(closing()), this, SLOT(close()));
 
     if (mType == Account) {
-        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account details"));
+        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account Details"));
         mUi->tabWidget->setTabText(1, i18n("Opportunities and Contacts"));
         SugarAccount account = ItemEditWidget->item().payload<SugarAccount>();
         const int oppCount = loadAssociatedData(account.id(), Opportunity);
         const int contactCount = loadAssociatedData(account.id(), Contact);
         mUi->tabWidget->setTabEnabled(1, oppCount > 0 || contactCount > 0);
     } else if (mType == Opportunity) {
-        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Opportunity details"));
+        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Opportunity Details"));
         mUi->tabWidget->setTabText(1, i18n("Contacts"));
         SugarOpportunity opportunity = ItemEditWidget->item().payload<SugarOpportunity>();
         const int contactCount = loadAssociatedData(opportunity.accountId(), Contact);
