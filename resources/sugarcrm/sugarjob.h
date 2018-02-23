@@ -59,9 +59,6 @@ protected:
     bool doKill() override;
     virtual void startSugarTask() = 0;
 
-    bool handleError(const KDSoapGenerated::TNS__Error_value &errorValue);
-    bool handleLoginError(const KDSoapMessage &fault);
-
     SugarSession *session() const;
     QString sessionId() const;
     bool shouldTryRelogin() const;

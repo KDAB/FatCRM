@@ -177,42 +177,6 @@ bool SugarJob::doKill()
     return true;
 }
 
-bool SugarJob::handleError(const KDSoapGenerated::TNS__Error_value &errorValue)
-{
-    if (errorValue.number() == QLatin1String("0"))
-        return false; // no error
-
-    if (errorValue.number() == QLatin1String("10")) {
-        // Invalid login error, meaning we need to log in again
-        if (d->mTryRelogin) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
-            QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
-            // We'll retry the operation in loginDone()
-            return true;
-        }
-    }
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << errorValue.number() << errorValue.description();
-    setError(SugarJob::SoapError);
-    setErrorText(errorValue.description());
-    emitResult();
-    return true;
-}
-
-// This is called when KDSoap sends a fault, e.g. "Fault code 99: Host unreachable"
-bool SugarJob::handleLoginError(const KDSoapMessage &fault)
-{
-    // TODO check for error indicating that new login is required, e.g. network error.
-    // No point in re-login on a real fault sent by the server.
-    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "fault" << fault.name() << fault.faultAsString() << "d->mTryRelogin=" << d->mTryRelogin;
-    Q_UNUSED(fault);
-    if (d->mTryRelogin) {
-        QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
-        return true;
-    }
-
-    return false;
-}
-
 SugarSession *SugarJob::session() const
 {
     return d->mSession;
