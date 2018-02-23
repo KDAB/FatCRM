@@ -118,8 +118,10 @@ int SugarMockProtocol::getEntriesCount(const ListEntriesScope &scope, Module mod
 
 QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listAccounts(bool includeDeleted, const QDateTime &timestamp) const
 {
+    //qDebug() << "Listing accounts from" << timestamp << "including deleted:" << includeDeleted;
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const SugarAccount &acc : mAccounts) {
+        //qDebug() << "  account" << acc.name() << "deleted" << acc.deleted() << "dateModified" << acc.dateModified() << "listing:" << ((acc.deleted() != "1" || includeDeleted) && acc.dateModified() >= timestamp);
         if ((acc.deleted() != "1" || includeDeleted) && acc.dateModified() >= timestamp) {
             KDSoapGenerated::TNS__Entry_value entryValue;
             entryValue.setId(acc.id());
@@ -280,7 +282,6 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
             for (int i = 0; i < mAccounts.size(); ++i) {
                 if (mAccounts.at(i).id() == id) {
                     found = true;
-                    account.setId(mAccounts.at(i).id());
                     mAccounts[i] = account;
                     break;
                 }
@@ -304,7 +305,6 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
             for (int i = 0; i < mOpportunities.size() && !found; ++i) {
                 if (mOpportunities.at(i).id() == id) {
                     found = true;
-                    opp.setId(mOpportunities.at(i).id());
                     mOpportunities[i] = opp;
                     break;
                 }
