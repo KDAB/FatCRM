@@ -49,6 +49,8 @@ private Q_SLOTS:
         QString str = input;
         KDCRMUtils::incrementTimeStamp(str);
         QCOMPARE(str, output);
+        KDCRMUtils::decrementTimeStamp(str);
+        QCOMPARE(str, input);
     }
 };
 
