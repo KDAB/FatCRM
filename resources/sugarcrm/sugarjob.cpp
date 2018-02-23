@@ -177,6 +177,18 @@ bool SugarJob::doKill()
     return true;
 }
 
+bool SugarJob::handleConnectError(int error, const QString &errorMessage)
+{
+    Q_UNUSED(errorMessage);
+    if (error == SugarJob::CouldNotConnectError) {
+        if (d->mTryRelogin) {
+            QMetaObject::invokeMethod(this, "startLogin", Qt::QueuedConnection);
+            return true;
+        }
+    }
+    return false;
+}
+
 SugarSession *SugarJob::session() const
 {
     return d->mSession;

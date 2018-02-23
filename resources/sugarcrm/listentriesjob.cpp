@@ -183,15 +183,10 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
 
 void ListEntriesJob::Private::handleError(int error, const QString &errorMessage)
 {
-    if (error == SugarJob::CouldNotConnectError) {
-        // Invalid login error, meaning we need to log in again
-        if (q->shouldTryRelogin()) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
-            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
-            return;
-        }
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << error << errorMessage;
+    if (q->handleConnectError(error, errorMessage)) {
+        return;
     }
-    qWarning() << q << error << errorMessage;
 
     q->setError(SugarJob::SoapError);
     q->setErrorText(errorMessage);

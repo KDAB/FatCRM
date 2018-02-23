@@ -36,8 +36,6 @@ using namespace KDSoapGenerated;
 
 #include <QStringList>
 
-#define kWarning() qCWarning(FATCRM_SUGARCRMRESOURCE_LOG)
-
 using namespace Akonadi;
 
 class UpdateEntryJob::Private
@@ -131,15 +129,10 @@ void UpdateEntryJob::Private::getEntryError(int error, const QString &errorMessa
         return;
     }
 
-    if (error == SugarJob::CouldNotConnectError) {
-        // Invalid login error, meaning we need to log in again
-        if (q->shouldTryRelogin()) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
-            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
-            return;
-        }
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << error << errorMessage;
+    if (q->handleConnectError(error, errorMessage)) {
+        return;
     }
-    kWarning() << q << error << errorMessage;
 
     q->setError(SugarJob::SoapError);
     q->setErrorText(errorMessage);
@@ -173,15 +166,10 @@ void UpdateEntryJob::Private::setEntryDone(const QString &id)
 
 void UpdateEntryJob::Private::setEntryError(int error, const QString &errorMessage)
 {
-    if (error == SugarJob::CouldNotConnectError) {
-        // Invalid login error, meaning we need to log in again
-        if (q->shouldTryRelogin()) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Got error 10, probably a session timeout, let's login again";
-            QMetaObject::invokeMethod(q, "startLogin", Qt::QueuedConnection);
-            return;
-        }
+    qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << q << error << errorMessage;
+    if (q->handleConnectError(error, errorMessage)) {
+        return;
     }
-    kWarning() << q << error << errorMessage;
 
     q->setError(SugarJob::SoapError);
     q->setErrorText(errorMessage);

@@ -59,6 +59,8 @@ protected:
     bool doKill() override;
     virtual void startSugarTask() = 0;
 
+    bool handleConnectError(int error, const QString &errorMessage);
+
     SugarSession *session() const;
     QString sessionId() const;
     bool shouldTryRelogin() const;
