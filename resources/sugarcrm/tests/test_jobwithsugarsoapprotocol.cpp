@@ -170,18 +170,24 @@ private Q_SLOTS:
         QVERIFY2(!deletedAccountIds.contains(mNewAccount.id()), qPrintable(deletedAccountIds.join(',')));
     }
 
-    void listAccountsAgainShouldListNothing() // it's incremental
+    void listAccountsAgainShouldSeeTheSame() // it's incremental... but due to the one-second granularity, we have to get the same stuff again...
     {
         //WHEN
         QStringList newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames;
         listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames);
         // THEN
+#if 0
         QVERIFY2(!newAccountNames.contains("newAccount"), qPrintable(newAccountNames.join(",")));
         QVERIFY2(!deletedAccountNames.contains("newAccount"), qPrintable(deletedAccountNames.join(",")));
         QVERIFY2(!newAccountIds.contains(mNewAccount.id()), qPrintable(newAccountIds.join(',')));
         QVERIFY2(!deletedAccountIds.contains(mNewAccount.id()), qPrintable(deletedAccountIds.join(',')));
+#else
+        QVERIFY2(newAccountNames.contains("newAccount"), qPrintable(newAccountNames.join(",")));
+        QVERIFY2(!deletedAccountNames.contains("newAccount"), qPrintable(deletedAccountNames.join(",")));
+        QVERIFY2(newAccountIds.contains(mNewAccount.id()), qPrintable(newAccountIds.join(',')));
+        QVERIFY2(!deletedAccountIds.contains(mNewAccount.id()), qPrintable(deletedAccountIds.join(',')));
+#endif
     }
-
 
     void shouldFetchAccount()
     {

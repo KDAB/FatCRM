@@ -73,6 +73,7 @@ public:
     Stage mStage;
     QString mLatestTimestampFromItems;
     Akonadi::Item::List mDeletedItems;
+    int mTotalCount = 0;
     int mItemsAlreadyEmitted = 0;
     bool mCollectionAttributesChanged;
 
@@ -90,6 +91,7 @@ void ListEntriesJob::Private::getEntriesCountDone(int count)
     if (count == 0) {
         q->emitResult();
     } else {
+        mTotalCount = count;
         mStage = GetExisting;
         q->startSugarTask(); // proceed to next stage
     }
@@ -133,43 +135,50 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
 
         mListScope.setOffset(callResult.nextOffset);
 
-        // TODO if totalCount reached, no need to ask the server with one more roundtrip....
-
-        // Avoid double recursion
-        QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
-    } else {
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries for" << mHandler->module() << "done. Latest timestamp=" << mLatestTimestampFromItems;
-
-        // Store timestamp into DB, to persist it across restarts
-        // Add one second, so we don't get the same stuff all over again every time
-        KDCRMUtils::incrementTimeStamp(mLatestTimestampFromItems);
-        EntityAnnotationsAttribute *annotationsAttribute =
-                mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
-        Q_ASSERT(annotationsAttribute);
-        bool changed = false;
-        if (!mLatestTimestampFromItems.isEmpty() && annotationsAttribute->value(s_timeStampKey) != mLatestTimestampFromItems) {
-            annotationsAttribute->insert(s_timeStampKey, mLatestTimestampFromItems);
-            changed = true;
+        if (mItemsAlreadyEmitted < mTotalCount) {
+            // Avoid double recursion
+            QMetaObject::invokeMethod(q, "listNextEntries", Qt::QueuedConnection);
+            return;
         }
-        if (!mListScope.isUpdateScope()) {
-            // We just did a full listing (first time, or after a contents version upgrade)
-            // then upgrade the contents version attribute.
-            const int currentVersion = mHandler->expectedContentsVersion();
-            if (annotationsAttribute->value(s_contentsVersionKey).toInt() != currentVersion) {
-                annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
-                changed = true;
-            }
-        }
-        // Also store the list of supported fields, so that the GUI knows what to expect and set
-        const QString fields = mHandler->supportedCRMFields().join(QStringLiteral(","));
-        if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
-            annotationsAttribute->insert(s_supportedFieldsKey, fields);
-            changed = true;
-        }
-
-        mCollectionAttributesChanged = mCollectionAttributesChanged || changed;
-        q->emitResult();
     }
+
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << q << "List Entries for" << mHandler->module() << "done. Latest timestamp=" << mLatestTimestampFromItems;
+
+    // Store timestamp into DB, to persist it across restarts
+
+    // Here we used to increment mLatestTimestampFromItems, to avoid getting the same last modified object
+    // every time, but this can break if we end up doing modify+list+modify in the same second
+    // (could be 2 or 3 different users, so it could happen).
+    // So now we'll always get the last modified object again, on every listing.
+    // TODO: we could optimize away the sending of that object to akonadi
+    // (if SugarAccount::operator== says same object as last time, don't call itemsRetrievedIncremental)
+
+    EntityAnnotationsAttribute *annotationsAttribute =
+            mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
+    Q_ASSERT(annotationsAttribute);
+    bool changed = false;
+    if (!mLatestTimestampFromItems.isEmpty() && annotationsAttribute->value(s_timeStampKey) != mLatestTimestampFromItems) {
+        annotationsAttribute->insert(s_timeStampKey, mLatestTimestampFromItems);
+        changed = true;
+    }
+    if (!mListScope.isUpdateScope()) {
+        // We just did a full listing (first time, or after a contents version upgrade)
+        // then upgrade the contents version attribute.
+        const int currentVersion = mHandler->expectedContentsVersion();
+        if (annotationsAttribute->value(s_contentsVersionKey).toInt() != currentVersion) {
+            annotationsAttribute->insert(s_contentsVersionKey, QString::number(currentVersion));
+            changed = true;
+        }
+    }
+    // Also store the list of supported fields, so that the GUI knows what to expect and set
+    const QString fields = mHandler->supportedCRMFields().join(QStringLiteral(","));
+    if (annotationsAttribute->value(s_supportedFieldsKey) != fields) {
+        annotationsAttribute->insert(s_supportedFieldsKey, fields);
+        changed = true;
+    }
+
+    mCollectionAttributesChanged = mCollectionAttributesChanged || changed;
+    q->emitResult();
 }
 
 void ListEntriesJob::Private::handleError(int error, const QString &errorMessage)
