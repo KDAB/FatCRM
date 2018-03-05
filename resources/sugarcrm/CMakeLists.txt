@@ -46,7 +46,7 @@ qt5_wrap_ui(sugarcrmresource_SRCS
   sugarconfigdialog.ui
 )
 
-install(FILES sugarcrmresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
+install(FILES sugarcrmresource.desktop DESTINATION "${KDE_INSTALL_DATAROOTDIR}/akonadi/agents")
 
 kconfig_add_kcfg_files(sugarcrmresource_SRCS settings.kcfgc)
 kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
