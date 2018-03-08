@@ -33,7 +33,6 @@ after_build:
 # tests are broken, disable them for now
 test: off
 
-
 environment:
     matrix:
     - TARGET: windows-msvc2017_64-cl
