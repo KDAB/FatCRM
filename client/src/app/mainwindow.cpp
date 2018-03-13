@@ -270,7 +270,7 @@ void MainWindow::slotResourceSelectionChanged(int index)
         AccountRepository::instance()->clear();
         mLinkedItemsRepository->clear();
         mCollectionManager->setResource(identifier);
-        slotShowMessage(i18n("(0/5) Listing folders..."));
+        slotShowMessage(i18n("(0/6) Listing folders..."));
     } else {
         mUi.actionSynchronize->setEnabled(false);
         mUi.actionFullReload->setEnabled(false);
