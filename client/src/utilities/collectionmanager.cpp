@@ -44,9 +44,6 @@
 
 using namespace Akonadi;
 
-#define kWarning() qCWarning(FATCRM_CLIENT_LOG)
-#define KABC KContacts
-
 CollectionManager::CollectionManager(QObject *parent) :
     QObject(parent)
 {
@@ -89,7 +86,7 @@ void CollectionManager::slotCollectionChanged(const Akonadi::Collection &collect
         readSupportedFields(collection);
     }
     if (attributeNames.contains("CRM-enumdefinitions")) { // EnumDefinitionAttribute::type()
-        readEnumDefinitionAttributes(collection);
+        readEnumDefinitionsAttributes(collection);
     }
     if (mCollectionData.contains(collection.id())) {
         mCollectionData[collection.id()].mCollection = collection;
@@ -137,6 +134,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
 {
     CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob *>(job);
 
+    QStringList collectionsWithoutEnumDefinitions;
     Collection::List collections = fetchJob->collections();
     Q_FOREACH (const Collection &collection, collections) {
         const QString contentMimeType = collection.contentMimeTypes().at(0);
@@ -146,7 +144,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
             mMainCollectionIds[Account] = collection.id();
         } else if (contentMimeType == SugarOpportunity::mimeType()) {
             mMainCollectionIds[Opportunity] = collection.id();
-        } else if (contentMimeType == KABC::Addressee::mimeType()) {
+        } else if (contentMimeType == KContacts::Addressee::mimeType()) {
             mMainCollectionIds[Contact] = collection.id();
         } else if (contentMimeType == SugarLead::mimeType()) {
             mMainCollectionIds[Lead] = collection.id();
@@ -156,9 +154,21 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
 
         //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
         readSupportedFields(collection);
-        readEnumDefinitionAttributes(collection);
+
+        if (!readEnumDefinitionsAttributes(collection)){
+            qCWarning(FATCRM_CLIENT_LOG) << "No EnumDefinitions in collection attribute for" << collection.id() << collection.name();
+            qCWarning(FATCRM_CLIENT_LOG) << "Collection attributes:";
+            foreach (Akonadi::Attribute *attr, collection.attributes()) {
+                qCWarning(FATCRM_CLIENT_LOG) << attr->type();
+            }
+            collectionsWithoutEnumDefinitions += collection.name();
+        }
 
         mCollectionData[collection.id()].mCollection = collection;
+    }
+
+    if (!collectionsWithoutEnumDefinitions.isEmpty()) {
+        showEnumDefinitionWarnings(collectionsWithoutEnumDefinitions);
     }
 
     qSort(collections.begin(), collections.end(), collectionLessThan);
@@ -182,7 +192,7 @@ void CollectionManager::readSupportedFields(const Collection &collection)
     if (!fields.isEmpty()) {
         mCollectionData[collection.id()].supportedFields = fields;
     } else {
-        kWarning() << "No supported fields for" << collection;
+        qCWarning(FATCRM_CLIENT_LOG) << "No supported fields for" << collection;
         static bool errorShown = false;
         if (!errorShown) {
             errorShown = true;
@@ -191,24 +201,14 @@ void CollectionManager::readSupportedFields(const Collection &collection)
     }
 }
 
-void CollectionManager::readEnumDefinitionAttributes(const Collection &collection)
+bool CollectionManager::readEnumDefinitionsAttributes(const Collection &collection)
 {
     EnumDefinitionAttribute *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
     if (enumsAttr) {
         mCollectionData[collection.id()].enumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
-    } else {
-        kWarning() << "No EnumDefinitions in collection attribute for" << collection.id() << collection.name();
-        kWarning() << "Collection attributes:";
-        foreach (Akonadi::Attribute *attr, collection.attributes()) {
-            kWarning() << attr->type();
-        }
-
-        static bool errorShown = false;
-        if (!errorShown) {
-            errorShown = true;
-            QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of enumeration values for '%1' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", collection.name()));
-        }
+        return true;
     }
+    return false;
 }
 
 static const char s_timeStampKey[] = "timestamp"; // duplicated in listentriesjob.cpp
@@ -228,4 +228,9 @@ QList<KJob *> CollectionManager::clearTimestamps()
         jobs << modJob;
     }
     return jobs;
+}
+
+void CollectionManager::showEnumDefinitionWarnings(const QStringList &warnings)
+{
+    QMessageBox::warning(qApp->activeWindow(), i18n("Internal error"), i18n("The list of enumeration values for '%1' is not available. Comboboxes will be empty. Try restarting the CRM resource and synchronizing again, making sure at least one update is fetched (then restart FatCRM).", warnings.join(QStringLiteral(", "))));
 }

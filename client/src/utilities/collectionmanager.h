@@ -67,7 +67,8 @@ private slots:
 
 private:
     void readSupportedFields(const Akonadi::Collection &collection);
-    void readEnumDefinitionAttributes(const Akonadi::Collection &collection);
+    bool readEnumDefinitionsAttributes(const Akonadi::Collection &collection);
+    void showEnumDefinitionWarnings(const QStringList &warnings);
 
     struct CollectionData
     {
