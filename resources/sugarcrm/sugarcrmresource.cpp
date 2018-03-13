@@ -493,13 +493,14 @@ void SugarCRMResource::listModulesResult(KJob *job)
         if (handler) {
             Collection collection = handler->collection();
             collection.setParentCollection(topLevelCollection);
-            collections << collection;
 
             // Let's also get the fields for each module
             const KDSoapGenerated::TNS__Field_list fields = handler->listAvailableFields(mSession, module);
             if (handler->parseFieldList(collection, fields)) {
                 handler->modifyCollection(collection);
             }
+
+            collections << collection;
         }
     }
 

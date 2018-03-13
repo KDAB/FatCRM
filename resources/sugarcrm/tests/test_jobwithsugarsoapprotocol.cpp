@@ -24,6 +24,7 @@
 #include <QSettings>
 #include <itemtransferinterface.h>
 #include <sugardocument.h>
+#include <enumdefinitionattribute.h>
 #include <AkonadiCore/Item>
 #include "sugaraccount.h"
 #include "sugarsession.h"
@@ -130,6 +131,14 @@ private Q_SLOTS:
         const EnumDefinitions accountEnums = mAccountsHandler->enumDefinitions();
         QCOMPARE(accountEnums.at(0).mEnumName, QStringLiteral("account_type"));
         QCOMPARE(accountEnums.at(1).mEnumName, QStringLiteral("industry"));
+
+        // Test that the enums were stored into the collection
+        // (but of course this doesn't check that the collection actually got synced)
+        EnumDefinitionAttribute *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
+        QVERIFY(enumsAttr);
+        const EnumDefinitions enumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
+        QCOMPARE(enumDefinitions.at(0).mEnumName, QStringLiteral("account_type"));
+        QCOMPARE(enumDefinitions.at(1).mEnumName, QStringLiteral("industry"));
 
         // Opportunities
         const KDSoapGenerated::TNS__Field_list opportunitiesFields = mOpportunitiesHandler->listAvailableFields(&mSession, moduleToName(Opportunities));
