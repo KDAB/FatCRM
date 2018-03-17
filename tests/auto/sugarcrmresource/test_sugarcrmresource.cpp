@@ -408,7 +408,7 @@ private Q_SLOTS:
     void shouldForgetSessionWhenInvalid()
     {
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
-        QDBusReply<void> reply = mock.call("setNextSoapError", "The session ID is invalid");
+        QDBusReply<void> reply = mock.call("setNextSoapError", "Fault code 11: Invalid Session ID");
         QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
         QCOMPARE(sessionId(), QString("1"));
 
