@@ -34,7 +34,10 @@
 
 #include <KLocalizedString>
 
+#include <QMessageBox>
 #include <QDate>
+
+#include <stdlib.h>
 
 using namespace Akonadi;
 
@@ -103,16 +106,36 @@ static bool opportunityMatchesFilter(const SugarOpportunity &opportunity, const 
     return false;
 }
 
+Q_NORETURN void OpportunityFilterProxyModel::showFatalError(const QString &fatalError)
+{
+    QMessageBox::warning(nullptr, i18n("Corrupt Database"), fatalError);
+    ::exit(EXIT_FAILURE);
+}
+
 bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const
 {
     const QModelIndex index = sourceModel()->index(row, 0, parent);
     const Akonadi::Item item =
         index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
-    if (!item.hasPayload<SugarOpportunity>()) {
-        qWarning() << "item" << item.id() << item.remoteId() << item.mimeType() << "is not a SugarOpportunity";
+    static QString fatalError;
+    if (fatalError.isEmpty()) {
+        if (item.mimeType() != SugarOpportunity::mimeType()) {
+            fatalError = i18n("The item with ID %1 (%2) was found in an opportunity folder, but has the wrong type: %3. FatCRM will abort, try clearing the Akonadi database.",
+                    QString::number(item.id()), item.remoteId(), item.mimeType());
+        } else if (!item.hasPayload()) {
+            fatalError = i18n("The opportunity with ID %1 (%2) doesn't have content on disk. FatCRM will abort, try clearing the Akonadi database.",
+                    QString::number(item.id()), item.remoteId());
+        } else if (!item.hasPayload<SugarOpportunity>()) {
+            fatalError = i18n("The opportunity with ID %1 (%2) doesn't contain an opportunity. FatCRM will abort, try clearing the Akonadi database.",
+                    QString::number(item.id()), item.remoteId());
+        }
+        if (!fatalError.isEmpty()) {
+            // Delay to avoid nested event loop while the ETM is filling
+            QMetaObject::invokeMethod(const_cast<OpportunityFilterProxyModel *>(this), "showFatalError", Qt::QueuedConnection, Q_ARG(QString, fatalError));
+            return false;
+        }
     }
-    Q_ASSERT(item.hasPayload<SugarOpportunity>());
     const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
     const QStringList assignees = d->settings.assignees();
