@@ -171,7 +171,8 @@ private Q_SLOTS:
     {
         //WHEN
         QStringList newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames;
-        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames);
+        QList<SugarAccount> newAccounts;
+        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames, newAccounts);
         // THEN
         QVERIFY2(newAccountNames.contains("newAccount"), qPrintable(newAccountNames.join(",")));
         QVERIFY2(!deletedAccountNames.contains("newAccount"), qPrintable(deletedAccountNames.join(",")));
@@ -183,7 +184,8 @@ private Q_SLOTS:
     {
         //WHEN
         QStringList newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames;
-        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames);
+        QList<SugarAccount> newAccounts;
+        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames, newAccounts);
         // THEN
 #if 0
         QVERIFY2(!newAccountNames.contains("newAccount"), qPrintable(newAccountNames.join(",")));
@@ -239,7 +241,8 @@ private Q_SLOTS:
     {
         //WHEN
         QStringList newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames;
-        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames);
+        QList<SugarAccount> newAccounts;
+        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames, newAccounts);
         // THEN
         QVERIFY2(newAccountNames.contains("updateAccount"), qPrintable(newAccountNames.join(",")));
         QVERIFY2(!newAccountNames.contains("newAccount"), qPrintable(newAccountNames.join(",")));
@@ -264,7 +267,8 @@ private Q_SLOTS:
     {
         //WHEN
         QStringList newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames;
-        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames);
+        QList<SugarAccount> newAccounts;
+        listNewAndDeletedItems<SugarAccount>(mAccountsHandler.data(), newAccountIds, newAccountNames, deletedAccountIds, deletedAccountNames, newAccounts);
         // THEN
         QVERIFY2(!newAccountNames.contains("updateAccount"), qPrintable(newAccountNames.join(",")));
         QVERIFY2(deletedAccountNames.contains("updateAccount"), qPrintable(deletedAccountNames.join(",")));
@@ -361,14 +365,21 @@ private Q_SLOTS:
         // THEN
         QVERIFY(ok);
 
+        // Check that updating locally shows the attached document
         {
             QStringList newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames;
-            listNewAndDeletedItems<SugarDocument>(mDocumentsHandler.data(), newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames);
+            QList<SugarDocument> newDocuments;
+            listNewAndDeletedItems<SugarDocument>(mDocumentsHandler.data(), newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames, newDocuments);
             QVERIFY2(newDocumentIds.contains(documentId), qPrintable(newDocumentIds.join(',')));
             QVERIFY2(newDocumentNames.contains("MyDocument"), qPrintable(newDocumentNames.join(',')));
             QVERIFY2(!deletedDocumentIds.contains(documentId), qPrintable(deletedDocumentIds.join(',')));
             QVERIFY2(!deletedDocumentNames.contains("MyDocument"), qPrintable(deletedDocumentNames.join(',')));
+
+            QCOMPARE(newDocuments.count(), 1);
+            QEXPECT_FAIL("", "This is broken...", Continue);
+            QCOMPARE(newDocuments.at(0).linkedOpportunityIds().count(), 1);
         }
+
 
         // Cleanup
         Akonadi::Item item;
@@ -378,7 +389,8 @@ private Q_SLOTS:
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
 
         QStringList newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames;
-        listNewAndDeletedItems<SugarDocument>(mDocumentsHandler.data(), newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames);
+        QList<SugarDocument> newDocuments;
+        listNewAndDeletedItems<SugarDocument>(mDocumentsHandler.data(), newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames, newDocuments);
         QVERIFY2(!newDocumentIds.contains(documentId), qPrintable(newDocumentIds.join(',')));
         QVERIFY2(!newDocumentNames.contains("MyDocument"), qPrintable(newDocumentNames.join(',')));
         QVERIFY2(deletedDocumentIds.contains(documentId), qPrintable(deletedDocumentIds.join(',')));
@@ -419,7 +431,7 @@ private: // helper methods
     QString extractName(const SugarDocument& document) { return document.documentName(); }
 
     template <typename T>
-    void listNewAndDeletedItems(ModuleHandler *handler, QStringList &newIds, QStringList &newNames, QStringList &deletedIds, QStringList &deletedNames)
+    void listNewAndDeletedItems(ModuleHandler *handler, QStringList &newIds, QStringList &newNames, QStringList &deletedIds, QStringList &deletedNames, QList<T>& newObjects)
     {
         Akonadi::Collection collection;
         ListEntriesJob *job = new ListEntriesJob(collection, &mSession);
@@ -439,6 +451,7 @@ private: // helper methods
                 const T object = item.payload<T>();
                 newIds.append(object.id());
                 newNames.append(extractName(object));
+                newObjects.append(object);
             }
         }
         const Akonadi::Item::List deletedItems = job->deletedItems();
