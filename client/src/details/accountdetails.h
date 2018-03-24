@@ -65,7 +65,7 @@ private:
 private:
     Ui::AccountDetails *mUi;
     AccountDataExtractor *mDataExtractor;
-    LinkedItemsRepository *mLinkedItemsRepository;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
 };
 
 #endif /* ACCOUNTDETAILS_H */

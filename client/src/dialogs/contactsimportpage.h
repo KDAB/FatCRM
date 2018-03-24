@@ -73,12 +73,12 @@ private:
     {
         UpdateCheckBoxes();
 
-        QCheckBox *prefix;
-        QCheckBox *givenName;
-        QCheckBox *familyName;
-        QCheckBox *emailAddress;
-        QCheckBox *phoneNumber;
-        QCheckBox *jobTitle;
+        QCheckBox *prefix = nullptr;
+        QCheckBox *givenName = nullptr;
+        QCheckBox *familyName = nullptr;
+        QCheckBox *emailAddress = nullptr;
+        QCheckBox *phoneNumber = nullptr;
+        QCheckBox *jobTitle = nullptr;
     };
     UpdateCheckBoxes mUpdateCheckBoxes;
 

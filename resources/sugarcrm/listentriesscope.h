@@ -46,9 +46,9 @@ public:
     QString query(const QString &filter, Module moduleName) const;
 
 private:
-    int mOffset;
+    int mOffset = 0;
     QString mUpdateTimestamp;
-    bool mGetDeleted;
+    bool mGetDeleted = false;
 };
 
 #endif // LISTENTRIESSCOPE_H

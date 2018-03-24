@@ -49,8 +49,7 @@ private slots:
     void saveHeaderView();
 
 private:
-
-    ItemsTreeModel* mItemsTreeModel;
+    ItemsTreeModel* mItemsTreeModel = nullptr;
 };
 
 #endif // ITEMSTREEVIEW_H

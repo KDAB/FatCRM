@@ -28,9 +28,6 @@
 #include <QSettings>
 
 OpportunityFilterSettings::OpportunityFilterSettings()
-    : mMaxDateIndex(0),
-      mShowOpen(true),
-      mShowClosed(false)
 {
 }
 

@@ -168,12 +168,6 @@ QString formattedAddress(const KContacts::Address &address)
 } // namespace
 
 MergeWidget::UpdateCheckBoxes::UpdateCheckBoxes()
-    : prefix(nullptr)
-    , givenName(nullptr)
-    , familyName(nullptr)
-    , emailAddress(nullptr)
-    , phoneNumber(nullptr),
-      jobTitle(nullptr)
 {
 }
 

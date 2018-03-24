@@ -132,11 +132,7 @@ bool DocumentWidget::isModified() const
 
 DocumentsWindow::DocumentsWindow(QWidget *parent)
     : QWidget(parent),
-      ui(new Ui::DocumentsWindow),
-      mLinkedItemsRepository(nullptr),
-      mIsNotModifiedOverride(false),
-      mLinkedItemType(Account),
-      mPendingJobCount(0)
+      ui(new Ui::DocumentsWindow)
 {
     ui->setupUi(this);
     ClientSettings::self()->restoreWindowSize("DocumentsWindow", this);

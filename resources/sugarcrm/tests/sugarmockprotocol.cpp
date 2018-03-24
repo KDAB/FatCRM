@@ -32,9 +32,7 @@
 #include <QtDBus/QDBusConnection>
 
 SugarMockProtocol::SugarMockProtocol()
-    : mServerNotFound(false),
-      mSession(nullptr),
-      mLastTimeStamp(QDateTime(QDate(2000, 1, 1), QTime(0, 0, 0)))
+    : mLastTimeStamp(QDateTime(QDate(2000, 1, 1), QTime(0, 0, 0)))
 {
     QDBusConnection::sessionBus().registerObject(QLatin1String("/CRMMock"),
             this,

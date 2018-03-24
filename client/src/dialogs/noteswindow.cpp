@@ -38,9 +38,7 @@
 
 NotesWindow::NotesWindow(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::NotesWindow),
-    mLinkedItemsRepository(nullptr),
-    mIsNotModifiedOverride(false)
+    ui(new Ui::NotesWindow)
 {
     ui->setupUi(this);
     ui->textEdit->enableFindReplace(true);

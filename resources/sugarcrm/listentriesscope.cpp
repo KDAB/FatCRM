@@ -23,8 +23,6 @@
 #include "listentriesscope.h"
 
 ListEntriesScope::ListEntriesScope()
-    : mOffset(0),
-      mGetDeleted(false)
 {
 }
 

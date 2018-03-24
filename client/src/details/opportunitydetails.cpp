@@ -43,7 +43,7 @@
 #include <QCompleter>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this)), mCloseDateChangedByUser(false)
+    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
 {
     mUi->setupUi(this);
 
