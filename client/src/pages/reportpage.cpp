@@ -50,8 +50,7 @@ static QDate lastDayOfMonth(const QDate &date)
 
 ReportPage::ReportPage(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::ReportPage),
-    mOppModel(nullptr)
+    ui(new Ui::ReportPage)
 {
     ui->setupUi(this);
 

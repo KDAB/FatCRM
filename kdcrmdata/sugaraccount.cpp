@@ -36,7 +36,6 @@ class SugarAccount::Private : public QSharedData
 {
 public:
     Private()
-        : mEmpty(true)
     {
     }
 
@@ -86,7 +85,7 @@ public:
     {
     }
 
-    bool mEmpty;
+    bool mEmpty = true;
 
     QString mId;
     QString mName;

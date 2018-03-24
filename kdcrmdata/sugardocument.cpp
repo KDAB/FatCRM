@@ -33,11 +33,10 @@ class SugarDocument::Private : public QSharedData
 {
 public:
     Private()
-        : mEmpty(true)
     {
     }
 
-    bool mEmpty;
+    bool mEmpty = true;
 
     QString mId;
     QString mDateEntered;

@@ -90,8 +90,8 @@ public Q_SLOTS:
     Q_SCRIPTABLE QDateTime nextTimeStamp();
 
 private:
-    bool mServerNotFound;
-    SugarSession *mSession;
+    bool mServerNotFound = false;
+    SugarSession *mSession = nullptr;
     QString mNextSoapError;
     QVector<SugarAccount> mAccounts;
     QVector<SugarOpportunity> mOpportunities;

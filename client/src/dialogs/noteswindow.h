@@ -36,8 +36,7 @@ class LinkedItemsRepository;
 // internal. Generic representation for notes and emails, to sort them by date.
 struct NoteText
 {
-    NoteText()
-        : m_isHtml(false) {}
+    NoteText() {}
     NoteText(const QDateTime &dt, const QString &htmlHeader, const QString &text, bool isHtml = false)
         : m_date(dt), m_htmlHeader(htmlHeader), m_text(text), m_isHtml(isHtml) {}
 
@@ -54,7 +53,7 @@ private:
     QDateTime m_date;
     QString m_htmlHeader;
     QString m_text;
-    bool m_isHtml;
+    bool m_isHtml = false;
 };
 
 class NotesWindow : public QWidget
@@ -92,8 +91,8 @@ private:
     QVector<NoteText> m_notes;
     Ui::NotesWindow *ui;
     QString mResourceIdentifier;
-    LinkedItemsRepository *mLinkedItemsRepository;
-    bool mIsNotModifiedOverride;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
+    bool mIsNotModifiedOverride = false;
 
     QString mLinkedItemId;
     DetailsType mLinkedItemType;

@@ -76,9 +76,9 @@ private:
     QDate mMaxDate;
     QDate mCustomMaxDate;
     QDate mModifiedBefore, mModifiedAfter;
-    int mMaxDateIndex;
-    bool mShowOpen;
-    bool mShowClosed;
+    int mMaxDateIndex = 0;
+    bool mShowOpen = true;
+    bool mShowClosed = false;
 };
 
 #endif // OPPORTUNITYFILTERSETTINGS_H

@@ -115,14 +115,14 @@ private:
 
     Ui::DocumentsWindow *ui;
     QString mResourceIdentifier;
-    LinkedItemsRepository *mLinkedItemsRepository;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
     EnumDefinitions mEnumDefinitions;
-    bool mIsNotModifiedOverride;
+    bool mIsNotModifiedOverride = false;
 
     QString mLinkedItemId;
-    LinkedItemType mLinkedItemType;
+    LinkedItemType mLinkedItemType = Account;
 
-    int mPendingJobCount;
+    int mPendingJobCount = 0;
 };
 
 #endif // DOCUMENTSWINDOW_H

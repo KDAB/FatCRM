@@ -71,7 +71,7 @@ private:
     LinkedItemsRepository *mLinkedItemsRepository;
     OpportunityDataExtractor *mDataExtractor;
     QDate mOriginalCloseDate;
-    bool mCloseDateChangedByUser;
+    bool mCloseDateChangedByUser = false;
     void updateLinkedItemsButtons();
 };
 

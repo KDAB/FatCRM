@@ -79,7 +79,7 @@ private Q_SLOTS:
 
 private:
     ContactDataExtractor *mDataExtractor;
-    LinkedItemsRepository *mLinkedItemsRepository;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
     void updateLinkedItemsButtons();
 };
 

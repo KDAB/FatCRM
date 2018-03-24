@@ -47,7 +47,7 @@ private slots:
 
 private:
     Ui::ReportPage *ui;
-    ItemsTreeModel *mOppModel;
+    ItemsTreeModel *mOppModel = nullptr;
 };
 
 #endif // REPORTPAGE_H
