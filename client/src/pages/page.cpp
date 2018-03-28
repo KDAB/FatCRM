@@ -140,6 +140,9 @@ void Page::openWidgetForItem(const Item &item, DetailsType itemType)
         widget = createItemEditWidget(item, itemType);
         widget->show();
     } else {
+        if (widget->isMinimized()) {
+            widget->showNormal();
+        }
         widget->raise();
         widget->activateWindow();
     }
