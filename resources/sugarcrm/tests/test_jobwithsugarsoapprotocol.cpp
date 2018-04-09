@@ -376,7 +376,6 @@ private Q_SLOTS:
             QVERIFY2(!deletedDocumentNames.contains("MyDocument"), qPrintable(deletedDocumentNames.join(',')));
 
             QCOMPARE(newDocuments.count(), 1);
-            QEXPECT_FAIL("", "This is broken...", Continue);
             QCOMPARE(newDocuments.at(0).linkedOpportunityIds().count(), 1);
         }
 
