@@ -87,7 +87,11 @@ void DocumentWidget::setDocument(const SugarDocument &document)
 {
     mDocument = document;
 
-    mNameLabel->setText(QString::fromLatin1("<a href=\"document:///%1\">%2</a>").arg(mDocument.documentRevisionId(), mDocument.documentName().toHtmlEscaped()));
+    mNameLabel->setText(QString::fromLatin1("<a href=\"document:///%1\">%2</a> (date modified: %3)").arg(
+        mDocument.documentRevisionId(),
+        mDocument.documentName().toHtmlEscaped(),
+        KDCRMUtils::formatDateTime(mDocument.dateModified())
+    ));
     mStatusBox->setCurrentIndex(mStatusBox->findText(mDocument.statusId()));
     mDescriptionEdit->setPlainText(mDocument.description());
 }
