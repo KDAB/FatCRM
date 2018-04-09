@@ -24,7 +24,8 @@
           <string>&amp;New</string>
          </property>
          <property name="icon">
-          <iconset theme="document-new"/>
+          <iconset theme="document-new">
+           <normaloff>.</normaloff>.</iconset>
          </property>
         </widget>
        </item>
@@ -60,12 +61,9 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="searchLE"/>
-       </item>
-       <item>
-        <widget class="QToolButton" name="clearSearchPB">
-         <property name="text">
-          <string>&amp;Clear</string>
+        <widget class="QLineEdit" name="searchLE">
+         <property name="clearButtonEnabled">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

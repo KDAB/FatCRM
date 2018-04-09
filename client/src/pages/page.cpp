@@ -399,13 +399,6 @@ void Page::initialize()
     // so unclutter the GUI a bit
     mUi.reloadPB->hide();
 
-#if QT_VERSION > QT_VERSION_CHECK(5, 1, 0)
-    mUi.clearSearchPB->hide();
-    mUi.searchLE->setClearButtonEnabled(true);
-#endif
-
-    connect(mUi.clearSearchPB, SIGNAL(clicked()),
-            this, SLOT(slotResetSearch()));
     connect(mUi.newPB, SIGNAL(clicked()),
             this, SLOT(slotNewClicked()));
     connect(mUi.reloadPB, SIGNAL(clicked()),
@@ -560,11 +553,6 @@ void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottom
     }
 }
 
-
-void Page::slotResetSearch()
-{
-    mUi.searchLE->clear();
-}
 
 void Page::slotReloadCollection()
 {

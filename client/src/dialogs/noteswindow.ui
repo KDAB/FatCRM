@@ -20,7 +20,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>&amp;Add new note:</string>
+      <string>Add &amp;new note:</string>
      </property>
      <property name="buddy">
       <cstring>newNoteDescription</cstring>
@@ -38,6 +38,9 @@
     <widget class="KTextEdit" name="newNoteDescription">
      <property name="acceptRichText">
       <bool>false</bool>
+     </property>
+     <property name="placeholderText">
+      <string>Type here for the detailed description of the new note...</string>
      </property>
     </widget>
    </item>

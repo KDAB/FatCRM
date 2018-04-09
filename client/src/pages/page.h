@@ -109,7 +109,6 @@ private Q_SLOTS:
     void slotCheckCollectionPopulated(Akonadi::Collection::Id);
     void slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end);
     void slotDataChanged(const QModelIndex &, const QModelIndex &);
-    void slotResetSearch();
     void slotReloadCollection();
     void slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames);
     void slotItemChanged(const Akonadi::Item &item, const QSet<QByteArray> &partIdentifiers);
