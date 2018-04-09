@@ -3,7 +3,7 @@
 set(MIN_KDSOAP_VER "1.6.0")
 find_package(KDSoap ${MIN_KDSOAP_VER} CONFIG QUIET) # first try KDSoapConfig.cmake
 find_package(KDSoap ${MIN_KDSOAP_VER} REQUIRED) # then try FindKDSoap.cmake
-set_package_properties(KDSoap PROPERTIES DESCRIPTION "KDSoap, Qt SOAP library by KDAB.com" TYPE REQUIRED URL "http://www.kdab.com/kdsoap" PURPOSE "Required to access the SugarCRM SOAP webservice.")
+set_package_properties(KDSoap PROPERTIES DESCRIPTION "KDSoap, Qt SOAP library by KDAB.com" TYPE REQUIRED URL "https://www.kdab.com/kdsoap" PURPOSE "Required to access the SugarCRM SOAP webservice.")
 
 
 # TODO: Just use KDSOAP_GENERATE_WSDL?
