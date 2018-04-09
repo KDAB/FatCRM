@@ -192,7 +192,7 @@ ResourceConfigDialog::ResourceConfigDialog(QWidget *parent)
     connect(d->mUi.removeResource, SIGNAL(clicked()), this, SLOT(removeResource()));
 
     d->mApplyButton = d->mUi.buttonBox->button(QDialogButtonBox::Apply);
-    d->mApplyButton->setText(i18nc("@action:button", "Select for work"));
+    d->mApplyButton->setText(i18nc("@action:button", "Select for Work"));
     connect(d->mApplyButton, SIGNAL(clicked()), this, SLOT(applyResourceSelection()));
     connect(d->mUi.resources->view(), SIGNAL(doubleClicked(QModelIndex)),
             this, SLOT(applyResourceSelection()));

@@ -47,6 +47,9 @@
          <property name="text">
           <string>Add...</string>
          </property>
+         <property name="icon">
+          <iconset theme="list-add"/>
+         </property>
          <property name="autoDefault">
           <bool>false</bool>
          </property>
@@ -56,6 +59,9 @@
         <widget class="QPushButton" name="configureResource">
          <property name="text">
           <string>Configure...</string>
+         </property>
+         <property name="icon">
+          <iconset theme="configure"/>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -67,6 +73,9 @@
          <property name="text">
           <string>Synchronize</string>
          </property>
+         <property name="icon">
+          <iconset theme="folder-sync"/>
+         </property>
          <property name="autoDefault">
           <bool>false</bool>
          </property>
@@ -76,6 +85,9 @@
         <widget class="QPushButton" name="removeResource">
          <property name="text">
           <string>Remove</string>
+         </property>
+         <property name="icon">
+          <iconset theme="list-remove"/>
          </property>
          <property name="autoDefault">
           <bool>false</bool>
@@ -115,7 +127,7 @@
   <customwidget>
    <class>Akonadi::AgentInstanceWidget</class>
    <extends>QWidget</extends>
-   <header location="global">AkonadiWidgets/AgentInstanceWidget</header>
+   <header>agentinstancewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
