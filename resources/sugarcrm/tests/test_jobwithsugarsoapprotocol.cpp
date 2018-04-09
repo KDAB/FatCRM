@@ -380,6 +380,7 @@ private Q_SLOTS:
 
             QCOMPARE(newDocuments.count(), 1);
             QCOMPARE(newDocuments.at(0).linkedOpportunityIds().count(), 1);
+            QCOMPARE(newDocuments.at(0).linkedOpportunityIds().at(0), mNewOpp.id());
         }
 
 
