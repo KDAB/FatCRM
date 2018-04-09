@@ -544,7 +544,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             statusBar()->clearMessage();
             mProgressBarHideTimer->start();
         } else {
-            qCDebug(FATCRM_CLIENT_LOG) << progress << message;
+            qCDebug(FATCRM_CLIENT_LOG) << "Resource:" << message << "- progress:" << progress;
             mProgressBar->show();
             mProgressBar->setValue(progress);
             if (progress == 100) {
