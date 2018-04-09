@@ -63,6 +63,7 @@ DocumentWidget::DocumentWidget(EnumDefinitions *definitions, QWidget *parent)
         }
     }
 
+    mDeleteButton->setIcon(QIcon::fromTheme(QStringLiteral("list-remove")));
     mDeleteButton->setText(i18n("Delete"));
     horizontalLine->setFrameShape(QFrame::HLine);
 
