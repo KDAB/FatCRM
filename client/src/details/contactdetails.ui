@@ -163,6 +163,9 @@
           <property name="text">
            <string>Send Email</string>
           </property>
+          <property name="icon">
+           <iconset theme="mail-send"/>
+          </property>
          </widget>
         </item>
        </layout>
@@ -187,6 +190,9 @@
           <property name="text">
            <string>Send Email</string>
           </property>
+          <property name="icon">
+           <iconset theme="mail-send"/>
+          </property>
          </widget>
         </item>
        </layout>
@@ -210,6 +216,9 @@
          <widget class="QPushButton" name="viewNotesButton">
           <property name="text">
            <string>View Notes</string>
+          </property>
+          <property name="icon">
+           <iconset theme="view-pim-notes"/>
           </property>
          </widget>
         </item>

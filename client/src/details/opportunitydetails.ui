@@ -263,12 +263,18 @@
           <property name="text">
            <string>&amp;View Notes</string>
           </property>
+          <property name="icon">
+           <iconset theme="view-pim-notes"/>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="viewDocumentsButton">
           <property name="text">
            <string>&amp;View Documents</string>
+          </property>
+          <property name="icon">
+           <iconset theme="folder-documents"/>
           </property>
          </widget>
         </item>

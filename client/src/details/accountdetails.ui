@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>602</height>
+    <width>884</width>
+    <height>623</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -146,12 +146,18 @@
           <property name="text">
            <string>View Notes</string>
           </property>
+          <property name="icon">
+           <iconset theme="view-pim-notes"/>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QPushButton" name="viewDocumentsButton">
           <property name="text">
            <string>&amp;View Documents</string>
+          </property>
+          <property name="icon">
+           <iconset theme="folder-documents"/>
           </property>
          </widget>
         </item>
