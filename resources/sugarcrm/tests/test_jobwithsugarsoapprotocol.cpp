@@ -102,7 +102,7 @@ private Q_SLOTS:
         mDocumentsHandler.reset(new DocumentsHandler(&mSession));
 
         LoginJob job(&mSession);
-        QVERIFY(job.exec());
+        QVERIFY2(job.exec(), qPrintable(job.errorString()));
 
         qRegisterMetaType<Akonadi::Collection>();
     }
