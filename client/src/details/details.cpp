@@ -491,14 +491,14 @@ void Details::copyAddressFromGroup(QGroupBox *box)
 
     QMap<QString, QString> address;
     for (auto it = fieldNames.constBegin(); it != fieldNames.constEnd(); ++it) {
-        QWidget *field = box->findChild<QWidget*>(it.value());
+        auto *field = box->findChild<QWidget*>(it.value());
         if (field) {
-            QPlainTextEdit *plainTextEdit = qobject_cast<QPlainTextEdit*>(field);
+            auto *plainTextEdit = qobject_cast<QPlainTextEdit*>(field);
             if (plainTextEdit) {
                 address.insert(it.key(), plainTextEdit->toPlainText());
                 continue;
             }
-            QLineEdit *lineEdit = qobject_cast<QLineEdit*>(field);
+            auto *lineEdit = qobject_cast<QLineEdit*>(field);
             if (lineEdit) {
                 address.insert(it.key(), lineEdit->text());
                 continue;

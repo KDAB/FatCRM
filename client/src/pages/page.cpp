@@ -331,7 +331,7 @@ void Page::slotRemoveItem()
 
     if (item.isValid()) {
         // job starts automatically
-        ItemDeleteJob *job = new ItemDeleteJob(item, this);
+        auto *job = new ItemDeleteJob(item, this);
         connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDeleteJobResult(KJob*)));
     }
 }
@@ -451,7 +451,7 @@ QMenu *Page::createContextMenu(const QPoint &)
         }
     }
 
-    QMenu *contextMenu = new QMenu(this);
+    auto *contextMenu = new QMenu(this);
 
     contextMenu->addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
 
@@ -643,7 +643,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     connect(details, SIGNAL(openObject(DetailsType,QString)),
             this, SIGNAL(openObject(DetailsType,QString)));
     // Don't set a parent, so that the widgets can be minimized/restored independently
-    SimpleItemEditWidget *widget = new SimpleItemEditWidget(details);
+    auto *widget = new SimpleItemEditWidget(details);
     widget->setOnline(mOnline);
     if (item.isValid()) // no need to call setItem for "New <Item>" widget
         widget->setItem(item);
@@ -673,7 +673,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
                  this, SLOT(slotUnregisterItemEditWidget()));
         return widget;
     } else {
-        TabbedItemEditWidget *tabbedWidget = new TabbedItemEditWidget(widget, itemType, this);
+        auto *tabbedWidget = new TabbedItemEditWidget(widget, itemType, this);
         tabbedWidget->setAttribute(Qt::WA_DeleteOnClose);
         connect (tabbedWidget, SIGNAL(openWidgetForItem(Akonadi::Item,DetailsType)),
                  this, SLOT(openWidgetForItem(Akonadi::Item,DetailsType)));
@@ -697,7 +697,7 @@ ItemEditWidgetBase *Page::openedWidgetForItem(Item::Id id)
 
 void Page::slotUnregisterItemEditWidget()
 {
-    ItemEditWidgetBase *widget = qobject_cast<ItemEditWidgetBase*>(sender());
+    auto *widget = qobject_cast<ItemEditWidgetBase*>(sender());
     OpenedWidgetsRepository::instance()->unregisterWidget(widget);
 }
 
@@ -707,7 +707,7 @@ void Page::slotChangeFields()
     if (!action)
         return;
 
-    const ModifierField field = action->property(s_modifierFieldId).value<ModifierField>();
+    const auto field = action->property(s_modifierFieldId).value<ModifierField>();
 
     QString dialogTitle;
     QString dialogText;
@@ -824,7 +824,7 @@ void Page::slotChangeFields()
     };
 
     foreach (const Akonadi::Item &item, modifiedItems) {
-        Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
+        auto *job = new Akonadi::ItemModifyJob(item, this);
         mJobProgressTracker->addJob(job, errorMessage);
     }
 

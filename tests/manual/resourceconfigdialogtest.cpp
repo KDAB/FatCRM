@@ -34,7 +34,7 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     parser.process(app);
 
-    ResourceConfigDialog *dlg = new ResourceConfigDialog;
+    auto *dlg = new ResourceConfigDialog;
     dlg->show();
     return app.exec();
 }

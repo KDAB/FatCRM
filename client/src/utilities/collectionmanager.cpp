@@ -132,7 +132,7 @@ static bool collectionLessThan(const Collection &c1, const Collection &c2)
 
 void CollectionManager::slotCollectionFetchResult(KJob *job)
 {
-    CollectionFetchJob *fetchJob = qobject_cast<CollectionFetchJob *>(job);
+    auto *fetchJob = qobject_cast<CollectionFetchJob *>(job);
 
     QStringList collectionsWithoutEnumDefinitions;
     Collection::List collections = fetchJob->collections();
@@ -186,7 +186,7 @@ void CollectionManager::readSupportedFields(const Collection &collection)
     if (!mMainCollectionIds.contains(collection.id())) {
         return;
     }
-    Akonadi::EntityAnnotationsAttribute *annotationsAttribute =
+    auto *annotationsAttribute =
             collection.attribute<Akonadi::EntityAnnotationsAttribute>();
     const QStringList fields = annotationsAttribute ? annotationsAttribute->value(s_supportedFieldsKey).split(',', QString::SkipEmptyParts) : QStringList();
     if (!fields.isEmpty()) {
@@ -203,7 +203,7 @@ void CollectionManager::readSupportedFields(const Collection &collection)
 
 bool CollectionManager::readEnumDefinitionsAttributes(const Collection &collection)
 {
-    EnumDefinitionAttribute *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
+    auto *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
     if (enumsAttr) {
         mCollectionData[collection.id()].enumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
         return true;
@@ -221,10 +221,10 @@ QList<KJob *> CollectionManager::clearTimestamps()
         Collection coll = it.value().mCollection;
         Q_ASSERT(!coll.resource().isEmpty());
         Q_ASSERT(coll.id() == it.key());
-        EntityAnnotationsAttribute *newAnnotationsAttribute =
+        auto *newAnnotationsAttribute =
                 coll.attribute<EntityAnnotationsAttribute>(Collection::AddIfMissing);
         newAnnotationsAttribute->insert(s_timeStampKey, QString());
-        Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(coll, this);
+        auto *modJob = new Akonadi::CollectionModifyJob(coll, this);
         jobs << modJob;
     }
     return jobs;

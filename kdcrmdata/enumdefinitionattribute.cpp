@@ -47,7 +47,7 @@ QByteArray EnumDefinitionAttribute::type() const
 
 Akonadi::Attribute *EnumDefinitionAttribute::clone() const
 {
-    EnumDefinitionAttribute *attr = new EnumDefinitionAttribute;
+    auto *attr = new EnumDefinitionAttribute;
     attr->setValue(mValue);
     return attr;
 }

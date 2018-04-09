@@ -34,12 +34,12 @@ QPair<QString, QString> FatCRMInputDialog::getAssignedUser(const QString &captio
     QDialog dialog;
     dialog.setWindowTitle(caption);
 
-    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    auto *layout = new QVBoxLayout(&dialog);
 
     QLabel *label = new QLabel(&dialog);
     label->setText(labelText);
 
-    QComboBox *comboBox = new QComboBox(&dialog);
+    auto *comboBox = new QComboBox(&dialog);
 
     QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &dialog);
 
@@ -70,12 +70,12 @@ QDate FatCRMInputDialog::getDate(const QString &caption, const QString &labelTex
     QDialog dialog;
     dialog.setWindowTitle(caption);
 
-    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    auto *layout = new QVBoxLayout(&dialog);
 
     QLabel *label = new QLabel(&dialog);
     label->setText(labelText);
 
-    NullableDateComboBox *dateEdit = new NullableDateComboBox(&dialog);
+    auto *dateEdit = new NullableDateComboBox(&dialog);
     dateEdit->setCalendarPopup(true);
     dateEdit->setDate(value);
 

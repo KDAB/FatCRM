@@ -122,7 +122,7 @@ int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsTy
 {
     ItemsTreeModel *model = ModelRepository::instance()->model(type);
     const int count = model->rowCount();
-    QStringListModel *listModel = new QStringListModel(this);
+    auto *listModel = new QStringListModel(this);
     QStringList list;
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = model->index(i, 0);

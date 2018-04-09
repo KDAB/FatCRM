@@ -40,7 +40,7 @@ bool LoadingOverlay::eventFilter(QObject *object, QEvent *event)
 {
     if (object == parent()) {
         if (event->type() == QEvent::Resize) {
-            QResizeEvent *resizeEvent = static_cast<QResizeEvent*>(event);
+            auto *resizeEvent = static_cast<QResizeEvent*>(event);
             resize(resizeEvent->size());
         }
     }

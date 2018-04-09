@@ -134,7 +134,7 @@ void AccountDetails::on_viewNotesButton_clicked()
     qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for account" << accountId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForAccount(accountId);
     qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for account" << accountId;
-    NotesWindow *dlg = new NotesWindow(nullptr);
+    auto *dlg = new NotesWindow(nullptr);
     dlg->setResourceIdentifier(resourceIdentifier());
     dlg->setLinkedItemsRepository(mLinkedItemsRepository);
     dlg->setLinkedTo(accountId, type());
@@ -153,7 +153,7 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    auto *dlg = new DocumentsWindow(nullptr);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

@@ -72,7 +72,7 @@ void LinkedItemsRepository::loadNotes()
     //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mNotesCollection.statistics().count() << "notes";
 
     // load notes
-    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
+    auto *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
     configureItemFetchScope(job->fetchScope());
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotNotesReceived(Akonadi::Item::List)));
@@ -214,7 +214,7 @@ void LinkedItemsRepository::loadEmails()
     qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mEmailsCollection.statistics().count() << "emails";
 
     // load emails
-    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
+    auto *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
     configureItemFetchScope(job->fetchScope());
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotEmailsReceived(Akonadi::Item::List)));
@@ -376,7 +376,7 @@ void LinkedItemsRepository::loadDocuments()
     //qCDebug(FATCRM_CLIENT_LOG) << "Loading" << mDocumentsCollection.statistics().count() << "documents";
 
     // load documents
-    Akonadi::ItemFetchJob *job = new Akonadi::ItemFetchJob(mDocumentsCollection, this);
+    auto *job = new Akonadi::ItemFetchJob(mDocumentsCollection, this);
     configureItemFetchScope(job->fetchScope());
     connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
             this, SLOT(slotDocumentsReceived(Akonadi::Item::List)));

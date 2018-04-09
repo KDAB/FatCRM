@@ -101,7 +101,7 @@ private:
     static void fetchItems(Collection &col, QList<ItemData> &result)
     {
         Q_ASSERT(result.isEmpty());
-        ItemFetchJob *job = new ItemFetchJob(col);
+        auto *job = new ItemFetchJob(col);
         job->fetchScope().fetchFullPayload();
         AKVERIFYEXEC(job);
         for (const Item &item : job->items()) {
@@ -181,7 +181,7 @@ private:
 
     static QString collectionTimestamp(const Collection &collection)
     {
-        EntityAnnotationsAttribute *annotationsAttribute = collection.attribute<EntityAnnotationsAttribute>();
+        auto *annotationsAttribute = collection.attribute<EntityAnnotationsAttribute>();
         if (annotationsAttribute) {
             return annotationsAttribute->value("timestamp");
         }
@@ -199,7 +199,7 @@ private:
         Item item;
         item.setPayload(sugarItem);
         item.setMimeType(T::mimeType());
-        ItemCreateJob *job = new ItemCreateJob(item, collection);
+        auto *job = new ItemCreateJob(item, collection);
 
         const QString oldTimestamp = collectionTimestamp(collection);
         QVERIFY(!oldTimestamp.isEmpty());
@@ -249,7 +249,7 @@ private:
         QVERIFY2(reply.value(), qPrintable(QString(operationName + " failed")));
 
         // Check that the timestamp was updated
-        CollectionFetchJob *fetchJob = new CollectionFetchJob(collection, CollectionFetchJob::Base);
+        auto *fetchJob = new CollectionFetchJob(collection, CollectionFetchJob::Base);
         AKVERIFYEXEC(fetchJob);
         QCOMPARE(fetchJob->collections().count(), 1);
         collection = fetchJob->collections().at(0);
@@ -271,7 +271,7 @@ private:
         sugarItem.setName(name);
         item.setPayload(sugarItem);
         QCOMPARE(item.mimeType(), T::mimeType());
-        ItemModifyJob *job = new ItemModifyJob(item);
+        auto *job = new ItemModifyJob(item);
         //WHEN
         AKVERIFYEXEC(job);
         //THEN
@@ -305,7 +305,7 @@ private:
     void deleteSugarItem(const Item &item, Collection &collection, QList<ItemData> &&expected)
     {
         //GIVEN
-        ItemDeleteJob *job = new ItemDeleteJob(item);
+        auto *job = new ItemDeleteJob(item);
         //WHEN
         AKVERIFYEXEC(job);
         //THEN
@@ -497,7 +497,7 @@ private Q_SLOTS:
         item.addAttribute(new Akonadi::EntityDisplayAttribute());
         item.removeAttribute<Akonadi::EntityDisplayAttribute>();
 #endif
-        ItemModifyJob *modifyJob = new ItemModifyJob(item);
+        auto *modifyJob = new ItemModifyJob(item);
         AKVERIFYEXEC(modifyJob);
 
         // List opps again, we should see the new name

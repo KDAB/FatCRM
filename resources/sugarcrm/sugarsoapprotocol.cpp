@@ -116,7 +116,7 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     KDSoapGenerated::TNS__Select_fields Fields;
     Fields.setItems(selectedFields);
 
-    KDSoapGenerated::Get_entry_listJob *job = new KDSoapGenerated::Get_entry_listJob(soap);
+    auto *job = new KDSoapGenerated::Get_entry_listJob(soap);
     job->setSession(mSession->sessionId());
     job->setModule_name(moduleToName(moduleName));
     job->setQuery(query);

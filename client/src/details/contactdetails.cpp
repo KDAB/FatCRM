@@ -413,7 +413,7 @@ void ContactDetails::on_viewNotesButton_clicked()
     qDebug() << notes.count() << "notes found for contact" << contactId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
     qDebug() << emails.count() << "emails found for contact" << contactId;
-    NotesWindow *dlg = new NotesWindow(nullptr);
+    auto *dlg = new NotesWindow(nullptr);
     dlg->setResourceIdentifier(resourceIdentifier());
     dlg->setLinkedItemsRepository(mLinkedItemsRepository);
     dlg->setLinkedTo(contactId, type());
@@ -430,7 +430,7 @@ void ContactDetails::on_viewNotesButton_clicked()
 
 void ContactDetails::slotSelectAccount()
 {
-    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    auto *dlg = new SelectItemDialog(Account, this);
     dlg->setModel(ModelRepository::instance()->model(Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));

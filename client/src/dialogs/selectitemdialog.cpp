@@ -48,7 +48,7 @@ SelectItemDialog::~SelectItemDialog()
 void SelectItemDialog::setModel(QAbstractItemModel *model)
 {
     mUi->treeView->header()->setContextMenuPolicy(Qt::NoContextMenu);
-    QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel(this);
+    auto *proxyModel = new QSortFilterProxyModel(this);
     proxyModel->setSourceModel(model);
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setFilterKeyColumn(-1); // all columns

@@ -134,7 +134,7 @@ private Q_SLOTS:
 
         // Test that the enums were stored into the collection
         // (but of course this doesn't check that the collection actually got synced)
-        EnumDefinitionAttribute *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
+        auto *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
         QVERIFY(enumsAttr);
         const EnumDefinitions enumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
         QCOMPARE(enumDefinitions.at(0).mEnumName, QStringLiteral("account_type"));
@@ -159,7 +159,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarAccount>(account);
-        CreateEntryJob *job = new CreateEntryJob(item, &mSession);
+        auto *job = new CreateEntryJob(item, &mSession);
         job->setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -282,7 +282,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewAccount.id());
-        FetchEntryJob *job = new FetchEntryJob(item, &mSession);
+        auto *job = new FetchEntryJob(item, &mSession);
         job->setModule(mAccountsHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -301,7 +301,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarOpportunity>(opp);
-        CreateEntryJob *job = new CreateEntryJob(item, &mSession);
+        auto *job = new CreateEntryJob(item, &mSession);
         job->setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -317,7 +317,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        FetchEntryJob *job = new FetchEntryJob(item, &mSession);
+        auto *job = new FetchEntryJob(item, &mSession);
         job->setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -339,7 +339,7 @@ private Q_SLOTS:
         item.setRemoteId(mNewOpp.id());
         item.setRemoteRevision(mRemoteRevision);
         item.setPayload<SugarOpportunity>(opp);
-        UpdateEntryJob *job = new UpdateEntryJob(item, &mSession);
+        auto *job = new UpdateEntryJob(item, &mSession);
         job->setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -387,7 +387,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(documentId);
-        DeleteEntryJob *job = new DeleteEntryJob(item, &mSession, Module::Documents);
+        auto *job = new DeleteEntryJob(item, &mSession, Module::Documents);
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
 
         QStringList newDocumentIds, newDocumentNames, deletedDocumentIds, deletedDocumentNames;
@@ -406,7 +406,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        DeleteEntryJob *job = new DeleteEntryJob(item, &mSession, Module::Opportunities);
+        auto *job = new DeleteEntryJob(item, &mSession, Module::Opportunities);
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
     }
@@ -418,7 +418,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
-        FetchEntryJob *job = new FetchEntryJob(item, &mSession);
+        auto *job = new FetchEntryJob(item, &mSession);
         job->setModule(mOpportunitiesHandler.data());
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
@@ -438,7 +438,7 @@ private: // helper methods
     void listNewAndDeletedItems(ModuleHandler *handler, QStringList &newIds, QStringList &newNames, QStringList &deletedIds, QStringList &deletedNames, QList<T>& newObjects)
     {
         Akonadi::Collection collection;
-        ListEntriesJob *job = new ListEntriesJob(collection, &mSession);
+        auto *job = new ListEntriesJob(collection, &mSession);
         job->setModule(handler);
         job->setLatestTimestamp(mRemoteRevision);
         QSignalSpy receivedSpy(job, &ListEntriesJob::itemsReceived);

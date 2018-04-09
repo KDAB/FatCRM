@@ -99,7 +99,7 @@ private Q_SLOTS:
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addData();
         SugarSession session(nullptr);
         protocol->setSession(&session);
@@ -113,7 +113,7 @@ private Q_SLOTS:
         } else if (moduleName == Module::Campaigns) {
             handler = new CampaignsHandler(&session);
         }
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        auto *job = new ListEntriesJob(collection, &session);
         job->setModule(handler);
         QSignalSpy spy(job, SIGNAL(totalItems(int)));
         //WHEN
@@ -131,14 +131,14 @@ private Q_SLOTS:
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addAccounts();
         SugarSession session(nullptr);
         protocol->setSession(&session);
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         AccountsHandler handler(&session);
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        auto *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
@@ -165,14 +165,14 @@ private Q_SLOTS:
         //GIVEN
         Akonadi::Collection collection;
         collection.setId(1);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addOpportunities();
         SugarSession session(nullptr);
         protocol->setSession(&session);
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         OpportunitiesHandler handler(&session);
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        auto *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
         QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
         //WHEN
@@ -193,13 +193,13 @@ private Q_SLOTS:
     {
         Akonadi::Collection collection;
         collection.setId(1);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         protocol->setSession(&session);
         session.setProtocol(protocol);
         session.setSessionParameters("user", "password", "hosttest");
         ModuleHandler *handler = new AccountsHandler(&session);
-        ListEntriesJob *job = new ListEntriesJob(collection, &session);
+        auto *job = new ListEntriesJob(collection, &session);
         job->setModule(handler);
         const QString errStr = "The session ID is invalid";
         //WHEN

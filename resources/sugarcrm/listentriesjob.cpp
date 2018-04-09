@@ -153,7 +153,7 @@ void ListEntriesJob::Private::listEntriesDone(const EntriesListResult &callResul
     // TODO: we could optimize away the sending of that object to akonadi
     // (if SugarAccount::operator== says same object as last time, don't call itemsRetrievedIncremental)
 
-    EntityAnnotationsAttribute *annotationsAttribute =
+    auto *annotationsAttribute =
             mCollection.attribute<EntityAnnotationsAttribute>( Akonadi::Collection::AddIfMissing );
     Q_ASSERT(annotationsAttribute);
     bool changed = false;
@@ -251,7 +251,7 @@ Item::List ListEntriesJob::deletedItems() const
 
 int ListEntriesJob::currentContentsVersion(const Collection &collection)
 {
-    EntityAnnotationsAttribute *annotationsAttribute =
+    auto *annotationsAttribute =
             collection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute)
         return annotationsAttribute->value(s_contentsVersionKey).toInt();
@@ -261,7 +261,7 @@ int ListEntriesJob::currentContentsVersion(const Collection &collection)
 // static
 QString ListEntriesJob::latestTimestamp(const Akonadi::Collection &collection, ModuleHandler *handler)
 {
-    EntityAnnotationsAttribute *annotationsAttribute =
+    auto *annotationsAttribute =
             collection.attribute<EntityAnnotationsAttribute>();
     if (annotationsAttribute) {
         const int contentsVersion = annotationsAttribute->value(s_contentsVersionKey).toInt();

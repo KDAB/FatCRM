@@ -38,7 +38,7 @@ private Q_SLOTS:
     void shouldUpdateAccount()
     {
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addData();
@@ -70,7 +70,7 @@ private Q_SLOTS:
     void shouldUpdateOpportunity()
     {
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addData();
@@ -108,7 +108,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setPayload<SugarAccount>(account);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addData();
@@ -133,7 +133,7 @@ private Q_SLOTS:
         item.setId(0);
         item.setRemoteId("1");
         item.setPayload<SugarAccount>(account);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->setServerNotFound(true);
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");

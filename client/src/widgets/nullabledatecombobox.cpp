@@ -82,7 +82,7 @@ NullableDateComboBox::NullableDateComboBox(QWidget *parent) :
 
     //WORKAROUND: Since the QDateEditEx can accept empty dates, we should clear the text
     // if user click on "no date" menu entry
-    QMenu *dateMenu = findChild<QMenu*>();
+    auto *dateMenu = findChild<QMenu*>();
     connect(dateMenu, &QMenu::triggered, this, &NullableDateComboBox::onMenuSelected);
 }
 
@@ -134,7 +134,7 @@ void NullableDateComboBox::setNullable(bool enable)
 QSize NullableDateComboBox::sizeHint() const
 {
     const QSize sz = KDateComboBox::sizeHint();
-    QAbstractButton *btn = lineEdit()->findChild<QAbstractButton*>();
+    auto *btn = lineEdit()->findChild<QAbstractButton*>();
 
     if (!btn)
         return sz;
@@ -147,7 +147,7 @@ QSize NullableDateComboBox::sizeHint() const
 QSize NullableDateComboBox::minimumSizeHint() const
 {
     const QSize sz = KDateComboBox::minimumSizeHint();
-    QAbstractButton *btn = lineEdit()->findChild<QAbstractButton*>();
+    auto *btn = lineEdit()->findChild<QAbstractButton*>();
 
     if (!btn)
         return sz;
@@ -173,7 +173,7 @@ void NullableDateComboBox::setCalendarPopup(bool flag)
 
 bool NullableDateComboBox::isClearButtonVisible() const
 {
-    QAbstractButton *btn = lineEdit()->findChild<QAbstractButton*>();
+    auto *btn = lineEdit()->findChild<QAbstractButton*>();
     if (!btn)
         return false;
 

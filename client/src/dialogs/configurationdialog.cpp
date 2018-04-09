@@ -102,13 +102,13 @@ ClientSettings::GroupFilters ConfigurationDialog::countryFilters() const
 
 void ConfigurationDialog::addAssigneeItem(const QString &name)
 {
-    QListWidgetItem *item = new QListWidgetItem(name, ui->assigneeListWidget);
+    auto *item = new QListWidgetItem(name, ui->assigneeListWidget);
     item->setFlags(item->flags() | Qt::ItemIsEditable);
 }
 
 void ConfigurationDialog::addCountryItem(const QString &name)
 {
-    QListWidgetItem *item = new QListWidgetItem(name, ui->countryListWidget);
+    auto *item = new QListWidgetItem(name, ui->countryListWidget);
     item->setFlags(item->flags() | Qt::ItemIsEditable);
 }
 

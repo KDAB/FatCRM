@@ -221,7 +221,7 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
 {
     d->mUi.setupUi(this);
 
-    QVBoxLayout *detailsLayout = new QVBoxLayout(d->mUi.detailsContainer);
+    auto *detailsLayout = new QVBoxLayout(d->mUi.detailsContainer);
     detailsLayout->addWidget(details);
 
     connect(d->mDetails, SIGNAL(modified()), this, SLOT(dataModified()));

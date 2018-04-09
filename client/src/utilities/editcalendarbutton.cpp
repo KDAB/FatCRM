@@ -35,7 +35,7 @@ EditCalendarButton::EditCalendarButton(QWidget *parent)
 {
     setText(i18n("&Edit"));
     mDialog->setWindowTitle(i18n("Calendar"));
-    QVBoxLayout *dlgLayout = new QVBoxLayout;
+    auto *dlgLayout = new QVBoxLayout;
     dlgLayout->addWidget(mCalendar);
     mDialog->setLayout(dlgLayout);
 }

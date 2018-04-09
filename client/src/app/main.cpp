@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 
     KDBusService service(KDBusService::Multiple);
 
-    MainWindow *window = new MainWindow(!parser.isSet(noOverlayOption));
+    auto *window = new MainWindow(!parser.isSet(noOverlayOption));
     window->setAttribute(Qt::WA_DeleteOnClose);
     window->show();
     return app.exec();

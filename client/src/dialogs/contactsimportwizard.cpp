@@ -94,7 +94,7 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
 
     setAttribute(Qt::WA_DeleteOnClose, false);
 
-    KJobProgressTracker *tracker = new KJobProgressTracker(this, this);
+    auto *tracker = new KJobProgressTracker(this, this);
     tracker->setCaption(i18n("Import Contacts"));
     tracker->setLabel(i18n("Importing contacts, please wait..."));
     connect(tracker, SIGNAL(finished()), SLOT(deleteLater()));
@@ -103,12 +103,12 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         if (item.isValid()) {
-            Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
+            auto *job = new Akonadi::ItemModifyJob(item, this);
 
             const QString errorMessage = i18n("Unable to update contact %1:", contact.realName());
             tracker->addJob(job, errorMessage);
         } else {
-            Akonadi::ItemCreateJob *job = new Akonadi::ItemCreateJob(item, mContactsCollection, this);
+            auto *job = new Akonadi::ItemCreateJob(item, mContactsCollection, this);
 
             const QString errorMessage = i18n("Unable to create contact %1:", contact.realName());
             if (mContactsImportPage->openContactsAfterImport()) {
@@ -123,7 +123,7 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
 
 void ContactsImportWizard::slotContactCreated(KJob *job)
 {
-    Akonadi::ItemCreateJob *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
+    auto *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
     if (!createJob->error()) {
         const Akonadi::Item item = createJob->item();
         // no remote id yet, can't use ItemDataExtractor

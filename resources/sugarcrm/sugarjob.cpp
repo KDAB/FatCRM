@@ -85,7 +85,7 @@ void SugarJob::Private::startLogin()
     mSession->setSessionId(QString());
 
     if(mSession->protocol() == nullptr) {
-        SugarSoapProtocol *protocol = new SugarSoapProtocol;
+        auto *protocol = new SugarSoapProtocol;
         protocol->setSession(mSession);
         mSession->setProtocol(protocol);
     }

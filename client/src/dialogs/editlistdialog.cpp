@@ -33,7 +33,7 @@
 EditListDialog::EditListDialog(const QString &labelText, QWidget *parent) :
     QDialog(parent)
 {
-    QVBoxLayout *layout = new QVBoxLayout(this);
+    auto *layout = new QVBoxLayout(this);
     layout->addWidget(new QLabel(labelText, this));
     mTextEdit = new QTextEdit(this);
     mTextEdit->setAcceptRichText(false);

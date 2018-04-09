@@ -108,7 +108,7 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
     QMenu menu;
     for (int i = 0; i < header()->count(); ++i) {
         const QString title = model()->headerData(i, Qt::Horizontal).toString();
-        QAction *showHideAction = new QAction(title, &menu);
+        auto *showHideAction = new QAction(title, &menu);
         showHideAction->setCheckable(true);
         showHideAction->setChecked(!header()->isSectionHidden(i));
         showHideAction->setData(i);

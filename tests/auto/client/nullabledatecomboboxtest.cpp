@@ -60,10 +60,10 @@ private Q_SLOTS:
     void focusOutFromNullDateShouldNotShowDate()
     {
         QWidget top;
-        QVBoxLayout *layout = new QVBoxLayout(&top);
-        NullableDateComboBox *w = new NullableDateComboBox(&top);
+        auto *layout = new QVBoxLayout(&top);
+        auto *w = new NullableDateComboBox(&top);
         layout->addWidget(w);
-        QLineEdit *other = new QLineEdit(&top);
+        auto *other = new QLineEdit(&top);
         layout->addWidget(other);
 
         w->setNullable(true);

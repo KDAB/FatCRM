@@ -214,7 +214,7 @@ void ItemsTreeModel::slotAccountRemoved(const QString &accountId)
                 fakeItem.addAttribute(new Akonadi::EntityDisplayAttribute());
                 fakeItem.removeAttribute<Akonadi::EntityDisplayAttribute>();
 #endif
-                Akonadi::ItemModifyJob *modifyJob = new Akonadi::ItemModifyJob(fakeItem, this);
+                auto *modifyJob = new Akonadi::ItemModifyJob(fakeItem, this);
                 connect(modifyJob, &Akonadi::ItemModifyJob::result, this, []() {
                     qDebug() << "ItemModifyJob is done";
                 });

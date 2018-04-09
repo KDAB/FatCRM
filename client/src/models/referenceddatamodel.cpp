@@ -111,11 +111,11 @@ ReferencedDataModel::~ReferencedDataModel()
 
 void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedDataType type)
 {
-    QSortFilterProxyModel *proxy = new QSortFilterProxyModel(combo);
+    auto *proxy = new QSortFilterProxyModel(combo);
     proxy->setDynamicSortFilter(true);
     proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     proxy->setSortLocaleAware(true);
-    ReferencedDataModel *model = new ReferencedDataModel(type, combo);
+    auto *model = new ReferencedDataModel(type, combo);
     proxy->setSourceModel(model);
     proxy->sort(0);
     combo->setModel(proxy);

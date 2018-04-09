@@ -106,7 +106,7 @@ void ResourceConfigDialog::Private::addResource()
     if (dialog.exec() == QDialog::Accepted) {
         const AgentType resourceType = dialog.agentType();
         if (resourceType.isValid()) {
-            AgentInstanceCreateJob *job = new AgentInstanceCreateJob(resourceType);
+            auto *job = new AgentInstanceCreateJob(resourceType);
             job->configure(q);
             connect(job, SIGNAL(result(KJob*)), q, SLOT(resourceCreateResult(KJob*)));
             job->start();

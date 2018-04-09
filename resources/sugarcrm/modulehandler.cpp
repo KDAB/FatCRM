@@ -91,7 +91,7 @@ Akonadi::Collection ModuleHandler::collection()
 
 void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 {
-    Akonadi::CollectionModifyJob *modJob = new Akonadi::CollectionModifyJob(collection, this);
+    auto *modJob = new Akonadi::CollectionModifyJob(collection, this);
     connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
     modJob->exec();
     mCollection = modJob->collection();
@@ -222,7 +222,7 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
         // Opportunities: opportunity_type, lead_source, sales_stage
         // Emails: type, status
         // Notes: <none>
-        EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);
+        auto *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);
         const QString serialized = mEnumDefinitions.toString();
         if (attr->value() != serialized) {
             attr->setValue(serialized);
@@ -510,6 +510,6 @@ void ModuleHandler::slotCollectionsReceived(const Akonadi::Collection::List &col
         Akonadi::AgentManager::self()->synchronizeCollection(collection);
     }
 
-    EnumDefinitionAttribute *attr = collection.attribute<EnumDefinitionAttribute>();
+    auto *attr = collection.attribute<EnumDefinitionAttribute>();
     mHasEnumDefinitions = attr;
 }

@@ -242,7 +242,7 @@ private Q_SLOTS:
     void shouldCorrectlyListModules()
     {
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         QStringList modules;
         QString errorMessage;
         //WHEN
@@ -260,7 +260,7 @@ private Q_SLOTS:
     void shouldFailToListModules()
     {
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         QStringList modules;
         QString errorMessage;
         //WHEN

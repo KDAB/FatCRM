@@ -64,7 +64,7 @@ SalesforceResource::SalesforceResource(const QString &id)
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),
             Settings::self(), QDBusConnection::ExportAdaptors);
 
-    ResourceDebugInterface *debugInterface = new ResourceDebugInterface(this);
+    auto *debugInterface = new ResourceDebugInterface(this);
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug"),
             debugInterface,
             QDBusConnection::ExportScriptableSlots);
@@ -736,7 +736,7 @@ void SalesforceResource::describeGlobalDone(const TNS__DescribeGlobalResponse &c
             }
             mModuleHandlers->insert(module, handler);
 
-            ModuleDebugInterface *debugInterface = new ModuleDebugInterface(module, this);
+            auto *debugInterface = new ModuleDebugInterface(module, this);
             QDBusConnection::sessionBus().registerObject(QStringLiteral("/CRMDebug/modules/") + module,
                     debugInterface,
                     QDBusConnection::ExportScriptableSlots);

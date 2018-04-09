@@ -83,7 +83,7 @@ void AccountImportPage::fillSimilarAccounts(int row)
     PendingAccount &pa = mPendingAccounts[row];
 
     QGroupBox *container = pa.groupBox;
-    QGridLayout *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
+    auto *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
     Q_ASSERT(buttonsLayout);
 
     QButtonGroup *group = pa.buttonGroup;
@@ -135,11 +135,11 @@ void AccountImportPage::setImportedContacts(const QVector<ContactsSet> &contacts
         QLabel *locationLabel = new QLabel(location(newAccount), this);
         mUi->gridLayout->addWidget(locationLabel, row, 1);
 
-        QGroupBox *container = new QGroupBox(this);
+        auto *container = new QGroupBox(this);
         mUi->gridLayout->addWidget(container, row, 2);
 
         accountLineEdit->setProperty("row", row);
-        QButtonGroup *buttonGroup = new QButtonGroup(this);
+        auto *buttonGroup = new QButtonGroup(this);
         connect(buttonGroup, SIGNAL(buttonClicked(QAbstractButton*)), this, SLOT(slotButtonClicked(QAbstractButton*)));
 
         QString contactsInfo;
@@ -212,7 +212,7 @@ Q_DECLARE_METATYPE(QAbstractButton *)
 
 void AccountImportPage::slotTextChanged(QWidget *obj)
 {
-    QLineEdit *lineEdit = qobject_cast<QLineEdit *>(obj);
+    auto *lineEdit = qobject_cast<QLineEdit *>(obj);
     Q_ASSERT(lineEdit);
     const int row = lineEdit->property("row").toInt();
     PendingAccount &pa = mPendingAccounts[row];
@@ -266,7 +266,7 @@ void AccountImportPage::slotCreateAccountResult(KJob *job)
         // We need the ID to associate the contact to the account, so let's wait for AccountRepository.
 
         button->setText(i18n("Account created, waiting for server..."));
-        Akonadi::ItemCreateJob *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
+        auto *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
         qDebug() << "OK, created. id=" << createJob->item().id();
         pa.idBeingCreated = createJob->item().id();
     }
@@ -288,7 +288,7 @@ void AccountImportPage::accountCreated(int row, const QString &id)
     // replace the pushbutton with a radiobutton
     QGroupBox *container = mPendingAccounts.at(row).groupBox;
     QPushButton *createButton = mPendingAccounts.at(row).createButton;
-    QGridLayout *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
+    auto *buttonsLayout = qobject_cast<QGridLayout *>(container->layout());
     int buttonRow;
     int buttonCol;
     int rowSpan, colSpan;

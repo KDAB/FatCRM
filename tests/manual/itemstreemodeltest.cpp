@@ -66,20 +66,20 @@ private Q_SLOTS:
             qWarning() << job->errorString();
             return;
         }
-        CollectionFetchJob *collectionJob = qobject_cast<CollectionFetchJob *>(job);
+        auto *collectionJob = qobject_cast<CollectionFetchJob *>(job);
         const Collection::List list = collectionJob->collections();
 
         qDebug() << list.count();
         qDebug() << list.first().name();
         mChangeRecorder->setCollectionMonitored(list.first(), true);
 
-        ItemsTreeModel *model = new ItemsTreeModel(Opportunity, mChangeRecorder);
+        auto *model = new ItemsTreeModel(Opportunity, mChangeRecorder);
         mTreeView->setModel(model);
 
 
         //
     #if 1
-        Akonadi::EntityTreeView *view = new Akonadi::EntityTreeView;
+        auto *view = new Akonadi::EntityTreeView;
         view->setModel(model);
         view->resize(900, 900);
         view->show();
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
     recorder.setMimeTypeMonitored(SugarOpportunity::mimeType());
     recorder.itemFetchScope().fetchFullPayload(true);
 
-    QTreeView *tree = new QTreeView(nullptr);
+    auto *tree = new QTreeView(nullptr);
     tree->resize(900, 900);
     tree->show();
 

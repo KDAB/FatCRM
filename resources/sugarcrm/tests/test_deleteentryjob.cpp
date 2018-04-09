@@ -48,7 +48,7 @@ private Q_SLOTS:
         QFETCH(QString, remoteId);
         QFETCH(bool, exist);
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addAccounts();
@@ -88,7 +88,7 @@ private Q_SLOTS:
         QFETCH(QString, remoteId);
         QFETCH(bool, exist);
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
         protocol->addOpportunities();
@@ -115,7 +115,7 @@ private Q_SLOTS:
     void shouldHandleCouldNotConnectError()
     {
         //GIVEN
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->setServerNotFound(true);
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");

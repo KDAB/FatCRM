@@ -89,7 +89,7 @@ MainWindow::MainWindow(bool displayOverlay)
 
     (void)new DBusWinIdProvider(this);
 
-    DBusInvokerInterface *iface = new DBusInvokerInterface(this);
+    auto *iface = new DBusInvokerInterface(this);
     connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
 
     ClientSettings::self()->restoreWindowSize(QStringLiteral("main"), this);
@@ -108,7 +108,7 @@ bool MainWindow::eventFilter(QObject *object, QEvent *event)
     // Intercept mouse wheel events on closed combo boxes, because
     // it causes accidentally data changes in the UI.
     if (event->type() == QEvent::Wheel) {
-        QComboBox *cb = qobject_cast<QComboBox*>(object);
+        auto *cb = qobject_cast<QComboBox*>(object);
         if (cb)
             return true;
     }
@@ -422,7 +422,7 @@ void MainWindow::createTabs()
     addPage(mAccountPage);
     mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
-    OpportunitiesPage *opportunitiesPage = new OpportunitiesPage(this);
+    auto *opportunitiesPage = new OpportunitiesPage(this);
     addPage(opportunitiesPage);
     mUi.tabWidget->addTab(opportunitiesPage, i18n("&Opportunities"));
 
@@ -463,8 +463,8 @@ void MainWindow::slotConfigureResources()
 void MainWindow::setupResourcesCombo()
 {
     // monitor Akonadi agents so we can check for KDCRM specific resources
-    AgentInstanceModel *agentModel = new AgentInstanceModel(this);
-    AgentFilterProxyModel *agentFilterModel = new AgentFilterProxyModel(this);
+    auto *agentModel = new AgentInstanceModel(this);
+    auto *agentFilterModel = new AgentFilterProxyModel(this);
     agentFilterModel->addCapabilityFilter(QStringLiteral("KDCRM").toLatin1());
     agentFilterModel->setSourceModel(agentModel);
 
@@ -643,7 +643,7 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
         const QVector<ContactsSet> contacts = importer.contacts();
         // non modal so that we can use FatCRM to search for accounts/contacts.
         // no parent widget so it can be minimized separately, shows up separate in the taskbar, etc.
-        ContactsImportWizard *importWizard = new ContactsImportWizard(nullptr);
+        auto *importWizard = new ContactsImportWizard(nullptr);
         importWizard->setAccountCollection(mAccountPage->collection());
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);

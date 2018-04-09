@@ -173,7 +173,7 @@ MergeWidget::UpdateCheckBoxes::UpdateCheckBoxes()
 
 QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
 {
-    QCheckBox *checkBox = new QCheckBox;
+    auto *checkBox = new QCheckBox;
     QString text(str);
     checkBox->setText(text.replace('&', QLatin1String("&&")));
     mImportedContactLayout->addWidget(checkBox);
@@ -190,11 +190,11 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     , mImportedAddressee(importedAddressee)
     , mPossibleMatches(possibleMatches)
 {
-    QHBoxLayout *mainLayout = new QHBoxLayout(this);
+    auto *mainLayout = new QHBoxLayout(this);
 
-    QGroupBox *importedContactBox = new QGroupBox;
-    QGroupBox *matchingContactsBox = new QGroupBox;
-    QGroupBox *finalContactBox = new QGroupBox;
+    auto *importedContactBox = new QGroupBox;
+    auto *matchingContactsBox = new QGroupBox;
+    auto *finalContactBox = new QGroupBox;
 
     mainLayout->addWidget(importedContactBox, 1);
     mainLayout->addWidget(matchingContactsBox, 2);
@@ -244,14 +244,14 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     mImportedContactLayout->addStretch();
 
     // matching contacts box content
-    QVBoxLayout *matchingContactsLayout = new QVBoxLayout(matchingContactsBox);
+    auto *matchingContactsLayout = new QVBoxLayout(matchingContactsBox);
     mButtonGroup = new QButtonGroup(this);
     mButtonGroup->setExclusive(true);
     connect(mButtonGroup, SIGNAL(buttonClicked(int)), SLOT(updateFinalContact()));
 
     for (int i = 0; i < mPossibleMatches.count(); ++i) {
         const KContacts::Addressee &possibleMatch = mPossibleMatches.at(i).contact;
-        QRadioButton *button = new QRadioButton;
+        auto *button = new QRadioButton;
         button->setProperty("__index", i);
         button->setText(i18n("Update %1", formattedContact(possibleMatch, true)));
         mButtonGroup->addButton(button);
@@ -260,7 +260,7 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     }
 
     {
-        QRadioButton *button = new QRadioButton;
+        auto *button = new QRadioButton;
         button->setProperty("__index", static_cast<int>(CreateNewContact));
         button->setText(i18n("Create new contact"));
         button->setChecked(mPossibleMatches.isEmpty());
@@ -269,7 +269,7 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     }
 
     {
-        QRadioButton *button = new QRadioButton;
+        auto *button = new QRadioButton;
         button->setProperty("__index", static_cast<int>(ExcludeContact));
         button->setText(i18n("Cancel importing this contact"));
         mButtonGroup->addButton(button);
@@ -279,7 +279,7 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     matchingContactsLayout->addStretch();
 
     // final contact box content
-    QVBoxLayout *finalContactLayout = new QVBoxLayout(finalContactBox);
+    auto *finalContactLayout = new QVBoxLayout(finalContactBox);
     mFinalContactLabel = new QLabel;
     mFinalContactLabel->setWordWrap(true);
     finalContactLayout->addWidget(mFinalContactLabel);
@@ -573,6 +573,6 @@ void ContactsImportPage::adjustPageSize()
 void ContactsImportPage::addMergeWidget(const SugarAccount &account, const KContacts::Addressee &importedAddressee,
                                         const QVector<MatchPair> &possibleMatches)
 {
-    MergeWidget *widget = new MergeWidget(account, importedAddressee, possibleMatches);
+    auto *widget = new MergeWidget(account, importedAddressee, possibleMatches);
     mUi->mainLayout->addWidget(widget);
 }

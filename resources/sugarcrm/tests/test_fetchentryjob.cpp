@@ -57,7 +57,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(id);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addAccounts();
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
@@ -99,7 +99,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(id);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addOpportunities();
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
@@ -124,7 +124,7 @@ private Q_SLOTS:
         //GIVEN
         Akonadi::Item item;
         item.setId(0);
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->addAccounts();
         SugarSession session(nullptr);
         session.setSessionParameters("user", "password", "hosttest");
@@ -145,7 +145,7 @@ private Q_SLOTS:
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId("0");
-        SugarMockProtocol *protocol = new SugarMockProtocol;
+        auto *protocol = new SugarMockProtocol;
         protocol->setServerNotFound(true);
         protocol->addAccounts();
         SugarSession session(nullptr);

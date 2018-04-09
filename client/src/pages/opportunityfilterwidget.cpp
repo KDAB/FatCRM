@@ -184,7 +184,7 @@ void OpportunityFilterWidget::filterChanged()
     filterSettings.setShownPriority(ui->cbPriority->currentText());
 
     if (ui->cbMaxNextStepDate->currentIndex() == indexForOther()) {
-        QCalendarWidget *calendar = new QCalendarWidget();
+        auto *calendar = new QCalendarWidget();
         calendar->setWindowModality(Qt::ApplicationModal);
         calendar->setWindowFlags(Qt::Popup);
         calendar->setAttribute(Qt::WA_DeleteOnClose);
@@ -208,7 +208,7 @@ void OpportunityFilterWidget::slotResetMaxNextStepDateIndex()
 
 void OpportunityFilterWidget::slotSetMaxNextStepCustomDate(const QDate &date)
 {
-    QCalendarWidget *calendar = qobject_cast<QCalendarWidget*>(sender());
+    auto *calendar = qobject_cast<QCalendarWidget*>(sender());
     if (!calendar)
         return;
     disconnect(calendar, SIGNAL(destroyed()), this, SLOT(slotResetMaxNextStepDateIndex()));

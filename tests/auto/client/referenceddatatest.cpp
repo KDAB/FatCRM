@@ -38,9 +38,9 @@ private Q_SLOTS:
     void testSortedCombo()
     {
         // Given GUI first
-        QComboBox *combo = new QComboBox;
+        auto *combo = new QComboBox;
         ReferencedDataModel::setModelForCombo(combo, AssignedToRef);
-        QAbstractProxyModel *proxy = qobject_cast<QAbstractProxyModel *>(combo->model());
+        auto *proxy = qobject_cast<QAbstractProxyModel *>(combo->model());
         QVERIFY(proxy);
         QAbstractItemModel *sourceModel = proxy->sourceModel();
         QCOMPARE(sourceModel->rowCount(), 1); // +1 for empty item at the top

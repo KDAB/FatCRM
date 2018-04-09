@@ -215,7 +215,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for opp" << oppId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForOpportunity(oppId);
     qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for opp" << oppId;
-    NotesWindow *dlg = new NotesWindow(nullptr);
+    auto *dlg = new NotesWindow(nullptr);
     dlg->setResourceIdentifier(resourceIdentifier());
     dlg->setLinkedItemsRepository(mLinkedItemsRepository);
     dlg->setLinkedTo(oppId, type());
@@ -234,7 +234,7 @@ void OpportunityDetails::on_viewDocumentsButton_clicked()
 {
     const QString oppId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    auto *dlg = new DocumentsWindow(nullptr);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());
@@ -253,7 +253,7 @@ void OpportunityDetails::on_buttonOpenAccount_clicked()
 
 void OpportunityDetails::slotSelectAccount()
 {
-    SelectItemDialog *dlg = new SelectItemDialog(Account, this);
+    auto *dlg = new SelectItemDialog(Account, this);
     dlg->setModel(ModelRepository::instance()->model(Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));

@@ -91,7 +91,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
             mDebugInterface,
             QDBusConnection::ExportScriptableSlots);
 
-    ItemTransferInterface *itemTransferInterface = new ItemTransferInterface(this);
+    auto *itemTransferInterface = new ItemTransferInterface(this);
     QDBusConnection::sessionBus().registerObject(QLatin1String("/ItemTransfer"),
             itemTransferInterface,
             QDBusConnection::ExportScriptableSlots);
@@ -110,7 +110,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
 
     SugarProtocolBase *protocol;
     if (selectedProtocol == "Mock") {
-        SugarMockProtocol *p = new SugarMockProtocol;
+        auto *p = new SugarMockProtocol;
         p->addData();
         protocol = p;
         mSession = new SugarSession(nullptr, this);
@@ -251,7 +251,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
     if (handler) {
         status(Running);
 
-        CreateEntryJob *job = new CreateEntryJob(item, mSession, this);
+        auto *job = new CreateEntryJob(item, mSession, this);
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
         job->setModule(handler);
@@ -348,7 +348,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
         // getting items in batches
         setItemStreamingEnabled(true);
 
-        ListEntriesJob *job = new ListEntriesJob(collection, mSession, this);
+        auto *job = new ListEntriesJob(collection, mSession, this);
         job->setModule(handler);
         job->setLatestTimestamp(ListEntriesJob::latestTimestamp(collection, handler));
         Q_ASSERT(!mCurrentJob);
@@ -388,7 +388,7 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Running, message);
 
-        FetchEntryJob *job = new FetchEntryJob(item, mSession, this);
+        auto *job = new FetchEntryJob(item, mSession, this);
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
         job->setModule(handler);
@@ -462,7 +462,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
         return;
     }
 
-    ListModulesJob *listJob = qobject_cast<ListModulesJob *>(job);
+    auto *listJob = qobject_cast<ListModulesJob *>(job);
     Q_ASSERT(listJob != nullptr);
 
     Collection::List collections;
@@ -534,7 +534,7 @@ void SugarCRMResource::slotItemsReceived(const Item::List &items, bool isUpdateJ
 
 void SugarCRMResource::listEntriesResult(KJob *job)
 {
-    ListEntriesJob *listEntriesJob = static_cast<ListEntriesJob *>(job);
+    auto *listEntriesJob = static_cast<ListEntriesJob *>(job);
 
     emit percent(100);
 
@@ -591,7 +591,7 @@ void SugarCRMResource::handleDeletedItems(const QVariant &val)
     status(Running, message);
 
     // Check whether those items still exist, it's an error in akonadi to delete items that don't exist anymore.
-    Akonadi::ItemFetchJob *fetchJob = new Akonadi::ItemFetchJob(arg.deletedItems, this);
+    auto *fetchJob = new Akonadi::ItemFetchJob(arg.deletedItems, this);
     fetchJob->setCollection(arg.collection);
     fetchJob->fetchScope().fetchAllAttributes(false);
     fetchJob->fetchScope().fetchFullPayload(false);
@@ -604,7 +604,7 @@ void SugarCRMResource::handleDeletedItems(const QVariant &val)
         } else {
             const Akonadi::Item::List items = fetchJob->items();
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << "Resolved to" << items.size() << "items by the fetch job";
-            Akonadi::ItemDeleteJob *deleteJob = new Akonadi::ItemDeleteJob(items, this);
+            auto *deleteJob = new Akonadi::ItemDeleteJob(items, this);
             connect(deleteJob, &KJob::result, this, &SugarCRMResource::slotDeleteEntriesResult);
         }
     });
@@ -640,7 +640,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
         return;
     }
 
-    CreateEntryJob *createJob = qobject_cast<CreateEntryJob *>(job);
+    auto *createJob = qobject_cast<CreateEntryJob *>(job);
     Q_ASSERT(createJob != nullptr);
 
     changeCommitted(createJob->item());
@@ -669,7 +669,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
         return;
     }
 
-    DeleteEntryJob *deleteJob = qobject_cast<DeleteEntryJob *>(job);
+    auto *deleteJob = qobject_cast<DeleteEntryJob *>(job);
     Q_ASSERT(deleteJob != nullptr);
 
     changeCommitted(deleteJob->item());
@@ -694,7 +694,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
         return;
     }
 
-    FetchEntryJob *fetchJob = qobject_cast<FetchEntryJob *>(job);
+    auto *fetchJob = qobject_cast<FetchEntryJob *>(job);
     Q_ASSERT(fetchJob != nullptr);
 
     itemRetrieved(fetchJob->item());
@@ -709,7 +709,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
         return;
     }
 
-    UpdateEntryJob *updateJob = qobject_cast<UpdateEntryJob *>(job);
+    auto *updateJob = qobject_cast<UpdateEntryJob *>(job);
     Q_ASSERT(updateJob != nullptr);
 
     if (job->error() != 0) {
@@ -757,7 +757,7 @@ void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
 
 void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *handler)
 {
-    UpdateEntryJob *job = new UpdateEntryJob(item, mSession, this);
+    auto *job = new UpdateEntryJob(item, mSession, this);
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
     job->setModule(handler);
@@ -776,7 +776,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
             if (module == Module::Contacts) {
                 handler = new ContactsHandler(mSession);
             } else if (module == Module::Accounts) {
-                AccountsHandler *accountsHandler = new AccountsHandler(mSession);
+                auto *accountsHandler = new AccountsHandler(mSession);
                 accountsHandler->fillAccountsCache();
                 handler = accountsHandler;
             } else if (module == Module::Opportunities) {

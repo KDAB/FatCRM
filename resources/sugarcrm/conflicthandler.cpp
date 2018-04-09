@@ -99,7 +99,7 @@ void ConflictHandler::Private::resolve()
         emit q->commitChange(mRemoteItem);
 
         // commit does not update payload, so we modify as well
-        ItemModifyJob *modifyJob = new ItemModifyJob(mRemoteItem, q);
+        auto *modifyJob = new ItemModifyJob(mRemoteItem, q);
         modifyJob->disableRevisionCheck();
         break;
     }
@@ -110,7 +110,7 @@ void ConflictHandler::Private::resolve()
         emit q->commitChange(mRemoteItem);
 
         // commit does not update payload, so we modify as well
-        ItemModifyJob *modifyJob = new ItemModifyJob(mRemoteItem, q);
+        auto *modifyJob = new ItemModifyJob(mRemoteItem, q);
         modifyJob->disableRevisionCheck();
 
         createDuplicate(mLocalItem);
@@ -133,7 +133,7 @@ void ConflictHandler::Private::createDuplicate(const Item &item)
 
 void ConflictHandler::Private::duplicateLocalItemResult(KJob *job)
 {
-    ItemCreateJob *createJob = qobject_cast<ItemCreateJob *>(job);
+    auto *createJob = qobject_cast<ItemCreateJob *>(job);
     Q_ASSERT(createJob != nullptr);
 
     const Item item = createJob->item();

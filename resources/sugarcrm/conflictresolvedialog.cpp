@@ -215,22 +215,22 @@ void ConflictResolveDialog::Private::openEditor()
 ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
     : QDialog(parent), d(new Private(this))
 {
-    QVBoxLayout *mainLayout = new QVBoxLayout;
+    auto *mainLayout = new QVBoxLayout;
     setLayout(mainLayout);
 
     // Don't use QDialogButtonBox, order is very important (left on the left, right on the right)
-    QHBoxLayout *buttonLayout = new QHBoxLayout();
-    QPushButton *takeLeftButton = new QPushButton(this);
+    auto *buttonLayout = new QHBoxLayout();
+    auto *takeLeftButton = new QPushButton(this);
     takeLeftButton->setText(i18nc("@action:button", "Take my version"));
     connect(takeLeftButton, SIGNAL(clicked()), this, SLOT(useLocalItem()));
     buttonLayout->addWidget(takeLeftButton);
 
-    QPushButton *takeRightButton = new QPushButton(this);
+    auto *takeRightButton = new QPushButton(this);
     takeRightButton->setText(i18nc("@action:button", "Take their version"));
     connect(takeRightButton, SIGNAL(clicked()), this, SLOT(useOtherItem()));
     buttonLayout->addWidget(takeRightButton);
 
-    QPushButton *keepBothButton = new QPushButton(this);
+    auto *keepBothButton = new QPushButton(this);
     keepBothButton->setText(i18nc("@action:button", "Keep both versions"));
     buttonLayout->addWidget(keepBothButton);
     connect(keepBothButton, SIGNAL(clicked()), this, SLOT(useBothItems()));
@@ -248,10 +248,10 @@ ConflictResolveDialog::ConflictResolveDialog(QWidget *parent)
                 "Unless one version can just be thrown away, you will have to integrate those changes manually.\n"
                 "Click on \"Open text editor\" to keep a copy of the texts, then select which version is most correct, then re-open it and modify it again to add what's missing."));
     // TODO it would be even better if this was a clickable link in the label...
-    QPushButton *openEditorButton = new QPushButton(this);
+    auto *openEditorButton = new QPushButton(this);
     openEditorButton->setText(i18nc("@action:button", "Open text editor"));
     connect(openEditorButton, SIGNAL(clicked()), this, SLOT(openEditor()));
-    QHBoxLayout *separateLayout = new QHBoxLayout;
+    auto *separateLayout = new QHBoxLayout;
     separateLayout->addWidget(openEditorButton);
     separateLayout->addStretch();
 

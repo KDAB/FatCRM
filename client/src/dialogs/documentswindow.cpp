@@ -69,9 +69,9 @@ DocumentWidget::DocumentWidget(EnumDefinitions *definitions, QWidget *parent)
     connect(mNameLabel, SIGNAL(linkActivated(QString)), SIGNAL(urlClicked(QString)));
     connect(mDeleteButton, SIGNAL(clicked()), SIGNAL(deleteDocument()));
 
-    QVBoxLayout *topLayout = new QVBoxLayout(this);
+    auto *topLayout = new QVBoxLayout(this);
 
-    QHBoxLayout *firstRow = new QHBoxLayout;
+    auto *firstRow = new QHBoxLayout;
     firstRow->addWidget(mNameLabel);
     firstRow->addWidget(mStatusBox);
     firstRow->addStretch();
@@ -155,7 +155,7 @@ void DocumentsWindow::setLinkedItemsRepository(LinkedItemsRepository *repository
 {
     mLinkedItemsRepository = repository;
 
-    EnumDefinitionAttribute *enumsAttr = mLinkedItemsRepository->documentsCollection().attribute<EnumDefinitionAttribute>();
+    auto *enumsAttr = mLinkedItemsRepository->documentsCollection().attribute<EnumDefinitionAttribute>();
     if (enumsAttr)
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
 }
@@ -254,7 +254,7 @@ void DocumentsWindow::urlClicked(const QString &url)
 
 void DocumentsWindow::deleteDocument()
 {
-    DocumentWidget *widget = qobject_cast<DocumentWidget*>(sender());
+    auto *widget = qobject_cast<DocumentWidget*>(sender());
     if (!widget)
         return;
 
@@ -307,7 +307,7 @@ DocumentWidget *DocumentsWindow::addDocument(const SugarDocument &document)
 {
     mDocuments.append(document);
 
-    DocumentWidget *widget = new DocumentWidget(&mEnumDefinitions);
+    auto *widget = new DocumentWidget(&mEnumDefinitions);
     widget->setDocument(document);
     mDocumentWidgets.append(widget);
 
@@ -349,7 +349,7 @@ void DocumentsWindow::saveChanges()
         if (it == mDocumentWidgets.end()) {
             const Akonadi::Item item = mLinkedItemsRepository->documentItem(id);
             if (item.isValid()) {
-                Akonadi::ItemDeleteJob *job = new Akonadi::ItemDeleteJob(item, this);
+                auto *job = new Akonadi::ItemDeleteJob(item, this);
                 connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
 
                 ++mPendingJobCount;
@@ -407,7 +407,7 @@ void DocumentsWindow::saveChanges()
                 if (item.isValid()) {
                     item.setPayload(modifiedDocument);
 
-                    Akonadi::ItemModifyJob *job = new Akonadi::ItemModifyJob(item, this);
+                    auto *job = new Akonadi::ItemModifyJob(item, this);
                     connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
 
                     ++mPendingJobCount;
