@@ -25,11 +25,10 @@
         <x>0</x>
         <y>0</y>
         <width>480</width>
-        <height>233</height>
+        <height>227</height>
        </rect>
       </property>
-      <layout class="QVBoxLayout" name="scrollAreaLayout">
-      </layout>
+      <layout class="QVBoxLayout" name="scrollAreaLayout"/>
      </widget>
     </widget>
    </item>
@@ -39,6 +38,9 @@
       <widget class="QPushButton" name="attachButton">
        <property name="text">
         <string>Attach New Document...</string>
+       </property>
+       <property name="icon">
+        <iconset theme="list-add"/>
        </property>
       </widget>
      </item>
