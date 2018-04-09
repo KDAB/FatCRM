@@ -306,13 +306,14 @@ private Q_SLOTS:
         //WHEN
         QVERIFY2(job->exec(), qPrintable(job->errorString()));
         mNewOpp = job->item().payload<SugarOpportunity>();
-        Q_ASSERT(!mNewOpp.dateModifiedRaw().isEmpty());
+        QVERIFY(!mNewOpp.dateModifiedRaw().isEmpty());
         mRemoteRevision = job->item().remoteRevision();
     }
 
     void shouldFetchOpportunity()
     {
         //GIVEN
+        QVERIFY(!mNewOpp.isEmpty()); // this test requires shouldCreateOpportunity
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
@@ -329,6 +330,7 @@ private Q_SLOTS:
     void shouldUpdateOpportunity()
     {
         //GIVEN
+        QVERIFY(!mNewOpp.isEmpty()); // this test requires shouldCreateOpportunity
         SugarOpportunity opp;
         opp.setName("updateOpportunity");
         opp.setId(mNewOpp.id());
@@ -361,6 +363,7 @@ private Q_SLOTS:
         QVERIFY2(!documentId.contains("ERROR"), qPrintable(documentId));
 
         // AND WHEN
+        QVERIFY(!mNewOpp.isEmpty()); // this test requires shouldCreateOpportunity
         const bool ok = transferInterface.linkItem(documentId, moduleToName(Documents), mNewOpp.id(), moduleToName(Opportunities));
         // THEN
         QVERIFY(ok);
@@ -399,6 +402,7 @@ private Q_SLOTS:
     void shouldDeleteOpportunity()
     {
         //GIVEN
+        QVERIFY(!mNewOpp.isEmpty()); // this test requires shouldCreateOpportunity
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
@@ -410,6 +414,7 @@ private Q_SLOTS:
     void shouldFetchDeletedOpportunity()
     {
         //GIVEN
+        QVERIFY(!mNewOpp.isEmpty()); // this test requires shouldCreateOpportunity
         Akonadi::Item item;
         item.setId(0);
         item.setRemoteId(mNewOpp.id());
