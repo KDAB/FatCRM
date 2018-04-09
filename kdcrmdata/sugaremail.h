@@ -212,8 +212,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarEmail::*valueGetter)() const;
-    typedef void (SugarEmail::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarEmail::*)() const;
+    using valueSetter = void (SugarEmail::*)(const QString &);
 
     class EmailAccessorPair
     {

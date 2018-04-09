@@ -30,7 +30,7 @@ class TestAccountRepository : public QObject
     Q_OBJECT
 public:
 private:
-    typedef AccountRepository::Field Field;
+    using Field = AccountRepository::Field;
 
     static QString fieldsVectorToString(QVector<AccountRepository::Field> fields)
     {

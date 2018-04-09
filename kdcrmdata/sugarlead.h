@@ -609,8 +609,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarLead::*valueGetter)() const;
-    typedef void (SugarLead::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarLead::*)() const;
+    using valueSetter = void (SugarLead::*)(const QString &);
 
     class LeadAccessorPair
     {

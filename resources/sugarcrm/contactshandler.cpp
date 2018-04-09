@@ -43,9 +43,9 @@ using namespace KDSoapGenerated;
 
 #define KABC KContacts
 
-typedef QString(*valueGetter)(const KContacts::Addressee &);
-typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
-typedef void (*addressSetter)(const QString &, KContacts::Address &);
+using valueGetter = QString (*)(const KContacts::Addressee &);
+using valueSetter = void (*)(const QString &, KContacts::Addressee &);
+using addressSetter = void (*)(const QString &, KContacts::Address &);
 
 static QString getFirstName(const KContacts::Addressee &addressee)
 {

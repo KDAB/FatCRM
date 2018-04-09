@@ -366,8 +366,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarDocument::*valueGetter)() const;
-    typedef void (SugarDocument::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarDocument::*)() const;
+    using valueSetter = void (SugarDocument::*)(const QString &);
 
     class DocumentAccessorPair
     {

@@ -503,8 +503,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarAccount::*valueGetter)() const;
-    typedef void (SugarAccount::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarAccount::*)() const;
+    using valueSetter = void (SugarAccount::*)(const QString &);
 
     class AccountAccessorPair
     {

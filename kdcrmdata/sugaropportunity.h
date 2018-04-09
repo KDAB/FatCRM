@@ -360,8 +360,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarOpportunity::*valueGetter)() const;
-    typedef void (SugarOpportunity::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarOpportunity::*)() const;
+    using valueSetter = void (SugarOpportunity::*)(const QString &);
 
     class OpportunityAccessorPair
     {

@@ -339,8 +339,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarCampaign::*valueGetter)() const;
-    typedef void (SugarCampaign::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarCampaign::*)() const;
+    using valueSetter = void (SugarCampaign::*)(const QString &);
 
     class CampaignAccessorPair
     {

@@ -57,7 +57,7 @@ public:
         static Enum fromString(const QString &str);
 
         QString mEnumName;
-        typedef QVector<KeyValue> Vector;
+        using Vector = QVector<KeyValue>;
         Vector mEnumValues; // ID, display string
     };
 

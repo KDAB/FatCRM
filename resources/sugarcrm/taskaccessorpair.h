@@ -22,8 +22,8 @@
 
 #include <QHash>
 
-typedef QString (*taskValueGetter)( const KCalCore::Todo& );
-typedef void (*taskValueSetter)( const QString&, KCalCore::Todo&);
+using taskValueGetter = QString (*)(const KCalCore::Todo &);
+using taskValueSetter = void (*)(const QString &, KCalCore::Todo &);
 
 class TaskAccessorPair
 {

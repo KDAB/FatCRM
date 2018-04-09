@@ -89,7 +89,7 @@ public:
     /**
      * Describes a list of columns of the items tree model.
      */
-    typedef QList<ColumnType> ColumnTypes;
+    using ColumnTypes = QList<ColumnType>;
 
     /**
      * Creates a new items tree model.

@@ -33,8 +33,8 @@ using namespace KDSoapGenerated;
 
 #include <QHash>
 
-typedef QString(*valueGetter)(const KContacts::Addressee &);
-typedef void (*valueSetter)(const QString &, KContacts::Addressee &);
+using valueGetter = QString (*)(const KContacts::Addressee &);
+using valueSetter = void (*)(const QString &, KContacts::Addressee &);
 
 static QString getId(const KContacts::Addressee &addressee)
 {

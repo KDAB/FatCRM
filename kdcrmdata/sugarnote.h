@@ -204,8 +204,8 @@ public:
      */
     static QString mimeType();
 
-    typedef QString(SugarNote::*valueGetter)() const;
-    typedef void (SugarNote::*valueSetter)(const QString &);
+    using valueGetter = QString (SugarNote::*)() const;
+    using valueSetter = void (SugarNote::*)(const QString &);
 
     class NoteAccessorPair
     {

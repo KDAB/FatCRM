@@ -28,7 +28,7 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include <functional>
 
-typedef std::function<bool(Akonadi::Item &)> ReferenceUpdateFunction;
+using ReferenceUpdateFunction = std::function<bool (Akonadi::Item &)>;
 
 template <typename U, typename V> class QHash;
 class OpportunitiesHandler : public ModuleHandler
