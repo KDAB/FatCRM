@@ -1,0 +1,22 @@
+# general
+apidocs
+.kdev4
+build
+*~
+*.bak
+*.orig
+*.rej
+doxygen.log
+Doxyfile
+.*kate-swp
+build/
+mem.log.*
+massif.*
+callgrind.*
+perf.data*
+
+# from kdiff3
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
