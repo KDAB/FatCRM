@@ -73,7 +73,9 @@ QStringList DocumentsHandler::supportedCRMFields() const
 
 int DocumentsHandler::expectedContentsVersion() const
 {
-    return 0;
+    // 0: initial version
+    // 1: after fixing getExtraInformation to fetch linked accounts/opps correctly, upgraded to force a full refetch
+    return 1;
 }
 
 int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage)
