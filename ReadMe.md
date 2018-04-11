@@ -1,5 +1,5 @@
-Introduction
-============
+# Introduction
+
 FatCRM is a desktop application for SugarCRM.
 
 Desktop application for a web service, fat client, get it? :-)
@@ -11,12 +11,12 @@ that applies to every action, requiring roundtrips to the web server.
 FatCRM solves this by creating a local cache of the data (accounts, opportunities, contacts, etc.)
 and providing a desktop application to search, view, and edit this data.
 
-Dependencies
-============
+# Dependencies
+
 FatCRM uses Qt5, KDSoap, KDReports, Akonadi, and KF5.
 
-Compiling from sources, on Linux
-================================
+# Compiling from sources, on Linux
+
 * Prerequisites
 
 Install the packages: kcalcore-devel akonadi-contact-devel (OpenSuSE), libkf5akonadicontact-dev extra-cmake-modules (Debian/Ubuntu).
@@ -71,22 +71,22 @@ The first time, you'll have to configure your SugarCRM account. Click on "Add...
 
 After that, go to the Settings dialog and configure your full user name at the top, as shown in the web interface for SugarCRM.
 
-Contributing
-============
+# Contributing
+
 KDAB will happily accept external contributions, but substantial
 contributions will require a signed Copyright Assignment Agreement.
 Contact support@kdab.com for more information.
 
-License
-=======
+# License
+
 The FatCRM Software is (C) 2010-2017 Klarälvdalens Datakonsult AB (KDAB),
 and is available under the terms of the GPL version 2 (or any later version,
 at your option).  See LICENSE.GPL.txt for license details.
 
 A commercial license can be negotiated, contact KDAB for this.
 
-About KDAB
-==========
+# About KDAB
+
 FatCRM is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).
 
 KDAB, the Qt experts, provide consulting and mentoring for developing
