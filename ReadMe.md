@@ -31,27 +31,34 @@ Get it here: https://ci.appveyor.com/project/KDAB/fatcrm
 
 Craft is an open source meta build system and package manager. It manages dependencies and builds libraries and applications from source, on *Windows*, *Mac*, *Linux* and *FreeBSD*.
 
-* Setup Craft https://community.kde.org/Craft
+### Setting up Craft
+
+Read through: https://community.kde.org/Craft
+
+### Compiling FatCRM (and dependencies)
 
 For compiling FatCRM:
 ```
 craft --target master -i craft
-build fatrcm and its dependencies
 craft fatcrm
 ```
 
-Optional: For creating an installer:
+### Optional: Creating an installer
+
 ```
 craft --package fatcrm
 ```
 
 ## Unix: Manual instructions
 
-* Prerequisites
+### Prerequisites
 
-Install the packages: `kcalcore-devel akonadi-contact-devel` (OpenSuSE), `libkf5akonadicontact-dev extra-cmake-modules` (Debian/Ubuntu).
+Install the packages:
 
-* Install KDSoap (version 1.6.0 or higher)
+- for OpenSuse: `kcalcore-devel akonadi-contact-devel`
+- for Debian/Kubuntu: `libkf5akonadicontact-dev extra-cmake-modules`
+
+### Install KDSoap (version 1.6.0 or higher)
 
 ```
 git clone https://github.com/KDAB/KDSoap.git
@@ -62,7 +69,7 @@ sudo make install
 cd ..
 ```
 
-* Install KDReports
+### Install KDReports
 
 ```
 git clone https://github.com/KDAB/KDReports.git
@@ -73,7 +80,7 @@ sudo make install
 cd ..
 ```
 
-* Compile FatCRM
+### Compile FatCRM
 
 ```
 git clone https://github.com/KDAB/FatCRM
@@ -88,16 +95,16 @@ Now restart akonadi so that it sees the newly installed resource (on the command
 
 # Using FatCRM
 
-* Web settings
+## Web settings
 
 In SugarCRM, click on your own name in the topright corner, go to the Advanced tab, and in the first group ("User Settings"), ensure that "Show Full Names" is checked.
 Further below in the "Locale Settings" group, ensure that the decimal separator is "." (dot) and that the thousands separator is "," (comma).
 
-* Starting FatCRM
+## Starting FatCRM
 
 The executable name is `fatcrm`. It should appear in your K menu under the name *FatCRM*.
 
-* First time setup
+## First time setup
 
 The first time, you'll have to configure your SugarCRM account. Click on *Add...*, type Sugar, click on *SugarCRM Resource*.
 
