@@ -15,11 +15,41 @@ and providing a desktop application to search, view, and edit this data.
 
 FatCRM uses Qt5, KDSoap, KDReports, Akonadi, and KF5.
 
-# Compiling from sources, on Linux
+# Installation
+
+## Linux
+
+For some of the more popular Linux distributions we provide installable packages using the [openSUSE Build Service](https://build.opensuse.org/project/show/isv:KDAB).
+
+## Installer for Windows
+
+Get it here: https://ci.appveyor.com/project/KDAB/fatcrm
+
+# Compiling from Sources
+
+## All Platforms: Using KDE's Craft
+
+Craft is an open source meta build system and package manager. It manages dependencies and builds libraries and applications from source, on *Windows*, *Mac*, *Linux* and *FreeBSD*.
+
+* Setup Craft https://community.kde.org/Craft
+
+For compiling FatCRM:
+```
+craft --target master -i craft
+build fatrcm and its dependencies
+craft fatcrm
+```
+
+Optional: For creating an installer:
+```
+craft --package fatcrm
+```
+
+## Unix: Manual instructions
 
 * Prerequisites
 
-Install the packages: kcalcore-devel akonadi-contact-devel (OpenSuSE), libkf5akonadicontact-dev extra-cmake-modules (Debian/Ubuntu).
+Install the packages: `kcalcore-devel akonadi-contact-devel` (OpenSuSE), `libkf5akonadicontact-dev extra-cmake-modules` (Debian/Ubuntu).
 
 * Install KDSoap (version 1.6.0 or higher)
 
@@ -56,6 +86,8 @@ sudo make install
 
 Now restart akonadi so that it sees the newly installed resource (on the command-line: `akonadictl restart`)
 
+# Using FatCRM
+
 * Web settings
 
 In SugarCRM, click on your own name in the topright corner, go to the Advanced tab, and in the first group ("User Settings"), ensure that "Show Full Names" is checked.
@@ -63,11 +95,11 @@ Further below in the "Locale Settings" group, ensure that the decimal separator 
 
 * Starting FatCRM
 
-The executable name is fatcrm. It should appear in your K menu under the name "FatCRM".
+The executable name is `fatcrm`. It should appear in your K menu under the name *FatCRM*.
 
 * First time setup
 
-The first time, you'll have to configure your SugarCRM account. Click on "Add...", type Sugar, click on "SugarCRM Resource".
+The first time, you'll have to configure your SugarCRM account. Click on *Add...*, type Sugar, click on *SugarCRM Resource*.
 
 After that, go to the Settings dialog and configure your full user name at the top, as shown in the web interface for SugarCRM.
 
