@@ -1,6 +1,6 @@
 # Introduction
 
-FatCRM is a desktop application for SugarCRM.
+FatCRM is a desktop application for the web application [SugarCRM](https://www.sugarcrm.com).
 
 Desktop application for a web service, fat client, get it? :-)
 
