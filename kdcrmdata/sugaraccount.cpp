@@ -155,7 +155,7 @@ SugarAccount &SugarAccount::operator=(const SugarAccount &other)
 // The code below will try adding a dot, and prepending a comma
 static const char* s_extensions[] = {
     "Inc", "LLC", "Ltd", "Limited", // USA, UK
-    "GmbH & Co. KG", "GmbH + Co. KG", "GmbH", "e.V", // Germany
+    "GmbH and Co. KG", "GmbH + Co. KG", "GmbH", "e.V", // Germany
     "S.A.S", "SAS", "S.A", "SA", // France
     "S.A.U", // Spain
     "S.p.A", "Spa", // Italy
@@ -207,6 +207,7 @@ QString SugarAccount::cleanAccountName() const
         result.remove(", " + extension, Qt::CaseInsensitive);
         result.remove(QChar(' ') + extension + '.', Qt::CaseInsensitive);
         result.remove(QChar(' ') + extension, Qt::CaseInsensitive);
+        result.replace(QChar('&'), QStringLiteral("and"));
     }
     if (result.endsWith(']')) {
         int pos = result.lastIndexOf('[');

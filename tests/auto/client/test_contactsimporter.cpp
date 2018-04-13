@@ -46,6 +46,8 @@ private Q_SLOTS:
         QTest::newRow("AB_nospace") << "KDAB" << "KD" << false;
         QTest::newRow("sas_sa") << "KDAB S.A.S." << "KDAB S.A." << true;
         QTest::newRow("case_insensitive") << "EXAMPLE SAS" << "Example" << true;
+        QTest::newRow("And_sign") << "KDAB Research & Development" << "KDAB Research And Development" << true;
+        QTest::newRow("and_sign") << "KDAB Research & Development" << "KDAB Research and Development" << true;
         QTest::newRow("Spa") << "Foo Bar Spa" << "Foo Bar" << true;
         QTest::newRow("gmbh_and_co_kg") << "One Two GmbH & Co. KG" << "One Two" << true;
         QTest::newRow("NV") << "One Two" << "One Two N.V." << true;
