@@ -47,7 +47,7 @@ struct HandleDeletedItemsArg
 };
 
 
-class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
+class SugarCRMResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::ObserverV2
 {
     friend class ItemTransferInterface;
     friend class ModuleDebugInterface;

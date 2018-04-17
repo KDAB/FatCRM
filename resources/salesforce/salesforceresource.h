@@ -43,7 +43,7 @@ class TNS__UpsertResponse;
 
 template <typename U, typename V> class QHash;
 
-class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::Observer
+class SalesforceResource : public Akonadi::ResourceBase, public Akonadi::AgentBase::ObserverV2
 {
     friend class ModuleDebugInterface;
     friend class ResourceDebugInterface;
