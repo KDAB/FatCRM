@@ -35,7 +35,6 @@ SelectItemDialog::SelectItemDialog(DetailsType type, QWidget *parent) :
    mUi->treeView->setSortingEnabled(true);
    connect(mUi->treeView, SIGNAL(clicked(Akonadi::Item)), this, SLOT(slotItemSelected(Akonadi::Item)));
    connect(mUi->treeView, SIGNAL(activated(QModelIndex)), this, SLOT(accept()));
-   connect(mUi->clearSearchPB, SIGNAL(clicked()), mUi->searchLE, SLOT(clear()));
 
    mDataExtractor = ItemDataExtractor::createDataExtractor(type, this);
 }

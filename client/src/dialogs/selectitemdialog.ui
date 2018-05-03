@@ -24,12 +24,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="searchLE"/>
-     </item>
-     <item>
-      <widget class="QToolButton" name="clearSearchPB">
-       <property name="text">
-        <string>&amp;Clear</string>
+      <widget class="QLineEdit" name="searchLE">
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
