@@ -4,6 +4,7 @@ apidocs
 build
 *~
 *.bak
+*.kdev4
 *.orig
 *.rej
 doxygen.log
