@@ -29,6 +29,7 @@
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 
+#include <QButtonGroup>
 #include <QBoxLayout>
 #include <QCheckBox>
 #include <QGroupBox>
