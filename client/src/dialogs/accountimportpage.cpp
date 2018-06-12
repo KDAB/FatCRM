@@ -30,6 +30,7 @@
 #include <KJobUiDelegate>
 #include <KLocalizedString>
 
+#include <QButtonGroup>
 #include <QGroupBox>
 #include <QLabel>
 #include <QLineEdit>
