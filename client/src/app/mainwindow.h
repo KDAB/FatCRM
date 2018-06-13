@@ -127,6 +127,7 @@ private:
 
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
+    QTimer *mSyncWarningTimer;
     ReportPage *mReportPage;
 
     ResourceConfigDialog *mResourceDialog;

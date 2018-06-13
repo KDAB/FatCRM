@@ -186,7 +186,11 @@ void MainWindow::initialize(bool displayOverlay)
 
     mProgressBarHideTimer = new QTimer(this);
     mProgressBarHideTimer->setInterval(1000);
-    connect(mProgressBarHideTimer, SIGNAL(timeout()), mProgressBar, SLOT(hide()));
+    connect(mProgressBarHideTimer, &QTimer::timeout, mProgressBar, &QProgressBar::hide);
+
+    mSyncWarningTimer = new QTimer(this);
+    mSyncWarningTimer->setInterval(60 * 60 * 1000); // 1h
+    connect(mSyncWarningTimer, &QTimer::timeout, this, [this]() { slotShowMessage(i18n("Warning: 1 hour without synchronization. Check internet connection, then try killing akonadi_sugarcrm_resource.")); });
 
     connect(mLinkedItemsRepository, SIGNAL(notesLoaded(int)),
             this, SLOT(slotNotesLoaded(int)));
@@ -522,6 +526,10 @@ void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
         mUi.actionOfflineMode->setChecked(!online);
         mUi.actionImportContacts->setEnabled(online);
         emit onlineStatusChanged(online); // update details dialog
+        if (online)
+            mSyncWarningTimer->start();
+        else
+            mSyncWarningTimer->stop();
     }
 }
 
@@ -535,6 +543,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
         if (status == AgentInstance::Broken
                 || status == AgentInstance::NotConfigured
                 || !resource.isOnline()) {
+            mSyncWarningTimer->stop();
             mProgressBar->hide();
             if (!mUi.actionOfflineMode->isChecked()) {
                 statusBar()->showMessage(message);
@@ -552,6 +561,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             } else {
                 mProgressBarHideTimer->stop();
             }
+            mSyncWarningTimer->start();
         }
         if (!message.isEmpty()) {
             statusBar()->showMessage(message);
