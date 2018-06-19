@@ -23,7 +23,7 @@ For some of the more popular Linux distributions we provide installable packages
 
 ## Installer for Windows
 
-Get it here: https://ci.appveyor.com/project/KDAB/fatcrm
+Get it here: https://ci.appveyor.com/project/KDAB/fatcrm/build/artifacts
 
 # Compiling from Sources
 
