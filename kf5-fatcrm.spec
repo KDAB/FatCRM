@@ -12,7 +12,7 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
-BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files
+BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmake-modules
 %endif
 
 %if %{defined fedora}
@@ -31,7 +31,10 @@ contacts, etc.) and providing a desktop application to search, view, and edit th
 
 Authors:
 --------
-     David Faure <david.faure@kdab.com>
+     Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
+
+%define debug_package %{nil}
+%global __debug_install_post %{nil}
 
 %prep
 %setup -T -c
