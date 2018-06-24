@@ -1,5 +1,5 @@
 Name:           kf5-fatcrm
-Version:        1.3.2
+Version:        2.1.0
 Release:        0
 Summary:        desktop application for SugarCRM
 Source:         %{name}-%{version}.tar.gz
@@ -73,5 +73,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
+* Sun Jun 24 2018 Allen Winter <allen.winter@kdab.com> 2.1.0
+- 2.1.0 release
 * Wed Nov 09 2016 Allen Winter <allen.winter@kdab.com> 1.3.2
 - 1.3.2 pre-release
