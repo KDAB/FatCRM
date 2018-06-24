@@ -12,7 +12,7 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
-BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files #todo
+BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files
 %endif
 
 %if %{defined fedora}
