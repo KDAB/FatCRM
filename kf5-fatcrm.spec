@@ -12,7 +12,7 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
-BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmake-modules
+BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmake-modules kdbusaddons-devel akonadi-server-devel kcalcore-devel kcontacts-devel akonadi-contact-devel akonadi-calendar-devel kwallet-devel libicu-devel
 %endif
 
 %if %{defined fedora}
@@ -48,7 +48,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %make_install
 
 %if %{defined suse_version}
-%suse_update_desktop_file fatcrm Utility DesktopUtility
+%suse_update_desktop_file -c org.kde.fatcrm FatCRM "Desktop application for SugarCRM" fatcrm fatcrm Utility DesktopUtility
 %suse_update_desktop_file fatcrminvoker Utility DesktopUtility
 %endif
 
@@ -60,7 +60,13 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_sysconfdir}/xdg/fatcrm.categories
 %{_libdir}/libkdcrmdata.*
 %{_libdir}/libfatcrmprivate.*
+%if %{defined suse_version}
+%dir %{_prefix}/share/akonadi/plugins/
+%dir %{_prefix}/share/akonadi/plugins/serializer
+%{_libdir}/qt5/plugins/akonadi_serializer_*
+%else
 %{_libdir}/plugins/akonadi_serializer_*
+%endif
 %{_prefix}/share/akonadi/plugins/serializer/akonadi_serializer_*.desktop
 %{_prefix}/share/mime/packages/kdabcrm-mime.xml
 %{_prefix}/bin/fatcrm
