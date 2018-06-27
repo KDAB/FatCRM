@@ -13,7 +13,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_library(PhoneNumber_LIBRARIES
-        NAMES phonenumber geocoding
+        NAMES phonenumber
         PATH_SUFFIXES lib
         HINTS ENV PHONENUMBERDIR)
 
