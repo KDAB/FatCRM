@@ -411,11 +411,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 {
     Q_ASSERT(mLoginJob == job);
     mLoginJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
-
-    if (job->error() != 0) {
+    if (job->error() == SugarJob::LoginError) {
         QString message = job->errorText();
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
 
@@ -433,6 +429,9 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
         cancelTask(message);
         return;
     }
+    if (handleError(job, CancelTaskOnError)) {
+        return;
+    }
 
     taskDone();
     status(Idle);
@@ -444,17 +443,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
 
-    if (handleLoginError(job)) {
-        return;
-    }
-
-    if (job->error() != 0) {
-        const QString message = job->errorText();
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-        status(Broken, message);
-        error(message);
-        cancelTask(message);
+    if (handleError(job, CancelTaskOnError)) {
         return;
     }
 
@@ -536,18 +525,8 @@ void SugarCRMResource::listEntriesResult(KJob *job)
 
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
 
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job;
-    if (job->error() != 0) {
-        const QString message = job->errorText();
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-        status(Broken, message);
-        error(message);
-        cancelTask(message);
+    if (handleError(job, CancelTaskOnError)) {
         return;
     }
 
@@ -622,17 +601,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
-
-    if (job->error() != 0) {
-        const QString message = job->errorText();
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-        status(Broken, message);
-        error(message);
-        deferTask();
+    if (handleError(job, DeferTaskOnError)) {
         return;
     }
 
@@ -651,17 +620,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
-
-    if (job->error() != 0) {
-        const QString message = job->errorText();
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-        status(Broken, message);
-        error(message);
-        deferTask();
+    if (handleError(job, DeferTaskOnError)) {
         return;
     }
 
@@ -673,17 +632,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
-
-    if (job->error() != 0) {
-        const QString message = job->errorText();
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-        status(Broken, message);
-        error(message);
-        cancelTask(message);
+    if (handleError(job, CancelTaskOnError)) {
         return;
     }
 
@@ -698,24 +647,11 @@ void SugarCRMResource::updateEntryResult(KJob *job)
 {
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleLoginError(job)) {
-        return;
-    }
 
     auto *updateJob = qobject_cast<UpdateEntryJob *>(job);
     Q_ASSERT(updateJob != nullptr);
 
-    if (job->error() != 0) {
-        if (job->error() != UpdateEntryJob::ConflictError) {
-            const QString message = job->errorText();
-            qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "error=" << job->error() << ":" << message;
-
-            status(Broken, message);
-            error(message);
-            deferTask();
-            return;
-        }
-
+    if (job->error() == UpdateEntryJob::ConflictError) {
         const Item localItem = updateJob->item();
         const Item remoteItem = updateJob->conflictItem();
 
@@ -724,10 +660,15 @@ void SugarCRMResource::updateEntryResult(KJob *job)
         mConflictHandler->setParentWindowId(winIdForDialogs());
         mConflictHandler->setParentName(name());
         mConflictHandler->start();
-    } else {
-        changeCommitted(updateJob->item());
-        status(Idle);
+        return;
     }
+
+    if (handleError(job, DeferTaskOnError)) {
+        return;
+    }
+
+    changeCommitted(updateJob->item());
+    status(Idle);
 }
 
 void SugarCRMResource::commitChange(const Akonadi::Item &item)
@@ -811,46 +752,61 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 }
 
-bool SugarCRMResource::handleLoginError(KJob *job)
+// We want to defer anything that has a change of working if we try again,
+// and especially any task which makes changes on the server, so they don't get lost.
+// On the other hand, we should never defer a SyncCollection, that's unsupported (!)
+//
+// Returns true on error, false otherwise.
+bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
 {
+    auto deferOrCancel = [action, this](const QString &message){
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
+        if (action == CancelTaskOnError) {
+            status(Broken, message);
+            cancelTask(message);
+        } else {
+            error(message);
+            deferTask();
+        }
+    };
     if (job->error()) {
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error();
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "job->error()=" << job->error() << job->errorString();
     }
     switch (job->error()) {
+    case KJob::NoError:
+        return false;
     case SugarJob::LoginError:
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "LoginError! Going to Broken state";
         setOnline( false );
-        emit status( Broken, job->errorText() );
-        // if this is any other job than an explicit login, defer to next attempt
-        if (qobject_cast<LoginJob *>(job) == nullptr) {
-            deferTask();
-        } else {
-            taskDone();
-        }
-        return true;
+        deferOrCancel(job->errorText());
+        break;
     case SugarJob::CouldNotConnectError: // transient error, try again later
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
         emit status( Idle, i18n( "Server is not available." ) );
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
-        deferTask();
-        setTemporaryOffline(300); // this calls doSetOnline(false)
-        return true;
+        deferOrCancel(job->errorText());
+        if (action == DeferTaskOnError)
+            setTemporaryOffline(300); // this calls doSetOnline(false)
+        break;
     case SugarJob::SoapError: // this could be transient too, e.g. capturing portal. Or it could be real...
-        if (job->errorString() == QLatin1String("You do not have access")) // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
-            return false;
-        if (job->errorString().contains(QLatin1String("The session ID is invalid")) || job->errorString().contains(QLatin1String("Invalid Session ID"))) {
+        if (job->errorString() == QLatin1String("You do not have access")) { // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
+            // No point in trying this one again, it has to be cancelled.
+            cancelTask(job->errorString());
+        } else if (job->errorString().contains(QLatin1String("The session ID is invalid")) || job->errorString().contains(QLatin1String("Invalid Session ID"))) {
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Forgetting invalid session ID, the next attempt will login again";
             mSession->forgetSession();
-            return false;
+            deferOrCancel(job->errorText());
+        } else {
+            emit status( Idle, job->errorString() );
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
+            deferOrCancel(job->errorText());
+            if (action == DeferTaskOnError)
+                setTemporaryOffline(300); // this calls doSetOnline(false)
         }
-        emit status( Idle, job->errorString() );
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
-        deferTask();
-        setTemporaryOffline(300); // this calls doSetOnline(false)
-        return true;
+        break;
     default:
-        // no error, or another kind of error, which the caller will have to handle
-        return false;
+        deferOrCancel(job->errorText());
+        break;
     }
+    return true;
 }
 

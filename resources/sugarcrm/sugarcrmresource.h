@@ -121,7 +121,9 @@ private:
     void updateItem(const Akonadi::Item &item, ModuleHandler *handler);
     void createModuleHandlers(const QStringList &availableModules);
 
-    bool handleLoginError(KJob *job);
+    // very similar to imapresource's ActionIfNoSession
+    enum ActionOnError { CancelTaskOnError, DeferTaskOnError };
+    bool handleError(KJob *job, ActionOnError action);
 };
 
 Q_DECLARE_METATYPE(HandleDeletedItemsArg)
