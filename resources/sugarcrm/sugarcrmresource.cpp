@@ -636,7 +636,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
 
         status(Broken, message);
         error(message);
-        cancelTask(message);
+        deferTask();
         return;
     }
 
@@ -665,7 +665,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 
         status(Broken, message);
         error(message);
-        cancelTask(message);
+        deferTask();
         return;
     }
 
@@ -716,7 +716,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
 
             status(Broken, message);
             error(message);
-            cancelTask(message);
+            deferTask();
             return;
         }
 

@@ -264,7 +264,11 @@ int SugarMockProtocol::getEntry(Module moduleName, const QString &remoteId, cons
 
 int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__Name_value_list& nameValueList, QString &newId, QString &errorMessage)
 {
-    Q_UNUSED(errorMessage);
+    if (!mNextSoapError.isEmpty()) {
+        errorMessage = mNextSoapError;
+        mNextSoapError.clear();
+        return SugarJob::SoapError;
+    }
     QList<KDSoapGenerated::TNS__Name_value> list = nameValueList.items();
     const bool deleted = std::any_of(list.begin(), list.end(), [](const KDSoapGenerated::TNS__Name_value &nv){return nv.name() == "deleted" && nv.value() == "1";});
     QString id;

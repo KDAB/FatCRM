@@ -97,6 +97,7 @@ private:
         return reply.value();
     }
 
+    // Fetch from the DB
     template<typename T>
     static void fetchItems(Collection &col, QList<ItemData> &result)
     {
@@ -318,6 +319,13 @@ private:
         fetchAndCompareItems<T>(collection, std::move(expected));
     }
 
+    void setInvalidSessionNextError()
+    {
+        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
+        QDBusReply<void> reply = mock.call("setNextSoapError", "Fault code 11: Invalid Session ID");
+        QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
+    }
+
 private Q_SLOTS:
 
     void initTestCase()
@@ -407,9 +415,7 @@ private Q_SLOTS:
 
     void shouldForgetSessionWhenInvalid()
     {
-        QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
-        QDBusReply<void> reply = mock.call("setNextSoapError", "Fault code 11: Invalid Session ID");
-        QVERIFY2(reply.isValid(), reply.error().message().toLatin1());
+        setInvalidSessionNextError();
         QCOMPARE(sessionId(), QString("1"));
 
         // WHEN
@@ -479,6 +485,12 @@ private Q_SLOTS:
         updateSugarItem<SugarOpportunity>(mOpportunityItem, "updateOpportunity", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updateOpportunity", "1001"}}, "opportunityExists");
     }
 
+    void shouldCorrectlySaveWhenInvalidSession()
+    {
+        setInvalidSessionNextError();
+        updateSugarItem<SugarOpportunity>(mOpportunityItem, "updated opportunity with invalid session", mOpportunitiesCollection, {{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"updated opportunity with invalid session", "1001"}}, "opportunityExists");
+    }
+
     // Forcing a resource-fetch (from the server) for an opportunity we have in cache
     void forceRefreshShouldCallResource()
     {
@@ -499,6 +511,7 @@ private Q_SLOTS:
 #endif
         auto *modifyJob = new ItemModifyJob(item);
         AKVERIFYEXEC(modifyJob);
+        mOpportunityItem = modifyJob->item();
 
         // List opps again, we should see the new name
         QList<ItemData> expected{{"validOpp", "100"}, {"oppWithNonExistingAccount", "101"}, {"no_touch", "1001"}};
