@@ -669,10 +669,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
         return;
     }
 
-    auto *deleteJob = qobject_cast<DeleteEntryJob *>(job);
-    Q_ASSERT(deleteJob != nullptr);
-
-    changeCommitted(deleteJob->item());
+    changeProcessed();
     status(Idle);
 }
 
