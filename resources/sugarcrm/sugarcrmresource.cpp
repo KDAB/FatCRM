@@ -263,7 +263,6 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
-        error(message);
         cancelTask(message);
     }
 }
@@ -292,7 +291,6 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
         status(Broken, message);
-        error(message);
         cancelTask(message);
     }
 }
@@ -312,7 +310,6 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
 #if 0
     const QString message = "disabled for safety reasons";
     status(Broken, message);
-    error(message);
     cancelTask(message);
 #else
     SugarJob *job = new DeleteEntryJob(item, mSession, nameToModule(collection.remoteId()), this);
@@ -433,7 +430,6 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
 
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
         status(Broken, message);
-        error(message);
         cancelTask(message);
         return;
     }
