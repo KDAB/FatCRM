@@ -178,6 +178,14 @@ void MainWindow::initialize(bool displayOverlay)
     mUi.actionFullReload->setEnabled(false);
     mUi.actionOfflineMode->setEnabled(false);
 
+    // Displays status of FatCRM initial loading,
+    // and then displays status of the resource.
+    // This is permanent (rather than using showMessage) because the statustip
+    // feature, when e.g. leaving a toolbutton, clears any temporary message.
+    // If the resource shows a severe error, we want to see it for sure.
+    mStatusLabel = new QLabel(this);
+    statusBar()->addWidget(mStatusLabel);
+
     mProgressBar = new QProgressBar(this);
     mProgressBar->setRange(0, 100);
     mProgressBar->setMaximumWidth(100);
@@ -351,7 +359,7 @@ void MainWindow::slotFullReload()
 void MainWindow::slotShowMessage(const QString &message)
 {
     qCDebug(FATCRM_CLIENT_LOG) << message;
-    statusBar()->showMessage(message);
+    mStatusLabel->setText(message);
 }
 
 void MainWindow::slotModelLoaded(DetailsType type)
@@ -546,7 +554,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             mSyncWarningTimer->stop();
             mProgressBar->hide();
             if (!mUi.actionOfflineMode->isChecked()) {
-                statusBar()->showMessage(message);
+                slotShowMessage(message);
                 return;
             }
         } else if (status == AgentInstance::Idle) {
@@ -564,7 +572,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
             mSyncWarningTimer->start();
         }
         if (!message.isEmpty()) {
-            statusBar()->showMessage(message);
+            slotShowMessage(message);
         }
     }
 }

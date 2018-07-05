@@ -33,6 +33,7 @@ class ItemsTreeModel;
 class KJob;
 class QAction;
 class QComboBox;
+class QLabel;
 class QProgressBar;
 class QTimer;
 class QToolBar;
@@ -125,6 +126,7 @@ private:
     Ui_MainWindow mUi;
     QMenu *mViewMenu;
 
+    QLabel *mStatusLabel;
     QProgressBar *mProgressBar;
     QTimer *mProgressBarHideTimer;
     QTimer *mSyncWarningTimer;
