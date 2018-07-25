@@ -256,6 +256,7 @@ void MainWindow::setupActions()
                 this, SLOT(slotModelLoaded(DetailsType)));
         connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)),
                 this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
+        connect(page, &Page::syncRequired, this, &MainWindow::slotSynchronize);
         connect(page, SIGNAL(openObject(DetailsType,QString)),
                 this, SLOT(slotOpenObject(DetailsType,QString)));
     }

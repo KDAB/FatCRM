@@ -630,6 +630,7 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
 
     connect(details, SIGNAL(openObject(DetailsType,QString)),
             this, SIGNAL(openObject(DetailsType,QString)));
+    connect(details, &Details::syncRequired, this, &Page::syncRequired);
     // Don't set a parent, so that the widgets can be minimized/restored independently
     auto *widget = new SimpleItemEditWidget(details);
     widget->setOnline(mOnline);

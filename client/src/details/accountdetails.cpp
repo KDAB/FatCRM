@@ -153,7 +153,8 @@ void AccountDetails::on_viewDocumentsButton_clicked()
 {
     const QString accountId = id();
 
-    auto *dlg = new DocumentsWindow(nullptr);
+    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    connect(dlg, &DocumentsWindow::documentsCreated, this, &AccountDetails::syncRequired);
     dlg->setWindowTitle(i18n("Documents for account %1", name()));
 
     dlg->setResourceIdentifier(resourceIdentifier());

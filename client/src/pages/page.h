@@ -74,6 +74,7 @@ Q_SIGNALS:
     void modelLoaded(DetailsType type);
     void modelItemChanged(const Akonadi::Item &item);
     void synchronizeCollection(const Akonadi::Collection &collection);
+    void syncRequired();
     void openObject(DetailsType type, const QString &id);
     void onlineStatusChanged(bool online);
 

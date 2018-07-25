@@ -364,6 +364,7 @@ void DocumentsWindow::saveChanges()
 
     const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource,
                                                                   mResourceIdentifier);
+    bool docsCreated = false;
     foreach (DocumentWidget *widget, mDocumentWidgets) {
         if (widget->isModified()) {
             const SugarDocument document = widget->document();
@@ -407,6 +408,7 @@ void DocumentsWindow::saveChanges()
                     continue;
                 }
 
+                docsCreated = true;
             } else {
                 Akonadi::Item item = mLinkedItemsRepository->documentItem(document.id());
                 if (item.isValid()) {
@@ -419,6 +421,10 @@ void DocumentsWindow::saveChanges()
                 }
             }
         }
+    }
+
+    if (docsCreated) {
+        emit documentsCreated();
     }
 
     if (mPendingJobCount == 0 && errors == 0) {
