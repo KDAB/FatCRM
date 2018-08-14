@@ -63,3 +63,11 @@ void SerializerPluginSugarNote::serialize(const Item &item, const QByteArray &la
     io.writeSugarNote(sugarNote, &data);
 }
 
+QString SerializerPluginSugarNote::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarNote>()) {
+        const SugarNote sugarNote = item.payload<SugarNote>();
+        return sugarNote.id();
+    }
+    return QString();
+}

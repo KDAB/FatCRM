@@ -63,3 +63,11 @@ void SerializerPluginSugarCampaign::serialize(const Item &item, const QByteArray
     io.writeSugarCampaign(sugarCampaign, &data);
 }
 
+QString SerializerPluginSugarCampaign::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarCampaign>()) {
+        const SugarCampaign sugarCampaign = item.payload<SugarCampaign>();
+        return sugarCampaign.id();
+    }
+    return QString();
+}

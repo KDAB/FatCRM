@@ -63,3 +63,12 @@ void SerializerPluginSugarAccount::serialize(const Item &item, const QByteArray 
     io.writeSugarAccount(sugarAccount, &data);
 }
 
+QString SerializerPluginSugarAccount::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarAccount>()) {
+        const SugarAccount sugarAccount = item.payload<SugarAccount>();
+        return sugarAccount.id();
+    }
+    return QString();
+}
+

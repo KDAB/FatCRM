@@ -24,21 +24,23 @@
 #define SERIALIZERPLUGINSUGARACCOUNT_H
 
 #include <AkonadiCore/ItemSerializerPlugin>
+#include <AkonadiCore/GidExtractorInterface>
 
 #include <QObject>
 
 namespace Akonadi
 {
 
-class SerializerPluginSugarAccount : public QObject, public ItemSerializerPlugin
+class SerializerPluginSugarAccount : public QObject, public ItemSerializerPlugin, public GidExtractorInterface
 {
     Q_OBJECT
-    Q_INTERFACES(Akonadi::ItemSerializerPlugin)
+    Q_INTERFACES(Akonadi::ItemSerializerPlugin Akonadi::GidExtractorInterface)
     Q_PLUGIN_METADATA(IID "org.kde.akonadi.SerializerPluginSugarAccount")
 
 public:
     bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version) override;
     void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version) override;
+    QString extractGid(const Item &item) const override;
 };
 
 }

@@ -63,3 +63,12 @@ void SerializerPluginSugarEmail::serialize(const Item &item, const QByteArray &l
     io.writeSugarEmail(sugarEmail, &data);
 }
 
+QString SerializerPluginSugarEmail::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarEmail>()) {
+        const SugarEmail sugarEmail = item.payload<SugarEmail>();
+        return sugarEmail.id();
+    }
+    return QString();
+}
+

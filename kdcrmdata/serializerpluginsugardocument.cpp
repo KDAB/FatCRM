@@ -61,5 +61,14 @@ void SerializerPluginSugarDocument::serialize(const Item &item, const QByteArray
     io.writeSugarDocument(sugarDocument, &data);
 }
 
+QString SerializerPluginSugarDocument::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarDocument>()) {
+        const SugarDocument sugarDocument = item.payload<SugarDocument>();
+        return sugarDocument.id();
+    }
+    return QString();
+}
+
 //Q_EXPORT_PLUGIN2(akonadi_serializer_sugardocument, Akonadi::SerializerPluginSugarDocument)
 

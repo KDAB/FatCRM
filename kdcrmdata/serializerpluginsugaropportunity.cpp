@@ -63,3 +63,11 @@ void SerializerPluginSugarOpportunity::serialize(const Item &item, const QByteAr
     io.writeSugarOpportunity(sugarOpportunity, &data);
 }
 
+QString SerializerPluginSugarOpportunity::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarOpportunity>()) {
+        const SugarOpportunity sugarOpportunity = item.payload<SugarOpportunity>();
+        return sugarOpportunity.id();
+    }
+    return QString();
+}

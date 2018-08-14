@@ -24,13 +24,14 @@
 #define SERIALIZERPLUGINSUGARNOTE_H
 
 #include <AkonadiCore/ItemSerializerPlugin>
+#include <AkonadiCore/GidExtractorInterface>
 
 #include <QObject>
 
 namespace Akonadi
 {
 
-class SerializerPluginSugarNote : public QObject, public ItemSerializerPlugin
+class SerializerPluginSugarNote : public QObject, public ItemSerializerPlugin, public GidExtractorInterface
 {
     Q_OBJECT
     Q_INTERFACES(Akonadi::ItemSerializerPlugin)
@@ -38,6 +39,7 @@ class SerializerPluginSugarNote : public QObject, public ItemSerializerPlugin
 public:
     bool deserialize(Item &item, const QByteArray &label, QIODevice &data, int version) override;
     void serialize(const Item &item, const QByteArray &label, QIODevice &data, int &version) override;
+    QString extractGid(const Item &item) const override;
 };
 
 }

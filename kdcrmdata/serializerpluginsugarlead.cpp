@@ -63,3 +63,12 @@ void SerializerPluginSugarLead::serialize(const Item &item, const QByteArray &la
     io.writeSugarLead(sugarLead, &data);
 }
 
+QString SerializerPluginSugarLead::extractGid(const Item &item) const
+{
+    if (item.hasPayload<SugarLead>()) {
+        const SugarLead sugarLead = item.payload<SugarLead>();
+        return sugarLead.id();
+    }
+    return QString();
+}
+
