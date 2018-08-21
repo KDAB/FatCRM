@@ -292,6 +292,7 @@ void SimpleItemEditWidget::updateItem(const Akonadi::Item &item)
             // Here we could pop up the conflict dialog, but it's private and meant for resources
             // Alternatively we could merge in the fields that haven't been locally modified, if we had that info.
             qWarning() << "Ignoring remote change on" << typeToString(d->mDetails->type()) << item.id() << "while modifying it";
+            d->mItem.setRevision(item.revision());
         } else {
             setItem(item);
         }
