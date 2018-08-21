@@ -269,6 +269,11 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
 
 void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteArray> &parts)
 {
+    //if (item.hasPayload<SugarOpportunity>()) {
+    //    SugarOpportunity opp = item.payload<SugarOpportunity>();
+    //    qDebug() << opp.id() << opp.name() << parts;
+    //}
+
     // find the handler for the module represented by the given collection and let it
     // perform the respective "set entry" operation
     const Collection collection = item.parentCollection();
@@ -613,6 +618,9 @@ void SugarCRMResource::createEntryResult(KJob *job)
 
     // commit does not update payload, so we modify as well
     ItemModifyJob *modifyJob = new ItemModifyJob(createJob->item(), this);
+    // this job will fail if the user has other changes pending
+    // (e.g. because he created+modified the item while the resource was offline)
+    // For that reason we also do this in updateEntryResult.
     modifyJob->disableRevisionCheck();
 }
 
@@ -667,8 +675,12 @@ void SugarCRMResource::updateEntryResult(KJob *job)
         return;
     }
 
-    changeCommitted(updateJob->item());
+    changeCommitted(updateJob->item()); // this clears the dirty flag of the item in the DB
     status(Idle);
+
+    // Save the date_modified change (see also the comment in createEntryResult)
+    ItemModifyJob *modifyJob = new ItemModifyJob(updateJob->item(), this);
+    modifyJob->disableRevisionCheck();
 }
 
 void SugarCRMResource::commitChange(const Akonadi::Item &item)

@@ -214,7 +214,6 @@ private:
         QSignalSpy spyChanged(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
 
         QVERIFY(spyAdded.wait());
-        QVERIFY(spyChanged.wait());
 
 //        for (int i = 0; i < spyAdded.count(); i++) {
 //            const QList<QVariant> arguments = spyAdded.at(i);
@@ -234,6 +233,8 @@ private:
         const QList<QVariant> arguments = spyAdded.at(0);
         compareToExpectedResult<T>(arguments, name, id);
 
+        // The resource changes the item again, to set ID, modification time etc.
+        QVERIFY(spyChanged.wait());
         QTRY_COMPARE(spyChanged.count(), 2);
 
         const QList<QVariant> argumentsUpdate = spyChanged.at(spyChanged.count()-1);
@@ -241,7 +242,8 @@ private:
 
         fetchAndCompareItems<T>(collection, std::move(expected));
 
-        createdItem = spyChanged.at(0).at(0).value<Item>();
+        createdItem = spyChanged.at(spyChanged.count()-1).at(0).value<Item>();
+        QVERIFY(createdItem.hasPayload<T>());
         QVERIFY(createdItem.id() != 0);
 
         QDBusInterface mock(serviceName(), s_dbusObjectName, s_dbusInterfaceName);
@@ -271,6 +273,7 @@ private:
         Q_ASSERT(!id.isEmpty());
         sugarItem.setName(name);
         item.setPayload(sugarItem);
+        const int oldRevision = item.revision();
         QCOMPARE(item.mimeType(), T::mimeType());
         auto *job = new ItemModifyJob(item);
         //WHEN
@@ -278,8 +281,17 @@ private:
         //THEN
         Monitor monitor;
         monitorInit(monitor, collection);
+
+        // We should receive two itemChanged notifications.
+        // 1) from the modification made by us just above
+        // 2) when the resource updates date_modified (see end of SugarCRMResource::updateEntryResult)
         QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
         QVERIFY(spy.wait());
+        auto firstItem = spy.at(0).at(0).value<Akonadi::Item>();
+        QCOMPARE(firstItem.revision(), oldRevision + 1);
+        QCOMPARE(spy.at(0).at(1).value<QSet<QByteArray>>(), QSet<QByteArray>{QByteArray("PLD:RFC822")});
+        QVERIFY(spy.wait());
+        QCOMPARE(spy.count(), 2);
 #if 0
         QTest::qWait(2000);
         for (int i = 0; i < spy.count(); i++) {
@@ -290,9 +302,9 @@ private:
         }
 #endif
 
-        const QList<QVariant> arguments = spy.at(0);
+        const QList<QVariant> arguments = spy.at(1);
         compareToExpectedResult<T>(arguments, name, id);
-        item = spy.at(0).at(0).value<Akonadi::Item>(); // update revision, to avoid a conflict
+        item = spy.at(1).at(0).value<Akonadi::Item>(); // update revision, to avoid a conflict
 
         fetchAndCompareItems<T>(collection, std::move(expected));
 
@@ -306,15 +318,17 @@ private:
     void deleteSugarItem(const Item &item, Collection &collection, QList<ItemData> &&expected)
     {
         //GIVEN
-        auto *job = new ItemDeleteJob(item);
-        //WHEN
-        AKVERIFYEXEC(job);
-        //THEN
         Monitor monitor;
         monitor.setCollectionMonitored(collection);
         configureItemFetchScope(monitor.itemFetchScope());
         QSignalSpy spyRemoved(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
-        QVERIFY(spyRemoved.wait());
+        auto *job = new ItemDeleteJob(item);
+        //WHEN
+        AKVERIFYEXEC(job);
+        //THEN
+        if (spyRemoved.isEmpty()) {
+            QVERIFY(spyRemoved.wait());
+        }
 
         fetchAndCompareItems<T>(collection, std::move(expected));
     }

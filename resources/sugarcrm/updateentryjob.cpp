@@ -25,6 +25,7 @@
 #include "modulehandler.h"
 #include "sugarsoap.h"
 #include "sugaraccount.h"
+#include "sugaropportunity.h"
 
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
@@ -113,6 +114,10 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
         mStage = UpdateEntry;
 
         QString id, errorMessage;
+        //if (mItem.hasPayload<SugarOpportunity>()) {
+        //    SugarOpportunity opp = mItem.payload<SugarOpportunity>();
+        //    qDebug() << opp.id() << opp.name();
+        //}
         int result = mHandler->setEntry(mItem, id, errorMessage);
         if (result == KJob::NoError) {
             setEntryDone(remoteItem.remoteId());
