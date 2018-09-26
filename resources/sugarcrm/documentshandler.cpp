@@ -158,7 +158,7 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         // Get the Account(s) related to this document
         // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_relationships/
         // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Examples/REST/PHP/Retrieving_Related_Records/
-        KDSoapGenerated::TNS__Get_entry_result_version2 result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Accounts).toLower(), {}, selectedFields,
+        KDSoapGenerated::TNS__Get_entry_result_version2 result = mSession->soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Accounts).toLower(), {}, selectedFields,
                                                                    {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
 
         QStringList linkedAccountIds;
@@ -172,7 +172,7 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         }
 
         QStringList linkedOpportunityIds;
-        result = soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Opportunities).toLower(), {}, selectedFields,
+        result = mSession->soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Opportunities).toLower(), {}, selectedFields,
                                            {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
 
         Q_FOREACH (const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {

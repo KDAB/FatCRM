@@ -114,7 +114,7 @@ void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
     KDSoapGenerated::TNS__Link_names_to_fields_array link_name_to_fields_array;
     // Blocking call
     const auto result =
-            soap()->get_entry_list(sessionId(), QStringLiteral("EmailText"), query, QString() /*orderBy*/,
+            mSession->soap()->get_entry_list(sessionId(), QStringLiteral("EmailText"), query, QString() /*orderBy*/,
                                    0 /*offset*/, selectedFields, link_name_to_fields_array,
                                    items.count() /*maxResults*/, 0 /*fetchDeleted*/, false /*favorites*/);
 

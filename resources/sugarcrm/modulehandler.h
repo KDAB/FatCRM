@@ -38,7 +38,6 @@ class ListEntriesScope;
 
 namespace KDSoapGenerated
 {
-class Sugarsoap;
 class TNS__Entry_list;
 class TNS__Entry_value;
 class TNS__Field_list;
@@ -124,7 +123,6 @@ protected:
     QStringList sugarFieldsFromCrmFields(const QStringList &crmFieldNames) const;
 
     QString sessionId() const;
-    KDSoapGenerated::Sugarsoap *soap() const;
 
 private Q_SLOTS:
     void slotCollectionModifyResult(KJob *);

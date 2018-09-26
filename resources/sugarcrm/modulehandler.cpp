@@ -25,7 +25,6 @@
 #include "sugarcrmresource_debug.h"
 
 #include "sugarsession.h"
-#include "sugarsoap.h"
 #include "listentriesscope.h"
 #include "listentriesjob.h"
 using namespace KDSoapGenerated;
@@ -468,11 +467,6 @@ const QMap<QString, QString>& ModuleHandler::fieldNamesMapping()
 QString ModuleHandler::sessionId() const
 {
     return mSession->sessionId();
-}
-
-KDSoapGenerated::Sugarsoap *ModuleHandler::soap() const
-{
-    return mSession->soap();
 }
 
 void ModuleHandler::slotCollectionModifyResult(KJob *job)
