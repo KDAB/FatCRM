@@ -64,9 +64,7 @@ public:
     void modifyCollection(const Akonadi::Collection &collection);
 
     int getEntriesCount(const ListEntriesScope &scope, int &entriesCount, QString &errorMessage);
-    void listEntries(const ListEntriesScope &scope); //Depreciated
     int listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage);
-
 
     QStringList availableFields() const;
     static KDSoapGenerated::TNS__Field_list listAvailableFields(SugarSession *session, const QString &module);

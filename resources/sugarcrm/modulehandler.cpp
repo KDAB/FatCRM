@@ -103,20 +103,6 @@ int ModuleHandler::getEntriesCount(const ListEntriesScope &scope, int &entriesCo
     return mSession->protocol()->getEntriesCount(scope, module(), query, entriesCount, errorMessage);
 }
 
-void ModuleHandler::listEntries(const ListEntriesScope &scope)
-{
-    const QString query = scope.query(queryStringForListing(), mModule);
-    const QString orderBy = orderByForListing();
-    const int offset = scope.offset();
-    const int maxResults = 100;
-    const int fetchDeleted = scope.includeDeleted();
-
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems(supportedSugarFields());
-
-    soap()->asyncGet_entry_list(sessionId(), moduleToName(module()), query, orderBy, offset, selectedFields, {}, maxResults, fetchDeleted, false);
-}
-
 int ModuleHandler::listEntries(const ListEntriesScope &scope, EntriesListResult &entriesListResult, QString &errorMessage)
 {
     const QString query = scope.query(queryStringForListing(), mModule);
