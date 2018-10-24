@@ -291,8 +291,14 @@ void SimpleItemEditWidget::updateItem(const Akonadi::Item &item)
             // Don't lose the user's changes (FATCRM-75)
             // Here we could pop up the conflict dialog, but it's private and meant for resources
             // Alternatively we could merge in the fields that haven't been locally modified, if we had that info.
-            qWarning() << "Ignoring remote change on" << typeToString(d->mDetails->type()) << item.id() << "while modifying it";
+            qWarning() << "Ignoring remote change on" << typeToString(d->mDetails->type()) << item.id() << d->mDetails->property("id") << "while modifying it";
+            qDebug() << "Old item" << d->mItem.remoteId() << d->mItem.remoteRevision();
+            qDebug() << "New item" << item.remoteId() << item.remoteRevision();
             d->mItem.setRevision(item.revision());
+            // ## aren't we going to overwrite all of the remote changes? Urgh....
+
+            d->mUi.labelOffline->setText(i18n("Warning: item was modified by someone else on the server. Better cancel and edit this item again."));
+            d->mUi.labelOffline->show();
         } else {
             setItem(item);
         }
