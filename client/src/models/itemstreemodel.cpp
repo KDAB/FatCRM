@@ -171,9 +171,8 @@ QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
 
 void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields)
 {
-    Q_UNUSED(accountId);
     if (mType == Opportunity) {
-        // We could iterate over all opps to find those which use that account.... but maybe this is just faster:
+        // Find which opps use that account
         const int rows = rowCount();
         if (rows == 0)
             return;
@@ -188,8 +187,14 @@ void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector
             return;
         const int firstColumn = *std::min_element(columns.constBegin(), columns.constEnd());
         const int lastColumn = *std::max_element(columns.constBegin(), columns.constEnd());
-        qDebug() << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
-        emit dataChanged(index(0, firstColumn), index(rows - 1, lastColumn));
+        for (int i = 0; i < rows; ++i) {
+            const QModelIndex idx = index(i, 0);
+            const Akonadi::Item item = data(idx, EntityTreeModel::ItemRole).value<Item>();
+            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            if (opportunity.accountId() == accountId) {
+                emit dataChanged(idx.sibling(i, firstColumn), idx.sibling(i, lastColumn), {Qt::DisplayRole});
+            }
+        }
     }
 }
 
