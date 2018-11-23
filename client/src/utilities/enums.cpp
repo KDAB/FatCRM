@@ -22,6 +22,7 @@
 
 #include "enums.h"
 #include <KLocalizedString>
+#include <QDebug>
 
 QString typeToString(DetailsType type)
 {
@@ -55,4 +56,31 @@ QString typeToTranslatedString(DetailsType type)
     } else {
         return QString();
     }
+}
+
+static const char* s_maxNextStepDateStrings[] = {
+    "NoDate",
+    "OneMonthAgo",
+    "Today",
+    "EndOfThisWeek",
+    "EndOfThisMonth",
+    "EndOfThisYear",
+    "CustomDate"
+};
+
+QString maxNextStepDateToString(MaxNextStepDate date)
+{
+    return QString::fromLatin1(s_maxNextStepDateStrings[date]);
+}
+
+MaxNextStepDate maxNextStepDateFromString(const QString &str)
+{
+    static int s_count = sizeof(s_maxNextStepDateStrings) / sizeof(*s_maxNextStepDateStrings);
+    for (int i = 0; i < s_count; ++i) {
+        if (str == s_maxNextStepDateStrings[i]) {
+            return MaxNextStepDate(i);
+        }
+    }
+    qWarning() << "Unknown value for MaxNextStepDate enum:" << str;
+    return NoDate;
 }

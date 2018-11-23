@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>819</width>
-    <height>107</height>
+    <height>126</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,6 +22,11 @@
      <item>
       <property name="text">
        <string>-</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>One month ago</string>
       </property>
      </item>
      <item>
@@ -60,7 +65,7 @@
    </item>
    <item row="2" column="5">
     <widget class="NullableDateComboBox" name="modifiedAfter">
-     <property name="calendarPopup">
+     <property name="calendarPopup" stdset="0">
       <bool>true</bool>
      </property>
     </widget>
@@ -127,7 +132,7 @@
    </item>
    <item row="2" column="8">
     <widget class="NullableDateComboBox" name="modifiedBefore">
-     <property name="calendarPopup">
+     <property name="calendarPopup" stdset="0">
       <bool>true</bool>
      </property>
     </widget>

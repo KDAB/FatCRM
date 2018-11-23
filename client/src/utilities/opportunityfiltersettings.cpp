@@ -47,7 +47,7 @@ void OpportunityFilterSettings::setCountries(const QStringList &countries, const
 void OpportunityFilterSettings::setMaxDate(const QDate &maxDate, int comboIndex)
 {
     mMaxDate = maxDate;
-    mMaxDateIndex = comboIndex;
+    mMaxDateIndex = MaxNextStepDate(comboIndex);
 }
 
 void OpportunityFilterSettings::setCustomMaxDate(const QDate &customMaxDate)
@@ -135,7 +135,7 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/countries", mCountries);
     settings.setValue(prefix + "/countryGroup", mCountryGroup);
     settings.setValue(prefix + "/customMaxDate", mCustomMaxDate);
-    settings.setValue(prefix + "/maxDateIndex", mMaxDateIndex);
+    settings.setValue(prefix + "/maxDateIndex", maxNextStepDateToString(mMaxDateIndex));
     settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
     settings.setValue(prefix + "/showOpen", mShowOpen);
@@ -147,6 +147,26 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/searchText", mSearchText);
 }
 
+static MaxNextStepDate loadOldMaxNextDate(int oldIndex)
+{
+    // OneMonthAgo didn't exist back then
+    switch (oldIndex) {
+    case 0:
+        return NoDate;
+    case 1:
+        return Today;
+    case 2:
+        return EndOfThisWeek;
+    case 3:
+        return EndOfThisMonth;
+    case 4:
+        return EndOfThisYear;
+    case 5:
+        return CustomDate;
+    };
+    return NoDate;
+}
+
 void OpportunityFilterSettings::load(const QSettings &settings, const QString &prefix)
 {
     mAssignees = settings.value(prefix + "/assignees").toStringList();
@@ -154,7 +174,14 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     mCountries = settings.value(prefix + "/countries").toStringList();
     mCountryGroup = settings.value(prefix + "/countryGroup").toString();
     mCustomMaxDate = settings.value(prefix + "/customMaxDate").toDate();
-    mMaxDateIndex = settings.value(prefix + "/maxDateIndex").toInt();
+    const QString maxDateStr = settings.value(prefix + "/maxDateIndex").toString();
+    bool oldFormat;
+    const int oldIndex = maxDateStr.toInt(&oldFormat);
+    if (oldFormat) {
+        mMaxDateIndex = loadOldMaxNextDate(oldIndex);
+    } else {
+        mMaxDateIndex = maxNextStepDateFromString(maxDateStr);
+    }
     mModifiedBefore = settings.value(prefix + "/modifiedBefore").toDate();
     mModifiedAfter = settings.value(prefix + "/modifiedAfter").toDate();
     QVariant val = settings.value(prefix + "/showOpen");

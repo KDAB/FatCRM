@@ -25,10 +25,11 @@
 
 #include <QStringList>
 #include <QDate>
+#include "enums.h"
 class QSettings;
 
 /**
- * Filter oportunities by assignees OR by country.
+ * Filter opportunities by assignees OR by country.
  * And with a possible max date.
  * And either open, or closed, or both.
  * And a possible range of "modified date".
@@ -82,7 +83,7 @@ private:
     QDate mMaxDate;
     QDate mCustomMaxDate;
     QDate mModifiedBefore, mModifiedAfter;
-    int mMaxDateIndex = 0;
+    MaxNextStepDate mMaxDateIndex = NoDate;
     bool mShowOpen = true;
     bool mShowClosed = false;
     QString mSearchName;

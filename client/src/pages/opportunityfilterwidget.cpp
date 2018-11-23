@@ -32,15 +32,6 @@
 #include <QCalendarWidget>
 #include <QDate>
 
-enum MaxNextStepDate {
-    NoDate,
-    Today,
-    EndOfThisWeek,
-    EndOfThisMonth,
-    EndOfThisYear,
-    CustomDate
-};
-
 OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *oppFilterProxyModel,
                                                  QWidget *parent) :
     QWidget(parent),
@@ -126,6 +117,9 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
     switch (ui->cbMaxNextStepDate->currentIndex()) {
     case NoDate: // Any
         date = QDate();
+        break;
+    case OneMonthAgo:
+        date = date.addDays(-31);
         break;
     case Today:
         break;

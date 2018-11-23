@@ -45,6 +45,19 @@ enum ReferencedDataType {
     ContactRef        // contact id       => full name   (used for "reports to" combo)
 };
 
+enum MaxNextStepDate {
+    NoDate,
+    OneMonthAgo,
+    Today,
+    EndOfThisWeek,
+    EndOfThisMonth,
+    EndOfThisYear,
+    CustomDate
+};
+
+QString maxNextStepDateToString(MaxNextStepDate date);
+MaxNextStepDate maxNextStepDateFromString(const QString &str);
+
 Q_DECLARE_METATYPE(DetailsType);
 #endif /* ENUMS_H */
 
