@@ -98,8 +98,9 @@ public:
     void incrementSearchIndex();
     int searchIndex() const;
     void removeSearch(const QString &searchName);
-    QList<QVariant> recentlyUsedSearches() const;
-    void setRecentlyUsedSearches(const QList<QVariant> &useOrder);
+    QStringList recentlyUsedSearches() const;
+    void setRecentlyUsedSearches(const QStringList &useOrder);
+    void addRecentlyUsedSearch(const QString &searchName);
     QString searchText(const QString &searchName) const;
 
     ClientSettings();

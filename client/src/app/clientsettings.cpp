@@ -247,6 +247,8 @@ void ClientSettings::saveSearch(const OpportunityFilterSettings &settings, QStri
         prefix = "savedSearch-" + QString::number(searchIndex());
     }
     settings.save(*m_settings, prefix);
+
+    ClientSettings::self()->addRecentlyUsedSearch(settings.searchName());
 }
 
 void ClientSettings::loadSavedSearch(OpportunityFilterSettings &settings, const QString &prefix)
@@ -283,20 +285,35 @@ void ClientSettings::removeSearch(const QString &searchName)
 {
     m_settings->remove(searchPrefixFromName(searchName));
 
-    QList<QVariant> recentlyUsedSearches = this->recentlyUsedSearches();
-    auto it = std::find_if(recentlyUsedSearches.begin(),
-                 recentlyUsedSearches.end(),
-                 [searchName](const QVariant &search){ return search.toString() == searchName; });
+    QStringList recentlyUsedSearches = this->recentlyUsedSearches();
+    auto it = std::find(recentlyUsedSearches.begin(),
+                        recentlyUsedSearches.end(),
+                        searchName);
     if (it != recentlyUsedSearches.end()) {
         recentlyUsedSearches.erase(it);
     }
     setRecentlyUsedSearches(recentlyUsedSearches);
 }
 
-void ClientSettings::setRecentlyUsedSearches(const QList<QVariant> &useOrder)
+void ClientSettings::setRecentlyUsedSearches(const QStringList &useOrder)
 {
     m_settings->setValue("savedSearches/useOrder", useOrder);
     emit recentSearchesUpdated();
+}
+
+void ClientSettings::addRecentlyUsedSearch(const QString &searchName)
+{
+    QStringList recentlyUsedSearches = this->recentlyUsedSearches();
+    auto it = std::find(recentlyUsedSearches.begin(),
+                        recentlyUsedSearches.end(),
+                        searchName);
+    // Remove if it exists
+    if (it != recentlyUsedSearches.end()) {
+        recentlyUsedSearches.erase(it);
+    }
+    // And then prepend
+    recentlyUsedSearches.prepend(searchName);
+    setRecentlyUsedSearches(recentlyUsedSearches);
 }
 
 QString ClientSettings::searchText(const QString &searchName) const
@@ -305,7 +322,7 @@ QString ClientSettings::searchText(const QString &searchName) const
     return m_settings->value(prefix + "/searchText").toString();
 }
 
-QList<QVariant> ClientSettings::recentlyUsedSearches() const
+QStringList ClientSettings::recentlyUsedSearches() const
 {
-    return m_settings->value("savedSearches/useOrder").toList();
+    return m_settings->value("savedSearches/useOrder").toStringList();
 }

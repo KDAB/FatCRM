@@ -72,16 +72,15 @@ void SearchesDialog::on_editSearch_clicked()
     mDialog = new AddSearchDialog(this, true, mSelectedItemName, ClientSettings::self()->searchText(mSelectedItemName));
     mDialog->setWindowTitle(i18n("Edit ") + QString("\"%1\"").arg(mSelectedItemName));
 
-    QList<QVariant> recentlyUsedSearches = ClientSettings::self()->recentlyUsedSearches();
-    auto it = std::find_if(recentlyUsedSearches.begin(),
-                           recentlyUsedSearches.end(),
-                           [this](const QVariant &search){ return search.toString() == mSelectedItemName; });
+    QStringList recentlyUsedSearches = ClientSettings::self()->recentlyUsedSearches();
+    auto it = std::find(recentlyUsedSearches.begin(),
+                        recentlyUsedSearches.end(),
+                        mSelectedItemName);
 
     openAddSearchDialog();
 
     if (it != recentlyUsedSearches.end()) {
-        recentlyUsedSearches.replace(std::distance(recentlyUsedSearches.begin(), it),
-                         ClientSettings::self()->searchNameFromPrefix(selectedPrefix));
+        *it = ClientSettings::self()->searchNameFromPrefix(selectedPrefix);
 
         ClientSettings::self()->setRecentlyUsedSearches(recentlyUsedSearches);
     }

@@ -694,7 +694,8 @@ void MainWindow::slotOpenSearchesDialog()
         return;
     }
 
-    loadSavedSearches(dlg.selectedItemName());
+    loadSavedSearch(dlg.selectedItemName());
+    ClientSettings::self()->addRecentlyUsedSearch(dlg.selectedItemName());
 }
 
 Page *MainWindow::currentPage() const
@@ -790,7 +791,7 @@ void MainWindow::slotHideOverlay()
     mLoadingOverlay->hide();
 }
 
-void MainWindow::loadSavedSearches(const QString &selectedItemName)
+void MainWindow::loadSavedSearch(const QString &selectedItemName)
 {
     // Make sure user is on the Opportunities Page
     mUi.tabWidget->setCurrentIndex(1);
@@ -802,25 +803,16 @@ void MainWindow::loadSavedSearches(const QString &selectedItemName)
     currentPage()->setSearchText(searchText);
 
     mLoadedSearchName = selectedItemName;
-
-    QList<QVariant> recentlyUsedSearches = ClientSettings::self()->recentlyUsedSearches();
-    auto it = std::find_if(recentlyUsedSearches.begin(),
-                           recentlyUsedSearches.end(),
-                           [selectedItemName](const QVariant &search){ return search.toString() == selectedItemName; });
-    if (it == recentlyUsedSearches.end()) {
-        recentlyUsedSearches.prepend(selectedItemName);
-    }
-    ClientSettings::self()->setRecentlyUsedSearches(recentlyUsedSearches);
 }
 
 void MainWindow::populateSavedSearchesMenu()
 {
-    QList<QVariant> recentSearches = ClientSettings::self()->recentlyUsedSearches();
-    int count = qMin(recentSearches.count(), 5);
+    const QStringList recentSearches = ClientSettings::self()->recentlyUsedSearches();
+    const int count = qMin(recentSearches.count(), 5);
 
     mSavedSearchesMenu->clear();
     for (int x = 0; x < count; ++x) {
-        const QString searchName = recentSearches.at(x).toString();
+        const QString searchName = recentSearches.at(x);
         QAction *searchAlternative = new QAction(searchName, this);
         mSavedSearchesMenu->addAction(searchAlternative);
     }
@@ -847,14 +839,14 @@ void MainWindow::populateSavedSearchesMenu()
 
 void MainWindow::slotLoadSearchFromRecent(QAction *searchAction)
 {
-    const QList<QVariant> recentSearches = ClientSettings::self()->recentlyUsedSearches();
+    const QStringList recentSearches = ClientSettings::self()->recentlyUsedSearches();
     const QString selectedSearchName = searchAction->iconText();
-    auto it = std::find_if(recentSearches.begin(),
-                      recentSearches.end(),
-                      [selectedSearchName](const QVariant &recentSearchesName){ return recentSearchesName.toString() == selectedSearchName; });
+    auto it = std::find(recentSearches.begin(),
+                        recentSearches.end(),
+                        selectedSearchName);
 
     if (it != recentSearches.end()) {
-        loadSavedSearches(selectedSearchName);
+        loadSavedSearch(selectedSearchName);
     }
 }
 

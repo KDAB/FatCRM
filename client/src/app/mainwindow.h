@@ -124,7 +124,7 @@ private:
     void showResourceDialog();
     int resourceIndexFor(const QString &id) const;
     void raiseMainWindowAndDialog(QWidget *dialog);
-    void loadSavedSearches(const QString &selectedItemName);
+    void loadSavedSearch(const QString &selectedItemName);
 
     QList<Page *> mPages;
 
