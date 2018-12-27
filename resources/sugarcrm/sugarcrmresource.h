@@ -120,6 +120,7 @@ private Q_SLOTS:
 private:
     void updateItem(const Akonadi::Item &item, ModuleHandler *handler);
     void createModuleHandlers(const QStringList &availableModules);
+    bool hasInvalidSessionError(KJob *job);
 
     // very similar to imapresource's ActionIfNoSession
     enum ActionOnError { CancelTaskOnError, DeferTaskOnError };

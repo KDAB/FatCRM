@@ -434,6 +434,11 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
         cancelTask(message);
         return;
     }
+    if (hasInvalidSessionError(job)) {
+        qDebug() << "Retrying explicit login";
+        startExplicitLogin();
+        return;
+    }
     if (handleError(job, CancelTaskOnError)) {
         return;
     }
@@ -448,6 +453,11 @@ void SugarCRMResource::listModulesResult(KJob *job)
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
 
+    if (hasInvalidSessionError(job)) {
+        qDebug() << "Retrying listing modules";
+        retrieveCollections();
+        return;
+    }
     if (handleError(job, CancelTaskOnError)) {
         return;
     }
@@ -531,6 +541,11 @@ void SugarCRMResource::listEntriesResult(KJob *job)
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
 
+    if (hasInvalidSessionError(job)) {
+        qDebug() << "Retrying to list the collection";
+        retrieveItems(listEntriesJob->collection());
+        return;
+    }
     if (handleError(job, CancelTaskOnError)) {
         return;
     }
@@ -638,14 +653,21 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 
 void SugarCRMResource::fetchEntryResult(KJob *job)
 {
+    auto *fetchJob = qobject_cast<FetchEntryJob *>(job);
+    Q_ASSERT(fetchJob != nullptr);
+
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
-    if (handleError(job, CancelTaskOnError)) {
+
+    if (hasInvalidSessionError(job)) {
+        qDebug() << "Retrying to list the collection";
+        retrieveItem(fetchJob->item(), {});
         return;
     }
 
-    auto *fetchJob = qobject_cast<FetchEntryJob *>(job);
-    Q_ASSERT(fetchJob != nullptr);
+    if (handleError(job, CancelTaskOnError)) {
+        return;
+    }
 
     itemRetrieved(fetchJob->item());
     status(Idle);
@@ -764,6 +786,16 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 
 }
 
+bool SugarCRMResource::hasInvalidSessionError(KJob *job)
+{
+    if (job->error() == SugarJob::SoapError &&
+            (job->errorString().contains(QLatin1String("The session ID is invalid")) || job->errorString().contains(QLatin1String("Invalid Session ID")))) {
+        mSession->forgetSession();
+        return true;
+    }
+    return false;
+}
+
 // We want to defer anything that has a change of working if we try again,
 // and especially any task which makes changes on the server, so they don't get lost.
 // On the other hand, we should never defer a SyncCollection, that's unsupported (!)
@@ -772,7 +804,7 @@ void SugarCRMResource::createModuleHandlers(const QStringList &availableModules)
 bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
 {
     auto deferOrCancel = [action, this](const QString &message){
-        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message << "=> we have to" << (action == CancelTaskOnError ? "cancel" : "defer");
         if (action == CancelTaskOnError) {
             status(Broken, message);
             cancelTask(message);
@@ -803,9 +835,8 @@ bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
         if (job->errorString() == QLatin1String("You do not have access")) { // that's when the object we're modifying has been deleted on the server meanwhile. Real error, let's move on.
             // No point in trying this one again, it has to be cancelled.
             cancelTask(job->errorString());
-        } else if (job->errorString().contains(QLatin1String("The session ID is invalid")) || job->errorString().contains(QLatin1String("Invalid Session ID"))) {
+        } else if (hasInvalidSessionError(job)) {
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Forgetting invalid session ID, the next attempt will login again";
-            mSession->forgetSession();
             deferOrCancel(job->errorText());
         } else {
             emit status( Idle, job->errorString() );

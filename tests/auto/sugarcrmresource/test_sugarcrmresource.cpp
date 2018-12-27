@@ -436,8 +436,6 @@ private Q_SLOTS:
         AgentManager::self()->synchronizeCollection(mAccountsCollection); // should fail
 
         // THEN the session id should be forgotten
-        QTRY_COMPARE(sessionId(), QString());
-
         // ... and the next attempt should succeed
         QList<QVariant> arguments;
         externalOperation(mAccountsCollection, "addAccount", "nameTestSession", "idTestSession", SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)), arguments);
