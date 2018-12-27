@@ -342,6 +342,7 @@ void MainWindow::slotSynchronize()
     if (currentAgent.isValid()) {
         if (!currentAgent.isOnline())
             currentAgent.setIsOnline(true);
+        slotResourceProgress(currentAgent); // show initial status, very important if it's e.g. Broken
         currentAgent.synchronize();
     }
 }
