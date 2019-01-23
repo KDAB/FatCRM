@@ -82,6 +82,7 @@ SugarCRMResource::SugarCRMResource(const QString &id)
       mConflictHandler(new ConflictHandler(ConflictHandler::BackendConflict, this)),
       mOnline(false)
 {
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     new SettingsAdaptor(Settings::self());
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),
             Settings::self(),
