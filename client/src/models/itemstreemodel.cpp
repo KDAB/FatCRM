@@ -487,7 +487,7 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return priority.isEmpty() ? QString::fromLatin1("Z") : priority; // for better ordering: A, B, C, <none>
         }
         case Description:
-            return opportunity.limitedDescription(2);
+            return opportunity.limitedDescription(1);
         case CreationDate: {
             const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
