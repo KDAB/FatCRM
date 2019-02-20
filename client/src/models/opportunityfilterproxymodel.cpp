@@ -189,6 +189,17 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
 bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
+    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
+    const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
+
+    // consider empty next step dates to be "far in the future", so they appear last in asc sort
+    if (sortColumn() == nextStepDateColumn) {
+        const auto leftNextStepDate = left.data(sortRole());
+        const auto rightNextStepDate = right.data(sortRole());
+        if (leftNextStepDate.isNull() != rightNextStepDate.isNull())
+            return rightNextStepDate.isNull();
+    }
+
     if (FilterProxyModel::lessThan(left, right)) {
         return true;
     }
@@ -197,8 +208,6 @@ bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModel
     }
 
     // fallback if the values are equal
-    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
-    const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
     const int newSortColumn = (sortColumn() == nextStepDateColumn ?
                              columns.indexOf(ItemsTreeModel::LastModifiedDate) :
                              columns.indexOf(ItemsTreeModel::CreationDate));
