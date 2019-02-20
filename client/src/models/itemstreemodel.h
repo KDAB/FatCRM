@@ -28,6 +28,8 @@
 #include <AkonadiCore/EntityTreeModel>
 #include "accountrepository.h"
 
+#include <QVector>
+
 namespace KContacts { class Addressee; }
 namespace Akonadi { class ChangeRecorder; }
 
@@ -89,7 +91,7 @@ public:
     /**
      * Describes a list of columns of the items tree model.
      */
-    using ColumnTypes = QList<ColumnType>;
+    using ColumnTypes = QVector<ColumnType>;
 
     /**
      * Creates a new items tree model.

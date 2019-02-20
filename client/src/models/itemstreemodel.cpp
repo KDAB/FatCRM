@@ -599,65 +599,69 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
 
 ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
 {
-    ItemsTreeModel::ColumnTypes columns;
-
     switch (type) {
     case Account:
-        columns << ItemsTreeModel::Name
-                << ItemsTreeModel::Street
-                << ItemsTreeModel::City
-                << ItemsTreeModel::PostalCode
-                << ItemsTreeModel::Country
-                << ItemsTreeModel::Phone
-                << ItemsTreeModel::Email
-                << ItemsTreeModel::CreatedBy;
-        break;
+        return {
+            ItemsTreeModel::Name,
+            ItemsTreeModel::Street,
+            ItemsTreeModel::City,
+            ItemsTreeModel::PostalCode,
+            ItemsTreeModel::Country,
+            ItemsTreeModel::Phone,
+            ItemsTreeModel::Email,
+            ItemsTreeModel::CreatedBy
+        };
     case Contact:
-        columns << ItemsTreeModel::FullName
-                << ItemsTreeModel::Title
-                << ItemsTreeModel::Organization
-                << ItemsTreeModel::Country
-                << ItemsTreeModel::PreferredEmail
-                << ItemsTreeModel::PhoneWork
-                << ItemsTreeModel::PhoneMobile
-                << ItemsTreeModel::CreationDate
-                << ItemsTreeModel::LastModifiedDate;
-        break;
+        return {
+            ItemsTreeModel::FullName,
+            ItemsTreeModel::Title,
+            ItemsTreeModel::Organization,
+            ItemsTreeModel::Country,
+            ItemsTreeModel::PreferredEmail,
+            ItemsTreeModel::PhoneWork,
+            ItemsTreeModel::PhoneMobile,
+            ItemsTreeModel::CreationDate,
+            ItemsTreeModel::LastModifiedDate
+        };
     case Lead:
-        columns << ItemsTreeModel::LeadName
-                << ItemsTreeModel::LeadStatus
-                << ItemsTreeModel::LeadAccountName
-                << ItemsTreeModel::LeadEmail
-                << ItemsTreeModel::LeadUser;
+        return {
+            ItemsTreeModel::LeadName,
+            ItemsTreeModel::LeadStatus,
+            ItemsTreeModel::LeadAccountName,
+            ItemsTreeModel::LeadEmail,
+            ItemsTreeModel::LeadUser
+        };
         break;
     case Opportunity:
-        columns << ItemsTreeModel::OpportunityAccountName
-                << ItemsTreeModel::OpportunityName
-                << ItemsTreeModel::PostalCode
-                << ItemsTreeModel::City
-                << ItemsTreeModel::Country
-                << ItemsTreeModel::SalesStage
-                << ItemsTreeModel::Amount
-                << ItemsTreeModel::OpportunitySize
-                << ItemsTreeModel::Description
-                << ItemsTreeModel::CreationDate
-                << ItemsTreeModel::NextStep
-                << ItemsTreeModel::NextStepDate
-                << ItemsTreeModel::LastModifiedDate
-                << ItemsTreeModel::AssignedTo
-                << ItemsTreeModel::OpportunityPriority;
-        break;
+        return {
+            ItemsTreeModel::OpportunityAccountName,
+            ItemsTreeModel::OpportunityName,
+            ItemsTreeModel::PostalCode,
+            ItemsTreeModel::City,
+            ItemsTreeModel::Country,
+            ItemsTreeModel::SalesStage,
+            ItemsTreeModel::Amount,
+            ItemsTreeModel::OpportunitySize,
+            ItemsTreeModel::Description,
+            ItemsTreeModel::CreationDate,
+            ItemsTreeModel::NextStep,
+            ItemsTreeModel::NextStepDate,
+            ItemsTreeModel::LastModifiedDate,
+            ItemsTreeModel::AssignedTo,
+            ItemsTreeModel::OpportunityPriority
+        };
     case Campaign:
-        columns << ItemsTreeModel::CampaignName
-                << ItemsTreeModel::Status
-                << ItemsTreeModel::Type
-                << ItemsTreeModel::EndDate
-                << ItemsTreeModel::User;
-    default:
-        break;
+        return {
+            ItemsTreeModel::CampaignName,
+            ItemsTreeModel::Status,
+            ItemsTreeModel::Type,
+            ItemsTreeModel::EndDate,
+            ItemsTreeModel::User
+        };
     }
 
-    return columns;
+    Q_UNREACHABLE();
+    return {};
 }
 
 QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
