@@ -16,7 +16,7 @@ BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmak
 %endif
 
 %if %{defined fedora}
-BuildRequires:  gcc-c++ extra-cmake-modules python qt5-qtbase-devel cmake desktop-file-utils kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel
+BuildRequires:  gcc-c++ extra-cmake-modules shared-mime-info python qt5-qtbase-devel cmake desktop-file-utils kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel
 %endif
 
 %description
@@ -65,7 +65,11 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %dir %{_prefix}/share/akonadi/plugins/serializer
 %{_libdir}/qt5/plugins/akonadi_serializer_*
 %else
+%if 0%{?fedora} > 28
+%{_libdir}/qt5/plugins/akonadi_serializer_*
+%else
 %{_libdir}/plugins/akonadi_serializer_*
+%endif
 %endif
 %{_prefix}/share/akonadi/plugins/serializer/akonadi_serializer_*.desktop
 %{_prefix}/share/mime/packages/kdabcrm-mime.xml
