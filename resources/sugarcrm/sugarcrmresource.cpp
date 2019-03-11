@@ -610,7 +610,6 @@ void SugarCRMResource::slotDeleteEntriesResult(KJob *job)
     if (job->error()) {
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << job->errorString();
     }
-    mCurrentJob = nullptr;
 
     taskDone();
     emit status(Idle);
@@ -653,7 +652,6 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
 void SugarCRMResource::fetchEntryResult(KJob *job)
 {
     auto *fetchJob = qobject_cast<FetchEntryJob *>(job);
-    Q_ASSERT(fetchJob != nullptr);
 
     Q_ASSERT(mCurrentJob == job);
     mCurrentJob = nullptr;
