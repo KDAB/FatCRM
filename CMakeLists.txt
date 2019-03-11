@@ -69,7 +69,7 @@ set_package_properties(PhoneNumber PROPERTIES
   URL "https://github.com/googlei18n/libphonenumber"
   DESCRIPTION "Google's common Java, C++ and JavaScript library for parsing, formatting, and validating international phone numbers."
   TYPE OPTIONAL
-  PURPOSE "Required to parse phone numbers and extract coutry names"
+  PURPOSE "Required to parse phone numbers and extract country names"
 )
 
 find_package(ICU COMPONENTS uc)
