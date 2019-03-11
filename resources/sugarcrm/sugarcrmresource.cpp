@@ -159,7 +159,9 @@ void SugarCRMResource::configure(WId windowId)
 
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
+#if !defined(Q_OS_MACOS)
     KWindowSystem::setMainWindow(&dialog, windowId);
+#endif
 
     int result = dialog.exec();
 
