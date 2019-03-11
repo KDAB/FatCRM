@@ -57,6 +57,7 @@ qt5_add_dbus_adaptor(sugarcrmresource_SRCS
 kdsoap_generate_soap_bindings(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.wsdl sugarsoap "")
 
 add_executable(akonadi_sugarcrm_resource main_sugarcrmresource.cpp)
+set_target_properties(akonadi_sugarcrm_resource PROPERTIES MACOSX_BUNDLE FALSE)
 
 add_library(akonadi_sugarcrm_resource_private STATIC ${sugarcrmresource_SRCS})
 
