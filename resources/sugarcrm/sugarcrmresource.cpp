@@ -51,6 +51,8 @@
 #include "sugarsoapprotocol.h"
 #include "tests/sugarmockprotocol.h"
 
+#include <kdcrmutils.h>
+
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchScope>
@@ -80,6 +82,8 @@ SugarCRMResource::SugarCRMResource(const QString &id)
       mConflictHandler(new ConflictHandler(ConflictHandler::BackendConflict, this)),
       mOnline(false)
 {
+    KDCRMUtils::setupIconTheme();
+
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     new SettingsAdaptor(Settings::self());
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),

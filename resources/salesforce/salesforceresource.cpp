@@ -31,6 +31,8 @@
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
+#include <kdcrmutils.h>
+
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>
 #include <AkonadiCore/ItemFetchScope>
@@ -60,6 +62,8 @@ SalesforceResource::SalesforceResource(const QString &id)
       mSoap(new SforceService),
       mModuleHandlers(new ModuleHandlerHash)
 {
+    KDCRMUtils::setupIconTheme();
+
     new SettingsAdaptor(Settings::self());
     QDBusConnection::sessionBus().registerObject(QStringLiteral("/Settings"),
             Settings::self(), QDBusConnection::ExportAdaptors);

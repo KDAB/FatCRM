@@ -26,6 +26,8 @@
 
 #include <QLocale>
 #include <QDateTime>
+#include <QDir>
+#include <QIcon>
 
 #define TIMESTAMPFORMAT QLatin1String( "yyyy-MM-dd hh:mm:ss" )
 
@@ -157,4 +159,26 @@ QString KDCRMUtils::canonicalCountryName(const QString &input)
         return QStringLiteral("Czech Republic");
     }
     return input;
+}
+
+void KDCRMUtils::setupIconTheme()
+{
+#if defined(Q_OS_MAC)
+    if (qEnvironmentVariableIsSet("XDG_DATA_DIRS")) {
+        const QStringList dirs = qEnvironmentVariable("XDG_DATA_DIRS").split(QDir::listSeparator());
+        QStringList themes(QIcon::themeSearchPaths());
+        QStringList fallbacks(QIcon::fallbackSearchPaths());
+
+        for (const QString &dir: dirs) {
+            themes << QString::fromLatin1("%1/icons").arg(dir);
+            fallbacks << QString::fromLatin1("%1/icons").arg(dir);
+        }
+
+        QIcon::setThemeSearchPaths(themes);
+        QIcon::setFallbackSearchPaths(fallbacks);
+
+        QIcon::setThemeName("breeze");
+        QIcon::setFallbackThemeName("hicolor");
+    }
+#endif
 }

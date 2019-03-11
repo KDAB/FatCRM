@@ -33,6 +33,7 @@ add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 set_target_properties(akonadi_salesforce_resource PROPERTIES MACOSX_BUNDLE FALSE)
 
 target_link_libraries(akonadi_salesforce_resource
+  kdcrmdata
   ${KDSoap_LIBRARIES}
   KF5::Contacts
   Qt5::DBus

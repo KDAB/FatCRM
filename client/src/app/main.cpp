@@ -23,6 +23,8 @@
 #include "mainwindow.h"
 #include <config-fatcrm-version.h>
 
+#include <kdcrmutils.h>
+
 #include <KAboutData>
 #include <KDBusService>
 
@@ -62,6 +64,8 @@ int main(int argc, char **argv)
     }
 
     KDBusService service(KDBusService::Multiple);
+
+    KDCRMUtils::setupIconTheme();
 
     auto *window = new MainWindow(!parser.isSet(noOverlayOption));
     window->setAttribute(Qt::WA_DeleteOnClose);
