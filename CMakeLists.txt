@@ -7,9 +7,6 @@ endif()
 if(POLICY CMP0063)
   cmake_policy(SET CMP0063 NEW)
 endif()
-if(POLICY CMP0059)
-  cmake_policy(SET CMP0059 OLD) # we use DEFINITIONS as a built-in directory property
-endif()
 
 # we need some parts of the ECM CMake helpers
 find_package(ECM 5.12.0 REQUIRED NO_MODULE)
