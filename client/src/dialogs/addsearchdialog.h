@@ -41,7 +41,7 @@ public:
 
 private slots:
     void slotUpdateSearchName(const QString &searchName);
-    void accept();
+    void accept() override;
 
 private:
     Ui::AddSearchDialog *ui;
