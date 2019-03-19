@@ -1,5 +1,6 @@
 CHECKSETS qt4,c++,foss
 EXCLUDE copyright
+EXCLUDE style
 
 #KDAB-specific checks
 EXTRA kdabcopyright
@@ -13,6 +14,7 @@ SKIP /resources/sugarcrm/taskaccessorpair\.h|/resources/sugarcrm/taskaccessorpai
 SKIP /client/src/widgets/qdateeditex\.h|/client/src/widgets/qdateeditex\.cpp
 SKIP /client/src/utilities/qcsvreader\.h|/client/src/utilities/qcsvreader\.cpp
 SKIP /cmake/FindXsltproc\.cmake
+SKIP /cmake/FindICU\.cmake
 
 #SKIP Squish tests
 SKIP /tests/squish/
