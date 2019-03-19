@@ -1,0 +1,3 @@
+#clazy checks specification
+CHECKS level1,no-qproperty-without-notify
+
