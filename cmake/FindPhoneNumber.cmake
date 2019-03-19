@@ -6,7 +6,7 @@
 # PhoneNumber_INCLUDE_DIR           - Path to the PhoneNumber include directory.
 # PhoneNumberGeoCoding_LIBRARIES    - Path to PhoneNumber GeoCodeing libraries.
 #
-# Copyright (C) 2017 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+# Copyright (C) 2017-2019 Klaralvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
 
 # Redistribution and use is allowed according to the terms of the BSD license
 

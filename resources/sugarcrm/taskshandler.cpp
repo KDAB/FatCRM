@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010, 2011 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2010-2019 Klaralvdalens Datakonsult AB.  All rights reserved.
 ** Copyright (C) 2011-2012 Eric Newberry <ericnewberry@mirametrics.com>. All Rights Reserved.
 ** Copyright (C) 2012, Kevin Krammer <kevin.krammer@gmx.at>
 **
