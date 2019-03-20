@@ -50,7 +50,7 @@ int SugarMockProtocol::login(const QString &user, const QString &password, QStri
             return KJob::NoError;
         } else {
             int error = SugarJob::Errors::LoginError;
-            errorMessage = QString("Login for user %1 on %2 failed: %3").arg(user).arg("test").arg(error);
+            errorMessage = QString("Login for user %1 on %2 failed: %3").arg(user, QStringLiteral("test")).arg(error);
             return error;
         }
     } else {

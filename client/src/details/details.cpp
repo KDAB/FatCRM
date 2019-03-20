@@ -510,9 +510,9 @@ void Details::copyAddressFromGroup(QGroupBox *box)
     }
     QClipboard *clipboard = QGuiApplication::clipboard();
     clipboard->setText(QString("%1\n%2 %3 %4\n%5")
-                       .arg(address.value(QStringLiteral("street")))
-                       .arg(address.value(QStringLiteral("postalcode")))
-                       .arg(address.value(QStringLiteral("city")))
-                       .arg(address.value(QStringLiteral("state")))
-                       .arg(address.value(QStringLiteral("country"))));
+                       .arg(address.value(QStringLiteral("street")),
+                            address.value(QStringLiteral("postalcode")),
+                            address.value(QStringLiteral("city")),
+                            address.value(QStringLiteral("state")),
+                            address.value(QStringLiteral("country"))));
 }
