@@ -105,7 +105,8 @@ private:
         auto *job = new ItemFetchJob(col);
         job->fetchScope().fetchFullPayload();
         AKVERIFYEXEC(job);
-        for (const Item &item : job->items()) {
+        const Item::List items = job->items();
+        for (const Item &item : items) {
             QVERIFY(item.hasPayload<T>());
             T sugarItem = item.payload<T>();
             result << ItemData(sugarItem.name(), sugarItem.id());
@@ -359,8 +360,9 @@ private Q_SLOTS:
         AKVERIFYEXEC(fetchJob);
         QStringList expected{{"Accounts"}, {"Opportunities"}, {"Contacts"}, {"Documents"}, {"Emails"}, {"akonadi_sugarcrm_resource_0"}};
         //THEN
-        QCOMPARE(fetchJob->collections().size(), 6);
-        for (const Collection &col : fetchJob->collections()) {
+        const Collection::List collections = fetchJob->collections();
+        QCOMPARE(collections.size(), 6);
+        for (const Collection &col : collections) {
             QVERIFY(expected.contains(col.name()));
             QString name = col.name();
             if (name == "Accounts") {

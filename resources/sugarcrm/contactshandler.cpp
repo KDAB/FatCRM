@@ -720,7 +720,7 @@ KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(
     std::copy_if(customAddresseeFields.begin(), customAddresseeFields.end(), std::back_inserter(customSugarFields),
                  [](const QString &custom) { return custom.startsWith(customFieldPrefix); });
 
-    for (const QString &custom : customSugarFields) {
+    for (const QString &custom : qAsConst(customSugarFields)) {
         const int pos = custom.indexOf(':');
         if (pos == -1)
             continue;

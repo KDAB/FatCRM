@@ -126,9 +126,10 @@ QStringList ModuleHandler::availableFields() const
 QStringList ModuleHandler::listAvailableFieldNames(SugarSession *session, const QString &module)
 {
     const KDSoapGenerated::TNS__Field_list fieldList = listAvailableFields(session, module);
+    const auto items = fieldList.items();
     QStringList availableFields;
-    availableFields.reserve(fieldList.items().count());
-    for (const auto &field : fieldList.items()) {
+    availableFields.reserve(items.count());
+    for (const auto &field : items) {
         availableFields << field.name();
     }
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Fields (SOAP v4.1) :" << availableFields;
