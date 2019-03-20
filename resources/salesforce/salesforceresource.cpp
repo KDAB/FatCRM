@@ -168,17 +168,17 @@ void SalesforceResource::doSetOnline(bool online)
 #if 0
         if (Settings::host().isEmpty()) {
             const QString message = i18nc("@info:status", "No server configured");
-            status(Broken, message);
-            error(message);
+            emit status(Broken, message);
+            emit error(message);
         } else if (Settings::user().isEmpty()) {
             const QString message = i18nc("@info:status", "No user name configured");
-            status(Broken, message);
-            error(message);
+            emit status(Broken, message);
+            emit error(message);
 #else
         if (Settings::user().isEmpty()) {
             const QString message = i18nc("@info:status", "No user name configured");
-            status(Broken, message);
-            error(message);
+            emit status(Broken, message);
+            emit error(message);
 #endif
         } else {
             doLogin();
@@ -224,10 +224,10 @@ void SalesforceResource::itemAdded(const Akonadi::Item &item, const Akonadi::Col
     }
 
     if (message.isEmpty()) {
-        status(Running);
+        emit status(Running);
     } else {
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     }
 }
@@ -258,10 +258,10 @@ void SalesforceResource::itemChanged(const Akonadi::Item &item, const QSet<QByte
     }
 
     if (message.isEmpty()) {
-        status(Running);
+        emit status(Running);
     } else {
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     }
 }
@@ -292,7 +292,7 @@ void SalesforceResource::itemRemoved(const Akonadi::Item &item)
     // results handled by slots getEntryDone() and getEntryError()
     mSoap->asyncDelete(deleteParams);
 
-    status(Running);
+    emit status(Running);
 }
 
 void SalesforceResource::connectSoapProxy()
@@ -347,11 +347,11 @@ void SalesforceResource::retrieveCollections()
             message = i18nc("@info:status", "Unable to login to %1", Settings::host());
         }
 
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     } else {
-        status(Running, i18nc("@info:status", "Retrieving folders"));
+        emit status(Running, i18nc("@info:status", "Retrieving folders"));
 #if 0
         const TNS__DescribeGlobalResponse callResult = mSoap->describeGlobal();
         const QString error = mSoap->lastError();
@@ -414,15 +414,15 @@ void SalesforceResource::retrieveItems(const Akonadi::Collection &collection)
             message = i18nc("@info:status", "Unable to login to %1", Settings::host());
         }
 
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     } else {
         // find the handler for the module represented by the given collection and let it
         // perform the respective "list entries" operation
         ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
         if (moduleIt != mModuleHandlers->constEnd()) {
-            status(Running, i18nc("@info:status", "Retrieving contents of folder %1", collection.name()));
+            emit status(Running, i18nc("@info:status", "Retrieving contents of folder %1", collection.name()));
 
             // getting items in batches
             setItemStreamingEnabled(true);
@@ -479,12 +479,12 @@ void SalesforceResource::loginDone(const TNS__LoginResponse &callResult)
         sessionHeader.setSessionId(mSessionId);
         mSoap->setSessionHeader(sessionHeader);
 
-        status(Idle);
+        emit status(Idle);
 
         synchronizeCollectionTree();
     } else {
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
     }
 }
 
@@ -495,8 +495,8 @@ void SalesforceResource::loginError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
 }
 
 void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
@@ -518,11 +518,11 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
             if (!queryResult.done()) {
                 moduleIt.value()->listEntries(queryResult.queryLocator(), mSoap);
             } else {
-                status(Idle);
+                emit status(Idle);
                 itemsRetrievalDone();
             }
         } else {
-            status(Idle);
+            emit status(Idle);
             itemsRetrievalDone();
         }
     } else {
@@ -549,11 +549,11 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
             if (!queryResult.done()) {
                 moduleIt.value()->listEntries(queryResult.queryLocator(), mSoap);
             } else {
-                status(Idle);
+                emit status(Idle);
                 itemsRetrievalDone();
             }
         } else {
-            status(Idle);
+            emit status(Idle);
             itemsRetrievalDone();
         }
     } else {
@@ -566,8 +566,8 @@ void SalesforceResource::getEntryListError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
     cancelTask(message);
 }
 
@@ -607,14 +607,14 @@ void SalesforceResource::setEntryDone(const TNS__UpsertResponse &callResult)
 
     if (!message.isEmpty()) {
         qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     } else {
         qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "itemAdded/itemChanged done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
-        status(Idle);
+        emit status(Idle);
         changeCommitted(mPendingItem);
     }
 
@@ -626,8 +626,8 @@ void SalesforceResource::setEntryError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
 
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
     cancelTask(message);
 
     mPendingItem = Item();
@@ -661,14 +661,14 @@ void SalesforceResource::deleteEntryDone(const TNS__DeleteResponse &callResult)
 
     if (!message.isEmpty()) {
         qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
-        status(Broken, message);
-        error(message);
+        emit status(Broken, message);
+        emit error(message);
         cancelTask(message);
     } else {
         qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "itemRemoved done, comitting pending item (id="
                  << mPendingItem.id() << ", remoteId=" << mPendingItem.remoteId()
                  << ", mime=" << mPendingItem.mimeType();
-        status(Idle);
+        emit status(Idle);
         changeCommitted(mPendingItem);
     }
 
@@ -680,8 +680,8 @@ void SalesforceResource::deleteEntryError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
     cancelTask(message);
 
     mPendingItem = Item();
@@ -764,8 +764,8 @@ void SalesforceResource::describeGlobalError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
     cancelTask(message);
 }
 
@@ -806,8 +806,8 @@ void SalesforceResource::describeSObjectsError(const KDSoapMessage &fault)
     const QString message = fault.faultAsString();
     qCCritical(FATCRM_SALESFORCERESOURCE_LOG) << message;
 
-    status(Broken, message);
-    error(message);
+    emit status(Broken, message);
+    emit error(message);
     cancelTask(message);
 }
 

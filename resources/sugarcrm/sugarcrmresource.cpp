@@ -215,12 +215,12 @@ void SugarCRMResource::doSetOnline(bool online)
         if (online) {
             if (Settings::host().isEmpty()) {
                 const QString message = i18nc("@info:status", "No server configured");
-                status(Broken, message);
-                error(message);
+                emit status(Broken, message);
+                emit error(message);
             } else if (Settings::user().isEmpty()) {
                 const QString message = i18nc("@info:status", "No user name configured");
-                status(Broken, message);
-                error(message);
+                emit status(Broken, message);
+                emit error(message);
             } else {
                 // schedule login as a prepended custom task to hold all other until finished
                 scheduleCustomTask(this, "startExplicitLogin", QVariant(), ResourceBase::Prepend);
@@ -250,7 +250,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
     // perform the respective "set entry" operation
     ModuleHandler *handler = mModuleHandlers->value(collection.remoteId());
     if (handler) {
-        status(Running);
+        emit status(Running);
 
         auto *job = new CreateEntryJob(item, mSession, this);
         Q_ASSERT(!mCurrentJob);
@@ -263,7 +263,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
                                       collection.name());
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
-        status(Broken, message);
+        emit status(Broken, message);
         cancelTask(message);
     }
 }
@@ -288,7 +288,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
             changeCommitted(item);
             return;
         }
-        status(Running);
+        emit status(Running);
 
         updateItem(item, handler);
     } else {
@@ -296,7 +296,7 @@ void SugarCRMResource::itemChanged(const Akonadi::Item &item, const QSet<QByteAr
                                       collection.name());
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
 
-        status(Broken, message);
+        emit status(Broken, message);
         cancelTask(message);
     }
 }
@@ -311,11 +311,11 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
         return;
     }
 
-    status(Running);
+    emit status(Running);
 
 #if 0
     const QString message = "disabled for safety reasons";
-    status(Broken, message);
+    emit status(Broken, message);
     cancelTask(message);
 #else
     SugarJob *job = new DeleteEntryJob(item, mSession, nameToModule(collection.remoteId()), this);
@@ -328,7 +328,7 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
 
 void SugarCRMResource::retrieveCollections()
 {
-    status(Running, i18nc("@info:status", "Retrieving folders"));
+    emit status(Running, i18nc("@info:status", "Retrieving folders"));
 
     SugarJob *job = new ListModulesJob(mSession, this);
     Q_ASSERT(!mCurrentJob);
@@ -361,7 +361,7 @@ void SugarCRMResource::retrieveItems(const Akonadi::Collection &collection)
                 ? i18nc("@info:status", "Updating contents of folder %1", collection.name())
                 : i18nc("@info:status", "Retrieving contents of folder %1", collection.name());
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
-        status(Running, message);
+        emit status(Running, message);
         emit percent(0);
 
         connect(job, &ListEntriesJob::totalItems, this, &SugarCRMResource::slotTotalItems);
@@ -389,7 +389,7 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         const QString message = i18nc("@info:status", "Retrieving entry from folder %1",
                                       collection.name());
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
-        status(Running, message);
+        emit status(Running, message);
 
         auto *job = new FetchEntryJob(item, mSession, this);
         Q_ASSERT(!mCurrentJob);
@@ -431,7 +431,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
         }
 
         qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << message;
-        status(Broken, message);
+        emit status(Broken, message);
         cancelTask(message);
         return;
     }
@@ -445,7 +445,7 @@ void SugarCRMResource::explicitLoginResult(KJob *job)
     }
 
     taskDone();
-    status(Idle);
+    emit status(Idle);
     synchronizeCollectionTree();
 }
 
@@ -509,7 +509,7 @@ void SugarCRMResource::listModulesResult(KJob *job)
     Settings::self()->save();
 
     collectionsRetrieved(collections);
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::slotTotalItems(int count)
@@ -573,7 +573,7 @@ void SugarCRMResource::listEntriesResult(KJob *job)
         scheduleCustomTask(this, "handleDeletedItems", QVariant::fromValue(arg));
     }
 
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::handleDeletedItems(const QVariant &val)
@@ -584,7 +584,7 @@ void SugarCRMResource::handleDeletedItems(const QVariant &val)
     // don't set mCurrentJob, can run in parallel to e.g. retrieveCollections()
     const QString message = i18nc("@info:status", "Retrieving deleted items for folder %1", arg.collection.name());
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message;
-    status(Running, message);
+    emit status(Running, message);
 
     // Check whether those items still exist, it's an error in akonadi to delete items that don't exist anymore.
     auto *fetchJob = new Akonadi::ItemFetchJob(arg.deletedItems, this);
@@ -596,7 +596,7 @@ void SugarCRMResource::handleDeletedItems(const QVariant &val)
         if (fetchJob->error()) {
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << fetchJob->errorString();
             taskDone();
-            status(Idle);
+            emit status(Idle);
         } else {
             const Akonadi::Item::List items = fetchJob->items();
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG()) << "Resolved to" << items.size() << "items by the fetch job";
@@ -615,7 +615,7 @@ void SugarCRMResource::slotDeleteEntriesResult(KJob *job)
     mCurrentJob = nullptr;
 
     taskDone();
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::createEntryResult(KJob *job)
@@ -630,7 +630,7 @@ void SugarCRMResource::createEntryResult(KJob *job)
     Q_ASSERT(createJob != nullptr);
 
     changeCommitted(createJob->item());
-    status(Idle);
+    emit status(Idle);
 
     // commit does not update payload, so we modify as well
     ItemModifyJob *modifyJob = new ItemModifyJob(createJob->item(), this);
@@ -649,7 +649,7 @@ void SugarCRMResource::deleteEntryResult(KJob *job)
     }
 
     changeProcessed();
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::fetchEntryResult(KJob *job)
@@ -671,7 +671,7 @@ void SugarCRMResource::fetchEntryResult(KJob *job)
     }
 
     itemRetrieved(fetchJob->item());
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::updateEntryResult(KJob *job)
@@ -699,7 +699,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
     }
 
     changeCommitted(updateJob->item()); // this clears the dirty flag of the item in the DB
-    status(Idle);
+    emit status(Idle);
 
     // Save the date_modified change (see also the comment in createEntryResult)
     ItemModifyJob *modifyJob = new ItemModifyJob(updateJob->item(), this);
@@ -709,7 +709,7 @@ void SugarCRMResource::updateEntryResult(KJob *job)
 void SugarCRMResource::commitChange(const Akonadi::Item &item)
 {
     changeCommitted(item);
-    status(Idle);
+    emit status(Idle);
 }
 
 void SugarCRMResource::updateOnBackend(const Akonadi::Item &item)
@@ -807,10 +807,10 @@ bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
     auto deferOrCancel = [action, this](const QString &message){
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << message << "=> we have to" << (action == CancelTaskOnError ? "cancel" : "defer");
         if (action == CancelTaskOnError) {
-            status(Broken, message);
+            emit status(Broken, message);
             cancelTask(message);
         } else {
-            error(message);
+            emit error(message);
             deferTask();
         }
     };
