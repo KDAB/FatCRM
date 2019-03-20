@@ -263,8 +263,6 @@ void DocumentsWindow::deleteDocument()
     if (!widget)
         return;
 
-    const QString documentId = widget->document().id();
-
     const int answer = QMessageBox::question(this, i18n("Delete Document?"), i18n("Do you really want to delete the document %1?", widget->document().documentName()),
                                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
     if (answer == QMessageBox::No)

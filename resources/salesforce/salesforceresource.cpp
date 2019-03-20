@@ -504,8 +504,6 @@ void SalesforceResource::getEntryListDone(const TNS__QueryResponse &callResult)
     const Collection collection = currentCollection();
     qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "got Query result for module" << collection.remoteId();
 
-    Item::List items;
-
     // find the handler for the module represented by the given collection and let it
     // "deserialize" the SOAP response into an item payload and perform the respective "list entries" operation
     ModuleHandlerHash::const_iterator moduleIt = mModuleHandlers->constFind(collection.remoteId());
@@ -534,8 +532,6 @@ void SalesforceResource::getEntryListDone(const TNS__QueryMoreResponse &callResu
 {
     const Collection collection = currentCollection();
     qCDebug(FATCRM_SALESFORCERESOURCE_LOG) << "got QueryMore result for module" << collection.remoteId();
-
-    Item::List items;
 
     // find the handler for the module represented by the given collection and let it
     // "deserialize" the SOAP response into an item payload and perform the respective "list entries" operation
