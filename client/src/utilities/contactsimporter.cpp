@@ -27,15 +27,14 @@
 #include "qcsvreader.h"
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
+#include "fatcrm_client_debug.h"
 
 #include <QFile>
-#include "fatcrm_client_debug.h"
-#include <QTextCodec>
 #include <QLocale>
-#include <QStringList>
 #include <QString>
+#include <QTextCodec>
 
-#include "config-phonenumber.h"
+#include <config-phonenumber.h>
 
 #if USE_PHONENUMBER
 

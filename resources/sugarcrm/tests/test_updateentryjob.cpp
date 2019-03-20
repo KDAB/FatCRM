@@ -18,17 +18,20 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTest>
-#include <QDebug>
-#include <QSignalSpy>
-#include <AkonadiCore/Item>
-#include "sugaraccount.h"
-#include "sugarsession.h"
-#include "sugarmockprotocol.h"
-#include "updateentryjob.h"
 #include "accountshandler.h"
 #include "opportunitieshandler.h"
-#include <kdcrmdata/kdcrmutils.h>
+#include "sugaraccount.h"
+#include "sugarmockprotocol.h"
+#include "sugarsession.h"
+#include "updateentryjob.h"
+#include "kdcrmdata/kdcrmutils.h"
+
+#include <AkonadiCore/Item>
+
+#include <QDebug>
+#include <QSignalSpy>
+
+#include <QTest>
 
 class TestUpdateEntryJob : public QObject
 {

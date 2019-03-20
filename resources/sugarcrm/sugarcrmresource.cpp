@@ -49,6 +49,7 @@
 #include "updateentryjob.h"
 #include "passwordhandler.h"
 #include "sugarsoapprotocol.h"
+#include "tests/sugarmockprotocol.h"
 
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>
@@ -60,14 +61,11 @@
 
 #include <KContacts/Addressee>
 
-#include <QDebug>
-
 #include <KLocalizedString>
 #include <KWindowSystem>
 
+#include <QDebug>
 #include <QtDBus/QDBusConnection>
-
-#include <tests/sugarmockprotocol.h>
 
 using namespace Akonadi;
 

@@ -18,30 +18,33 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTest>
-#include <QDebug>
-#include <QSignalSpy>
-#include <QDBusInterface>
-#include <AkonadiCore/Item>
+#include "sugaraccount.h"
+#include "sugaropportunity.h"
+
+#include <akonadi_version.h>
+#include <AkonadiCore/AttributeFactory>
 #include <AkonadiCore/Collection>
-#include <AkonadiCore/Job>
 #include <AkonadiCore/CollectionFetchJob>
 #include <AkonadiCore/CollectionFetchScope>
+#include <AkonadiCore/EntityAnnotationsAttribute>
+#include <AkonadiCore/EntityDisplayAttribute>
+#include <AkonadiCore/Item>
+#include <AkonadiCore/ItemCreateJob>
+#include <AkonadiCore/ItemDeleteJob>
 #include <AkonadiCore/ItemFetchJob>
 #include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/ItemCreateJob>
 #include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/ItemDeleteJob>
-#include <qtest_akonadi.h>
-#include <AkonadiCore/servermanager.h>
-#include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/EntityDisplayAttribute>
+#include <AkonadiCore/Job>
 #include <AkonadiCore/Monitor>
+#include <AkonadiCore/servermanager.h>
+#include <AkonadiCore/qtest_akonadi.h>
+
+#include <QDBusInterface>
 #include <QDBusReply>
-#include <sugaraccount.h>
-#include <sugaropportunity.h>
-#include <akonadi_version.h>
-#include <EntityAnnotationsAttribute>
+#include <QDebug>
+#include <QSignalSpy>
+
+#include <QTest>
 
 Q_DECLARE_METATYPE(QSet<QByteArray>)
 

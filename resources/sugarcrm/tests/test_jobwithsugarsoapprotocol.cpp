@@ -18,27 +18,30 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTest>
-#include <QDebug>
-#include <QSignalSpy>
-#include <QSettings>
-#include <itemtransferinterface.h>
-#include <sugardocument.h>
-#include <enumdefinitionattribute.h>
-#include <AkonadiCore/Item>
+#include "accountshandler.h"
+#include "createentryjob.h"
+#include "deleteentryjob.h"
+#include "documentshandler.h"
+#include "enumdefinitionattribute.h"
+#include "fetchentryjob.h"
+#include "itemtransferinterface.h"
+#include "listentriesjob.h"
+#include "listmodulesjob.h"
+#include "loginjob.h"
+#include "opportunitieshandler.h"
 #include "sugaraccount.h"
+#include "sugardocument.h"
 #include "sugarsession.h"
 #include "sugarsoapprotocol.h"
-#include "loginjob.h"
-#include "listentriesjob.h"
-#include "createentryjob.h"
 #include "updateentryjob.h"
-#include "deleteentryjob.h"
-#include "fetchentryjob.h"
-#include "listmodulesjob.h"
-#include "accountshandler.h"
-#include "opportunitieshandler.h"
-#include "documentshandler.h"
+
+#include <AkonadiCore/Item>
+
+#include <QDebug>
+#include <QSettings>
+#include <QSignalSpy>
+
+#include <QTest>
 
 /**
  * This test talks to a REAL SugarCRM server.

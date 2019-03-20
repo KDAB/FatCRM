@@ -26,7 +26,7 @@
 #include <QTest>
 #include <QTemporaryFile>
 
-#include "config-phonenumber.h"
+#include <config-phonenumber.h>
 
 class TestContactsImporter : public QObject
 {

@@ -23,7 +23,6 @@
 #include "sugarsession.h"
 
 #include "sugarsoap.h"
-#include "sugarsoap.h"
 #include "passwordhandler.h"
 #include "sugarprotocolbase.h"
 #include "sugarcrmresource_debug.h"
