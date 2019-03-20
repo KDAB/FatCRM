@@ -202,7 +202,7 @@ Akonadi::Collection SalesforceContactsHandler::collection() const
 void SalesforceContactsHandler::listEntries(const TNS__QueryLocator &locator, SforceService *soap)
 {
     static QString queryString = QStringLiteral("Select ") +
-                                 QStringList(mAccessors->keys()).join(QStringLiteral(", ")) +
+                                 QStringList(mAccessors->keys()).join(QStringLiteral(", ")) + // clazy:exclude=container-anti-pattern
                                  QStringLiteral(" from Contact");   // without trailing 's'
 
     if (locator.value().isEmpty()) {
@@ -289,7 +289,7 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
             ContactAccessorHash::const_iterator accessorIt = mAccessors->constFind(it->name());
             if (accessorIt != mAccessors->constEnd()) {
                 if (accessorIt->isAvailable) {
-                    accessorIt->setter(it->value().value<QString>(), addressee);
+                    accessorIt->setter(it->value().toString(), addressee);
                 }
             } else {
                 qCWarning(FATCRM_SALESFORCERESOURCE_LOG) << "Contacts entry for id=" << entry.id().value()

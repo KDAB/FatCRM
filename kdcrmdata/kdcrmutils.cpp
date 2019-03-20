@@ -62,7 +62,7 @@ QString KDCRMUtils::formatTimestamp(const QString &serverTimestamp)
 
 QString KDCRMUtils::currentTimestamp()
 {
-    return QDateTime::currentDateTime().toUTC().toString(TIMESTAMPFORMAT);
+    return QDateTime::currentDateTimeUtc().toString(TIMESTAMPFORMAT);
 }
 
 QDate KDCRMUtils::dateFromString(const QString &dateString)

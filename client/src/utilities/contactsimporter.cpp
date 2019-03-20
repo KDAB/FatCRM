@@ -107,7 +107,7 @@ bool ContactsImporter::importFile(const QString &fileName)
     for (int row = 1; row < rows; ++row) { // skip title row
         QMap<QString, QString> accountData;
         QMap<int, QString>::const_iterator it = accountColumns.constBegin();
-        for ( ; it != accountColumns.end() ; ++it) {
+        for ( ; it != accountColumns.constEnd() ; ++it) {
             QString value = builder.data(row, it.key()).trimmed();
              //qCDebug(FATCRM_CLIENT_LOG) << it.key() << value << "->" << it.value();
             if (it.key() == COLUMN_COUNTRY) {

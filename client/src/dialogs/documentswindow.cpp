@@ -349,7 +349,7 @@ void DocumentsWindow::saveChanges()
         const QString id = oldDocument.id();
 
         auto it = std::find_if(mDocumentWidgets.constBegin(), mDocumentWidgets.constEnd(), [&id](DocumentWidget *widget) { return widget->document().id() == id; });
-        if (it == mDocumentWidgets.end()) {
+        if (it == mDocumentWidgets.constEnd()) {
             const Akonadi::Item item = mLinkedItemsRepository->documentItem(id);
             if (item.isValid()) {
                 auto *job = new Akonadi::ItemDeleteJob(item, this);
