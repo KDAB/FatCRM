@@ -553,7 +553,7 @@ private Q_SLOTS:
         QStringList statusMessages;
         QVector<int> progresses;
         connect(agentManager, &AgentManager::instanceProgressChanged,
-                this, [&progresses, &currentAgent, &statusMessages](const AgentInstance &instance) {
+                this, [&progresses, &currentAgent, &statusMessages](const AgentInstance &instance) { // clazy:exclude=lambda-in-connect
             if (instance == currentAgent) {
                 progresses << instance.progress();
                 statusMessages << instance.statusMessage();
@@ -562,7 +562,7 @@ private Q_SLOTS:
 
         QVector<AgentInstance::Status> statuses;
         connect(agentManager, &AgentManager::instanceStatusChanged,
-                this, [&statuses, &currentAgent, &statusMessages](const AgentInstance &instance) {
+                this, [&statuses, &currentAgent, &statusMessages](const AgentInstance &instance) { // clazy:exclude=lambda-in-connect
             if (instance == currentAgent) {
                 statuses << instance.status();
                 statusMessages << instance.statusMessage();
