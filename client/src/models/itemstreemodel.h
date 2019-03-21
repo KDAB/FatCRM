@@ -86,7 +86,7 @@ public:
         OpportunityPriority
     };
 
-    Q_ENUMS(ColumnType)
+    Q_ENUM(ColumnType)
 
     /**
      * Describes a list of columns of the items tree model.
