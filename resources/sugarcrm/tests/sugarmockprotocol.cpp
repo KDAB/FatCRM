@@ -183,7 +183,7 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listLeads(bool inclu
 QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts(bool includeDeleted, const QDateTime &timestamp) const
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
-    for (const KABC::Addressee &contact : mContacts) {
+    for (const KContacts::Addressee &contact : mContacts) {
         if ((contact.custom("FATCRM", "X-Deleted").isEmpty() || includeDeleted) && KDCRMUtils::dateTimeFromString(contact.custom("FATCRM", "X-DateModified")) >= timestamp) {
             KDSoapGenerated::TNS__Entry_value entryValue;
             const QString id = contact.custom("FATCRM", "X-ContactId");

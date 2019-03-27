@@ -28,9 +28,7 @@
 #include "sugarcampaign.h"
 #include "itemdataextractor.h"
 
-#define KABC KContacts
-
-Q_DECLARE_METATYPE(KABC::Address);
+Q_DECLARE_METATYPE(KContacts::Address);
 
 template<typename T>
 static Akonadi::Item createAkonadiItemfromType()
@@ -43,12 +41,12 @@ static Akonadi::Item createAkonadiItemfromType()
 }
 
 template<>
-Akonadi::Item createAkonadiItemfromType<KABC::Addressee>()
+Akonadi::Item createAkonadiItemfromType<KContacts::Addressee>()
 {
-    KABC::Addressee contact;
+    KContacts::Addressee contact;
     contact.insertCustom("FATCRM", "X-ContactId", "24");
     Akonadi::Item item;
-    item.setPayload<KABC::Addressee>(contact);
+    item.setPayload<KContacts::Addressee>(contact);
     return item;
 }
 
@@ -111,7 +109,7 @@ private Q_SLOTS:
         QTest::newRow("account") << DetailsType::Account << createAkonadiItemfromType<SugarAccount>();
         QTest::newRow("opportunity") << DetailsType::Opportunity << createAkonadiItemfromType<SugarOpportunity>();
         QTest::newRow("lead") << DetailsType::Lead << createAkonadiItemfromType<SugarLead>();
-        QTest::newRow("contact") << DetailsType::Contact << createAkonadiItemfromType<KABC::Addressee>();
+        QTest::newRow("contact") << DetailsType::Contact << createAkonadiItemfromType<KContacts::Addressee>();
         QTest::newRow("campaign") << DetailsType::Campaign << createAkonadiItemfromType<SugarCampaign>();
     }
 

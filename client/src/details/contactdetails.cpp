@@ -44,8 +44,6 @@
 #include <QDesktopServices>
 #include <QMessageBox>
 
-#define KABC KContacts
-
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
 {
@@ -493,7 +491,7 @@ void ContactDetails::setItemsTreeModel(ItemsTreeModel *model)
     for (int row = 0; row < model->rowCount(); ++row) {
         const QModelIndex index = model->index(row, 0);
         const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
-        const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+        const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
         const QString addresseeTitle = addressee.title();
         if (!addresseeTitle.isEmpty())
             words.insert(addresseeTitle);

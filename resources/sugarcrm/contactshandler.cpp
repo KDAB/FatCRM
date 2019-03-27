@@ -41,8 +41,6 @@ using namespace KDSoapGenerated;
 
 #include <QHash>
 
-#define KABC KContacts
-
 using valueGetter = QString (*)(const KContacts::Addressee &);
 using valueSetter = void (*)(const QString &, KContacts::Addressee &);
 using addressSetter = void (*)(const QString &, KContacts::Address &);
@@ -683,7 +681,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 {
     Akonadi::Collection contactCollection;
     contactCollection.setRemoteId(moduleToName(module()));
-    contactCollection.setContentMimeTypes(QStringList() << KABC::Addressee::mimeType());
+    contactCollection.setContentMimeTypes(QStringList() << KContacts::Addressee::mimeType());
     contactCollection.setName(i18nc("@item folder name", "Contacts"));
     contactCollection.setRights(Akonadi::Collection::CanChangeItem |
                                 Akonadi::Collection::CanCreateItem |
@@ -693,7 +691,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 }
 
 
-KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList)
+KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KContacts::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
     const AccessorHash accessors = accessorHash();
     AccessorHash::const_iterator it    = accessors.constBegin();
@@ -763,7 +761,7 @@ int ContactsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString
     }
 
     // add regular sugar fields
-    const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+    const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
     KDSoapGenerated::TNS__Name_value_list valueList = addresseeToNameValueList(addressee, itemList);
 
@@ -881,7 +879,7 @@ Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_v
         const QString value = KDCRMUtils::decodeXML(namedValue.value());
 
         if (isAddressValue(crmFieldName)) {
-            KABC::Address &address =
+            KContacts::Address &address =
                 isPrimaryAddressValue(crmFieldName) ? workAddress : homeAddress;
             (*accessIt).setter.aSetter(value, address);
         } else {

@@ -38,11 +38,7 @@
 #include <QStringListModel>
 #include <QVBoxLayout>
 
-// kdepimlibs4 compat
-#define KABC KContacts
-
 using namespace Akonadi;
-
 
 TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent) :
     ItemEditWidgetBase(parent),
@@ -134,7 +130,7 @@ int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsTy
                 mItemsMap.insert(opportunity.name(), qMakePair(index, Opportunity));
             }
         } else if (type == Contact) {
-            const KABC::Addressee addressee = item.payload<KABC::Addressee>();
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
             if (addressee.custom("FATCRM", "X-AccountId")  == accountId) {
                 list << addressee.assembledName();
                 mItemsMap.insert(addressee.assembledName(), qMakePair(index, Contact));

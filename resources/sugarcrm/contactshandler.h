@@ -26,8 +26,7 @@
 #include "modulehandler.h"
 
 class ContactAccessorPair;
-#define KABC KContacts
-namespace KABC
+namespace KContacts
 {
 class Addressee;
 }
@@ -43,7 +42,7 @@ public:
 
     Akonadi::Collection handlerCollection() const override;
 
-    static KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KABC::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
+    static KDSoapGenerated::TNS__Name_value_list addresseeToNameValueList(const KContacts::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
     int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
 
     QString orderByForListing() const override;
