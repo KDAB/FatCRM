@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>832</width>
-    <height>424</height>
+    <height>608</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QTextEdit" name="statusDescription">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
         <property name="acceptRichText">
          <bool>false</bool>
         </property>
@@ -292,6 +295,9 @@
       </item>
       <item row="1" column="1">
        <widget class="QTextEdit" name="leadSourceDescription">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
         <property name="acceptRichText">
          <bool>false</bool>
         </property>

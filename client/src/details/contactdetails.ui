@@ -534,7 +534,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="BetterPlainTextEdit" name="primaryAddressStreet"/>
+       <widget class="BetterPlainTextEdit" name="primaryAddressStreet">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_19">
@@ -648,7 +652,11 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="BetterPlainTextEdit" name="altAddressStreet"/>
+       <widget class="BetterPlainTextEdit" name="altAddressStreet">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_24">
