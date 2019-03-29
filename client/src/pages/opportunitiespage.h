@@ -55,6 +55,8 @@ protected:
     ItemDataExtractor *itemDataExtractor() const override;
     QString reportTitle() const override;
     void handleNewRows(int start, int end, bool emitChanges) override;
+    void handleRemovedRows(int start, int end, bool initialLoadingDone) override;
+    void handleItemChanged(const Akonadi::Item &item) override;
 
 private:
     OpportunityFilterWidget *mFilterUiWidget;

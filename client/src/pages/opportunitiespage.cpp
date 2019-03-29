@@ -23,6 +23,7 @@
 #include "opportunitiespage.h"
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
+#include "linkeditemsrepository.h"
 #include "opportunitydataextractor.h"
 #include "opportunityfilterwidget.h"
 #include "opportunityfilterproxymodel.h"
@@ -119,9 +120,35 @@ void OpportunitiesPage::handleNewRows(int start, int end, bool emitChanges)
         if (item.hasPayload<SugarOpportunity>()) {
             const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
             assignedToRefMap.insert(opportunity.assignedUserId(), opportunity.assignedUserName());
+            linkedItemsRepository()->addOpportunity(opportunity);
         }
     }
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
+}
+
+void OpportunitiesPage::handleRemovedRows(int start, int end, bool initialLoadingDone)
+{
+    Q_UNUSED(initialLoadingDone);
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<SugarOpportunity>()) {
+            const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
+            linkedItemsRepository()->removeOpportunity(opportunity);
+        }
+    }
+}
+
+void OpportunitiesPage::handleItemChanged(const Item &item)
+{
+    Q_ASSERT(item.hasPayload<SugarOpportunity>());
+    const SugarOpportunity opp = item.payload<SugarOpportunity>();
+    const QString id = opp.id();
+    if (id.isEmpty()) {
+        return;
+    }
+    linkedItemsRepository()->updateOpportunity(opp);
 }
 
 void OpportunitiesPage::setSearchPrefix(const QString &searchPrefix)

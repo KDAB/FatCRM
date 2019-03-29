@@ -44,6 +44,7 @@ protected:
 
     void handleNewRows(int start, int end, bool emitChanges) override;
     void handleItemChanged(const Akonadi::Item &item) override;
+    void handleRemovedRows(int start, int end, bool initialLoadingDone) override;
 
 private:
     ContactDataExtractor *mDataExtractor;

@@ -63,6 +63,7 @@ public:
     Akonadi::Collection collection() const { return mCollection; }
     void setCollectionManager(CollectionManager *collectionManager);
     void setLinkedItemsRepository(LinkedItemsRepository *repo);
+    LinkedItemsRepository *linkedItemsRepository() const;
     bool queryClose();
     void openWidget(const QString &id);
     void printReport();

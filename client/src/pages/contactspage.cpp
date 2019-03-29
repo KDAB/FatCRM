@@ -25,6 +25,7 @@
 #include "itemstreemodel.h"
 #include "filterproxymodel.h"
 #include "referenceddata.h"
+#include "linkeditemsrepository.h"
 
 #include <KContacts/Address>
 #include <KContacts/Addressee>
@@ -76,6 +77,7 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
             const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
             contactRefMap.insert(id, fullName);
             assignedToRefMap.insert(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
+            linkedItemsRepository()->addContact(addressee);
         }
     }
     ReferencedData::instance(ContactRef)->addMap(contactRefMap, emitChanges);
@@ -97,5 +99,20 @@ void ContactsPage::handleItemChanged(const Item &item)
         }
         ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
         ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
+        linkedItemsRepository()->updateContact(addressee);
+    }
+}
+
+void ContactsPage::handleRemovedRows(int start, int end, bool initialLoadingDone)
+{
+    Q_UNUSED(initialLoadingDone);
+    ItemsTreeModel *treeModel = itemsTreeModel();
+    for (int row = start; row <= end; ++row) {
+        const QModelIndex index = treeModel->index(row, 0);
+        const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
+            linkedItemsRepository()->removeContact(contact);
+        }
     }
 }

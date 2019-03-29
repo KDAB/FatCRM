@@ -30,6 +30,8 @@
 
 #include <QVector>
 
+class LinkedItemsRepository;
+
 namespace KContacts { class Addressee; }
 namespace Akonadi { class ChangeRecorder; }
 
@@ -83,6 +85,8 @@ public:
         NextStepDate,
         LastModifiedDate,
         AssignedTo,
+        NumberOfOpportunities,
+        NumberOfContacts,
         OpportunityPriority
     };
 
@@ -117,6 +121,8 @@ public:
     QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const override;
     int entityColumnCount(HeaderGroup headerGroup) const override;
 
+    void setLinkedItemsRepository(LinkedItemsRepository *repo);
+
     static QString countryForContact(const KContacts::Addressee &addressee);
 
 private Q_SLOTS:
@@ -138,6 +144,7 @@ private:
     class Private;
     Private *const d;
     DetailsType mType;
+    LinkedItemsRepository *mLinkedItemsRepository;
 };
 
 #endif /* ITEMSTREEMODEL_H */

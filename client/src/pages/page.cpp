@@ -248,6 +248,11 @@ void Page::setLinkedItemsRepository(LinkedItemsRepository *repo)
     mLinkedItemsRepository = repo;
 }
 
+LinkedItemsRepository *Page::linkedItemsRepository() const
+{
+    return mLinkedItemsRepository;
+}
+
 bool Page::queryClose()
 {
     foreach (ItemEditWidgetBase *widget, OpenedWidgetsRepository::instance()->openedWidgets()) {
@@ -503,6 +508,8 @@ void Page::setupModel()
 
     Q_ASSERT(!mItemsTreeModel);
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
+    Q_ASSERT(mLinkedItemsRepository);
+    mItemsTreeModel->setLinkedItemsRepository(mLinkedItemsRepository);
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)), this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));

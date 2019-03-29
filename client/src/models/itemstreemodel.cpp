@@ -23,6 +23,7 @@
 #include "itemstreemodel.h"
 #include "referenceddata.h"
 #include "clientsettings.h"
+#include "linkeditemsrepository.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -156,6 +157,11 @@ int ItemsTreeModel::entityColumnCount(HeaderGroup headerGroup) const
     } else {
         return EntityTreeModel::entityColumnCount(headerGroup);
     }
+}
+
+void ItemsTreeModel::setLinkedItemsRepository(LinkedItemsRepository *repo)
+{
+    mLinkedItemsRepository = repo;
 }
 
 QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
@@ -307,6 +313,10 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
             return account.createdByName();
         case PostalCode:
             return account.postalCodeForGui();
+        case NumberOfOpportunities:
+            return mLinkedItemsRepository->opportunitiesForAccount(account.id()).count();
+        case NumberOfContacts:
+            return mLinkedItemsRepository->contactsForAccount(account.id()).count();
         default:
             return QVariant();
         }
@@ -609,7 +619,9 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::Country,
             ItemsTreeModel::Phone,
             ItemsTreeModel::Email,
-            ItemsTreeModel::CreatedBy
+            ItemsTreeModel::CreatedBy,
+            ItemsTreeModel::NumberOfOpportunities,
+            ItemsTreeModel::NumberOfContacts,
         };
     case Contact:
         return {
@@ -732,13 +744,17 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
     case Description:
         return i18nc("@title:column description", "Description");
     case NextStep:
-        return i18nc("@title:column next step", "Next Step");
+        return i18nc("@title:column next step for an opportunity", "Next Step");
     case NextStepDate:
-        return i18nc("@title:column next step date", "Next Step Date");
+        return i18nc("@title:column date of the next step for an opportunity", "Next Step Date");
     case LastModifiedDate:
-        return i18nc("@title:column next step date", "Last Modified Date");
+        return i18nc("@title:column", "Last Modified Date");
     case AssignedTo:
-        return i18nc("@title:column assigned to name", "Assigned To");
+        return i18nc("@title:column name of the person this object is assigned to", "Assigned To");
+    case NumberOfOpportunities:
+        return i18nc("@title:column number of opportunities for this account", "# Opps");
+    case NumberOfContacts:
+        return i18nc("@title:column number of contacts for this account", "# Contacts");
     }
     return QString();
 }
@@ -768,6 +784,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case Account:
         columns.removeAll(ItemsTreeModel::Street);
         columns.removeAll(ItemsTreeModel::CreatedBy);
+        columns.removeAll(ItemsTreeModel::NumberOfOpportunities);
+        columns.removeAll(ItemsTreeModel::NumberOfContacts);
         break;
     case Contact:
         // too wide and too seldom filled in

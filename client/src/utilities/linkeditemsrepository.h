@@ -26,11 +26,15 @@
 #include "kdcrmdata/sugardocument.h"
 #include "kdcrmdata/sugaremail.h"
 #include "kdcrmdata/sugarnote.h"
+#include "kdcrmdata/sugaropportunity.h"
+#include "fatcrmprivate_export.h"
 
 #include <AkonadiCore/Item>
 #include <AkonadiCore/Collection>
 
 #include <QObject>
+
+#include <KContacts/Addressee>
 
 class CollectionManager;
 
@@ -46,7 +50,7 @@ namespace Akonadi
  *
  * The repository monitors the Documents, Notes and Emails folders in order to update itself automatically.
  */
-class LinkedItemsRepository : public QObject
+class FATCRMPRIVATE_EXPORT LinkedItemsRepository : public QObject
 {
     Q_OBJECT
 public:
@@ -76,6 +80,16 @@ public:
     QVector<SugarDocument> documentsForOpportunity(const QString &id) const;
 
     Akonadi::Item documentItem(const QString &id) const;
+
+    void addOpportunity(const SugarOpportunity &opp);
+    void removeOpportunity(const SugarOpportunity &opp);
+    void updateOpportunity(const SugarOpportunity &opp);
+    QVector<SugarOpportunity> opportunitiesForAccount(const QString &accountId) const;
+
+    void addContact(const KContacts::Addressee &contact);
+    void removeContact(const KContacts::Addressee &contact);
+    void updateContact(const KContacts::Addressee &contact);
+    QVector<KContacts::Addressee> contactsForAccount(const QString &accountId) const;
 
 signals:
     void notesLoaded(int count);
@@ -137,6 +151,11 @@ private:
     QHash<QString, QSet<QString> > mDocumentsOpportunityIdHash; // document id -> opportunity ids (to handle removals)
     QHash<QString, Akonadi::Item> mDocumentItems;
     int mDocumentsLoaded;
+
+    using OpportunitiesHash = QHash<QString, QVector<SugarOpportunity>>;
+    using ContactsHash = QHash<QString, QVector<KContacts::Addressee>>;
+    OpportunitiesHash mAccountOpportunitiesHash;
+    ContactsHash mAccountContactsHash;
 
     CollectionManager *mCollectionManager;
 };

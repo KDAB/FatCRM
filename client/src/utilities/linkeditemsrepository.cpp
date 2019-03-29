@@ -58,6 +58,8 @@ void LinkedItemsRepository::clear()
     mOpportunityEmailsHash.clear();
     mAccountDocumentsHash.clear();
     mOpportunityDocumentsHash.clear();
+    mAccountOpportunitiesHash.clear();
+    mAccountContactsHash.clear();
     delete mMonitor;
     mMonitor = nullptr;
 }
@@ -395,6 +397,90 @@ QVector<SugarDocument> LinkedItemsRepository::documentsForAccount(const QString 
 Akonadi::Item LinkedItemsRepository::documentItem(const QString &id) const
 {
     return mDocumentItems.value(id);
+}
+
+void LinkedItemsRepository::addOpportunity(const SugarOpportunity &opp)
+{
+    mAccountOpportunitiesHash[opp.accountId()].push_back(opp);
+}
+
+static bool eraseOpportunityByUid(QVector<SugarOpportunity> &vec, const QString &id)
+{
+    auto it = std::find_if(vec.begin(), vec.end(), [&id](const SugarOpportunity &testOpp) {
+        return id == testOpp.id();
+    });
+    if (it != vec.end()) {
+        vec.erase(it);
+        return true;
+    }
+    return false;
+}
+
+void LinkedItemsRepository::removeOpportunity(const SugarOpportunity &opp)
+{
+    auto & opps = mAccountOpportunitiesHash[opp.accountId()];
+    eraseOpportunityByUid(opps, opp.id());
+}
+
+void LinkedItemsRepository::updateOpportunity(const SugarOpportunity &opp)
+{
+    for (auto accIt = mAccountOpportunitiesHash.begin(); accIt != mAccountOpportunitiesHash.end(); ++accIt) {
+        QVector<SugarOpportunity> &opps = accIt.value();
+        if (eraseOpportunityByUid(opps, opp.id()))
+            break;
+    }
+
+    addOpportunity(opp);
+}
+
+QVector<SugarOpportunity> LinkedItemsRepository::opportunitiesForAccount(const QString &accountId) const
+{
+    return mAccountOpportunitiesHash.value(accountId);
+}
+
+static QString contactAccountId(const KContacts::Addressee &contact)
+{
+    return contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+}
+
+void LinkedItemsRepository::addContact(const KContacts::Addressee &contact)
+{
+    mAccountContactsHash[contactAccountId(contact)].push_back(contact);
+}
+
+static bool eraseContactByUid(QVector<KContacts::Addressee> &vec, const QString &uid)
+{
+    auto it = std::find_if(vec.begin(), vec.end(), [&uid](const KContacts::Addressee &testContact) {
+        return uid == testContact.uid();
+    });
+    if (it != vec.end()) {
+        vec.erase(it);
+        return true;
+    }
+    return false;
+}
+
+void LinkedItemsRepository::removeContact(const KContacts::Addressee &contact)
+{
+    auto & contacts = mAccountContactsHash[contactAccountId(contact)];
+    eraseContactByUid(contacts, contact.uid());
+}
+
+void LinkedItemsRepository::updateContact(const KContacts::Addressee &contact)
+{
+    for (auto accIt = mAccountContactsHash.begin(); accIt != mAccountContactsHash.end(); ++accIt) {
+        QVector<KContacts::Addressee> &contacts = accIt.value();
+        if (eraseContactByUid(contacts, contact.uid())) {
+            break;
+        }
+    }
+
+    addContact(contact);
+}
+
+QVector<KContacts::Addressee> LinkedItemsRepository::contactsForAccount(const QString &accountId) const
+{
+    return mAccountContactsHash.value(accountId);
 }
 
 void LinkedItemsRepository::slotDocumentsReceived(const Akonadi::Item::List &items)

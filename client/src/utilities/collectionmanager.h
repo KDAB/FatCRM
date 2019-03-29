@@ -29,6 +29,7 @@
 
 #include "enums.h"
 #include "enumdefinitions.h"
+#include "fatcrmprivate_export.h"
 #include <AkonadiCore/Collection>
 
 class KJob;
@@ -36,7 +37,7 @@ class KJob;
 /**
  * The CollectionManager lists the collections initially, and emits them, in the desired order for loading.
  */
-class CollectionManager : public QObject
+class FATCRMPRIVATE_EXPORT CollectionManager : public QObject
 {
     Q_OBJECT
 public:

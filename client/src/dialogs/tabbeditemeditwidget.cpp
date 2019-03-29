@@ -116,9 +116,14 @@ void TabbedItemEditWidget::initialize()
 
 int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsType type)
 {
+    auto *listModel = new QStringListModel(this);
+
+    // This could use LinkedItemsRepository::opportunitiesForAccount and contactsForAccount
+    // but we also use need to redo the lookup in openWidget somehow, in case the opp changed.
+    //
+    // (and we need to pass the repository to this class)
     ItemsTreeModel *model = ModelRepository::instance()->model(type);
     const int count = model->rowCount();
-    auto *listModel = new QStringListModel(this);
     QStringList list;
     for (int i = 0; i < count; ++i) {
         const QModelIndex index = model->index(i, 0);
