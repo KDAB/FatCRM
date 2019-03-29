@@ -106,7 +106,8 @@
            <string>Select Account...</string>
           </property>
           <property name="icon">
-           <iconset theme="select"/>
+           <iconset theme="select">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -170,7 +171,8 @@
            <string>Send Email</string>
           </property>
           <property name="icon">
-           <iconset theme="mail-send"/>
+           <iconset theme="mail-send">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -197,7 +199,8 @@
            <string>Send Email</string>
           </property>
           <property name="icon">
-           <iconset theme="mail-send"/>
+           <iconset theme="mail-send">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -224,7 +227,8 @@
            <string>View Notes</string>
           </property>
           <property name="icon">
-           <iconset theme="view-pim-notes"/>
+           <iconset theme="view-pim-notes">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -273,7 +277,28 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="phone_work"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_7">
+        <item>
+         <widget class="QLineEdit" name="phone_work"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonCallWork">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Call</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="call-start">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_13">
@@ -286,7 +311,28 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="phone_mobile"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_8">
+        <item>
+         <widget class="QLineEdit" name="phone_mobile"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonCallMobile">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Call</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="call-start">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_14">
@@ -299,7 +345,28 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QLineEdit" name="phone_home"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_9">
+        <item>
+         <widget class="QLineEdit" name="phone_home"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonCallHome">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Call</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="call-start">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_15">
@@ -312,7 +379,28 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QLineEdit" name="phone_fax"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLineEdit" name="phone_fax"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonFax">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Fax</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="mail-send">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_16">
@@ -325,7 +413,28 @@
        </widget>
       </item>
       <item row="4" column="1">
-       <widget class="QLineEdit" name="phone_other"/>
+       <layout class="QHBoxLayout" name="horizontalLayout_11">
+        <item>
+         <widget class="QLineEdit" name="phone_other"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="buttonCallOtherPhone">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Call</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset theme="call-start">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_30">
