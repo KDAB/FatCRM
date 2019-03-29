@@ -397,6 +397,37 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
     connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
     connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
 
+    connect(mUi->phone_work, &QLineEdit::textChanged, this, [this]() {
+        mUi->buttonCallWork->setEnabled(!mUi->phone_work->text().isEmpty());
+    });
+    connect(mUi->buttonCallWork, &QPushButton::clicked, this, [this]() {
+        QDesktopServices::openUrl(QUrl("tel:" + mUi->phone_work->text()));
+    });
+    connect(mUi->phone_mobile, &QLineEdit::textChanged, this, [this]() {
+        mUi->buttonCallMobile->setEnabled(!mUi->phone_mobile->text().isEmpty());
+    });
+    connect(mUi->buttonCallMobile, &QPushButton::clicked, this, [this]() {
+        QDesktopServices::openUrl(QUrl("tel:" + mUi->phone_mobile->text()));
+    });
+    connect(mUi->phone_home, &QLineEdit::textChanged, this, [this]() {
+        mUi->buttonCallHome->setEnabled(!mUi->phone_home->text().isEmpty());
+    });
+    connect(mUi->buttonCallHome, &QPushButton::clicked, this, [this]() {
+        QDesktopServices::openUrl(QUrl("tel:" + mUi->phone_home->text()));
+    });
+    connect(mUi->phone_fax, &QLineEdit::textChanged, this, [this]() {
+        mUi->buttonFax->setEnabled(!mUi->phone_fax->text().isEmpty());
+    });
+    connect(mUi->buttonFax, &QPushButton::clicked, this, [this]() {
+        QDesktopServices::openUrl(QUrl("fax:" + mUi->phone_fax->text()));
+    });
+    connect(mUi->phone_other, &QLineEdit::textChanged, this, [this]() {
+        mUi->buttonCallOtherPhone->setEnabled(!mUi->phone_other->text().isEmpty());
+    });
+    connect(mUi->buttonCallOtherPhone, &QPushButton::clicked, this, [this]() {
+        QDesktopServices::openUrl(QUrl("tel:" + mUi->phone_other->text()));
+    });
+
     updateLinkedItemsButtons();
 }
 
