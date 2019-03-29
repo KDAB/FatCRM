@@ -105,10 +105,16 @@
           <property name="text">
            <string>Select Account...</string>
           </property>
+          <property name="icon">
+           <iconset theme="select"/>
+          </property>
          </widget>
         </item>
         <item>
          <widget class="QToolButton" name="buttonOpenAccount">
+          <property name="toolTip">
+           <string>Open Account</string>
+          </property>
           <property name="icon">
            <iconset theme="document-open">
             <normaloff>.</normaloff>.</iconset>
