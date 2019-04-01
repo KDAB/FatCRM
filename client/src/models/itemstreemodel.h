@@ -87,6 +87,7 @@ public:
         AssignedTo,
         NumberOfOpportunities,
         NumberOfContacts,
+        NumberOfDocumentsNotesEmails,
         OpportunityPriority
     };
 

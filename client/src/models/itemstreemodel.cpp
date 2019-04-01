@@ -317,6 +317,12 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
             return mLinkedItemsRepository->opportunitiesForAccount(account.id()).count();
         case NumberOfContacts:
             return mLinkedItemsRepository->contactsForAccount(account.id()).count();
+        case NumberOfDocumentsNotesEmails:
+            // The goal is to find those with 0 of each (for GDPR cleanup purposes)
+            // so I'm not doing 3 different columns, for now.
+            return mLinkedItemsRepository->documentsForAccount(account.id()).count() +
+                    mLinkedItemsRepository->notesForAccount(account.id()).count() +
+                    mLinkedItemsRepository->emailsForAccount(account.id()).count();
         default:
             return QVariant();
         }
@@ -622,6 +628,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::CreatedBy,
             ItemsTreeModel::NumberOfOpportunities,
             ItemsTreeModel::NumberOfContacts,
+            ItemsTreeModel::NumberOfDocumentsNotesEmails,
         };
     case Contact:
         return {
@@ -755,6 +762,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column number of opportunities for this account", "# Opps");
     case NumberOfContacts:
         return i18nc("@title:column number of contacts for this account", "# Contacts");
+    case NumberOfDocumentsNotesEmails:
+        return i18nc("@title:column number of documents + notes + emails for this account", "# Docs/Notes/Emails");
     }
     return QString();
 }
@@ -786,6 +795,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         columns.removeAll(ItemsTreeModel::CreatedBy);
         columns.removeAll(ItemsTreeModel::NumberOfOpportunities);
         columns.removeAll(ItemsTreeModel::NumberOfContacts);
+        columns.removeAll(ItemsTreeModel::NumberOfDocumentsNotesEmails);
         break;
     case Contact:
         // too wide and too seldom filled in
