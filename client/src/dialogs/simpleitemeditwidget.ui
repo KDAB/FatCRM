@@ -116,7 +116,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Description</string>
+      <string>&amp;Description</string>
      </property>
      <property name="checkable">
       <bool>false</bool>
