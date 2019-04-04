@@ -96,27 +96,27 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
         index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
 
     switch (d->mType) {
-    case Account: {
+    case DetailsType::Account: {
         Q_ASSERT(item.hasPayload<SugarAccount>());
         const SugarAccount account = item.payload<SugarAccount>();
         return accountMatchesFilter(account, d->mFilter);
     }
-    case Campaign: {
+    case DetailsType::Campaign: {
         Q_ASSERT(item.hasPayload<SugarCampaign>());
         const SugarCampaign campaign = item.payload<SugarCampaign>();
         return campaignMatchesFilter(campaign, d->mFilter);
     }
-    case Contact: {
+    case DetailsType::Contact: {
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         return contactMatchesFilter(contact, d->mFilter);
     }
-    case Lead: {
+    case DetailsType::Lead: {
         Q_ASSERT(item.hasPayload<SugarLead>());
         const SugarLead lead = item.payload<SugarLead>();
         return leadMatchesFilter(lead, d->mFilter);
     }
-    case Opportunity: // notreached, handled by subclass
+    case DetailsType::Opportunity: // notreached, handled by subclass
         return false;
     }
     return true;

@@ -35,9 +35,9 @@
 using namespace Akonadi;
 
 AccountsPage::AccountsPage(QWidget *parent)
-    : Page(parent, SugarAccount::mimeType(), Account), mDataExtractor(new AccountDataExtractor(this))
+    : Page(parent, SugarAccount::mimeType(), DetailsType::Account), mDataExtractor(new AccountDataExtractor(this))
 {
-    setFilter(new FilterProxyModel(Account, this));
+    setFilter(new FilterProxyModel(DetailsType::Account, this));
 }
 
 AccountsPage::~AccountsPage()

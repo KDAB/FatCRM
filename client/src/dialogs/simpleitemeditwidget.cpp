@@ -88,7 +88,7 @@ void SimpleItemEditWidget::Private::setData(const QMap<QString, QString> &data)
     mUi.date_modified->setText(localTime);
 
     mUi.description->enableFindReplace(true);
-    mUi.description->setPlainText((mDetails->type() != Campaign) ?
+    mUi.description->setPlainText((mDetails->type() != DetailsType::Campaign) ?
                                   data.value(KDCRMFields::description()) :
                                   data.value(KDCRMFields::content()));
 }
@@ -99,11 +99,11 @@ QMap<QString, QString> SimpleItemEditWidget::Private::data() const
     QMap<QString, QString> currentData = mDetails->getData();
 
     currentData[KDCRMFields::description()] = mUi.description->toPlainText();
-    if (mDetails->type() == Campaign) {
+    if (mDetails->type() == DetailsType::Campaign) {
         currentData[KDCRMFields::content()] = mUi.description->toPlainText();
     }
     // Turn "First Name <email@example.com> into "email@example.com so that SugarCRM doesn't reject it.
-    if (mDetails->type() == Contact) {
+    if (mDetails->type() == DetailsType::Contact) {
         QString email = currentData.value(KDCRMFields::email1());
         if (!email.isEmpty()) {
             currentData.insert(KDCRMFields::email1(), KEmailAddress::extractEmailAddress(email));
@@ -125,7 +125,7 @@ void SimpleItemEditWidget::Private::saveClicked()
         return;
     }
 
-    if (mDetails->type() == Opportunity) {
+    if (mDetails->type() == DetailsType::Opportunity) {
         if (mDetails->currentAccountId().isEmpty()) {
             QMessageBox::warning(mDetails, i18n("Invalid opportunity data"), i18n("You need to select an account for this opportunity."));
             return;
@@ -173,19 +173,19 @@ QString SimpleItemEditWidget::title() const
     if (d->mItem.isValid()) {
         const QString name = detailsName();
         switch (d->mDetails->type()) {
-        case Account: return i18n("Account: %1[*]", name);
-        case Campaign: return i18n("Campaign: %1[*]", name);
-        case Contact: return i18n("Contact: %1[*]", name);
-        case Lead: return i18n("Lead: %1[*]", name);
-        case Opportunity: return i18n("Opportunity: %1[*]", name);
+        case DetailsType::Account: return i18n("Account: %1[*]", name);
+        case DetailsType::Campaign: return i18n("Campaign: %1[*]", name);
+        case DetailsType::Contact: return i18n("Contact: %1[*]", name);
+        case DetailsType::Lead: return i18n("Lead: %1[*]", name);
+        case DetailsType::Opportunity: return i18n("Opportunity: %1[*]", name);
         }
     } else {
         switch (d->mDetails->type()) {
-        case Account: return i18n("New Account[*]");
-        case Campaign: return i18n("New Campaign[*]");
-        case Contact: return i18n("New Contact[*]");
-        case Lead: return i18n("New Lead[*]");
-        case Opportunity: return i18n("New Opportunity[*]");
+        case DetailsType::Account: return i18n("New Account[*]");
+        case DetailsType::Campaign: return i18n("New Campaign[*]");
+        case DetailsType::Contact: return i18n("New Contact[*]");
+        case DetailsType::Lead: return i18n("New Lead[*]");
+        case DetailsType::Opportunity: return i18n("New Opportunity[*]");
         }
     }
     return QString(); // for stupid compilers

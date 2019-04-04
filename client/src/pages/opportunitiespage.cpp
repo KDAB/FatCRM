@@ -54,7 +54,7 @@ public:
     // (if hidden, because of QTBUG-8376, and if visible, because we prefer truncating over making rows higher)
     QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const override
     {
-        if (index.column() == ItemsTreeModel::columnTypes(Opportunity).indexOf(ItemsTreeModel::Description)) {
+        if (index.column() == ItemsTreeModel::columnTypes(DetailsType::Opportunity).indexOf(ItemsTreeModel::Description)) {
             return QSize(0,0);
         }
         return QStyledItemDelegate::sizeHint(option, index);
@@ -62,7 +62,7 @@ public:
 };
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
-    : Page(parent, SugarOpportunity::mimeType(), Opportunity), mDataExtractor(new OpportunityDataExtractor(this))
+    : Page(parent, SugarOpportunity::mimeType(), DetailsType::Opportunity), mDataExtractor(new OpportunityDataExtractor(this))
 {
     treeView()->setItemDelegate(new OpportunityTreeViewItemDelegate(this));
     mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
@@ -82,7 +82,7 @@ void OpportunitiesPage::setupModel()
 {
     Page::setupModel();
 
-    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
+    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(DetailsType::Opportunity);
     const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
     treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
 }

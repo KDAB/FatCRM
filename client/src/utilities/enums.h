@@ -26,14 +26,14 @@
 #include <QString>
 #include <QMetaType>
 
-enum DetailsType {
+enum class DetailsType {
     Account,
     Opportunity,
     Lead,
     Contact,
     Campaign,
-    MaxType = Campaign
 };
+static const int MaxType = int(DetailsType::Campaign);
 
 QString typeToString(DetailsType type);
 QString typeToTranslatedString(DetailsType type);

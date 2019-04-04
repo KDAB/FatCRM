@@ -53,17 +53,16 @@ QUrl ItemDataExtractor::itemUrl(const QString &resourceBaseUrl, const QString &i
 ItemDataExtractor *ItemDataExtractor::createDataExtractor(DetailsType type, QObject *parent)
 {
     switch(type) {
-    case Account:
+    case DetailsType::Account:
         return new AccountDataExtractor(parent);
-    case Opportunity:
+    case DetailsType::Opportunity:
         return new OpportunityDataExtractor(parent);
-    case Lead:
+    case DetailsType::Lead:
         return new LeadDataExtractor(parent);
-    case Contact:
+    case DetailsType::Contact:
         return new ContactDataExtractor(parent);
-    case Campaign:
+    case DetailsType::Campaign:
         return new CampaignDataExtractor(parent);
-    default:
-        return nullptr;
     }
+    return nullptr;
 }

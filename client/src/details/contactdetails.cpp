@@ -45,7 +45,7 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
+    : Details(DetailsType::Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -432,7 +432,7 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
 void ContactDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
-    emit openObject(Account, accountId);
+    emit openObject(DetailsType::Account, accountId);
 }
 
 void ContactDetails::on_viewNotesButton_clicked()
@@ -459,8 +459,8 @@ void ContactDetails::on_viewNotesButton_clicked()
 
 void ContactDetails::slotSelectAccount()
 {
-    auto *dlg = new SelectItemDialog(Account, this);
-    dlg->setModel(ModelRepository::instance()->model(Account));
+    auto *dlg = new SelectItemDialog(DetailsType::Account, this);
+    dlg->setModel(ModelRepository::instance()->model(DetailsType::Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
     dlg->show();

@@ -34,9 +34,9 @@
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)
-    : Page(parent, QString(SugarCampaign::mimeType()), Campaign), mDataExtractor(new CampaignDataExtractor(this))
+    : Page(parent, QString(SugarCampaign::mimeType()), DetailsType::Campaign), mDataExtractor(new CampaignDataExtractor(this))
 {
-    setFilter(new FilterProxyModel(Campaign, this));
+    setFilter(new FilterProxyModel(DetailsType::Campaign, this));
 }
 
 CampaignsPage::~CampaignsPage()

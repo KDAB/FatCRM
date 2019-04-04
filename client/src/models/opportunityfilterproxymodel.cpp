@@ -52,7 +52,7 @@ public:
 };
 
 OpportunityFilterProxyModel::OpportunityFilterProxyModel(QObject *parent)
-    : FilterProxyModel(Opportunity, parent), d(new Private())
+    : FilterProxyModel(DetailsType::Opportunity, parent), d(new Private())
 {
 }
 
@@ -189,7 +189,7 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
 
 bool OpportunityFilterProxyModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
 {
-    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(Opportunity);
+    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(DetailsType::Opportunity);
     const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
 
     // consider empty next step dates to be "far in the future", so they appear last in asc sort

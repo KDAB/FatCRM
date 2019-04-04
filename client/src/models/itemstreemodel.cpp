@@ -65,7 +65,7 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
 {
     d->mColumns = columnTypes(mType);
 
-    if (mType == Opportunity) {
+    if (mType == DetailsType::Opportunity) {
         // Update accountName and country columns once all accounts are loaded
         connect(AccountRepository::instance(), SIGNAL(initialLoadingDone()),
                 this, SLOT(slotAccountsLoaded()));
@@ -101,27 +101,28 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
     // avoid calling item.payload() for all other roles
     if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::DecorationRole) {
 
-        if (mType == Account) {
+        switch (mType) {
+        case DetailsType::Account:
             return accountData(item, column, role);
-        } else if (mType == Campaign) {
+        case DetailsType::Campaign:
             return campaignData(item, column, role);
-        } else if (mType == Contact) {
+        case DetailsType::Contact:
             return contactData(item, column, role);
-        } else if (mType == Lead) {
+        case DetailsType::Lead:
             return leadData(item, column, role);
-        } else if (mType == Opportunity) {
+        case DetailsType::Opportunity:
             return opportunityData(item, column, role);
         }
     } else if (role == Qt::ToolTipRole) {
         if (ClientSettings::self()->showToolTips()) {
-            if (mType == Account) {
+            if (mType == DetailsType::Account) {
                 return accountToolTip(item);
-            } else if (mType == Opportunity) {
+            } else if (mType == DetailsType::Opportunity) {
                 return opportunityToolTip(item);
             }
         }
         return QVariant();
-    } else if (mType == Opportunity && role == Qt::FontRole) {
+    } else if (mType == DetailsType::Opportunity && role == Qt::FontRole) {
         return opportunityData(item, column, role);
     }
 
@@ -177,7 +178,7 @@ QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
 
 void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields)
 {
-    if (mType == Opportunity) {
+    if (mType == DetailsType::Opportunity) {
         // Find which opps use that account
         const int rows = rowCount();
         if (rows == 0)
@@ -206,7 +207,7 @@ void ItemsTreeModel::slotAccountModified(const QString &accountId, const QVector
 
 void ItemsTreeModel::slotAccountRemoved(const QString &accountId)
 {
-    if (mType == Opportunity) {
+    if (mType == DetailsType::Opportunity) {
         // The opps that were using this account need to be synced explicitly, this might be the result of an account merge
         // and SugarCRM doesn't mark the opps as modified when this happens...
         const int rows = rowCount();
@@ -389,7 +390,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.assembledName();
         case Title:
             return addressee.title();
-        case Organization: {
+        case Account: {
             // not using addressee.organization() since that doesn't follow account renames/deletions
             const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
             return ReferencedData::instance(AccountRef)->referencedData(accountId);
@@ -621,7 +622,7 @@ QVariant ItemsTreeModel::opportunityToolTip(const Item &item) const
 ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
 {
     switch (type) {
-    case Account:
+    case DetailsType::Account:
         return {
             ItemsTreeModel::Name,
             ItemsTreeModel::Street,
@@ -635,11 +636,11 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::NumberOfContacts,
             ItemsTreeModel::NumberOfDocumentsNotesEmails,
         };
-    case Contact:
+    case DetailsType::Contact:
         return {
             ItemsTreeModel::FullName,
             ItemsTreeModel::Title,
-            ItemsTreeModel::Organization,
+            ItemsTreeModel::Account,
             ItemsTreeModel::Country,
             ItemsTreeModel::PreferredEmail,
             ItemsTreeModel::PhoneWork,
@@ -648,7 +649,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::LastModifiedDate,
             ItemsTreeModel::NumberOfOpportunities,
         };
-    case Lead:
+    case DetailsType::Lead:
         return {
             ItemsTreeModel::LeadName,
             ItemsTreeModel::LeadStatus,
@@ -657,7 +658,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::LeadUser
         };
         break;
-    case Opportunity:
+    case DetailsType::Opportunity:
         return {
             ItemsTreeModel::OpportunityAccountName,
             ItemsTreeModel::OpportunityName,
@@ -675,7 +676,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::AssignedTo,
             ItemsTreeModel::OpportunityPriority
         };
-    case Campaign:
+    case DetailsType::Campaign:
         return {
             ItemsTreeModel::CampaignName,
             ItemsTreeModel::Status,
@@ -724,7 +725,7 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column full name of a contact ", "Name");
     case Title:
         return i18nc("@title:column contact title", "Title");
-    case Organization:
+    case Account:
         return i18nc("@title:column company", "Organization");
     case PreferredEmail:
         return i18nc("@title:column email", "Preferred Email");
@@ -796,23 +797,23 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
 {
     ItemsTreeModel::ColumnTypes columns = columnTypes();
     switch (mType) {
-    case Account:
+    case DetailsType::Account:
         columns.removeAll(ItemsTreeModel::Street);
         columns.removeAll(ItemsTreeModel::CreatedBy);
         columns.removeAll(ItemsTreeModel::NumberOfOpportunities);
         columns.removeAll(ItemsTreeModel::NumberOfContacts);
         columns.removeAll(ItemsTreeModel::NumberOfDocumentsNotesEmails);
         break;
-    case Contact:
+    case DetailsType::Contact:
         // too wide and too seldom filled in
         columns.removeAll(ItemsTreeModel::Title);
         columns.removeAll(ItemsTreeModel::CreationDate);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         columns.removeAll(ItemsTreeModel::NumberOfOpportunities);
         break;
-    case Lead:
+    case DetailsType::Lead:
         break;
-    case Opportunity:
+    case DetailsType::Opportunity:
         columns.removeAll(ItemsTreeModel::PostalCode);
         columns.removeAll(ItemsTreeModel::City);
         columns.removeAll(ItemsTreeModel::Amount);
@@ -820,7 +821,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         columns.removeAll(ItemsTreeModel::OpportunitySize);
         break;
-    case Campaign:
+    case DetailsType::Campaign:
         break;
     default:
         break;

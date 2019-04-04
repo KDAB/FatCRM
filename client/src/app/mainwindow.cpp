@@ -379,20 +379,20 @@ void MainWindow::slotModelLoaded(DetailsType type)
     //qCDebug(FATCRM_CLIENT_LOG) << typeToString(type) << "loaded";
     switch (type)
     {
-    case Account:
+    case DetailsType::Account:
         slotShowMessage(i18n("(2/6) Loading opportunities..."));
         break;
-    case Opportunity:
+    case DetailsType::Opportunity:
         slotShowMessage(i18n("(3/6) Loading contacts..."));
         break;
-    case Contact:
+    case DetailsType::Contact:
         slotShowMessage(i18n("(4/6) Loading notes..."));
         ReferencedData::emitInitialLoadingDoneForAll(); // fill combos
         slotHideOverlay();
         mLinkedItemsRepository->loadNotes();
         break;
-    case Lead:
-    case Campaign:
+    case DetailsType::Lead:
+    case DetailsType::Campaign:
         // currently unused
         break;
     }
@@ -645,7 +645,7 @@ void MainWindow::slotOpenObject(DetailsType type, const QString &id)
     if (page) {
         page->openWidget(id);
     } else {
-        qCDebug(FATCRM_CLIENT_LOG) << "No page for type" << type;
+        qCDebug(FATCRM_CLIENT_LOG) << "No page for type" << int(type);
     }
 }
 

@@ -481,7 +481,7 @@ void MergeWidget::updateFinalContact()
 ContactsImportPage::ContactsImportPage(QWidget *parent)
     : QWizardPage(parent)
     , mUi(new Ui::ContactsImportPage)
-    , mContactsModel(new FilterProxyModel(Contact, this))
+    , mContactsModel(new FilterProxyModel(DetailsType::Contact, this))
 {
     mUi->setupUi(this);
 }

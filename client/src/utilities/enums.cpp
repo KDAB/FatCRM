@@ -26,36 +26,36 @@
 
 QString typeToString(DetailsType type)
 {
-    if (type == Account) {
+    switch (type) {
+    case DetailsType::Account:
         return QStringLiteral("Accounts");
-    } else if (type == Opportunity) {
+    case DetailsType::Opportunity:
         return QStringLiteral("Opportunities");
-    } else if (type == Lead) {
+    case DetailsType::Lead:
         return QStringLiteral("Leads");
-    } else if (type == Contact) {
+    case DetailsType::Contact:
         return QStringLiteral("Contacts");
-    } else if (type == Campaign) {
+    case DetailsType::Campaign:
         return QStringLiteral("Campaigns");
-    } else {
-        return QString();
     }
+    return QString();
 }
 
 QString typeToTranslatedString(DetailsType type)
 {
-    if (type == Account) {
+    switch (type) {
+    case DetailsType::Account:
         return i18n("accounts");
-    } else if (type == Opportunity) {
+    case DetailsType::Opportunity:
         return i18n("opportunities");
-    } else if (type == Lead) {
+    case DetailsType::Lead:
         return i18n("leads");
-    } else if (type == Contact) {
+    case DetailsType::Contact:
         return i18n("contacts");
-    } else if (type == Campaign) {
+    case DetailsType::Campaign:
         return i18n("campaigns");
-    } else {
-        return QString();
     }
+    return QString();
 }
 
 static const char* s_maxNextStepDateStrings[] = {

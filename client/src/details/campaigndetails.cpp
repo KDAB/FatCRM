@@ -34,7 +34,7 @@
 #include <QDialog>
 
 CampaignDetails::CampaignDetails(QWidget *parent)
-    : Details(Campaign, parent), mUi(new Ui::CampaignDetails), mDataExtractor(new CampaignDataExtractor(this))
+    : Details(DetailsType::Campaign, parent), mUi(new Ui::CampaignDetails), mDataExtractor(new CampaignDataExtractor(this))
 
 {
     mUi->setupUi(this);

@@ -298,27 +298,27 @@ void Page::slotRemoveItem()
     Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     QString deleStr = i18n("The selected item will be deleted permanently!");
     switch (mType) {
-    case Account: {
+    case DetailsType::Account: {
         Q_ASSERT(item.hasPayload<SugarAccount>());
         SugarAccount acct = item.payload<SugarAccount>();
         deleStr = i18n("The account \"%1\" will be deleted permanently!", acct.name());
         break;
     }
-    case Opportunity: {
+    case DetailsType::Opportunity: {
         Q_ASSERT(item.hasPayload<SugarOpportunity>());
         SugarOpportunity opp = item.payload<SugarOpportunity>();
         deleStr = i18n("The %1 opportunity \"%2\" will be deleted permanently!",
                        opp.tempAccountName(), opp.name());
         break;
     }
-    case Contact: {
+    case DetailsType::Contact: {
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const auto contact = item.payload<KContacts::Addressee>();
         deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
         break;
     }
-    case Lead:
-    case Campaign:
+    case DetailsType::Lead:
+    case DetailsType::Campaign:
         break;
     }
 
@@ -377,7 +377,7 @@ void Page::slotCheckCollectionPopulated(Akonadi::Collection::Id id)
         //emit modelLoaded(mType, i18n("%1 %2 loaded", mItemsTreeModel->rowCount(), typeToString(mType)));
         emit modelLoaded(mType);
 
-        if (mType == Account) {
+        if (mType == DetailsType::Account) {
             AccountRepository::instance()->emitInitialLoadingDone();
         }
     }
@@ -462,15 +462,15 @@ QMenu *Page::createContextMenu(const QPoint &)
         contextMenu->addAction(i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
     }
 
-    if (!selectedIndexes.isEmpty() && (mType == Account || mType == Opportunity || mType == Contact)) {
+    if (!selectedIndexes.isEmpty() && (mType == DetailsType::Account || mType == DetailsType::Opportunity || mType == DetailsType::Contact)) {
         QMenu *changeMenu = contextMenu->addMenu(i18n("Change..."));
-        if (mType == Account || mType == Contact) {
+        if (mType == DetailsType::Account || mType == DetailsType::Contact) {
             QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
             cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
 
             QAction *countryAction = changeMenu->addAction(i18n("Country"), this, SLOT(slotChangeFields()));
             countryAction->setProperty(s_modifierFieldId, QVariant::fromValue(CountryField));
-        } else if (mType == Opportunity) {
+        } else if (mType == DetailsType::Opportunity) {
             QAction *dateAction = changeMenu->addAction(i18n("Next Step Date"), this, SLOT(slotChangeFields()));
             dateAction->setProperty(s_modifierFieldId, QVariant::fromValue(NextStepDateField));
 
@@ -750,7 +750,7 @@ void Page::slotChangeFields()
     Q_FOREACH (const QModelIndex &index, selectedIndexes) {
         Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
 
-        if (mType == Account) {
+        if (mType == DetailsType::Account) {
             Q_ASSERT(item.hasPayload<SugarAccount>());
             SugarAccount account = item.payload<SugarAccount>();
 
@@ -767,7 +767,7 @@ void Page::slotChangeFields()
             }
 
             item.setPayload(account);
-        } else if (mType == Opportunity) {
+        } else if (mType == DetailsType::Opportunity) {
             Q_ASSERT(item.hasPayload<SugarOpportunity>());
             SugarOpportunity opportunity = item.payload<SugarOpportunity>();
 
@@ -779,7 +779,7 @@ void Page::slotChangeFields()
             }
 
             item.setPayload(opportunity);
-        } else if (mType == Contact) {
+        } else if (mType == DetailsType::Contact) {
             Q_ASSERT(item.hasPayload<KContacts::Addressee>());
             KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
 
@@ -806,13 +806,13 @@ void Page::slotChangeFields()
 
     QString errorMessage;
     switch (mType) {
-    case Account:
+    case DetailsType::Account:
         errorMessage = i18n("Failed to change account:");
         break;
-    case Opportunity:
+    case DetailsType::Opportunity:
         errorMessage = i18n("Failed to change opportunity:");
         break;
-    case Contact:
+    case DetailsType::Contact:
         errorMessage = i18n("Failed to change contact:");
         break;
     default:

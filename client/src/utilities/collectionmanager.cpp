@@ -66,7 +66,7 @@ void CollectionManager::setResource(const QByteArray &identifier)
 
 Akonadi::Collection::Id CollectionManager::collectionIdForType(DetailsType detailsType) const
 {
-    return mMainCollectionIds.at(detailsType);
+    return mMainCollectionIds.at(int(detailsType));
 }
 
 QStringList CollectionManager::supportedFields(Akonadi::Collection::Id collectionId) const
@@ -135,22 +135,24 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
     auto *fetchJob = qobject_cast<CollectionFetchJob *>(job);
 
     QStringList collectionsWithoutEnumDefinitions;
-    Collection::List collections = fetchJob->collections();
-    Q_FOREACH (const Collection &collection, collections) {
+    const Collection::List collections = fetchJob->collections();
+    for (const Collection &collection : collections) {
         const QString contentMimeType = collection.contentMimeTypes().at(0);
+        DetailsType detailsType;
         if (contentMimeType == QLatin1String("inode/directory")) {
             continue;
         } else if (contentMimeType == SugarAccount::mimeType()) {
-            mMainCollectionIds[Account] = collection.id();
+            detailsType = DetailsType::Account;
         } else if (contentMimeType == SugarOpportunity::mimeType()) {
-            mMainCollectionIds[Opportunity] = collection.id();
+            detailsType = DetailsType::Opportunity;
         } else if (contentMimeType == KContacts::Addressee::mimeType()) {
-            mMainCollectionIds[Contact] = collection.id();
+            detailsType = DetailsType::Contact;
         } else if (contentMimeType == SugarLead::mimeType()) {
-            mMainCollectionIds[Lead] = collection.id();
+            detailsType = DetailsType::Lead;
         } else if (contentMimeType == SugarCampaign::mimeType()) {
-            mMainCollectionIds[Campaign] = collection.id();
+            detailsType = DetailsType::Campaign;
         }
+        mMainCollectionIds[int(detailsType)] = collection.id();
 
         //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
         readSupportedFields(collection);
@@ -171,9 +173,10 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
         showEnumDefinitionWarnings(collectionsWithoutEnumDefinitions);
     }
 
-    qSort(collections.begin(), collections.end(), collectionLessThan);
+    auto sortedCollections = collections;
+    qSort(sortedCollections.begin(), sortedCollections.end(), collectionLessThan);
 
-    Q_FOREACH (const Collection &collection, collections) {
+    for (const Collection &collection : qAsConst(sortedCollections)) {
         //qCDebug(FATCRM_CLIENT_LOG) << collection.contentMimeTypes() << "name" << collection.name();
         emit collectionResult(collection.contentMimeTypes().at(0), collection);
     }

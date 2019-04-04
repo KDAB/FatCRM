@@ -73,7 +73,7 @@ private Q_SLOTS:
         qDebug() << list.first().name();
         mChangeRecorder->setCollectionMonitored(list.first(), true);
 
-        auto *model = new ItemsTreeModel(Opportunity, mChangeRecorder);
+        auto *model = new ItemsTreeModel(DetailsType::Opportunity, mChangeRecorder);
         mTreeView->setModel(model);
 
 

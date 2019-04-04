@@ -93,11 +93,11 @@ void ItemEditWidgetBase::closeEvent(QCloseEvent *event)
 Details *ItemEditWidgetBase::createDetailsForType(DetailsType type)
 {
     switch (type) {
-    case Account: return new AccountDetails;
-    case Opportunity: return new OpportunityDetails;
-    case Contact: return new ContactDetails;
-    case Lead: return new LeadDetails;
-    case Campaign: return new CampaignDetails;
+    case DetailsType::Account: return new AccountDetails;
+    case DetailsType::Opportunity: return new OpportunityDetails;
+    case DetailsType::Contact: return new ContactDetails;
+    case DetailsType::Lead: return new LeadDetails;
+    case DetailsType::Campaign: return new CampaignDetails;
     }
 
     return nullptr;

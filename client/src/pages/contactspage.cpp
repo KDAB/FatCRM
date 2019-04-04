@@ -35,9 +35,9 @@
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, KContacts::Addressee::mimeType(), Contact), mDataExtractor(new ContactDataExtractor(this))
+    : Page(parent, KContacts::Addressee::mimeType(), DetailsType::Contact), mDataExtractor(new ContactDataExtractor(this))
 {
-    setFilter(new FilterProxyModel(Contact, this));
+    setFilter(new FilterProxyModel(DetailsType::Contact, this));
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 }
 
@@ -95,7 +95,7 @@ void ContactsPage::handleItemChanged(const Item &item)
         const int idx = mPendingContactsToOpen.indexOf(item.id());
         if (idx > -1) {
             mPendingContactsToOpen.remove(idx);
-            openWidgetForItem(item, Contact);
+            openWidgetForItem(item, DetailsType::Contact);
         }
         ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
         ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));

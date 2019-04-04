@@ -64,7 +64,7 @@ private Q_SLOTS:
 
         QTest::newRow("simple") << "test" << "879" << DetailsType::Account << QUrl("test?action=DetailView&module=Accounts&record=879");
         static const char *sDetailType[] = {"Accounts", "Opportunities", "Leads", "Contacts", "Campaigns"};
-        for(uint i = 0; i <= DetailsType::MaxType; i++) {
+        for(int i = 0; i <= int(DetailsType::Campaign); i++) {
                QTest::newRow(sDetailType[i]) << "KDAB" << "1"
                                              << static_cast<DetailsType>(i) << QUrl("KDAB?action=DetailView&module=" + QString(sDetailType[i]) + "&record=1");
         }

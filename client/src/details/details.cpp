@@ -423,7 +423,7 @@ QString Details::currentAccountId() const
 {
     // Account has KDCRMFields::parentId()
     // Contact, Leads, Opportunity have KDCRMFields::accountId()
-    if (mType != Campaign) {
+    if (mType != DetailsType::Campaign) {
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
         Q_FOREACH (QComboBox *cb, comboBoxes) {
             const QString key = cb->objectName();
@@ -454,7 +454,7 @@ void Details::assignToMe()
 
 QString Details::name() const
 {
-    if (mType == Contact) {
+    if (mType == DetailsType::Contact) {
         return findChild<QLineEdit *>(KDCRMFields::firstName())->text() + ' ' + findChild<QLineEdit *>(KDCRMFields::lastName())->text();
     }
     return property("name").toString();

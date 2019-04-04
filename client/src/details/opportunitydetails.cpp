@@ -43,7 +43,7 @@
 #include <QCompleter>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
+    : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
 {
     mUi->setupUi(this);
 
@@ -249,13 +249,13 @@ void OpportunityDetails::on_viewDocumentsButton_clicked()
 void OpportunityDetails::on_buttonOpenAccount_clicked()
 {
     const QString accountId = currentAccountId();
-    emit openObject(Account, accountId);
+    emit openObject(DetailsType::Account, accountId);
 }
 
 void OpportunityDetails::slotSelectAccount()
 {
-    auto *dlg = new SelectItemDialog(Account, this);
-    dlg->setModel(ModelRepository::instance()->model(Account));
+    auto *dlg = new SelectItemDialog(DetailsType::Account, this);
+    dlg->setModel(ModelRepository::instance()->model(DetailsType::Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
     connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
     dlg->show();
