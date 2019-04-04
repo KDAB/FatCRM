@@ -726,7 +726,7 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
     case Title:
         return i18nc("@title:column contact title", "Title");
     case Account:
-        return i18nc("@title:column company", "Organization");
+        return i18nc("@title:column company", "Account");
     case PreferredEmail:
         return i18nc("@title:column email", "Preferred Email");
     case PhoneWork:
