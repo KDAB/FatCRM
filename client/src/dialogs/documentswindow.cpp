@@ -142,6 +142,8 @@ DocumentsWindow::DocumentsWindow(QWidget *parent)
     ui->setupUi(this);
     ClientSettings::self()->restoreWindowSize("DocumentsWindow", this);
 
+    setAcceptDrops(true);
+
     connect(ui->attachButton, SIGNAL(clicked()), SLOT(attachDocument()));
 }
 
@@ -280,10 +282,21 @@ void DocumentsWindow::attachDocument()
     if (filePath.isEmpty())
         return;
 
-    const QFileInfo fileInfo(filePath);
+    attachDocument(filePath);
+}
+
+void DocumentsWindow::attachDocument(const QString &filePath)
+{
+    if (filePath.isEmpty()) {
+        qWarning() << "Empty file path passed";
+        return;
+    }
 
     static int tempDocumentCounter = 0;
     ++tempDocumentCounter;
+
+    qDebug() << "Attaching document:" << filePath;
+    const QFileInfo fileInfo(filePath);
 
     SugarDocument document;
     document.setId(QString::fromLatin1("__temp%1").arg(tempDocumentCounter));
@@ -429,4 +442,29 @@ void DocumentsWindow::saveChanges()
         mIsNotModifiedOverride = true;
         QWidget::close();
     }
+}
+
+void DocumentsWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    if (!mimeData->hasUrls() || mimeData->urls().size() > 1) {
+        return; // only allow drag of one file to prevent accidental drops
+    }
+
+    const QUrl url = mimeData->urls().first();
+    if (!url.isLocalFile()) {
+        return;
+    }
+
+    event->acceptProposedAction();
+}
+
+void DocumentsWindow::dropEvent(QDropEvent *event)
+{
+    const QMimeData* mimeData = event->mimeData();
+    for (const QUrl &url : mimeData->urls()) {
+        attachDocument(url.toLocalFile());
+    }
+
+    event->acceptProposedAction();
 }
