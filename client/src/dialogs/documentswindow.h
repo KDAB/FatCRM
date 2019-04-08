@@ -95,6 +95,8 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
+    void dragEnterEvent(QDragEnterEvent *event) override;
+    void dropEvent(QDropEvent *event) override;
 
 private slots:
     void on_buttonBox_accepted();
@@ -103,6 +105,7 @@ private slots:
     void urlClicked(const QString &url);
     void deleteDocument();
     void attachDocument();
+    void attachDocument(const QString &filePath);
 
     void slotJobResult(KJob *job);
 
