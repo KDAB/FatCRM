@@ -139,6 +139,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
     for (const Collection &collection : collections) {
         const QString contentMimeType = collection.contentMimeTypes().at(0);
         DetailsType detailsType;
+        bool mainFolder = true;
         if (contentMimeType == QLatin1String("inode/directory")) {
             continue;
         } else if (contentMimeType == SugarAccount::mimeType()) {
@@ -151,8 +152,12 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
             detailsType = DetailsType::Lead;
         } else if (contentMimeType == SugarCampaign::mimeType()) {
             detailsType = DetailsType::Campaign;
+        } else {
+            mainFolder = false;
         }
-        mMainCollectionIds[int(detailsType)] = collection.id();
+        if (mainFolder) {
+            mMainCollectionIds[int(detailsType)] = collection.id();
+        }
 
         //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
         readSupportedFields(collection);
