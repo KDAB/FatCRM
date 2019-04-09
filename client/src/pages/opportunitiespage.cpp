@@ -142,7 +142,10 @@ void OpportunitiesPage::handleRemovedRows(int start, int end, bool initialLoadin
 
 void OpportunitiesPage::handleItemChanged(const Item &item)
 {
-    Q_ASSERT(item.hasPayload<SugarOpportunity>());
+    if (!item.hasPayload<SugarOpportunity>()) {
+        qWarning() << "Broken item, missing payload (or not an opportunity)" << item.id() << item.remoteId();
+        return;
+    }
     const SugarOpportunity opp = item.payload<SugarOpportunity>();
     const QString id = opp.id();
     if (id.isEmpty()) {
