@@ -67,9 +67,9 @@ private:
     void updateCloseDateLabel(bool closed);
 
 private:
-    Ui::OpportunityDetails *mUi;
-    LinkedItemsRepository *mLinkedItemsRepository;
-    OpportunityDataExtractor *mDataExtractor;
+    Ui::OpportunityDetails *mUi = nullptr;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
+    OpportunityDataExtractor *mDataExtractor = nullptr;
     QDate mOriginalCloseDate;
     bool mCloseDateChangedByUser = false;
     void updateLinkedItemsButtons();
