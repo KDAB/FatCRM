@@ -162,7 +162,8 @@ void DocumentsWindow::setLinkedItemsRepository(LinkedItemsRepository *repository
 {
     mLinkedItemsRepository = repository;
 
-    auto *enumsAttr = mLinkedItemsRepository->documentsCollection().attribute<EnumDefinitionAttribute>();
+    const auto collection = mLinkedItemsRepository->documentsCollection();
+    auto *enumsAttr = collection.attribute<EnumDefinitionAttribute>();
     if (enumsAttr)
         mEnumDefinitions = EnumDefinitions::fromString(enumsAttr->value());
 }
