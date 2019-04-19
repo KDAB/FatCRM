@@ -156,7 +156,7 @@ SugarAccount &SugarAccount::operator=(const SugarAccount &other)
 static const char* s_extensions[] = {
     "Inc", "LLC", "Ltd", "Limited", // USA, UK
     "GmbH and Co. KG", "GmbH + Co. KG", "GmbH", "e.V", // Germany
-    "S.A.S", "SAS", "S.A", "SA", // France
+    "S.A.S", "SAS", "SASU", "S.A", "SA", // France
     "S.A.U", // Spain
     "S.p.A", "Spa", // Italy
     "AB", // Sweden
