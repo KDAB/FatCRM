@@ -13,8 +13,7 @@ include(FindPackageHandleStandardArgs)
 
 find_library(KDReports_LIBRARIES
     NAMES KDReports kdreports kdreports1 kdreports1d kdreportsd1 NAMES_PER_DIR
-    HINTS ${KDReports_DIR} ENV KDReports_DIR
-    PATH_SUFFIXES lib)
+    HINTS ${KDReports_DIR} ENV KDReports_DIR)
 find_path(KDReports_INCLUDE_DIR
     NAMES KDReportsGlobal.h
     HINTS ${KDReports_DIR} ENV KDReports_DIR
