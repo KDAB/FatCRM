@@ -22,13 +22,16 @@
 #include <QDebug>
 #include <QSignalSpy>
 #include <KContacts/Addressee>
+#include <kcontacts_version.h>
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 #include "sugarlead.h"
 #include "sugarcampaign.h"
 #include "itemdataextractor.h"
 
+#if KContacts_VERSION < QT_VERSION_CHECK(5, 11, 42)
 Q_DECLARE_METATYPE(KContacts::Address);
+#endif
 
 template<typename T>
 static Akonadi::Item createAkonadiItemfromType()
