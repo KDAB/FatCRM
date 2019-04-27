@@ -18,15 +18,12 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QTest>
-#include <QDebug>
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 #include "linkeditemsrepository.h"
-#include <QSignalSpy>
-#include <utilities/collectionmanager.h>
+#include "collectionmanager.h"
 
-
+#include <QTest>
 class TestLinkedItemsRepository : public QObject
 {
     Q_OBJECT
