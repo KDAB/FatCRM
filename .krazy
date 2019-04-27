@@ -1,9 +1,13 @@
 CHECKSETS qt4,c++,foss
-EXCLUDE copyright
-EXCLUDE style
 
 #KDAB-specific checks
 EXTRA kdabcopyright
+
+#exclude checks now being done by clazy or clang-tools
+EXCLUDE strings,explicit,normalize,passbyvalue,operators,nullstrcompare,nullstrassign,doublequote_chars,qobject,sigsandslots,staticobjects
+#exclude more checks
+EXCLUDE copyright
+EXCLUDE style
 
 #additional checks
 EXTRA defines,null,camelcase
