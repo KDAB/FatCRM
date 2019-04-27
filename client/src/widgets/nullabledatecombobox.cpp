@@ -33,7 +33,7 @@
   \brief A KDateComboBox with a nullable date
 
   This is a subclass of KDateComboBox that has the additional feature
-  of allowing to select a empty date. This can be achived with the
+  of allowing to select a empty date. This can be achieved with the
   clear button or by selecting the whole date and press backspace.
 
   To set an empty date from code, use the setter with an invalid
