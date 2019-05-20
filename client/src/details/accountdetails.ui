@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>884</width>
+    <width>1381</width>
     <height>623</height>
    </rect>
   </property>
@@ -14,170 +14,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" rowspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string>Details</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>&amp;Name:</string>
-        </property>
-        <property name="buddy">
-         <cstring>name</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="name"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Website:</string>
-        </property>
-        <property name="buddy">
-         <cstring>website</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLineEdit" name="website"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="visitWebsiteButton">
-          <property name="text">
-           <string>Visit</string>
-          </property>
-          <property name="icon">
-           <iconset theme="internet-web-browser">
-            <normaloff>.</normaloff>.</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Tic&amp;ker Symbol:</string>
-        </property>
-        <property name="buddy">
-         <cstring>ticker_symbol</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QLineEdit" name="ticker_symbol"/>
-      </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>&amp;Member of:</string>
-        </property>
-        <property name="buddy">
-         <cstring>parent_id</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="1">
-       <widget class="QComboBox" name="parent_id"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_5">
-        <property name="text">
-         <string>Ownership:</string>
-        </property>
-        <property name="buddy">
-         <cstring>ownership</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="4" column="1">
-       <widget class="QLineEdit" name="ownership"/>
-      </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_6">
-        <property name="text">
-         <string>Industry:</string>
-        </property>
-        <property name="buddy">
-         <cstring>industry</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="5" column="1">
-       <widget class="QComboBox" name="industry"/>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_7">
-        <property name="text">
-         <string>&amp;Type:</string>
-        </property>
-        <property name="buddy">
-         <cstring>account_type</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="1">
-       <widget class="QComboBox" name="account_type"/>
-      </item>
-      <item row="7" column="0">
-       <widget class="QLabel" name="label_9">
-        <property name="text">
-         <string>Assi&amp;gned to:</string>
-        </property>
-        <property name="buddy">
-         <cstring>assigned_user_id</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="7" column="1">
-       <widget class="QComboBox" name="assigned_user_id"/>
-      </item>
-      <item row="8" column="1">
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QPushButton" name="viewNotesButton">
-          <property name="text">
-           <string>View Notes</string>
-          </property>
-          <property name="icon">
-           <iconset theme="view-pim-notes">
-            <normaloff>.</normaloff>.</iconset>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="viewDocumentsButton">
-          <property name="text">
-           <string>&amp;View Documents</string>
-          </property>
-          <property name="icon">
-           <iconset theme="folder-documents">
-            <normaloff>.</normaloff>.</iconset>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLabel" name="urllabel">
-        <property name="text">
-         <string>-</string>
-        </property>
-        <property name="openExternalLinks">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
    <item row="0" column="1" rowspan="2">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
@@ -288,36 +124,6 @@
       <item row="7" column="1">
        <widget class="QLineEdit" name="email1"/>
       </item>
-      <item row="9" column="0">
-       <widget class="QLabel" name="label_28">
-        <property name="text">
-         <string>Visma ID:</string>
-        </property>
-        <property name="buddy">
-         <cstring>visma_id_c</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0">
-       <widget class="QLabel" name="label_29">
-        <property name="text">
-         <string>Accounting:</string>
-        </property>
-        <property name="buddy">
-         <cstring>accounting_c</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="9" column="1">
-       <widget class="QLineEdit" name="visma_id_c"/>
-      </item>
-      <item row="10" column="1">
-       <widget class="BetterPlainTextEdit" name="accounting_c">
-        <property name="tabChangesFocus">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="8" column="0">
        <widget class="QLabel" name="label_30">
         <property name="text">
@@ -330,6 +136,36 @@
       </item>
       <item row="8" column="1">
        <widget class="QLineEdit" name="vat_no_c"/>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_28">
+        <property name="text">
+         <string>Visma ID:</string>
+        </property>
+        <property name="buddy">
+         <cstring>visma_id_c</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLineEdit" name="visma_id_c"/>
+      </item>
+      <item row="10" column="0">
+       <widget class="QLabel" name="label_29">
+        <property name="text">
+         <string>Accounting:</string>
+        </property>
+        <property name="buddy">
+         <cstring>accounting_c</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="1">
+       <widget class="BetterPlainTextEdit" name="accounting_c">
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -575,6 +411,194 @@
          </widget>
         </item>
        </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="0" rowspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Details</string>
+     </property>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="name"/>
+      </item>
+      <item row="3" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="website"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="visitWebsiteButton">
+          <property name="text">
+           <string>Visit</string>
+          </property>
+          <property name="icon">
+           <iconset theme="internet-web-browser">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="ticker_symbol"/>
+      </item>
+      <item row="7" column="1">
+       <widget class="QComboBox" name="parent_id"/>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLineEdit" name="ownership"/>
+      </item>
+      <item row="11" column="1">
+       <widget class="QComboBox" name="industry"/>
+      </item>
+      <item row="13" column="1">
+       <widget class="QComboBox" name="account_type"/>
+      </item>
+      <item row="15" column="1">
+       <widget class="QComboBox" name="assigned_user_id"/>
+      </item>
+      <item row="18" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="viewDocumentsButton">
+          <property name="text">
+           <string>Open</string>
+          </property>
+          <property name="icon">
+           <iconset theme="document-open"/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="manageDocumentsButton">
+          <property name="text">
+           <string>&amp;Manage Documents</string>
+          </property>
+          <property name="icon">
+           <iconset theme="document-edit">
+            <normaloff>.</normaloff>.</iconset>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="20" column="0">
+       <widget class="QLabel" name="label_33">
+        <property name="text">
+         <string>Notes:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="20" column="1">
+       <widget class="QPushButton" name="viewNotesButton">
+        <property name="text">
+         <string>View Notes</string>
+        </property>
+        <property name="icon">
+         <iconset theme="view-pim-notes">
+          <normaloff>.</normaloff>.</iconset>
+        </property>
+       </widget>
+      </item>
+      <item row="22" column="0">
+       <widget class="QLabel" name="urllabel">
+        <property name="text">
+         <string>-</string>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="18" column="0">
+       <widget class="QLabel" name="label_32">
+        <property name="text">
+         <string>Documents:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="15" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Assi&amp;gned to:</string>
+        </property>
+        <property name="buddy">
+         <cstring>assigned_user_id</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="13" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>&amp;Type:</string>
+        </property>
+        <property name="buddy">
+         <cstring>account_type</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="11" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Industry:</string>
+        </property>
+        <property name="buddy">
+         <cstring>industry</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Ownership:</string>
+        </property>
+        <property name="buddy">
+         <cstring>ownership</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>&amp;Member of:</string>
+        </property>
+        <property name="buddy">
+         <cstring>parent_id</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Tic&amp;ker Symbol:</string>
+        </property>
+        <property name="buddy">
+         <cstring>ticker_symbol</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Website:</string>
+        </property>
+        <property name="buddy">
+         <cstring>website</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>&amp;Name:</string>
+        </property>
+        <property name="buddy">
+         <cstring>name</cstring>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

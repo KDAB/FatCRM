@@ -24,10 +24,9 @@
 class QString;
 class QWidget;
 
-class ExternalOpen
+namespace ExternalOpen
 {
-public:
-    static bool openSugarDocument(const QString &documentRevisionId, const QString &resourceIdentifier, QWidget *window);
+    bool openSugarDocument(const QString &documentRevisionId, const QString &resourceIdentifier, QWidget *window);
 };
 
 #endif // EXTERNALOPEN_H

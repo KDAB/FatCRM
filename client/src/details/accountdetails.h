@@ -52,7 +52,7 @@ private Q_SLOTS:
     void slotBillingAddressCountryEditingFinished();
     void slotShippingAddressCountryEditingFinished();
     void on_viewNotesButton_clicked();
-    void on_viewDocumentsButton_clicked();
+    void on_manageDocumentsButton_clicked();
     void slotLinkedItemsModified(const QString &accountId);
 
 private:

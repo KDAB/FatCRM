@@ -22,8 +22,6 @@
 
 #include "sugarresourceitemtransfer.h"
 
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/ServerManager>
 
 #include <KLocalizedString>
