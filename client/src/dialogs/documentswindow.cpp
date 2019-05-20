@@ -22,6 +22,7 @@
 #include "ui_documentswindow.h"
 
 #include "clientsettings.h"
+#include "externalopen.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 #include "kdcrmutils.h"
 #include "linkeditemsrepository.h"
@@ -233,31 +234,7 @@ void DocumentsWindow::on_buttonBox_rejected()
 void DocumentsWindow::urlClicked(const QString &url)
 {
     const QString documentRevisionId = QUrl(url).path().mid(1); // strip leading '/' from path
-
-    const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource,
-                                                                  mResourceIdentifier);
-
-    ComKdabSugarCRMItemTransferInterface transferInterface(service, QLatin1String("/ItemTransfer"), QDBusConnection::sessionBus());
-
-    QDBusPendingReply<QString> reply = transferInterface.downloadDocumentRevision(documentRevisionId);
-    reply.waitForFinished();
-
-    if (reply.isValid()) {
-
-        const QString filePath = reply.value();
-        if (!filePath.isEmpty()) {
-            const QUrl localFile = QUrl::fromLocalFile(filePath);
-
-            QMimeDatabase db;
-            const auto mimeType = db.mimeTypeForUrl(localFile);
-
-            KRun::runUrl(localFile, mimeType.isValid() ? mimeType.name() : QString(), this, KRun::RunFlags(KRun::DeleteTemporaryFiles));
-
-            return;
-        }
-    }
-
-    QMessageBox::warning(this, i18n("Unable to download Document"), i18n("Could not download the document, make sure the resource is online."));
+    ExternalOpen::openSugarDocument(documentRevisionId, mResourceIdentifier, this);
 }
 
 void DocumentsWindow::deleteDocument()
