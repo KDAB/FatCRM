@@ -31,6 +31,7 @@
 #include "opportunitydataextractor.h"
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
+#include "externalopen.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -41,6 +42,7 @@
 
 #include <QCalendarWidget>
 #include <QCompleter>
+#include <QMenu>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
@@ -171,10 +173,22 @@ void OpportunityDetails::updateLinkedItemsButtons()
         mUi->viewNotesButton->setEnabled(!oppId.isEmpty());
     }
     {
-        const int documents = oppId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForOpportunity(oppId).count();
-        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
-        mUi->viewDocumentsButton->setText(buttonText);
-        mUi->viewDocumentsButton->setEnabled(!oppId.isEmpty());
+        const auto documents = mLinkedItemsRepository->documentsForOpportunity(oppId);
+        const QString buttonText = documents.isEmpty() ? i18n("Attach Document") : i18np("Manage 1 Document", "Manage %1 Documents", documents.count());
+        mUi->manageDocumentsButton->setText(buttonText);
+        mUi->viewDocumentsButton->setEnabled(!documents.isEmpty());
+
+        auto *menu = new QMenu(this);
+        for (auto doc : documents) {
+            auto *action = menu->addAction(doc.documentName().toHtmlEscaped());
+            connect(action, &QAction::triggered, this, [this, doc]() {
+                ExternalOpen::openSugarDocument(doc.documentRevisionId(), resourceIdentifier(), this);
+            });
+        }
+        if (auto oldMenu = mUi->viewDocumentsButton->menu()) {
+            oldMenu->deleteLater();
+        }
+        mUi->viewDocumentsButton->setMenu(menu);
     }
 }
 
@@ -230,7 +244,7 @@ void OpportunityDetails::on_viewNotesButton_clicked()
     dlg->show();
 }
 
-void OpportunityDetails::on_viewDocumentsButton_clicked()
+void OpportunityDetails::on_manageDocumentsButton_clicked()
 {
     const QString oppId = id();
 

@@ -26,6 +26,7 @@
 
 #include "accountdataextractor.h"
 #include "documentswindow.h"
+#include "externalopen.h"
 #include "linkeditemsrepository.h"
 #include "noteswindow.h"
 #include "referenceddatamodel.h"
@@ -37,6 +38,7 @@
 #include <KLocalizedString>
 
 #include <QDesktopServices>
+#include <QMenu>
 
 AccountDetails::AccountDetails(QWidget *parent)
     : Details(DetailsType::Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this))
@@ -149,7 +151,7 @@ void AccountDetails::on_viewNotesButton_clicked()
     dlg->show();
 }
 
-void AccountDetails::on_viewDocumentsButton_clicked()
+void AccountDetails::on_manageDocumentsButton_clicked()
 {
     const QString accountId = id();
 
@@ -232,10 +234,22 @@ void AccountDetails::updateLinkedItemsButtons()
         mUi->viewNotesButton->setEnabled(!accountId.isEmpty());
     }
     {
-        const int documents = accountId.isEmpty() ? 0 : mLinkedItemsRepository->documentsForAccount(accountId).count();
-        const QString buttonText = (documents == 0) ? i18n("Attach Document") : i18np("View 1 Document", "View %1 Documents", documents);
-        mUi->viewDocumentsButton->setText(buttonText);
-        mUi->viewDocumentsButton->setEnabled(!accountId.isEmpty());
+        const auto documents = mLinkedItemsRepository->documentsForOpportunity(accountId);
+        const QString buttonText = documents.isEmpty() ? i18n("Attach Document") : i18np("Manage 1 Document", "Manage %1 Documents", documents.count());
+        mUi->manageDocumentsButton->setText(buttonText);
+        mUi->viewDocumentsButton->setEnabled(!documents.isEmpty());
+
+        auto *menu = new QMenu(this);
+        for (auto doc : documents) {
+            auto *action = menu->addAction(doc.documentName().toHtmlEscaped());
+            connect(action, &QAction::triggered, this, [this, doc]() {
+                ExternalOpen::openSugarDocument(doc.documentRevisionId(), resourceIdentifier(), this);
+            });
+        }
+        if (auto oldMenu = mUi->viewDocumentsButton->menu()) {
+            oldMenu->deleteLater();
+        }
+        mUi->viewDocumentsButton->setMenu(menu);
     }
 }
 

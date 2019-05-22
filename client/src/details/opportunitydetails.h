@@ -56,7 +56,7 @@ private Q_SLOTS:
     void slotLinkedItemsModified(const QString &oppId);
 
     void on_viewNotesButton_clicked();
-    void on_viewDocumentsButton_clicked();
+    void on_manageDocumentsButton_clicked();
     void on_buttonOpenAccount_clicked();
 
 private:
