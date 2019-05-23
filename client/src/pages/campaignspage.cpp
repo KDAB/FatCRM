@@ -34,7 +34,7 @@
 using namespace Akonadi;
 
 CampaignsPage::CampaignsPage(QWidget *parent)
-    : Page(parent, QString(SugarCampaign::mimeType()), DetailsType::Campaign), mDataExtractor(new CampaignDataExtractor(this))
+    : Page(parent, QString(SugarCampaign::mimeType()), DetailsType::Campaign), mDataExtractor(new CampaignDataExtractor)
 {
     setFilter(new FilterProxyModel(DetailsType::Campaign, this));
 }
@@ -70,5 +70,5 @@ void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
 
 ItemDataExtractor *CampaignsPage::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }

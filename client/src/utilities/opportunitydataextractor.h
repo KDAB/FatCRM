@@ -27,11 +27,8 @@
 
 class OpportunityDataExtractor : public ItemDataExtractor
 {
-    Q_OBJECT
 public:
-    explicit OpportunityDataExtractor(QObject *parent = nullptr);
-
-    ~OpportunityDataExtractor() override;
+    explicit OpportunityDataExtractor();
 
 protected:
     QString itemAddress() const override ;

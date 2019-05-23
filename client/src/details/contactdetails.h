@@ -78,7 +78,7 @@ private Q_SLOTS:
     void slotLinkedItemsModified(const QString &contactId);
 
 private:
-    ContactDataExtractor *mDataExtractor;
+    std::unique_ptr<ContactDataExtractor> mDataExtractor;
     LinkedItemsRepository *mLinkedItemsRepository = nullptr;
     void updateLinkedItemsButtons();
 };

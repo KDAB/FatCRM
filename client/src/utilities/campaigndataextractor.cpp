@@ -24,13 +24,7 @@
 
 #include "kdcrmdata/sugarcampaign.h"
 
-CampaignDataExtractor::CampaignDataExtractor(QObject *parent)
-    : ItemDataExtractor(parent)
-{
-
-}
-
-CampaignDataExtractor::~CampaignDataExtractor()
+CampaignDataExtractor::CampaignDataExtractor()
 {
 
 }

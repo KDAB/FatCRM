@@ -55,7 +55,7 @@ private:
     void setDataInternal(const QMap<QString, QString> &) override;
 
     Ui::CampaignDetails *mUi;
-    CampaignDataExtractor *mDataExtractor;
+    std::unique_ptr<CampaignDataExtractor> mDataExtractor;
 };
 
 #endif /* CAMPAIGNDETAILS_H */

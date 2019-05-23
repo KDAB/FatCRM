@@ -25,14 +25,10 @@
 
 #include "itemdataextractor.h"
 
-
 class AccountDataExtractor : public ItemDataExtractor
 {
-    Q_OBJECT
 public:
-    explicit AccountDataExtractor(QObject *parent = nullptr);
-
-    ~AccountDataExtractor() override;
+    explicit AccountDataExtractor();
 
 protected:
     QString itemAddress() const override;

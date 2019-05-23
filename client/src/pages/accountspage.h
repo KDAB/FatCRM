@@ -50,7 +50,7 @@ private slots:
     void createNewOpportunityForSelectedAccount();
 
 private:
-    AccountDataExtractor *mDataExtractor;
+    std::unique_ptr<AccountDataExtractor> mDataExtractor;
 
 };
 #endif /* ACCOUNTSPAGE_H */

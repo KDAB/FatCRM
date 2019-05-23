@@ -24,8 +24,8 @@
 
 #include "kdcrmdata/sugarlead.h"
 
-LeadDataExtractor::LeadDataExtractor(QObject *parent)
-    : ItemDataExtractor(parent)
+LeadDataExtractor::LeadDataExtractor()
+    : ItemDataExtractor()
 {
 
 }

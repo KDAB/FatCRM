@@ -64,7 +64,7 @@ private:
 
 private:
     Ui::AccountDetails *mUi;
-    AccountDataExtractor *mDataExtractor;
+    std::unique_ptr<AccountDataExtractor> mDataExtractor;
     LinkedItemsRepository *mLinkedItemsRepository = nullptr;
 };
 

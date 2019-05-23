@@ -24,18 +24,17 @@
 #include "fatcrmprivate_export.h"
 #include "enums.h"
 
-#include <QObject>
-
 #include <AkonadiCore/Item>
+
+#include <memory>
 
 /**
  * @brief Base class for type-dependent extraction of the ID from an Akonadi::Item
  */
-class FATCRMPRIVATE_EXPORT ItemDataExtractor : public QObject
+class FATCRMPRIVATE_EXPORT ItemDataExtractor
 {
-    Q_OBJECT
 public:
-    ~ItemDataExtractor() override;
+    virtual ~ItemDataExtractor();
 
     // Extract the id from the (type-dependent) payload
     virtual QString idForItem(const Akonadi::Item &item) const = 0;
@@ -46,10 +45,10 @@ public:
     // Return the web URL for this item ID
     QUrl itemUrl(const QString &resourceBaseUrl, const QString &itemId) const; // called from details dialog
 
-    static ItemDataExtractor *createDataExtractor(DetailsType type, QObject *parent);
+    static std::unique_ptr<ItemDataExtractor> createDataExtractor(DetailsType type);
 
 protected:
-    explicit ItemDataExtractor(QObject *parent = nullptr);
+    explicit ItemDataExtractor();
 
 private:
     // Returns the part of the URL query that is type-dependent

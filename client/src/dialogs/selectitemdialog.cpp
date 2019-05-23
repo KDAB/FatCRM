@@ -29,14 +29,13 @@ using namespace Akonadi;
 
 SelectItemDialog::SelectItemDialog(DetailsType type, QWidget *parent) :
     QDialog(parent),
-    mUi(new Ui::SelectItemDialog)
+    mUi(new Ui::SelectItemDialog),
+    mDataExtractor(ItemDataExtractor::createDataExtractor(type))
 {
    mUi->setupUi(this);
    mUi->treeView->setSortingEnabled(true);
    connect(mUi->treeView, SIGNAL(clicked(Akonadi::Item)), this, SLOT(slotItemSelected(Akonadi::Item)));
    connect(mUi->treeView, SIGNAL(activated(QModelIndex)), this, SLOT(accept()));
-
-   mDataExtractor = ItemDataExtractor::createDataExtractor(type, this);
 }
 
 SelectItemDialog::~SelectItemDialog()

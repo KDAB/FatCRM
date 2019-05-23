@@ -41,7 +41,7 @@
 #include <QMenu>
 
 AccountDetails::AccountDetails(QWidget *parent)
-    : Details(DetailsType::Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor(this))
+    : Details(DetailsType::Account, parent), mUi(new Ui::AccountDetails), mDataExtractor(new AccountDataExtractor)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -97,7 +97,7 @@ void AccountDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
 
 ItemDataExtractor *AccountDetails::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 QMap<QString, QString> AccountDetails::fillAddressFieldsMap(QGroupBox *box) const

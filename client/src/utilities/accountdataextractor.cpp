@@ -24,13 +24,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
-AccountDataExtractor::AccountDataExtractor(QObject *parent)
-    : ItemDataExtractor(parent)
-{
-
-}
-
-AccountDataExtractor::~AccountDataExtractor()
+AccountDataExtractor::AccountDataExtractor()
 {
 
 }

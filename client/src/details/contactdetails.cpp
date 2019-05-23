@@ -46,7 +46,7 @@
 #include <QMessageBox>
 
 ContactDetails::ContactDetails(QWidget *parent)
-    : Details(DetailsType::Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor(this))
+    : Details(DetailsType::Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor)
 {
     mUi->setupUi(this);
     mUi->urllabel->setTextInteractionFlags(Qt::LinksAccessibleByMouse);
@@ -125,7 +125,7 @@ void ContactDetails::initialize()
 
 ItemDataExtractor *ContactDetails::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 void ContactDetails::slotSetBirthday()

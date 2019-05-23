@@ -26,13 +26,7 @@
 
 #include <KLocalizedString>
 
-OpportunityDataExtractor::OpportunityDataExtractor(QObject *parent)
-    : ItemDataExtractor(parent)
-{
-
-}
-
-OpportunityDataExtractor::~OpportunityDataExtractor()
+OpportunityDataExtractor::OpportunityDataExtractor()
 {
 
 }

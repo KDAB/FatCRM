@@ -61,7 +61,7 @@ protected:
 private:
     OpportunityFilterWidget *mFilterUiWidget;
     OpportunityFilterProxyModel *mOppFilterProxyModel;
-    OpportunityDataExtractor *mDataExtractor;
+    std::unique_ptr<OpportunityDataExtractor> mDataExtractor;
 
 private slots:
     void slotDefaultOppFilterUpdated(const OpportunityFilterSettings &settings);

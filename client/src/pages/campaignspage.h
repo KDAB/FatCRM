@@ -42,7 +42,7 @@ protected:
     void handleNewRows(int start, int end, bool emitChanges) override;
 
 private:
-    CampaignDataExtractor *mDataExtractor;
+    std::unique_ptr<CampaignDataExtractor> mDataExtractor;
 
 };
 

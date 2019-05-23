@@ -35,7 +35,7 @@
 using namespace Akonadi;
 
 ContactsPage::ContactsPage(QWidget *parent)
-    : Page(parent, KContacts::Addressee::mimeType(), DetailsType::Contact), mDataExtractor(new ContactDataExtractor(this))
+    : Page(parent, KContacts::Addressee::mimeType(), DetailsType::Contact), mDataExtractor(new ContactDataExtractor)
 {
     setFilter(new FilterProxyModel(DetailsType::Contact, this));
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -57,7 +57,7 @@ QString ContactsPage::reportTitle() const
 
 ItemDataExtractor *ContactsPage::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 void ContactsPage::handleNewRows(int start, int end, bool emitChanges)

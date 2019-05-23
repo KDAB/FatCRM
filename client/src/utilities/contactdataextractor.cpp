@@ -26,13 +26,7 @@
 
 #include <KLocalizedString>
 
-ContactDataExtractor::ContactDataExtractor(QObject *parent)
-    : ItemDataExtractor(parent)
-{
-
-}
-
-ContactDataExtractor::~ContactDataExtractor()
+ContactDataExtractor::ContactDataExtractor()
 {
 
 }

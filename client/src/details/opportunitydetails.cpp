@@ -46,7 +46,7 @@
 #include <QMenu>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
-    : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor(this))
+    : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor)
 {
     mUi->setupUi(this);
 
@@ -94,7 +94,7 @@ void OpportunityDetails::initialize()
 
 ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 void OpportunityDetails::slotAutoNextStepDate()

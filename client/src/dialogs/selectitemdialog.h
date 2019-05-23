@@ -60,9 +60,9 @@ private Q_SLOTS:
     void slotItemSelected(const Akonadi::Item &item);
 
 private:
-    ItemDataExtractor *mDataExtractor;
-    Akonadi::Item mSelectedItem;
     Ui::SelectItemDialog *mUi;
+    Akonadi::Item mSelectedItem;
+    std::unique_ptr<ItemDataExtractor> mDataExtractor;
 };
 
 #endif // SELECTITEMDIALOG_H

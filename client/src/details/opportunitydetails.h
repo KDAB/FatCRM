@@ -69,7 +69,7 @@ private:
 private:
     Ui::OpportunityDetails *mUi = nullptr;
     LinkedItemsRepository *mLinkedItemsRepository = nullptr;
-    OpportunityDataExtractor *mDataExtractor = nullptr;
+    std::unique_ptr<OpportunityDataExtractor> mDataExtractor;
     QDate mOriginalCloseDate;
     bool mCloseDateChangedByUser = false;
     void updateLinkedItemsButtons();

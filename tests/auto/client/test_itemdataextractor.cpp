@@ -82,7 +82,7 @@ private Q_SLOTS:
         QFETCH(QString, itemId);
         QFETCH(DetailsType, type);
         QFETCH(QUrl, expectedUrl);
-        ItemDataExtractor *itemDE = ItemDataExtractor::createDataExtractor(type, 0);
+        auto itemDE = ItemDataExtractor::createDataExtractor(type);
         //WHEN
         const QUrl url = itemDE->itemUrl(resourceBaseUrl, itemId);
         //THEN
@@ -93,7 +93,7 @@ private Q_SLOTS:
     void shouldReturnCorrectUrlFromAkonadiItem()
     {
         //GIVEN
-        ItemDataExtractor *itemDE = ItemDataExtractor::createDataExtractor(DetailsType::Account, 0);
+        auto itemDE = ItemDataExtractor::createDataExtractor(DetailsType::Account);
         SugarAccount account;
         account.setId("1");
         Akonadi::Item item;
@@ -121,7 +121,7 @@ private Q_SLOTS:
         //GIVEN
         QFETCH(DetailsType, type);
         QFETCH(Akonadi::Item, item);
-        ItemDataExtractor *itemDE = ItemDataExtractor::createDataExtractor(type, 0);
+        auto itemDE = ItemDataExtractor::createDataExtractor(type);
         //WHEN
         const QString id = itemDE->idForItem(item);
         //THEN

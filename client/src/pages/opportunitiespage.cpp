@@ -62,7 +62,7 @@ public:
 };
 
 OpportunitiesPage::OpportunitiesPage(QWidget *parent)
-    : Page(parent, SugarOpportunity::mimeType(), DetailsType::Opportunity), mDataExtractor(new OpportunityDataExtractor(this))
+    : Page(parent, SugarOpportunity::mimeType(), DetailsType::Opportunity), mDataExtractor(new OpportunityDataExtractor)
 {
     treeView()->setItemDelegate(new OpportunityTreeViewItemDelegate(this));
     mOppFilterProxyModel = new OpportunityFilterProxyModel(this);
@@ -181,7 +181,7 @@ void OpportunitiesPage::loadSearch(const QString &searchPrefix)
 
 ItemDataExtractor *OpportunitiesPage::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 void OpportunitiesPage::slotDefaultOppFilterUpdated(const OpportunityFilterSettings &settings)

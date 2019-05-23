@@ -47,7 +47,7 @@ protected:
     void handleRemovedRows(int start, int end, bool initialLoadingDone) override;
 
 private:
-    ContactDataExtractor *mDataExtractor;
+    std::unique_ptr<ContactDataExtractor> mDataExtractor;
     QVector<Akonadi::Item::Id> mPendingContactsToOpen;
 };
 

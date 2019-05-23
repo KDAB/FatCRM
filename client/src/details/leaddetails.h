@@ -54,7 +54,7 @@ private:
     QMap<QString, QString> data(const Akonadi::Item &item) const override;
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
     void setDataInternal(const QMap<QString, QString> &data) override;
-    LeadDataExtractor *mDataExtractor;
+    std::unique_ptr<LeadDataExtractor> mDataExtractor;
 };
 
 #endif /* LEADDETAILS_H */

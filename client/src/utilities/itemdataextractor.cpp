@@ -26,8 +26,7 @@
 #include "leaddataextractor.h"
 #include "opportunitydataextractor.h"
 
-ItemDataExtractor::ItemDataExtractor(QObject *parent) :
-    QObject(parent)
+ItemDataExtractor::ItemDataExtractor()
 {
 
 }
@@ -50,19 +49,21 @@ QUrl ItemDataExtractor::itemUrl(const QString &resourceBaseUrl, const QString &i
     return QUrl(resourceBaseUrl + itemAddress() + itemId);
 }
 
-ItemDataExtractor *ItemDataExtractor::createDataExtractor(DetailsType type, QObject *parent)
+std::unique_ptr<ItemDataExtractor> ItemDataExtractor::createDataExtractor(DetailsType type)
 {
+    using Type = std::unique_ptr<ItemDataExtractor>;
+
     switch(type) {
     case DetailsType::Account:
-        return new AccountDataExtractor(parent);
+        return Type(new AccountDataExtractor);
     case DetailsType::Opportunity:
-        return new OpportunityDataExtractor(parent);
+        return Type(new OpportunityDataExtractor);
     case DetailsType::Lead:
-        return new LeadDataExtractor(parent);
+        return Type(new LeadDataExtractor);
     case DetailsType::Contact:
-        return new ContactDataExtractor(parent);
+        return Type(new ContactDataExtractor);
     case DetailsType::Campaign:
-        return new CampaignDataExtractor(parent);
+        return Type(new CampaignDataExtractor);
     }
     return nullptr;
 }

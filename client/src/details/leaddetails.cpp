@@ -34,7 +34,7 @@
 #include <QDialog>
 
 LeadDetails::LeadDetails(QWidget *parent)
-    : Details(DetailsType::Lead, parent), mUi(new Ui::LeadDetails), mDataExtractor(new LeadDataExtractor(this))
+    : Details(DetailsType::Lead, parent), mUi(new Ui::LeadDetails), mDataExtractor(new LeadDataExtractor)
 
 {
     mUi->setupUi(this);
@@ -83,7 +83,7 @@ LeadDetails::~LeadDetails()
 
 ItemDataExtractor *LeadDetails::itemDataExtractor() const
 {
-    return mDataExtractor;
+    return mDataExtractor.get();
 }
 
 void LeadDetails::initialize()

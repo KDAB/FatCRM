@@ -41,7 +41,7 @@ protected:
     void handleNewRows(int start, int end, bool emitChanges) override;
 
 private:
-    LeadDataExtractor *mDataExtractor;
+    std::unique_ptr<LeadDataExtractor> mDataExtractor;
 };
 
 #endif /* LEADSPAGE_H */

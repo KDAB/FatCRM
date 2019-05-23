@@ -27,11 +27,8 @@
 
 class CampaignDataExtractor : public ItemDataExtractor
 {
-    Q_OBJECT
 public:
-    explicit CampaignDataExtractor(QObject *parent = nullptr);
-
-    ~CampaignDataExtractor() override;
+    explicit CampaignDataExtractor();
 
 protected:
     QString itemAddress() const override;
