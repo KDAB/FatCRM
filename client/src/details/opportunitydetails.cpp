@@ -248,7 +248,7 @@ void OpportunityDetails::on_manageDocumentsButton_clicked()
 {
     const QString oppId = id();
 
-    DocumentsWindow *dlg = new DocumentsWindow(nullptr);
+    auto *dlg = new DocumentsWindow(nullptr);
     connect(dlg, &DocumentsWindow::documentsCreated, this, &OpportunityDetails::syncRequired);
     dlg->setWindowTitle(i18n("Documents for opportunity %1", name()));
 

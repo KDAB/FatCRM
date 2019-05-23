@@ -814,7 +814,7 @@ void MainWindow::populateSavedSearchesMenu()
     mSavedSearchesMenu->clear();
     for (int x = 0; x < count; ++x) {
         const QString searchName = recentSearches.at(x);
-        QAction *searchAlternative = new QAction(searchName, this);
+        auto *searchAlternative = new QAction(searchName, this);
         mSavedSearchesMenu->addAction(searchAlternative);
     }
 
@@ -822,7 +822,7 @@ void MainWindow::populateSavedSearchesMenu()
 
     mLoadedSearchName = ClientSettings::self()->searchNameFromPrefix(mLoadedSearchPrefix);
     QString saveActionName = mLoadedSearchPrefix.isEmpty() ? i18n("Save...") : i18n("Save \"%1\"", mLoadedSearchName);
-    QAction *saveCurrentSearch = new QAction(saveActionName, this);
+    auto *saveCurrentSearch = new QAction(saveActionName, this);
     mSavedSearchesMenu->addAction(saveCurrentSearch);
     connect(saveCurrentSearch, &QAction::triggered, this, &MainWindow::slotSaveSearch);
     if (mLoadedSearchPrefix.isEmpty()) {
