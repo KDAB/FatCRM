@@ -96,6 +96,7 @@ void ReportGenerator::finalizeReport(KDReports::Report &report, QWidget *parent)
     report.setPageSize(QPrinter::A4);
 
     KDReports::PreviewDialog preview(&report, parent);
+    preview.setWindowTitle(i18n("Print Preview"));
     preview.previewWidget()->setShowPageListWidget(false);
     preview.previewWidget()->setShowTableSettingsDialog(false);
     preview.resize(1167, 906);
