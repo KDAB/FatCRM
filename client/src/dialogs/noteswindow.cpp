@@ -96,7 +96,7 @@ void NotesWindow::addEmail(const SugarEmail &email)
 void NotesWindow::setVisible(bool visible)
 {
     if (ui->textEdit->document()->isEmpty()) {
-        qSort(m_notes);
+        std::sort(m_notes.begin(), m_notes.end());
         QTextCursor cursor = ui->textEdit->textCursor();
         foreach (const NoteText &note, m_notes) {
             //cursor.insertText(s_separator);

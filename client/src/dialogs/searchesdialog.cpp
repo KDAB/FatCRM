@@ -96,7 +96,7 @@ void SearchesDialog::populateListView()
 {
     ui->searchesList->clear();
     QVector<QString> savedSearches = ClientSettings::self()->savedSearches();
-    qSort(savedSearches.begin(), savedSearches.end(), [](const QString &s1, const QString &s2){ return s1.toLower() < s2.toLower(); });
+    std::sort(savedSearches.begin(), savedSearches.end(), [](const QString &s1, const QString &s2){ return s1.toLower() < s2.toLower(); });
     for (const QString &search : savedSearches) {
         ui->searchesList->addItem(search);
     }

@@ -179,7 +179,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
     }
 
     auto sortedCollections = collections;
-    qSort(sortedCollections.begin(), sortedCollections.end(), collectionLessThan);
+    std::sort(sortedCollections.begin(), sortedCollections.end(), collectionLessThan);
 
     for (const Collection &collection : qAsConst(sortedCollections)) {
         //qCDebug(FATCRM_CLIENT_LOG) << collection.contentMimeTypes() << "name" << collection.name();
