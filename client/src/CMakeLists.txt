@@ -49,6 +49,7 @@ set(app_SRCS
   dialogs/tabbeditemeditwidget.cpp
   dialogs/searchesdialog.cpp
   dialogs/addsearchdialog.cpp
+  reports/createlinksproxymodel.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
   utilities/accountdataextractor.cpp

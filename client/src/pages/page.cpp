@@ -38,6 +38,7 @@
 #include "sugarresourcesettings.h"
 #include "tabbeditemeditwidget.h"
 #include "collectionmanager.h"
+#include "createlinksproxymodel.h"
 #include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/kdcrmutils.h"
@@ -620,10 +621,14 @@ void Page::printReport()
         }
     }
 
-    RearrangeColumnsProxyModel proxy;
-    proxy.setSourceColumns(sourceColumns);
-    proxy.setSourceModel(model);
-    generator.generateListReport(&proxy, reportTitle(), reportSubTitle(count), this);
+    CreateLinksProxyModel createLinksProxy(mResourceBaseUrl);
+    createLinksProxy.setSourceModel(model);
+
+    RearrangeColumnsProxyModel rearrangeColumnsProxy;
+    rearrangeColumnsProxy.setSourceColumns(sourceColumns);
+    rearrangeColumnsProxy.setSourceModel(&createLinksProxy);
+
+    generator.generateListReport(&rearrangeColumnsProxy, reportTitle(), reportSubTitle(count), this);
 }
 
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget)
