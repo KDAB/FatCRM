@@ -822,18 +822,18 @@ void MainWindow::populateSavedSearchesMenu()
 
     mLoadedSearchName = ClientSettings::self()->searchNameFromPrefix(mLoadedSearchPrefix);
     QString saveActionName = mLoadedSearchPrefix.isEmpty() ? i18n("Save...") : i18n("Save \"%1\"", mLoadedSearchName);
-    auto *saveCurrentSearch = new QAction(saveActionName, this);
+    auto *saveCurrentSearch = new QAction(QIcon::fromTheme("document-save"), saveActionName, this);
     mSavedSearchesMenu->addAction(saveCurrentSearch);
     connect(saveCurrentSearch, &QAction::triggered, this, &MainWindow::slotSaveSearch);
     if (mLoadedSearchPrefix.isEmpty()) {
         saveCurrentSearch->setDisabled(true);
     }
 
-    QAction *saveSearchAs = new QAction(i18n("Save Search As..."), this);
+    QAction *saveSearchAs = new QAction(QIcon::fromTheme("document-save-as"), i18n("Save Search As..."), this);
     mSavedSearchesMenu->addAction(saveSearchAs);
     connect(saveSearchAs, &QAction::triggered, this, &MainWindow::slotSaveSearchAs);
 
-    QAction *manageSearches = new QAction(i18n("Load Saved Search..."), this);
+    QAction *manageSearches = new QAction(QIcon::fromTheme("document-import"), i18n("Load Saved Search..."), this);
     mSavedSearchesMenu->addAction(manageSearches);
     connect(manageSearches, &QAction::triggered, this, &MainWindow::slotOpenSearchesDialog);
 }

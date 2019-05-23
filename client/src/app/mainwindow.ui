@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>523</width>
-     <height>27</height>
+     <height>34</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -95,6 +95,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset theme="network-offline"/>
+   </property>
    <property name="text">
     <string>&amp;Offline Mode</string>
    </property>
@@ -103,6 +106,9 @@
    </property>
   </action>
   <action name="actionQuit">
+   <property name="icon">
+    <iconset theme="application-exit"/>
+   </property>
    <property name="text">
     <string>&amp;Quit</string>
    </property>
@@ -111,19 +117,26 @@
    </property>
   </action>
   <action name="actionImportContacts">
+   <property name="icon">
+    <iconset theme="document-import"/>
+   </property>
    <property name="text">
     <string>&amp;Import Contacts...</string>
    </property>
   </action>
   <action name="actionConfigureFatCRM">
    <property name="icon">
-    <iconset theme="configure"/>
+    <iconset theme="configure">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Configure FatCRM...</string>
    </property>
   </action>
   <action name="actionAboutFatCRM">
+   <property name="icon">
+    <iconset theme="fatcrm"/>
+   </property>
    <property name="text">
     <string>About &amp;FatCRM...</string>
    </property>
