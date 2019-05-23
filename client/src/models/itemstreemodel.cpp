@@ -207,6 +207,15 @@ int ItemsTreeModel::entityColumnCount(HeaderGroup headerGroup) const
     }
 }
 
+QVariant ItemsTreeModel::data(const QModelIndex &index, int role) const
+{
+    if (role == ColumnTypeRole) {
+        return d->mColumns.value(index.column());
+    }
+
+    return EntityTreeModel::data(index, role);
+}
+
 void ItemsTreeModel::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
     mLinkedItemsRepository = repo;

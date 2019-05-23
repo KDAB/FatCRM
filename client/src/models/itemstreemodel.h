@@ -90,8 +90,12 @@ public:
         NumberOfDocumentsNotesEmails,
         OpportunityPriority
     };
-
     Q_ENUM(ColumnType)
+
+    enum Roles {
+        ColumnTypeRole = UserRole
+    };
+    Q_ENUM(Roles)
 
     /**
      * Describes a list of columns of the items tree model.
@@ -121,6 +125,8 @@ public:
     QVariant entityData(const Akonadi::Collection &collection, int column, int role = Qt::DisplayRole) const override;
     QVariant entityHeaderData(int section, Qt::Orientation orientation, int role, HeaderGroup headerGroup) const override;
     int entityColumnCount(HeaderGroup headerGroup) const override;
+
+    QVariant data(const QModelIndex & index, int role) const override;
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo);
 
