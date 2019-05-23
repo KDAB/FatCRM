@@ -81,7 +81,7 @@
      <item>
       <widget class="QPushButton" name="pbMonthlySpreadsheet">
        <property name="text">
-        <string>Export as spreadsheet (CSV)</string>
+        <string>Export as Spreadsheet (CSV)</string>
        </property>
       </widget>
      </item>
