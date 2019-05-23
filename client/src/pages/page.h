@@ -25,7 +25,6 @@
 
 #include "enums.h"
 #include "filterproxymodel.h"
-#include "itemstreemodel.h"
 #include "ui_page.h"
 
 #include "kdcrmdata/enumdefinitions.h"
@@ -44,6 +43,7 @@ class Item;
 class CollectionManager;
 class ItemDataExtractor;
 class ItemEditWidgetBase;
+class ItemsTreeModel;
 class KJob;
 class KJobProgressTracker;
 class LinkedItemsRepository;

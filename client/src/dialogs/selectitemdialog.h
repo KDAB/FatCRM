@@ -23,8 +23,9 @@
 
 #include <QDialog>
 
+#include <AkonadiCore/Item>
+
 #include "enums.h"
-#include "itemstreemodel.h"
 
 namespace Akonadi
 {

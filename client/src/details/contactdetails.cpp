@@ -25,6 +25,7 @@
 #include "accountrepository.h"
 #include "contactdataextractor.h"
 #include "editcalendarbutton.h"
+#include "itemstreemodel.h"
 #include "linkeditemsrepository.h"
 #include "modelrepository.h"
 #include "noteswindow.h"

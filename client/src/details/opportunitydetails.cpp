@@ -25,6 +25,7 @@
 #include "ui_opportunitydetails.h"
 #include "documentswindow.h"
 #include "enums.h"
+#include "itemstreemodel.h"
 #include "linkeditemsrepository.h"
 #include "modelrepository.h"
 #include "noteswindow.h"
