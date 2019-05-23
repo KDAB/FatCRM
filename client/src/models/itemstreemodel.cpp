@@ -278,6 +278,10 @@ QVariant ItemsTreeModel::entityHeaderData(int section, Qt::Orientation orientati
         }
     }
 
+    if (role == Qt::ToolTipRole) {
+        return columnToolTip(d->mColumns.at(section));
+    }
+
     return EntityTreeModel::entityHeaderData(section, orientation, role, headerGroup);
 }
 
@@ -748,9 +752,9 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
     case OpportunityAccountName:
         return i18nc("@title:column account name", "Account Name");
     case OpportunitySize:
-        return i18nc("@title:column opportunity size", "Size");
+        return i18nc("@title:column opportunity size (abbreviated)", "S");
     case OpportunityPriority:
-        return i18nc("@title:column opportunity priority", "Priority");
+        return i18nc("@title:column opportunity priority (abbreviated)", "P");
     case SalesStage:
         return i18nc("@title:column sales stage", "Sales Stage");
     case Amount:
@@ -773,6 +777,18 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column number of documents + notes + emails for this account", "# Docs/Notes/Emails");
     }
     return QString();
+}
+
+QString ItemsTreeModel::columnToolTip(ItemsTreeModel::ColumnType col) const
+{
+    switch (col) {
+    case OpportunitySize:
+        return i18nc("@title:column opportunity size", "Size");
+    case OpportunityPriority:
+        return i18nc("@title:column opportunity priority", "Priority");
+    default:
+        return {};
+    }
 }
 
 QString ItemsTreeModel::columnNameFromType(ItemsTreeModel::ColumnType col)

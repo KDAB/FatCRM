@@ -139,6 +139,7 @@ private:
     QVariant opportunityData(const Akonadi::Item &item, int column, int role) const;
     QVariant accountToolTip(const Akonadi::Item &item) const;
     QVariant opportunityToolTip(const Akonadi::Item &item) const;
+    QString columnToolTip(ColumnType col) const;
     QString columnTitle(ColumnType col) const;
 
 private:
