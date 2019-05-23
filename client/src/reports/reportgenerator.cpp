@@ -86,6 +86,8 @@ void ReportGenerator::generateListReport(QAbstractItemModel *model, const QStrin
     report.setParagraphMargins(1, 1, 1, 1);
     KDReports::AutoTableElement table(model);
     table.setVerticalHeaderVisible(false);
+    // make sure country flags do not get huge
+    table.setIconSize(QSize(16, 16));
     report.addElement(table);
 
     finalizeReport(report, parent);
