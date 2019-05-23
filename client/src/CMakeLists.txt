@@ -109,6 +109,7 @@ qt5_wrap_ui(app_SRCS
 
 qt5_add_resources(app_SRCS
   icons/icons.qrc
+  ../data/flags/flags.qrc
 )
 
 # Generate DBus interface in order to find out the config of the sugar resource (for the web link)

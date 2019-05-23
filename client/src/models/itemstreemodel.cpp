@@ -39,6 +39,11 @@
 #include <AkonadiCore/EntityDisplayAttribute>
 #include <akonadi_version.h>
 
+#include <QDebug>
+#include <QJsonArray>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QFile>
 #include <QIcon>
 #include <KIconLoader>
 #include <KLocalizedString>
@@ -46,6 +51,48 @@
 #include <QFont>
 
 using namespace Akonadi;
+
+namespace {
+
+QString countryNameTo2DigitCode(const QString& countryName)
+{
+    auto create = []() -> QHash<QString, QString>
+    {
+        // build the country name to 2-digit-code map
+        QFile file(":/flags/countrylist.json");
+        bool success = file.open(QIODevice::ReadOnly);
+        Q_ASSERT(success);
+        if (!success) {
+            qWarning() << "Failed to load countrylist.json";
+            return {};
+        }
+
+        QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
+        auto countryListArray = doc.array();
+
+        QHash<QString, QString> countryNameTo2DigitCodeMap;
+        for (auto it = countryListArray.begin(), end = countryListArray.end(); it != end; ++it) {
+            const QString &code = it->toObject().value("Code").toString();
+            const QString &name = it->toObject().value("Name").toString();
+            countryNameTo2DigitCodeMap.insert(name, code.toLower());
+        }
+
+        // add some more common country name mappings
+        countryNameTo2DigitCodeMap.unite({
+            {"USA", "us"},
+            {"UK", "gb"},
+            {"South Korea", "kr"}
+        });
+
+        return countryNameTo2DigitCodeMap;
+    };
+
+    static const auto countryNameTo2DigitCodeMap = create();
+
+    return countryNameTo2DigitCodeMap.value(countryName);
+}
+
+}
 
 class ItemsTreeModel::Private
 {
@@ -332,6 +379,21 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
             return QVariant();
         }
     }
+
+    if (role == Qt::DecorationRole) {
+        switch (columnTypes().at(column)) {
+        case Country: {
+            const QString countryCode = countryNameTo2DigitCode(accountData(item, column, Qt::DisplayRole).toString());
+            if (countryCode.isEmpty())
+                return {};
+
+            return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
+        }
+        default:
+            return {};
+        }
+    }
+
     return QVariant();
 }
 
@@ -552,6 +614,21 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return boldFont;
         }
     }
+
+    if (role == Qt::DecorationRole) {
+        switch (columnTypes().at(column)) {
+        case Country: {
+            const QString countryCode = countryNameTo2DigitCode(opportunityData(item, column, Qt::DisplayRole).toString());
+            if (countryCode.isEmpty())
+                return {};
+
+            return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
+        }
+        default:
+            return {};
+        }
+    }
+
     return QVariant();
 }
 
