@@ -180,10 +180,11 @@ void OpportunityDetails::updateLinkedItemsButtons()
         mUi->viewDocumentsButton->setEnabled(!documents.isEmpty());
 
         auto *menu = new QMenu(this);
-        for (auto doc : documents) {
+        for (const auto &doc : documents) {
             auto *action = menu->addAction(doc.documentName().toHtmlEscaped());
-            connect(action, &QAction::triggered, this, [this, doc]() {
-                ExternalOpen::openSugarDocument(doc.documentRevisionId(), resourceIdentifier(), this);
+            const auto docId = doc.documentRevisionId();
+            connect(action, &QAction::triggered, this, [this, docId]() {
+                ExternalOpen::openSugarDocument(docId, resourceIdentifier(), this);
             });
         }
         if (auto oldMenu = mUi->viewDocumentsButton->menu()) {

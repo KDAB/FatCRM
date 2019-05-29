@@ -429,7 +429,7 @@ void DocumentsWindow::dragEnterEvent(QDragEnterEvent *event)
         return; // only allow drag of one file to prevent accidental drops
     }
 
-    const QUrl url = mimeData->urls().first();
+    const QUrl url = mimeData->urls().at(0);
     if (!url.isLocalFile()) {
         return;
     }
@@ -440,7 +440,8 @@ void DocumentsWindow::dragEnterEvent(QDragEnterEvent *event)
 void DocumentsWindow::dropEvent(QDropEvent *event)
 {
     const QMimeData* mimeData = event->mimeData();
-    for (const QUrl &url : mimeData->urls()) {
+    const auto urls = mimeData->urls();
+    for (const QUrl &url : urls) {
         attachDocument(url.toLocalFile());
     }
 
