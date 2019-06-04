@@ -834,6 +834,10 @@ void Page::slotChangeFields()
 
 void Page::retrieveResourceUrl()
 {
+    if (mResourceIdentifier.isEmpty()) { // happens when creating the first resource, before selecting it
+        return;
+    }
+
     const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource, mResourceIdentifier);
 
     OrgKdeAkonadiSugarCRMSettingsInterface iface(service, QStringLiteral("/Settings"), QDBusConnection::sessionBus());
