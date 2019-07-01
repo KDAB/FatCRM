@@ -99,6 +99,8 @@ QString OpportunityFilterSettings::filterDescription() const
         txt = i18n("Assigned to %1", mAssigneeGroup);
     } else if (!mCountries.isEmpty()) {
         txt = i18n("In country %1", mCountryGroup);
+    } else {
+        txt = i18n("All opportunities");
     }
 
     if (!openOrClosed.isEmpty()) {
