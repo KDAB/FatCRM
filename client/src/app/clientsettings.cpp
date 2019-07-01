@@ -256,6 +256,16 @@ void ClientSettings::loadSavedSearch(OpportunityFilterSettings &settings, const 
     settings.load(*m_settings, prefix);
 }
 
+const QSettings &ClientSettings::settings() const
+{
+    return *m_settings;
+}
+
+QSettings &ClientSettings::settings()
+{
+    return *m_settings;
+}
+
 QVector<QString> ClientSettings::savedSearches() const
 {
     return OpportunityFilterSettings::savedSearches(*m_settings);

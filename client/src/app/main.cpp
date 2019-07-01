@@ -22,6 +22,7 @@
 
 #include "mainwindow.h"
 #include <config-fatcrm-version.h>
+#include "clientsettings.h"
 
 #include <kdcrmutils.h>
 
@@ -33,6 +34,9 @@
 #include <KMessageBox>
 #include <QCommandLineParser>
 #include <QMimeDatabase>
+#include <QSettings>
+
+#include <stdio.h> // for stdout
 
 static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
 static const char version[] = FATCRM_VERSION_STRING;
@@ -53,9 +57,39 @@ int main(int argc, char **argv)
     parser.addHelpOption();
     QCommandLineOption noOverlayOption("nooverlay", i18n("Do not display the overlay during initial data loading"));
     parser.addOption(noOverlayOption);
+    QCommandLineOption configKeyOption("config-key", i18n("Internal feature: Return the value for setting <key>"), "key");
+    parser.addOption(configKeyOption);
+    QCommandLineOption configValueOption("set-config-value", i18n("Internal feature: Set the value for setting specified by 'config-key' parameter"), "value");
+    parser.addOption(configValueOption);
     aboutData.setupCommandLine(&parser);
     parser.process(app);
     aboutData.processCommandLine(&parser);
+
+    if (parser.isSet(configKeyOption)) {
+        QTextStream qout(stdout);
+        QTextStream qerr(stderr);
+
+        const QVariant currentValue = ClientSettings::self()->settings().value(parser.value(configKeyOption));
+
+        if (parser.isSet(configValueOption)) {
+            const QString key = parser.value(configKeyOption);
+
+            // write config
+            QVariant valueAsVariant(parser.value(configValueOption));
+            if (!valueAsVariant.convert(static_cast<int>(currentValue.type()))) {
+                qerr << "Failed to convert value to target type: " << currentValue.typeName() << endl;
+                return 1;
+            }
+
+            ClientSettings::self()->settings().setValue(key, valueAsVariant);
+            qerr << "Value for '" << key << "' set to: " << valueAsVariant.toString() << endl;
+            return 0;
+        }
+
+        // else: read config
+        qout << currentValue.toString() << endl;
+        return 0;
+    }
 
     QMimeDatabase db;
     if (!db.mimeTypeForName("application/x-vnd.kdab.crm.opportunity").isValid()) {

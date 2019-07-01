@@ -23,18 +23,21 @@
 #ifndef CLIENTSETTINGS_H
 #define CLIENTSETTINGS_H
 
+#include "fatcrmprivate_export.h"
+
 #include <QObject>
-class QSettings;
-class OpportunityFilterSettings;
 #include <QSize>
 #include <QStringList>
 #include <QVector>
+
+class QSettings;
+class OpportunityFilterSettings;
 
 /**
  * Settings for the FatCRM client application.
  * Saved in ~/.config/KDAB/FatCRM.conf
  */
-class ClientSettings : public QObject
+class FATCRMPRIVATE_EXPORT ClientSettings : public QObject
 {
     Q_OBJECT
 public:
@@ -62,6 +65,9 @@ public:
 
     void saveSearch(const OpportunityFilterSettings &settings, QString searchName);
     void loadSavedSearch(OpportunityFilterSettings &settings, const QString &prefix);
+
+    const QSettings &settings() const;
+    QSettings& settings();
 
     class GroupFilters
     {
