@@ -41,6 +41,17 @@ QString typeToString(DetailsType type)
     return QString();
 }
 
+DetailsType stringToType(const QString &typeStr)
+{
+    static const QVector<QString> types = {"Accounts", "Opportunities", "Leads", "Contacts", "Campaigns"};
+
+    const int index = types.indexOf(typeStr);
+    if (index == -1)
+        return DetailsType::Account; // default
+
+    return static_cast<DetailsType>(index);
+}
+
 QString typeToTranslatedString(DetailsType type)
 {
     switch (type) {

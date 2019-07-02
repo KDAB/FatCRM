@@ -21,16 +21,19 @@
 */
 
 #include "reportgenerator.h"
+
 #include <KDReportsReport.h>
 #include <KDReportsHeader.h>
 #include <KDReportsTextElement.h>
 #include <KDReportsAutoTableElement.h>
-#include <KDReportsPreviewDialog.h>
-#include <KDReportsPreviewWidget.h>
 
 #include <KLocalizedString>
 
 ReportGenerator::ReportGenerator()
+{
+}
+
+ReportGenerator::~ReportGenerator()
 {
 }
 
@@ -73,34 +76,25 @@ void ReportGenerator::addHeader(KDReports::Report &report)
     header.addVariable(KDReports::PageCount);
 }
 
-void ReportGenerator::generateListReport(QAbstractItemModel *model, const QString &title,
-                                         const QString &subTitle, QWidget *parent)
+std::unique_ptr<KDReports::Report> ReportGenerator::generateListReport(QAbstractItemModel *model, const QString &title,
+                                         const QString &subTitle)
 {
-    KDReports::Report report;
-    setupReport(report);
-    addTitle(report, title);
-    addSubTitle(report, subTitle);
+    auto report = std::unique_ptr<KDReports::Report>(new KDReports::Report);
 
-    report.addVerticalSpacing(5);
+    setupReport(*report);
+    addTitle(*report, title);
+    addSubTitle(*report, subTitle);
 
-    report.setParagraphMargins(1, 1, 1, 1);
+    report->addVerticalSpacing(5);
+
+    report->setParagraphMargins(1, 1, 1, 1);
     KDReports::AutoTableElement table(model);
     table.setVerticalHeaderVisible(false);
     // make sure country flags do not get huge
     table.setIconSize(QSize(16, 16));
-    report.addElement(table);
+    report->addElement(table);
 
-    finalizeReport(report, parent);
-}
+    report->setPageSize(QPrinter::A4);
 
-void ReportGenerator::finalizeReport(KDReports::Report &report, QWidget *parent)
-{
-    report.setPageSize(QPrinter::A4);
-
-    KDReports::PreviewDialog preview(&report, parent);
-    preview.setWindowTitle(i18n("Print Preview"));
-    preview.previewWidget()->setShowPageListWidget(false);
-    preview.previewWidget()->setShowTableSettingsDialog(false);
-    preview.resize(1167, 906);
-    preview.exec();
+    return report;
 }

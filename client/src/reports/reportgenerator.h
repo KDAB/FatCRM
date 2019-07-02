@@ -23,26 +23,32 @@
 #ifndef REPORTGENERATOR_H
 #define REPORTGENERATOR_H
 
-class QAbstractItemModel;
+#include "fatcrmprivate_export.h"
+
+#include <qglobal.h>
+
+#include <memory>
+
 namespace KDReports {
     class Report;
 }
-class QString;
-class QWidget;
 
-class ReportGenerator
+class QAbstractItemModel;
+class QString;
+
+class FATCRMPRIVATE_EXPORT ReportGenerator
 {
 public:
     ReportGenerator();
+    ~ReportGenerator();
 
-    void generateListReport(QAbstractItemModel *model, const QString &title, const QString &subTitle, QWidget *parent);
+    Q_REQUIRED_RESULT std::unique_ptr<KDReports::Report> generateListReport(QAbstractItemModel *model, const QString &title, const QString &subTitle);
 
 private:
     void setupReport(KDReports::Report &report);
     void addHeader(KDReports::Report &report);
     void addTitle(KDReports::Report &report, const QString &title);
     void addSubTitle(KDReports::Report &report, const QString &text);
-    void finalizeReport(KDReports::Report &report, QWidget *parent);
 };
 
 #endif // REPORTGENERATOR_H

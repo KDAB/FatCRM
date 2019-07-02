@@ -28,6 +28,7 @@
 
 #include <KAboutData>
 #include <KDBusService>
+#include <KDReportsReport.h>
 
 #include <QApplication>
 #include <KLocalizedString>
@@ -55,6 +56,12 @@ int main(int argc, char **argv)
     KAboutData::setApplicationData(aboutData);
     parser.addVersionOption();
     parser.addHelpOption();
+    QCommandLineOption printToPdfOption("print-to-pdf", i18n("Print page after initial import and exit FatCRM"), "fileName");
+    parser.addOption(printToPdfOption);
+    QCommandLineOption printTypeOption("print-type", i18n("Print type, either 'Accounts', 'Opportunities' or 'Contacts'"), "printType", "Opportunities");
+    parser.addOption(printTypeOption);
+    QCommandLineOption loadSavedSearchOption("load-saved-search", i18n("Load saved search after startup"), "name");
+    parser.addOption(loadSavedSearchOption);
     QCommandLineOption noOverlayOption("nooverlay", i18n("Do not display the overlay during initial data loading"));
     parser.addOption(noOverlayOption);
     QCommandLineOption configKeyOption("config-key", i18n("Internal feature: Return the value for setting <key>"), "key");
@@ -101,8 +108,53 @@ int main(int argc, char **argv)
 
     KDCRMUtils::setupIconTheme();
 
-    auto *window = new MainWindow(!parser.isSet(noOverlayOption));
-    window->setAttribute(Qt::WA_DeleteOnClose);
-    window->show();
+    auto *mainWindow = new MainWindow(!parser.isSet(noOverlayOption));
+    mainWindow->setAttribute(Qt::WA_DeleteOnClose);
+
+    if (parser.isSet(printToPdfOption) || parser.isSet(loadSavedSearchOption)) {
+        const QString fileName = parser.value(printToPdfOption);
+        const DetailsType detailsType = stringToType(parser.value(printTypeOption));
+        const QString loadSavedSearch = parser.value(loadSavedSearchOption);
+
+        QObject::connect(mainWindow, &MainWindow::initialLoadingDone, [mainWindow, fileName, detailsType, loadSavedSearch, &app]() {
+            QTextStream qout(stdout);
+            QTextStream qerr(stderr);
+
+            // first: load saved search if requested
+            if (!loadSavedSearch.isEmpty()) {
+                const bool loadingSucceeded = mainWindow->loadSavedSearch(loadSavedSearch);
+                if (!loadingSucceeded) {
+                    qerr << "Error: Failed to load saved search: " << loadSavedSearch << endl;
+                    app.exit(1);
+                    return;
+                }
+            }
+
+            // second: print a PDF if requested and then exit the application
+            if (!fileName.isEmpty()) {
+                qerr << "Initial import done, now printing report as requested for: " << typeToString(detailsType) << endl;
+                auto page = mainWindow->pageForType(detailsType);
+                if (!page) {
+                    qerr << "Error: No page for: " << typeToString(detailsType);
+                    app.exit(1);
+                    return;
+                }
+
+                auto report = page->generateReport(false);
+                const bool exportSucceeded = report->exportToFile(fileName);
+                if (!exportSucceeded) {
+                    qerr << "Error: Printing failed." << endl;
+                    app.exit(1);
+                    return;
+                }
+
+                qerr << "Printing to file done: " << fileName << endl;
+                app.exit(0);
+            }
+        });
+    } else {
+        mainWindow->show();
+    }
+
     return app.exec();
 }
