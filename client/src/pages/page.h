@@ -23,8 +23,10 @@
 #ifndef PAGE_H
 #define PAGE_H
 
+#include "fatcrmprivate_export.h"
 #include "enums.h"
 #include "filterproxymodel.h"
+#include "reportgenerator.h"
 #include "ui_page.h"
 
 #include "kdcrmdata/enumdefinitions.h"
@@ -33,6 +35,10 @@
 #include <AkonadiCore/Item>
 
 #include <QWidget>
+
+namespace KDReports {
+class Report;
+}
 
 namespace Akonadi
 {
@@ -49,7 +55,7 @@ class KJobProgressTracker;
 class LinkedItemsRepository;
 class QPoint;
 
-class Page : public QWidget
+class FATCRMPRIVATE_EXPORT Page : public QWidget
 {
     Q_OBJECT
 public:
@@ -66,7 +72,7 @@ public:
     LinkedItemsRepository *linkedItemsRepository() const;
     bool queryClose();
     void openWidget(const QString &id);
-    void printReport();
+    Q_REQUIRED_RESULT std::unique_ptr<KDReports::Report> generateReport(bool warnOnLongReport = true) const;
     void createNewItem(const QMap<QString, QString> &data = QMap<QString, QString>());
     void setSearchText(const QString &searchText);
     QString searchText() const { return mUi.searchLE->text(); }

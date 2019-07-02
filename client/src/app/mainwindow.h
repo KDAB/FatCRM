@@ -60,11 +60,19 @@ public:
 
     ~MainWindow() override;
 
+    Page *currentPage() const;
+    Page *pageForType(DetailsType type) const;
+
     bool eventFilter(QObject *object, QEvent *event) override;
+
+public Q_SLOTS:
+    bool loadSavedSearch(const QString &searchName);
 
 Q_SIGNALS:
     void resourceSelected(const QByteArray &identifier);
     void onlineStatusChanged(bool online);
+
+    void initialLoadingDone();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -114,17 +122,14 @@ private:
     void addPage(Page *page);
     void updateWindowTitle(bool online);
 
-    Page *currentPage() const;
-    Page *pageForType(DetailsType type) const;
     void setupResourcesCombo();
     Akonadi::AgentInstance currentResource() const;
     void initialResourceSelection();
-    void initialLoadingDone();
+    void slotInitialLoadingDone();
     void processPendingImports();
     void showResourceDialog();
     int resourceIndexFor(const QString &id) const;
     void raiseMainWindowAndDialog(QWidget *dialog);
-    void loadSavedSearch(const QString &selectedItemName);
 
     QList<Page *> mPages;
 

@@ -23,6 +23,8 @@
 #ifndef ENUMS_H
 #define ENUMS_H
 
+#include "fatcrmprivate_export.h"
+
 #include <QString>
 #include <QMetaType>
 
@@ -35,8 +37,9 @@ enum class DetailsType {
 };
 static const int MaxType = int(DetailsType::Campaign);
 
-QString typeToString(DetailsType type);
-QString typeToTranslatedString(DetailsType type);
+FATCRMPRIVATE_EXPORT QString typeToString(DetailsType type);
+FATCRMPRIVATE_EXPORT DetailsType stringToType(const QString &typeStr);
+FATCRMPRIVATE_EXPORT QString typeToTranslatedString(DetailsType type);
 
 enum ReferencedDataType {
     AccountRef,        // account.id()     => account.name()

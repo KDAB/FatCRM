@@ -47,6 +47,8 @@
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 
+#include <KDReportsReport.h>
+
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/CollectionStatistics>
@@ -589,12 +591,12 @@ void Page::slotItemSaved()
     emit statusMessage(QStringLiteral("Item successfully saved"));
 }
 
-void Page::printReport()
+std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) const
 {
-    ReportGenerator generator;
     QAbstractItemModel *model = mUi.treeView->model();
     if (!model)
-        return;
+        return {};
+
     const int count = model->rowCount();
     if (count > 1000) {
         QMessageBox msgBox;
@@ -606,7 +608,7 @@ void Page::printReport()
         msgBox.setDefaultButton(QMessageBox::Yes);
         int ret = msgBox.exec();
         if (ret == QMessageBox::Cancel) {
-            return;
+            return {};
         }
     }
 
@@ -628,7 +630,8 @@ void Page::printReport()
     rearrangeColumnsProxy.setSourceColumns(sourceColumns);
     rearrangeColumnsProxy.setSourceModel(&createLinksProxy);
 
-    generator.generateListReport(&rearrangeColumnsProxy, reportTitle(), reportSubTitle(count), this);
+    ReportGenerator generator;
+    return generator.generateListReport(&rearrangeColumnsProxy, reportTitle(), reportSubTitle(count));
 }
 
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget)

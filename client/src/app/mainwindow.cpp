@@ -47,6 +47,10 @@
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
+#include <KDReportsReport.h>
+#include <KDReportsPreviewDialog.h>
+#include <KDReportsPreviewWidget.h>
+
 #include <AkonadiCore/AgentFilterProxyModel>
 #include <AkonadiCore/AgentInstance>
 #include <AkonadiCore/AgentInstanceModel>
@@ -415,10 +419,10 @@ void MainWindow::slotEmailsLoaded(int count)
 void MainWindow::slotDocumentsLoaded(int count)
 {
     Q_UNUSED(count);
-    initialLoadingDone();
+    slotInitialLoadingDone();
 }
 
-void MainWindow::initialLoadingDone()
+void MainWindow::slotInitialLoadingDone()
 {
     mInitialLoadingDone = true;
 
@@ -430,6 +434,8 @@ void MainWindow::initialLoadingDone()
     slotSynchronize();
 
     processPendingImports();
+
+    emit initialLoadingDone();
 }
 
 void MainWindow::addPage(Page *page)
@@ -605,8 +611,18 @@ void MainWindow::slotConfigure()
 void MainWindow::slotPrintReport()
 {
     Page *page = currentPage();
-    if (page)
-        page->printReport();
+    if (!page) {
+        return;
+    }
+
+    auto report = page->generateReport();
+
+    KDReports::PreviewDialog preview(report.get(), this);
+    preview.setWindowTitle(i18n("Print Preview"));
+    preview.previewWidget()->setShowPageListWidget(false);
+    preview.previewWidget()->setShowTableSettingsDialog(false);
+    preview.resize(1167, 906);
+    preview.exec();
 }
 
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)
@@ -792,18 +808,21 @@ void MainWindow::slotHideOverlay()
     mLoadingOverlay->hide();
 }
 
-void MainWindow::loadSavedSearch(const QString &selectedItemName)
+bool MainWindow::loadSavedSearch(const QString &searchName)
 {
+    qDebug() << "Loading saved search:" << searchName;
+
     // Make sure user is on the Opportunities Page
     mUi.tabWidget->setCurrentIndex(1);
 
-    mLoadedSearchPrefix = ClientSettings::self()->searchPrefixFromName(selectedItemName);
+    mLoadedSearchPrefix = ClientSettings::self()->searchPrefixFromName(searchName);
     mOpportunitiesPage->loadSearch(mLoadedSearchPrefix);
 
-    QString searchText = ClientSettings::self()->searchText(selectedItemName);
+    QString searchText = ClientSettings::self()->searchText(searchName);
     currentPage()->setSearchText(searchText);
 
-    mLoadedSearchName = selectedItemName;
+    mLoadedSearchName = searchName;
+    return !mLoadedSearchPrefix.isEmpty();
 }
 
 void MainWindow::populateSavedSearchesMenu()
