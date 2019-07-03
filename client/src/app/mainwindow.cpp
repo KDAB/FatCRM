@@ -620,7 +620,6 @@ void MainWindow::slotPrintReport()
     KDReports::PreviewDialog preview(report.get(), this);
     preview.setWindowTitle(i18n("Print Preview"));
     preview.previewWidget()->setShowPageListWidget(false);
-    preview.previewWidget()->setShowTableSettingsDialog(false);
     preview.resize(1167, 906);
     preview.exec();
 }
