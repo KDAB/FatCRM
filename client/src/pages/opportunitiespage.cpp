@@ -78,15 +78,6 @@ OpportunitiesPage::~OpportunitiesPage()
 {
 }
 
-void OpportunitiesPage::setupModel()
-{
-    Page::setupModel();
-
-    const ItemsTreeModel::ColumnTypes columns = ItemsTreeModel::columnTypes(DetailsType::Opportunity);
-    const int nextStepDateColumn = columns.indexOf(ItemsTreeModel::NextStepDate);
-    treeView()->sortByColumn(nextStepDateColumn, Qt::DescendingOrder);
-}
-
 void OpportunitiesPage::createOpportunity(const QString &accountId)
 {
     QMap<QString, QString> opportunityData;
