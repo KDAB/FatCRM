@@ -38,8 +38,6 @@ public:
 
     ~OpportunitiesPage() override;
 
-    void setupModel() override;
-
     void setSearchPrefix(const QString &searchPrefix);
     void setSearchName(const QString &searchName);
     void setSearchText(const QString &searchText);

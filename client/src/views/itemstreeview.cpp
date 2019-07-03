@@ -82,6 +82,8 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
             this, &ItemsTreeView::saveHeaderView);
     connect(header(), &QHeaderView::sectionMoved,
             this, &ItemsTreeView::saveHeaderView);
+    connect(header(), &QHeaderView::sectionClicked,
+            this, &ItemsTreeView::saveHeaderView);
 }
 
 void ItemsTreeView::keyPressEvent(QKeyEvent *event)
