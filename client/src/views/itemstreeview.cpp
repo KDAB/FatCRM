@@ -46,8 +46,8 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     unused.setHorizontalHeader(new QHeaderView(Qt::Horizontal));
 
     header()->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(header(), SIGNAL(customContextMenuRequested(QPoint)),
-            this, SLOT(slotHeaderContextMenu(QPoint)));
+    connect(header(), &QWidget::customContextMenuRequested,
+            this, &ItemsTreeView::slotHeaderContextMenu);
 }
 
 void ItemsTreeView::setViewName(const QString &name)
@@ -78,10 +78,10 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         header()->restoreState(state);
     }
 
-    connect(header(), SIGNAL(sectionResized(int,int,int)),
-            this, SLOT(saveHeaderView()));
-    connect(header(), SIGNAL(sectionMoved(int,int,int)),
-            this, SLOT(saveHeaderView()));
+    connect(header(), &QHeaderView::sectionResized,
+            this, &ItemsTreeView::saveHeaderView);
+    connect(header(), &QHeaderView::sectionMoved,
+            this, &ItemsTreeView::saveHeaderView);
 }
 
 void ItemsTreeView::keyPressEvent(QKeyEvent *event)
