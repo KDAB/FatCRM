@@ -109,6 +109,29 @@ QStringList preferredMailAddressesForSelectedRows(const QModelIndexList selected
     return result;
 }
 
+/// Returns a map of action names -> call URLs, e.g. {"Call Work" -> "tel:+49..."}
+QVector<QPair<QString, QUrl>> phoneNumberMapForSelectedRows(const QModelIndexList selectedIndexes)
+{
+    using namespace KContacts;
+
+    QVector<QPair<QString, QUrl>> result;
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+            const auto phoneNumbers = addressee.phoneNumbers();
+            for (const auto& phoneNumber : phoneNumbers) {
+                static const QVector<PhoneNumber::Type> telTypes = {PhoneNumber::Home, PhoneNumber::Work, PhoneNumber::Cell};
+
+                if (telTypes.contains(phoneNumber.type())) {
+                    result.append({i18n("Call %1", phoneNumber.typeLabel()), QUrl("tel:" + phoneNumber.number())});
+                }
+            }
+        }
+    }
+    return result;
+}
+
 } // namespace
 
 Q_DECLARE_METATYPE(ModifierField);
@@ -474,6 +497,18 @@ QMenu *Page::createContextMenu(const QPoint &)
         contextMenu->addAction(QIcon::fromTheme("mail-send"), i18n("Send &Email"), this, [selectedEmails]() {
             QDesktopServices::openUrl("mailto:" + selectedEmails.join(QStringLiteral(",")));
         });
+    }
+
+    const auto phoneNumbers = phoneNumberMapForSelectedRows(selectedIndexes);
+    if (!phoneNumbers.isEmpty()) {
+        if (selectedEmails.isEmpty()) {
+            contextMenu->addSeparator();
+        }
+        for (const auto &phoneNumber : phoneNumbers) {
+            contextMenu->addAction(QIcon::fromTheme("call-start"), phoneNumber.first, this, [phoneNumber]() {
+                QDesktopServices::openUrl(phoneNumber.second);
+            });
+        }
     }
 
     if (!selectedIndexes.isEmpty() && (mType == DetailsType::Account || mType == DetailsType::Opportunity || mType == DetailsType::Contact)) {
