@@ -127,7 +127,6 @@ private Q_SLOTS:
     void slotItemContextMenuRequested(const QPoint &pos);
     void slotOpenUrl();
     void slotCopyLink();
-    void slotOpenEmailClient();
     void slotUnregisterItemEditWidget();
     void slotChangeFields();
     void slotDeleteJobResult(KJob *job);
@@ -160,8 +159,6 @@ private:
     LinkedItemsRepository *mLinkedItemsRepository;
     bool mOnline;
     bool mInitialLoadingDone;
-
-    QStringList mSelectedEmails;
 
     KJobProgressTracker *mJobProgressTracker;
 };

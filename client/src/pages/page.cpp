@@ -75,6 +75,8 @@
 #include <QShortcut>
 #include <KEmailAddress>
 
+using namespace Akonadi;
+
 namespace {
 
 enum ModifierField
@@ -87,11 +89,25 @@ enum ModifierField
 
 static const char s_modifierFieldId[] = "__modifierField";
 
+QStringList preferredMailAddressesForSelectedRows(const QModelIndexList selectedIndexes)
+{
+    QStringList result;
+    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
+        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+        if (item.hasPayload<KContacts::Addressee>()) {
+            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+
+            if (!preferredEmail.isEmpty())
+                result.append(preferredEmail);
+        }
+    }
+    return result;
+}
+
 } // namespace
 
 Q_DECLARE_METATYPE(ModifierField);
-
-using namespace Akonadi;
 
 Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
@@ -438,19 +454,7 @@ QMenu *Page::createContextMenu(const QPoint &)
         mCurrentItemUrl = dataExtractor->itemUrl(mResourceBaseUrl, item);
     }
 
-    mSelectedEmails.clear();
-
     const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
-    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
-        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KContacts::Addressee>()) {
-            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
-
-            if (!preferredEmail.isEmpty())
-                mSelectedEmails.append(preferredEmail);
-        }
-    }
 
     auto *contextMenu = new QMenu(this);
 
@@ -460,9 +464,12 @@ QMenu *Page::createContextMenu(const QPoint &)
         contextMenu->addAction(QIcon::fromTheme("edit-copy"), i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
     }
 
-    if (!mSelectedEmails.isEmpty()) {
+    const QStringList selectedEmails = preferredMailAddressesForSelectedRows(selectedIndexes);
+    if (!selectedEmails.isEmpty()) {
         contextMenu->addSeparator();
-        contextMenu->addAction(QIcon::fromTheme("mail-send"), i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
+        contextMenu->addAction(QIcon::fromTheme("mail-send"), i18n("Send &Email"), this, [selectedEmails]() {
+            QDesktopServices::openUrl("mailto:" + selectedEmails.join(QStringLiteral(",")));
+        });
     }
 
     if (!selectedIndexes.isEmpty() && (mType == DetailsType::Account || mType == DetailsType::Opportunity || mType == DetailsType::Contact)) {
@@ -502,11 +509,6 @@ void Page::slotOpenUrl()
 void Page::slotCopyLink()
 {
     QApplication::clipboard()->setText(mCurrentItemUrl.toString());
-}
-
-void Page::slotOpenEmailClient()
-{
-    QDesktopServices::openUrl("mailto:" + mSelectedEmails.join(QStringLiteral(",")));
 }
 
 void Page::setupModel()
