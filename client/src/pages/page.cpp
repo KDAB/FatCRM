@@ -96,10 +96,14 @@ QStringList preferredMailAddressesForSelectedRows(const QModelIndexList selected
         const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KContacts::Addressee>()) {
             const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+            if (addressee.preferredEmail().isEmpty())
+                continue;
 
-            if (!preferredEmail.isEmpty())
-                result.append(preferredEmail);
+            const QString preferredEmail = KEmailAddress::normalizedAddress(addressee.assembledName(), addressee.preferredEmail());
+            if (preferredEmail.isEmpty())
+                continue;
+
+            result.append(preferredEmail);
         }
     }
     return result;
