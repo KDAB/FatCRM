@@ -454,19 +454,21 @@ QMenu *Page::createContextMenu(const QPoint &)
 
     auto *contextMenu = new QMenu(this);
 
-    contextMenu->addAction(i18n("Delete..."), this, SLOT(slotRemoveItem()));
-
     if (mCurrentItemUrl.isValid()) {
-        contextMenu->addAction(i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
-        contextMenu->addAction(i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+        contextMenu->addSeparator();
+        contextMenu->addAction(QIcon::fromTheme("internet-web-browser"), i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
+        contextMenu->addAction(QIcon::fromTheme("edit-copy"), i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
     }
 
     if (!mSelectedEmails.isEmpty()) {
-        contextMenu->addAction(i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
+        contextMenu->addSeparator();
+        contextMenu->addAction(QIcon::fromTheme("mail-send"), i18n("Send &Email"), this, SLOT(slotOpenEmailClient()));
     }
 
     if (!selectedIndexes.isEmpty() && (mType == DetailsType::Account || mType == DetailsType::Opportunity || mType == DetailsType::Contact)) {
+        contextMenu->addSeparator();
         QMenu *changeMenu = contextMenu->addMenu(i18n("Change..."));
+        changeMenu->setIcon(QIcon::fromTheme("edit-entry"));
         if (mType == DetailsType::Account || mType == DetailsType::Contact) {
             QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
             cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
@@ -481,6 +483,8 @@ QMenu *Page::createContextMenu(const QPoint &)
             assigneeAction->setProperty(s_modifierFieldId, QVariant::fromValue(AssigneeField));
         }
     }
+
+    contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, SLOT(slotRemoveItem()));
 
     if (contextMenu->actions().isEmpty()) {
         delete contextMenu;
