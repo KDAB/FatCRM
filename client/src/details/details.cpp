@@ -139,9 +139,8 @@ void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
             qCWarning(FATCRM_CLIENT_LOG) << "Enum definition not found for" << objectName << "in" << typeToString(mType);
         } else {
             const EnumDefinitions::Enum &def = mEnumDefinitions.at(enumIndex);
-            for (EnumDefinitions::Enum::Vector::const_iterator it = def.mEnumValues.constBegin();
-                 it != def.mEnumValues.constEnd(); ++it) {
-                combo->addItem(it->value, it->key);
+            for (const auto &keyValue : def.mEnumValues) {
+                combo->addItem(keyValue.value, keyValue.key);
             }
         }
     }

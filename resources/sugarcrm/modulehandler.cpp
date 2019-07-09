@@ -195,10 +195,7 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
                     // In general, name==value except for some like
                     // name="QtonAndroidFreeSessions" value="Qt on Android Free Sessions"
                     //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << nameValue.name() << nameValue.value();
-                    EnumDefinitions::KeyValue keyValue;
-                    keyValue.key = nameValue.name();
-                    keyValue.value = nameValue.value();
-                    definition.mEnumValues.append(keyValue);
+                    definition.mEnumValues.append(EnumDefinitions::KeyValue{nameValue.name(), nameValue.value()});
                 }
                 mEnumDefinitions.append(definition);
             }
