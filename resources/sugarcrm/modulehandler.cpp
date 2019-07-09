@@ -33,6 +33,7 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/enumdefinitionattribute.h"
 
+#include "currency.h"
 #include "sugarprotocolbase.h"
 
 #include <AkonadiCore/AgentManager>
@@ -202,10 +203,32 @@ bool ModuleHandler::parseFieldList(Akonadi::Collection &collection, const TNS__F
                 mEnumDefinitions.append(definition);
             }
         }
+
+        // Also store currencies in there (for opps)
+        if (module() == Opportunities) {
+            // Grab currencies (typically there are only 2 or 3)
+            // The fields can be checked using
+            // qdbus org.freedesktop.Akonadi.Resource.akonadi_sugarcrm_resource_0 /CRMDebug availableFields Currencies
+            QString errorMessage;
+            EntriesListResult entriesListResult;
+            const int result = mSession->protocol()->listEntries({}, Currencies, QString(), QString(), {"id", "symbol", "iso4217"}, entriesListResult, errorMessage);
+            if (result == KJob::NoError) {
+                EnumDefinitions::Enum definition(KDCRMFields::currencyId());
+                // The magic id -99 for EUR is in the SuiteCRM source code...
+                definition.mEnumValues.append(EnumDefinitions::KeyValue{QString("-99"), QString::fromUtf8("€")});
+                const auto items = entriesListResult.entryList.items();
+                for (const KDSoapGenerated::TNS__Entry_value &entry : items) {
+                    const Currency cur(entry);
+                    definition.mEnumValues.append(EnumDefinitions::KeyValue{cur.id(), cur.symbol()});
+                }
+                mEnumDefinitions.append(definition);
+            }
+        }
+
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << module() << "found enum definitions:" << mEnumDefinitions.toString();
         // Accounts: account_type, industry
         // Contacts: salutation, lead_source, portal_user_type
-        // Opportunities: opportunity_type, lead_source, sales_stage
+        // Opportunities: opportunity_type, lead_source, sales_stage  (+ we add currency_symbol by hand)
         // Emails: type, status
         // Notes: <none>
         auto *attr = collection.attribute<EnumDefinitionAttribute>(Akonadi::Collection::AddIfMissing);

@@ -36,6 +36,14 @@ QString EnumDefinitions::Enum::toString() const
     return ret;
 }
 
+QString EnumDefinitions::Enum::value(const QString &key) const
+{
+    const auto it = std::find_if(mEnumValues.constBegin(), mEnumValues.constEnd(), [key](const KeyValue &keyVal) {
+        return keyVal.key == key;
+    });
+    return it != mEnumValues.constEnd() ? it->value : QString();
+}
+
 EnumDefinitions::Enum EnumDefinitions::Enum::fromString(const QString &str)
 {
     const int nameSep = str.indexOf('|');

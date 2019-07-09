@@ -65,9 +65,6 @@ static QStringList storedProperties()
         props << KDCRMFields::id();
         props << KDCRMFields::createdBy();
         props << KDCRMFields::createdByName();
-        props << KDCRMFields::currencyId(); // campaign, opportunity
-        props << KDCRMFields::currencyName(); // opportunity
-        props << KDCRMFields::currencySymbol(); // opportunity
         props << KDCRMFields::contactId(); // leads, notes
 
         props << KDCRMFields::opportunityRoleFields(); // contacts
@@ -296,8 +293,6 @@ void Details::setData(const QMap<QString, QString> &data,
         hideIfUnsupported(w);
         //qDebug() << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
-        if (key == KDCRMFields::amount())
-            w->setSuffix(data.value(KDCRMFields::currencySymbol()));
     }
 
     Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {

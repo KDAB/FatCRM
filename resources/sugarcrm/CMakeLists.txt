@@ -7,6 +7,7 @@ set(sugarcrmresource_SRCS
   campaignshandler.cpp
   contactshandler.cpp
   createentryjob.cpp
+  currency.cpp
   deleteentryjob.cpp
   documentshandler.cpp
   emailshandler.cpp

@@ -24,12 +24,14 @@
 #include "referenceddata.h"
 #include "clientsettings.h"
 #include "linkeditemsrepository.h"
+#include "collectionmanager.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
 #include "kdcrmdata/sugaropportunity.h"
 #include "kdcrmdata/kdcrmutils.h"
+#include "kdcrmdata/kdcrmfields.h"
 
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
@@ -219,6 +221,11 @@ QVariant ItemsTreeModel::data(const QModelIndex &index, int role) const
 void ItemsTreeModel::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
     mLinkedItemsRepository = repo;
+}
+
+void ItemsTreeModel::setCollectionManager(CollectionManager *collectionManager)
+{
+    mCollectionManager = collectionManager;
 }
 
 QString ItemsTreeModel::countryForContact(const KContacts::Addressee &addressee)
@@ -571,8 +578,19 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             return opportunity.salesStage();
         case Amount: {
             const double amount = QLocale::c().toDouble(opportunity.amount());
-            if (role == Qt::DisplayRole)
-                return QLocale().toCurrencyString(amount, opportunity.currencySymbol());
+            if (role == Qt::DisplayRole) {
+                // We can't use opportunity.currencySymbol(), it's only set for euros.
+                // So we have to look up currencyId() in the (fake) enum definition set by the resource.
+                const auto &enums = mCollectionManager->enumDefinitions(item.parentCollection().id());
+                const int pos = enums.indexOf(KDCRMFields::currencyId());
+                if (pos > -1) {
+                    const auto &enumDef = enums.at(pos);
+                    const QString currencySymbol = enumDef.value(opportunity.currencyId());
+                    if (!currencySymbol.isEmpty()) {
+                        return QLocale().toCurrencyString(amount, currencySymbol);
+                    }
+                }
+            }
             return amount; // for sorting
         }
         case OpportunitySize:

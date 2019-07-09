@@ -38,7 +38,8 @@ static const ModuleEntry s_moduleNames[] = {
     {"Documents", Documents},
     {"Emails", Emails},
     {"Notes", Notes},
-    {"Tasks", Tasks}
+    {"Tasks", Tasks},
+    {"Currencies", Currencies},
 };
 
 static const int count = sizeof(s_moduleNames) / sizeof(*s_moduleNames);

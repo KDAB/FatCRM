@@ -31,6 +31,7 @@
 #include <QVector>
 
 class LinkedItemsRepository;
+class CollectionManager;
 
 namespace KContacts { class Addressee; }
 namespace Akonadi { class ChangeRecorder; }
@@ -129,6 +130,7 @@ public:
     QVariant data(const QModelIndex & index, int role) const override;
 
     void setLinkedItemsRepository(LinkedItemsRepository *repo);
+    void setCollectionManager(CollectionManager *collectionManager);
 
     static QString countryForContact(const KContacts::Addressee &addressee);
 
@@ -152,7 +154,8 @@ private:
     class Private;
     Private *const d;
     DetailsType mType;
-    LinkedItemsRepository *mLinkedItemsRepository;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
+    CollectionManager *mCollectionManager = nullptr;
 };
 
 #endif /* ITEMSTREEMODEL_H */

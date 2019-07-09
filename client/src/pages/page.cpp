@@ -558,6 +558,7 @@ void Page::setupModel()
     mItemsTreeModel = new ItemsTreeModel(mType, mChangeRecorder, this);
     Q_ASSERT(mLinkedItemsRepository);
     mItemsTreeModel->setLinkedItemsRepository(mLinkedItemsRepository);
+    mItemsTreeModel->setCollectionManager(mCollectionManager); // for enum definitions
 
     connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
     connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)), this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));

@@ -54,6 +54,7 @@ public:
     {
         Enum(const QString &name) : mEnumName(name) {}
         QString toString() const;
+        QString value(const QString &key) const;
         static Enum fromString(const QString &str);
 
         QString mEnumName;

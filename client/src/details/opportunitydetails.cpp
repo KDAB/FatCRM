@@ -201,6 +201,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     fillComboBox(mUi->sales_stage, KDCRMFields::salesStage());
     fillComboBox(mUi->opportunityPriority, KDCRMFields::opportunityPriority());
     fillComboBox(mUi->opportunitySize, KDCRMFields::opportunitySize());
+    fillComboBox(mUi->currency_id, KDCRMFields::currencyId());
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
