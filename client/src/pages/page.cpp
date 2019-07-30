@@ -644,7 +644,7 @@ std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) c
         return {};
 
     const int count = model->rowCount();
-    if (count > 1000) {
+    if (warnOnLongReport && count > 1000) {
         QMessageBox msgBox;
         msgBox.setWindowTitle(i18n("Long report warning"));
         msgBox.setText(i18n("The generated report will contain %1 rows, which might be long to generate and print.", count));
