@@ -23,6 +23,7 @@
 #include "opportunitydetails.h"
 
 #include "ui_opportunitydetails.h"
+#include "clientsettings.h"
 #include "documentswindow.h"
 #include "enums.h"
 #include "itemstreemodel.h"
@@ -85,6 +86,12 @@ void OpportunityDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
+    connect(mUi->assigned_user_id, &QComboBox::currentTextChanged, this, [this](const QString &currentText) {
+        mUi->assignToMeButton->setEnabled(currentText != ClientSettings::self()->fullUserName());
+    });
+    connect(mUi->assignToMeButton, &QPushButton::clicked, this, [this]() {
+        mUi->assigned_user_id->setCurrentText(ClientSettings::self()->fullUserName());
+    });
     connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
     connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
