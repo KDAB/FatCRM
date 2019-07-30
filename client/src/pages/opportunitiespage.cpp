@@ -42,8 +42,10 @@
 
 using namespace Akonadi;
 
-class OpportunityTreeViewItemDelegate: public QStyledItemDelegate
+class OpportunityTreeViewItemDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
+
 public:
     OpportunityTreeViewItemDelegate(QObject *parent)
         : QStyledItemDelegate(parent)
@@ -179,3 +181,5 @@ void OpportunitiesPage::slotDefaultOppFilterUpdated(const OpportunityFilterSetti
 {
     ClientSettings::self()->setFilterSettings(settings);
 }
+
+#include "opportunitiespage.moc"
