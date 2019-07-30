@@ -21,3 +21,6 @@ perf.data*
 *.BASE.*
 *.LOCAL.*
 *.REMOTE.*
+
+# from QtCreator
+*.user
