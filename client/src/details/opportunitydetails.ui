@@ -20,7 +20,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Opportunity Na&amp;me:</string>
+         <string>&amp;Opportunity Name:</string>
         </property>
         <property name="buddy">
          <cstring>name</cstring>
@@ -33,7 +33,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Account Name:</string>
+         <string>Account &amp;Name:</string>
         </property>
         <property name="buddy">
          <cstring>account_id</cstring>
@@ -136,7 +136,7 @@
         <item>
          <widget class="QPushButton" name="assignToMeButton">
           <property name="text">
-           <string>Assign to me</string>
+           <string>Assign to &amp;me</string>
           </property>
          </widget>
         </item>
@@ -160,7 +160,7 @@
         <item>
          <widget class="QCheckBox" name="urgent">
           <property name="text">
-           <string>Urgent</string>
+           <string>&amp;Urgent</string>
           </property>
          </widget>
         </item>
@@ -202,7 +202,7 @@
       <item row="4" column="0">
        <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Next Step Date:</string>
+         <string>Next Step &amp;Date:</string>
         </property>
         <property name="buddy">
          <cstring>next_call_date</cstring>
@@ -221,7 +221,7 @@
         <item>
          <widget class="QPushButton" name="nextStepDateAutoButton">
           <property name="text">
-           <string>In 2 weeks</string>
+           <string>In 2 &amp;weeks</string>
           </property>
          </widget>
         </item>
@@ -230,7 +230,7 @@
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Sales Stage:</string>
+         <string>&amp;Sales Stage:</string>
         </property>
         <property name="buddy">
          <cstring>sales_stage</cstring>
