@@ -81,6 +81,7 @@ public:
         OpportunityAccountName,
         OpportunitySize,
         SalesStage,
+        Probability,
         Amount,
         NextStep,
         NextStepDate,

@@ -576,6 +576,13 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case SalesStage:
             return opportunity.salesStage();
+        case Probability: {
+            const int probability = opportunity.probability().toInt();
+            if (role == Qt::DisplayRole) {
+                return i18nc("Probability percentage of opportunity", "%1 %", probability);
+            }
+            return probability; // for sorting
+        }
         case Amount: {
             const double amount = QLocale::c().toDouble(opportunity.amount());
             if (role == Qt::DisplayRole) {
@@ -774,6 +781,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::City,
             ItemsTreeModel::Country,
             ItemsTreeModel::SalesStage,
+            ItemsTreeModel::Probability,
             ItemsTreeModel::Amount,
             ItemsTreeModel::OpportunitySize,
             ItemsTreeModel::Description,
@@ -861,6 +869,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column opportunity priority (abbreviated)", "P");
     case SalesStage:
         return i18nc("@title:column sales stage", "Sales Stage");
+    case Probability:
+        return i18nc("@title:column probability", "Probability");
     case Amount:
         return i18nc("@title:column amount", "Amount");
     case Description:
@@ -934,6 +944,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
     case DetailsType::Lead:
         break;
     case DetailsType::Opportunity:
+        columns.removeAll(ItemsTreeModel::Probability);
         columns.removeAll(ItemsTreeModel::PostalCode);
         columns.removeAll(ItemsTreeModel::City);
         columns.removeAll(ItemsTreeModel::Amount);
