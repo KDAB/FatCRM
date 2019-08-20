@@ -23,8 +23,7 @@
 #include "mainwindow.h"
 #include <config-fatcrm-version.h>
 #include "clientsettings.h"
-
-#include <kdcrmutils.h>
+#include "kdcrmutils.h"
 
 #include <KAboutData>
 #include <KDBusService>

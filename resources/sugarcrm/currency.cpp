@@ -19,8 +19,9 @@
 */
 
 #include "currency.h"
+#include "sugarsoap.h"
+
 #include <QDebug>
-#include <sugarsoap.h>
 
 Currency::Currency(const KDSoapGenerated::TNS__Entry_value &entry)
 {

@@ -31,7 +31,7 @@
 #include "salesforcesoap.h"
 using namespace KDSoapGenerated;
 
-#include <kdcrmutils.h>
+#include "kdcrmutils.h"
 
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>

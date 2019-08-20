@@ -33,6 +33,7 @@
 #include "emailshandler.h"
 #include "fetchentryjob.h"
 #include "itemtransferinterface.h"
+#include "kdcrmutils.h"
 #include "leadshandler.h"
 #include "listentriesjob.h"
 #include "listmodulesjob.h"
@@ -50,8 +51,6 @@
 #include "passwordhandler.h"
 #include "sugarsoapprotocol.h"
 #include "tests/sugarmockprotocol.h"
-
-#include <kdcrmutils.h>
 
 #include <AkonadiCore/ChangeRecorder>
 #include <AkonadiCore/Collection>
