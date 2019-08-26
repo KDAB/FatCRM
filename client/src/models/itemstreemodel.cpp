@@ -149,6 +149,20 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
 {
     // avoid calling item.payload() for all other roles
     if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::DecorationRole) {
+        if (role == Qt::DecorationRole) {
+            switch (columnTypes().at(column)) {
+            case Country: {
+                const QString country = entityData(item, column, Qt::DisplayRole).toString();
+                const QString countryCode = countryNameTo2DigitCode(country);
+                if (countryCode.isEmpty())
+                    return {};
+
+                return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
+            }
+            default:
+                return {};
+            }
+        }
 
         switch (mType) {
         case DetailsType::Account:
@@ -396,20 +410,6 @@ QVariant ItemsTreeModel::accountData(const Item &item, int column, int role) con
         }
     }
 
-    if (role == Qt::DecorationRole) {
-        switch (columnTypes().at(column)) {
-        case Country: {
-            const QString countryCode = countryNameTo2DigitCode(accountData(item, column, Qt::DisplayRole).toString());
-            if (countryCode.isEmpty())
-                return {};
-
-            return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
-        }
-        default:
-            return {};
-        }
-    }
-
     return QVariant();
 }
 
@@ -507,6 +507,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return QVariant();
         }
     }
+
     return QVariant();
 }
 
@@ -646,20 +647,6 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
             QFont boldFont;
             boldFont.setBold(true);
             return boldFont;
-        }
-    }
-
-    if (role == Qt::DecorationRole) {
-        switch (columnTypes().at(column)) {
-        case Country: {
-            const QString countryCode = countryNameTo2DigitCode(opportunityData(item, column, Qt::DisplayRole).toString());
-            if (countryCode.isEmpty())
-                return {};
-
-            return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
-        }
-        default:
-            return {};
         }
     }
 
