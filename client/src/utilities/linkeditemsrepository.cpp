@@ -224,6 +224,7 @@ void LinkedItemsRepository::loadEmails()
 
 void LinkedItemsRepository::monitorChanges()
 {
+    // cppcheck-suppress publicAllocationError
     mMonitor = new Akonadi::Monitor(this);
     mMonitor->setCollectionMonitored(mNotesCollection);
     mMonitor->setCollectionMonitored(mEmailsCollection);

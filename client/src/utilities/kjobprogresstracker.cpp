@@ -60,7 +60,7 @@ void KJobProgressTracker::addJob(KJob *job, const QString &errorMessage)
 
 void KJobProgressTracker::start()
 {
-    // cppcheck-suppress publicAllocationError as widget deletes itself later
+    // cppcheck-suppress publicAllocationError
     mProgressDialog = new QProgressDialog(mParentWidget);
     mProgressDialog->setWindowTitle(mCaption);
     mProgressDialog->setLabelText(mLabel);

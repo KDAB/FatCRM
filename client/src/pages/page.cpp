@@ -589,7 +589,6 @@ void Page::createNewItem(const QMap<QString, QString> &data)
     item.setParentCollection(mCollection);
     widget->showNewItem(moreData, mCollection);
     widget->show();
-    // cppcheck-suppress memleak as widget deletes itself
 }
 
 void Page::slotDataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
