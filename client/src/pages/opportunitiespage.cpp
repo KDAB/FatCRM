@@ -37,6 +37,7 @@
 
 #include <KLocalizedString>
 
+#include <QPainter>
 #include <QStyledItemDelegate>
 #include <QSettings>
 
@@ -50,6 +51,32 @@ public:
     OpportunityTreeViewItemDelegate(QObject *parent)
         : QStyledItemDelegate(parent)
     {
+    }
+
+    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const override
+    {
+        if (index.column() == ItemsTreeModel::columnTypes(DetailsType::Opportunity).indexOf(ItemsTreeModel::OpportunityName)) {
+            QStyleOptionViewItem opt = option;
+            initStyleOption(&opt, index);
+
+            const QStyle *style = option.widget ? option.widget->style() : QApplication::style();
+            style->drawControl(QStyle::CE_ItemViewItem, &opt, painter, option.widget);
+
+            const QPalette palette = option.widget ? option.widget->palette() : QApplication::palette();
+
+            // use Qt::EditRole so we get the integer representation
+            const int probabilityColumn = ItemsTreeModel::columnTypes(DetailsType::Opportunity).indexOf(ItemsTreeModel::Probability);
+            const double fillPercent = index.siblingAtColumn(probabilityColumn).data(Qt::EditRole).toInt() / 100.0;
+
+            painter->save();
+            painter->setBrush(palette.text());
+            painter->setOpacity(0.4);
+            painter->setPen(Qt::NoPen);
+            painter->drawRect(QRect(opt.rect.topLeft(), QSize(static_cast<int>(opt.rect.width() * fillPercent), 2)));
+            painter->restore();
+        } else {
+            QStyledItemDelegate::paint(painter, option, index);
+        }
     }
 
     // Return a null size for the description column:
