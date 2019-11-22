@@ -771,27 +771,38 @@
   <tabstop>title</tabstop>
   <tabstop>department</tabstop>
   <tabstop>account_id</tabstop>
+  <tabstop>buttonSelectAccount</tabstop>
   <tabstop>buttonOpenAccount</tabstop>
   <tabstop>lead_source</tabstop>
   <tabstop>reports_to_id</tabstop>
   <tabstop>email1</tabstop>
+  <tabstop>buttonMailToPrimary</tabstop>
   <tabstop>email2</tabstop>
+  <tabstop>buttonMailToOther</tabstop>
   <tabstop>assigned_user_id</tabstop>
+  <tabstop>viewNotesButton</tabstop>
   <tabstop>phone_work</tabstop>
+  <tabstop>buttonCallWork</tabstop>
   <tabstop>phone_mobile</tabstop>
+  <tabstop>buttonCallMobile</tabstop>
   <tabstop>phone_home</tabstop>
+  <tabstop>buttonCallHome</tabstop>
   <tabstop>phone_fax</tabstop>
+  <tabstop>buttonFax</tabstop>
   <tabstop>phone_other</tabstop>
+  <tabstop>buttonCallOtherPhone</tabstop>
   <tabstop>do_not_call</tabstop>
   <tabstop>birthdate</tabstop>
   <tabstop>calendarButton</tabstop>
   <tabstop>assistant</tabstop>
   <tabstop>phoneAssistant</tabstop>
+  <tabstop>copyPrimaryAddressButton</tabstop>
   <tabstop>primaryAddressStreet</tabstop>
   <tabstop>primaryAddressCity</tabstop>
   <tabstop>primaryAddressState</tabstop>
   <tabstop>primaryAddressPostalcode</tabstop>
   <tabstop>primaryAddressCountry</tabstop>
+  <tabstop>copyOtherAddressButton</tabstop>
   <tabstop>altAddressStreet</tabstop>
   <tabstop>altAddressCity</tabstop>
   <tabstop>altAddressState</tabstop>

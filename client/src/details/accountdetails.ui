@@ -468,7 +468,8 @@
            <string>Open</string>
           </property>
           <property name="icon">
-           <iconset theme="document-open"/>
+           <iconset theme="document-open">
+            <normaloff>.</normaloff>.</iconset>
           </property>
          </widget>
         </item>
@@ -615,12 +616,16 @@
  <tabstops>
   <tabstop>name</tabstop>
   <tabstop>website</tabstop>
+  <tabstop>visitWebsiteButton</tabstop>
   <tabstop>ticker_symbol</tabstop>
   <tabstop>parent_id</tabstop>
   <tabstop>ownership</tabstop>
   <tabstop>industry</tabstop>
   <tabstop>account_type</tabstop>
   <tabstop>assigned_user_id</tabstop>
+  <tabstop>viewDocumentsButton</tabstop>
+  <tabstop>manageDocumentsButton</tabstop>
+  <tabstop>viewNotesButton</tabstop>
   <tabstop>phone_office</tabstop>
   <tabstop>phone_fax</tabstop>
   <tabstop>phone_alternate</tabstop>
@@ -632,11 +637,13 @@
   <tabstop>vat_no_c</tabstop>
   <tabstop>visma_id_c</tabstop>
   <tabstop>accounting_c</tabstop>
+  <tabstop>copyBillingAddressButton</tabstop>
   <tabstop>billing_address_street</tabstop>
   <tabstop>billing_address_city</tabstop>
   <tabstop>billing_address_state</tabstop>
   <tabstop>billing_address_postalcode</tabstop>
   <tabstop>billing_address_country</tabstop>
+  <tabstop>copyOfficeAddressButton</tabstop>
   <tabstop>shipping_address_street</tabstop>
   <tabstop>shipping_address_city</tabstop>
   <tabstop>shipping_address_state</tabstop>
