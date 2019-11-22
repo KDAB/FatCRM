@@ -363,13 +363,19 @@
   <tabstop>lead_source</tabstop>
   <tabstop>date_closed</tabstop>
   <tabstop>assigned_user_id</tabstop>
+  <tabstop>assignToMeButton</tabstop>
   <tabstop>opportunityPriority</tabstop>
   <tabstop>urgent</tabstop>
+  <tabstop>amount</tabstop>
+  <tabstop>currency_id</tabstop>
   <tabstop>next_step</tabstop>
   <tabstop>next_call_date</tabstop>
   <tabstop>nextStepDateAutoButton</tabstop>
   <tabstop>sales_stage</tabstop>
   <tabstop>probability</tabstop>
+  <tabstop>viewDocumentsButton</tabstop>
+  <tabstop>manageDocumentsButton</tabstop>
+  <tabstop>viewNotesButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>
