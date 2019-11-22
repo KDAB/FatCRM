@@ -24,3 +24,4 @@ perf.data*
 
 # from QtCreator
 *.user
+*.user.*
