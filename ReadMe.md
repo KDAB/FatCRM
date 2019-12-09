@@ -11,6 +11,12 @@ that applies to every action, requiring roundtrips to the web server.
 FatCRM solves this by creating a local cache of the data (accounts, opportunities, contacts, etc.)
 and providing a desktop application to search, view, and edit this data.
 
+# Screenshots
+
+![fatcrm_opps](screenshots/fatcrm-opps.png?raw=true "Opportunities view")
+
+![fatcrm_opp](screenshots/fatcrm-opp.png?raw=true "Single opportunity view")
+
 # Dependencies
 
 FatCRM uses Qt5, KDSoap, KDReports, Akonadi, and KF5.
