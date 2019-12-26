@@ -66,7 +66,7 @@ public:
 
             // use Qt::EditRole so we get the integer representation
             const int probabilityColumn = ItemsTreeModel::columnTypes(DetailsType::Opportunity).indexOf(ItemsTreeModel::Probability);
-            const double fillPercent = index.siblingAtColumn(probabilityColumn).data(Qt::EditRole).toInt() / 100.0;
+            const double fillPercent = index.sibling(index.row(), probabilityColumn).data(Qt::EditRole).toInt() / 100.0;
 
             painter->save();
             painter->setBrush(palette.text());
