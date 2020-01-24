@@ -133,36 +133,36 @@ private:
 
     QList<Page *> mPages;
 
-    QComboBox *mResourceSelector;
+    QComboBox *mResourceSelector = nullptr;
 
     Ui_MainWindow mUi;
-    QMenu *mViewMenu;
+    QMenu *mViewMenu = nullptr;
 
-    QLabel *mStatusLabel;
-    QProgressBar *mProgressBar;
-    QTimer *mProgressBarHideTimer;
-    QTimer *mSyncWarningTimer;
-    ReportPage *mReportPage;
+    QLabel *mStatusLabel = nullptr;
+    QProgressBar *mProgressBar = nullptr;
+    QTimer *mProgressBarHideTimer = nullptr;
+    QTimer *mSyncWarningTimer = nullptr;
+    ReportPage *mReportPage = nullptr;
 
-    ResourceConfigDialog *mResourceDialog;
-    CollectionManager *mCollectionManager;
-    LinkedItemsRepository *mLinkedItemsRepository;
+    ResourceConfigDialog *mResourceDialog = nullptr;
+    CollectionManager *mCollectionManager = nullptr;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
 
-    AccountsPage *mAccountPage;
-    ContactsPage *mContactsPage;
-    OpportunitiesPage *mOpportunitiesPage;
-    ItemsTreeModel *mContactsModel;
+    AccountsPage *mAccountPage = nullptr;
+    ContactsPage *mContactsPage = nullptr;
+    OpportunitiesPage *mOpportunitiesPage = nullptr;
+    ItemsTreeModel *mContactsModel = nullptr;
 
-    QToolBar *mMainToolBar;
-    QAction *mResourceSelectorAction;
+    QToolBar *mMainToolBar = nullptr;
+    QAction *mResourceSelectorAction = nullptr;
     QList<KJob *> mClearTimestampJobs;
 
     bool mInitialLoadingDone;
     bool mDisplayOverlay;
     QStringList mPendingImportPaths;
-    LoadingOverlay *mLoadingOverlay;
+    LoadingOverlay *mLoadingOverlay = nullptr;
 
-    QMenu *mSavedSearchesMenu;
+    QMenu *mSavedSearchesMenu = nullptr;
     QString mLoadedSearchName;
     QString mLoadedSearchPrefix;
 };

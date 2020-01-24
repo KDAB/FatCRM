@@ -74,8 +74,7 @@ using namespace Akonadi;
 #include <QToolBar>
 
 MainWindow::MainWindow(bool displayOverlay)
-    : QMainWindow(),
-      mProgressBar(nullptr),
+    : mProgressBar(nullptr),
       mProgressBarHideTimer(nullptr),
       mCollectionManager(new CollectionManager(this)),
       mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
@@ -716,10 +715,7 @@ void MainWindow::slotOpenSearchesDialog()
 
 Page *MainWindow::currentPage() const
 {
-    const int index = mUi.tabWidget->currentIndex();
-    if (index >= 0 && index <= mPages.count())
-        return mPages[ index ];
-    return nullptr;
+    return mPages.value(mUi.tabWidget->currentIndex());
 }
 
 AgentInstance MainWindow::currentResource() const
@@ -831,7 +827,7 @@ void MainWindow::populateSavedSearchesMenu()
 
     mSavedSearchesMenu->clear();
     for (int x = 0; x < count; ++x) {
-        const QString searchName = recentSearches.at(x);
+        const QString &searchName = recentSearches.at(x);
         auto *searchAlternative = new QAction(searchName, this);
         mSavedSearchesMenu->addAction(searchAlternative);
     }
