@@ -113,6 +113,8 @@ private Q_SLOTS:
     void slotLoadSearchFromRecent(QAction *searchAction);
     void slotSaveSearch();
     void slotSaveSearchAs();
+    void slotActivateNextTab();
+    void slotActivatePreviousTab();
 
 private:
     void initialize(bool displayOverlay);

@@ -261,6 +261,16 @@ void MainWindow::setupActions()
 
     connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
 
+    auto *activateNextTabAction = new QAction(tr("Activate Next Tab"), this);
+    activateNextTabAction->setShortcut(Qt::CTRL + Qt::Key_PageDown);
+    connect(activateNextTabAction, &QAction::triggered, this, &MainWindow::slotActivateNextTab);
+    addAction(activateNextTabAction);
+
+    auto *activatePreviousTabAction = new QAction(tr("Activate Previous Tab"), this);
+    activatePreviousTabAction->setShortcut(Qt::CTRL + Qt::Key_PageUp);
+    connect(activatePreviousTabAction, &QAction::triggered, this, &MainWindow::slotActivatePreviousTab);
+    addAction(activatePreviousTabAction);
+
     Q_FOREACH (const Page *page, mPages) {
         connect(page, SIGNAL(statusMessage(QString)),
                 this, SLOT(slotShowMessage(QString)));
@@ -882,4 +892,14 @@ void MainWindow::slotSaveSearchAs()
     AddSearchDialog dialog(this, false, mLoadedSearchName, currentPage()->searchText());
     dialog.setWindowTitle(i18n("Save Search As"));
     dialog.exec();
+}
+
+void MainWindow::slotActivateNextTab()
+{
+    mUi.tabWidget->setCurrentIndex((mUi.tabWidget->currentIndex() + 1) % mUi.tabWidget->count());
+}
+
+void MainWindow::slotActivatePreviousTab()
+{
+    mUi.tabWidget->setCurrentIndex((mUi.tabWidget->currentIndex() - 1) % mUi.tabWidget->count());
 }
