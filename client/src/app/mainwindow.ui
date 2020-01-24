@@ -73,6 +73,9 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionCRMAccounts">
+   <property name="icon">
+    <iconset theme="network-workgroup"/>
+   </property>
    <property name="text">
     <string>&amp;CRM Accounts...</string>
    </property>
