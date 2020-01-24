@@ -74,7 +74,7 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
             if (id.isEmpty()) { // newly created, not ID yet
                 continue;
             }
-            const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
+            const QString fullName = tr("%1 %2 (%3)", "GIVEN_NAME FAMILY_NAME (ORG)").arg(addressee.givenName(), addressee.familyName(), addressee.organization());
             contactRefMap.insert(id, fullName);
             assignedToRefMap.insert(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
             linkedItemsRepository()->addContact(addressee);
