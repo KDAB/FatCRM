@@ -1,5 +1,11 @@
 cmake_minimum_required(VERSION 3.0)
-project(FatCRM)
+
+# Project & version setup
+# 1.x was Qt4/kdelisbs4-based
+# 2.x is Qt5/KF5-based
+project(FatCRM VERSION 2.1.0)
+
+set(FatCRM_SOVERSION "1.0.0") # for libkdcrmdata
 
 if(POLICY CMP0028)
   cmake_policy(SET CMP0028 NEW) # CMP0028: Double colon in target name means ALIAS or IMPORTED target.
@@ -84,20 +90,11 @@ else()
 endif()
 configure_file(config-phonenumber.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-phonenumber.h)
 
-# Version setup
-# 1.x was Qt4/kdelisbs4-based
-# 2.x is Qt5/KF5-based
-set(FATCRM_VERSION_MAJOR "2")
-set(FATCRM_VERSION_MINOR "1")
-set(FATCRM_VERSION_PATCH "0")
-set(FATCRM_VERSION "${FATCRM_VERSION_MAJOR}.${FATCRM_VERSION_MINOR}.${FATCRM_VERSION_PATCH}")
-set(FATCRM_VERSION_STRING "${FATCRM_VERSION}")
-set(FATCRM_SOVERSION "1.0.0") # for libkdcrmdata
-
 include(GetGitRevisionDescription)
+set(FatCRM_EXTENDED_VERSION "${FatCRM_VERSION}")
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   git_describe(GIT_DESC --tags)
-  set(FATCRM_VERSION_STRING "${FATCRM_VERSION_STRING} (revision: ${GIT_DESC})")
+  set(FatCRM_EXTENDED_VERSION "${FatCRM_EXTENDED_VERSION} (revision: ${GIT_DESC})")
 endif()
 
 configure_file(
@@ -163,5 +160,5 @@ add_subdirectory(images)
 add_subdirectory(tests)
 install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
 
-message(STATUS "Building FatCRM ${FATCRM_VERSION_STRING} in ${CMAKE_BUILD_TYPE} mode")
+message(STATUS "Building FatCRM ${FatCRM_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)

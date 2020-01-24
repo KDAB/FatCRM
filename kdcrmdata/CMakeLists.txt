@@ -38,8 +38,8 @@ target_link_libraries(kdcrmdata PUBLIC
 )
 
 set_target_properties(kdcrmdata PROPERTIES
-  VERSION ${FATCRM_SOVERSION}
-  SOVERSION ${FATCRM_SOVERSION}
+  VERSION ${FatCRM_SOVERSION}
+  SOVERSION ${FatCRM_SOVERSION}
 )
 
 target_include_directories(kdcrmdata PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>")

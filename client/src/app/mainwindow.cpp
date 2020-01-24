@@ -163,7 +163,7 @@ void MainWindow::slotDelayedInit()
 
 void MainWindow::slotAboutApp()
 {
-    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2018 Klarälvdalens Datakonsult AB (KDAB)", QStringLiteral(FATCRM_VERSION_STRING)));
+    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2018 Klarälvdalens Datakonsult AB (KDAB)", QStringLiteral(FATCRM_EXTENDED_VERSION)));
 }
 
 void MainWindow::initialize(bool displayOverlay)
