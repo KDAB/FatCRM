@@ -137,6 +137,12 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     job->start();
     eventLoop.exec();
 
+    if (job->isFault()) {
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "listing entries in" << moduleName << "returned error" << job->faultAsString();
+        errorMessage = job->faultAsString();
+        return SugarJob::SoapError;
+    }
+
     const KDSoapGenerated::TNS__Get_entry_list_result_version2 entry_result = job->return_();
 
     entriesListResult.entryList = entry_result.entry_list();

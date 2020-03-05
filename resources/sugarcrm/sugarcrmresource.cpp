@@ -587,6 +587,10 @@ void SugarCRMResource::listEntriesResult(KJob *job)
 
 void SugarCRMResource::handleDeletedItems(const QVariant &val)
 {
+    // If listing gives a SOAP error, don't hide it just because we went on with handling deleted items
+    if (status() == Broken)
+        return;
+
     const HandleDeletedItemsArg arg = val.value<HandleDeletedItemsArg>();
 
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Handling" << arg.deletedItems.count() << "deleted items";
@@ -817,6 +821,7 @@ bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
             emit status(Broken, message);
             cancelTask(message);
         } else {
+            emit status(Idle, message);
             emit error(message);
             deferTask();
         }
@@ -847,11 +852,11 @@ bool SugarCRMResource::handleError(KJob *job, ActionOnError action)
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Forgetting invalid session ID, the next attempt will login again";
             deferOrCancel(job->errorText());
         } else {
-            emit status( Idle, job->errorString() );
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
             deferOrCancel(job->errorText());
-            if (action == DeferTaskOnError)
+            if (action == DeferTaskOnError) {
+                qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "deferring task";
                 setTemporaryOffline(300); // this calls doSetOnline(false)
+            }
         }
         break;
     default:
