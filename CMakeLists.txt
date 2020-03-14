@@ -77,7 +77,7 @@ set_package_properties(PhoneNumber PROPERTIES
 
 find_package(ICU COMPONENTS uc)
 set_package_properties(ICU PROPERTIES
-  URL "http://site.icu-project.org/"
+  URL "http://www.icu-project.org/"
   DESCRIPTION "ICU is a mature, widely used set of C/C++ and Java libraries providing Unicode and Globalization support for software applications."
   TYPE OPTIONAL
   PURPOSE "Required to localize country names"

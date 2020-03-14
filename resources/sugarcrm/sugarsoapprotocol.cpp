@@ -97,7 +97,7 @@ int SugarSoapProtocol::getEntriesCount(const ListEntriesScope &scope, Module mod
 
 int SugarSoapProtocol::getModuleFields(const QString &moduleName, KDSoapGenerated::TNS__Field_list& fields, QString &errorMessage)
 {
-    // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_module_fields/
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_module_fields/
     auto *soap = mSession->soap();
     const KDSoapGenerated::TNS__New_module_fields result = soap->get_module_fields(mSession->sessionId(), moduleName, {});
     fields = result.module_fields();
@@ -153,7 +153,7 @@ int SugarSoapProtocol::getEntry(Module moduleName, const QString &remoteId, cons
     auto *soap = mSession->soap();
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(selectedFields);
-    // http://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_entry/
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_6.5/Application_Framework/Web_Services/Method_Calls/get_entry/
     KDSoapGenerated::TNS__Get_entry_result_version2 result = soap->get_entry(mSession->sessionId(), moduleToName(moduleName), remoteId, fields, {} /*link_..._array*/, false /*track_view*/);
     if (!result.entry_list().items().isEmpty()) {
         entryValue = result.entry_list().items().at(0);

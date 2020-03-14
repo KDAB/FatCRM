@@ -228,7 +228,7 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
 
     // connect to document's modificationChanged instead of QTextEdit's textChanged(),
     // to ignore notifications triggered by the syntax highlighter
-    // cf. http://stackoverflow.com/questions/22685463/qt5-tell-qplaintextedit-to-ignore-syntax-highlighting-changes
+    // cf. https://stackoverflow.com/questions/22685463/qt5-tell-qplaintextedit-to-ignore-syntax-highlighting-changes
     connect(d->mUi.description->document(), SIGNAL(modificationChanged(bool)), this, SLOT(descriptionModificationChanged(bool)));
 
     QPushButton *saveButton = d->mUi.buttonBox->button(QDialogButtonBox::Save);

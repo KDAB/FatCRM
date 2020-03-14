@@ -19,6 +19,7 @@ SKIP /client/src/widgets/qdateeditex\.h|/client/src/widgets/qdateeditex\.cpp
 SKIP /client/src/utilities/qcsvreader\.h|/client/src/utilities/qcsvreader\.cpp
 SKIP /cmake/FindXsltproc\.cmake
 SKIP /cmake/FindICU\.cmake
+SKIP /cmake/GetGitRevisionDescription\.cmake
 
 #SKIP Squish tests
 SKIP /tests/squish/
