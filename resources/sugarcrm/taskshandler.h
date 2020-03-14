@@ -1,5 +1,5 @@
 /****************************************************************************
-** Copyright (C) 2010-2019 Klaralvdalens Datakonsult AB.  All rights reserved.
+** Copyright (C) 2010-2020 Klaralvdalens Datakonsult AB.  All rights reserved.
 ** Copyright (C) 2011-2012 Eric Newberry <ericnewberry@mirametrics.com>. All Rights Reserved.
 **
 ** This file is part of the Akonadi Resource for SugarCRM.
