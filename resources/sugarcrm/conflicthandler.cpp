@@ -32,6 +32,7 @@ using namespace Akonadi;
 
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <kwindowsystem_version.h>
 
 class ConflictHandler::Private
 {
@@ -70,7 +71,12 @@ void ConflictHandler::Private::resolve()
     if (mWindowId != 0) {
         // if we have a "parent" window id, use it
         // otherwise focus stealing prevention might put us behind it
+#if KWINDOWSYSTEM_VERSION >= QT_VERSION_CHECK(5,62,0)
+        dialog.setAttribute(Qt::WA_NativeWindow, true);
+        KWindowSystem::setMainWindow(dialog.windowHandle(), mWindowId);
+#else
         KWindowSystem::setMainWindow(&dialog, mWindowId);
+#endif
     }
 
     if (mName.isEmpty()) {

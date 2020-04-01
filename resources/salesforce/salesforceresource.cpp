@@ -39,6 +39,7 @@ using namespace KDSoapGenerated;
 
 #include <KLocalizedString>
 #include <KWindowSystem>
+#include <kwindowsystem_version.h>
 
 #include <KDSoapClient/KDSoapMessage.h>
 
@@ -98,7 +99,12 @@ void SalesforceResource::configure(WId windowId)
     // make sure we are seen as a child window of the caller's window
     // otherwise focus stealing prevention might put us behind it
 #if !defined(Q_OS_MACOS)
+#if KWINDOWSYSTEM_VERSION >= QT_VERSION_CHECK(5,62,0)
+    dialog.setAttribute(Qt::WA_NativeWindow, true);
+    KWindowSystem::setMainWindow(dialog.windowHandle(), windowId);
+#else
     KWindowSystem::setMainWindow(&dialog, windowId);
+#endif
 #endif
 
     int result = dialog.exec();
