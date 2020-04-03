@@ -75,6 +75,7 @@ static const char* s_maxNextStepDateStrings[] = {
     "Today",
     "EndOfThisWeek",
     "EndOfThisMonth",
+    "OneMonthFromNow",
     "EndOfThisYear",
     "CustomDate"
 };

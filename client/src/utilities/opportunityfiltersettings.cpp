@@ -151,7 +151,7 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
 
 static MaxNextStepDate loadOldMaxNextDate(int oldIndex)
 {
-    // OneMonthAgo didn't exist back then
+    // OneMonthAgo and OneMonthFromNow didn't exist back then
     switch (oldIndex) {
     case 0:
         return NoDate;

@@ -46,6 +46,11 @@
      </item>
      <item>
       <property name="text">
+       <string>One month from now</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
        <string>End of this year</string>
       </property>
      </item>

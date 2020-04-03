@@ -131,6 +131,9 @@ QDate OpportunityFilterWidget::maxNextStepDate() const
     case EndOfThisMonth:
         date = QDate(date.year(), date.month(), date.daysInMonth());
         break;
+    case OneMonthFromNow:
+        date = date.addDays(31);
+        break;
     case EndOfThisYear:
         date = QDate(date.year(), 12, 31);
         break;

@@ -54,6 +54,7 @@ enum MaxNextStepDate {
     Today,
     EndOfThisWeek,
     EndOfThisMonth,
+    OneMonthFromNow,
     EndOfThisYear,
     CustomDate
 };
