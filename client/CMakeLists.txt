@@ -16,5 +16,5 @@ if(PhoneNumber_FOUND AND ICU_FOUND)
     )
 endif()
 
+add_subdirectory(icons) # gives us fatcrm_ICONS
 add_subdirectory(src)
-add_subdirectory(icons)

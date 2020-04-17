@@ -156,7 +156,6 @@ add_subdirectory(kdcrmdata)
 add_subdirectory(client)
 add_subdirectory(resources)
 add_subdirectory(invoker)
-add_subdirectory(images)
 add_subdirectory(tests)
 install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
 

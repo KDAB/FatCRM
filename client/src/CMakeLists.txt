@@ -125,6 +125,8 @@ qt5_add_dbus_interface(app_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemTransfer.xml sugarresourceitemtransfer SugarItemTransfer
 )
 
+ecm_add_app_icon(app_SRCS ICONS ${fatcrm_ICONS})
+
 add_library(fatcrmprivate ${app_SRCS})
 generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
