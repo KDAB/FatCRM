@@ -15,7 +15,7 @@ if(POLICY CMP0063)
 endif()
 
 # we need some parts of the ECM CMake helpers
-find_package(ECM 5.12.0 REQUIRED NO_MODULE)
+find_package(ECM 5.38.0 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ ${ECM_MODULE_PATH})
 
 include(ECMOptionalAddSubdirectory)
