@@ -53,8 +53,6 @@ int main(int argc, char **argv)
 
     QCommandLineParser parser;
     KAboutData::setApplicationData(aboutData);
-    parser.addVersionOption();
-    parser.addHelpOption();
     QCommandLineOption printToPdfOption("print-to-pdf", i18n("Print page after initial import and exit FatCRM"), "fileName");
     parser.addOption(printToPdfOption);
     QCommandLineOption printTypeOption("print-type", i18n("Print type, either 'Accounts', 'Opportunities' or 'Contacts'"), "printType", "Opportunities");
