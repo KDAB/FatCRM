@@ -42,7 +42,13 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
     userAuth.setUser_name(user);
     userAuth.setPassword(QString::fromLatin1(passwordHash));
 
-    const auto entry_result = soap->login(userAuth, QLatin1String("FatCRM"), {});
+    KDSoapGenerated::TNS__Name_value_list nameValueList;
+    KDSoapGenerated::TNS__Name_value nameValue1;
+    nameValue1.setName("notifyonsave");
+    nameValue1.setValue("true");
+    nameValueList.setItems({nameValue1});
+
+    const auto entry_result = soap->login(userAuth, QLatin1String("FatCRM"), nameValueList);
     if (soap->lastError() == 0) {
         sessionId = entry_result.id();
         return KJob::NoError;
