@@ -113,7 +113,7 @@ protected:
 
 private Q_SLOTS:
     void slotNewClicked();
-    void slotRemoveItem();
+    void slotDeleteItems();
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int start, int end);
     void slotCheckCollectionPopulated(Akonadi::Collection::Id);

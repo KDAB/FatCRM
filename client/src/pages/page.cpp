@@ -334,33 +334,45 @@ QString Page::reportSubTitle(int count) const
     return i18n("%1: %2 %3", desc, count, itemsType);
 }
 
-void Page::slotRemoveItem()
+void Page::slotDeleteItems()
 {
-    const QModelIndex index = mUi.treeView->selectionModel()->currentIndex();
-    if (!index.isValid()) {
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+    if (selectedIndexes.isEmpty()) { // the action is supposed to be disabled...
         return;
     }
 
-    Item item = mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-    QString deleStr = i18n("The selected item will be deleted permanently!");
+    Item::List items;
+    items.resize(selectedIndexes.count());
+    std::transform(selectedIndexes.begin(), selectedIndexes.end(), items.begin(), [this](const QModelIndex &index) {
+        return mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    });
+
+    const Item firstItem = items.at(0);
+    QString deleStr = i18np("The selected item will be deleted permanently!",
+                            "%1 items will be deleted permanently!", items.count());
     switch (mType) {
     case DetailsType::Account: {
-        Q_ASSERT(item.hasPayload<SugarAccount>());
-        SugarAccount acct = item.payload<SugarAccount>();
-        deleStr = i18n("The account \"%1\" will be deleted permanently!", acct.name());
+        Q_ASSERT(firstItem.hasPayload<SugarAccount>());
+        SugarAccount acct = firstItem.payload<SugarAccount>();
+        deleStr = i18np("The account \"%1\" will be deleted permanently!",
+                        "%2 accounts will be deleted permanently!",
+                        acct.name(), items.count());
         break;
     }
     case DetailsType::Opportunity: {
-        Q_ASSERT(item.hasPayload<SugarOpportunity>());
-        SugarOpportunity opp = item.payload<SugarOpportunity>();
-        deleStr = i18n("The %1 opportunity \"%2\" will be deleted permanently!",
-                       opp.tempAccountName(), opp.name());
+        Q_ASSERT(firstItem.hasPayload<SugarOpportunity>());
+        SugarOpportunity opp = firstItem.payload<SugarOpportunity>();
+        deleStr = i18np("The %1 opportunity \"%2\" will be deleted permanently!",
+                        "%3 accounts will be deleted permanently!",
+                        opp.tempAccountName(), opp.name(), items.count());
         break;
     }
     case DetailsType::Contact: {
-        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
-        const auto contact = item.payload<KContacts::Addressee>();
-        deleStr = i18n("The contact \"%1\" will be deleted permanently!", contact.fullEmail());
+        Q_ASSERT(firstItem.hasPayload<KContacts::Addressee>());
+        const auto contact = firstItem.payload<KContacts::Addressee>();
+        deleStr = i18np("The contact \"%1\" will be deleted permanently!",
+                        "%2 contacts will be deleted permanently!",
+                        contact.fullEmail(), items.count());
         break;
     }
     case DetailsType::Lead:
@@ -369,9 +381,9 @@ void Page::slotRemoveItem()
     }
 
     QMessageBox msgBox;
-    msgBox.setWindowTitle(i18n("Delete record"));
+    msgBox.setWindowTitle(i18np("Delete record", "Delete %1 records", items.count()));
     msgBox.setText(deleStr);
-    msgBox.setInformativeText(i18n("Are you sure you want to delete it?"));
+    msgBox.setInformativeText(i18n("Are you sure you want to proceed?"));
     msgBox.setStandardButtons(QMessageBox::Yes |
                               QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
@@ -380,11 +392,9 @@ void Page::slotRemoveItem()
         return;
     }
 
-    if (item.isValid()) {
-        // job starts automatically
-        auto *job = new ItemDeleteJob(item, this);
-        connect( job, SIGNAL(result(KJob*)), this, SLOT(slotDeleteJobResult(KJob*)));
-    }
+    // job starts automatically
+    auto *job = new ItemDeleteJob(items, this);
+    connect(job, &KJob::result, this, &Page::slotDeleteJobResult);
 }
 
 void Page::slotVisibleRowCountChanged()
@@ -530,7 +540,9 @@ QMenu *Page::createContextMenu(const QPoint &)
         }
     }
 
-    contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, SLOT(slotRemoveItem()));
+    if (!selectedIndexes.isEmpty()) {
+        contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, SLOT(slotDeleteItems()));
+    }
 
     if (contextMenu->actions().isEmpty()) {
         delete contextMenu;
