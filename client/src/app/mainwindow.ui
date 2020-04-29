@@ -66,6 +66,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="actionAboutFatCRM"/>
+    <addaction name="actionAboutKDAB"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuSettings"/>
@@ -74,7 +75,8 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionCRMAccounts">
    <property name="icon">
-    <iconset theme="network-workgroup"/>
+    <iconset theme="network-workgroup">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;CRM Accounts...</string>
@@ -99,7 +101,8 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset theme="network-offline"/>
+    <iconset theme="network-offline">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Offline Mode</string>
@@ -110,7 +113,8 @@
   </action>
   <action name="actionQuit">
    <property name="icon">
-    <iconset theme="application-exit"/>
+    <iconset theme="application-exit">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Quit</string>
@@ -121,7 +125,8 @@
   </action>
   <action name="actionImportContacts">
    <property name="icon">
-    <iconset theme="document-import"/>
+    <iconset theme="document-import">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>&amp;Import Contacts...</string>
@@ -138,7 +143,8 @@
   </action>
   <action name="actionAboutFatCRM">
    <property name="icon">
-    <iconset theme="fatcrm"/>
+    <iconset theme="fatcrm">
+     <normaloff>.</normaloff>.</iconset>
    </property>
    <property name="text">
     <string>About &amp;FatCRM...</string>
@@ -155,7 +161,18 @@
     <string>Reload everything from the server. This is useful after merging accounts, which does not correctly update the opportunities and accounts that were using the old account.</string>
    </property>
   </action>
+  <action name="actionAboutKDAB">
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/images/kdablogo.png</normaloff>:/images/kdablogo.png</iconset>
+   </property>
+   <property name="text">
+    <string>About KDAB</string>
+   </property>
+  </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

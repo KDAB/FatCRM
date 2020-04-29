@@ -21,6 +21,7 @@ set(app_SRCS
   details/details.cpp
   details/leaddetails.cpp
   details/opportunitydetails.cpp
+  dialogs/aboutdialog.cpp
   dialogs/accountimportpage.cpp
   dialogs/addsearchdialog.cpp
   dialogs/configurationdialog.cpp
@@ -89,6 +90,7 @@ qt5_wrap_ui(app_SRCS
   details/contactdetails.ui
   details/leaddetails.ui
   details/opportunitydetails.ui
+  dialogs/aboutdialog.ui
   dialogs/accountimportpage.ui
   dialogs/addsearchdialog.ui
   dialogs/configurationdialog.ui
@@ -109,7 +111,7 @@ qt5_wrap_ui(app_SRCS
 #qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
 
 qt5_add_resources(app_SRCS
-  icons/icons.qrc
+  resources.qrc
   ../data/flags/flags.qrc
 )
 

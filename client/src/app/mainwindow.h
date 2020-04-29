@@ -79,6 +79,7 @@ protected:
 
 private Q_SLOTS:
     void slotDelayedInit();
+    void slotAboutKDAB();
     void slotAboutApp();
     void slotToggleOffline(bool offline);
     void slotSynchronize();

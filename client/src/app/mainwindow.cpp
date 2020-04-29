@@ -27,6 +27,7 @@
 #include "opportunitiespage.h"
 #include "opportunityfilterwidget.h"
 
+#include "aboutdialog.h"
 #include "accountrepository.h"
 #include "clientsettings.h"
 #include "collectionmanager.h"
@@ -60,6 +61,7 @@
 #include <AkonadiCore/ServerManager>
 using namespace Akonadi;
 
+#include <KAboutData>
 #include <KLocalizedString>
 
 #include <QCheckBox>
@@ -161,14 +163,54 @@ void MainWindow::slotDelayedInit()
     Akonadi::AttributeFactory::registerAttribute<EnumDefinitionAttribute>();
 }
 
+void MainWindow::slotAboutKDAB()
+{
+    AboutDialog dialog(this);
+    dialog.setWindowTitle(tr("About KDAB"));
+    dialog.setTitle(tr("Klarälvdalens Datakonsult AB (KDAB)"));
+    dialog.setText(tr("<qt><p>This application is supported and maintained by KDAB</p>"
+                      "<p>KDAB, the Qt experts, provide consulting and mentoring for developing "
+                      "Qt applications from scratch and in porting from all popular and legacy "
+                      "frameworks to Qt. We continue to help develop parts of Qt and are one "
+                      "of the major contributors to the Qt Project. We can give advanced or "
+                      "standard trainings anywhere around the globe.</p>"
+                      "<p>Please visit <a href='https://www.kdab.com'>https://www.kdab.com</a> "
+                      "to meet the people who write code like this."
+                      "</p></qt>"));
+    dialog.setLogo(QStringLiteral(":/images/kdablogo.png"));
+    dialog.setWindowIcon(QPixmap(QStringLiteral(":/images/kdablogo.png")));
+    dialog.adjustSize();
+    dialog.exec();
+}
+
 void MainWindow::slotAboutApp()
 {
-    QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n(C) 2010-2018 Klarälvdalens Datakonsult AB (KDAB)", QStringLiteral(FATCRM_EXTENDED_VERSION)));
+    const auto aboutData = KAboutData::applicationData();
+    //QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n", QStringLiteral(FATCRM_EXTENDED_VERSION)));
+
+    AboutDialog dialog(this);
+    dialog.setWindowTitle(tr("About Hotspot"));
+    dialog.setTitle(tr("FatCRM - %1").arg(aboutData.shortDescription()));
+    dialog.setText(tr("<qt><p>FatCRM is supported and maintained by KDAB</p>"
+                      "<p>(C) 2010-2018 Klarälvdalens Datakonsult AB (KDAB)</p>"
+                      "<p>Version %1</p>"
+                      "<p>This project is a KDAB R&D effort to create a standalone GUI for SugarCRM.</p>"
+                      "<p>FatCRM is an open source project:</p>"
+                      "<ul>"
+                      "<li><a href=\"https://github.com/KDAB/FatCRM\">GitHub project page</a></li>"
+                      "<li><a href=\"https://github.com/KDAB/FatCRM/issues\">Issue Tracker</a></li>"
+                      "<li><a href=\"https://github.com/KDAB/FatCRM/graphs/contributors\">Contributors</a></li>"
+                      "</ul><p>Patches welcome!</p></qt>").arg(FATCRM_EXTENDED_VERSION));
+    dialog.setLogo(QStringLiteral(":/images/fatcrmlogo.png"));
+    dialog.setWindowIcon(QIcon::fromTheme(QStringLiteral("fatcrm")));
+    dialog.adjustSize();
+    dialog.exec();
 }
+
 
 void MainWindow::initialize(bool displayOverlay)
 {
-    Q_INIT_RESOURCE(icons);
+    Q_INIT_RESOURCE(resources);
 
     mLoadingOverlay = new LoadingOverlay(mUi.tabWidget);
     if (!displayOverlay)
@@ -258,6 +300,7 @@ void MainWindow::setupActions()
     connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
+    connect(mUi.actionAboutKDAB, SIGNAL(triggered()), this, SLOT(slotAboutKDAB()));
 
     connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
 
