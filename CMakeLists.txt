@@ -94,7 +94,9 @@ include(GetGitRevisionDescription)
 set(FatCRM_EXTENDED_VERSION "${FatCRM_VERSION}")
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
   git_describe(GIT_DESC --tags)
-  set(FatCRM_EXTENDED_VERSION "${FatCRM_EXTENDED_VERSION} (revision: ${GIT_DESC})")
+  if (GIT_DESC)
+    set(FatCRM_EXTENDED_VERSION "${FatCRM_EXTENDED_VERSION} (revision: ${GIT_DESC})")
+  endif()
 endif()
 
 configure_file(
@@ -159,5 +161,5 @@ add_subdirectory(invoker)
 add_subdirectory(tests)
 install( FILES fatcrm.categories DESTINATION ${KDE_INSTALL_CONFDIR} )
 
-message(STATUS "Building FatCRM ${FatCRM_VERSION} in ${CMAKE_BUILD_TYPE} mode")
+message(STATUS "Building FatCRM ${FatCRM_EXTENDED_VERSION} in ${CMAKE_BUILD_TYPE} mode")
 feature_summary(WHAT ALL FATAL_ON_MISSING_REQUIRED_PACKAGES)
