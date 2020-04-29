@@ -436,6 +436,8 @@ void LinkedItemsRepository::updateOpportunity(const SugarOpportunity &opp)
 
 QVector<SugarOpportunity> LinkedItemsRepository::opportunitiesForAccount(const QString &accountId) const
 {
+    if (accountId.isEmpty())
+        return {};
     return mAccountOpportunitiesHash.value(accountId);
 }
 
@@ -481,6 +483,8 @@ void LinkedItemsRepository::updateContact(const KContacts::Addressee &contact)
 
 QVector<KContacts::Addressee> LinkedItemsRepository::contactsForAccount(const QString &accountId) const
 {
+    if (accountId.isEmpty())
+        return {};
     return mAccountContactsHash.value(accountId);
 }
 

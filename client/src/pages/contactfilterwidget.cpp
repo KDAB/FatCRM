@@ -29,16 +29,19 @@
 ContactFilterWidget::ContactFilterWidget(FilterProxyModel *proxyModel, QWidget *parent)
     : QWidget(parent)
 {
-    auto *layout = new QVBoxLayout(this);
+    auto *layout = new QHBoxLayout(this);
+    layout->setContentsMargins(0, 0, 0, 0);
     mGDPRComboBox = new QComboBox(this);
     // Should match FilterProxyModel::Action
     mGDPRComboBox->addItems({
                                 i18n("All contacts"),
-                                i18n("Candidates for GDPR deletion"),
-                                i18n("Candidates for GDPR anonymization")
+                                i18n("Candidates for GDPR deletion [no account, created 5+ years ago, no description, no notes]"),
+                                i18n("Candidates for GDPR anonymization [created 5+ years ago, no description, no notes, nothing in the account]")
                             });
     layout->addWidget(mGDPRComboBox);
     connect(mGDPRComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int idx) {
        proxyModel->setGDPRFilter(static_cast<FilterProxyModel::Action>(idx));
     });
+
+    layout->addStretch(1);
 }
