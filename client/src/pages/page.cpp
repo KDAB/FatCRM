@@ -110,22 +110,20 @@ QStringList preferredMailAddressesForSelectedRows(const QModelIndexList selected
 }
 
 /// Returns a map of action names -> call URLs, e.g. {"Call Work" -> "tel:+49..."}
-QVector<QPair<QString, QUrl>> phoneNumberMapForSelectedRows(const QModelIndexList selectedIndexes)
+QVector<QPair<QString, QUrl>> phoneNumberMapForRow(const QModelIndex &index)
 {
     using namespace KContacts;
 
     QVector<QPair<QString, QUrl>> result;
-    Q_FOREACH (const QModelIndex &index, selectedIndexes) {
-        const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
-        if (item.hasPayload<KContacts::Addressee>()) {
-            const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const auto phoneNumbers = addressee.phoneNumbers();
-            for (const auto& phoneNumber : phoneNumbers) {
-                static const QVector<PhoneNumber::Type> telTypes = {PhoneNumber::Home, PhoneNumber::Work, PhoneNumber::Cell};
+    const Item item = index.data(EntityTreeModel::ItemRole).value<Item>();
+    if (item.hasPayload<KContacts::Addressee>()) {
+        const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+        const auto phoneNumbers = addressee.phoneNumbers();
+        for (const auto& phoneNumber : phoneNumbers) {
+            static const QVector<PhoneNumber::Type> telTypes = {PhoneNumber::Home, PhoneNumber::Work, PhoneNumber::Cell};
 
-                if (telTypes.contains(phoneNumber.type())) {
-                    result.append({i18n("Call %1", phoneNumber.typeLabel()), QUrl("tel:" + phoneNumber.number())});
-                }
+            if (telTypes.contains(phoneNumber.type())) {
+                result.append({i18n("Call %1", phoneNumber.typeLabel()), QUrl("tel:" + phoneNumber.number())});
             }
         }
     }
@@ -509,7 +507,7 @@ QMenu *Page::createContextMenu(const QPoint &)
         });
     }
 
-    const auto phoneNumbers = phoneNumberMapForSelectedRows(selectedIndexes);
+    const auto phoneNumbers = phoneNumberMapForRow(idx);
     if (!phoneNumbers.isEmpty()) {
         if (selectedEmails.isEmpty()) {
             contextMenu->addSeparator();
