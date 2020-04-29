@@ -185,13 +185,12 @@ void MainWindow::slotAboutKDAB()
 void MainWindow::slotAboutApp()
 {
     const auto aboutData = KAboutData::applicationData();
-    //QMessageBox::about(this, i18n("About FatCRM"), i18n("A desktop application for SugarCRM\n\nVersion %1\n\n", QStringLiteral(FATCRM_EXTENDED_VERSION)));
 
     AboutDialog dialog(this);
-    dialog.setWindowTitle(tr("About Hotspot"));
+    dialog.setWindowTitle(tr("About FatCRM"));
     dialog.setTitle(tr("FatCRM - %1").arg(aboutData.shortDescription()));
     dialog.setText(tr("<qt><p>FatCRM is supported and maintained by KDAB</p>"
-                      "<p>(C) 2010-2018 Klarälvdalens Datakonsult AB (KDAB)</p>"
+                      "<p>(C) 2010-2020 Klarälvdalens Datakonsult AB (KDAB)</p>"
                       "<p>Version %1</p>"
                       "<p>This project is a KDAB R&D effort to create a standalone GUI for SugarCRM.</p>"
                       "<p>FatCRM is an open source project:</p>"
