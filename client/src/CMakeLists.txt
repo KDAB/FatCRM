@@ -8,47 +8,47 @@ include_directories(
   pages
   reports
   utilities
-  widgets
   views
+  widgets
 )
 
 set(app_SRCS
-  fatcrm_client_debug.cpp
-  app/mainwindow.cpp
   app/clientsettings.cpp
-  pages/page.cpp
+  app/mainwindow.cpp
+  details/accountdetails.cpp
+  details/campaigndetails.cpp
+  details/contactdetails.cpp
+  details/details.cpp
+  details/leaddetails.cpp
+  details/opportunitydetails.cpp
+  dialogs/accountimportpage.cpp
+  dialogs/addsearchdialog.cpp
+  dialogs/configurationdialog.cpp
+  dialogs/contactsimportpage.cpp
+  dialogs/contactsimportwizard.cpp
+  dialogs/documentswindow.cpp
+  dialogs/editlistdialog.cpp
+  dialogs/fatcrminputdialog.cpp
+  dialogs/itemeditwidgetbase.cpp
+  dialogs/noteswindow.cpp
+  dialogs/resourceconfigdialog.cpp
+  dialogs/searchesdialog.cpp
+  dialogs/selectitemdialog.cpp
+  dialogs/simpleitemeditwidget.cpp
+  dialogs/tabbeditemeditwidget.cpp
+  fatcrm_client_debug.cpp
+  models/filterproxymodel.cpp
+  models/itemstreemodel.cpp
+  models/opportunityfilterproxymodel.cpp
+  models/referenceddatamodel.cpp
   pages/accountspage.cpp
   pages/campaignspage.cpp
   pages/contactspage.cpp
   pages/leadspage.cpp
   pages/opportunitiespage.cpp
   pages/opportunityfilterwidget.cpp
+  pages/page.cpp
   pages/reportpage.cpp
-  models/filterproxymodel.cpp
-  models/itemstreemodel.cpp
-  models/opportunityfilterproxymodel.cpp
-  models/referenceddatamodel.cpp
-  details/details.cpp
-  details/accountdetails.cpp
-  details/campaigndetails.cpp
-  details/contactdetails.cpp
-  details/leaddetails.cpp
-  details/opportunitydetails.cpp
-  dialogs/accountimportpage.cpp
-  dialogs/contactsimportpage.cpp
-  dialogs/contactsimportwizard.cpp
-  dialogs/configurationdialog.cpp
-  dialogs/itemeditwidgetbase.cpp
-  dialogs/simpleitemeditwidget.cpp
-  dialogs/documentswindow.cpp
-  dialogs/editlistdialog.cpp
-  dialogs/fatcrminputdialog.cpp
-  dialogs/noteswindow.cpp
-  dialogs/resourceconfigdialog.cpp
-  dialogs/selectitemdialog.cpp
-  dialogs/tabbeditemeditwidget.cpp
-  dialogs/searchesdialog.cpp
-  dialogs/addsearchdialog.cpp
   reports/createlinksproxymodel.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
@@ -63,12 +63,12 @@ set(app_SRCS
   utilities/editcalendarbutton.cpp
   utilities/enums.cpp
   utilities/externalopen.cpp
-  utilities/loadingoverlay.cpp
   utilities/itemdataextractor.cpp
   utilities/keypresseventlistview.cpp
   utilities/kjobprogresstracker.cpp
   utilities/leaddataextractor.cpp
   utilities/linkeditemsrepository.cpp
+  utilities/loadingoverlay.cpp
   utilities/modelrepository.cpp
   utilities/openedwidgetsrepository.cpp
   utilities/opportunitydataextractor.cpp
@@ -84,25 +84,25 @@ ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER
 
 qt5_wrap_ui(app_SRCS
   app/mainwindow.ui
-  pages/page.ui
-  pages/reportpage.ui
-  pages/opportunityfilterwidget.ui
   details/accountdetails.ui
   details/campaigndetails.ui
   details/contactdetails.ui
   details/leaddetails.ui
   details/opportunitydetails.ui
   dialogs/accountimportpage.ui
+  dialogs/addsearchdialog.ui
   dialogs/configurationdialog.ui
   dialogs/contactsimportpage.ui
   dialogs/documentswindow.ui
   dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.ui
+  dialogs/searchesdialog.ui
   dialogs/selectitemdialog.ui
   dialogs/simpleitemeditwidget.ui
   dialogs/tabbeditemeditwidget.ui
-  dialogs/searchesdialog.ui
-  dialogs/addsearchdialog.ui
+  pages/opportunityfilterwidget.ui
+  pages/page.ui
+  pages/reportpage.ui
   widgets/associateddatawidget.ui
 )
 
