@@ -38,7 +38,7 @@
 
 #include <stdio.h> // for stdout
 
-static const char description[] = I18N_NOOP("A Simple SugarCRM Client");
+static const char description[] = I18N_NOOP("A Desktop SugarCRM Client");
 static const char version[] = FATCRM_EXTENDED_VERSION;
 
 int main(int argc, char **argv)
