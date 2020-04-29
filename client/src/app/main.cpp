@@ -48,7 +48,7 @@ int main(int argc, char **argv)
 
     KAboutData aboutData(QStringLiteral("fatcrm"), i18n("FatCRM"),
                      version, i18n(description),
-                     KAboutLicense::GPL_V2, i18n("(C) 2010-2018 KDAB"),
+                     KAboutLicense::GPL_V2, i18n("(C) 2010-2020 KDAB"),
                      QString(), QStringLiteral("info@kdab.com"));
 
     QCommandLineParser parser;
