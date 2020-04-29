@@ -22,10 +22,12 @@
 
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
+#include "linkeditemsrepository.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
 #include "kdcrmdata/sugarlead.h"
+#include "kdcrmutils.h"
 
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
@@ -33,6 +35,8 @@
 #include <AkonadiCore/EntityTreeModel>
 
 #include <KLocalizedString>
+#include <QCoreApplication>
+#include <QFile>
 
 static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);
@@ -48,11 +52,14 @@ using namespace Akonadi;
 class FilterProxyModel::Private
 {
 public:
-    Private(DetailsType type)
+    explicit Private(DetailsType type)
         : mType(type)
     {}
     DetailsType mType;
     QString mFilter;
+    LinkedItemsRepository *mLinkedItemsRepository = nullptr;
+    FilterProxyModel::Action mGDPRFilterAction = FilterProxyModel::NoAction;
+    QStringList mProtectedEmails; // never touch those
 };
 
 FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
@@ -61,11 +68,38 @@ FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
     // account names should be sorted correctly
     setSortLocaleAware(true);
     setDynamicSortFilter(true); // for sorting during insertion, too
+
+    if (type == DetailsType::Contact) {
+         // mailchimp export
+        const QString filePath = QCoreApplication::applicationDirPath() + QLatin1String("/newsletter.txt");
+        QFile f(filePath);
+        if (f.open(QIODevice::ReadOnly)) {
+            d->mProtectedEmails.reserve(918);
+            while (!f.atEnd()) {
+                QByteArray line = f.readLine();
+                Q_ASSERT(line.endsWith('\n'));
+                line.chop(1);
+                d->mProtectedEmails << QString::fromLatin1(line);
+            }
+            qDebug() << "Read" << d->mProtectedEmails.count() << "protected emails from" << filePath;
+        }
+    }
 }
 
 FilterProxyModel::~FilterProxyModel()
 {
     delete d;
+}
+
+void FilterProxyModel::setLinkedItemsRepository(LinkedItemsRepository *repo)
+{
+    d->mLinkedItemsRepository = repo;
+}
+
+void FilterProxyModel::setGDPRFilter(Action action)
+{
+    d->mGDPRFilterAction = action;
+    invalidateFilter();
 }
 
 QString FilterProxyModel::filterString() const
@@ -88,7 +122,7 @@ void FilterProxyModel::setFilterString(const QString &filter)
 
 bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const
 {
-    if (d->mFilter.isEmpty()) {
+    if (d->mFilter.isEmpty() && d->mGDPRFilterAction == NoAction) {
         return true;
     }
     const QModelIndex index = sourceModel()->index(row, 0, parent);
@@ -98,23 +132,51 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
     switch (d->mType) {
     case DetailsType::Account: {
         Q_ASSERT(item.hasPayload<SugarAccount>());
-        const SugarAccount account = item.payload<SugarAccount>();
-        return accountMatchesFilter(account, d->mFilter);
+        return d->mFilter.isEmpty() || accountMatchesFilter(item.payload<SugarAccount>(), d->mFilter);
     }
     case DetailsType::Campaign: {
         Q_ASSERT(item.hasPayload<SugarCampaign>());
-        const SugarCampaign campaign = item.payload<SugarCampaign>();
-        return campaignMatchesFilter(campaign, d->mFilter);
+        return d->mFilter.isEmpty() || campaignMatchesFilter(item.payload<SugarCampaign>(), d->mFilter);
     }
     case DetailsType::Contact: {
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
-        return contactMatchesFilter(contact, d->mFilter);
+        if (d->mGDPRFilterAction != NoAction) {
+            const QString contactId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
+            const QString accountId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+            Q_ASSERT(!contactId.isEmpty());
+            static QDate today = QDate::currentDate();
+            if ((accountId.isEmpty() ||
+                    (d->mLinkedItemsRepository->opportunitiesForAccount(accountId).isEmpty() &&
+                     d->mLinkedItemsRepository->documentsForAccount(accountId).isEmpty() &&
+                     d->mLinkedItemsRepository->notesForAccount(accountId).isEmpty() &&
+                     d->mLinkedItemsRepository->emailsForAccount(accountId).isEmpty())
+                 ) &&
+                    contact.note().isEmpty() && // description
+                    d->mLinkedItemsRepository->notesForContact(contactId).isEmpty() &&
+                    d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty() &&
+                    KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) > 5*365) {
+                // No account -> delete
+                // Otherwise -> anonymize
+                const bool shouldDelete = accountId.isEmpty();
+                const bool matchesFilter = (d->mGDPRFilterAction == FullyDelete) ? shouldDelete : !shouldDelete;
+                if (!matchesFilter)
+                    return false;
+                if (d->mProtectedEmails.contains(contact.preferredEmail())) {
+                    qDebug() << "PROTECTED BY NEWSLETTER:" << contact.preferredEmail() << "against" << (shouldDelete?"deletion":"anonymization");
+                    return false;
+                }
+                return d->mFilter.isEmpty() || contactMatchesFilter(contact, d->mFilter);
+            } else {
+                return false;
+            }
+        } else {
+            return d->mFilter.isEmpty() || contactMatchesFilter(contact, d->mFilter);
+        }
     }
     case DetailsType::Lead: {
         Q_ASSERT(item.hasPayload<SugarLead>());
-        const SugarLead lead = item.payload<SugarLead>();
-        return leadMatchesFilter(lead, d->mFilter);
+        return d->mFilter.isEmpty() || leadMatchesFilter(item.payload<SugarLead>(), d->mFilter);
     }
     case DetailsType::Opportunity: // notreached, handled by subclass
         return false;

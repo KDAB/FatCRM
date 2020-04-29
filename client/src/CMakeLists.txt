@@ -44,6 +44,7 @@ set(app_SRCS
   models/referenceddatamodel.cpp
   pages/accountspage.cpp
   pages/campaignspage.cpp
+  pages/contactfilterwidget.cpp
   pages/contactspage.cpp
   pages/leadspage.cpp
   pages/opportunitiespage.cpp

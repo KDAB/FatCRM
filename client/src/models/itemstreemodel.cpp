@@ -503,6 +503,15 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
             return mLinkedItemsRepository->opportunitiesForAccount(accountId).count();
         }
+        case NumberOfDocumentsNotesEmails:
+        {
+            const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+            // The goal is to find those with 0 of each (for GDPR cleanup purposes)
+            // so I'm not doing 3 different columns, for now.
+            return mLinkedItemsRepository->documentsForAccount(accountId).count() +
+                    mLinkedItemsRepository->notesForAccount(accountId).count() +
+                    mLinkedItemsRepository->emailsForAccount(accountId).count();
+        }
         default:
             return QVariant();
         }
@@ -750,6 +759,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::CreationDate,
             ItemsTreeModel::LastModifiedDate,
             ItemsTreeModel::NumberOfOpportunities,
+            ItemsTreeModel::NumberOfDocumentsNotesEmails,
         };
     case DetailsType::Lead:
         return {

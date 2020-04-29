@@ -26,6 +26,7 @@
 #include "filterproxymodel.h"
 #include "referenceddata.h"
 #include "linkeditemsrepository.h"
+#include "contactfilterwidget.h"
 
 #include <KContacts/Address>
 #include <KContacts/Addressee>
@@ -37,8 +38,14 @@ using namespace Akonadi;
 ContactsPage::ContactsPage(QWidget *parent)
     : Page(parent, KContacts::Addressee::mimeType(), DetailsType::Contact), mDataExtractor(new ContactDataExtractor)
 {
-    setFilter(new FilterProxyModel(DetailsType::Contact, this));
+    auto *filterProxyModel = new FilterProxyModel(DetailsType::Contact, this);
+    setFilter(filterProxyModel);
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
+
+    mFilterUiWidget = new ContactFilterWidget(filterProxyModel, this);
+    insertFilterWidget(mFilterUiWidget);
+
+    //connect(mFilterUiWidget, &ContactFilterWidget::filterUpdated, this, &ContactsPage::slotDefaultOppFilterUpdated);
 }
 
 ContactsPage::~ContactsPage()

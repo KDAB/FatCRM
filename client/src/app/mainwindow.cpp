@@ -25,7 +25,6 @@
 #include "contactspage.h"
 #include "accountspage.h"
 #include "opportunitiespage.h"
-#include "opportunityfilterwidget.h"
 
 #include "aboutdialog.h"
 #include "accountrepository.h"

@@ -566,6 +566,7 @@ void Page::setupModel()
     connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
 
     mFilter->setSourceModel(mItemsTreeModel);
+    mFilter->setLinkedItemsRepository(mLinkedItemsRepository);
     mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
     ModelRepository::instance()->setModel(mType, mItemsTreeModel);

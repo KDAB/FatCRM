@@ -25,6 +25,7 @@
 
 #include "page.h"
 
+class ContactFilterWidget;
 class ContactDataExtractor;
 
 class ContactsPage : public Page
@@ -49,6 +50,7 @@ protected:
 private:
     std::unique_ptr<ContactDataExtractor> mDataExtractor;
     QVector<Akonadi::Item::Id> mPendingContactsToOpen;
+    ContactFilterWidget *mFilterUiWidget;
 };
 
 #endif /* CONTACTSPAGE_H */

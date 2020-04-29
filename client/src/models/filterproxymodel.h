@@ -26,6 +26,8 @@
 #include <QSortFilterProxyModel>
 #include "enums.h"
 
+class LinkedItemsRepository;
+
 /**
  * A proxy model for sugar tree models.
  *
@@ -59,6 +61,20 @@ public:
      * For showing in reports
      */
     virtual QString filterDescription() const;
+
+    void setLinkedItemsRepository(LinkedItemsRepository *repo);
+
+    enum Action {
+        NoAction,
+        FullyDelete,
+        Anonymize
+    };
+
+    /**
+     * Show candidates for GDPR cleanup
+     * Only makes sense for contacts
+     */
+    void setGDPRFilter(Action action);
 
 public Q_SLOTS:
     /**
