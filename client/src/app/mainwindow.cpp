@@ -625,6 +625,8 @@ void MainWindow::slotPrintReport()
     }
 
     auto report = page->generateReport();
+    if (!report)
+        return;
 
     KDReports::PreviewDialog preview(report.get(), this);
     preview.setWindowTitle(i18n("Print Preview"));
