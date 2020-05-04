@@ -83,7 +83,11 @@ void OpportunityFilterWidget::setupFromConfig(const OpportunityFilterSettings &s
     ui->cbCountry->clear();
     ui->cbCountry->addItems(ClientSettings::self()->countryFilters().groupNames());
     ui->cbCountry->addItem(i18n("Other"));
-    ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbAssignee->findText(settings.assigneeGroup())));
+    if (settings.assigneeGroup().isEmpty()) {
+        ui->cbAssignee->setCurrentIndex(0); // "Me"
+    } else {
+        ui->cbAssignee->setCurrentIndex(qMax(0, ui->cbAssignee->findText(settings.assigneeGroup())));
+    }
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
     ui->cbClosed->setChecked(settings.showClosed());
@@ -163,11 +167,10 @@ void OpportunityFilterWidget::filterChanged()
     if (ui->rbAssignedTo->isChecked()) {
         const int idx = ui->cbAssignee->currentIndex();
         if (idx == 0) {
-            // "me"
+            // "Me"
             assignees << ClientSettings::self()->fullUserName();
         } else if (idx == 1) {
             // separator clicked. should not happen.
-            Q_UNREACHABLE();
         } else {
             assignees = ClientSettings::self()->assigneeFilters().groups().at(idx-2).entries;
         }
