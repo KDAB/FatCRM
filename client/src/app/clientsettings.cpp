@@ -164,6 +164,9 @@ QString ClientSettings::GroupFilters::toString() const
 
 void ClientSettings::GroupFilters::loadFromString(const QString &str)
 {
+    if (str.isEmpty())
+        return;
+
     Q_FOREACH(const QString &itemStr, str.split('|')) {
         const QStringList lst = itemStr.split(';');
         if (lst.isEmpty()) {
