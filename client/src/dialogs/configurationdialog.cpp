@@ -147,6 +147,10 @@ void ConfigurationDialog::slotAddAssignee()
     const QString assignee = QInputDialog::getText(this, i18n("Add assignee group"), i18n("Assignee group name"));
     m_assigneeFilters.addGroup(assignee);
     addAssigneeItem(assignee);
+
+    // edit them right away, as empty entries do not make sense
+    ui->assigneeListWidget->setCurrentRow(ui->assigneeListWidget->count() - 1);
+    slotEditAssigneeGroup();
 }
 
 void ConfigurationDialog::slotCurrentCountryChanged(const QModelIndex &idx)
@@ -173,6 +177,10 @@ void ConfigurationDialog::slotAddCountry()
     const QString country = QInputDialog::getText(this, i18n("Add country group"), i18n("Country group name"));
     m_countryFilters.addGroup(country);
     addCountryItem(country);
+
+    // edit them right away, as empty entries do not make sense
+    ui->countryListWidget->setCurrentRow(ui->countryListWidget->count() - 1);
+    slotEditCountryGroup();
 }
 
 void ConfigurationDialog::slotEditAssigneeGroup()
