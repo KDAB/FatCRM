@@ -47,14 +47,27 @@
 #include <QJsonObject>
 #include <QFile>
 #include <QIcon>
+#include <KColorScheme>
+#include <KColorUtils>
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <QMetaEnum>
 #include <QFont>
+#include <QElapsedTimer>
+#include <QHash>
+#include <QScopedValueRollback>
 
 using namespace Akonadi;
 
 namespace {
+
+// TODO: Use std::clamp once we require C++17
+template<class T>
+const T& clamp( const T& v, const T& lo, const T& hi )
+{
+    Q_ASSERT(!(hi < lo));
+    return (v < lo) ? lo : (hi < v) ? hi : v;
+}
 
 QString countryNameTo2DigitCode(const QString& countryName)
 {
@@ -99,6 +112,17 @@ QString countryNameTo2DigitCode(const QString& countryName)
 class ItemsTreeModel::Private
 {
 public:
+    struct BackgroundColors
+    {
+        QColor lastModifiedDateBackground;
+        QColor nextStepDateBackground;
+
+        bool containsValidColors() const
+        {
+            return lastModifiedDateBackground.isValid() || nextStepDateBackground.isValid();
+        }
+    };
+
     Private()
         : mColumns(),
           mIconSize(KIconLoader::global()->currentSize(KIconLoader::Small))
@@ -106,6 +130,8 @@ public:
     }
 
     ItemsTreeModel::ColumnTypes mColumns;
+    QHash<Item::Id, BackgroundColors> mIdToBackgroundColorsMap;
+    bool mCurrentlyUpdatingBackgrounds = false;
     const int mIconSize;
 };
 
@@ -127,6 +153,14 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
         connect(AccountRepository::instance(), &AccountRepository::accountRemoved,
                 this, &ItemsTreeModel::slotAccountRemoved);
     }
+
+    connect(this, &EntityTreeModel::rowsInserted, [this](const QModelIndex&, int first, int last) {
+        updateBackgrounds(first, last);
+    });
+    connect(this, &EntityTreeModel::dataChanged, [this](const QModelIndex& topLeft, const QModelIndex& bottomRight) {
+        updateBackgrounds(topLeft.row(), bottomRight.row());
+    });
+    updateBackgrounds();
 }
 
 ItemsTreeModel::~ItemsTreeModel()
@@ -140,6 +174,84 @@ ItemsTreeModel::~ItemsTreeModel()
 ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes() const
 {
     return d->mColumns;
+}
+
+void ItemsTreeModel::updateBackgrounds()
+{
+    if (rowCount() == 0)
+        return;
+
+    updateBackgrounds(0, rowCount() - 1);
+}
+
+void ItemsTreeModel::updateBackgrounds(int first, int last)
+{
+    Q_ASSERT(first >= 0 && last >= 0 && last < rowCount());
+
+    if (d->mCurrentlyUpdatingBackgrounds)
+        return;
+
+    QScopedValueRollback<bool> reentrancyBlocker(d->mCurrentlyUpdatingBackgrounds, true);
+
+    const int lastModifiedDateColumn = d->mColumns.indexOf(LastModifiedDate);
+    const int nextStepDateColumn = d->mColumns.indexOf(NextStepDate);
+    if (lastModifiedDateColumn == -1 && nextStepDateColumn == -1)
+        return; // no backgrounds to show, nothing to do for this model
+
+    QElapsedTimer timer;
+    timer.start();
+
+    const KColorScheme colors(QPalette::Active);
+    // TODO: Take alternating row colors into account? How?
+    const QColor background = colors.background().color();
+
+    const auto currentDateTime = QDateTime::currentDateTime();
+
+    for (int row = first; row <= last; ++row) {
+        const Item item = index(row, 0).data(ItemRole).value<Item>();
+        Q_ASSERT(item.isValid());
+
+        Private::BackgroundColors bgColors;
+
+        if (lastModifiedDateColumn != -1) {
+            // LastModifiedDate => Indicate whether opps are still 'warm', cf. FATCRM-109
+            const qint64 secsAfterOppIsCold = 90*24*3600;
+            const auto dateTime = entityData(item, lastModifiedDateColumn, Qt::EditRole).toDateTime();
+            const qint64 secsSinceLastModificationDate = ::clamp(dateTime.secsTo(currentDateTime), 0ll, secsAfterOppIsCold);
+            if (secsSinceLastModificationDate != secsAfterOppIsCold) {
+                const qreal amount = (float)qAbs(secsSinceLastModificationDate - secsAfterOppIsCold) / secsAfterOppIsCold;
+                bgColors.lastModifiedDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::PositiveBackground).color(), amount);
+            }
+        }
+
+        if (nextStepDateColumn != -1) {
+            // NextStepDate => Indicate whether next steps are due
+            const qint64 secsPastNextStepDateWhenHeavilyDue = 90*24*3600;
+            const auto dateTime = entityData(item, nextStepDateColumn, Qt::EditRole).toDateTime();
+            // means: after this time we consider the next step heavily due
+            const qint64 secsPastNextStepDate = ::clamp(dateTime.secsTo(currentDateTime), 0ll, secsPastNextStepDateWhenHeavilyDue);
+            if (secsPastNextStepDate != 0) {
+                // use a min amount of 0.3f since we should definitely notice the indicator when we're past the due date
+                const qreal amount = qMax(0.3f, (float)secsPastNextStepDate / secsPastNextStepDateWhenHeavilyDue);
+                bgColors.nextStepDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::NegativeBackground).color(), amount);
+            }
+        }
+
+        if (bgColors.containsValidColors()) {
+            d->mIdToBackgroundColorsMap[item.id()] = bgColors;
+        } else {
+            d->mIdToBackgroundColorsMap.remove(item.id());
+        }
+    }
+
+    if (lastModifiedDateColumn != -1) {
+        emit dataChanged(index(first, lastModifiedDateColumn), index(last, lastModifiedDateColumn));
+    }
+    if (nextStepDateColumn != -1) {
+        emit dataChanged(index(first, nextStepDateColumn), index(last, nextStepDateColumn));
+    }
+
+    qDebug() << "Done updating backgrounds for" << (last-first+1) << "items in" << timer.elapsed() << "ms";
 }
 
 /**
@@ -175,6 +287,20 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
             return leadData(item, column, role);
         case DetailsType::Opportunity:
             return opportunityData(item, column, role);
+        }
+    } else if (role == Qt::BackgroundRole) {
+        const auto columnType = columnTypes().at(column);
+        switch (columnType) {
+        case NextStepDate: {
+            auto color = d->mIdToBackgroundColorsMap.value(item.id()).nextStepDateBackground;
+            return color.isValid() ? color : QVariant();
+        }
+        case LastModifiedDate: {
+            auto color = d->mIdToBackgroundColorsMap.value(item.id()).lastModifiedDateBackground;
+            return color.isValid() ? color : QVariant();
+        }
+        default:
+            return {};
         }
     } else if (role == Qt::ToolTipRole) {
         if (ClientSettings::self()->showToolTips()) {
