@@ -49,7 +49,7 @@ int SugarSoapProtocol::login(const QString &user, const QString &password, QStri
     nameValueList.setItems({nameValue1});
 
     const auto entry_result = soap->login(userAuth, QLatin1String("FatCRM"), nameValueList);
-    if (soap->lastError() == 0) {
+    if (soap->lastErrorCode() == 0) {
         sessionId = entry_result.id();
         return KJob::NoError;
     } else {
