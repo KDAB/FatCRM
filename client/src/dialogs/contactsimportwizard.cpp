@@ -38,14 +38,14 @@ ContactsImportWizard::ContactsImportWizard(QWidget *parent)
     addPage(mAccountImportPage);
     addPage(mContactsImportPage);
 
-    connect(mAccountImportPage, SIGNAL(chosenContactsAvailable(QVector<ContactsSet>)),
-            mContactsImportPage, SLOT(setChosenContacts(QVector<ContactsSet>)));
-    connect(mAccountImportPage, SIGNAL(layoutChanged()),
-            this, SLOT(adaptWindowSize()));
-    connect(mContactsImportPage, SIGNAL(importedItems(QVector<Akonadi::Item>)),
-            this, SLOT(importItems(QVector<Akonadi::Item>)));
-    connect(mContactsImportPage, SIGNAL(layoutChanged()),
-            this, SLOT(adaptWindowSize()));
+    connect(mAccountImportPage, &AccountImportPage::chosenContactsAvailable,
+            mContactsImportPage, &ContactsImportPage::setChosenContacts);
+    connect(mAccountImportPage, &AccountImportPage::layoutChanged,
+            this, &ContactsImportWizard::adaptWindowSize);
+    connect(mContactsImportPage, &ContactsImportPage::importedItems,
+            this, &ContactsImportWizard::importItems);
+    connect(mContactsImportPage, &ContactsImportPage::layoutChanged,
+            this, &ContactsImportWizard::adaptWindowSize);
 
     setWindowTitle(i18n("Import Contacts"));
 }
@@ -97,7 +97,7 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
     auto *tracker = new KJobProgressTracker(this, this);
     tracker->setCaption(i18n("Import Contacts"));
     tracker->setLabel(i18n("Importing contacts, please wait..."));
-    connect(tracker, SIGNAL(finished()), SLOT(deleteLater()));
+    connect(tracker, &KJobProgressTracker::finished, this, &QObject::deleteLater);
 
     foreach (const Akonadi::Item &item, items) {
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
@@ -112,7 +112,7 @@ void ContactsImportWizard::importItems(const QVector<Akonadi::Item> &items)
 
             const QString errorMessage = i18n("Unable to create contact %1:", contact.realName());
             if (mContactsImportPage->openContactsAfterImport()) {
-                connect(job, SIGNAL(result(KJob*)), this, SLOT(slotContactCreated(KJob*)));
+                connect(job, &KJob::result, this, &ContactsImportWizard::slotContactCreated);
             }
             tracker->addJob(job, errorMessage);
         }

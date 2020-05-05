@@ -60,8 +60,8 @@ void CollectionManager::setResource(const QByteArray &identifier)
     CollectionFetchJob *job = new CollectionFetchJob(Collection::root(), CollectionFetchJob::Recursive);
     job->fetchScope().setResource(identifier);
     job->fetchScope().setIncludeStatistics(true);
-    connect(job, SIGNAL(result(KJob*)),
-            this, SLOT(slotCollectionFetchResult(KJob*)));
+    connect(job, &KJob::result,
+            this, &CollectionManager::slotCollectionFetchResult);
 }
 
 Akonadi::Collection::Id CollectionManager::collectionIdForType(DetailsType detailsType) const

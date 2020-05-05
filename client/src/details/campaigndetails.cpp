@@ -65,12 +65,12 @@ ItemDataExtractor *CampaignDetails::itemDataExtractor() const
 
 void CampaignDetails::initialize()
 {
-    connect(mUi->clearStartDateButton, SIGNAL(clicked()), this, SLOT(slotClearStartDate()));
-    connect(mUi->startDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetStartDate()));
-    connect(mUi->clearEndDateButton, SIGNAL(clicked()), this, SLOT(slotClearEndDate()));
-    connect(mUi->endDateCalendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetEndDate()));
+    connect(mUi->clearStartDateButton, &QAbstractButton::clicked, this, &CampaignDetails::slotClearStartDate);
+    connect(mUi->startDateCalendarButton->calendarWidget(), &QCalendarWidget::clicked,
+            this, &CampaignDetails::slotSetStartDate);
+    connect(mUi->clearEndDateButton, &QAbstractButton::clicked, this, &CampaignDetails::slotClearEndDate);
+    connect(mUi->endDateCalendarButton->calendarWidget(), &QCalendarWidget::clicked,
+            this, &CampaignDetails::slotSetEndDate);
 
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 }

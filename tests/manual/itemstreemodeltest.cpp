@@ -57,8 +57,8 @@ public:
         fetchJob->fetchScope().setContentMimeTypes(QStringList() << SugarOpportunity::mimeType());
        // fetchJob->fetchScope().setAncestorRetrieval(Akonadi::CollectionFetchScope::All); // needed?
 
-        connect(fetchJob, SIGNAL(result(KJob*)),
-                this, SLOT(rootFetchJobDone(KJob*)));
+        connect(fetchJob, &KJob::result,
+                this, &Controller::rootFetchJobDone);
     }
 private Q_SLOTS:
     void rootFetchJobDone(KJob *job) {

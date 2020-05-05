@@ -179,7 +179,7 @@ QCheckBox *MergeWidget::addFieldCheckBox(const QString &str)
     checkBox->setText(text.replace('&', QLatin1String("&&")));
     mImportedContactLayout->addWidget(checkBox);
     checkBox->setChecked(true);
-    connect(checkBox, SIGNAL(toggled(bool)), SLOT(updateFinalContact()));
+    connect(checkBox, &QAbstractButton::toggled, this, &MergeWidget::updateFinalContact);
 
     return checkBox;
 }

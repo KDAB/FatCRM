@@ -50,18 +50,18 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
 
     setupFromConfig();
 
-    connect(ui->rbAll, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
-    connect(ui->rbAssignedTo, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
-    connect(ui->rbCountry, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
+    connect(ui->rbAll, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->rbAssignedTo, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->rbCountry, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(slotAssigneeSelected()));
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
-    connect(ui->cbOpen, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
-    connect(ui->cbClosed, SIGNAL(toggled(bool)), this, SLOT(filterChanged()));
+    connect(ui->cbOpen, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->cbClosed, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(slotCountrySelected()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
-    connect(ui->modifiedAfter, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
-    connect(ui->modifiedBefore, SIGNAL(dateChanged(QDate)), this, SLOT(filterChanged()));
+    connect(ui->modifiedAfter, &KDateComboBox::dateChanged, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->modifiedBefore, &KDateComboBox::dateChanged, this, &OpportunityFilterWidget::filterChanged);
     connect(ui->cbPriority, SIGNAL(currentIndexChanged(QString)), this, SLOT(filterChanged()));
 
 
@@ -198,8 +198,8 @@ void OpportunityFilterWidget::filterChanged()
         calendar->setWindowTitle(i18n("Custom Date"));
         calendar->show();
         calendar->move(ui->cbMaxNextStepDate->pos().x(), (ui->cbMaxNextStepDate->pos().y() + calendar->rect().height()));
-        connect(calendar, SIGNAL(clicked(QDate)), this, SLOT(slotSetMaxNextStepCustomDate(QDate)));
-        connect(calendar, SIGNAL(destroyed()), this, SLOT(slotResetMaxNextStepDateIndex()));
+        connect(calendar, &QCalendarWidget::clicked, this, &OpportunityFilterWidget::slotSetMaxNextStepCustomDate);
+        connect(calendar, &QObject::destroyed, this, &OpportunityFilterWidget::slotResetMaxNextStepDateIndex);
     }
     filterSettings.setMaxDate(maxNextStepDate(), ui->cbMaxNextStepDate->currentIndex());
     m_oppFilterProxyModel->setFilter(filterSettings);
@@ -219,7 +219,7 @@ void OpportunityFilterWidget::slotSetMaxNextStepCustomDate(const QDate &date)
     auto *calendar = qobject_cast<QCalendarWidget*>(sender());
     if (!calendar)
         return;
-    disconnect(calendar, SIGNAL(destroyed()), this, SLOT(slotResetMaxNextStepDateIndex()));
+    disconnect(calendar, &QObject::destroyed, this, &OpportunityFilterWidget::slotResetMaxNextStepDateIndex);
     if (mCustomMaxNextStepDate.isValid())
         ui->cbMaxNextStepDate->removeItem(CustomDate); // existing custom date will be replaced
     mCustomMaxNextStepDate = date;

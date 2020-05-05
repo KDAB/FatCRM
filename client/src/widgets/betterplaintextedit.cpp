@@ -31,8 +31,8 @@
 BetterPlainTextEdit::BetterPlainTextEdit(QWidget *parent) :
     QPlainTextEdit(parent)
 {
-    connect(document()->documentLayout(), SIGNAL(documentSizeChanged(QSizeF)),
-            this, SLOT(slotDocumentSizeChanged()));
+    connect(document()->documentLayout(), &QAbstractTextDocumentLayout::documentSizeChanged,
+            this, &BetterPlainTextEdit::slotDocumentSizeChanged);
 }
 
 QSize BetterPlainTextEdit::widgetSizeForTextSize(const QSize &size) const

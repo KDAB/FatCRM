@@ -45,8 +45,8 @@ AccountImportPage::AccountImportPage(QWidget *parent) :
     mUi->setupUi(this);
     connect(&mLineEditMapper, SIGNAL(mapped(QWidget*)), this, SLOT(slotTextChanged(QWidget*)));
 
-    connect(AccountRepository::instance(), SIGNAL(accountAdded(QString,Akonadi::Item::Id)),
-            this, SLOT(slotAccountAdded(QString,Akonadi::Item::Id)));
+    connect(AccountRepository::instance(), &AccountRepository::accountAdded,
+            this, &AccountImportPage::slotAccountAdded);
 }
 
 AccountImportPage::~AccountImportPage()
@@ -241,7 +241,7 @@ void AccountImportPage::slotButtonClicked(QAbstractButton *button)
         mAccountCreationJobs.append(job);
         button->setEnabled(false);
         button->setText(i18n("Creating account '%1'...", account.name()));
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(slotCreateAccountResult(KJob*)));
+        connect(job, &KJob::result, this, &AccountImportPage::slotCreateAccountResult);
     } else {
         // radiobutton selected
         emit completeChanged();

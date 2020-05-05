@@ -133,7 +133,7 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     job->setDeleted(fetchDeleted);
 
     QEventLoop eventLoop;
-    QObject::connect(job, SIGNAL(finished(KDSoapJob*)), &eventLoop, SLOT(quit()));
+    QObject::connect(job, &KDSoapJob::finished, &eventLoop, &QEventLoop::quit);
     job->start();
     eventLoop.exec();
 

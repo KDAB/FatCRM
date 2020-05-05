@@ -93,9 +93,9 @@ void LeadDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
-    connect(mUi->clearDateButton, SIGNAL(clicked()), this, SLOT(slotClearDate()));
-    connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetBirthDate()));
+    connect(mUi->clearDateButton, &QAbstractButton::clicked, this, &LeadDetails::slotClearDate);
+    connect(mUi->calendarButton->calendarWidget(), &QCalendarWidget::clicked,
+            this, &LeadDetails::slotSetBirthDate);
 }
 
 void LeadDetails::slotSetBirthDate()

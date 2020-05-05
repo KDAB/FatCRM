@@ -78,8 +78,8 @@ OpportunityDetails::~OpportunityDetails()
 void OpportunityDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
     mLinkedItemsRepository = repo;
-    connect(mLinkedItemsRepository, SIGNAL(opportunityModified(QString)),
-            this, SLOT(slotLinkedItemsModified(QString)));
+    connect(mLinkedItemsRepository, &LinkedItemsRepository::opportunityModified,
+            this, &OpportunityDetails::slotLinkedItemsModified);
 }
 
 void OpportunityDetails::initialize()
@@ -92,11 +92,11 @@ void OpportunityDetails::initialize()
     connect(mUi->assignToMeButton, &QPushButton::clicked, this, [this]() {
         mUi->assigned_user_id->setCurrentText(ClientSettings::self()->fullUserName());
     });
-    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
-    connect(mUi->nextStepDateAutoButton, SIGNAL(clicked()), this, SLOT(slotAutoNextStepDate()));
+    connect(mUi->buttonSelectAccount, &QAbstractButton::clicked, this, &OpportunityDetails::slotSelectAccount);
+    connect(mUi->nextStepDateAutoButton, &QAbstractButton::clicked, this, &OpportunityDetails::slotAutoNextStepDate);
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
-    connect(mUi->date_closed, SIGNAL(dateChanged(QDate)), this, SLOT(slotCloseDateChanged(QDate)));
+    connect(mUi->date_closed, &KDateComboBox::dateChanged, this, &OpportunityDetails::slotCloseDateChanged);
 }
 
 ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
@@ -281,7 +281,7 @@ void OpportunityDetails::slotSelectAccount()
     auto *dlg = new SelectItemDialog(DetailsType::Account, this);
     dlg->setModel(ModelRepository::instance()->model(DetailsType::Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
-    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    connect(dlg, &SelectItemDialog::selectedItem, this, &OpportunityDetails::slotAccountSelected);
     dlg->show();
 }
 

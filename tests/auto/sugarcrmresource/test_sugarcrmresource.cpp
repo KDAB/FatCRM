@@ -214,8 +214,8 @@ private:
         //THEN
         Monitor monitor;
         monitorInit(monitor, collection);
-        QSignalSpy spyAdded(&monitor, SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)));
-        QSignalSpy spyChanged(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
+        QSignalSpy spyAdded(&monitor, &Monitor::itemAdded);
+        QSignalSpy spyChanged(&monitor, &Monitor::itemChanged);
 
         QVERIFY(spyAdded.wait());
 
@@ -289,7 +289,7 @@ private:
         // We should receive two itemChanged notifications.
         // 1) from the modification made by us just above
         // 2) when the resource updates date_modified (see end of SugarCRMResource::updateEntryResult)
-        QSignalSpy spy(&monitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)));
+        QSignalSpy spy(&monitor, &Monitor::itemChanged);
         QVERIFY(spy.wait());
         auto firstItem = spy.at(0).at(0).value<Akonadi::Item>();
         QCOMPARE(firstItem.revision(), oldRevision + 1);
@@ -325,7 +325,7 @@ private:
         Monitor monitor;
         monitor.setCollectionMonitored(collection);
         configureItemFetchScope(monitor.itemFetchScope());
-        QSignalSpy spyRemoved(&monitor, SIGNAL(itemRemoved(Akonadi::Item)));
+        QSignalSpy spyRemoved(&monitor, &Monitor::itemRemoved);
         auto *job = new ItemDeleteJob(item);
         //WHEN
         AKVERIFYEXEC(job);

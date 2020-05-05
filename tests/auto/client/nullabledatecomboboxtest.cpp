@@ -40,7 +40,7 @@ private Q_SLOTS:
         NullableDateComboBox w;
         w.setNullable(true);
         w.setDate(QDate());
-        QSignalSpy spy(&w, SIGNAL(dateChanged(QDate)));
+        QSignalSpy spy(&w, &KDateComboBox::dateChanged);
         QVERIFY(spy.isValid());
         QCOMPARE(w.text(), QLatin1String(""));
         QCOMPARE(spy.count(), 0);

@@ -36,7 +36,7 @@ KJobProgressTracker::KJobProgressTracker(QWidget *parentWidget, QObject *parent)
 KJobProgressTracker::~KJobProgressTracker()
 {
     foreach (KJob *job, mJobs) {
-        disconnect(job, SIGNAL(result(KJob*)), this, SLOT(jobFinished(KJob*)));
+        disconnect(job, &KJob::result, this, &KJobProgressTracker::jobFinished);
         job->deleteLater();
     }
 }
@@ -54,7 +54,7 @@ void KJobProgressTracker::setLabel(const QString &label)
 void KJobProgressTracker::addJob(KJob *job, const QString &errorMessage)
 {
     job->setProperty("__errorMessage", errorMessage);
-    connect(job, SIGNAL(result(KJob*)), SLOT(jobFinished(KJob*)));
+    connect(job, &KJob::result, this, &KJobProgressTracker::jobFinished);
     mJobs.append(job);
 }
 

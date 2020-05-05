@@ -50,8 +50,8 @@ QPair<QString, QString> FatCRMInputDialog::getAssignedUser(const QString &captio
 
     ReferencedDataModel::setModelForCombo(comboBox, AssignedToRef);
 
-    QObject::connect(buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    QObject::connect(buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
     const bool result = (dialog.exec() == QDialog::Accepted);
 
@@ -86,8 +86,8 @@ QDate FatCRMInputDialog::getDate(const QString &caption, const QString &labelTex
     layout->addStretch();
     layout->addWidget(buttonBox);
 
-    QObject::connect(buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    QObject::connect(buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    QObject::connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
     const bool result = (dialog.exec() == QDialog::Accepted);
 

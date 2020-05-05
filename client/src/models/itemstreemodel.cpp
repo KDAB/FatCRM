@@ -116,12 +116,12 @@ ItemsTreeModel::ItemsTreeModel(DetailsType type, ChangeRecorder *monitor, QObjec
 
     if (mType == DetailsType::Opportunity) {
         // Update accountName and country columns once all accounts are loaded
-        connect(AccountRepository::instance(), SIGNAL(initialLoadingDone()),
-                this, SLOT(slotAccountsLoaded()));
+        connect(AccountRepository::instance(), &AccountRepository::initialLoadingDone,
+                this, &ItemsTreeModel::slotAccountsLoaded);
 
         // and update it again later in case of single changes (by the user or when updating from server)
-        connect(AccountRepository::instance(), SIGNAL(accountModified(QString,QVector<AccountRepository::Field>)),
-                this, SLOT(slotAccountModified(QString,QVector<AccountRepository::Field>)));
+        connect(AccountRepository::instance(), &AccountRepository::accountModified,
+                this, &ItemsTreeModel::slotAccountModified);
 
         // React to account removals
         connect(AccountRepository::instance(), &AccountRepository::accountRemoved,

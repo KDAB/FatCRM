@@ -38,29 +38,29 @@ ConfigurationDialog::ConfigurationDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->countryListWidget->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(slotCurrentCountryChanged(QModelIndex)));
-    connect(ui->removeCountryGroup, SIGNAL(clicked()),
-            this, SLOT(slotRemoveCountry()));
-    connect(ui->addCountryGroup, SIGNAL(clicked()),
-            this, SLOT(slotAddCountry()));
-    connect(ui->editSelectedCountryFilter, SIGNAL(clicked()),
-            this, SLOT(slotEditCountryGroup()));
-    connect(ui->countryListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
-            this, SLOT(slotCountryGroupChanged(QListWidgetItem*)));
+    connect(ui->countryListWidget->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &ConfigurationDialog::slotCurrentCountryChanged);
+    connect(ui->removeCountryGroup, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotRemoveCountry);
+    connect(ui->addCountryGroup, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotAddCountry);
+    connect(ui->editSelectedCountryFilter, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotEditCountryGroup);
+    connect(ui->countryListWidget, &QListWidget::itemChanged,
+            this, &ConfigurationDialog::slotCountryGroupChanged);
     ui->editSelectedCountryFilter->setEnabled(false);
     ui->removeCountryGroup->setEnabled(false);
 
-    connect(ui->assigneeListWidget->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-            this, SLOT(slotCurrentAssigneeChanged(QModelIndex)));
-    connect(ui->removeAssigneeGroup, SIGNAL(clicked()),
-            this, SLOT(slotRemoveAssignee()));
-    connect(ui->addAssigneeGroup, SIGNAL(clicked()),
-            this, SLOT(slotAddAssignee()));
-    connect(ui->editSelectedAssigneeFilter, SIGNAL(clicked()),
-            this, SLOT(slotEditAssigneeGroup()));
-    connect(ui->assigneeListWidget, SIGNAL(itemChanged(QListWidgetItem*)),
-            this, SLOT(slotAssigneeGroupChanged(QListWidgetItem*)));
+    connect(ui->assigneeListWidget->selectionModel(), &QItemSelectionModel::currentChanged,
+            this, &ConfigurationDialog::slotCurrentAssigneeChanged);
+    connect(ui->removeAssigneeGroup, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotRemoveAssignee);
+    connect(ui->addAssigneeGroup, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotAddAssignee);
+    connect(ui->editSelectedAssigneeFilter, &QAbstractButton::clicked,
+            this, &ConfigurationDialog::slotEditAssigneeGroup);
+    connect(ui->assigneeListWidget, &QListWidget::itemChanged,
+            this, &ConfigurationDialog::slotAssigneeGroupChanged);
     ui->editSelectedAssigneeFilter->setEnabled(false);
     ui->removeAssigneeGroup->setEnabled(false);
 

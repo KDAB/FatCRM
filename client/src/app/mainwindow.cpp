@@ -96,7 +96,7 @@ MainWindow::MainWindow(bool displayOverlay)
     (void)new DBusWinIdProvider(this);
 
     auto *iface = new DBusInvokerInterface(this);
-    connect(iface, SIGNAL(importCsvFileRequested(QString)), this, SLOT(slotTryImportCsvFile(QString)));
+    connect(iface, &DBusInvokerInterface::importCsvFileRequested, this, &MainWindow::slotTryImportCsvFile);
 
     ClientSettings::self()->restoreWindowSize(QStringLiteral("main"), this);
 
@@ -126,10 +126,10 @@ void MainWindow::slotDelayedInit()
 {
     Q_FOREACH (const Page *page, mPages) {
         // Connect from this to pages - this is really just a way to avoid writing a loop at emit time...
-        connect(this, SIGNAL(resourceSelected(QByteArray)),
-                page, SLOT(slotResourceSelectionChanged(QByteArray)));
-        connect(this, SIGNAL(onlineStatusChanged(bool)),
-                page, SLOT(slotOnlineStatusChanged(bool)));
+        connect(this, &MainWindow::resourceSelected,
+                page, &Page::slotResourceSelectionChanged);
+        connect(this, &MainWindow::onlineStatusChanged,
+                page, &Page::slotOnlineStatusChanged);
     }
 
     // initialize additional UI
@@ -139,25 +139,25 @@ void MainWindow::slotDelayedInit()
     // no parent so it can have its own Akonadi-not-started overlay (bug in Akonadi::ErrorOverlay, fixed in f5f76cc, kdepimlibs >= 4.14.10)
     mResourceDialog = new ResourceConfigDialog;
 
-    connect(mResourceDialog, SIGNAL(resourceSelected(Akonadi::AgentInstance)),
-            this, SLOT(slotResourceSelected(Akonadi::AgentInstance)));
+    connect(mResourceDialog, &ResourceConfigDialog::resourceSelected,
+            this, &MainWindow::slotResourceSelected);
 
-    connect(mCollectionManager, SIGNAL(collectionResult(QString,Akonadi::Collection)),
-            this, SLOT(slotCollectionResult(QString,Akonadi::Collection)));
+    connect(mCollectionManager, &CollectionManager::collectionResult,
+            this, &MainWindow::slotCollectionResult);
 
     initialResourceSelection();
 
-    connect(Akonadi::ServerManager::self(), SIGNAL(started()),
-            SLOT(slotServerStarted()));
+    connect(Akonadi::ServerManager::self(), &ServerManager::started,
+            this, &MainWindow::slotServerStarted);
 
-    connect(AgentManager::self(), SIGNAL(instanceError(Akonadi::AgentInstance,QString)),
-            this, SLOT(slotResourceError(Akonadi::AgentInstance,QString)));
-    connect(AgentManager::self(), SIGNAL(instanceOnline(Akonadi::AgentInstance,bool)),
-            this, SLOT(slotResourceOnline(Akonadi::AgentInstance,bool)));
-    connect(AgentManager::self(), SIGNAL(instanceProgressChanged(Akonadi::AgentInstance)),
-            this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
-    connect(AgentManager::self(), SIGNAL(instanceStatusChanged(Akonadi::AgentInstance)),
-            this, SLOT(slotResourceProgress(Akonadi::AgentInstance)));
+    connect(AgentManager::self(), &AgentManager::instanceError,
+            this, &MainWindow::slotResourceError);
+    connect(AgentManager::self(), &AgentManager::instanceOnline,
+            this, &MainWindow::slotResourceOnline);
+    connect(AgentManager::self(), &AgentManager::instanceProgressChanged,
+            this, &MainWindow::slotResourceProgress);
+    connect(AgentManager::self(), &AgentManager::instanceStatusChanged,
+            this, &MainWindow::slotResourceProgress);
 
     Akonadi::AttributeFactory::registerAttribute<EnumDefinitionAttribute>();
 }
@@ -262,7 +262,7 @@ void MainWindow::createActions()
     QAction *printAction = new QAction(i18n("Print Report..."), this);
     printAction->setShortcut(QKeySequence::Print);
     printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
-    connect(printAction, SIGNAL(triggered()), this, SLOT(slotPrintReport()));
+    connect(printAction, &QAction::triggered, this, &MainWindow::slotPrintReport);
     mViewMenu->addAction(printAction);
     mViewMenu->addSeparator();
 
@@ -290,17 +290,17 @@ void MainWindow::setupActions()
         mUi.actionSynchronize->setIcon(reloadIcon);
     }
 
-    connect(mUi.actionCRMAccounts, SIGNAL(triggered()), SLOT(slotConfigureResources()));
-    connect(mUi.actionImportContacts, SIGNAL(triggered()), this, SLOT(slotImportContacts()));
-    connect(mUi.actionOfflineMode, SIGNAL(toggled(bool)), this, SLOT(slotToggleOffline(bool)));
-    connect(mUi.actionSynchronize, SIGNAL(triggered()), this, SLOT(slotSynchronize()));
-    connect(mUi.actionFullReload, SIGNAL(triggered()), this, SLOT(slotFullReload()));
-    connect(mUi.actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(mUi.actionCRMAccounts, &QAction::triggered, this, &MainWindow::slotConfigureResources);
+    connect(mUi.actionImportContacts, &QAction::triggered, this, &MainWindow::slotImportContacts);
+    connect(mUi.actionOfflineMode, &QAction::toggled, this, &MainWindow::slotToggleOffline);
+    connect(mUi.actionSynchronize, &QAction::triggered, this, &MainWindow::slotSynchronize);
+    connect(mUi.actionFullReload, &QAction::triggered, this, &MainWindow::slotFullReload);
+    connect(mUi.actionQuit, &QAction::triggered, this, &QWidget::close);
 
-    connect(mUi.actionAboutFatCRM, SIGNAL(triggered()), this, SLOT(slotAboutApp()));
-    connect(mUi.actionAboutKDAB, SIGNAL(triggered()), this, SLOT(slotAboutKDAB()));
+    connect(mUi.actionAboutFatCRM, &QAction::triggered, this, &MainWindow::slotAboutApp);
+    connect(mUi.actionAboutKDAB, &QAction::triggered, this, &MainWindow::slotAboutKDAB);
 
-    connect(mUi.actionConfigureFatCRM, SIGNAL(triggered()), this, SLOT(slotConfigure()));
+    connect(mUi.actionConfigureFatCRM, &QAction::triggered, this, &MainWindow::slotConfigure);
 
     auto *activateNextTabAction = new QAction(tr("Activate Next Tab"), this);
     activateNextTabAction->setShortcut(Qt::CTRL + Qt::Key_PageDown);
@@ -313,15 +313,15 @@ void MainWindow::setupActions()
     addAction(activatePreviousTabAction);
 
     Q_FOREACH (const Page *page, mPages) {
-        connect(page, SIGNAL(statusMessage(QString)),
-                this, SLOT(slotShowMessage(QString)));
-        connect(page, SIGNAL(modelLoaded(DetailsType)),
-                this, SLOT(slotModelLoaded(DetailsType)));
-        connect(page, SIGNAL(synchronizeCollection(Akonadi::Collection)),
-                this, SLOT(slotSynchronizeCollection(Akonadi::Collection)));
+        connect(page, &Page::statusMessage,
+                this, &MainWindow::slotShowMessage);
+        connect(page, &Page::modelLoaded,
+                this, &MainWindow::slotModelLoaded);
+        connect(page, &Page::synchronizeCollection,
+                this, &MainWindow::slotSynchronizeCollection);
         connect(page, &Page::syncRequired, this, &MainWindow::slotSynchronize);
-        connect(page, SIGNAL(openObject(DetailsType,QString)),
-                this, SLOT(slotOpenObject(DetailsType,QString)));
+        connect(page, &Page::openObject,
+                this, &MainWindow::slotOpenObject);
     }
 }
 
@@ -417,7 +417,7 @@ void MainWindow::slotFullReload()
     // Once all these jobs are done, we'll trigger a resource synchronization
     mClearTimestampJobs = mCollectionManager->clearTimestamps();
     Q_FOREACH (KJob *modJob, mClearTimestampJobs) {
-        connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotClearTimestampResult(KJob*)));
+        connect(modJob, &KJob::result, this, &MainWindow::slotClearTimestampResult);
     }
 }
 
@@ -518,7 +518,7 @@ void MainWindow::createTabs()
     addPage(mContactsPage);
     mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 
-    connect(mContactsPage, SIGNAL(modelCreated(ItemsTreeModel*)), this, SLOT(slotContactsModelCreated(ItemsTreeModel*)));
+    connect(mContactsPage, &Page::modelCreated, this, &MainWindow::slotContactsModelCreated);
 
 #if 0
     page = new CampaignsPage(this);
@@ -551,10 +551,10 @@ void MainWindow::setupResourcesCombo()
 
     connect(mResourceSelector, SIGNAL(activated(int)),
             this, SLOT(slotResourceSelectionChanged(int)));
-    connect(mResourceSelector->model(), SIGNAL(rowsInserted(QModelIndex,int,int)),
-            this, SLOT(slotResourceCountChanged()));
-    connect(mResourceSelector->model(), SIGNAL(rowsRemoved(QModelIndex,int,int)),
-            this, SLOT(slotResourceCountChanged()));
+    connect(mResourceSelector->model(), &QAbstractItemModel::rowsInserted,
+            this, &MainWindow::slotResourceCountChanged);
+    connect(mResourceSelector->model(), &QAbstractItemModel::rowsRemoved,
+            this, &MainWindow::slotResourceCountChanged);
     slotResourceCountChanged();
 }
 
@@ -744,8 +744,8 @@ void MainWindow::slotImportCsvFile(const QString &filePath)
         importWizard->setContactsCollection(mContactsPage->collection());
         importWizard->setImportedContacts(contacts);
         importWizard->setContactsModel(mContactsModel);
-        connect(importWizard, SIGNAL(openFutureContact(Akonadi::Item::Id)),
-                mContactsPage, SLOT(slotOpenFutureContact(Akonadi::Item::Id)));
+        connect(importWizard, &ContactsImportWizard::openFutureContact,
+                mContactsPage, &ContactsPage::slotOpenFutureContact);
         importWizard->show();
         raiseMainWindowAndDialog(importWizard);
     } else {

@@ -138,10 +138,10 @@ SugarCRMResource::SugarCRMResource(const QString &id)
     protocol->setSession(mSession);
     mSession->setProtocol(protocol);
 
-    connect(mConflictHandler, SIGNAL(commitChange(Akonadi::Item)),
-            this, SLOT(commitChange(Akonadi::Item)));
-    connect(mConflictHandler, SIGNAL(updateOnBackend(Akonadi::Item)),
-            this, SLOT(updateOnBackend(Akonadi::Item)));
+    connect(mConflictHandler, &ConflictHandler::commitChange,
+            this, &SugarCRMResource::commitChange);
+    connect(mConflictHandler, &ConflictHandler::updateOnBackend,
+            this, &SugarCRMResource::updateOnBackend);
 
     createModuleHandlers(Settings::availableModules());
 }
@@ -265,7 +265,7 @@ void SugarCRMResource::itemAdded(const Akonadi::Item &item, const Akonadi::Colle
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
         job->setModule(handler);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(createEntryResult(KJob*)));
+        connect(job, &KJob::result, this, &SugarCRMResource::createEntryResult);
         job->start();
     } else {
         const QString message = i18nc("@info:status", "Cannot add items to folder %1",
@@ -330,7 +330,7 @@ void SugarCRMResource::itemRemoved(const Akonadi::Item &item)
     SugarJob *job = new DeleteEntryJob(item, mSession, nameToModule(collection.remoteId()), this);
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(deleteEntryResult(KJob*)));
+    connect(job, &KJob::result, this, &SugarCRMResource::deleteEntryResult);
     job->start();
 #endif
 }
@@ -342,7 +342,7 @@ void SugarCRMResource::retrieveCollections()
     SugarJob *job = new ListModulesJob(mSession, this);
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(listModulesResult(KJob*)));
+    connect(job, &KJob::result, this, &SugarCRMResource::listModulesResult);
     job->start();
 }
 
@@ -404,7 +404,7 @@ bool SugarCRMResource::retrieveItem(const Akonadi::Item &item, const QSet<QByteA
         Q_ASSERT(!mCurrentJob);
         mCurrentJob = job;
         job->setModule(handler);
-        connect(job, SIGNAL(result(KJob*)), this, SLOT(fetchEntryResult(KJob*)));
+        connect(job, &KJob::result, this, &SugarCRMResource::fetchEntryResult);
         job->start();
         return true;
     } else {
@@ -418,7 +418,7 @@ void SugarCRMResource::startExplicitLogin()
     qCDebug(FATCRM_SUGARCRMRESOURCE_LOG);
     Q_ASSERT(!mLoginJob); // didn't we kill it in doSetOnline(false) already?
     mLoginJob = new LoginJob(mSession, this);
-    connect(mLoginJob, SIGNAL(result(KJob*)), this, SLOT(explicitLoginResult(KJob*)));
+    connect(mLoginJob, &KJob::result, this, &SugarCRMResource::explicitLoginResult);
     mLoginJob->start();
 }
 
@@ -737,7 +737,7 @@ void SugarCRMResource::updateItem(const Akonadi::Item &item, ModuleHandler *hand
     Q_ASSERT(!mCurrentJob);
     mCurrentJob = job;
     job->setModule(handler);
-    connect(job, SIGNAL(result(KJob*)), this, SLOT(updateEntryResult(KJob*)));
+    connect(job, &KJob::result, this, &SugarCRMResource::updateEntryResult);
     job->start();
 }
 

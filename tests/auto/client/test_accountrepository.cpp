@@ -215,7 +215,7 @@ private Q_SLOTS:
         AccountRepository *repository = AccountRepository::instance();
         repository->clear();
         repository->addAccount(originalAccount, 1);
-        QSignalSpy spy(repository, SIGNAL(accountModified(QString,QVector<AccountRepository::Field>)));
+        QSignalSpy spy(repository, &AccountRepository::accountModified);
         //WHEN
         const QVector<AccountRepository::Field> modifyField = repository->modifyAccount(modifyAccount);
         //THEN
@@ -241,7 +241,7 @@ private Q_SLOTS:
         AccountRepository *repository = AccountRepository::instance();
         repository->clear();
         qRegisterMetaType<Akonadi::Item::Id>("Akonadi::Item::Id");
-        QSignalSpy spy(repository, SIGNAL(accountAdded(QString,Akonadi::Item::Id)));
+        QSignalSpy spy(repository, &AccountRepository::accountAdded);
         //WHEN
         SugarAccount account;
         account.setId("1");

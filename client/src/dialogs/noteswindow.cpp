@@ -181,7 +181,7 @@ void NotesWindow::saveChanges()
     item.setMimeType(SugarNote::mimeType());
     item.setPayload(newNote);
     Akonadi::ItemCreateJob *createJob = new Akonadi::ItemCreateJob(item, mLinkedItemsRepository->notesCollection(), this);
-    connect(createJob, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
+    connect(createJob, &KJob::result, this, &NotesWindow::slotJobResult);
 }
 
 void NotesWindow::setResourceIdentifier(const QString &resourceIdentifier)

@@ -236,7 +236,7 @@ SimpleItemEditWidget::SimpleItemEditWidget(Details *details, QWidget *parent)
     connect(saveButton, SIGNAL(clicked()), this, SLOT(saveClicked()));
 
     QPushButton *cancelButton = d->mUi.buttonBox->button(QDialogButtonBox::Cancel);
-    connect(cancelButton, SIGNAL(clicked()), this, SLOT(close()));
+    connect(cancelButton, &QAbstractButton::clicked, this, &QWidget::close);
 
     if (isWindow())
         ClientSettings::self()->restoreWindowSize("details", this);

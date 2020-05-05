@@ -311,37 +311,37 @@ void SalesforceResource::connectSoapProxy()
 {
     Q_ASSERT(mSoap != nullptr);
 
-    connect(mSoap, SIGNAL(loginDone(TNS__LoginResponse)), this, SLOT(loginDone(TNS__LoginResponse)));
-    connect(mSoap, SIGNAL(loginError(KDSoapMessage)), this, SLOT(loginError(KDSoapMessage)));
+    connect(mSoap, &SforceService::loginDone, this, &SalesforceResource::loginDone);
+    connect(mSoap, &SforceService::loginError, this, &SalesforceResource::loginError);
 
-    connect(mSoap, SIGNAL(describeGlobalDone(TNS__DescribeGlobalResponse)),
-            this,  SLOT(describeGlobalDone(TNS__DescribeGlobalResponse)));
-    connect(mSoap, SIGNAL(describeGlobalError(KDSoapMessage)),
-            this, SLOT(describeGlobalError(KDSoapMessage)));
+    connect(mSoap, &SforceService::describeGlobalDone,
+            this,  &SalesforceResource::describeGlobalDone);
+    connect(mSoap, &SforceService::describeGlobalError,
+            this, &SalesforceResource::describeGlobalError);
 
-    connect(mSoap, SIGNAL(describeSObjectsDone(TNS__DescribeSObjectsResponse)),
-            this,  SLOT(describeSObjectsDone(TNS__DescribeSObjectsResponse)));
-    connect(mSoap, SIGNAL(describeSObjectsError(KDSoapMessage)),
-            this, SLOT(describeSObjectsError(KDSoapMessage)));
+    connect(mSoap, &SforceService::describeSObjectsDone,
+            this,  &SalesforceResource::describeSObjectsDone);
+    connect(mSoap, &SforceService::describeSObjectsError,
+            this, &SalesforceResource::describeSObjectsError);
 
     connect(mSoap, SIGNAL(queryDone(TNS__QueryResponse)),
             this,  SLOT(getEntryListDone(TNS__QueryResponse)));
-    connect(mSoap, SIGNAL(queryError(KDSoapMessage)),
-            this,  SLOT(getEntryListError(KDSoapMessage)));
+    connect(mSoap, &SforceService::queryError,
+            this,  &SalesforceResource::getEntryListError);
     connect(mSoap, SIGNAL(queryMoreDone(TNS__QueryMoreResponse)),
             this,  SLOT(getEntryListDone(TNS__QueryMoreResponse)));
-    connect(mSoap, SIGNAL(queryMoreError(KDSoapMessage)),
-            this,  SLOT(getEntryListError(KDSoapMessage)));
+    connect(mSoap, &SforceService::queryMoreError,
+            this,  &SalesforceResource::getEntryListError);
 
-    connect(mSoap, SIGNAL(upsertDone(TNS__UpsertResponse)),
-            this,  SLOT(setEntryDone(TNS__UpsertResponse)));
-    connect(mSoap, SIGNAL(upsertError(KDSoapMessage)),
-            this,  SLOT(setEntryError(KDSoapMessage)));
+    connect(mSoap, &SforceService::upsertDone,
+            this,  &SalesforceResource::setEntryDone);
+    connect(mSoap, &SforceService::upsertError,
+            this,  &SalesforceResource::setEntryError);
 
-    connect(mSoap, SIGNAL(deleteDone(TNS__DeleteResponse)),
-            this,  SLOT(deleteEntryDone(TNS__DeleteResponse)));
-    connect(mSoap, SIGNAL(deleteError(KDSoapMessage)),
-            this,  SLOT(deleteEntryError(KDSoapMessage)));
+    connect(mSoap, &SforceService::deleteDone,
+            this,  &SalesforceResource::deleteEntryDone);
+    connect(mSoap, &SforceService::deleteError,
+            this,  &SalesforceResource::deleteEntryError);
 }
 
 void SalesforceResource::retrieveCollections()

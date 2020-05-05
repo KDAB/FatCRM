@@ -197,12 +197,12 @@ void Page::setFilter(FilterProxyModel *filter)
     mFilter = filter;
 
     mFilter->setSortRole(Qt::EditRole); // to allow custom formatting for dates in DisplayRole
-    connect(mFilter, SIGNAL(layoutChanged()), this, SLOT(slotVisibleRowCountChanged()));
-    connect(mFilter, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
-    connect(mFilter, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(slotVisibleRowCountChanged()));
+    connect(mFilter, &QAbstractItemModel::layoutChanged, this, &Page::slotVisibleRowCountChanged);
+    connect(mFilter, &QAbstractItemModel::rowsInserted, this, &Page::slotVisibleRowCountChanged);
+    connect(mFilter, &QAbstractItemModel::rowsRemoved, this, &Page::slotVisibleRowCountChanged);
 
-    connect(mUi.searchLE, SIGNAL(textChanged(QString)),
-            mFilter, SLOT(setFilterString(QString)));
+    connect(mUi.searchLE, &QLineEdit::textChanged,
+            mFilter, &FilterProxyModel::setFilterString);
 }
 
 // Connected to signal resourceSelected() from the mainwindow
@@ -267,8 +267,8 @@ void Page::setCollection(const Collection &collection)
         mChangeRecorder->setMimeTypeMonitored(mMimeType);
         connect(mChangeRecorder, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
                 this, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
-        connect(mChangeRecorder, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),
-                this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
+        connect(mChangeRecorder, &Monitor::itemChanged,
+                this, &Page::slotItemChanged);
 
         // if empty, the collection might not have been loaded yet, try synchronizing
         if (mCollection.statistics().count() == 0) {
@@ -445,8 +445,8 @@ void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
 void Page::initialize()
 {
     connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
-    connect(mUi.treeView, SIGNAL(returnPressed(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
-    connect(mUi.treeView, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(slotItemContextMenuRequested(QPoint)));
+    connect(mUi.treeView, &ItemsTreeView::returnPressed, this, &Page::slotItemDoubleClicked);
+    connect(mUi.treeView, &QWidget::customContextMenuRequested, this, &Page::slotItemContextMenuRequested);
 
     const QIcon icon = (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, mUi.reloadPB) : QIcon());
     if (!icon.isNull()) {
@@ -458,13 +458,13 @@ void Page::initialize()
     // so unclutter the GUI a bit
     mUi.reloadPB->hide();
 
-    connect(mUi.newPB, SIGNAL(clicked()),
-            this, SLOT(slotNewClicked()));
-    connect(mUi.reloadPB, SIGNAL(clicked()),
-            this, SLOT(slotReloadCollection()));
+    connect(mUi.newPB, &QAbstractButton::clicked,
+            this, &Page::slotNewClicked);
+    connect(mUi.reloadPB, &QAbstractButton::clicked,
+            this, &Page::slotReloadCollection);
 
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
-    connect(reloadShortcut, SIGNAL(activated()), this, SLOT(slotReloadCollection()));
+    connect(reloadShortcut, &QShortcut::activated, this, &Page::slotReloadCollection);
 }
 
 void Page::slotItemContextMenuRequested(const QPoint &pos)
@@ -495,8 +495,8 @@ QMenu *Page::createContextMenu(const QPoint &)
 
     if (mCurrentItemUrl.isValid()) {
         contextMenu->addSeparator();
-        contextMenu->addAction(QIcon::fromTheme("internet-web-browser"), i18n("Open in &Web Browser"), this, SLOT(slotOpenUrl()));
-        contextMenu->addAction(QIcon::fromTheme("edit-copy"), i18n("Copy &Link Location"), this, SLOT(slotCopyLink()));
+        contextMenu->addAction(QIcon::fromTheme("internet-web-browser"), i18n("Open in &Web Browser"), this, &Page::slotOpenUrl);
+        contextMenu->addAction(QIcon::fromTheme("edit-copy"), i18n("Copy &Link Location"), this, &Page::slotCopyLink);
     }
 
     const QStringList selectedEmails = preferredMailAddressesForSelectedRows(selectedIndexes);
@@ -524,22 +524,22 @@ QMenu *Page::createContextMenu(const QPoint &)
         QMenu *changeMenu = contextMenu->addMenu(i18n("Change..."));
         changeMenu->setIcon(QIcon::fromTheme("edit-entry"));
         if (mType == DetailsType::Account || mType == DetailsType::Contact) {
-            QAction *cityAction = changeMenu->addAction(i18n("City"), this, SLOT(slotChangeFields()));
+            QAction *cityAction = changeMenu->addAction(i18n("City"), this, &Page::slotChangeFields);
             cityAction->setProperty(s_modifierFieldId, QVariant::fromValue(CityField));
 
-            QAction *countryAction = changeMenu->addAction(i18n("Country"), this, SLOT(slotChangeFields()));
+            QAction *countryAction = changeMenu->addAction(i18n("Country"), this, &Page::slotChangeFields);
             countryAction->setProperty(s_modifierFieldId, QVariant::fromValue(CountryField));
         } else if (mType == DetailsType::Opportunity) {
-            QAction *dateAction = changeMenu->addAction(i18n("Next Step Date"), this, SLOT(slotChangeFields()));
+            QAction *dateAction = changeMenu->addAction(i18n("Next Step Date"), this, &Page::slotChangeFields);
             dateAction->setProperty(s_modifierFieldId, QVariant::fromValue(NextStepDateField));
 
-            QAction *assigneeAction = changeMenu->addAction(i18n("Assignee"), this, SLOT(slotChangeFields()));
+            QAction *assigneeAction = changeMenu->addAction(i18n("Assignee"), this, &Page::slotChangeFields);
             assigneeAction->setProperty(s_modifierFieldId, QVariant::fromValue(AssigneeField));
         }
     }
 
     if (!selectedIndexes.isEmpty()) {
-        contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, SLOT(slotDeleteItems()));
+        contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, &Page::slotDeleteItems);
     }
 
     if (contextMenu->actions().isEmpty()) {
@@ -570,10 +570,10 @@ void Page::setupModel()
     mItemsTreeModel->setLinkedItemsRepository(mLinkedItemsRepository);
     mItemsTreeModel->setCollectionManager(mCollectionManager); // for enum definitions
 
-    connect(mItemsTreeModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(slotRowsInserted(QModelIndex,int,int)));
-    connect(mItemsTreeModel, SIGNAL(collectionPopulated(Akonadi::Collection::Id)), this, SLOT(slotCheckCollectionPopulated(Akonadi::Collection::Id)));
-    connect(mItemsTreeModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(slotRowsAboutToBeRemoved(QModelIndex,int,int)));
-    connect(mItemsTreeModel, SIGNAL(dataChanged(QModelIndex,QModelIndex)), this, SLOT(slotDataChanged(QModelIndex,QModelIndex)));
+    connect(mItemsTreeModel, &QAbstractItemModel::rowsInserted, this, &Page::slotRowsInserted);
+    connect(mItemsTreeModel, &EntityTreeModel::collectionPopulated, this, &Page::slotCheckCollectionPopulated);
+    connect(mItemsTreeModel, &QAbstractItemModel::rowsAboutToBeRemoved, this, &Page::slotRowsAboutToBeRemoved);
+    connect(mItemsTreeModel, &QAbstractItemModel::dataChanged, this, &Page::slotDataChanged);
 
     mFilter->setSourceModel(mItemsTreeModel);
     mFilter->setLinkedItemsRepository(mLinkedItemsRepository);
@@ -699,8 +699,8 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     details->setLinkedItemsRepository(mLinkedItemsRepository);
     // warning, do not use any type-dependent member variable here. We could be creating a widget for another type.
 
-    connect(details, SIGNAL(openObject(DetailsType,QString)),
-            this, SIGNAL(openObject(DetailsType,QString)));
+    connect(details, &Details::openObject,
+            this, &Page::openObject);
     connect(details, &Details::syncRequired, this, &Page::syncRequired);
     // Don't set a parent, so that the widgets can be minimized/restored independently
     auto *widget = new SimpleItemEditWidget(details);
@@ -709,12 +709,12 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
         widget->setItem(item);
 
     // in case of changes while the widget is up
-    connect(this, SIGNAL(modelItemChanged(Akonadi::Item)),
-            widget, SLOT(updateItem(Akonadi::Item)));
-    connect(this, SIGNAL(onlineStatusChanged(bool)),
-            widget, SLOT(setOnline(bool)));
-    connect(widget, SIGNAL(itemSaved()),
-            this, SLOT(slotItemSaved()));
+    connect(this, &Page::modelItemChanged,
+            widget, &SimpleItemEditWidget::updateItem);
+    connect(this, &Page::onlineStatusChanged,
+            widget, &SimpleItemEditWidget::setOnline);
+    connect(widget, &ItemEditWidgetBase::itemSaved,
+            this, &Page::slotItemSaved);
 
     ItemEditWidgetType widgetType;
     if (forceSimpleWidget) {
@@ -729,16 +729,16 @@ ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, Detail
     if (widgetType == Simple) {
         widget->setAttribute(Qt::WA_DeleteOnClose);
         OpenedWidgetsRepository::instance()->registerWidget(widget);
-        connect (widget, SIGNAL(closing()),
-                 this, SLOT(slotUnregisterItemEditWidget()));
+        connect (widget, &ItemEditWidgetBase::closing,
+                 this, &Page::slotUnregisterItemEditWidget);
         return widget;
     } else {
         auto *tabbedWidget = new TabbedItemEditWidget(widget, itemType, this);
         tabbedWidget->setAttribute(Qt::WA_DeleteOnClose);
         connect (tabbedWidget, SIGNAL(openWidgetForItem(Akonadi::Item,DetailsType)),
                  this, SLOT(openWidgetForItem(Akonadi::Item,DetailsType)));
-        connect (tabbedWidget, SIGNAL(closing()),
-                 this, SLOT(slotUnregisterItemEditWidget()));
+        connect (tabbedWidget, &ItemEditWidgetBase::closing,
+                 this, &Page::slotUnregisterItemEditWidget);
         OpenedWidgetsRepository::instance()->registerWidget(tabbedWidget);
         return tabbedWidget;
     }
@@ -866,7 +866,7 @@ void Page::slotChangeFields()
     mJobProgressTracker = new KJobProgressTracker(this, this);
     mJobProgressTracker->setCaption(dialogTitle);
     mJobProgressTracker->setLabel(i18n("Please wait..."));
-    connect(mJobProgressTracker, SIGNAL(finished()), mJobProgressTracker, SLOT(deleteLater()));
+    connect(mJobProgressTracker, &KJobProgressTracker::finished, mJobProgressTracker, &QObject::deleteLater);
 
     QString errorMessage;
     switch (mType) {

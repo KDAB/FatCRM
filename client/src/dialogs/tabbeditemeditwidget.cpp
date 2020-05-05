@@ -51,13 +51,13 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     buttonBox->button(QDialogButtonBox::Save)->setShortcut(Qt::CTRL | Qt::Key_Return);
     setWindowModified(false);
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
-    connect(buttonBox, SIGNAL(rejected()), this, SLOT(close()));
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close);
     layout()->addWidget(buttonBox);
 
     ItemEditWidget->hideButtonBox();
     mItemEditWidget = ItemEditWidget;
-    connect(mItemEditWidget, SIGNAL(dataModified()), this, SLOT(dataChanged()));
-    connect(mItemEditWidget, SIGNAL(closing()), this, SLOT(close()));
+    connect(mItemEditWidget, &ItemEditWidgetBase::dataModified, this, &TabbedItemEditWidget::dataChanged);
+    connect(mItemEditWidget, &ItemEditWidgetBase::closing, this, &QWidget::close);
 
     if (mType == DetailsType::Account) {
         mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account Details"));
@@ -111,7 +111,7 @@ void TabbedItemEditWidget::initialize()
     if (mType == DetailsType::Opportunity) {
         mUi->associatedDataTab->hideOpportunityGui();
     }
-    connect (mUi->associatedDataTab, SIGNAL(openItem(QString)), this, SLOT(openWidget(QString)));
+    connect (mUi->associatedDataTab, &AssociatedDataWidget::openItem, this, &TabbedItemEditWidget::openWidget);
 }
 
 int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsType type)

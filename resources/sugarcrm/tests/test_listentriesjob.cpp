@@ -115,7 +115,7 @@ private Q_SLOTS:
         }
         auto *job = new ListEntriesJob(collection, &session);
         job->setModule(handler);
-        QSignalSpy spy(job, SIGNAL(totalItems(int)));
+        QSignalSpy spy(job, &ListEntriesJob::totalItems);
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -140,7 +140,7 @@ private Q_SLOTS:
         AccountsHandler handler(&session);
         auto *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
+        QSignalSpy spy(job, &ListEntriesJob::itemsReceived);
         //WHEN
         QVERIFY(job->exec());
         //THEN
@@ -174,7 +174,7 @@ private Q_SLOTS:
         OpportunitiesHandler handler(&session);
         auto *job = new ListEntriesJob(collection, &session);
         job->setModule(&handler);
-        QSignalSpy spy(job, SIGNAL(itemsReceived(Akonadi::Item::List,bool)));
+        QSignalSpy spy(job, &ListEntriesJob::itemsReceived);
         //WHEN
         QVERIFY(job->exec());
         //THEN

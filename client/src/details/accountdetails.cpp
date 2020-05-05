@@ -91,8 +91,8 @@ AccountDetails::~AccountDetails()
 void AccountDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
     mLinkedItemsRepository = repo;
-    connect(mLinkedItemsRepository, SIGNAL(accountModified(QString)),
-            this, SLOT(slotLinkedItemsModified(QString)));
+    connect(mLinkedItemsRepository, &LinkedItemsRepository::accountModified,
+            this, &AccountDetails::slotLinkedItemsModified);
 }
 
 ItemDataExtractor *AccountDetails::itemDataExtractor() const
@@ -182,9 +182,9 @@ void AccountDetails::initialize()
     //ReferencedDataModel::setModelForCombo(mUi->campaign_id, CampaignRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
-    connect(mUi->billing_address_country, SIGNAL(editingFinished()), SLOT(slotBillingAddressCountryEditingFinished()));
-    connect(mUi->shipping_address_country, SIGNAL(editingFinished()), SLOT(slotShippingAddressCountryEditingFinished()));
-    connect(mUi->visitWebsiteButton, SIGNAL(clicked()), this, SLOT(slotVisitWebsite()));
+    connect(mUi->billing_address_country, &QLineEdit::editingFinished, this, &AccountDetails::slotBillingAddressCountryEditingFinished);
+    connect(mUi->shipping_address_country, &QLineEdit::editingFinished, this, &AccountDetails::slotShippingAddressCountryEditingFinished);
+    connect(mUi->visitWebsiteButton, &QAbstractButton::clicked, this, &AccountDetails::slotVisitWebsite);
     connect(mUi->copyBillingAddressButton, &QPushButton::clicked, this, [this]() {
         copyAddressFromGroup(mUi->billingAddressGroupBox);
     });

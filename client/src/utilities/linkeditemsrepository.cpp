@@ -76,8 +76,8 @@ void LinkedItemsRepository::loadNotes()
     // load notes
     auto *job = new Akonadi::ItemFetchJob(mNotesCollection, this);
     configureItemFetchScope(job->fetchScope());
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotNotesReceived(Akonadi::Item::List)));
+    connect(job, &Akonadi::ItemFetchJob::itemsReceived,
+            this, &LinkedItemsRepository::slotNotesReceived);
 }
 
 QVector<SugarNote> LinkedItemsRepository::notesForAccount(const QString &id) const
@@ -218,8 +218,8 @@ void LinkedItemsRepository::loadEmails()
     // load emails
     auto *job = new Akonadi::ItemFetchJob(mEmailsCollection, this);
     configureItemFetchScope(job->fetchScope());
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotEmailsReceived(Akonadi::Item::List)));
+    connect(job, &Akonadi::ItemFetchJob::itemsReceived,
+            this, &LinkedItemsRepository::slotEmailsReceived);
 }
 
 void LinkedItemsRepository::monitorChanges()
@@ -230,12 +230,12 @@ void LinkedItemsRepository::monitorChanges()
     mMonitor->setCollectionMonitored(mEmailsCollection);
     mMonitor->setCollectionMonitored(mDocumentsCollection);
     configureItemFetchScope(mMonitor->itemFetchScope());
-    connect(mMonitor, SIGNAL(itemAdded(Akonadi::Item,Akonadi::Collection)),
-            this, SLOT(slotItemAdded(Akonadi::Item,Akonadi::Collection)));
-    connect(mMonitor, SIGNAL(itemRemoved(Akonadi::Item)),
-            this, SLOT(slotItemRemoved(Akonadi::Item)));
-    connect(mMonitor, SIGNAL(itemChanged(Akonadi::Item,QSet<QByteArray>)),
-            this, SLOT(slotItemChanged(Akonadi::Item,QSet<QByteArray>)));
+    connect(mMonitor, &Akonadi::Monitor::itemAdded,
+            this, &LinkedItemsRepository::slotItemAdded);
+    connect(mMonitor, &Akonadi::Monitor::itemRemoved,
+            this, &LinkedItemsRepository::slotItemRemoved);
+    connect(mMonitor, &Akonadi::Monitor::itemChanged,
+            this, &LinkedItemsRepository::slotItemChanged);
     connect(mMonitor, SIGNAL(collectionChanged(Akonadi::Collection,QSet<QByteArray>)),
             mCollectionManager, SLOT(slotCollectionChanged(Akonadi::Collection,QSet<QByteArray>)));
 }
@@ -381,8 +381,8 @@ void LinkedItemsRepository::loadDocuments()
     // load documents
     auto *job = new Akonadi::ItemFetchJob(mDocumentsCollection, this);
     configureItemFetchScope(job->fetchScope());
-    connect(job, SIGNAL(itemsReceived(Akonadi::Item::List)),
-            this, SLOT(slotDocumentsReceived(Akonadi::Item::List)));
+    connect(job, &Akonadi::ItemFetchJob::itemsReceived,
+            this, &LinkedItemsRepository::slotDocumentsReceived);
 }
 
 QVector<SugarDocument> LinkedItemsRepository::documentsForOpportunity(const QString &id) const

@@ -28,10 +28,10 @@ AssociatedDataWidget::AssociatedDataWidget(QWidget *parent) :
     mUi(new Ui::AssociatedDataWidget)
 {
     mUi->setupUi(this);
-    connect(mUi->opportunitiesListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editItem(QModelIndex)));
-    connect(mUi->opportunitiesListView, SIGNAL(returnPressed(QModelIndex)), this, SLOT(editItem(QModelIndex)));
-    connect(mUi->contactsListView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(editItem(QModelIndex)));
-    connect(mUi->contactsListView, SIGNAL(returnPressed(QModelIndex)), this, SLOT(editItem(QModelIndex)));
+    connect(mUi->opportunitiesListView, &QAbstractItemView::doubleClicked, this, &AssociatedDataWidget::editItem);
+    connect(mUi->opportunitiesListView, &KeyPressEventListView::returnPressed, this, &AssociatedDataWidget::editItem);
+    connect(mUi->contactsListView, &QAbstractItemView::doubleClicked, this, &AssociatedDataWidget::editItem);
+    connect(mUi->contactsListView, &KeyPressEventListView::returnPressed, this, &AssociatedDataWidget::editItem);
 }
 
 AssociatedDataWidget::~AssociatedDataWidget()

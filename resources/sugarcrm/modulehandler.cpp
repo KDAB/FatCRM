@@ -72,7 +72,7 @@ Module ModuleHandler::module() const
 void ModuleHandler::initialCheck()
 {
     Akonadi::CollectionFetchJob *job = new Akonadi::CollectionFetchJob(collection(), Akonadi::CollectionFetchJob::Base, this);
-    connect(job, SIGNAL(collectionsReceived(Akonadi::Collection::List)), this, SLOT(slotCollectionsReceived(Akonadi::Collection::List)));
+    connect(job, &Akonadi::CollectionFetchJob::collectionsReceived, this, &ModuleHandler::slotCollectionsReceived);
 }
 
 QString ModuleHandler::latestTimestamp() const
@@ -92,7 +92,7 @@ Akonadi::Collection ModuleHandler::collection()
 void ModuleHandler::modifyCollection(const Akonadi::Collection &collection)
 {
     auto *modJob = new Akonadi::CollectionModifyJob(collection, this);
-    connect(modJob, SIGNAL(result(KJob*)), this, SLOT(slotCollectionModifyResult(KJob*)));
+    connect(modJob, &KJob::result, this, &ModuleHandler::slotCollectionModifyResult);
     modJob->exec();
     mCollection = modJob->collection();
 }

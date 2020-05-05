@@ -97,22 +97,22 @@ void Details::doConnects()
     // connect to changed signals
     Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
         if (!qobject_cast<QAbstractSpinBox *>(le->parentWidget()))
-            connect(le, SIGNAL(textChanged(QString)), this, SIGNAL(modified()));
+            connect(le, &QLineEdit::textChanged, this, &Details::modified);
     }
     Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>())
         connect(cb, SIGNAL(currentIndexChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>())
-        connect(cb, SIGNAL(toggled(bool)), this, SIGNAL(modified()));
+        connect(cb, &QAbstractButton::toggled, this, &Details::modified);
     Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>())
-        connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
+        connect(te, &QTextEdit::textChanged, this, &Details::modified);
     Q_FOREACH (QPlainTextEdit *te, findChildren<QPlainTextEdit *>())
-        connect(te, SIGNAL(textChanged()), this, SIGNAL(modified()));
+        connect(te, &QPlainTextEdit::textChanged, this, &Details::modified);
     Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>())
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
         connect(w, SIGNAL(valueChanged(double)), this, SIGNAL(modified()));
     Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>())
-        connect(w, SIGNAL(dateChanged(QDate)), this, SIGNAL(modified()));
+        connect(w, &KDateComboBox::dateChanged, this, &Details::modified);
 }
 
 void Details::hideIfUnsupported(QWidget *widget)

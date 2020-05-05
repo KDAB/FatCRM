@@ -68,8 +68,8 @@ DocumentWidget::DocumentWidget(EnumDefinitions *definitions, QWidget *parent)
     mDeleteButton->setText(i18n("Delete"));
     horizontalLine->setFrameShape(QFrame::HLine);
 
-    connect(mNameLabel, SIGNAL(linkActivated(QString)), SIGNAL(urlClicked(QString)));
-    connect(mDeleteButton, SIGNAL(clicked()), SIGNAL(deleteDocument()));
+    connect(mNameLabel, &QLabel::linkActivated, this, &DocumentWidget::urlClicked);
+    connect(mDeleteButton, &QAbstractButton::clicked, this, &DocumentWidget::deleteDocument);
 
     auto *topLayout = new QVBoxLayout(this);
 
@@ -305,8 +305,8 @@ DocumentWidget *DocumentsWindow::addDocument(const SugarDocument &document)
     widget->setDocument(document);
     mDocumentWidgets.append(widget);
 
-    connect(widget, SIGNAL(urlClicked(QString)), SLOT(urlClicked(QString)));
-    connect(widget, SIGNAL(deleteDocument()), SLOT(deleteDocument()));
+    connect(widget, &DocumentWidget::urlClicked, this, &DocumentsWindow::urlClicked);
+    connect(widget, &DocumentWidget::deleteDocument, this, &DocumentsWindow::deleteDocument);
 
     if (ui->scrollAreaLayout->count() > 1) // remove the stretch item at the end
         ui->scrollAreaLayout->removeItem(ui->scrollAreaLayout->itemAt(ui->scrollAreaLayout->count() - 1));
@@ -344,7 +344,7 @@ void DocumentsWindow::saveChanges()
             const Akonadi::Item item = mLinkedItemsRepository->documentItem(id);
             if (item.isValid()) {
                 auto *job = new Akonadi::ItemDeleteJob(item, this);
-                connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
+                connect(job, &KJob::result, this, &DocumentsWindow::slotJobResult);
 
                 ++mPendingJobCount;
             }
@@ -404,7 +404,7 @@ void DocumentsWindow::saveChanges()
                     item.setPayload(modifiedDocument);
 
                     auto *job = new Akonadi::ItemModifyJob(item, this);
-                    connect(job, SIGNAL(result(KJob*)), this, SLOT(slotJobResult(KJob*)));
+                    connect(job, &KJob::result, this, &DocumentsWindow::slotJobResult);
 
                     ++mPendingJobCount;
                 }

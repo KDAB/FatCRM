@@ -50,7 +50,7 @@ void SelectItemDialog::setModel(QAbstractItemModel *model)
     proxyModel->setSourceModel(model);
     proxyModel->setFilterCaseSensitivity(Qt::CaseInsensitive);
     proxyModel->setFilterKeyColumn(-1); // all columns
-    connect(mUi->searchLE, SIGNAL(textChanged(QString)), proxyModel, SLOT(setFilterFixedString(QString)));
+    connect(mUi->searchLE, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterFixedString);
     mUi->treeView->setModel(proxyModel);
 }
 

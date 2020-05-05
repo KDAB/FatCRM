@@ -97,8 +97,8 @@ ContactDetails::~ContactDetails()
 void ContactDetails::setLinkedItemsRepository(LinkedItemsRepository *repo)
 {
     mLinkedItemsRepository = repo;
-    connect(mLinkedItemsRepository, SIGNAL(contactModified(QString)),
-            this, SLOT(slotLinkedItemsModified(QString)));
+    connect(mLinkedItemsRepository, &LinkedItemsRepository::contactModified,
+            this, &ContactDetails::slotLinkedItemsModified);
 }
 
 void ContactDetails::initialize()
@@ -108,13 +108,13 @@ void ContactDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->reports_to_id, ContactRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
-    connect(mUi->calendarButton->calendarWidget(), SIGNAL(clicked(QDate)),
-            this, SLOT(slotSetBirthday()));
+    connect(mUi->calendarButton->calendarWidget(), &QCalendarWidget::clicked,
+            this, &ContactDetails::slotSetBirthday);
     connect(mUi->account_id, SIGNAL(activated(int)), this, SLOT(slotAccountActivated()));
-    connect(mUi->buttonSelectAccount, SIGNAL(clicked()), this, SLOT(slotSelectAccount()));
+    connect(mUi->buttonSelectAccount, &QAbstractButton::clicked, this, &ContactDetails::slotSelectAccount);
 
-    connect(mUi->primaryAddressCountry, SIGNAL(editingFinished()), SLOT(slotPrimaryAddressCountryEditingFinished()));
-    connect(mUi->altAddressCountry, SIGNAL(editingFinished()), SLOT(slotOtherAddressCountryEditingFinished()));
+    connect(mUi->primaryAddressCountry, &QLineEdit::editingFinished, this, &ContactDetails::slotPrimaryAddressCountryEditingFinished);
+    connect(mUi->altAddressCountry, &QLineEdit::editingFinished, this, &ContactDetails::slotOtherAddressCountryEditingFinished);
     connect(mUi->copyPrimaryAddressButton, &QPushButton::clicked, this, [this]() {
         copyAddressFromGroup(mUi->primaryAddressGroupBox);
     });
@@ -390,11 +390,11 @@ void ContactDetails::setDataInternal(const QMap<QString, QString> &)
         mUi->urllabel->setText(QString("<a href=\"%1\">Open Contact in Web Browser</a>").arg(url.toString()));
 
     slotEnableMailToPrimary();
-    connect(mUi->email1, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToPrimary()));
-    connect(mUi->buttonMailToPrimary, SIGNAL(clicked(bool)), this, SLOT(slotMailToPrimary()));
+    connect(mUi->email1, &QLineEdit::textChanged, this, &ContactDetails::slotEnableMailToPrimary);
+    connect(mUi->buttonMailToPrimary, &QAbstractButton::clicked, this, &ContactDetails::slotMailToPrimary);
     slotEnableMailToOther();
-    connect(mUi->email2, SIGNAL(textChanged(QString)), this, SLOT(slotEnableMailToOther()));
-    connect(mUi->buttonMailToOther, SIGNAL(clicked(bool)), this, SLOT(slotMailToOther()));
+    connect(mUi->email2, &QLineEdit::textChanged, this, &ContactDetails::slotEnableMailToOther);
+    connect(mUi->buttonMailToOther, &QAbstractButton::clicked, this, &ContactDetails::slotMailToOther);
 
     connect(mUi->phone_work, &QLineEdit::textChanged, this, [this]() {
         mUi->buttonCallWork->setEnabled(!mUi->phone_work->text().isEmpty());
@@ -463,7 +463,7 @@ void ContactDetails::slotSelectAccount()
     auto *dlg = new SelectItemDialog(DetailsType::Account, this);
     dlg->setModel(ModelRepository::instance()->model(DetailsType::Account));
     dlg->setAttribute(Qt::WA_DeleteOnClose);
-    connect(dlg, SIGNAL(selectedItem(QString)), this, SLOT(slotAccountSelected(QString)));
+    connect(dlg, &SelectItemDialog::selectedItem, this, &ContactDetails::slotAccountSelected);
     dlg->show();
 }
 
