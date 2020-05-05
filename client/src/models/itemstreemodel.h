@@ -139,6 +139,8 @@ private Q_SLOTS:
     void slotAccountModified(const QString &accountId, const QVector<AccountRepository::Field> &changedFields);
     void slotAccountRemoved(const QString &accountId);
     void slotAccountsLoaded();
+    void updateBackgrounds();
+    void updateBackgrounds(int first, int last);
 
 private:
     QVariant accountData(const Akonadi::Item &item, int column, int role) const;
