@@ -43,7 +43,7 @@ public:
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
     int listModules(QStringList &moduleNames, QString &errorMessage) override;
 private:
-    SugarSession *mSession;
+    SugarSession *mSession = nullptr;
 };
 
 #endif // SUGARSOAPPROTOCOL_H
