@@ -34,6 +34,7 @@
 
 #include <QCloseEvent>
 #include <QMessageBox>
+#include <QPushButton>
 #include <QScrollBar>
 
 NotesWindow::NotesWindow(QWidget *parent) :
@@ -44,6 +45,8 @@ NotesWindow::NotesWindow(QWidget *parent) :
     ui->textEdit->enableFindReplace(true);
     ui->textEdit->setAcceptRichText(true);
     ui->textEdit->setReadOnly(true);
+
+    ui->buttonBox->button(QDialogButtonBox::Save)->setShortcut(Qt::CTRL | Qt::Key_Return);
 
     ClientSettings::self()->restoreWindowSize("NotesWindow", this);
 }
