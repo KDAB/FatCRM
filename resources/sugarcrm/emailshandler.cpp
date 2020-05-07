@@ -82,7 +82,8 @@ int EmailsHandler::expectedContentsVersion() const
     // version 1 = description_html field added
     // version 2 = query emails for accounts and contacts as well
     // version 3 = fixed the wrong query, full download required
-    return 3;
+    // version 4 = fixed FATCRM-203 server-side, full download required
+    return 4;
 }
 
 void EmailsHandler::getExtraInformation(Akonadi::Item::List &items)
