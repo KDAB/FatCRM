@@ -57,7 +57,8 @@ OpportunityFilterWidget::OpportunityFilterWidget(OpportunityFilterProxyModel *op
     connect(ui->cbAssignee, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbMaxNextStepDate, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->cbOpen, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
-    connect(ui->cbClosed, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->cbClosedWon, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
+    connect(ui->cbClosedLost, &QAbstractButton::toggled, this, &OpportunityFilterWidget::filterChanged);
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(slotCountrySelected()));
     connect(ui->cbCountry, SIGNAL(activated(QString)), this, SLOT(filterChanged()));
     connect(ui->modifiedAfter, &KDateComboBox::dateChanged, this, &OpportunityFilterWidget::filterChanged);
@@ -90,7 +91,8 @@ void OpportunityFilterWidget::setupFromConfig(const OpportunityFilterSettings &s
     }
     ui->cbCountry->setCurrentIndex(qMax(0, ui->cbCountry->findText(settings.countryGroup())));
     ui->cbOpen->setChecked(settings.showOpen());
-    ui->cbClosed->setChecked(settings.showClosed());
+    ui->cbClosedWon->setChecked(settings.showClosedWon());
+    ui->cbClosedLost->setChecked(settings.showClosedLost());
     if (settings.customMaxDate().isValid()) {
         ui->cbMaxNextStepDate->insertItem(CustomDate, settings.customMaxDate().toString(QStringLiteral("MM/d/yyyy")));
         mCustomMaxNextStepDate = settings.customMaxDate();
@@ -184,7 +186,7 @@ void OpportunityFilterWidget::filterChanged()
     }
     filterSettings.setAssignees(assignees, ui->cbAssignee->currentText());
     filterSettings.setCountries(countries, ui->cbCountry->currentText());
-    filterSettings.setShowOpenClosed(ui->cbOpen->isChecked(), ui->cbClosed->isChecked());
+    filterSettings.setShowOpenClosed(ui->cbOpen->isChecked(), ui->cbClosedWon->isChecked(), ui->cbClosedLost->isChecked());
     filterSettings.setModifiedAfter(ui->modifiedAfter->date());
     filterSettings.setModifiedBefore(ui->modifiedBefore->date());
     filterSettings.setCustomMaxDate(mCustomMaxNextStepDate);

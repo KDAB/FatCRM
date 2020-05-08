@@ -65,10 +65,11 @@ void OpportunityFilterSettings::setModifiedBefore(const QDate &modifiedBefore)
     mModifiedBefore = modifiedBefore;
 }
 
-void OpportunityFilterSettings::setShowOpenClosed(bool showOpen, bool showClosed)
+void OpportunityFilterSettings::setShowOpenClosed(bool showOpen, bool showClosedWon, bool showClosedLost)
 {
     mShowOpen = showOpen;
-    mShowClosed = showClosed;
+    mShowClosedWon = showClosedWon;
+    mShowClosedLost = showClosedLost;
 }
 
 void OpportunityFilterSettings::setShownPriority(const QString &shownPriority)
@@ -88,11 +89,23 @@ void OpportunityFilterSettings::setSearchText(const QString &searchText)
 
 QString OpportunityFilterSettings::filterDescription() const
 {
+    auto appendWithSeparator = [](QString &out, const QString &str) {
+        if (!out.isEmpty()) {
+            out += ", ";
+        }
+        out += str;
+    };
+
     QString openOrClosed;
-    if (!mShowOpen && mShowClosed)
-        openOrClosed = i18n("closed");
-    else if (mShowOpen && !mShowClosed)
+    if (mShowOpen) {
         openOrClosed = i18n("open");
+    }
+    if (mShowClosedWon) {
+        appendWithSeparator(openOrClosed, i18n("closed won"));
+    }
+    if (mShowClosedLost) {
+        appendWithSeparator(openOrClosed, i18n("closed lost"));
+    }
 
     QString txt;
     if (!mAssignees.isEmpty()) {
@@ -141,7 +154,8 @@ void OpportunityFilterSettings::save(QSettings &settings, const QString &prefix)
     settings.setValue(prefix + "/modifiedBefore", mModifiedBefore);
     settings.setValue(prefix + "/modifiedAfter", mModifiedAfter);
     settings.setValue(prefix + "/showOpen", mShowOpen);
-    settings.setValue(prefix + "/showClosed", mShowClosed);
+    settings.setValue(prefix + "/showClosedWon", mShowClosedWon);
+    settings.setValue(prefix + "/showClosedLost", mShowClosedLost);
     settings.setValue(prefix + "/shownPriority", mShownPriority);
 
     // Allow saving searches using this function
@@ -188,7 +202,8 @@ void OpportunityFilterSettings::load(const QSettings &settings, const QString &p
     mModifiedAfter = settings.value(prefix + "/modifiedAfter").toDate();
     QVariant val = settings.value(prefix + "/showOpen");
     mShowOpen = val.isValid() ? val.toBool() : true;
-    mShowClosed = settings.value(prefix + "/showClosed").toBool();
+    mShowClosedWon = settings.value(prefix + "/showClosedWon").toBool();
+    mShowClosedLost = settings.value(prefix + "/showClosedLost").toBool();
     mShownPriority = settings.value(prefix + "/shownPriority").toString();
 
     // Allow loading searches using this function

@@ -55,9 +55,10 @@ public:
     QDate modifiedAfter() const { return mModifiedAfter; }
     void setModifiedBefore(const QDate &modifiedBefore);
     QDate modifiedBefore() const { return mModifiedBefore; }
-    void setShowOpenClosed(bool showOpen, bool showClosed);
+    void setShowOpenClosed(bool showOpen, bool showClosedWon, bool showClosedLost);
     bool showOpen() const { return mShowOpen; }
-    bool showClosed() const { return mShowClosed; }
+    bool showClosedWon() const { return mShowClosedWon; }
+    bool showClosedLost() const { return mShowClosedLost; }
     void setShownPriority(const QString &shownPriority);
     QString shownPriority() const { return mShownPriority; }
     void setSearchName(const QString &searchName);
@@ -85,7 +86,8 @@ private:
     QDate mModifiedBefore, mModifiedAfter;
     MaxNextStepDate mMaxDateIndex = NoDate;
     bool mShowOpen = true;
-    bool mShowClosed = false;
+    bool mShowClosedWon = false;
+    bool mShowClosedLost = false;
     QString mSearchName;
     QString mSearchText;
 };
