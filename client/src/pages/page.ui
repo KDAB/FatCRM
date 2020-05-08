@@ -17,41 +17,6 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QPushButton" name="newPB">
-         <property name="text">
-          <string>&amp;New</string>
-         </property>
-         <property name="icon">
-          <iconset theme="document-new">
-           <normaloff>.</normaloff>.</iconset>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QToolButton" name="reloadPB">
-         <property name="text">
-          <string>Reload</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
         <widget class="QLabel" name="searchLB">
@@ -65,8 +30,35 @@
        </item>
        <item>
         <widget class="QLineEdit" name="searchLE">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="clearButtonEnabled">
           <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="KSeparator" name="kseparator"/>
+       </item>
+       <item>
+        <widget class="QPushButton" name="newPB">
+         <property name="text">
+          <string>&amp;New</string>
+         </property>
+         <property name="icon">
+          <iconset theme="document-new">
+           <normaloff>.</normaloff>.</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="reloadPB">
+         <property name="text">
+          <string>Reload</string>
          </property>
         </widget>
        </item>
@@ -119,6 +111,11 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>KSeparator</class>
+   <extends>QFrame</extends>
+   <header>kseparator.h</header>
+  </customwidget>
   <customwidget>
    <class>ItemsTreeView</class>
    <extends>QTreeView</extends>
