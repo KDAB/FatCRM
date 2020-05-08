@@ -160,10 +160,14 @@ bool OpportunityFilterProxyModel::filterAcceptsRow(int row, const QModelIndex &p
         }
     }
 
-    const bool isClosed = opportunity.salesStage().contains(QLatin1String("Closed"));
-    if (!d->settings.showClosed() && isClosed)
+    const auto salesStage = opportunity.salesStage();
+    const bool isClosedWon = salesStage.contains(QLatin1String("Closed Won"));
+    const bool isClosedLost = salesStage.contains(QLatin1String("Closed Lost"));
+    if (!d->settings.showClosedWon() && isClosedWon)
         return false;
-    if (!d->settings.showOpen() && !isClosed)
+    if (!d->settings.showClosedLost() && isClosedLost)
+        return false;
+    if (!d->settings.showOpen() && !isClosedWon && !isClosedLost)
         return false;
     if (d->settings.maxDate().isValid() && (!opportunity.nextCallDate().isValid()
                                  || opportunity.nextCallDate() > d->settings.maxDate()))
