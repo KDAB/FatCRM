@@ -59,7 +59,6 @@ endif()
 
 find_package(KF5Contacts ${KCONTACTS_LIB_VERSION} CONFIG REQUIRED)
 find_package(KF5AkonadiContact CONFIG REQUIRED)
-find_package(KF5GuiAddons CONFIG REQUIRED)
 find_package(KF5I18n CONFIG REQUIRED)
 find_package(KF5KIO CONFIG REQUIRED)
 find_package(KF5IconThemes CONFIG REQUIRED)
