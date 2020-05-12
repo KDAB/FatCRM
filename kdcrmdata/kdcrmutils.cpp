@@ -137,8 +137,7 @@ QString KDCRMUtils::limitString(const QString &str, int wantedParagraphs)
 
             if (!row.isEmpty()) {
                 ++collectedParagraphs;
-                output.append(QLatin1Char(' '));
-                output.append(row.trimmed());
+                output.append(row);
             }
         }
         return output;
