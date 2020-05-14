@@ -12,31 +12,63 @@ include_directories(
   widgets
 )
 
-set(app_SRCS
+ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
+
+# Generate DBus interface in order to find out the config of the sugar resource (for the web link)
+# TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
+kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
+qt5_add_dbus_interface(app_SRCS
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
+)
+
+qt5_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemtransferinterface.h org.kde.Akonadi.SugarCRM.ItemTransfer.xml)
+qt5_add_dbus_interface(app_SRCS
+  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemTransfer.xml sugarresourceitemtransfer SugarItemTransfer
+)
+
+add_library(fatcrmprivate
   app/clientsettings.cpp
   app/mainwindow.cpp
+  app/mainwindow.ui
   details/accountdetails.cpp
+  details/accountdetails.ui
   details/campaigndetails.cpp
+  details/campaigndetails.ui
   details/contactdetails.cpp
+  details/contactdetails.ui
   details/details.cpp
   details/leaddetails.cpp
+  details/leaddetails.ui
   details/opportunitydetails.cpp
+  details/opportunitydetails.ui
   dialogs/aboutdialog.cpp
+  dialogs/aboutdialog.ui
   dialogs/accountimportpage.cpp
+  dialogs/accountimportpage.ui
   dialogs/addsearchdialog.cpp
+  dialogs/addsearchdialog.ui
   dialogs/configurationdialog.cpp
+  dialogs/configurationdialog.ui
   dialogs/contactsimportpage.cpp
+  dialogs/contactsimportpage.ui
   dialogs/contactsimportwizard.cpp
   dialogs/documentswindow.cpp
+  dialogs/documentswindow.ui
   dialogs/editlistdialog.cpp
   dialogs/fatcrminputdialog.cpp
   dialogs/itemeditwidgetbase.cpp
   dialogs/noteswindow.cpp
+  dialogs/noteswindow.ui
   dialogs/resourceconfigdialog.cpp
+  dialogs/resourceconfigdialog.ui
   dialogs/searchesdialog.cpp
+  dialogs/searchesdialog.ui
   dialogs/selectitemdialog.cpp
+  dialogs/selectitemdialog.ui
   dialogs/simpleitemeditwidget.cpp
+  dialogs/simpleitemeditwidget.ui
   dialogs/tabbeditemeditwidget.cpp
+  dialogs/tabbeditemeditwidget.ui
   fatcrm_client_debug.cpp
   models/filterproxymodel.cpp
   models/itemstreemodel.cpp
@@ -49,8 +81,11 @@ set(app_SRCS
   pages/leadspage.cpp
   pages/opportunitiespage.cpp
   pages/opportunityfilterwidget.cpp
+  pages/opportunityfilterwidget.ui
   pages/page.cpp
+  pages/page.ui
   pages/reportpage.cpp
+  pages/reportpage.ui
   reports/createlinksproxymodel.cpp
   reports/rearrangecolumnsproxymodel.cpp
   reports/reportgenerator.cpp
@@ -79,56 +114,15 @@ set(app_SRCS
   utilities/referenceddata.cpp
   views/itemstreeview.cpp
   widgets/associateddatawidget.cpp
+  widgets/associateddatawidget.ui
   widgets/betterplaintextedit.cpp
   widgets/nullabledatecombobox.cpp
-)
-ecm_qt_declare_logging_category(app_SRCS HEADER fatcrm_client_debug.h IDENTIFIER FATCRM_CLIENT_LOG CATEGORY_NAME log_fatcrm_client)
 
-qt5_wrap_ui(app_SRCS
-  app/mainwindow.ui
-  details/accountdetails.ui
-  details/campaigndetails.ui
-  details/contactdetails.ui
-  details/leaddetails.ui
-  details/opportunitydetails.ui
-  dialogs/aboutdialog.ui
-  dialogs/accountimportpage.ui
-  dialogs/addsearchdialog.ui
-  dialogs/configurationdialog.ui
-  dialogs/contactsimportpage.ui
-  dialogs/documentswindow.ui
-  dialogs/noteswindow.ui
-  dialogs/resourceconfigdialog.ui
-  dialogs/searchesdialog.ui
-  dialogs/selectitemdialog.ui
-  dialogs/simpleitemeditwidget.ui
-  dialogs/tabbeditemeditwidget.ui
-  pages/opportunityfilterwidget.ui
-  pages/page.ui
-  pages/reportpage.ui
-  widgets/associateddatawidget.ui
-)
-
-#qt5_add_resources(app_SRCS "${CMAKE_SOURCE_DIR}/images/hi*-apps-fatcrm.png")
-
-qt5_add_resources(app_SRCS
   resources.qrc
   ../data/flags/flags.qrc
-)
 
-# Generate DBus interface in order to find out the config of the sugar resource (for the web link)
-# TODO generalize to salesforce somehow one day (maybe a folder attribute instead?)
-kcfg_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/sugarcrmresource.kcfg org.kde.Akonadi.SugarCRM.Settings)
-qt5_add_dbus_interface(app_SRCS
-  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.Settings.xml sugarresourcesettings SugarSettings
+  ${app_SRCS}
 )
-
-qt5_generate_dbus_interface(${CMAKE_CURRENT_SOURCE_DIR}/../../resources/sugarcrm/itemtransferinterface.h org.kde.Akonadi.SugarCRM.ItemTransfer.xml)
-qt5_add_dbus_interface(app_SRCS
-  ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SugarCRM.ItemTransfer.xml sugarresourceitemtransfer SugarItemTransfer
-)
-
-add_library(fatcrmprivate ${app_SRCS})
 generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
   kdcrmdata
@@ -155,7 +149,6 @@ endif()
 
 ecm_add_app_icon(fatcrm_app_icon_SRCS ICONS ${fatcrm_ICONS})
 add_executable(fatcrm ${fatcrm_app_icon_SRCS} app/main.cpp)
-
 target_link_libraries(fatcrm
   fatcrmprivate
 )
