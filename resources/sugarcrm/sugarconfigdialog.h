@@ -23,9 +23,10 @@
 #ifndef SUGARCONFIGDIALOG_H
 #define SUGARCONFIGDIALOG_H
 
-#include "ui_sugarconfigdialog.h"
+#include <QDialog>
 
 class PasswordHandler;
+class Ui_SugarConfigDialog;
 
 class SugarConfigDialog : public QDialog
 {
@@ -42,7 +43,7 @@ public:
     int intervalCheckTime() const;
 
 private:
-    Ui_SugarConfigDialog mUi;
+    Ui_SugarConfigDialog *mUi;
 };
 
 #endif

@@ -27,7 +27,6 @@
 #include "enums.h"
 #include "filterproxymodel.h"
 #include "reportgenerator.h"
-#include "ui_page.h"
 
 #include "kdcrmdata/enumdefinitions.h"
 
@@ -43,6 +42,7 @@ class Report;
 namespace Akonadi
 {
 class ChangeRecorder;
+class EntityTreeView;
 class Item;
 }
 
@@ -53,7 +53,9 @@ class ItemsTreeModel;
 class KJob;
 class KJobProgressTracker;
 class LinkedItemsRepository;
+class QMenu;
 class QPoint;
+class Ui_Page;
 
 class FATCRMPRIVATE_EXPORT Page : public QWidget
 {
@@ -75,7 +77,7 @@ public:
     Q_REQUIRED_RESULT std::unique_ptr<KDReports::Report> generateReport(bool warnOnLongReport = true) const;
     void createNewItem(const QMap<QString, QString> &data = QMap<QString, QString>());
     void setSearchText(const QString &searchText);
-    QString searchText() const { return mUi.searchLE->text(); }
+    QString searchText() const;
 
 Q_SIGNALS:
     void modelCreated(ItemsTreeModel *model);
@@ -99,9 +101,8 @@ protected:
     virtual void handleItemChanged(const Akonadi::Item &item);
     virtual QMenu *createContextMenu(const QPoint &pos);
 
-    inline Akonadi::EntityTreeView *treeView() {
-        return mUi.treeView;
-    }
+    Akonadi::EntityTreeView *treeView() const;
+
     ItemsTreeModel *itemsTreeModel() const {
         return mItemsTreeModel;
     }
@@ -143,13 +144,14 @@ private:
     ItemEditWidgetBase *openedWidgetForItem(Akonadi::Item::Id id);
 
 private:
+    Ui_Page *mUi = nullptr;
+
     QString mMimeType;
     DetailsType mType;
     FilterProxyModel *mFilter;
     Akonadi::ChangeRecorder *mChangeRecorder;
     ItemsTreeModel *mItemsTreeModel;
     Akonadi::Collection mCollection;
-    Ui_page mUi;
     QByteArray mResourceIdentifier;
 
     // Things we keep around so we can set them on the details dialog when creating it

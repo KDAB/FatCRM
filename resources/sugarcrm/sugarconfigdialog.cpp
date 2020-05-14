@@ -21,50 +21,53 @@
 */
 
 #include "sugarconfigdialog.h"
+#include "ui_sugarconfigdialog.h"
 
 #include "passwordhandler.h"
 #include "settings.h"
 
 SugarConfigDialog::SugarConfigDialog(PasswordHandler *passwordHandler, const QString &accountName, QWidget *parent)
     : QDialog(parent)
+    , mUi(new Ui_SugarConfigDialog)
 {
-    mUi.setupUi(this);
+    mUi->setupUi(this);
 
-    mUi.accountName->setText(accountName);
-    mUi.host->setText(Settings::host());
-    mUi.user->setText(Settings::user());
-    mUi.password->setText(passwordHandler->password());
+    mUi->accountName->setText(accountName);
+    mUi->host->setText(Settings::host());
+    mUi->user->setText(Settings::user());
+    mUi->password->setText(passwordHandler->password());
 
-    mUi.checkIntervalSpinbox->setValue(Settings::intervalCheckTime());
+    mUi->checkIntervalSpinbox->setValue(Settings::intervalCheckTime());
 }
 
 SugarConfigDialog::~SugarConfigDialog()
 {
+    delete mUi;
 }
 
 QString SugarConfigDialog::accountName() const
 {
-    return mUi.accountName->text();
+    return mUi->accountName->text();
 }
 
 QString SugarConfigDialog::host() const
 {
-    return mUi.host->text();
+    return mUi->host->text();
 }
 
 QString SugarConfigDialog::user() const
 {
-    return mUi.user->text();
+    return mUi->user->text();
 }
 
 QString SugarConfigDialog::password() const
 {
-    return mUi.password->text();
+    return mUi->password->text();
 }
 
 int SugarConfigDialog::intervalCheckTime() const
 {
-    const int val = mUi.checkIntervalSpinbox->value();
-    return val == mUi.checkIntervalSpinbox->minimum() ? -1 : val;
+    const int val = mUi->checkIntervalSpinbox->value();
+    return val == mUi->checkIntervalSpinbox->minimum() ? -1 : val;
 }
 

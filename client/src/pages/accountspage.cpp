@@ -29,6 +29,7 @@
 
 #include "kdcrmdata/sugaraccount.h"
 
+#include <AkonadiWidgets/EntityTreeView>
 #include <KLocalizedString>
 #include <QMenu>
 

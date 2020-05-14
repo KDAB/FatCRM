@@ -21,6 +21,7 @@
 */
 
 #include "page.h"
+#include "ui_page.h"
 
 #include "accountrepository.h"
 #include "clientsettings.h"
@@ -60,6 +61,7 @@
 #include <AkonadiCore/ItemModifyJob>
 #include <AkonadiCore/EntityAnnotationsAttribute>
 #include <AkonadiCore/ServerManager>
+#include <AkonadiWidgets/EntityTreeView>
 
 #include <KContacts/Address>
 #include <KContacts/Addressee>
@@ -136,6 +138,7 @@ Q_DECLARE_METATYPE(ModifierField);
 
 Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     : QWidget(parent),
+      mUi(new Ui_Page),
       mMimeType(mimeType),
       mType(type),
       mFilter(nullptr),
@@ -148,14 +151,15 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
       mInitialLoadingDone(false),
       mJobProgressTracker(nullptr)
 {
-    mUi.setupUi(this);
-    mUi.treeView->setViewName(typeToString(type));
-    mUi.treeView->setAlternatingRowColors(true);
+    mUi->setupUi(this);
+    mUi->treeView->setViewName(typeToString(type));
+    mUi->treeView->setAlternatingRowColors(true);
     initialize();
 }
 
 Page::~Page()
 {
+    delete mUi;
 }
 
 void Page::openWidget(const QString &id)
@@ -201,7 +205,7 @@ void Page::setFilter(FilterProxyModel *filter)
     connect(mFilter, &QAbstractItemModel::rowsInserted, this, &Page::slotVisibleRowCountChanged);
     connect(mFilter, &QAbstractItemModel::rowsRemoved, this, &Page::slotVisibleRowCountChanged);
 
-    connect(mUi.searchLE, &QLineEdit::textChanged,
+    connect(mUi->searchLE, &QLineEdit::textChanged,
             mFilter, &FilterProxyModel::setFilterString);
 }
 
@@ -216,13 +220,13 @@ void Page::slotResourceSelectionChanged(const QByteArray &identifier)
     // cleanup from last time (useful when switching resources)
     ModelRepository::instance()->removeModel(mType);
     mFilter->setSourceModel(nullptr);
-    mUi.treeView->setModel(nullptr);
+    mUi->treeView->setModel(nullptr);
 
     delete mItemsTreeModel;
     mItemsTreeModel = nullptr;
 
     retrieveResourceUrl();
-    mUi.reloadPB->setEnabled(false);
+    mUi->reloadPB->setEnabled(false);
 
     mInitialLoadingDone = false;
 
@@ -255,8 +259,8 @@ void Page::setCollection(const Collection &collection)
     mCollection = collection;
 
     if (mCollection.isValid()) {
-        mUi.newPB->setEnabled(true);
-        mUi.reloadPB->setEnabled(true);
+        mUi->newPB->setEnabled(true);
+        mUi->reloadPB->setEnabled(true);
 
         mChangeRecorder = new ChangeRecorder(this);
         mChangeRecorder->setCollectionMonitored(mCollection, true);
@@ -277,8 +281,8 @@ void Page::setCollection(const Collection &collection)
 
         setupModel();
     } else {
-        mUi.newPB->setEnabled(false);
-        mUi.reloadPB->setEnabled(false);
+        mUi->newPB->setEnabled(false);
+        mUi->reloadPB->setEnabled(false);
     }
 }
 
@@ -342,7 +346,7 @@ void Page::slotDeleteItems()
     Item::List items;
     items.resize(selectedIndexes.count());
     std::transform(selectedIndexes.begin(), selectedIndexes.end(), items.begin(), [this](const QModelIndex &index) {
-        return mUi.treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+        return mUi->treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
     });
 
     const Item firstItem = items.at(0);
@@ -397,8 +401,8 @@ void Page::slotDeleteItems()
 
 void Page::slotVisibleRowCountChanged()
 {
-    if (mUi.treeView->model()) {
-        mUi.itemCountLB->setText(QStringLiteral("%1 %2").arg(mUi.treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
+    if (mUi->treeView->model()) {
+        mUi->itemCountLB->setText(QStringLiteral("%1 %2").arg(mUi->treeView->model()->rowCount()).arg(typeToTranslatedString(mType)));
     }
 }
 
@@ -423,8 +427,8 @@ void Page::slotCheckCollectionPopulated(Akonadi::Collection::Id id)
     if (done) {
         //qCDebug(FATCRM_CLIENT_LOG) << "Finished loading" << typeToString(mType);
         // Select the first row (historic reason: embedded details widget)
-        if (!mUi.treeView->currentIndex().isValid()) {
-            mUi.treeView->setCurrentIndex(mUi.treeView->model()->index(0, 0));
+        if (!mUi->treeView->currentIndex().isValid()) {
+            mUi->treeView->setCurrentIndex(mUi->treeView->model()->index(0, 0));
         }
         mInitialLoadingDone = true;
         // Move to the next model
@@ -444,23 +448,23 @@ void Page::slotRowsAboutToBeRemoved(const QModelIndex &, int start, int end)
 
 void Page::initialize()
 {
-    connect(mUi.treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
-    connect(mUi.treeView, &ItemsTreeView::returnPressed, this, &Page::slotItemDoubleClicked);
-    connect(mUi.treeView, &QWidget::customContextMenuRequested, this, &Page::slotItemContextMenuRequested);
+    connect(mUi->treeView, SIGNAL(doubleClicked(Akonadi::Item)), this, SLOT(slotItemDoubleClicked(Akonadi::Item)));
+    connect(mUi->treeView, &ItemsTreeView::returnPressed, this, &Page::slotItemDoubleClicked);
+    connect(mUi->treeView, &QWidget::customContextMenuRequested, this, &Page::slotItemContextMenuRequested);
 
-    const QIcon icon = (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, mUi.reloadPB) : QIcon());
+    const QIcon icon = (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, mUi->reloadPB) : QIcon());
     if (!icon.isNull()) {
-        mUi.reloadPB->setIcon(icon);
+        mUi->reloadPB->setIcon(icon);
     }
-    mUi.reloadPB->setEnabled(false);
+    mUi->reloadPB->setEnabled(false);
 
     // Reloading is already available in the toolbar (and using F5 for just one collection)
     // so unclutter the GUI a bit
-    mUi.reloadPB->hide();
+    mUi->reloadPB->hide();
 
-    connect(mUi.newPB, &QAbstractButton::clicked,
+    connect(mUi->newPB, &QAbstractButton::clicked,
             this, &Page::slotNewClicked);
-    connect(mUi.reloadPB, &QAbstractButton::clicked,
+    connect(mUi->reloadPB, &QAbstractButton::clicked,
             this, &Page::slotReloadCollection);
 
     QShortcut* reloadShortcut = new QShortcut(QKeySequence::Refresh, this);
@@ -471,7 +475,7 @@ void Page::slotItemContextMenuRequested(const QPoint &pos)
 {
     QMenu *menu = createContextMenu(pos);
     if (menu) {
-        menu->exec(mUi.treeView->mapToGlobal(pos));
+        menu->exec(mUi->treeView->mapToGlobal(pos));
         menu->deleteLater();
     }
 }
@@ -550,6 +554,11 @@ QMenu *Page::createContextMenu(const QPoint &)
     return contextMenu;
 }
 
+EntityTreeView *Page::treeView() const
+{
+    return mUi->treeView;
+}
+
 void Page::slotOpenUrl()
 {
     QDesktopServices::openUrl(mCurrentItemUrl);
@@ -577,7 +586,7 @@ void Page::setupModel()
 
     mFilter->setSourceModel(mItemsTreeModel);
     mFilter->setLinkedItemsRepository(mLinkedItemsRepository);
-    mUi.treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
+    mUi->treeView->setModels(mFilter, mItemsTreeModel, mItemsTreeModel->defaultVisibleColumns());
 
     ModelRepository::instance()->setModel(mType, mItemsTreeModel);
 
@@ -586,7 +595,7 @@ void Page::setupModel()
 
 void Page::insertFilterWidget(QWidget *widget)
 {
-    mUi.verticalLayout->insertWidget(0, widget);
+    mUi->verticalLayout->insertWidget(0, widget);
 }
 
 void Page::createNewItem(const QMap<QString, QString> &data)
@@ -649,7 +658,7 @@ void Page::slotItemSaved()
 
 std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) const
 {
-    QAbstractItemModel *model = mUi.treeView->model();
+    QAbstractItemModel *model = mUi->treeView->model();
     if (!model)
         return {};
 
@@ -669,7 +678,7 @@ std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) c
     }
 
     // Take care of hidden and reordered columns
-    QHeaderView *headerView = mUi.treeView->header();
+    QHeaderView *headerView = mUi->treeView->header();
     QVector<int> sourceColumns;
     sourceColumns.reserve(headerView->count());
     for (int col = 0; col < headerView->count(); ++col) {
@@ -909,7 +918,12 @@ void Page::retrieveResourceUrl()
 
 void Page::setSearchText(const QString &searchText)
 {
-    mUi.searchLE->setText(searchText);
+    mUi->searchLE->setText(searchText);
+}
+
+QString Page::searchText() const
+{
+    return mUi->searchLE->text();
 }
 
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)

@@ -21,6 +21,7 @@
 */
 
 #include "mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include "contactspage.h"
 #include "accountspage.h"
@@ -44,6 +45,7 @@
 #include "resourceconfigdialog.h"
 #include "fatcrm_client_debug.h"
 #include "searchesdialog.h"
+#include "itemstreemodel.h"
 
 #include "kdcrmdata/enumdefinitionattribute.h"
 
@@ -56,8 +58,8 @@
 #include <AkonadiCore/AgentInstanceModel>
 #include <AkonadiCore/AgentManager>
 #include <AkonadiCore/AttributeFactory>
-#include <AkonadiWidgets/ControlGui>
 #include <AkonadiCore/ServerManager>
+#include <AkonadiWidgets/ControlGui>
 using namespace Akonadi;
 
 #include <KAboutData>
@@ -67,6 +69,7 @@ using namespace Akonadi;
 #include <QCloseEvent>
 #include <QComboBox>
 #include <QDockWidget>
+#include <QLabel>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
@@ -75,7 +78,8 @@ using namespace Akonadi;
 #include <QToolBar>
 
 MainWindow::MainWindow(bool displayOverlay)
-    : mProgressBar(nullptr),
+    : mUi(new Ui_MainWindow),
+      mProgressBar(nullptr),
       mProgressBarHideTimer(nullptr),
       mCollectionManager(new CollectionManager(this)),
       mLinkedItemsRepository(new LinkedItemsRepository(mCollectionManager, this)),
@@ -83,7 +87,7 @@ MainWindow::MainWindow(bool displayOverlay)
       mInitialLoadingDone(false),
       mDisplayOverlay(displayOverlay)
 {
-    mUi.setupUi(this);
+    mUi->setupUi(this);
     initialize(displayOverlay);
 
     /*
@@ -107,6 +111,8 @@ MainWindow::~MainWindow()
 {
     ClientSettings::self()->saveWindowSize(QStringLiteral("main"), this);
     delete mResourceDialog;
+
+    delete mUi;
 }
 
 bool MainWindow::eventFilter(QObject *object, QEvent *event)
@@ -210,7 +216,7 @@ void MainWindow::initialize(bool displayOverlay)
 {
     Q_INIT_RESOURCE(resources);
 
-    mLoadingOverlay = new LoadingOverlay(mUi.tabWidget);
+    mLoadingOverlay = new LoadingOverlay(mUi->tabWidget);
     if (!displayOverlay)
         slotHideOverlay();
 
@@ -219,9 +225,9 @@ void MainWindow::initialize(bool displayOverlay)
     createTabs();
     setupActions();
     // initialize view actions
-    mUi.actionSynchronize->setEnabled(false);
-    mUi.actionFullReload->setEnabled(false);
-    mUi.actionOfflineMode->setEnabled(false);
+    mUi->actionSynchronize->setEnabled(false);
+    mUi->actionFullReload->setEnabled(false);
+    mUi->actionOfflineMode->setEnabled(false);
 
     // Displays status of FatCRM initial loading,
     // and then displays status of the resource.
@@ -258,7 +264,7 @@ void MainWindow::createActions()
     // the other menus are handled in Qt Designer
 
     mViewMenu = new QMenu(i18n("&View"), this);
-    menuBar()->insertMenu(mUi.menuSettings->menuAction(), mViewMenu);
+    menuBar()->insertMenu(mUi->menuSettings->menuAction(), mViewMenu);
     QAction *printAction = new QAction(i18n("Print Report..."), this);
     printAction->setShortcut(QKeySequence::Print);
     printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
@@ -276,7 +282,7 @@ void MainWindow::createActions()
     mMainToolBar = addToolBar(i18n("Main ToolBar"));
     mResourceSelector = new QComboBox(this);
     mResourceSelectorAction = mMainToolBar->addWidget(mResourceSelector);
-    mMainToolBar->addAction(mUi.actionSynchronize);
+    mMainToolBar->addAction(mUi->actionSynchronize);
 
     mMainToolBar->addAction(printAction);
 }
@@ -287,20 +293,20 @@ void MainWindow::setupActions()
         (style() != nullptr ? style()->standardIcon(QStyle::SP_BrowserReload, nullptr, nullptr)
          : QIcon());
     if (!reloadIcon.isNull()) {
-        mUi.actionSynchronize->setIcon(reloadIcon);
+        mUi->actionSynchronize->setIcon(reloadIcon);
     }
 
-    connect(mUi.actionCRMAccounts, &QAction::triggered, this, &MainWindow::slotConfigureResources);
-    connect(mUi.actionImportContacts, &QAction::triggered, this, &MainWindow::slotImportContacts);
-    connect(mUi.actionOfflineMode, &QAction::toggled, this, &MainWindow::slotToggleOffline);
-    connect(mUi.actionSynchronize, &QAction::triggered, this, &MainWindow::slotSynchronize);
-    connect(mUi.actionFullReload, &QAction::triggered, this, &MainWindow::slotFullReload);
-    connect(mUi.actionQuit, &QAction::triggered, this, &QWidget::close);
+    connect(mUi->actionCRMAccounts, &QAction::triggered, this, &MainWindow::slotConfigureResources);
+    connect(mUi->actionImportContacts, &QAction::triggered, this, &MainWindow::slotImportContacts);
+    connect(mUi->actionOfflineMode, &QAction::toggled, this, &MainWindow::slotToggleOffline);
+    connect(mUi->actionSynchronize, &QAction::triggered, this, &MainWindow::slotSynchronize);
+    connect(mUi->actionFullReload, &QAction::triggered, this, &MainWindow::slotFullReload);
+    connect(mUi->actionQuit, &QAction::triggered, this, &QWidget::close);
 
-    connect(mUi.actionAboutFatCRM, &QAction::triggered, this, &MainWindow::slotAboutApp);
-    connect(mUi.actionAboutKDAB, &QAction::triggered, this, &MainWindow::slotAboutKDAB);
+    connect(mUi->actionAboutFatCRM, &QAction::triggered, this, &MainWindow::slotAboutApp);
+    connect(mUi->actionAboutKDAB, &QAction::triggered, this, &MainWindow::slotAboutKDAB);
 
-    connect(mUi.actionConfigureFatCRM, &QAction::triggered, this, &MainWindow::slotConfigure);
+    connect(mUi->actionConfigureFatCRM, &QAction::triggered, this, &MainWindow::slotConfigure);
 
     auto *activateNextTabAction = new QAction(tr("Activate Next Tab"), this);
     activateNextTabAction->setShortcut(Qt::CTRL + Qt::Key_PageDown);
@@ -337,9 +343,9 @@ void MainWindow::slotResourceSelectionChanged(int index)
         ClientSettings::self()->setDefaultResourceId(identifier);
         emit resourceSelected(identifier);
         slotResourceOnline(agent, agent.isOnline());
-        mUi.actionSynchronize->setEnabled(true);
-        mUi.actionFullReload->setEnabled(true);
-        mUi.actionOfflineMode->setEnabled(true);
+        mUi->actionSynchronize->setEnabled(true);
+        mUi->actionFullReload->setEnabled(true);
+        mUi->actionOfflineMode->setEnabled(true);
         mResourceDialog->resourceSelectionChanged(agent);
         slotResourceProgress(agent);
         ReferencedData::clearAll();
@@ -348,9 +354,9 @@ void MainWindow::slotResourceSelectionChanged(int index)
         mCollectionManager->setResource(identifier);
         slotShowMessage(i18n("(0/6) Listing folders..."));
     } else {
-        mUi.actionSynchronize->setEnabled(false);
-        mUi.actionFullReload->setEnabled(false);
-        mUi.actionOfflineMode->setEnabled(false);
+        mUi->actionSynchronize->setEnabled(false);
+        mUi->actionFullReload->setEnabled(false);
+        mUi->actionOfflineMode->setEnabled(false);
     }
 }
 
@@ -499,11 +505,11 @@ void MainWindow::createTabs()
 {
     mAccountPage = new AccountsPage(this);
     addPage(mAccountPage);
-    mUi.tabWidget->addTab(mAccountPage, i18n("&Accounts"));
+    mUi->tabWidget->addTab(mAccountPage, i18n("&Accounts"));
 
     mOpportunitiesPage = new OpportunitiesPage(this);
     addPage(mOpportunitiesPage);
-    mUi.tabWidget->addTab(mOpportunitiesPage, i18n("&Opportunities"));
+    mUi->tabWidget->addTab(mOpportunitiesPage, i18n("&Opportunities"));
 
     connect(mAccountPage, &AccountsPage::requestNewOpportunity, mOpportunitiesPage, &OpportunitiesPage::createOpportunity);
     connect(mOpportunitiesPage, &Page::modelCreated, this, &MainWindow::slotOppModelCreated);
@@ -511,26 +517,26 @@ void MainWindow::createTabs()
 #if 0
     Page *page = new LeadsPage(this);
     addPage(page);
-    mUi.tabWidget->addTab(page, i18n("&Leads"));
+    mUi->tabWidget->addTab(page, i18n("&Leads"));
 #endif
 
     mContactsPage = new ContactsPage(this);
     addPage(mContactsPage);
-    mUi.tabWidget->addTab(mContactsPage, i18n("&Contacts"));
+    mUi->tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 
     connect(mContactsPage, &Page::modelCreated, this, &MainWindow::slotContactsModelCreated);
 
 #if 0
     page = new CampaignsPage(this);
     addPage(page);
-    mUi.tabWidget->addTab(page, i18n("&Campaigns"));
+    mUi->tabWidget->addTab(page, i18n("&Campaigns"));
 #endif
 
     mReportPage = new ReportPage(this);
-    mUi.tabWidget->addTab(mReportPage, i18n("&Reports"));
+    mUi->tabWidget->addTab(mReportPage, i18n("&Reports"));
 
     //set Opportunities page as current
-    mUi.tabWidget->setCurrentIndex(1);
+    mUi->tabWidget->setCurrentIndex(1);
 }
 
 void MainWindow::slotConfigureResources()
@@ -598,8 +604,8 @@ void MainWindow::slotResourceOnline(const AgentInstance &resource, bool online)
     const AgentInstance currentAgent = currentResource();
     if (currentAgent.isValid() && currentAgent.identifier() == resource.identifier()) {
         updateWindowTitle(online);
-        mUi.actionOfflineMode->setChecked(!online);
-        mUi.actionImportContacts->setEnabled(online);
+        mUi->actionOfflineMode->setChecked(!online);
+        mUi->actionImportContacts->setEnabled(online);
         emit onlineStatusChanged(online); // update details dialog
         if (online)
             mSyncWarningTimer->start();
@@ -620,7 +626,7 @@ void MainWindow::slotResourceProgress(const AgentInstance &resource)
                 || !resource.isOnline()) {
             mSyncWarningTimer->stop();
             mProgressBar->hide();
-            if (!mUi.actionOfflineMode->isChecked()) {
+            if (!mUi->actionOfflineMode->isChecked()) {
                 slotShowMessage(message);
                 return;
             }
@@ -768,7 +774,7 @@ void MainWindow::slotOpenSearchesDialog()
 
 Page *MainWindow::currentPage() const
 {
-    return mPages.value(mUi.tabWidget->currentIndex());
+    return mPages.value(mUi->tabWidget->currentIndex());
 }
 
 AgentInstance MainWindow::currentResource() const
@@ -861,7 +867,7 @@ bool MainWindow::loadSavedSearch(const QString &searchName)
     qDebug() << "Loading saved search:" << searchName;
 
     // Make sure user is on the Opportunities Page
-    mUi.tabWidget->setCurrentIndex(1);
+    mUi->tabWidget->setCurrentIndex(1);
 
     mLoadedSearchPrefix = ClientSettings::self()->searchPrefixFromName(searchName);
     mOpportunitiesPage->loadSearch(mLoadedSearchPrefix);
@@ -939,10 +945,10 @@ void MainWindow::slotSaveSearchAs()
 
 void MainWindow::slotActivateNextTab()
 {
-    mUi.tabWidget->setCurrentIndex((mUi.tabWidget->currentIndex() + 1) % mUi.tabWidget->count());
+    mUi->tabWidget->setCurrentIndex((mUi->tabWidget->currentIndex() + 1) % mUi->tabWidget->count());
 }
 
 void MainWindow::slotActivatePreviousTab()
 {
-    mUi.tabWidget->setCurrentIndex((mUi.tabWidget->currentIndex() - 1) % mUi.tabWidget->count());
+    mUi->tabWidget->setCurrentIndex((mUi->tabWidget->currentIndex() - 1) % mUi->tabWidget->count());
 }

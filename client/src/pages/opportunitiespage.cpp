@@ -35,8 +35,10 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
+#include <AkonadiWidgets/EntityTreeView>
 #include <KLocalizedString>
 
+#include <QApplication>
 #include <QPainter>
 #include <QStyledItemDelegate>
 #include <QSettings>

@@ -24,7 +24,6 @@
 #define MAINWINDOW_H
 
 #include <AkonadiCore/Collection>
-#include "ui_mainwindow.h"
 #include "enums.h"
 #include "fatcrmprivate_export.h"
 #include "opportunitiespage.h"
@@ -46,6 +45,7 @@ class ReportPage;
 class LoadingOverlay;
 class ContactsPage;
 class AccountsPage;
+class Ui_MainWindow;
 
 namespace Akonadi
 {
@@ -134,11 +134,12 @@ private:
     int resourceIndexFor(const QString &id) const;
     void raiseMainWindowAndDialog(QWidget *dialog);
 
+    Ui_MainWindow *mUi = nullptr;
+
     QList<Page *> mPages;
 
     QComboBox *mResourceSelector = nullptr;
 
-    Ui_MainWindow mUi;
     QMenu *mViewMenu = nullptr;
 
     QLabel *mStatusLabel = nullptr;

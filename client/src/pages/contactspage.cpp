@@ -28,6 +28,8 @@
 #include "linkeditemsrepository.h"
 #include "contactfilterwidget.h"
 
+#include <AkonadiWidgets/EntityTreeView>
+
 #include <KContacts/Address>
 #include <KContacts/Addressee>
 
