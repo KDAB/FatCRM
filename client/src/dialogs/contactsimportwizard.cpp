@@ -48,6 +48,7 @@ ContactsImportWizard::ContactsImportWizard(QWidget *parent)
             this, &ContactsImportWizard::adaptWindowSize);
 
     setWindowTitle(i18n("Import Contacts"));
+    resize(800, 600); // use a sensible size which fits all sub pages
 }
 
 void ContactsImportWizard::setAccountCollection(const Akonadi::Collection &collection)
