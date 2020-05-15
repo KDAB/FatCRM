@@ -112,7 +112,7 @@ void AccountImportPage::fillSimilarAccounts(int row)
         group->addButton(button);
     }
 
-    QPushButton *createButton = new QPushButton(i18n("Create account"), container);
+    auto *createButton = new QPushButton(i18n("Create Account"), container);
     createButton->setProperty("accountRowNumber", row);
     group->addButton(createButton);
     pa.createButton = createButton;
