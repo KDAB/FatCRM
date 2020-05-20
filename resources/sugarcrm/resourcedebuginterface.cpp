@@ -75,24 +75,50 @@ int ResourceDebugInterface::getCount(const QString &module) const
 
     // for notes and emails, use this:
     //const QString query = QString("parent_type=\"Opportunities\"");
+    //const QString query = QString("( emails.parent_type='Opportunities' or emails.parent_type='Accounts' or emails.parent_type='Contacts' ) AND emails.date_modified >= '2015-10-21 09:52:58'");
     const QString query = QString();
     KDSoapGenerated::TNS__Get_entries_count_result response = soap->get_entries_count(sessionId, module, query, 0);
-    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << response.result_count() << "entries";
+    const int totalCount = response.result_count();
+    qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << totalCount << "entries";
 
     // Let's also take a peek at the first entry
     KDSoapGenerated::TNS__Select_fields fields;
     fields.setItems(availableFields(module));
-    const auto listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, {}, 1 /*maxResults*/, 0 /*fetchDeleted*/, false /*favorites*/);
+    const auto listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, {}, 1 /*maxResults*/, 1 /*fetchDeleted*/, false /*favorites*/);
     const QList<KDSoapGenerated::TNS__Entry_value> items = listResponse.entry_list().items();
     if (!items.isEmpty()) {
-        QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
-        Q_FOREACH (const KDSoapGenerated::TNS__Name_value &value, values) {
+        const QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
+        for (const KDSoapGenerated::TNS__Name_value &value : values) {
             qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << value.name() << "=" << value.value();
         }
     } else {
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No items found. lastError=" << soap->lastError();
     }
 
-    return response.result_count();
+#if 0
+    // List all IDs
+    KDSoapGenerated::TNS__Select_fields justIdFields;
+    justIdFields.setItems({"id"});
+    for (int offset = 0 ; offset < totalCount ; offset += 100) {
+        qDebug() << "asking for" << offset << "-" << (offset+100);
+        const auto listAllResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, offset, justIdFields, {}, 100 /*maxResults*/, 0 /*fetchDeleted*/, false /*favorites*/);
+        const QList<KDSoapGenerated::TNS__Entry_value> allItems = listAllResponse.entry_list().items();
+        if (!allItems.isEmpty()) {
+            for (const KDSoapGenerated::TNS__Entry_value& item : allItems) {
+                const QList<KDSoapGenerated::TNS__Name_value> values = item.name_value_list().items();
+                for (const KDSoapGenerated::TNS__Name_value &value : values) {
+                    if (value.name() == "id") {
+                        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << value.name() << "=" << value.value();
+                    }
+                }
+            }
+        } else {
+            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Error listing all IDs. lastError=" << soap->lastError();
+        }
+        break; // OK, I only needed the first 100
+    }
+#endif
+
+    return totalCount;
 }
 

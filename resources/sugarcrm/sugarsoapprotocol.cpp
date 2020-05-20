@@ -149,6 +149,8 @@ int SugarSoapProtocol::listEntries(const ListEntriesScope &scope, Module moduleN
     entriesListResult.nextOffset = entry_result.next_offset();
     entriesListResult.resultCount = entry_result.result_count();
 
+    //qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "got" << entriesListResult.entryList.items().count() << "entries in" << moduleName;
+
     return checkError(soap, "listEntries", errorMessage);
 }
 
