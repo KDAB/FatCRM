@@ -113,6 +113,7 @@ namespace KDCRMFields
     KDCRMDATA_EXPORT QString phoneAssistant();
     KDCRMDATA_EXPORT QString salutation();
     KDCRMDATA_EXPORT QString doNotCall();
+    KDCRMDATA_EXPORT QString invalidEmail();
     KDCRMDATA_EXPORT QString cAcceptStatusFields();
     KDCRMDATA_EXPORT QString mAcceptStatusFields();
     KDCRMDATA_EXPORT QString opportunityRoleFields();

@@ -408,6 +408,7 @@ const QMap<QString, QString>& ModuleHandler::fieldNamesMapping()
         mapping.insert(KDCRMFields::id(), QStringLiteral("id"));
         mapping.insert(KDCRMFields::impressions(), QStringLiteral("impressions"));
         mapping.insert(KDCRMFields::industry(), QStringLiteral("industry"));
+        mapping.insert(KDCRMFields::invalidEmail(), QStringLiteral("invalid_email"));
         mapping.insert(KDCRMFields::lastName(), QStringLiteral("last_name"));
         mapping.insert(KDCRMFields::leadSource(), QStringLiteral("lead_source"));
         mapping.insert(KDCRMFields::leadSourceDescription(), QStringLiteral("lead_source_description"));

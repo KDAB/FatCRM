@@ -44,6 +44,7 @@ public Q_SLOTS:
     Q_SCRIPTABLE QStringList supportedModules() const;
     Q_SCRIPTABLE QStringList availableFields(const QString &module) const;
     Q_SCRIPTABLE int getCount(const QString &module) const;
+    Q_SCRIPTABLE void getEntry(const QString &module, const QString &id) const;
 
 private:
     SugarCRMResource *const mResource;

@@ -407,6 +407,11 @@ QString KDCRMFields::doNotCall()
     return QStringLiteral("do_not_call");
 }
 
+QString KDCRMFields::invalidEmail()
+{
+    return QStringLiteral("invalid_email");
+}
+
 QString KDCRMFields::cAcceptStatusFields()
 {
     return QStringLiteral("cAcceptStatusFields");

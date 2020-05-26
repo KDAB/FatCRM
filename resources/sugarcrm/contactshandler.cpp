@@ -320,6 +320,16 @@ static void setDoNotCall(const QString &value, KContacts::Addressee &addressee)
     addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall"), value);
 }
 
+static QString getInvalidEmail(const KContacts::Addressee &addressee)
+{
+    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail"));
+}
+
+static void setInvalidEmail(const QString &value, KContacts::Addressee &addressee)
+{
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail"), value);
+}
+
 static QString getNote(const KContacts::Addressee &addressee)
 {
     return addressee.note();
@@ -664,6 +674,8 @@ static AccessorHash accessorHash()
                             ContactAccessorPair(getDeleted, setDeleted, QString()));
         accessors.insert(KDCRMFields::doNotCall(),
                             ContactAccessorPair(getDoNotCall, setDoNotCall, QString()));
+        accessors.insert(KDCRMFields::invalidEmail(),
+                            ContactAccessorPair(getInvalidEmail, setInvalidEmail, QString()));
     }
     return accessors;
 }
@@ -820,6 +832,7 @@ QStringList ContactsHandler::supportedCRMFields() const
     ret.append(KDCRMFields::reportsTo());
     ret.append(KDCRMFields::reportsToId());
     ret.append(KDCRMFields::doNotCall());
+    ret.append(KDCRMFields::invalidEmail());
     ret.append(KDCRMFields::description());
     ret.append(KDCRMFields::modifiedByName());
     ret.append(KDCRMFields::dateModified());

@@ -68,6 +68,8 @@ ContactDetails::ContactDetails(QWidget *parent)
     mUi->phone_fax->setObjectName(KDCRMFields::phoneFax());
     mUi->phone_other->setObjectName(KDCRMFields::phoneOther());
     mUi->do_not_call->setObjectName(KDCRMFields::doNotCall());
+    // Proper support for "invalid email" for each email address would require using get_relationships...
+    mUi->invalid_email->setObjectName(KDCRMFields::invalidEmail());
     mUi->birthdate->setObjectName(KDCRMFields::birthdate());
     mUi->assistant->setObjectName(KDCRMFields::assistant());
     mUi->phoneAssistant->setObjectName(KDCRMFields::phoneAssistant());
@@ -256,6 +258,7 @@ QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &a
     data.insert(KDCRMFields::reportsToId(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserId")));
     data.insert(KDCRMFields::reportsTo(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserName")));
     data.insert(KDCRMFields::doNotCall(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall")));
+    data.insert(KDCRMFields::invalidEmail(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail")));
     data.insert(KDCRMFields::description(), addressee.note());
     data.insert(KDCRMFields::modifiedByName(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedByName")));
     data.insert(KDCRMFields::dateModified(), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified")));
@@ -364,6 +367,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), data.value(KDCRMFields::salutation()));
     addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted"), data.value(KDCRMFields::deleted()));
     addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall"), data.value(KDCRMFields::doNotCall()));
+    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail"), data.value(KDCRMFields::invalidEmail()));
 
     item.setMimeType(KContacts::Addressee::mimeType());
     item.setPayload<KContacts::Addressee>(addressee);

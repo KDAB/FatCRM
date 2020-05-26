@@ -64,6 +64,14 @@ QStringList ResourceDebugInterface::availableFields(const QString &module) const
     return ModuleHandler::listAvailableFieldNames(mResource->mSession, module);
 }
 
+
+static void dumpNameValueList(const QList<KDSoapGenerated::TNS__Name_value> &values)
+{
+    for (const KDSoapGenerated::TNS__Name_value &value : values) {
+        qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << value.name() << "=" << value.value();
+    }
+}
+
 int ResourceDebugInterface::getCount(const QString &module) const
 {
     SugarSession *session = mResource->mSession;
@@ -88,12 +96,11 @@ int ResourceDebugInterface::getCount(const QString &module) const
     const QList<KDSoapGenerated::TNS__Entry_value> items = listResponse.entry_list().items();
     if (!items.isEmpty()) {
         const QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
-        for (const KDSoapGenerated::TNS__Name_value &value : values) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << value.name() << "=" << value.value();
-        }
+        dumpNameValueList(values);
     } else {
         qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "No items found. lastError=" << soap->lastError();
     }
+
 
 #if 0
     // List all IDs
@@ -120,5 +127,27 @@ int ResourceDebugInterface::getCount(const QString &module) const
 #endif
 
     return totalCount;
+}
+
+void ResourceDebugInterface::getEntry(const QString &module, const QString &id) const
+{
+    SugarSession *session = mResource->mSession;
+    KDSoapGenerated::Sugarsoap *soap = session->soap();
+    const QString sessionId = session->sessionId();
+    if (sessionId.isEmpty()) {
+        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "No session! Need to login first.";
+    }
+
+    const QString query = QString("%1.id=\"%2\"").arg(module.toLower(), id);
+    KDSoapGenerated::TNS__Select_fields fields;
+    fields.setItems(availableFields(module));
+    const auto listResponse = soap->get_entry_list(sessionId, module, query, QString() /*orderBy*/, 0 /*offset*/, fields, {}, 1 /*maxResults*/, 1 /*fetchDeleted*/, false /*favorites*/);
+    const QList<KDSoapGenerated::TNS__Entry_value> items = listResponse.entry_list().items();
+    if (!items.isEmpty()) {
+        const QList<KDSoapGenerated::TNS__Name_value> values = items.at(0).name_value_list().items();
+        dumpNameValueList(values);
+    } else {
+        qWarning() << "No items found. lastError=" << soap->lastError();
+    }
 }
 
