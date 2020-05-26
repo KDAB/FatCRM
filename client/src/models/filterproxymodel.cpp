@@ -145,6 +145,10 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
             const QString contactId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
             const QString accountId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
             Q_ASSERT(!contactId.isEmpty());
+            if (AccountRepository::instance()->accountById(accountId).accountType() == "Partner") {
+                // Don't delete partners or providers (we don't create opportunities to model our collaboration)
+                return false;
+            }
             static QDate today = QDate::currentDate();
             if ((accountId.isEmpty() ||
                     (d->mLinkedItemsRepository->opportunitiesForAccount(accountId).isEmpty() &&

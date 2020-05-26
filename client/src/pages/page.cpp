@@ -336,18 +336,54 @@ QString Page::reportSubTitle(int count) const
     return i18n("%1: %2 %3", desc, count, itemsType);
 }
 
-void Page::slotDeleteItems()
+void Page::slotAnonymizeItems()
 {
-    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
-    if (selectedIndexes.isEmpty()) { // the action is supposed to be disabled...
+    Item::List items = selectedItems();
+    if (items.isEmpty()) { // the action is supposed to be disabled...
         return;
     }
 
-    Item::List items;
-    items.resize(selectedIndexes.count());
-    std::transform(selectedIndexes.begin(), selectedIndexes.end(), items.begin(), [this](const QModelIndex &index) {
-        return mUi->treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
-    });
+    const Item firstItem = items.at(0);
+    Q_ASSERT(firstItem.hasPayload<KContacts::Addressee>());
+    const auto firstContact = firstItem.payload<KContacts::Addressee>();
+    const QString confirmationStr = i18np("The contact \"%1\" will be anonymized permanently!",
+                                          "%2 contacts will be anonymized permanently!",
+                                          firstContact.fullEmail(), items.count());
+    QMessageBox msgBox;
+    msgBox.setWindowTitle(i18np("Anonymize record", "Anonymize %1 records", items.count()));
+    msgBox.setText(confirmationStr);
+    msgBox.setInformativeText(i18n("Are you sure you want to proceed?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
+    if (msgBox.exec() == QMessageBox::Cancel) {
+        return;
+    }
+
+    for (Item &item : items) {
+        Q_ASSERT(item.hasPayload<KContacts::Addressee>());
+        KContacts::Addressee contact = item.payload<KContacts::Addressee>();
+
+        contact.setName("Anonymized");
+        contact.setFamilyName("GDPR");
+        contact.setEmails({});
+        contact.setPhoneNumbers({});
+        const auto addresses = contact.addresses();
+        for (const KContacts::Address &address : addresses) {
+            contact.removeAddress(address);
+        }
+        Q_ASSERT(contact.addresses().isEmpty());
+
+        item.setPayload(contact);
+    }
+    modifyItems(items, i18n("Anonymizing"));
+}
+
+void Page::slotDeleteItems()
+{
+    const Item::List items = selectedItems();
+    if (items.isEmpty()) { // the action is supposed to be disabled...
+        return;
+    }
 
     const Item firstItem = items.at(0);
     QString deleStr = i18np("The selected item will be deleted permanently!",
@@ -386,11 +422,9 @@ void Page::slotDeleteItems()
     msgBox.setWindowTitle(i18np("Delete record", "Delete %1 records", items.count()));
     msgBox.setText(deleStr);
     msgBox.setInformativeText(i18n("Are you sure you want to proceed?"));
-    msgBox.setStandardButtons(QMessageBox::Yes |
-                              QMessageBox::Cancel);
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
     msgBox.setDefaultButton(QMessageBox::Cancel);
-    int ret = msgBox.exec();
-    if (ret == QMessageBox::Cancel) {
+    if (msgBox.exec() == QMessageBox::Cancel) {
         return;
     }
 
@@ -543,6 +577,9 @@ QMenu *Page::createContextMenu(const QPoint &)
     }
 
     if (!selectedIndexes.isEmpty()) {
+        if (mType == DetailsType::Contact) {
+            contextMenu->addAction(QIcon::fromTheme("edit-rename"), i18n("Anonymize..."), this, &Page::slotAnonymizeItems);
+        }
         contextMenu->addAction(QIcon::fromTheme("list-remove"), i18n("Delete..."), this, &Page::slotDeleteItems);
     }
 
@@ -764,6 +801,17 @@ ItemEditWidgetBase *Page::openedWidgetForItem(Item::Id id)
     return *it;
 }
 
+Item::List Page::selectedItems() const
+{
+    Item::List items;
+    const QModelIndexList selectedIndexes = treeView()->selectionModel()->selectedRows();
+    items.resize(selectedIndexes.count());
+    std::transform(selectedIndexes.begin(), selectedIndexes.end(), items.begin(), [this](const QModelIndex &index) {
+        return mUi->treeView->model()->data(index, EntityTreeModel::ItemRole).value<Item>();
+    });
+    return items;
+}
+
 void Page::slotUnregisterItemEditWidget()
 {
     auto *widget = qobject_cast<ItemEditWidgetBase*>(sender());
@@ -871,7 +919,11 @@ void Page::slotChangeFields()
 
         modifiedItems << item;
     }
+    modifyItems(modifiedItems, dialogTitle);
+}
 
+void Page::modifyItems(const QVector<Item> &modifiedItems, const QString &dialogTitle)
+{
     mJobProgressTracker = new KJobProgressTracker(this, this);
     mJobProgressTracker->setCaption(dialogTitle);
     mJobProgressTracker->setLabel(i18n("Please wait..."));

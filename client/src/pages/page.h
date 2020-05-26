@@ -114,6 +114,7 @@ protected:
 
 private Q_SLOTS:
     void slotNewClicked();
+    void slotAnonymizeItems();
     void slotDeleteItems();
     void slotVisibleRowCountChanged();
     void slotRowsInserted(const QModelIndex &, int start, int end);
@@ -142,6 +143,9 @@ private:
     enum ItemEditWidgetType { Simple, TabWidget };
     ItemEditWidgetBase *createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget = false);
     ItemEditWidgetBase *openedWidgetForItem(Akonadi::Item::Id id);
+    void modifyItems(const QVector<Akonadi::Item> &modifiedItems, const QString &dialogTitle);
+
+    Akonadi::Item::List selectedItems() const;
 
 private:
     Ui_Page *mUi = nullptr;
