@@ -348,7 +348,7 @@ void Page::slotAnonymizeItems()
     const auto firstContact = firstItem.payload<KContacts::Addressee>();
     const QString confirmationStr = i18np("The contact \"%1\" will be anonymized permanently!",
                                           "%2 contacts will be anonymized permanently!",
-                                          firstContact.fullEmail(), items.count());
+                                          firstContact.assembledName(), items.count());
     QMessageBox msgBox;
     msgBox.setWindowTitle(i18np("Anonymize record", "Anonymize %1 records", items.count()));
     msgBox.setText(confirmationStr);
@@ -363,15 +363,16 @@ void Page::slotAnonymizeItems()
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         KContacts::Addressee contact = item.payload<KContacts::Addressee>();
 
-        contact.setName("Anonymized");
+        contact.setGivenName("Anonymized");
         contact.setFamilyName("GDPR");
-        contact.setEmails({});
-        contact.setPhoneNumbers({});
-        const auto addresses = contact.addresses();
-        for (const KContacts::Address &address : addresses) {
-            contact.removeAddress(address);
+        if (!contact.emails().isEmpty()) {
+            // Sugar doesn't let us remove all emails, email1 reappears.
+            // So let's set a fake one
+            contact.setEmails({QStringLiteral("anonymized@example.org")});
         }
-        Q_ASSERT(contact.addresses().isEmpty());
+        contact.setPhoneNumbers({});
+        // Keep the address, it's useful especially for the country,
+        // and it's not tied to an individual anymore (those are office addresses)
 
         item.setPayload(contact);
     }
