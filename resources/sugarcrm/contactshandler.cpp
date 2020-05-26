@@ -854,7 +854,8 @@ int ContactsHandler::expectedContentsVersion() const
     // version 1 = decodeXML/encodeXML added to solve special chars
     // version 2 = support for custom fields added
     // version 3 = changed custom fields storage names
-    return 3;
+    // version 4 = added support for invalid_email
+    return 4;
 }
 
 Akonadi::Item ContactsHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)
