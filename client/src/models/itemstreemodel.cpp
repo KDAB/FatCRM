@@ -46,6 +46,7 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
+#include <QFont>
 #include <QIcon>
 #include <KColorScheme>
 #include <KColorUtils>
@@ -259,23 +260,24 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
  */
 QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) const
 {
-    // avoid calling item.payload() for all other roles
-    if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::DecorationRole) {
-        if (role == Qt::DecorationRole) {
-            switch (columnTypes().at(column)) {
-            case Country: {
-                const QString country = entityData(item, column, Qt::DisplayRole).toString();
-                const QString countryCode = countryNameTo2DigitCode(country);
-                if (countryCode.isEmpty())
-                    return {};
-
-                return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
-            }
-            default:
+    switch (role) {
+    case Qt::DecorationRole:
+        switch (columnTypes().at(column)) {
+        case Country: {
+            const QString country = entityData(item, column, Qt::DisplayRole).toString();
+            const QString countryCode = countryNameTo2DigitCode(country);
+            if (countryCode.isEmpty())
                 return {};
-            }
-        }
 
+            return QIcon(QStringLiteral(":/flags/%1.svg").arg(countryCode));
+        }
+        default:
+            return {};
+        }
+        break;
+
+    case Qt::DisplayRole:
+    case Qt::EditRole:
         switch (mType) {
         case DetailsType::Account:
             return accountData(item, column, role);
@@ -288,9 +290,10 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
         case DetailsType::Opportunity:
             return opportunityData(item, column, role);
         }
-    } else if (role == Qt::BackgroundRole) {
-        const auto columnType = columnTypes().at(column);
-        switch (columnType) {
+        break;
+
+    case Qt::BackgroundRole:
+        switch (columnTypes().at(column)) {
         case NextStepDate: {
             auto color = d->mIdToBackgroundColorsMap.value(item.id()).nextStepDateBackground;
             return color.isValid() ? color : QVariant();
@@ -302,7 +305,9 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
         default:
             return {};
         }
-    } else if (role == Qt::ToolTipRole) {
+        break;
+
+    case Qt::ToolTipRole:
         if (ClientSettings::self()->showToolTips()) {
             if (mType == DetailsType::Account) {
                 return accountToolTip(item);
@@ -311,8 +316,17 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
             }
         }
         return QVariant();
-    } else if (mType == DetailsType::Opportunity && role == Qt::FontRole) {
-        return opportunityData(item, column, role);
+
+    case Qt::FontRole:
+        if (mType == DetailsType::Opportunity) {
+            return opportunityData(item, column, role);
+        } else if (mType == DetailsType::Contact) {
+            return contactData(item, column, role);
+        }
+        break;
+
+    default:
+        break;
     }
 
     return EntityTreeModel::entityData(item, column, role);
@@ -577,6 +591,7 @@ QVariant ItemsTreeModel::campaignData(const Item &item, int column, int role) co
 
 /**
  * Return the data. KContacts::Addressee type - ref: Contacts
+ * Only called for DisplayRole, EditRole and FontRole
  */
 QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) const
 {
@@ -643,6 +658,20 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
         }
     }
 
+    if (role == Qt::FontRole) {
+        switch (columnTypes().at(column)) {
+        case PreferredEmail:
+            if (addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail")) == QLatin1String("1")) {
+                QFont f;
+                f.setStrikeOut(true);
+                return f;
+            }
+            break;
+        default:
+            break;
+        }
+    }
+
     return QVariant();
 }
 
@@ -684,6 +713,7 @@ QVariant ItemsTreeModel::leadData(const Item &item, int column, int role) const
 
 /**
  * Return the data. SugarOpportunity type
+ * Only called for DisplayRole, EditRole and FontRole
  */
 QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role) const
 {
