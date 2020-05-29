@@ -13,7 +13,7 @@
 include(FindPackageHandleStandardArgs)
 
 find_library(KDSoap_LIBRARIES
-  NAMES KDSoap kdsoap kdsoapd kdsoap1 kdsoap1d
+  NAMES KDSoap kdsoap kdsoapd kdsoap1 kdsoap1d NAMES_PER_DIR
   PATH_SUFFIXES lib bin
   HINTS ENV KDSOAPDIR
 )
