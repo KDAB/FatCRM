@@ -53,7 +53,6 @@
 #include <KIconLoader>
 #include <KLocalizedString>
 #include <QMetaEnum>
-#include <QFont>
 #include <QElapsedTimer>
 #include <QHash>
 #include <QScopedValueRollback>
