@@ -138,7 +138,7 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="KTextEdit" name="description">
+       <widget class="CustomTextEdit" name="description">
         <property name="acceptRichText">
          <bool>false</bool>
         </property>
@@ -205,9 +205,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>KTextEdit</class>
+   <class>CustomTextEdit</class>
    <extends>QTextEdit</extends>
-   <header>ktextedit.h</header>
+   <header>simpleitemeditwidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

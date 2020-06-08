@@ -36,15 +36,39 @@
 #include <AkonadiCore/ItemCreateJob>
 #include <AkonadiCore/ItemModifyJob>
 
+#include <KIO/KUriFilterSearchProviderActions>
+
 #include <KEmailAddress>
 #include <KLocalizedString>
 
 #include <QMessageBox>
 #include <QDialogButtonBox>
+#include <QMenu>
 #include <QPushButton>
 #include <QVBoxLayout>
 
 using namespace Akonadi;
+
+CustomTextEdit::CustomTextEdit(QWidget *parent)
+    : KTextEdit(parent)
+    , mWebshortcutMenuManager(new KIO::KUriFilterSearchProviderActions(this))
+{
+}
+
+QMenu *CustomTextEdit::mousePopupMenu()
+{
+    QMenu *popup = KTextEdit::mousePopupMenu();
+    if (popup) {
+        if (textCursor().hasSelection()) {
+            popup->addSeparator();
+            const QString selectedText = textCursor().selectedText();
+            mWebshortcutMenuManager->setSelectedText(selectedText);
+            mWebshortcutMenuManager->addWebShortcutsToMenu(popup);
+        }
+    }
+
+    return popup;
+}
 
 class SimpleItemEditWidget::Private
 {

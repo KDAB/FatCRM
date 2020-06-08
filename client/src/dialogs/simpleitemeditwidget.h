@@ -25,6 +25,8 @@
 
 #include "itemeditwidgetbase.h"
 
+#include <KTextEdit>
+
 #include <QObject>
 
 namespace Akonadi
@@ -33,8 +35,26 @@ class Item;
 class Collection;
 }
 
+namespace KIO
+{
+class KUriFilterSearchProviderActions;
+}
+
 class Details;
 class KJob;
+
+class CustomTextEdit : public KTextEdit
+{
+    Q_OBJECT
+
+public:
+    explicit CustomTextEdit(QWidget *parent = nullptr);
+
+    QMenu *mousePopupMenu() override;
+
+private:
+    KIO::KUriFilterSearchProviderActions *mWebshortcutMenuManager = nullptr;
+};
 
 class SimpleItemEditWidget : public ItemEditWidgetBase
 {
