@@ -116,10 +116,11 @@ public:
     {
         QColor lastModifiedDateBackground;
         QColor nextStepDateBackground;
+        QColor closeDateBackground;
 
         bool containsValidColors() const
         {
-            return lastModifiedDateBackground.isValid() || nextStepDateBackground.isValid();
+            return lastModifiedDateBackground.isValid() || nextStepDateBackground.isValid() || closeDateBackground.isValid();
         }
     };
 
@@ -195,7 +196,8 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
 
     const int lastModifiedDateColumn = d->mColumns.indexOf(LastModifiedDate);
     const int nextStepDateColumn = d->mColumns.indexOf(NextStepDate);
-    if (lastModifiedDateColumn == -1 && nextStepDateColumn == -1)
+    const int closeDateColumn = d->mColumns.indexOf(CloseDate);
+    if (lastModifiedDateColumn == -1 && nextStepDateColumn == -1 && closeDateColumn == -1)
         return; // no backgrounds to show, nothing to do for this model
 
     QElapsedTimer timer;
@@ -205,7 +207,7 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
     // TODO: Take alternating row colors into account? How?
     const QColor background = colors.background().color();
 
-    const auto currentDateTime = QDateTime::currentDateTime();
+    const auto currentDate = QDate::currentDate();
 
     for (int row = first; row <= last; ++row) {
         const Item item = index(row, 0).data(ItemRole).value<Item>();
@@ -215,25 +217,38 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
 
         if (lastModifiedDateColumn != -1) {
             // LastModifiedDate => Indicate whether opps are still 'warm', cf. FATCRM-109
-            const qint64 secsAfterOppIsCold = 90*24*3600;
-            const auto dateTime = entityData(item, lastModifiedDateColumn, Qt::EditRole).toDateTime();
-            const qint64 secsSinceLastModificationDate = ::clamp(dateTime.secsTo(currentDateTime), 0ll, secsAfterOppIsCold);
-            if (secsSinceLastModificationDate != secsAfterOppIsCold) {
-                const qreal amount = (float)qAbs(secsSinceLastModificationDate - secsAfterOppIsCold) / secsAfterOppIsCold;
+            const qint64 daysAfterOppIsCold = 90;
+            const auto date = entityData(item, lastModifiedDateColumn, Qt::EditRole).toDateTime().date();
+            const qint64 daysSinceLastModificationDate = ::clamp(date.daysTo(currentDate), 0ll, daysAfterOppIsCold);
+            if (daysSinceLastModificationDate != daysAfterOppIsCold) {
+                const qreal amount = (float)qAbs(daysSinceLastModificationDate - daysAfterOppIsCold) / daysAfterOppIsCold;
                 bgColors.lastModifiedDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::PositiveBackground).color(), amount);
             }
         }
 
         if (nextStepDateColumn != -1) {
             // NextStepDate => Indicate whether next steps are due
-            const qint64 secsPastNextStepDateWhenHeavilyDue = 90*24*3600;
-            const auto dateTime = entityData(item, nextStepDateColumn, Qt::EditRole).toDateTime();
+            const qint64 daysPastNextStepDateWhenHeavilyDue = 90;
+            const auto date = entityData(item, nextStepDateColumn, Qt::EditRole).toDateTime().date();
             // means: after this time we consider the next step heavily due
-            const qint64 secsPastNextStepDate = ::clamp(dateTime.secsTo(currentDateTime), 0ll, secsPastNextStepDateWhenHeavilyDue);
+            const qint64 daysPastNextStepDate = ::clamp(date.daysTo(currentDate), 0ll, daysPastNextStepDateWhenHeavilyDue);
+            if (daysPastNextStepDate != 0) {
+                // use a min amount of 0.3f since we should definitely notice the indicator when we're past the due date
+                const qreal amount = qMax(0.3f, (float)daysPastNextStepDate / daysPastNextStepDateWhenHeavilyDue);
+                bgColors.nextStepDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::NegativeBackground).color(), amount);
+            }
+        }
+
+        if (closeDateColumn != -1) {
+            // CloseDate => Indicate whether close date is due
+            const qint64 daysPastCloseDateWhenHeavilyDue = 90;
+            const auto date = entityData(item, closeDateColumn, Qt::EditRole).toDate();
+            // means: after this time we consider the close step heavily due
+            const qint64 secsPastNextStepDate = ::clamp(date.daysTo(currentDate), 0ll, daysPastCloseDateWhenHeavilyDue);
             if (secsPastNextStepDate != 0) {
                 // use a min amount of 0.3f since we should definitely notice the indicator when we're past the due date
-                const qreal amount = qMax(0.3f, (float)secsPastNextStepDate / secsPastNextStepDateWhenHeavilyDue);
-                bgColors.nextStepDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::NegativeBackground).color(), amount);
+                const qreal amount = qMax(0.3f, (float)secsPastNextStepDate / daysPastCloseDateWhenHeavilyDue);
+                bgColors.closeDateBackground = KColorUtils::mix(background, colors.background(KColorScheme::NegativeBackground).color(), amount);
             }
         }
 
@@ -249,6 +264,9 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
     }
     if (nextStepDateColumn != -1) {
         emit dataChanged(index(first, nextStepDateColumn), index(last, nextStepDateColumn));
+    }
+    if (closeDateColumn != -1) {
+        emit dataChanged(index(first, closeDateColumn), index(last, closeDateColumn));
     }
 
     qDebug() << "Done updating backgrounds for" << (last-first+1) << "items in" << timer.elapsed() << "ms";
@@ -299,6 +317,10 @@ QVariant ItemsTreeModel::entityData(const Item &item, int column, int role) cons
         }
         case LastModifiedDate: {
             auto color = d->mIdToBackgroundColorsMap.value(item.id()).lastModifiedDateBackground;
+            return color.isValid() ? color : QVariant();
+        }
+        case CloseDate: {
+            auto color = d->mIdToBackgroundColorsMap.value(item.id()).closeDateBackground;
             return color.isValid() ? color : QVariant();
         }
         default:
