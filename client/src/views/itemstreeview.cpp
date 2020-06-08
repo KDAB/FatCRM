@@ -105,8 +105,6 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
     if (!mItemsTreeModel)
         return;
 
-    const int section = header()->logicalIndexAt(point);
-
     QMenu menu;
     for (int i = 0; i < header()->count(); ++i) {
         const QString title = model()->headerData(i, Qt::Horizontal).toString();
@@ -115,16 +113,6 @@ void ItemsTreeView::slotHeaderContextMenu(const QPoint &point)
         showHideAction->setChecked(!header()->isSectionHidden(i));
         showHideAction->setData(i);
         menu.addAction(showHideAction);
-    }
-
-    const ItemsTreeModel::ColumnType columnType = mItemsTreeModel->columnTypes().at(section);
-    switch (columnType) {
-    case ItemsTreeModel::NextStepDate:
-    case ItemsTreeModel::CreationDate:
-    case ItemsTreeModel::LastModifiedDate:
-        qCDebug(FATCRM_CLIENT_LOG) << "Clicked on a date!";
-    default:
-        break;
     }
 
     QAction *selectedAction = menu.exec(header()->mapToGlobal(point));
