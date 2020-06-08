@@ -58,6 +58,7 @@ public:
         Description,
         Phone,
         Email,
+        CloseDate,
         CreationDate,
         CreatedBy,
         CampaignName,

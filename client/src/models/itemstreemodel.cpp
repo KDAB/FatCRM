@@ -775,6 +775,12 @@ QVariant ItemsTreeModel::opportunityData(const Item &item, int column, int role)
         }
         case Description:
             return opportunity.limitedDescription(1);
+        case CloseDate: {
+            const QDate date = KDCRMUtils::dateFromString(opportunity.dateClosed());
+            if (role == Qt::DisplayRole)
+                return KDCRMUtils::formatDate(date);
+            return date; // for sorting
+        }
         case CreationDate: {
             const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
             if (role == Qt::DisplayRole)
@@ -937,12 +943,13 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::Amount,
             ItemsTreeModel::OpportunitySize,
             ItemsTreeModel::Description,
+            ItemsTreeModel::CloseDate,
             ItemsTreeModel::CreationDate,
             ItemsTreeModel::NextStep,
             ItemsTreeModel::NextStepDate,
             ItemsTreeModel::LastModifiedDate,
             ItemsTreeModel::AssignedTo,
-            ItemsTreeModel::OpportunityPriority
+            ItemsTreeModel::OpportunityPriority,
         };
     case DetailsType::Campaign:
         return {
@@ -975,6 +982,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column phone", "Phone");
     case Email:
         return i18nc("@title:column email", "Email");
+    case CloseDate:
+        return i18nc("@title:column date closed", "Close Date");
     case CreationDate:
         return i18nc("@title:column date created", "Creation Date");
     case CreatedBy:
@@ -1101,6 +1110,7 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         columns.removeAll(ItemsTreeModel::City);
         columns.removeAll(ItemsTreeModel::Amount);
         columns.removeAll(ItemsTreeModel::NextStep);
+        columns.removeAll(ItemsTreeModel::CloseDate);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         columns.removeAll(ItemsTreeModel::OpportunitySize);
         break;
