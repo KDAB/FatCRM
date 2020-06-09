@@ -96,7 +96,8 @@ QString countryNameTo2DigitCode(const QString& countryName)
         countryNameTo2DigitCodeMap.unite({
             {"USA", "us"},
             {"UK", "gb"},
-            {"South Korea", "kr"}
+            {"South Korea", "kr"},
+            {"The Netherlands", "nl"}
         });
 
         return countryNameTo2DigitCodeMap;
