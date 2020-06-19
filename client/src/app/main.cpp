@@ -61,6 +61,8 @@ int main(int argc, char **argv)
     parser.addOption(loadSavedSearchOption);
     QCommandLineOption noOverlayOption("nooverlay", i18n("Do not display the overlay during initial data loading"));
     parser.addOption(noOverlayOption);
+    QCommandLineOption GDPROption("gdpr", i18n("Show GDPR filtering widgets"));
+    parser.addOption(GDPROption);
     QCommandLineOption configKeyOption("config-key", i18n("Internal feature: Return the value for setting <key>"), "key");
     parser.addOption(configKeyOption);
     QCommandLineOption configValueOption("set-config-value", i18n("Internal feature: Set the value for setting specified by 'config-key' parameter"), "value");
@@ -105,7 +107,7 @@ int main(int argc, char **argv)
 
     KDCRMUtils::setupIconTheme();
 
-    auto *mainWindow = new MainWindow(!parser.isSet(noOverlayOption));
+    auto *mainWindow = new MainWindow(!parser.isSet(noOverlayOption), parser.isSet(GDPROption));
     mainWindow->setAttribute(Qt::WA_DeleteOnClose);
 
     if (parser.isSet(printToPdfOption) || parser.isSet(loadSavedSearchOption)) {

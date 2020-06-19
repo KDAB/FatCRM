@@ -25,23 +25,32 @@
 
 #include <QVBoxLayout>
 #include <QComboBox>
+#include <QLabel>
+#include <QCoreApplication>
 
-ContactFilterWidget::ContactFilterWidget(FilterProxyModel *proxyModel, QWidget *parent)
+ContactFilterWidget::ContactFilterWidget(FilterProxyModel *proxyModel, bool showGDPR, QWidget *parent)
     : QWidget(parent)
 {
     auto *layout = new QHBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
-    mGDPRComboBox = new QComboBox(this);
-    // Should match FilterProxyModel::Action
-    mGDPRComboBox->addItems({
-                                i18n("All contacts"),
-                                i18n("Candidates for GDPR deletion [no account, created 5+ years ago, no description, no notes]"),
-                                i18n("Candidates for GDPR anonymization [created 5+ years ago, no description, no notes, nothing in the account]")
-                            });
-    layout->addWidget(mGDPRComboBox);
-    connect(mGDPRComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int idx) {
-       proxyModel->setGDPRFilter(static_cast<FilterProxyModel::Action>(idx));
-    });
+    if (showGDPR) {
+        if (proxyModel->hasGDPRProtectedEmails()) {
+            mGDPRComboBox = new QComboBox(this);
+            // Should match FilterProxyModel::Action
+            mGDPRComboBox->addItems({
+                                        i18n("All contacts"),
+                                        i18n("Candidates for GDPR deletion [no account, created 5+ years ago, no description, no notes]"),
+                                        i18n("Candidates for GDPR anonymization [created 5+ years ago, no description, no notes, nothing in the account]")
+                                    });
+            layout->addWidget(mGDPRComboBox);
+            connect(mGDPRComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int idx) {
+                proxyModel->setGDPRFilter(static_cast<FilterProxyModel::Action>(idx));
+            });
+        } else {
+            QLabel *label = new QLabel(i18n("newsletter.txt not found in %1", QCoreApplication::applicationDirPath()), this);
+            layout->addWidget(label);
+        }
+    }
 
     layout->addStretch(1);
 }

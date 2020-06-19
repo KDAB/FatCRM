@@ -102,6 +102,11 @@ void FilterProxyModel::setGDPRFilter(Action action)
     invalidateFilter();
 }
 
+bool FilterProxyModel::hasGDPRProtectedEmails() const
+{
+    return !d->mProtectedEmails.isEmpty();
+}
+
 QString FilterProxyModel::filterString() const
 {
     return d->mFilter;

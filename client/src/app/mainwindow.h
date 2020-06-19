@@ -56,7 +56,7 @@ class FATCRMPRIVATE_EXPORT MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit MainWindow(bool displayOverlay);
+    explicit MainWindow(bool displayOverlay, bool showGDPR);
 
     ~MainWindow() override;
 
@@ -118,10 +118,10 @@ private Q_SLOTS:
     void slotActivatePreviousTab();
 
 private:
-    void initialize(bool displayOverlay);
+    void initialize(bool displayOverlay, bool showGDPR);
     void createActions();
     void setupActions();
-    void createTabs();
+    void createTabs(bool showGDPR);
     void addPage(Page *page);
     void updateWindowTitle(bool online);
 

@@ -32,7 +32,7 @@ class ContactsPage : public Page
 {
     Q_OBJECT
 public:
-    explicit ContactsPage(QWidget *parent = nullptr);
+    explicit ContactsPage(bool showGDPR, QWidget *parent = nullptr);
 
     ~ContactsPage() override;
 

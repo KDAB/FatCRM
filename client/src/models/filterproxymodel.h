@@ -76,6 +76,8 @@ public:
      */
     void setGDPRFilter(Action action);
 
+    bool hasGDPRProtectedEmails() const;
+
 public Q_SLOTS:
     /**
      * Sets the filter that is used to filter for matching items

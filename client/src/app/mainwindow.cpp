@@ -77,7 +77,7 @@ using namespace Akonadi;
 #include <QTimer>
 #include <QToolBar>
 
-MainWindow::MainWindow(bool displayOverlay)
+MainWindow::MainWindow(bool displayOverlay, bool showGDPR)
     : mUi(new Ui_MainWindow),
       mProgressBar(nullptr),
       mProgressBarHideTimer(nullptr),
@@ -88,7 +88,7 @@ MainWindow::MainWindow(bool displayOverlay)
       mDisplayOverlay(displayOverlay)
 {
     mUi->setupUi(this);
-    initialize(displayOverlay);
+    initialize(displayOverlay, showGDPR);
 
     /*
      * this creates an overlay in case Akonadi is not running,
@@ -212,7 +212,7 @@ void MainWindow::slotAboutApp()
 }
 
 
-void MainWindow::initialize(bool displayOverlay)
+void MainWindow::initialize(bool displayOverlay, bool showGDPR)
 {
     Q_INIT_RESOURCE(resources);
 
@@ -222,7 +222,7 @@ void MainWindow::initialize(bool displayOverlay)
 
     resize(900, 900);
     createActions();
-    createTabs();
+    createTabs(showGDPR);
     setupActions();
     // initialize view actions
     mUi->actionSynchronize->setEnabled(false);
@@ -501,7 +501,7 @@ void MainWindow::addPage(Page *page)
     mPages << page;
 }
 
-void MainWindow::createTabs()
+void MainWindow::createTabs(bool showGDPR)
 {
     mAccountPage = new AccountsPage(this);
     addPage(mAccountPage);
@@ -520,7 +520,7 @@ void MainWindow::createTabs()
     mUi->tabWidget->addTab(page, i18n("&Leads"));
 #endif
 
-    mContactsPage = new ContactsPage(this);
+    mContactsPage = new ContactsPage(showGDPR, this);
     addPage(mContactsPage);
     mUi->tabWidget->addTab(mContactsPage, i18n("&Contacts"));
 

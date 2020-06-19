@@ -30,7 +30,7 @@ class ContactFilterWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit ContactFilterWidget(FilterProxyModel *proxyModel, QWidget *parent = nullptr);
+    explicit ContactFilterWidget(FilterProxyModel *proxyModel, bool showGDPR, QWidget *parent = nullptr);
 
 private:
     QComboBox *mGDPRComboBox;

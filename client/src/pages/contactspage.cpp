@@ -37,14 +37,14 @@
 
 using namespace Akonadi;
 
-ContactsPage::ContactsPage(QWidget *parent)
+ContactsPage::ContactsPage(bool showGDPR, QWidget *parent)
     : Page(parent, KContacts::Addressee::mimeType(), DetailsType::Contact), mDataExtractor(new ContactDataExtractor)
 {
     auto *filterProxyModel = new FilterProxyModel(DetailsType::Contact, this);
     setFilter(filterProxyModel);
     treeView()->setSelectionMode(QAbstractItemView::ExtendedSelection);
 
-    mFilterUiWidget = new ContactFilterWidget(filterProxyModel, this);
+    mFilterUiWidget = new ContactFilterWidget(filterProxyModel, showGDPR, this);
     insertFilterWidget(mFilterUiWidget);
 
     //connect(mFilterUiWidget, &ContactFilterWidget::filterUpdated, this, &ContactsPage::slotDefaultOppFilterUpdated);
