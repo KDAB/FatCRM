@@ -675,6 +675,10 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
                     mLinkedItemsRepository->notesForAccount(accountId).count() +
                     mLinkedItemsRepository->emailsForAccount(accountId).count();
         }
+        case LeadSource:
+            return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName"));
+        case AssignedTo:
+            return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName"));
         default:
             return QVariant();
         }
@@ -942,6 +946,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::columnTypes(DetailsType type)
             ItemsTreeModel::PhoneMobile,
             ItemsTreeModel::CreationDate,
             ItemsTreeModel::LastModifiedDate,
+            ItemsTreeModel::LeadSource,
+            ItemsTreeModel::AssignedTo,
             ItemsTreeModel::NumberOfOpportunities,
             ItemsTreeModel::NumberOfDocumentsNotesEmails,
         };
@@ -1067,6 +1073,8 @@ QString ItemsTreeModel::columnTitle(ItemsTreeModel::ColumnType col) const
         return i18nc("@title:column", "Last Modified Date");
     case AssignedTo:
         return i18nc("@title:column name of the person this object is assigned to", "Assigned To");
+    case LeadSource:
+        return i18nc("@title:column lead source", "Lead source");
     case NumberOfOpportunities:
         return i18nc("@title:column number of opportunities for this account (or this contact's account)", "# Opps");
     case NumberOfContacts:
@@ -1124,6 +1132,8 @@ ItemsTreeModel::ColumnTypes ItemsTreeModel::defaultVisibleColumns() const
         columns.removeAll(ItemsTreeModel::CreationDate);
         columns.removeAll(ItemsTreeModel::LastModifiedDate);
         columns.removeAll(ItemsTreeModel::NumberOfOpportunities);
+        columns.removeAll(ItemsTreeModel::AssignedTo);
+        columns.removeAll(ItemsTreeModel::LeadSource);
         break;
     case DetailsType::Lead:
         break;

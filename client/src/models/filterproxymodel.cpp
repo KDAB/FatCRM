@@ -151,8 +151,12 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
             const QString accountId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
             Q_ASSERT(!contactId.isEmpty());
             const QString accountType = AccountRepository::instance()->accountById(accountId).accountType();
-            if (accountType == "Partner" || accountType == "Competitor") {
-                // Don't delete partners, competitors or (TODO) providers (we don't create opportunities to model our collaboration)
+            if (accountType == "Partner" || accountType == "Competitor" || accountType == "Other") {
+                // Don't delete partners, competitors or providers (we don't create opportunities to model our collaboration)
+                return false;
+            }
+            if (contact.givenName() == "Anonymized" && contact.familyName() == "GDPR") {
+                // Already anonymized
                 return false;
             }
             static QDate today = QDate::currentDate();

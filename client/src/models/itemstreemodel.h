@@ -88,6 +88,7 @@ public:
         NextStepDate,
         LastModifiedDate,
         AssignedTo,
+        LeadSource,
         NumberOfOpportunities,
         NumberOfContacts,
         NumberOfDocumentsNotesEmails,
