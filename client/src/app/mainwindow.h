@@ -101,6 +101,7 @@ private Q_SLOTS:
     void slotImportContacts();
     void slotConfigure();
     void slotPrintReport();
+    void slotExport();
     void slotCollectionResult(const QString &mimeType, const Akonadi::Collection& collection);
     void slotOppModelCreated(ItemsTreeModel *model);
     void slotContactsModelCreated(ItemsTreeModel *model);

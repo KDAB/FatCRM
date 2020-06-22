@@ -694,6 +694,21 @@ void Page::slotItemSaved()
     emit statusMessage(QStringLiteral("Item successfully saved"));
 }
 
+QVector<int> Page::sourceColumns() const
+{
+    QHeaderView *headerView = mUi->treeView->header();
+    QVector<int> sourceColumns;
+    sourceColumns.reserve(headerView->count());
+    for (int col = 0; col < headerView->count(); ++col) {
+        const int logicalColumn = headerView->logicalIndex(col);
+        if (!headerView->isSectionHidden(logicalColumn)) {
+            sourceColumns.append(logicalColumn);
+        }
+    }
+
+    return sourceColumns;
+}
+
 std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) const
 {
     QAbstractItemModel *model = mUi->treeView->model();
@@ -715,26 +730,45 @@ std::unique_ptr<KDReports::Report> Page::generateReport(bool warnOnLongReport) c
         }
     }
 
-    // Take care of hidden and reordered columns
-    QHeaderView *headerView = mUi->treeView->header();
-    QVector<int> sourceColumns;
-    sourceColumns.reserve(headerView->count());
-    for (int col = 0; col < headerView->count(); ++col) {
-        const int logicalColumn = headerView->logicalIndex(col);
-        if (!headerView->isSectionHidden(logicalColumn)) {
-            sourceColumns.append(logicalColumn);
-        }
-    }
-
     CreateLinksProxyModel createLinksProxy(mResourceBaseUrl);
     createLinksProxy.setSourceModel(model);
 
     RearrangeColumnsProxyModel rearrangeColumnsProxy;
-    rearrangeColumnsProxy.setSourceColumns(sourceColumns);
+    rearrangeColumnsProxy.setSourceColumns(sourceColumns()); // take care of hidden and reordered columns
     rearrangeColumnsProxy.setSourceModel(&createLinksProxy);
 
     ReportGenerator generator;
     return generator.generateListReport(&rearrangeColumnsProxy, reportTitle(), reportSubTitle(count));
+}
+
+void Page::exportToCSV(const QString &fileName) const
+{
+    QAbstractItemModel *model = mUi->treeView->model();
+    if (!model)
+        return;
+    RearrangeColumnsProxyModel rearrangeColumnsProxy;
+    rearrangeColumnsProxy.setSourceColumns(sourceColumns()); // take care of hidden and reordered columns
+    rearrangeColumnsProxy.setSourceModel(model);
+
+    QFile file(fileName);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "Cannot open" << fileName << "for writing:" << file.errorString();
+        return;
+    }
+    const int rows = rearrangeColumnsProxy.rowCount();
+    const int columns = rearrangeColumnsProxy.columnCount();
+    for (int row = 0 ; row < rows ; ++row) {
+        QString line;
+        for (int column = 0 ; column < columns ; ++column) {
+            QString str = rearrangeColumnsProxy.index(row, column).data().toString();
+            if (str.contains(',')) {
+                str = '"' + str + '"';
+            }
+            line += str + ",";
+        }
+        line += '\n';
+        file.write(line.toUtf8());
+    }
 }
 
 ItemEditWidgetBase *Page::createItemEditWidget(const Akonadi::Item &item, DetailsType itemType, bool forceSimpleWidget)

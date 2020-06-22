@@ -270,6 +270,11 @@ void MainWindow::createActions()
     printAction->setIcon(QIcon(":/icons/document-print-preview.png"));
     connect(printAction, &QAction::triggered, this, &MainWindow::slotPrintReport);
     mViewMenu->addAction(printAction);
+
+    QAction *exportAction = new QAction(i18n("Export as CSV..."), this);
+    connect(exportAction, &QAction::triggered, this, &MainWindow::slotExport);
+    mViewMenu->addAction(exportAction);
+
     mViewMenu->addSeparator();
 
     mSavedSearchesMenu = new QMenu(i18n("Saved Searches"), mViewMenu);
@@ -680,6 +685,18 @@ void MainWindow::slotPrintReport()
     preview.previewWidget()->setShowPageListWidget(false);
     preview.resize(1167, 906);
     preview.exec();
+}
+
+void MainWindow::slotExport()
+{
+    Page *page = currentPage();
+    if (!page) {
+        return;
+    }
+    const QString fileName = QFileDialog::getSaveFileName(this, i18n("Export as CSV"), QString(), "*.csv");
+    if (!fileName.isEmpty()) {
+        page->exportToCSV(fileName);
+    }
 }
 
 void MainWindow::slotCollectionResult(const QString &mimeType, const Collection &collection)

@@ -75,6 +75,7 @@ public:
     bool queryClose();
     void openWidget(const QString &id);
     Q_REQUIRED_RESULT std::unique_ptr<KDReports::Report> generateReport(bool warnOnLongReport = true) const;
+    void exportToCSV(const QString &fileName) const;
     void createNewItem(const QMap<QString, QString> &data = QMap<QString, QString>());
     void setSearchText(const QString &searchText);
     QString searchText() const;
@@ -167,6 +168,7 @@ private:
     bool mInitialLoadingDone;
 
     KJobProgressTracker *mJobProgressTracker;
+    QVector<int> sourceColumns() const;
 };
 
 #endif
