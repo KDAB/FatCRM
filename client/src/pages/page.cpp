@@ -154,6 +154,7 @@ Page::Page(QWidget *parent, const QString &mimeType, DetailsType type)
     mUi->setupUi(this);
     mUi->treeView->setViewName(typeToString(type));
     mUi->treeView->setAlternatingRowColors(true);
+    mUi->treeView->setUniformRowHeights(true);
     initialize();
 }
 
