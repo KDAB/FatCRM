@@ -125,6 +125,16 @@ void FilterProxyModel::setFilterString(const QString &filter)
     invalidateFilter();
 }
 
+static int numRecentOpportunities(const QVector<SugarOpportunity> &opps)
+{
+    static QDate today = QDate::currentDate();
+    auto isRecent = [](const SugarOpportunity &opportunity) {
+        const QDateTime dt = KDCRMUtils::dateTimeFromString(opportunity.dateEntered());
+        return dt.date().daysTo(today) < 5*365;
+    };
+    return std::count_if(opps.begin(), opps.end(), isRecent);
+}
+
 bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const
 {
     if (d->mFilter.isEmpty() && d->mGDPRFilterAction == NoAction) {
@@ -160,13 +170,12 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
                 return false;
             }
             static QDate today = QDate::currentDate();
-            if ((accountId.isEmpty() ||
-                    (d->mLinkedItemsRepository->opportunitiesForAccount(accountId).isEmpty() &&
+            if ((accountId.isEmpty() || (
                      d->mLinkedItemsRepository->documentsForAccount(accountId).isEmpty() &&
                      d->mLinkedItemsRepository->notesForAccount(accountId).isEmpty() &&
-                     d->mLinkedItemsRepository->emailsForAccount(accountId).isEmpty())
-                 ) &&
-                    contact.note().isEmpty() && // description
+                     d->mLinkedItemsRepository->emailsForAccount(accountId).isEmpty() &&
+                     (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) == 0)
+                 )) &&
                     d->mLinkedItemsRepository->notesForContact(contactId).isEmpty() &&
                     d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty() &&
                     KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) > 5*365) {
