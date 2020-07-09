@@ -135,6 +135,20 @@ static int numRecentOpportunities(const QVector<SugarOpportunity> &opps)
     return std::count_if(opps.begin(), opps.end(), isRecent);
 }
 
+static bool descriptionIsOld(const QString &description, QDate today)
+{
+    if (description.isEmpty()) {
+        return true;
+    }
+    for (int year = today.year(); year >= today.year() - 5; --year) {
+        if (description.contains(QString::number(year))) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) const
 {
     if (d->mFilter.isEmpty() && d->mGDPRFilterAction == NoAction) {
@@ -170,14 +184,13 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
                 return false;
             }
             static QDate today = QDate::currentDate();
+            const QString contactDescription = contact.note();
             if ((accountId.isEmpty() || (
-                     d->mLinkedItemsRepository->documentsForAccount(accountId).isEmpty() &&
-                     d->mLinkedItemsRepository->notesForAccount(accountId).isEmpty() &&
-                     d->mLinkedItemsRepository->emailsForAccount(accountId).isEmpty() &&
                      (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) == 0)
                  )) &&
                     d->mLinkedItemsRepository->notesForContact(contactId).isEmpty() &&
                     d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty() &&
+                    descriptionIsOld(contactDescription, today) &&
                     KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) > 5*365) {
                 // No account -> delete
                 // Otherwise -> anonymize
@@ -191,6 +204,21 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
                 }
                 return d->mFilter.isEmpty() || contactMatchesFilter(contact, d->mFilter);
             } else {
+#if 0
+                if (contact.assembledName().contains("Richard")) {
+                    qDebug() << "Keeping" << contact.assembledName() << "because:";
+                    if (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) > 0)
+                        qDebug() << " account has recent opportunities";
+                    if (!d->mLinkedItemsRepository->notesForContact(contactId).isEmpty())
+                        qDebug() << " contact has notes";
+                    if (!d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty())
+                        qDebug() << " contact has emails";
+                    if (!descriptionIsOld(contactDescription, today))
+                        qDebug() << " contact description is recent";
+                    if (KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) <= 5*365)
+                        qDebug() << " created recently";
+                }
+#endif
                 return false;
             }
         } else {
