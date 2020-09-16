@@ -72,6 +72,7 @@ find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5WidgetsAddons CONFIG REQUIRED)
 find_package(KF5WindowSystem CONFIG REQUIRED)
 find_package(KF5Wallet CONFIG REQUIRED)
+find_package(KF5ConfigWidgets CONFIG REQUIRED)
 
 find_package(PhoneNumber)
 set_package_properties(PhoneNumber PROPERTIES
