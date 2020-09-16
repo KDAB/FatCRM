@@ -38,7 +38,7 @@ ItemsTreeView::ItemsTreeView(QWidget *parent) :
     setContextMenuPolicy(Qt::CustomContextMenu);
     setWordWrap(false);
 
-    // This is an awful awful workaround for the first column not being movable
+    // This is an awful, awful workaround for the first column not being movable
     // due to the broken fix for https://bugreports.qt.io/browse/QTBUG-332.
     QTableView unused;
     unused.setHorizontalHeader(header());
