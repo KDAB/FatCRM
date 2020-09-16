@@ -2,10 +2,11 @@ Source: fatcrm
 Section: Miscellaneous
 Priority: optional
 Maintainer: Allen Winter <allen.winter@kdab.com>
+Build-Depends: debhelper (>=9), cdbs, cmake
 Standards-Version: 3.9.6
 Homepage: https://github.com/KDAB/FatCRM
 
-Package: kf5-fatcrm
+Package: fatcrm
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Description: FatCRM is a desktop application for SugarCRM.

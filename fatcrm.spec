@@ -1,22 +1,23 @@
-Name:           kf5-fatcrm
-Version:        2.1.0
+Name:           fatcrm
+Version:        2.3.0
 Release:        0
 Summary:        desktop application for SugarCRM
-Source:         %{name}-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
+Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/FatCRM
 Group:          Productivity/Other
-License:        GPL-2.0+
+License:        GPL-2.0-or-later.txt
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 Vendor:         Klaralvdalens Datakonsult AB (KDAB)
 Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
-BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmake-modules kdbusaddons-devel akonadi-server-devel kcalcore-devel kcontacts-devel akonadi-contact-devel akonadi-calendar-devel kwallet-devel libicu-devel
+BuildRequires:  python libqt5-qtbase-devel cmake update-desktop-files extra-cmake-modules kdbusaddons-devel akonadi-server-devel kconfigwidgets-devel kdbusaddons-devel kcalcore-devel kcontacts-devel akonadi-contact-devel akonadi-calendar-devel kwallet-devel libicu-devel
 %endif
 
 %if %{defined fedora}
-BuildRequires:  gcc-c++ extra-cmake-modules shared-mime-info python qt5-qtbase-devel cmake desktop-file-utils kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel
+BuildRequires:  gcc-c++ extra-cmake-modules shared-mime-info python qt5-qtbase-devel cmake desktop-file-utils kf5-kconfigwidgets-devel kf5-kdbusaddons-devel kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel
 %endif
 
 %description
@@ -86,6 +87,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
+* Wed Sep 16 2020 Allen Winter <allen.winter@kdab.com> 2.3.0
+- 2.3.0 release
 * Sun Jun 24 2018 Allen Winter <allen.winter@kdab.com> 2.1.0
 - 2.1.0 release
 * Wed Nov 09 2016 Allen Winter <allen.winter@kdab.com> 1.3.2
