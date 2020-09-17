@@ -8,7 +8,7 @@ Homepage: https://github.com/KDAB/FatCRM
 
 Package: fatcrm
 Architecture: any
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, akonadi-server
 Description: FatCRM is a desktop application for SugarCRM.
  SugarCRM (and its opensource version SuiteCRM) is a web-oriented system for tracking
  customers and potential customers. The downside of web user interfaces is the latency

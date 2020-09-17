@@ -13,10 +13,12 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: cmake extra-cmake-modules qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
+Requires: akonadi
 BuildRequires:  python libxslt-tools libqt5-qtbase-devel update-desktop-files kdbusaddons-devel akonadi-server-devel kio-devel kwindowsystem-devel ktextwidgets-devel kguiaddons-devel ki18n-devel kiconthemes-devel kconfigwidgets-devel kdbusaddons-devel kcalcore-devel kcontacts-devel akonadi-contact-devel akonadi-calendar-devel kwallet-devel libicu-devel
 %endif
 
 %if %{defined fedora}
+Requires: akonadi
 BuildRequires:  gcc-c++ shared-mime-info python qt5-qtbase-devel desktop-file-utils kf5-kio-devel kf5-kwindowsystem-devel kf5-ktextwidgets-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kconfigwidgets-devel kf5-kdbusaddons-devel kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel
 %endif
 
