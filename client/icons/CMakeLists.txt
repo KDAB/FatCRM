@@ -5,8 +5,10 @@ set(fatcrm_ICONS
     ${CMAKE_CURRENT_SOURCE_DIR}/32-apps-fatcrm.png
     ${CMAKE_CURRENT_SOURCE_DIR}/48-apps-fatcrm.png
     ${CMAKE_CURRENT_SOURCE_DIR}/64-apps-fatcrm.png
-    PARENT_SCOPE
 )
+
+# a bit of a hack to not need to repeat the list of FatCRM icons for other uses
+set(fatcrm_ICONS ${fatcrm_ICONS} PARENT_SCOPE)
 
 ecm_install_icons(ICONS
     ${fatcrm_ICONS}
