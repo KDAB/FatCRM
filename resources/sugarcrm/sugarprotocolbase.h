@@ -22,7 +22,7 @@
 #define SUGARPROTOCOLBASE_H
 
 #include <QString>
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "modulename.h"
 
 class ListEntriesScope;

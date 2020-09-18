@@ -23,7 +23,7 @@
 #include "fetchentryjob.h"
 
 #include "modulehandler.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>

@@ -23,7 +23,7 @@
 #include "updateentryjob.h"
 
 #include "modulehandler.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
 

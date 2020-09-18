@@ -22,7 +22,7 @@
 
 #include "salesforcecontactshandler.h"
 #include "salesforceresource_debug.h"
-#include "salesforcesoap.h"
+#include "wsdl_salesforce-partner.h"
 using namespace KDSoapGenerated;
 
 #include <AkonadiCore/Collection>

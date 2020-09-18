@@ -22,7 +22,7 @@
 #define SUGARSOAPPROTOCOL_H
 
 #include <QString>
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarprotocolbase.h"
 
 

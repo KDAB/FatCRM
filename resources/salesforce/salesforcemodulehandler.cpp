@@ -21,7 +21,7 @@
 */
 
 #include "salesforcemodulehandler.h"
-#include "salesforcesoap.h"
+#include "wsdl_salesforce-partner.h"
 #include "salesforceresource_debug.h"
 using namespace KDSoapGenerated;
 

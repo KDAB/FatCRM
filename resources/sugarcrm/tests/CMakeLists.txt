@@ -34,5 +34,3 @@ add_resources_tests(
   test_deleteentryjob
   test_jobwithsugarsoapprotocol
 )
-
-add_dependencies(test_listentriesjob generate_sugarsoap_h)

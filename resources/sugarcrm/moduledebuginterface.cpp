@@ -25,7 +25,7 @@
 #include "modulehandler.h"
 #include "sugarcrmresource.h"
 #include "sugarsession.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 
 using namespace KDSoapGenerated;
 #include <QStringList>

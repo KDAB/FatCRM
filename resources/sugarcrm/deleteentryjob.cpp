@@ -23,7 +23,7 @@
 #include "deleteentryjob.h"
 
 #include "modulehandler.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarsession.h"
 
 using namespace KDSoapGenerated;

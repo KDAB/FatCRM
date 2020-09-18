@@ -28,7 +28,7 @@
 #include "settings.h"
 #include "settingsadaptor.h"
 #include "salesforceconfigdialog.h"
-#include "salesforcesoap.h"
+#include "wsdl_salesforce-partner.h"
 using namespace KDSoapGenerated;
 
 #include "kdcrmutils.h"

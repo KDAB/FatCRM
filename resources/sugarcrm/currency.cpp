@@ -19,7 +19,7 @@
 */
 
 #include "currency.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 
 #include <QDebug>
 

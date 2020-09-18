@@ -24,7 +24,7 @@
 #include "listentriesjob.h"
 
 #include "modulehandler.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "listentriesscope.h"
 #include "sugarprotocolbase.h"
 using namespace KDSoapGenerated;

@@ -31,7 +31,7 @@
 #include <KContacts/Addressee>
 #include <QObject>
 
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 
 class AccountsHandler;
 class OpportunitiesHandler;

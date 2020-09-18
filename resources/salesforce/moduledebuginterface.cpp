@@ -24,7 +24,7 @@
 
 #include "salesforcemodulehandler.h"
 #include "salesforceresource.h"
-#include "salesforcesoap.h"
+#include "wsdl_salesforce-partner.h"
 
 #include <QStringList>
 

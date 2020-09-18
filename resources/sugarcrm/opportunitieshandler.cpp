@@ -24,7 +24,7 @@
 #include "opportunitieshandler.h"
 
 #include "sugarsession.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
 #include "sugarjob.h"

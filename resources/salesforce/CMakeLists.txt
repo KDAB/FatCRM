@@ -27,7 +27,7 @@ qt5_add_dbus_adaptor(salesforceresource_SRCS
   ${CMAKE_CURRENT_BINARY_DIR}/org.kde.Akonadi.SalesForce.Settings.xml settings.h Settings
 )
 
-kdsoap_generate_soap_bindings(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl salesforcesoap "")
+kdsoap_generate_wsdl(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl)
 
 add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
 set_target_properties(akonadi_salesforce_resource PROPERTIES MACOSX_BUNDLE FALSE)

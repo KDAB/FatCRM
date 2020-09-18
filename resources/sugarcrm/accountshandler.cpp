@@ -25,7 +25,7 @@
 #include "sugarcrmresource_debug.h"
 #include "kdcrmutils.h"
 #include "sugarsession.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarjob.h"
 using namespace KDSoapGenerated;
 

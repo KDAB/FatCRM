@@ -23,7 +23,7 @@
 #include "sugarjob.h"
 
 #include "sugarsession.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarsoapprotocol.h"
 #include "passwordhandler.h"
 

@@ -22,7 +22,7 @@
 
 #include "listmodulesjob.h"
 
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarsession.h"
 #include "sugarprotocolbase.h"
 using namespace KDSoapGenerated;

@@ -23,7 +23,7 @@
 #include "sugarcrmresource_debug.h"
 
 #include "sugarsession.h"
-#include "sugarsoap.h"
+#include "wsdl_sugar41.h"
 #include "sugarcrmresource.h"
 
 #include <KCodecs>
