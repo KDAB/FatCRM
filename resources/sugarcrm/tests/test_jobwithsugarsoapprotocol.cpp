@@ -48,7 +48,7 @@
  * It's the only test that makes sure we implement the SOAP API correctly.
  * Obviously you want to connect this to a test server, not to a production one.
  * The user/pass/host information is read from a hand-written QSettings file.
- * On Unix, that is ~/config/KDAB/test_jobwithsugarsoapprotocol.conf
+ * On Unix, that is ~/.config/KDAB/test_jobwithsugarsoapprotocol.conf
  */
 class TestJobWithSugarSoapProtocol : public QObject
 {
