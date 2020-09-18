@@ -93,9 +93,7 @@ bool SugarLeadIO::writeSugarLead(const SugarLead &lead, QIODevice *device)
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
-    SugarLead::AccessorHash::const_iterator it = accessors.constBegin();
-    const SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarLead::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (lead.*getter)());
     }

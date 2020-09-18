@@ -308,9 +308,8 @@ void SugarNote::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
 
     const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
-    QMap<QString, QString>::const_iterator it = data.constBegin();
-    for ( ; it != data.constEnd() ; ++it) {
-        const SugarNote::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+    for (auto it = data.constBegin(); it != data.constEnd() ; ++it) {
+        const auto accessIt = accessors.constFind(it.key());
         if (accessIt != accessors.constEnd()) {
             (this->*(accessIt.value().setter))(it.value());
         }
@@ -327,9 +326,7 @@ QMap<QString, QString> SugarNote::data() const
     QMap<QString, QString> data;
 
     const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
-    SugarNote::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarNote::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarNote::valueGetter getter = (*it).getter;
         data.insert(it.key(), (this->*getter)());
     }

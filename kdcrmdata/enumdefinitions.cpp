@@ -26,7 +26,7 @@ QString EnumDefinitions::Enum::toString() const
 {
     QString ret = mEnumName;
     ret += '|';
-    for (Vector::const_iterator it = mEnumValues.constBegin(); it != mEnumValues.constEnd(); ++it) {
+    for (auto it = mEnumValues.constBegin(); it != mEnumValues.constEnd(); ++it) {
         Q_ASSERT(!it->key.contains(':'));
         Q_ASSERT(!it->key.contains('|'));
         Q_ASSERT(!it->value.contains(':'));

@@ -87,9 +87,7 @@ QStringList AccountsHandler::supportedCRMFields() const
 KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueList(const SugarAccount &account, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
     const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
-    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
@@ -102,10 +100,8 @@ KDSoapGenerated::TNS__Name_value_list AccountsHandler::sugarAccountToNameValueLi
         itemList << field;
     }
     // plus custom fields
-    QMap<QString, QString> customFields = account.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    const QMap<QString, QString> customFields = account.customFields();
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
         field.setName(ModuleHandler::customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
@@ -216,9 +212,7 @@ void AccountsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenShippingAddress = false;
 
     const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
-    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;

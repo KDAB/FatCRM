@@ -102,9 +102,7 @@ bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevic
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
-    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarDocument::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (document.*getter)());
     }
@@ -117,9 +115,7 @@ bool SugarDocumentIO::writeSugarDocument(const SugarDocument &document, QIODevic
 
     // plus custom fields
     QMap<QString, QString> customFields = document.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         writer.writeTextElement(cit.key(), cit.value());
     }
 

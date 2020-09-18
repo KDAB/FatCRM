@@ -100,9 +100,7 @@ int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
 
     const SugarDocument document = item.payload<SugarDocument>();
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
-    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;
@@ -117,10 +115,8 @@ int DocumentsHandler::setEntry(const Akonadi::Item &item, QString &newId, QStrin
     }
 
     // plus custom fields
-    QMap<QString, QString> customFields = document.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    const QMap<QString, QString> customFields = document.customFields();
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
         field.setName(customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
@@ -245,9 +241,7 @@ void DocumentsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
               modifiedBy, modifiedOn));
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
-    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             continue;

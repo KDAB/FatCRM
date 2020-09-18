@@ -283,10 +283,8 @@ Akonadi::Item::List SalesforceContactsHandler::itemsFromListEntriesResponse(cons
         KContacts::Addressee addressee;
         addressee.setUid(entry.id().value());
 
-        QList<KDSoapValue>::const_iterator it    = valueList.constBegin();
-        QList<KDSoapValue>::const_iterator endIt = valueList.constEnd();
-        for (; it != endIt; ++it) {
-            ContactAccessorHash::const_iterator accessorIt = mAccessors->constFind(it->name());
+        for (auto it = valueList.constBegin(); it != valueList.constEnd(); ++it) {
+            auto accessorIt = mAccessors->constFind(it->name());
             if (accessorIt != mAccessors->constEnd()) {
                 if (accessorIt->isAvailable) {
                     accessorIt->setter(it->value().toString(), addressee);

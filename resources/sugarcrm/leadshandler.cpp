@@ -72,9 +72,7 @@ QStringList LeadsHandler::supportedCRMFields() const
 KDSoapGenerated::TNS__Name_value_list LeadsHandler::sugarLeadToNameValueList(const SugarLead &lead, QList<TNS__Name_value> itemList)
 {
     const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
-    SugarLead::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
@@ -173,9 +171,7 @@ void LeadsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenPrimaryAddress = false;
     bool seenOtherAddress = false;
     const SugarLead::AccessorHash accessors = SugarLead::accessorHash();
-    SugarLead::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarLead::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;

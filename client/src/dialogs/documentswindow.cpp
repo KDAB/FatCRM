@@ -58,7 +58,7 @@ DocumentWidget::DocumentWidget(EnumDefinitions *definitions, QWidget *parent)
     const int enumIndex = mEnumDefinitions->indexOf("status_id");
     if (enumIndex != -1) {
         const EnumDefinitions::Enum &def = mEnumDefinitions->at(enumIndex);
-        for (EnumDefinitions::Enum::Vector::const_iterator it = def.mEnumValues.constBegin();
+        for (auto it = def.mEnumValues.constBegin();
              it != def.mEnumValues.constEnd(); ++it) {
             mStatusBox->addItem(it->value, it->key);
         }

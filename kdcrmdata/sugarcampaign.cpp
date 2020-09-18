@@ -415,9 +415,8 @@ void SugarCampaign::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
 
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
-    QMap<QString, QString>::const_iterator it = data.constBegin();
-    for ( ; it != data.constEnd() ; ++it) {
-        const SugarCampaign::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+    for (auto it = data.constBegin(); it != data.constEnd() ; ++it) {
+        const auto accessIt = accessors.constFind(it.key());
         if (accessIt != accessors.constEnd()) {
             (this->*(accessIt.value().setter))(it.value());
         } else {
@@ -432,9 +431,7 @@ QMap<QString, QString> SugarCampaign::data()
     QMap<QString, QString> data;
 
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
-    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarCampaign::valueGetter getter = (*it).getter;
         data.insert(it.key(), (this->*getter)());
     }

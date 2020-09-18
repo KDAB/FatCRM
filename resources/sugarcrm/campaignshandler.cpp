@@ -69,9 +69,7 @@ QStringList CampaignsHandler::supportedCRMFields() const
 KDSoapGenerated::TNS__Name_value_list CampaignsHandler::sugarCampaignToNameValueList(const SugarCampaign &campaign, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
-    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
@@ -169,9 +167,7 @@ void CampaignsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
               modifiedBy, modifiedOn));
 
     const SugarCampaign::AccessorHash accessors = SugarCampaign::accessorHash();
-    SugarCampaign::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarCampaign::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;

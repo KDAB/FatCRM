@@ -61,9 +61,7 @@ Akonadi::Collection OpportunitiesHandler::handlerCollection() const
 KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
     const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
-    SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == "id") {
             continue;
@@ -78,9 +76,7 @@ KDSoapGenerated::TNS__Name_value_list OpportunitiesHandler::sugarOpportunityToNa
 
     // plus custom fields
     const QMap<QString, QString> customFields = opp.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         KDSoapGenerated::TNS__Name_value field;
         field.setName(customSugarFieldFromCrmField(cit.key()));
         field.setValue(KDCRMUtils::encodeXML(cit.value()));
@@ -205,9 +201,7 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
               modifiedBy, modifiedOn));
 
     const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
-    SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;

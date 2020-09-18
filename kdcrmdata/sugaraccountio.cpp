@@ -70,7 +70,7 @@ void SugarAccountIO::readAccount(SugarAccount &account)
     while (xml.readNextStartElement()) {
         const QString key = xml.name().toString();
         const QString value = xml.readElementText();
-        const SugarAccount::AccessorHash::const_iterator accessIt = accessors.constFind(key);
+        const auto accessIt = accessors.constFind(key);
         if (accessIt != accessors.constEnd()) {
             (account.*(accessIt.value().setter))(value);
         } else {
@@ -101,10 +101,8 @@ bool SugarAccountIO::writeSugarAccount(const SugarAccount &account, QIODevice *d
     }
 
     // plus custom fields
-    QMap<QString, QString> customFields = account.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    const QMap<QString, QString> customFields = account.customFields();
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         writer.writeTextElement(cit.key(), cit.value());
     }
 

@@ -706,9 +706,7 @@ Akonadi::Collection ContactsHandler::handlerCollection() const
 KDSoapGenerated::TNS__Name_value_list ContactsHandler::addresseeToNameValueList(const KContacts::Addressee &addressee, QList<KDSoapGenerated::TNS__Name_value> itemList)
 {
     const AccessorHash accessors = accessorHash();
-    AccessorHash::const_iterator it    = accessors.constBegin();
-    AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if ((*it).getter == nullptr) {
             continue;
@@ -940,9 +938,7 @@ void ContactsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
     bool seenPrimaryAddress = false;
     bool seenOtherAddress = false;
     const AccessorHash accessors = accessorHash();
-    AccessorHash::const_iterator it    = accessors.constBegin();
-    AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if ((*it).getter == nullptr) {
             continue;

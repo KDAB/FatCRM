@@ -442,8 +442,7 @@ void SugarDocument::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
-    QMap<QString, QString>::const_iterator it = data.constBegin();
-    for ( ; it != data.constEnd() ; ++it) {
+    for (auto it = data.constBegin(); it != data.constEnd() ; ++it) {
         const SugarDocument::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
         if (accessIt != accessors.constEnd()) {
             (this->*(accessIt.value().setter))(it.value());
@@ -458,16 +457,12 @@ QMap<QString, QString> SugarDocument::data() const
     QMap<QString, QString> data;
 
     const SugarDocument::AccessorHash accessors = SugarDocument::accessorHash();
-    SugarDocument::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarDocument::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarDocument::valueGetter getter = (*it).getter;
         data.insert(it.key(), (this->*getter)());
     }
 
-    QMap<QString, QString>::const_iterator cit = d->mCustomFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = d->mCustomFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    for (auto cit = d->mCustomFields.constBegin(); cit != d->mCustomFields.constEnd(); ++cit ) {
         data.insert(cit.key(), cit.value());
     }
 

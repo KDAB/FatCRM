@@ -93,9 +93,7 @@ bool SugarEmailIO::writeSugarEmail(const SugarEmail &email, QIODevice *device)
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
-    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarEmail::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (email.*getter)());
     }

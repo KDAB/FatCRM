@@ -136,8 +136,8 @@ void ReferencedData::setReferencedDataInternal(const QString &id, const QString 
 
 void ReferencedData::addMap(const QMap<QString, QString> &idDataMap, bool emitChanges)
 {
-    QMap<QString, QString>::const_iterator it = idDataMap.constBegin();
-    const QMap<QString, QString>::const_iterator end = idDataMap.constEnd();
+    auto it = idDataMap.constBegin();
+    const auto end = idDataMap.constEnd();
     if (d->mVector.isEmpty()) {
         d->mVector.reserve(idDataMap.count());
         // The vector is currently empty -> fast path

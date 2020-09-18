@@ -172,9 +172,7 @@ int EmailsHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &
 
     const SugarEmail email = item.payload<SugarEmail>();
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
-    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         // check if this is a read-only field
         if (it.key() == QLatin1String("id")) {
             continue;
@@ -251,9 +249,7 @@ void EmailsHandler::compare(Akonadi::AbstractDifferencesReporter *reporter,
               modifiedBy, modifiedOn));
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
-    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const QString diffName = (*it).diffName;
         if (diffName.isEmpty()) {
             // TODO some fields like currency_id should be handled as special fields instead

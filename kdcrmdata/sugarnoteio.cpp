@@ -90,9 +90,7 @@ bool SugarNoteIO::writeSugarNote(const SugarNote &note, QIODevice *device)
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarNote::AccessorHash accessors = SugarNote::accessorHash();
-    SugarNote::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarNote::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarNote::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (note.*getter)());
     }

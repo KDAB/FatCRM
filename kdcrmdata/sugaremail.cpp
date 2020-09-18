@@ -331,8 +331,7 @@ void SugarEmail::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
-    QMap<QString, QString>::const_iterator it = data.constBegin();
-    for ( ; it != data.constEnd() ; ++it) {
+    for (auto it = data.constBegin(); it != data.constEnd() ; ++it) {
         const SugarEmail::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
         if (accessIt != accessors.constEnd()) {
             (this->*(accessIt.value().setter))(it.value());
@@ -350,9 +349,7 @@ QMap<QString, QString> SugarEmail::data() const
     QMap<QString, QString> data;
 
     const SugarEmail::AccessorHash accessors = SugarEmail::accessorHash();
-    SugarEmail::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarEmail::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarEmail::valueGetter getter = (*it).getter;
         data.insert(it.key(), (this->*getter)());
     }

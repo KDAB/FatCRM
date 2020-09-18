@@ -713,9 +713,8 @@ void SugarAccount::setData(const QMap<QString, QString>& data)
     d->mEmpty = false;
 
     const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
-    QMap<QString, QString>::const_iterator it = data.constBegin();
-    for ( ; it != data.constEnd() ; ++it) {
-        const SugarAccount::AccessorHash::const_iterator accessIt = accessors.constFind(it.key());
+    for (auto it = data.constBegin(); it != data.constEnd() ; ++it) {
+        auto accessIt = accessors.constFind(it.key());
         if (accessIt != accessors.constEnd()) {
             (this->*(accessIt.value().setter))(it.value());
         } else {
@@ -734,9 +733,7 @@ QMap<QString, QString> SugarAccount::data() const
     QMap<QString, QString> data;
 
     const SugarAccount::AccessorHash accessors = SugarAccount::accessorHash();
-    SugarAccount::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarAccount::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarAccount::valueGetter getter = (*it).getter;
         data.insert(it.key(), (this->*getter)());
     }
@@ -747,9 +744,7 @@ QMap<QString, QString> SugarAccount::data() const
     // ...
 
     // plus custom fields
-    QMap<QString, QString>::const_iterator cit = d->mCustomFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = d->mCustomFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    for (auto cit = d->mCustomFields.constBegin(); cit != d->mCustomFields.constEnd(); ++cit ) {
         data.insert(cit.key(), cit.value());
     }
 

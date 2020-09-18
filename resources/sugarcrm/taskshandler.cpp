@@ -397,9 +397,7 @@ int TasksHandler::setEntry(const Akonadi::Item &item, QString &newId, QString &e
 
     const KCalCore::Todo::Ptr todo = item.payload<KCalCore::Todo::Ptr>();
     const AccessorHash accessors = accessorHash();
-    AccessorHash::const_iterator it    = accessors.constBegin();
-    AccessorHash::const_iterator endIt = accessors.constEnd();
-    for ( ; it != endIt; ++it ) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it ) {
         // check if this is a read-only field
         if ( (*it).getter == nullptr ) {
             continue;
@@ -472,9 +470,7 @@ void TasksHandler::compare( Akonadi::AbstractDifferencesReporter *reporter,
                modifiedBy, modifiedOn ) );
 
     const AccessorHash accessors = accessorHash();
-    AccessorHash::const_iterator it    = accessors.constBegin();
-    AccessorHash::const_iterator endIt = accessors.constEnd();
-    for ( ; it != endIt; ++it ) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it ) {
         // check if this is a read-only field
         if ( (*it).getter == nullptr ) {
             continue;

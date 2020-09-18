@@ -101,18 +101,14 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     writer.writeAttribute(QStringLiteral("version"), QStringLiteral("1.0"));
 
     const SugarOpportunity::AccessorHash accessors = SugarOpportunity::accessorHash();
-    SugarOpportunity::AccessorHash::const_iterator it    = accessors.constBegin();
-    SugarOpportunity::AccessorHash::const_iterator endIt = accessors.constEnd();
-    for (; it != endIt; ++it) {
+    for (auto it = accessors.constBegin(); it != accessors.constEnd(); ++it) {
         const SugarOpportunity::valueGetter getter = (*it).getter;
         writer.writeTextElement(it.key(), (opportunity.*getter)());
     }
 
     // plus custom fields
-    QMap<QString, QString> customFields = opportunity.customFields();
-    QMap<QString, QString>::const_iterator cit = customFields.constBegin();
-    const QMap<QString, QString>::const_iterator end = customFields.constEnd();
-    for ( ; cit != end ; ++cit ) {
+    const QMap<QString, QString> customFields = opportunity.customFields();
+    for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         writer.writeTextElement(cit.key(), cit.value());
     }
 
