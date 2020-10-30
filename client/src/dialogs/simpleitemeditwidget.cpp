@@ -316,8 +316,8 @@ void SimpleItemEditWidget::updateItem(const Akonadi::Item &item)
             // Here we could pop up the conflict dialog, but it's private and meant for resources
             // Alternatively we could merge in the fields that haven't been locally modified, if we had that info.
             qWarning() << "Ignoring remote change on" << typeToString(d->mDetails->type()) << item.id() << d->mDetails->property("id") << "while modifying it";
-            qDebug() << "Old item" << d->mItem.remoteId() << d->mItem.remoteRevision();
-            qDebug() << "New item" << item.remoteId() << item.remoteRevision();
+            qCDebug(FATCRM_CLIENT_LOG) << "Old item" << d->mItem.remoteId() << d->mItem.remoteRevision();
+            qCDebug(FATCRM_CLIENT_LOG) << "New item" << item.remoteId() << item.remoteRevision();
             d->mItem.setRevision(item.revision());
             // ## aren't we going to overwrite all of the remote changes? Urgh....
 

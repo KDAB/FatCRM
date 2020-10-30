@@ -32,6 +32,7 @@
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
 #include "ui_contactdetails.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmutils.h"
 #include "kdcrmfields.h"
@@ -444,9 +445,9 @@ void ContactDetails::on_viewNotesButton_clicked()
 {
     const QString contactId = id();
     const QVector<SugarNote> notes = mLinkedItemsRepository->notesForContact(contactId);
-    qDebug() << notes.count() << "notes found for contact" << contactId;
+    qCDebug(FATCRM_CLIENT_LOG) << notes.count() << "notes found for contact" << contactId;
     const QVector<SugarEmail> emails = mLinkedItemsRepository->emailsForContact(contactId);
-    qDebug() << emails.count() << "emails found for contact" << contactId;
+    qCDebug(FATCRM_CLIENT_LOG) << emails.count() << "emails found for contact" << contactId;
     auto *dlg = new NotesWindow(nullptr);
     dlg->setResourceIdentifier(resourceIdentifier());
     dlg->setLinkedItemsRepository(mLinkedItemsRepository);

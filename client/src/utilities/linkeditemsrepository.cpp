@@ -197,7 +197,7 @@ void LinkedItemsRepository::removeNote(const QString &id)
         auto it = std::find_if(notes.constBegin(), notes.constEnd(), [id](const SugarNote &n) { return n.id() == id; });
         if (it != notes.constEnd()) {
             const int idx = std::distance(notes.constBegin(), it);
-            qDebug() << "Removing note at" << idx;
+            qCDebug(FATCRM_CLIENT_LOG) << "Removing note at" << idx;
             notes.remove(idx);
             emit opportunityModified(oldOpportunityId);
         }
@@ -355,7 +355,7 @@ void LinkedItemsRepository::removeEmail(const QString &id)
         auto it = std::find_if(emails.constBegin(), emails.constEnd(), [&id](const SugarEmail &n) { return n.id() == id; });
         if (it != emails.constEnd()) {
             const int idx = std::distance(emails.constBegin(), it);
-            qDebug() << "Removing email at" << idx;
+            qCDebug(FATCRM_CLIENT_LOG) << "Removing email at" << idx;
             emails.remove(idx);
             emit opportunityModified(oldOpportunityId);
         }
@@ -614,7 +614,7 @@ void LinkedItemsRepository::slotItemChanged(const Akonadi::Item &item, const QSe
     // I get only REMOTEREVISION when changing the parentid in the SugarNote or SugarEmail.
     // I also get REMOTEID when creating a note.
     // But anyway we handle all cases in updateItem().
-    //qDebug() << item.id() << partIdentifiers;
+    //qCDebug(FATCRM_CLIENT_LOG) << item.id() << partIdentifiers;
     Q_UNUSED(partIdentifiers);
 
     // Handle the case where the parent id changed

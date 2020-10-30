@@ -119,7 +119,7 @@ void Details::hideIfUnsupported(QWidget *widget)
 {
     const QString key = widget->objectName();
     if (!mKeys.contains(key)) {
-        //qDebug() << "HIDING" << key << "because of the contents of the EntityAnnotationsAttribute for the collection";
+        //qCDebug(FATCRM_CLIENT_LOG) << "HIDING" << key << "because of the contents of the EntityAnnotationsAttribute for the collection";
         widget->hide();
         // Find the label whose buddy is <widget>
         foreach (QLabel *label, widget->parentWidget()->findChildren<QLabel *>()) {
@@ -201,7 +201,7 @@ void Details::setEnumDefinitions(const EnumDefinitions &enums)
 void Details::setCollectionManager(CollectionManager *collectionManager)
 {
     Akonadi::Collection::Id coll = collectionManager->collectionIdForType(mType);
-    qDebug() << typeToString(mType) << coll << collectionManager->supportedFields(coll);
+    qCDebug(FATCRM_CLIENT_LOG) << typeToString(mType) << coll << collectionManager->supportedFields(coll);
     setSupportedFields(collectionManager->supportedFields(coll));
     setEnumDefinitions(collectionManager->enumDefinitions(coll));
 }
@@ -290,7 +290,7 @@ void Details::setData(const QMap<QString, QString> &data,
     Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
         key = w->objectName();
         hideIfUnsupported(w);
-        //qDebug() << data.value(key);
+        //qCDebug(FATCRM_CLIENT_LOG) << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
     }
 

@@ -27,6 +27,7 @@
 #include "kdcrmutils.h"
 #include "linkeditemsrepository.h"
 #include "sugarresourceitemtransfer.h"
+#include "fatcrm_client_debug.h"
 
 #include <AkonadiCore/ItemDeleteJob>
 #include <AkonadiCore/ItemModifyJob>
@@ -273,7 +274,7 @@ void DocumentsWindow::attachDocument(const QString &filePath)
     static int tempDocumentCounter = 0;
     ++tempDocumentCounter;
 
-    qDebug() << "Attaching document:" << filePath;
+    qCDebug(FATCRM_CLIENT_LOG) << "Attaching document:" << filePath;
     const QFileInfo fileInfo(filePath);
 
     SugarDocument document;

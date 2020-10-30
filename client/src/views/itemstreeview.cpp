@@ -65,7 +65,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         QStringList defaultColumnNames;
         foreach(ItemsTreeModel::ColumnType ct, defaultColumns)
             defaultColumnNames.append(ItemsTreeModel::columnNameFromType(ct));
-        qDebug() << objectName() << "defaultColumnNames:" << defaultColumnNames;
+        qCDebug(FATCRM_CLIENT_LOG) << objectName() << "defaultColumnNames:" << defaultColumnNames;
         for (int i = 0; i < header()->count(); ++i) {
             const QString name = mItemsTreeModel->columnName(i);
             header()->setSectionHidden(i, !defaultColumnNames.contains(name));
@@ -74,7 +74,7 @@ void ItemsTreeView::setModels(QAbstractItemModel *model, ItemsTreeModel *sourceM
         //header()->resizeSections(QHeaderView::ResizeToContents);
         header()->resizeSections(QHeaderView::Stretch);
     } else {
-        //qDebug() << objectName() << "restoring state" << state.size() << state;
+        //qCDebug(FATCRM_CLIENT_LOG) << objectName() << "restoring state" << state.size() << state;
         header()->restoreState(state);
     }
 

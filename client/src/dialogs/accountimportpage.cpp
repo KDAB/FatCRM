@@ -234,7 +234,7 @@ void AccountImportPage::slotButtonClicked(QAbstractButton *button)
         Akonadi::Item item;
         item.setMimeType(SugarAccount::mimeType());
         const SugarAccount account = mPendingAccounts.at(accountRowNumber.toInt()).contactsSet.account;
-        qDebug() << "Creating account id=" << account.id() << "name=" << account.name();
+        qCDebug(FATCRM_CLIENT_LOG) << "Creating account id=" << account.id() << "name=" << account.name();
         item.setPayload<SugarAccount>(account);
         Akonadi::Job *job = new Akonadi::ItemCreateJob(item, mAccountCollection, this);
         job->setProperty("jobAccountRow", accountRowNumber);
@@ -268,7 +268,7 @@ void AccountImportPage::slotCreateAccountResult(KJob *job)
 
         button->setText(i18n("Account created, waiting for server..."));
         auto *createJob = static_cast<Akonadi::ItemCreateJob *>(job);
-        qDebug() << "OK, created. id=" << createJob->item().id();
+        qCDebug(FATCRM_CLIENT_LOG) << "OK, created. id=" << createJob->item().id();
         pa.idBeingCreated = createJob->item().id();
     }
 }

@@ -23,6 +23,7 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 #include "linkeditemsrepository.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -81,7 +82,7 @@ FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
                 line.chop(1);
                 d->mProtectedEmails << QString::fromLatin1(line);
             }
-            qDebug() << "Read" << d->mProtectedEmails.count() << "protected emails from" << filePath;
+            qCDebug(FATCRM_CLIENT_LOG) << "Read" << d->mProtectedEmails.count() << "protected emails from" << filePath;
         }
     }
 }
@@ -199,24 +200,24 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
                 if (!matchesFilter)
                     return false;
                 if (d->mProtectedEmails.contains(contact.preferredEmail())) {
-                    qDebug() << "PROTECTED BY NEWSLETTER:" << contact.preferredEmail() << "against" << (shouldDelete?"deletion":"anonymization");
+                    qCDebug(FATCRM_CLIENT_LOG) << "PROTECTED BY NEWSLETTER:" << contact.preferredEmail() << "against" << (shouldDelete?"deletion":"anonymization");
                     return false;
                 }
                 return d->mFilter.isEmpty() || contactMatchesFilter(contact, d->mFilter);
             } else {
 #if 0
                 if (contact.assembledName().contains("Richard")) {
-                    qDebug() << "Keeping" << contact.assembledName() << "because:";
+                    qCDebug(FATCRM_CLIENT_LOG) << "Keeping" << contact.assembledName() << "because:";
                     if (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) > 0)
-                        qDebug() << " account has recent opportunities";
+                        qCDebug(FATCRM_CLIENT_LOG) << " account has recent opportunities";
                     if (!d->mLinkedItemsRepository->notesForContact(contactId).isEmpty())
-                        qDebug() << " contact has notes";
+                        qCDebug(FATCRM_CLIENT_LOG) << " contact has notes";
                     if (!d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty())
-                        qDebug() << " contact has emails";
+                        qCDebug(FATCRM_CLIENT_LOG) << " contact has emails";
                     if (!descriptionIsOld(contactDescription, today))
-                        qDebug() << " contact description is recent";
+                        qCDebug(FATCRM_CLIENT_LOG) << " contact description is recent";
                     if (KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) <= 5*365)
-                        qDebug() << " created recently";
+                        qCDebug(FATCRM_CLIENT_LOG) << " created recently";
                 }
 #endif
                 return false;

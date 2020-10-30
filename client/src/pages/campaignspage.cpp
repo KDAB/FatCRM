@@ -50,7 +50,7 @@ QString CampaignsPage::reportTitle() const
 
 void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //qDebug(); QElapsedTimer dt; dt.start();
+    //qCDebug(FATCRM_CLIENT_LOG); QElapsedTimer dt; dt.start();
     //QMap<QString, QString> campaignRefMap;
     QMap<QString, QString> assignedToRefMap;
     ItemsTreeModel *treeModel = itemsTreeModel();
@@ -65,7 +65,7 @@ void CampaignsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     //ReferencedData::instance(CampaignRef)->addMap(campaignRefMap, emitChanges);
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges);
-    //qDebug() << "done," << dt.elapsed() << "ms";
+    //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
 ItemDataExtractor *CampaignsPage::itemDataExtractor() const

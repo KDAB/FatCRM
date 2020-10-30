@@ -79,11 +79,11 @@ QVector<AccountRepository::Field> AccountRepository::modifyAccount(const SugarAc
         // Existing account modified
         const SugarAccount &oldAccount = *it;
         if (oldAccount.name() != account.name()) {
-            qDebug() << "account renamed from" << oldAccount.name() << "to" << account.name();
+            qCDebug(FATCRM_CLIENT_LOG) << "account renamed from" << oldAccount.name() << "to" << account.name();
             changedFields.append(Name);
         }
         if (oldAccount.countryForGui() != account.countryForGui()) {
-            qDebug() << account.name() << ": country modified";
+            qCDebug(FATCRM_CLIENT_LOG) << account.name() << ": country modified";
             changedFields.append(Country);
         }
 

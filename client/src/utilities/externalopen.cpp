@@ -21,6 +21,7 @@
 #include "externalopen.h"
 
 #include "sugarresourceitemtransfer.h"
+#include "fatcrm_client_debug.h"
 
 #include <AkonadiCore/ServerManager>
 
@@ -33,7 +34,7 @@
 
 bool ExternalOpen::openSugarDocument(const QString &documentRevisionId, const QString &resourceIdentifier, QWidget *window)
 {
-    qDebug() << "Opening document:" << documentRevisionId << "via resource:" << resourceIdentifier;
+    qCDebug(FATCRM_CLIENT_LOG) << "Opening document:" << documentRevisionId << "via resource:" << resourceIdentifier;
 
     const auto service = Akonadi::ServerManager::agentServiceName(Akonadi::ServerManager::Resource, resourceIdentifier);
 

@@ -217,13 +217,13 @@ void ClientSettings::GroupFilters::addGroup(const ClientSettings::GroupFilters::
 
 void ClientSettings::saveHeaderView(const QString &viewId, const QByteArray &headerViewData)
 {
-    //qDebug() << "writing" << ("header/"+viewId);
+    //qCDebug(FATCRM_CLIENT_LOG) << "writing" << ("header/"+viewId);
     m_settings->setValue("header/" + viewId, headerViewData);
 }
 
 QByteArray ClientSettings::restoreHeaderView(const QString &viewId) const
 {
-    //qDebug() << "reading" << ("header/"+viewId);
+    //qCDebug(FATCRM_CLIENT_LOG) << "reading" << ("header/"+viewId);
     return m_settings->value("header/" + viewId).toByteArray();
 }
 

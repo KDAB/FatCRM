@@ -881,7 +881,7 @@ void MainWindow::slotHideOverlay()
 
 bool MainWindow::loadSavedSearch(const QString &searchName)
 {
-    qDebug() << "Loading saved search:" << searchName;
+    qCDebug(FATCRM_CLIENT_LOG) << "Loading saved search:" << searchName;
 
     // Make sure user is on the Opportunities Page
     mUi->tabWidget->setCurrentIndex(1);

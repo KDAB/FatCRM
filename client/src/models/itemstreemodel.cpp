@@ -25,6 +25,7 @@
 #include "clientsettings.h"
 #include "linkeditemsrepository.h"
 #include "collectionmanager.h"
+#include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugaraccount.h"
 #include "kdcrmdata/sugarcampaign.h"
@@ -270,7 +271,7 @@ void ItemsTreeModel::updateBackgrounds(int first, int last)
         emit dataChanged(index(first, closeDateColumn), index(last, closeDateColumn));
     }
 
-    qDebug() << "Done updating backgrounds for" << (last-first+1) << "items in" << timer.elapsed() << "ms";
+    qCDebug(FATCRM_CLIENT_LOG) << "Done updating backgrounds for" << (last-first+1) << "items in" << timer.elapsed() << "ms";
 }
 
 /**
@@ -455,7 +456,7 @@ void ItemsTreeModel::slotAccountRemoved(const QString &accountId)
             const SugarOpportunity opp = item.payload<SugarOpportunity>();
             if (opp.accountId() == accountId) {
                 // force-sync this opp (this "strange" code is unittested in forceRefreshShouldCallResource)
-                qDebug() << "opp" << opp.name() << "is using deleted account" << accountId;
+                qCDebug(FATCRM_CLIENT_LOG) << "opp" << opp.name() << "is using deleted account" << accountId;
 
                 // Clear the payload, to force a refetch from the resource
                 Item fakeItem(item.id());
@@ -467,7 +468,7 @@ void ItemsTreeModel::slotAccountRemoved(const QString &accountId)
 #endif
                 auto *modifyJob = new Akonadi::ItemModifyJob(fakeItem, this);
                 connect(modifyJob, &Akonadi::ItemModifyJob::result, this, []() {
-                    qDebug() << "ItemModifyJob is done";
+                    qCDebug(FATCRM_CLIENT_LOG) << "ItemModifyJob is done";
                 });
             }
         }
@@ -485,7 +486,7 @@ void ItemsTreeModel::slotAccountsLoaded()
         const int columnAccountName = d->mColumns.indexOf(OpportunityAccountName);
         const int firstColumn = qMin(columnCountry, columnAccountName);
         const int lastColumn = qMax(columnCountry, columnAccountName);
-        qDebug() << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
+        qCDebug(FATCRM_CLIENT_LOG) << "emit dataChanged" << 0 << firstColumn << rows-1 << lastColumn;
         emit dataChanged(index(0, firstColumn), index(rows - 1, lastColumn));
     }
 }

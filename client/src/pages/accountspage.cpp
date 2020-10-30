@@ -52,7 +52,7 @@ QString AccountsPage::reportTitle() const
 
 void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //qDebug() << this << start << end;
+    //qCDebug(FATCRM_CLIENT_LOG) << this << start << end;
     // QElapsedTimer dt; dt.start();
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> accountRefMap, assignedToRefMap;
@@ -71,7 +71,7 @@ void AccountsPage::handleNewRows(int start, int end, bool emitChanges)
     }
     ReferencedData::instance(AccountRef)->addMap(accountRefMap, emitChanges); // renamings are handled in slotDataChanged
     ReferencedData::instance(AssignedToRef)->addMap(assignedToRefMap, emitChanges); // we assume user names don't change later
-    //qDebug() << "done," << dt.elapsed() << "ms";
+    //qCDebug(FATCRM_CLIENT_LOG) << "done," << dt.elapsed() << "ms";
 }
 
 void AccountsPage::handleRemovedRows(int start, int end, bool initialLoadingDone)

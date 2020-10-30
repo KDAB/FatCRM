@@ -677,7 +677,7 @@ void Page::slotReloadCollection()
 
 void Page::slotCollectionChanged(const Akonadi::Collection &collection, const QSet<QByteArray> &attributeNames)
 {
-    qDebug() << collection.id() << attributeNames;
+    qCDebug(FATCRM_CLIENT_LOG) << collection.id() << attributeNames;
     if (mCollection.isValid() && collection == mCollection) {
         mCollection = collection;
         mCollectionManager->slotCollectionChanged(collection, attributeNames);
@@ -1017,7 +1017,7 @@ QString Page::searchText() const
 void Page::slotItemChanged(const Item &item, const QSet<QByteArray> &partIdentifiers)
 {
     // partIdentifiers is "REMOTEREVISION" or "PLD:RFC822"
-    //qDebug() << "slotItemChanged" << partIdentifiers;
+    //qCDebug(FATCRM_CLIENT_LOG) << "slotItemChanged" << partIdentifiers;
     Q_UNUSED(partIdentifiers);
     handleItemChanged(item);
 }

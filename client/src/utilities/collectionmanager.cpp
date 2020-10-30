@@ -159,7 +159,7 @@ void CollectionManager::slotCollectionFetchResult(KJob *job)
             mMainCollectionIds[int(detailsType)] = collection.id();
         }
 
-        //qDebug() << collection.contentMimeTypes() << "name" << collection.name();
+        //qCDebug(FATCRM_CLIENT_LOG) << collection.contentMimeTypes() << "name" << collection.name();
         readSupportedFields(collection);
 
         if (!readEnumDefinitionsAttributes(collection)){

@@ -133,7 +133,7 @@ QString OpportunitiesPage::reportTitle() const
 
 void OpportunitiesPage::handleNewRows(int start, int end, bool emitChanges)
 {
-    //qDebug();
+    //qCDebug(FATCRM_CLIENT_LOG);
     ItemsTreeModel *treeModel = itemsTreeModel();
     QMap<QString, QString> assignedToRefMap;
     for (int row = start; row <= end; ++row) {
