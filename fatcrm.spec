@@ -1,7 +1,7 @@
 Name:           fatcrm
-Version:        2.3.0
+Version:        2.3.1
 Release:        0
-Summary:        desktop application for SugarCRM
+Summary:        Desktop application for SugarCRM
 Source0:        %{name}-%{version}.tar.gz
 Source1:        %{name}-%{version}.tar.gz.asc
 Url:            https://github.com/KDAB/FatCRM
@@ -13,7 +13,7 @@ Packager:       Klaralvdalens Datakonsult AB (KDAB) <info@kdab.com>
 
 BuildRequires: cmake extra-cmake-modules qt5-kdsoap-devel qt5-kdreports-devel
 %if %{defined suse_version}
-Requires: akonadi
+Requires: akonadi-server
 BuildRequires:  python libxslt-tools libqt5-qtbase-devel update-desktop-files kdbusaddons-devel akonadi-server-devel kio-devel kwindowsystem-devel ktextwidgets-devel kguiaddons-devel ki18n-devel kiconthemes-devel kconfigwidgets-devel kdbusaddons-devel kcalcore-devel kcontacts-devel akonadi-contact-devel akonadi-calendar-devel kwallet-devel libicu-devel
 %endif
 
@@ -50,6 +50,9 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %install
 %make_install
 
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+
 %if %{defined suse_version}
 %suse_update_desktop_file -c org.kde.fatcrm FatCRM "Desktop application for SugarCRM" fatcrm fatcrm Utility DesktopUtility
 %suse_update_desktop_file fatcrminvoker Utility DesktopUtility
@@ -60,7 +63,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 
 %files
 %defattr(-,root,root)
-%{_sysconfdir}/xdg/fatcrm.categories
+%config %{_sysconfdir}/xdg/fatcrm.categories
 %{_libdir}/libkdcrmdata.*
 %{_libdir}/libfatcrmprivate.*
 %if %{defined suse_version}
@@ -89,6 +92,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
+* Mon Dec 07 2020 Allen Winter <allen.winter@kdab.com> 2.3.1
+- 2.3.1 release
 * Wed Sep 16 2020 Allen Winter <allen.winter@kdab.com> 2.3.0
 - 2.3.0 release
 * Sun Jun 24 2018 Allen Winter <allen.winter@kdab.com> 2.1.0

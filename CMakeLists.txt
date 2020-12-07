@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.0)
 # Project & version setup
 # 1.x was Qt4/kdelisbs4-based
 # 2.x is Qt5/KF5-based
-project(FatCRM VERSION 2.3.0)
+project(FatCRM VERSION 2.3.1)
 
 set(FatCRM_SOVERSION "1.0.0") # for libkdcrmdata
 
