@@ -8,3 +8,4 @@ MimeType=application/x-vnd.kdab.crm.contacts_csv;
 X-DocPath=fatcrminvoker/index.html
 GenericName=Wrapper application for FatCRM
 Terminal=false
+Categories=Office;Database

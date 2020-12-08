@@ -46,3 +46,4 @@ GenericName=Desktop application for SugarCRM
 # This is needed for fatcrminvoker
 X-DBUS-ServiceName=org.kde.fatcrm
 X-DBUS-StartupType=Multi
+Categories=Office;Database
