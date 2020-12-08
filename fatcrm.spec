@@ -50,13 +50,13 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %install
 %make_install
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
-
 %if %{defined suse_version}
 %suse_update_desktop_file -c org.kde.fatcrm FatCRM "Desktop application for SugarCRM" fatcrm fatcrm Utility DesktopUtility
 %suse_update_desktop_file fatcrminvoker Utility DesktopUtility
 %endif
+
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
 
 %clean
 %__rm -rf "%{buildroot}"
@@ -92,7 +92,7 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
-* Mon Dec 08 2020 Allen Winter <allen.winter@kdab.com> 2.3.2
+* Tue Dec 08 2020 Allen Winter <allen.winter@kdab.com> 2.3.2
 - 2.3.2 release
 * Mon Dec 07 2020 Allen Winter <allen.winter@kdab.com> 2.3.1
 - 2.3.1 release
