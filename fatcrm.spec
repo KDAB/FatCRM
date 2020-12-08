@@ -1,5 +1,5 @@
 Name:           fatcrm
-Version:        2.3.1
+Version:        2.3.2
 Release:        0
 Summary:        Desktop application for SugarCRM
 Source0:        %{name}-%{version}.tar.gz
@@ -92,6 +92,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
+* Mon Dec 08 2020 Allen Winter <allen.winter@kdab.com> 2.3.2
+- 2.3.2 release
 * Mon Dec 07 2020 Allen Winter <allen.winter@kdab.com> 2.3.1
 - 2.3.1 release
 * Wed Sep 16 2020 Allen Winter <allen.winter@kdab.com> 2.3.0
