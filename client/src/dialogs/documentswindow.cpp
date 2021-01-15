@@ -426,11 +426,17 @@ void DocumentsWindow::saveChanges()
 void DocumentsWindow::dragEnterEvent(QDragEnterEvent *event)
 {
     const QMimeData* mimeData = event->mimeData();
-    if (!mimeData->hasUrls() || mimeData->urls().size() > 1) {
+
+    // NOTE: Make sure to call QMimeData::urls() only once as consecutive calls are not guaranteed to return the same result (at least on Linux/XCB).
+    // Note that each call of QMimeData::urls() asks the XCB layer for the clipboard contents (which at some point thinks the clipboard is empty)
+    // It seems to be this or at least related to this bug:
+    //   https://bugreports.qt.io/browse/QTBUG-79656
+    const auto urls = mimeData->urls();
+    if (urls.isEmpty() || urls.size() > 1) {
         return; // only allow drag of one file to prevent accidental drops
     }
 
-    const QUrl url = mimeData->urls().at(0);
+    const QUrl url = urls.at(0);
     if (!url.isLocalFile()) {
         return;
     }
