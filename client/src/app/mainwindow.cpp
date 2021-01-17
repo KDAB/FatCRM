@@ -174,12 +174,15 @@ void MainWindow::slotAboutKDAB()
     dialog.setWindowTitle(tr("About KDAB"));
     dialog.setTitle(tr("Klarälvdalens Datakonsult AB (KDAB)"));
     dialog.setText(tr("<qt><p>This application is supported and maintained by KDAB</p>"
-                      "<p>KDAB, the Qt experts, provide consulting and mentoring for developing "
-                      "Qt applications from scratch and in porting from all popular and legacy "
-                      "frameworks to Qt. We continue to help develop parts of Qt and are one "
-                      "of the major contributors to the Qt Project. We can give advanced or "
-                      "standard trainings anywhere around the globe.</p>"
-                      "<p>Please visit <a href='https://www.kdab.com'>https://www.kdab.com</a> "
+                      "<p>The KDAB Group is the global No.1 software consultancy for Qt, C++ and "
+                      "OpenGL applications across desktop, embedded and mobile platforms. "
+                      "<p>"
+                      "The KDAB Group provides consulting and mentoring for developing Qt applications " "from scratch and in porting from all popular and legacy frameworks to Qt. "
+                      "We continue to help develop parts of Qt and are one of the major contributors "
+                      "the Qt Project. We can give advanced or standard trainings anywhere "
+                      "around the globe on Qt as well as C++, OpenGL, 3D and more."
+                      "<p>"
+                      "Please visit <a href='https://www.kdab.com'>https://www.kdab.com</a> "
                       "to meet the people who write code like this."
                       "</p></qt>"));
     dialog.setLogo(QStringLiteral(":/images/kdablogo.png"));

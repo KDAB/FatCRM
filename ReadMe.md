@@ -120,7 +120,10 @@ After that, go to the Settings dialog and configure your full user name at the t
 
 KDAB will happily accept external contributions, but substantial
 contributions will require a signed Copyright Assignment Agreement.
-Contact support@kdab.com for more information.
+Contact info@kdab.com for more information.
+
+Please submit your contributions or issue reports from our GitHub space at
+https://github.com/KDAB/FatCRM
 
 # License
 
@@ -134,10 +137,19 @@ A commercial license can be negotiated, contact KDAB for this.
 
 FatCRM is supported and maintained by Klarälvdalens Datakonsult AB (KDAB).
 
-KDAB, the Qt experts, provide consulting and mentoring for developing
-Qt applications from scratch and in porting from all popular and legacy
-frameworks to Qt. We continue to help develop parts of Qt and are one
-of the major contributors to the Qt Project. We can give advanced or
-standard trainings anywhere around the globe.
+The KDAB Group is the global No.1 software consultancy for Qt, C++ and
+OpenGL applications across desktop, embedded and mobile platforms.
 
-Please visit http://www.kdab.com to meet the people who write code like this.
+The KDAB Group provides consulting and mentoring for developing Qt applications
+from scratch and in porting from all popular and legacy frameworks to Qt.
+We continue to help develop parts of Qt and are one of the major contributors
+to the Qt Project. We can give advanced or standard trainings anywhere
+around the globe on Qt as well as C++, OpenGL, 3D and more.
+
+Please visit https://www.kdab.com to meet the people who write code like this.
+
+Stay up-to-date with KDAB product announcements:
+
+* [KDAB Newsletter](https://news.kdab.com)
+* [KDAB Blogs](https://www.kdab.com/category/blogs)
+* [KDAB on Twitter](https://twitter.com/KDABQt)
