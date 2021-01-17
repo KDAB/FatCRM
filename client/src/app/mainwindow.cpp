@@ -1,7 +1,7 @@
 /*
   This file is part of FatCRM, a desktop application for SugarCRM written by KDAB.
 
-  Copyright (C) 2015-2020 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
+  Copyright (C) 2015-2021 Klarälvdalens Datakonsult AB, a KDAB Group company, info@kdab.com
   Authors: David Faure <david.faure@kdab.com>
            Michel Boyer de la Giroday <michel.giroday@kdab.com>
            Kevin Krammer <kevin.krammer@kdab.com>
@@ -196,7 +196,7 @@ void MainWindow::slotAboutApp()
     dialog.setWindowTitle(tr("About FatCRM"));
     dialog.setTitle(tr("FatCRM - %1").arg(aboutData.shortDescription()));
     dialog.setText(tr("<qt><p>FatCRM is supported and maintained by KDAB</p>"
-                      "<p>(C) 2010-2020 Klarälvdalens Datakonsult AB (KDAB)</p>"
+                      "<p>(C) 2010-2021 Klarälvdalens Datakonsult AB (KDAB)</p>"
                       "<p>Version %1</p>"
                       "<p>This project is a KDAB R&D effort to create a standalone GUI for SugarCRM.</p>"
                       "<p>FatCRM is an open source project:</p>"
