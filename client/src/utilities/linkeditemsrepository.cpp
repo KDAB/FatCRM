@@ -564,7 +564,7 @@ void LinkedItemsRepository::removeDocument(const QString &id)
 
 void LinkedItemsRepository::configureItemFetchScope(Akonadi::ItemFetchScope &scope)
 {
-    scope.setFetchRemoteIdentification(false);
+    scope.setFetchRemoteIdentification(true); // remoteId() is used by slotItemRemoved
     scope.setIgnoreRetrievalErrors(true);
     scope.fetchFullPayload(true);
 }
