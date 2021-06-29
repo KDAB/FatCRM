@@ -189,8 +189,6 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
             if ((accountId.isEmpty() || (
                      (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) == 0)
                  )) &&
-                    d->mLinkedItemsRepository->notesForContact(contactId).isEmpty() &&
-                    d->mLinkedItemsRepository->emailsForContact(contactId).isEmpty() &&
                     descriptionIsOld(contactDescription, today) &&
                     KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) > 5*365) {
                 // No account -> delete

@@ -39,8 +39,8 @@ ContactFilterWidget::ContactFilterWidget(FilterProxyModel *proxyModel, bool show
             // Should match FilterProxyModel::Action
             mGDPRComboBox->addItems({
                                         i18n("All contacts"),
-                                        i18n("Candidates for GDPR deletion [no account, created 5+ years ago, old description, no notes]"),
-                                        i18n("Candidates for GDPR anonymization [created 5+ years ago, old description, no notes, no recent opps]")
+                                        i18n("Candidates for GDPR deletion [no account, created 5+ years ago, old description]"),
+                                        i18n("Candidates for GDPR anonymization [created 5+ years ago, old description, no recent opps]")
                                     });
             layout->addWidget(mGDPRComboBox);
             connect(mGDPRComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [=](int idx) {
