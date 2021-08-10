@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.3)
 
 # Project & version setup
 # 1.x was Qt4/kdelisbs4-based
@@ -6,13 +6,6 @@ cmake_minimum_required(VERSION 3.0)
 project(FatCRM VERSION 2.3.2)
 
 set(FatCRM_SOVERSION "1.0.0") # for libkdcrmdata
-
-if(POLICY CMP0028)
-  cmake_policy(SET CMP0028 NEW) # CMP0028: Double colon in target name means ALIAS or IMPORTED target.
-endif()
-if(POLICY CMP0063)
-  cmake_policy(SET CMP0063 NEW)
-endif()
 
 # we need some parts of the ECM CMake helpers
 find_package(ECM 5.38.0 REQUIRED NO_MODULE)
