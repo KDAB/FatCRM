@@ -234,7 +234,7 @@ void AccountDetails::updateLinkedItemsButtons()
         mUi->viewNotesButton->setEnabled(!accountId.isEmpty());
     }
     {
-        const auto documents = mLinkedItemsRepository->documentsForOpportunity(accountId);
+        const auto documents = mLinkedItemsRepository->documentsForAccount(accountId);
         const QString buttonText = documents.isEmpty() ? i18n("Attach Document") : i18np("Manage 1 Document", "Manage %1 Documents", documents.count());
         mUi->manageDocumentsButton->setText(buttonText);
         mUi->viewDocumentsButton->setEnabled(!documents.isEmpty());
