@@ -1,4 +1,4 @@
-find_package(KDReports REQUIRED)
+find_package(KDReports REQUIRED 2.0)
 set_package_properties(KDReports PROPERTIES
   URL "https://github.com/KDAB/KDReports"
   DESCRIPTION "Qt library for generating printable and exportable reports from code and from XML descriptions"
