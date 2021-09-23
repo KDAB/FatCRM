@@ -34,7 +34,7 @@ set_target_properties(akonadi_salesforce_resource PROPERTIES MACOSX_BUNDLE FALSE
 
 target_link_libraries(akonadi_salesforce_resource
   kdcrmdata
-  ${KDSoap_LIBRARIES}
+  KDSoap::kdsoap
   KF5::Contacts
   Qt5::DBus
   Qt5::Core

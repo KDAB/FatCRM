@@ -9,14 +9,12 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../../..
 )
 
-include_directories(${KDSoap_INCLUDE_DIR})
-
 macro(add_resources_tests)
   foreach(_testname ${ARGN})
     ecm_add_test(${_testname}.cpp TEST_NAME "${_testname}" LINK_LIBRARIES
       akonadi_sugarcrm_resource_private
       kdcrmdata
-      ${KDSoap_LIBRARIES}
+      KDSoap::kdsoap
       Qt5::Test
       Qt5::Gui
     )

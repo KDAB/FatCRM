@@ -64,7 +64,7 @@ add_library(akonadi_sugarcrm_resource_private STATIC ${sugarcrmresource_SRCS})
 
 target_link_libraries(akonadi_sugarcrm_resource_private
   kdcrmdata
-  ${KDSoap_LIBRARIES}
+  KDSoap::kdsoap
   KF5::Contacts
   KF5::CalendarCore
   Qt5::DBus
