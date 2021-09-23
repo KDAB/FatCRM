@@ -2,20 +2,8 @@
 
 add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_salesforce_resource\")
 
-set(salesforceresource_SRCS
-  salesforcecontactshandler.cpp
-  moduledebuginterface.cpp
-  salesforcemodulehandler.cpp
-  resourcedebuginterface.cpp
-  salesforceconfigdialog.cpp
-  salesforceresource.cpp
-)
-
+set(salesforceresource_SRCS)
 ecm_qt_declare_logging_category(salesforceresource_SRCS HEADER salesforceresource_debug.h IDENTIFIER FATCRM_SALESFORCERESOURCE_LOG CATEGORY_NAME log_fatcrm_salesforceresource)
-
-qt5_wrap_ui(salesforceresource_SRCS
-  salesforceconfigdialog.ui
-)
 
 install(FILES salesforceresource.desktop DESTINATION "${CMAKE_INSTALL_PREFIX}/share/akonadi/agents")
 
@@ -29,10 +17,19 @@ qt5_add_dbus_adaptor(salesforceresource_SRCS
 
 kdsoap_generate_wsdl(salesforceresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/salesforce-partner.wsdl)
 
-add_executable(akonadi_salesforce_resource ${salesforceresource_SRCS})
+add_executable(akonadi_salesforce_resource
+    ${salesforceresource_SRCS}
+    moduledebuginterface.cpp
+    resourcedebuginterface.cpp
+    salesforceconfigdialog.cpp
+    salesforceconfigdialog.ui
+    salesforcecontactshandler.cpp
+    salesforcemodulehandler.cpp
+    salesforceresource.cpp
+)
 set_target_properties(akonadi_salesforce_resource PROPERTIES MACOSX_BUNDLE FALSE)
 
-target_link_libraries(akonadi_salesforce_resource
+target_link_libraries(akonadi_salesforce_resource PRIVATE
   kdcrmdata
   KDSoap::kdsoap
   KF5::Contacts

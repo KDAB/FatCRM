@@ -5,16 +5,6 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../kdcrmdata
 )
 
-#set(testtools_SRCS
-#
-#)
-
-#add_library(testtools STATIC ${testtools_SRCS})
-#target_link_libraries(testtools
-#Qt5::Core
-#Qt5::Test
-#)
-
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR})
 
 #use these variables to control the Akonadi-based tests. by default all backends are run
@@ -28,5 +18,4 @@ add_akonadi_isolated_test(test_sugarcrmresource.cpp)
 
 target_link_libraries(test_sugarcrmresource
     kdcrmdata
-    #testtools
 )

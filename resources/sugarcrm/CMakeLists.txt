@@ -2,50 +2,9 @@
 
 add_definitions(-DTRANSLATION_DOMAIN=\"akonadi_sugarcrm_resource\")
 
-set(sugarcrmresource_SRCS
-  accountshandler.cpp
-  campaignshandler.cpp
-  contactshandler.cpp
-  createentryjob.cpp
-  currency.cpp
-  deleteentryjob.cpp
-  documentshandler.cpp
-  emailshandler.cpp
-  fetchentryjob.cpp
-  itemtransferinterface.cpp
-  leadshandler.cpp
-  listentriesjob.cpp
-  listentriesscope.cpp
-  listmodulesjob.cpp
-  loginjob.cpp
-  moduledebuginterface.cpp
-  modulehandler.cpp
-  noteshandler.cpp
-  opportunitieshandler.cpp
-  passwordhandler.cpp
-  resourcedebuginterface.cpp
-  sugarconfigdialog.cpp
-  sugarcrmresource.cpp
-  sugarjob.cpp
-  sugarsession.cpp
-  updateentryjob.cpp
-  taskshandler.cpp
-  taskaccessorpair.cpp
-  sugarprotocolbase.cpp
-  sugarsoapprotocol.cpp
-  tests/sugarmockprotocol.cpp
-  modulename.cpp
-
-  # work with local implementations until available from kdepimlibs
-  conflicthandler.cpp
-  conflictresolvedialog.cpp
-)
+set(sugarcrmresource_SRCS)
 
 ecm_qt_declare_logging_category(sugarcrmresource_SRCS HEADER sugarcrmresource_debug.h IDENTIFIER FATCRM_SUGARCRMRESOURCE_LOG CATEGORY_NAME log_fatcrm_sugarcrmresource)
-
-qt5_wrap_ui(sugarcrmresource_SRCS
-  sugarconfigdialog.ui
-)
 
 install(FILES sugarcrmresource.desktop DESTINATION "${KDE_INSTALL_DATAROOTDIR}/akonadi/agents")
 
@@ -60,34 +19,76 @@ kdsoap_generate_wsdl(sugarcrmresource_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/sugar41.w
 add_executable(akonadi_sugarcrm_resource main_sugarcrmresource.cpp)
 set_target_properties(akonadi_sugarcrm_resource PROPERTIES MACOSX_BUNDLE FALSE)
 
-add_library(akonadi_sugarcrm_resource_private STATIC ${sugarcrmresource_SRCS})
+add_library(akonadi_sugarcrm_resource_private STATIC
+    ${sugarcrmresource_SRCS}
+
+    accountshandler.cpp
+    campaignshandler.cpp
+    contactshandler.cpp
+    createentryjob.cpp
+    currency.cpp
+    deleteentryjob.cpp
+    documentshandler.cpp
+    emailshandler.cpp
+    fetchentryjob.cpp
+    itemtransferinterface.cpp
+    leadshandler.cpp
+    listentriesjob.cpp
+    listentriesscope.cpp
+    listmodulesjob.cpp
+    loginjob.cpp
+    moduledebuginterface.cpp
+    modulehandler.cpp
+    modulename.cpp
+    noteshandler.cpp
+    opportunitieshandler.cpp
+    passwordhandler.cpp
+    resourcedebuginterface.cpp
+    sugarconfigdialog.cpp
+    sugarconfigdialog.ui
+    sugarcrmresource.cpp
+    sugarjob.cpp
+    sugarprotocolbase.cpp
+    sugarsession.cpp
+    sugarsoapprotocol.cpp
+    taskaccessorpair.cpp
+    taskshandler.cpp
+    tests/sugarmockprotocol.cpp
+    updateentryjob.cpp
+
+    # work with local implementations until available from kdepimlibs
+    conflicthandler.cpp
+    conflictresolvedialog.cpp
+)
 
 target_link_libraries(akonadi_sugarcrm_resource_private
-  kdcrmdata
-  KDSoap::kdsoap
-  KF5::Contacts
-  KF5::CalendarCore
-  Qt5::DBus
-  Qt5::Core
-  Qt5::Network
-  KF5::CalendarCore
-  KF5::AkonadiAgentBase
-  KF5::AkonadiContact
-  KF5::WindowSystem
+    PRIVATE
+        kdcrmdata
+        KDSoap::kdsoap
+        KF5::CalendarCore
+        Qt5::DBus
+        Qt5::Core
+        Qt5::Network
+        KF5::CalendarCore
+        KF5::AkonadiContact
+        KF5::WindowSystem
+    PUBLIC
+        KF5::AkonadiAgentBase
+        KF5::Contacts
 )
 if(KCALENDARCORE_REQUIRES_KDE4SUPPORT)
-  target_link_libraries(akonadi_sugarcrm_resource_private
+  target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE
     KF5::KDELibs4Support
   )
 endif()
 if(USE_KWALLET)
-  target_link_libraries(akonadi_sugarcrm_resource_private
+  target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE
     KF5::Wallet
   )
 endif()
-target_link_libraries(akonadi_sugarcrm_resource_private KDReports::kdreports)
+target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE KDReports::kdreports)
 
-target_link_libraries(akonadi_sugarcrm_resource
+target_link_libraries(akonadi_sugarcrm_resource PRIVATE
   akonadi_sugarcrm_resource_private
 )
 
