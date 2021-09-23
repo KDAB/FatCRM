@@ -85,9 +85,7 @@ if(USE_KWALLET)
     KF5::Wallet
   )
 endif()
-target_link_libraries(akonadi_sugarcrm_resource_private
-  ${KDReports_LIBRARIES}
-)
+target_link_libraries(akonadi_sugarcrm_resource_private KDReports::kdreports)
 
 target_link_libraries(akonadi_sugarcrm_resource
   akonadi_sugarcrm_resource_private

@@ -125,18 +125,17 @@ add_library(fatcrmprivate
 )
 generate_export_header(fatcrmprivate BASE_NAME fatcrmprivate)
 target_link_libraries(fatcrmprivate
-  kdcrmdata
-  KF5::AkonadiWidgets
-  KF5::Contacts
-  KF5::DBusAddons
-  KF5::GuiAddons
-  KF5::KIOWidgets
-  KF5::WidgetsAddons
-  Qt5::PrintSupport
-)
-
-target_link_libraries(fatcrmprivate
-  ${KDReports_LIBRARIES}
+    PRIVATE
+        KDReports::kdreports
+        KF5::AkonadiWidgets
+        KF5::DBusAddons
+        KF5::GuiAddons
+        KF5::KIOWidgets
+        KF5::WidgetsAddons
+        Qt5::PrintSupport
+    PUBLIC
+        kdcrmdata
+        KF5::Contacts
 )
 
 if (PhoneNumber_FOUND AND ICU_FOUND)
@@ -149,8 +148,10 @@ endif()
 
 ecm_add_app_icon(fatcrm_app_icon_SRCS ICONS ${fatcrm_ICONS})
 add_executable(fatcrm ${fatcrm_app_icon_SRCS} app/main.cpp)
-target_link_libraries(fatcrm
-  fatcrmprivate
+target_link_libraries(fatcrm PRIVATE
+    fatcrmprivate
+    KDReports::kdreports
+    KF5::DBusAddons
 )
 
 install(TARGETS fatcrmprivate ${INSTALL_TARGETS_DEFAULT_ARGS})

@@ -23,7 +23,7 @@ add_executable(itemstreemodeltest itemstreemodeltest.cpp)
 target_link_libraries(itemstreemodeltest
   fatcrmprivate
   Qt5::Gui
-  KF5::AkonadiCore
+  KF5::AkonadiWidgets
   Qt5::Widgets
   kdcrmdata
 )

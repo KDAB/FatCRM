@@ -67,6 +67,14 @@ find_package(KF5WindowSystem CONFIG REQUIRED)
 find_package(KF5Wallet CONFIG REQUIRED)
 find_package(KF5ConfigWidgets CONFIG REQUIRED)
 
+find_package(KDReports CONFIG)
+set_package_properties(KDReports PROPERTIES
+  URL "https://github.com/KDAB/KDReports"
+  DESCRIPTION "Qt library for generating printable and exportable reports from code and from XML descriptions"
+  TYPE REQUIRED
+  PURPOSE "Required to generate reports."
+)
+
 find_package(PhoneNumber)
 set_package_properties(PhoneNumber PROPERTIES
   URL "https://github.com/googlei18n/libphonenumber"
