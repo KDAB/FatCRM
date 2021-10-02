@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.16)
 
 # Project & version setup
 # 1.x was Qt4/kdelisbs4-based
