@@ -140,6 +140,7 @@ target_link_libraries(fatcrmprivate
 
 if (PhoneNumber_FOUND AND ICU_FOUND)
     target_link_libraries(fatcrmprivate
+      PUBLIC
         ${PhoneNumber_LIBRARIES}
         ${PhoneNumberGeoCoding_LIBRARIES}
         ICU::uc
