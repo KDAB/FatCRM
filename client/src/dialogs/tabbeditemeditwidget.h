@@ -39,12 +39,13 @@ class TabbedItemEditWidget : public ItemEditWidgetBase
     Q_OBJECT
 
 public:
-    explicit TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent = nullptr);
+    explicit TabbedItemEditWidget(SimpleItemEditWidget *itemEditWidget, DetailsType details, QWidget *parent = nullptr);
     ~TabbedItemEditWidget() override;
 
-    // check if that can be protected instead
     Akonadi::Item item() const override;
     bool isModified() const override;
+
+protected:
     QString title() const override;
     QString detailsName() const override;
 

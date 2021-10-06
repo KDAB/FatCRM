@@ -40,7 +40,7 @@
 
 using namespace Akonadi;
 
-TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget, DetailsType details, QWidget *parent) :
+TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *itemEditWidget, DetailsType details, QWidget *parent) :
     ItemEditWidgetBase(parent),
     mType(details),
     mUi(new Ui::TabbedItemEditWidget)
@@ -54,22 +54,22 @@ TabbedItemEditWidget::TabbedItemEditWidget(SimpleItemEditWidget *ItemEditWidget,
     connect(buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close);
     layout()->addWidget(buttonBox);
 
-    ItemEditWidget->hideButtonBox();
-    mItemEditWidget = ItemEditWidget;
+    itemEditWidget->hideButtonBox();
+    mItemEditWidget = itemEditWidget;
     connect(mItemEditWidget, &ItemEditWidgetBase::dataModified, this, &TabbedItemEditWidget::dataChanged);
     connect(mItemEditWidget, &ItemEditWidgetBase::closing, this, &QWidget::close);
 
     if (mType == DetailsType::Account) {
-        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Account Details"));
+        mUi->tabWidget->insertTab(0, itemEditWidget, i18n("Account Details"));
         mUi->tabWidget->setTabText(1, i18n("Opportunities and Contacts"));
-        SugarAccount account = ItemEditWidget->item().payload<SugarAccount>();
+        SugarAccount account = itemEditWidget->item().payload<SugarAccount>();
         const int oppCount = loadAssociatedData(account.id(), DetailsType::Opportunity);
         const int contactCount = loadAssociatedData(account.id(), DetailsType::Contact);
         mUi->tabWidget->setTabEnabled(1, oppCount > 0 || contactCount > 0);
     } else if (mType == DetailsType::Opportunity) {
-        mUi->tabWidget->insertTab(0, ItemEditWidget, i18n("Opportunity Details"));
+        mUi->tabWidget->insertTab(0, itemEditWidget, i18n("Opportunity Details"));
         mUi->tabWidget->setTabText(1, i18n("Contacts"));
-        SugarOpportunity opportunity = ItemEditWidget->item().payload<SugarOpportunity>();
+        SugarOpportunity opportunity = itemEditWidget->item().payload<SugarOpportunity>();
         const int contactCount = loadAssociatedData(opportunity.accountId(), DetailsType::Contact);
         mUi->tabWidget->setTabEnabled(1, contactCount > 0);
     }

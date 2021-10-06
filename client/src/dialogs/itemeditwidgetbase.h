@@ -44,6 +44,8 @@ public:
     virtual void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) { Q_UNUSED(data); Q_UNUSED(collection); }
     virtual bool isModified() const = 0;
     virtual Akonadi::Item item() const = 0;
+
+protected:
     virtual QString title() const = 0;
     virtual QString detailsName() const = 0;
 

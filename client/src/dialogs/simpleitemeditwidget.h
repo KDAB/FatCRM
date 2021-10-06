@@ -66,11 +66,14 @@ public:
 
     void showNewItem(const QMap<QString, QString> &data, const Akonadi::Collection &collection) override;
     bool isModified() const override;
-    QString title() const override;
-    QString detailsName() const override;
-    void hideButtonBox();
     Akonadi::Item item() const override;
 
+    void hideButtonBox();
+
+    QString title() const override;
+    QString detailsName() const override;
+
+protected:
     Details *details();
 
 public Q_SLOTS:
