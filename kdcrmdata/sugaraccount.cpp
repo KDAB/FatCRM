@@ -39,52 +39,6 @@ public:
     {
     }
 
-    Private(const Private &other)
-        : QSharedData(other),
-          mEmpty(other.mEmpty),
-          mId(other.mId),
-          mName(other.mName),
-          mDateEntered(other.mDateEntered),
-          mDateModified(other.mDateModified),
-          mModifiedUserId(other.mModifiedUserId),
-          mModifiedByName(other.mModifiedByName),
-          mCreatedBy(other.mCreatedBy),
-          mCreatedByName(other.mCreatedByName),
-          mDescription(other.mDescription),
-          mDeleted(other.mDeleted),
-          mAssignedUserId(other.mAssignedUserId),
-          mAssignedUserName(other.mAssignedUserName),
-          mAccountType(other.mAccountType),
-          mIndustry(other.mIndustry),
-          mAnnualRevenue(other.mAnnualRevenue),
-          mPhoneFax(other.mPhoneFax),
-          mBillingAddressStreet(other.mBillingAddressStreet),
-          mBillingAddressCity(other.mBillingAddressCity),
-          mBillingAddressState(other.mBillingAddressState),
-          mBillingAddressPostalcode(other.mBillingAddressPostalcode),
-          mBillingAddressCountry(other.mBillingAddressCountry),
-          mRating(other.mRating),
-          mPhoneOffice(other.mPhoneOffice),
-          mPhoneAlternate(other.mPhoneAlternate),
-          mWebsite(other.mWebsite),
-          mOwnership(other.mOwnership),
-          mEmployees(other.mEmployees),
-          mTickerSymbol(other.mTickerSymbol),
-          mShippingAddressStreet(other.mShippingAddressStreet),
-          mShippingAddressCity(other.mShippingAddressCity),
-          mShippingAddressState(other.mShippingAddressState),
-          mShippingAddressPostalcode(other.mShippingAddressPostalcode),
-          mShippingAddressCountry(other.mShippingAddressCountry),
-          mEmail1(other.mEmail1),
-          mParentId(other.mParentId),
-          mParentName(other.mParentName),
-          mSicCode(other.mSicCode),
-          mCampaignId(other.mCampaignId),
-          mCampaignName(other.mCampaignName),
-          mCustomFields(other.mCustomFields)
-    {
-    }
-
     bool mEmpty = true;
 
     QString mId;
