@@ -40,6 +40,7 @@ using namespace KDSoapGenerated;
 #include <KLocalizedString>
 
 #include <QHash>
+#include <sugarcontactwrapper.h>
 
 using valueGetter = QString (*)(const KContacts::Addressee &);
 using valueSetter = void (*)(const QString &, KContacts::Addressee &);
@@ -97,7 +98,7 @@ static void setAccountName(const QString &value, KContacts::Addressee &addressee
 
 static QString getAccountId(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+    return SugarContactWrapper(addressee).accountId();
 }
 
 static void setAccountId(const QString &value, KContacts::Addressee &addressee)
@@ -107,7 +108,7 @@ static void setAccountId(const QString &value, KContacts::Addressee &addressee)
 
 static QString getAssistantName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("KADDRESSBOOK"), QStringLiteral("X-AssistantsName"));
+    return SugarContactWrapper(addressee).assistant();
 }
 
 static void setAssistantName(const QString &value, KContacts::Addressee &addressee)
@@ -117,7 +118,7 @@ static void setAssistantName(const QString &value, KContacts::Addressee &address
 
 static QString getAssistantPhone(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssistantsPhone"));
+    return SugarContactWrapper(addressee).phoneAssistant();
 }
 
 static void setAssistantPhone(const QString &value, KContacts::Addressee &addressee)
@@ -127,7 +128,7 @@ static void setAssistantPhone(const QString &value, KContacts::Addressee &addres
 
 static QString getLeadSourceName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName"));
+    return SugarContactWrapper(addressee).leadSource();
 }
 
 static void setLeadSourceName(const QString &value, KContacts::Addressee &addressee)
@@ -137,7 +138,7 @@ static void setLeadSourceName(const QString &value, KContacts::Addressee &addres
 
 static QString getCampaignName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignName"));
+    return SugarContactWrapper(addressee).campaign();
 }
 
 static void setCampaignName(const QString &value, KContacts::Addressee &addressee)
@@ -147,7 +148,7 @@ static void setCampaignName(const QString &value, KContacts::Addressee &addresse
 
 static QString getCampaignId(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignId"));
+    return SugarContactWrapper(addressee).campaignId();
 }
 
 static void setCampaignId(const QString &value, KContacts::Addressee &addressee)
@@ -157,7 +158,7 @@ static void setCampaignId(const QString &value, KContacts::Addressee &addressee)
 
 static QString getAssignedUserName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName"));
+    return SugarContactWrapper(addressee).assignedUserName();
 }
 
 static void setAssignedUserName(const QString &value, KContacts::Addressee &addressee)
@@ -167,7 +168,7 @@ static void setAssignedUserName(const QString &value, KContacts::Addressee &addr
 
 static QString getAssignedUserId(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId"));
+    return SugarContactWrapper(addressee).assignedUserId();
 }
 
 static void setAssignedUserId(const QString &value, KContacts::Addressee &addressee)
@@ -177,7 +178,7 @@ static void setAssignedUserId(const QString &value, KContacts::Addressee &addres
 
 static QString getReportsToUserName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserName"));
+    return SugarContactWrapper(addressee).reportsTo();
 }
 
 static void setReportsToUserName(const QString &value, KContacts::Addressee &addressee)
@@ -187,7 +188,7 @@ static void setReportsToUserName(const QString &value, KContacts::Addressee &add
 
 static QString getReportsToUserId(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserId"));
+    return SugarContactWrapper(addressee).reportsToId();
 }
 
 static void setReportsToUserId(const QString &value, KContacts::Addressee &addressee)
@@ -197,7 +198,7 @@ static void setReportsToUserId(const QString &value, KContacts::Addressee &addre
 
 static QString getModifiedByName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedByName"));
+    return SugarContactWrapper(addressee).modifiedByName();
 }
 
 static void setModifiedByName(const QString &value, KContacts::Addressee &addressee)
@@ -207,7 +208,7 @@ static void setModifiedByName(const QString &value, KContacts::Addressee &addres
 
 static QString getDateModified(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified"));
+    return SugarContactWrapper(addressee).dateModified();
 }
 
 static void setDateModified(const QString &value, KContacts::Addressee &addressee)
@@ -217,7 +218,7 @@ static void setDateModified(const QString &value, KContacts::Addressee &addresse
 
 static QString getModifiedUserId(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedUserId"));
+    return SugarContactWrapper(addressee).modifiedUserId();
 }
 
 static void setModifiedUserId(const QString &value, KContacts::Addressee &addressee)
@@ -227,7 +228,7 @@ static void setModifiedUserId(const QString &value, KContacts::Addressee &addres
 
 static QString getDateCreated(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"));
+    return SugarContactWrapper(addressee).dateCreated();
 }
 
 static void setDateCreated(const QString &value, KContacts::Addressee &addressee)
@@ -242,7 +243,7 @@ static void setContactId(const QString &value, KContacts::Addressee &addressee)
 
 static QString getCreatedByName(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedByName"));
+    return SugarContactWrapper(addressee).createdByName();
 }
 
 static void setCreatedByName(const QString &value, KContacts::Addressee &addressee)
@@ -252,7 +253,7 @@ static void setCreatedByName(const QString &value, KContacts::Addressee &address
 
 static QString getCreatedById(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedById"));
+    return SugarContactWrapper(addressee).createdBy();
 }
 
 static void setCreatedById(const QString &value, KContacts::Addressee &addressee)
@@ -262,7 +263,7 @@ static void setCreatedById(const QString &value, KContacts::Addressee &addressee
 
 static QString getSalutation(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"));
+    return SugarContactWrapper(addressee).salutation();
 }
 
 static void setSalutation(const QString &value, KContacts::Addressee &addressee)
@@ -272,7 +273,7 @@ static void setSalutation(const QString &value, KContacts::Addressee &addressee)
 
 static QString getOpportunityRoleFields(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-OpportunityRoleFields"));
+    return SugarContactWrapper(addressee).opportunityRoleFields();
 }
 
 static void setOpportunityRoleFields(const QString &value, KContacts::Addressee &addressee)
@@ -282,7 +283,7 @@ static void setOpportunityRoleFields(const QString &value, KContacts::Addressee 
 
 static QString getCAcceptStatusFields(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-CacceptStatusFields"));
+    return SugarContactWrapper(addressee).cAcceptStatusFields();
 }
 
 static void setCAcceptStatusFields(const QString &value, KContacts::Addressee &addressee)
@@ -292,7 +293,7 @@ static void setCAcceptStatusFields(const QString &value, KContacts::Addressee &a
 
 static QString getMAcceptStatusFields(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-MacceptStatusFields"));
+    return SugarContactWrapper(addressee).mAcceptStatusFields();
 }
 
 static void setMAcceptStatusFields(const QString &value, KContacts::Addressee &addressee)
@@ -302,7 +303,7 @@ static void setMAcceptStatusFields(const QString &value, KContacts::Addressee &a
 
 static QString getDeleted(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted"));
+    return SugarContactWrapper(addressee).deleted();
 }
 
 static void setDeleted(const QString &value, KContacts::Addressee &addressee)
@@ -312,7 +313,7 @@ static void setDeleted(const QString &value, KContacts::Addressee &addressee)
 
 static QString getDoNotCall(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall"));
+    return SugarContactWrapper(addressee).doNotCall();
 }
 
 static void setDoNotCall(const QString &value, KContacts::Addressee &addressee)
@@ -322,7 +323,7 @@ static void setDoNotCall(const QString &value, KContacts::Addressee &addressee)
 
 static QString getInvalidEmail(const KContacts::Addressee &addressee)
 {
-    return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail"));
+    return SugarContactWrapper(addressee).invalidEmail();
 }
 
 static void setInvalidEmail(const QString &value, KContacts::Addressee &addressee)
@@ -347,7 +348,7 @@ static QString getBirthday(const KContacts::Addressee &addressee)
 
 static void setBirthday(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.setBirthday(QDateTime(KDCRMUtils::dateFromString(value)));
+    addressee.setBirthday(KDCRMUtils::dateFromString(value));
 }
 
 static QString getEmail1(const KContacts::Addressee &addressee)

@@ -34,6 +34,7 @@
 #include <KContacts/Addressee>
 
 #include <KLocalizedString>
+#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 
@@ -79,13 +80,14 @@ void ContactsPage::handleNewRows(int start, int end, bool emitChanges)
         const Item item = treeModel->data(index, EntityTreeModel::ItemRole).value<Item>();
         if (item.hasPayload<KContacts::Addressee>()) {
             const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
+            const SugarContactWrapper contactWrapper(addressee);
+            const QString id = contactWrapper.id();
             if (id.isEmpty()) { // newly created, not ID yet
                 continue;
             }
             const QString fullName = tr("%1 %2 (%3)", "GIVEN_NAME FAMILY_NAME (ORG)").arg(addressee.givenName(), addressee.familyName(), addressee.organization());
             contactRefMap.insert(id, fullName);
-            assignedToRefMap.insert(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
+            assignedToRefMap.insert(contactWrapper.assignedUserId(), contactWrapper.assignedUserName());
             linkedItemsRepository()->addContact(addressee);
         }
     }
@@ -98,8 +100,9 @@ void ContactsPage::handleItemChanged(const Item &item)
 {
     Q_ASSERT(item.hasPayload<KContacts::Addressee>());
     const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+    const SugarContactWrapper contactWrapper(addressee);
     const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
-    const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
+    const QString id = contactWrapper.id();
     if (!id.isEmpty()) {
         const int idx = mPendingContactsToOpen.indexOf(item.id());
         if (idx > -1) {
@@ -107,7 +110,7 @@ void ContactsPage::handleItemChanged(const Item &item)
             openWidgetForItem(item, DetailsType::Contact);
         }
         ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
-        ReferencedData::instance(AssignedToRef)->setReferencedData(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId")), addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName")));
+        ReferencedData::instance(AssignedToRef)->setReferencedData(contactWrapper.assignedUserId(), contactWrapper.assignedUserName());
         linkedItemsRepository()->updateContact(addressee);
     }
 }

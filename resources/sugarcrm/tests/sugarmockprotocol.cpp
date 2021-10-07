@@ -30,6 +30,7 @@
 #include "sugarsession.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include <QtDBus/QDBusConnection>
+#include <sugarcontactwrapper.h>
 
 SugarMockProtocol::SugarMockProtocol()
     : mLastTimeStamp(QDateTime(QDate(2000, 1, 1), QTime(0, 0, 0)))
@@ -184,9 +185,10 @@ QList<KDSoapGenerated::TNS__Entry_value> SugarMockProtocol::listContacts(bool in
 {
     QList<KDSoapGenerated::TNS__Entry_value> items;
     for (const KContacts::Addressee &contact : mContacts) {
-        if ((contact.custom("FATCRM", "X-Deleted").isEmpty() || includeDeleted) && KDCRMUtils::dateTimeFromString(contact.custom("FATCRM", "X-DateModified")) >= timestamp) {
+        const SugarContactWrapper contactWrapper(contact);
+        if ((contactWrapper.deleted().isEmpty() || includeDeleted) && KDCRMUtils::dateTimeFromString(contactWrapper.dateModified()) >= timestamp) {
             KDSoapGenerated::TNS__Entry_value entryValue;
-            const QString id = contact.custom("FATCRM", "X-ContactId");
+            const QString id = contactWrapper.id();
             entryValue.setId(id);
             entryValue.setModule_name("Contacts");
             KDSoapGenerated::TNS__Name_value_list nvl = ContactsHandler::addresseeToNameValueList(contact);

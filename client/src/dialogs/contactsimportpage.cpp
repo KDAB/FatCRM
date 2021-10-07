@@ -35,6 +35,7 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QRadioButton>
+#include <sugarcontactwrapper.h>
 
 namespace {
 
@@ -130,7 +131,7 @@ QString formattedContact(const KContacts::Addressee &addressee, bool withAddress
     }
 
     if (withAddress) {
-        const QString id = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+        const QString id = SugarContactWrapper(addressee).accountId();
         const SugarAccount account = AccountRepository::instance()->accountById(id);
 
         QStringList addressParts;
@@ -217,8 +218,9 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     mImportedAddressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
     mImportedContactLabel->setText(formattedContact(mImportedAddressee, true));
 
-    if (!mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")).isEmpty()) {
-        mUpdateCheckBoxes.prefix = addFieldCheckBox(mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
+    SugarContactWrapper contactWrapper(mImportedAddressee);
+    if (!contactWrapper.salutation().isEmpty()) {
+        mUpdateCheckBoxes.prefix = addFieldCheckBox(contactWrapper.salutation());
     }
 
     if (!mImportedAddressee.givenName().isEmpty()) {
@@ -357,6 +359,9 @@ void MergeWidget::updateFinalContact()
     int addressFlags = IsNormal;
     int jobTitleFlags = IsNormal;
 
+    const SugarContactWrapper importedContactWrapper(mImportedAddressee);
+    SugarContactWrapper finalContactWrapper(mFinalContact);
+
     if (index == ExcludeContact) {
         // do nothing
     } else if (index == CreateNewContact) {
@@ -365,7 +370,7 @@ void MergeWidget::updateFinalContact()
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             prefixFlags = IsNew;
-            mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
+            mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), importedContactWrapper.salutation());
         }
 
         if (mUpdateCheckBoxes.givenName && mUpdateCheckBoxes.givenName->isChecked()) {
@@ -420,9 +425,9 @@ void MergeWidget::updateFinalContact()
         mFinalContact.setNote(assemble(mFinalContact.note(), mImportedAddressee.note())); // add description coming from the CSV
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
-            if (mFinalContact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")) != mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"))) {
+            if (finalContactWrapper.salutation() != importedContactWrapper.salutation()) {
                 prefixFlags = (mFinalContact.prefix().isEmpty() ? IsNew : IsModified);
-                mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), mImportedAddressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")));
+                mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), importedContactWrapper.salutation());
             }
         }
 
@@ -467,7 +472,7 @@ void MergeWidget::updateFinalContact()
     if (index == ExcludeContact) {
         mFinalContactLabel->setText(QString());
     } else {
-        mFinalContactLabel->setText(formattedContact(mFinalContact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation")), prefixFlags,
+        mFinalContactLabel->setText(formattedContact(finalContactWrapper.salutation(), prefixFlags,
                                                      mFinalContact.givenName(), givenNameFlags,
                                                      mFinalContact.familyName(), familyNameFlags,
                                                      mFinalContact.title(), jobTitleFlags,

@@ -25,6 +25,7 @@
 #include <KContacts/Addressee>
 
 #include <KLocalizedString>
+#include <sugarcontactwrapper.h>
 
 ContactDataExtractor::ContactDataExtractor()
 {
@@ -39,8 +40,8 @@ QString ContactDataExtractor::itemAddress() const
 QString ContactDataExtractor::idForItem(const Akonadi::Item &item) const
 {
     if (item.hasPayload<KContacts::Addressee>()) {
-        KContacts::Addressee contact = item.payload<KContacts::Addressee>();
-        return contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
+        const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
+        return SugarContactWrapper(contact).id();
     }
     return QString();
 }

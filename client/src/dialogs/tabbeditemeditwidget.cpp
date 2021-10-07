@@ -37,6 +37,7 @@
 #include <QPushButton>
 #include <QStringListModel>
 #include <QVBoxLayout>
+#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 
@@ -136,7 +137,7 @@ int TabbedItemEditWidget::loadAssociatedData(const QString &accountId, DetailsTy
             }
         } else if (type == DetailsType::Contact) {
             const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
-            if (addressee.custom("FATCRM", "X-AccountId") == accountId) {
+            if (SugarContactWrapper(addressee).accountId() == accountId) {
                 list << addressee.assembledName();
                 mItemsMap.insert(addressee.assembledName(), qMakePair(index, type));
             }

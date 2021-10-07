@@ -8,6 +8,7 @@ add_library(kdcrmdata SHARED
     kdcrmfields.cpp
     sugaraccount.cpp
     sugaraccountio.cpp
+    sugarcontactwrapper.cpp
     sugardocument.cpp
     sugardocumentio.cpp
     sugaropportunity.cpp

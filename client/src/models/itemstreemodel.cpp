@@ -57,6 +57,7 @@
 #include <QElapsedTimer>
 #include <QHash>
 #include <QScopedValueRollback>
+#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 
@@ -629,6 +630,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
     }
 
     const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
+    const SugarContactWrapper contactWrapper(addressee);
 
     if ((role == Qt::DisplayRole) || (role == Qt::EditRole)) {
         switch (columnTypes().at(column)) {
@@ -636,11 +638,9 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
             return addressee.assembledName();
         case Title:
             return addressee.title();
-        case Account: {
+        case Account:
             // not using addressee.organization() since that doesn't follow account renames/deletions
-            const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
-            return ReferencedData::instance(AccountRef)->referencedData(accountId);
-        }
+            return ReferencedData::instance(AccountRef)->referencedData(contactWrapper.accountId());
         case PreferredEmail:
             return addressee.preferredEmail();
         case PhoneWork:
@@ -650,26 +650,25 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
         case Country:
             return countryForContact(addressee);
         case CreationDate: {
-            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated")));
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(contactWrapper.dateCreated());
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
         }
         case LastModifiedDate:
         {
-            const QDateTime dt = KDCRMUtils::dateTimeFromString(addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified")));
+            const QDateTime dt = KDCRMUtils::dateTimeFromString(contactWrapper.dateModified());
             if (role == Qt::DisplayRole)
                 return KDCRMUtils::formatDate(dt.date());
             return dt; // for sorting
         }
         case NumberOfOpportunities:
         {
-            const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
-            return mLinkedItemsRepository->opportunitiesForAccount(accountId).count();
+            return mLinkedItemsRepository->opportunitiesForAccount(contactWrapper.accountId()).count();
         }
         case NumberOfDocumentsNotesEmails:
         {
-            const QString accountId = addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+            const QString accountId = contactWrapper.accountId();
             // The goal is to find those with 0 of each (for GDPR cleanup purposes)
             // so I'm not doing 3 different columns, for now.
             return mLinkedItemsRepository->documentsForAccount(accountId).count() +
@@ -677,9 +676,9 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
                     mLinkedItemsRepository->emailsForAccount(accountId).count();
         }
         case LeadSource:
-            return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName"));
+            return contactWrapper.leadSource();
         case AssignedTo:
-            return addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName"));
+            return contactWrapper.assignedUserName();
         default:
             return QVariant();
         }
@@ -688,7 +687,7 @@ QVariant ItemsTreeModel::contactData(const Item &item, int column, int role) con
     if (role == Qt::FontRole) {
         switch (columnTypes().at(column)) {
         case PreferredEmail:
-            if (addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail")) == QLatin1String("1")) {
+            if (contactWrapper.invalidEmail() == QLatin1String("1")) {
                 QFont f;
                 f.setStrikeOut(true);
                 return f;

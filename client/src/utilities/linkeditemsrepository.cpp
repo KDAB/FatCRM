@@ -29,6 +29,7 @@
 #include <AkonadiCore/Monitor>
 
 #include <QStringList>
+#include <sugarcontactwrapper.h>
 
 #include "fatcrm_client_debug.h"
 
@@ -441,14 +442,9 @@ QVector<SugarOpportunity> LinkedItemsRepository::opportunitiesForAccount(const Q
     return mAccountOpportunitiesHash.value(accountId);
 }
 
-static QString contactAccountId(const KContacts::Addressee &contact)
-{
-    return contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
-}
-
 void LinkedItemsRepository::addContact(const KContacts::Addressee &contact)
 {
-    mAccountContactsHash[contactAccountId(contact)].push_back(contact);
+    mAccountContactsHash[SugarContactWrapper(contact).id()].push_back(contact);
 }
 
 static bool eraseContactByUid(QVector<KContacts::Addressee> &vec, const QString &uid)
@@ -465,7 +461,7 @@ static bool eraseContactByUid(QVector<KContacts::Addressee> &vec, const QString 
 
 void LinkedItemsRepository::removeContact(const KContacts::Addressee &contact)
 {
-    auto & contacts = mAccountContactsHash[contactAccountId(contact)];
+    auto & contacts = mAccountContactsHash[SugarContactWrapper(contact).id()];
     eraseContactByUid(contacts, contact.uid());
 }
 

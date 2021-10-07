@@ -38,6 +38,7 @@
 #include <KLocalizedString>
 #include <QCoreApplication>
 #include <QFile>
+#include <sugarcontactwrapper.h>
 
 static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);
@@ -172,8 +173,9 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
         Q_ASSERT(item.hasPayload<KContacts::Addressee>());
         const KContacts::Addressee contact = item.payload<KContacts::Addressee>();
         if (d->mGDPRFilterAction != NoAction) {
-            const QString contactId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"));
-            const QString accountId = contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"));
+            const SugarContactWrapper contactWrapper(contact);
+            const QString contactId = contactWrapper.id();
+            const QString accountId = contactWrapper.accountId();
             Q_ASSERT(!contactId.isEmpty());
             const QString accountType = AccountRepository::instance()->accountById(accountId).accountType();
             if (accountType == "Partner" || accountType == "Competitor" || accountType == "Other") {
@@ -190,7 +192,7 @@ bool FilterProxyModel::filterAcceptsRow(int row, const QModelIndex &parent) cons
                      (numRecentOpportunities(d->mLinkedItemsRepository->opportunitiesForAccount(accountId)) == 0)
                  )) &&
                     descriptionIsOld(contactDescription, today) &&
-                    KDCRMUtils::dateTimeFromString(contact.custom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"))).date().daysTo(today) > 5*365) {
+                    KDCRMUtils::dateTimeFromString(contactWrapper.dateCreated()).date().daysTo(today) > 5*365) {
                 // No account -> delete
                 // Otherwise -> anonymize
                 const bool shouldDelete = accountId.isEmpty();
