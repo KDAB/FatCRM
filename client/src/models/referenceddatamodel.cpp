@@ -145,11 +145,11 @@ QVariant ReferencedDataModel::data(const QModelIndex &index, int role) const
         }
         --row;
 
-        const QPair<QString, QString> pair = d->mData->data(row);
+        const KeyValue keyValue = d->mData->data(row);
 
         switch (role) {
-        case Qt::UserRole: return pair.first;
-        case Qt::DisplayRole: return elideText(pair.second);
+        case Qt::UserRole: return keyValue.key;
+        case Qt::DisplayRole: return elideText(keyValue.value);
         }
 
         return QVariant();

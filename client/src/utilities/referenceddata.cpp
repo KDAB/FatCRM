@@ -26,17 +26,6 @@
 #include <QMap>
 #include <QPair>
 
-struct KeyValue
-{
-    explicit KeyValue(const QString &k = QString(), const QString &v = QString())
-        : key(k), value(v) {}
-    QString key;
-    QString value;
-    bool operator<(const KeyValue &other) const { return key < other.key; }
-    static bool lessThan(const KeyValue &first, const KeyValue &other) { return first.key < other.key; }
-};
-
-
 class KeyValueVector : public QVector<KeyValue>
 {
 public:
@@ -184,13 +173,12 @@ void ReferencedData::removeReferencedData(const QString &id, bool emitChanges)
     }
 }
 
-QPair<QString, QString> ReferencedData::data(int row) const
+KeyValue ReferencedData::data(int row) const
 {
     if (row >= 0 && row < d->mVector.count()) {
-        const KeyValue &it = d->mVector.at(row);
-        return qMakePair(it.key, it.value);
+        return d->mVector.at(row);
     }
-    return qMakePair(QString(), QString());
+    return KeyValue{};
 }
 
 int ReferencedData::count() const

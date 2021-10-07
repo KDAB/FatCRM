@@ -28,8 +28,17 @@
 
 #include <QObject>
 
-template <typename K, typename V> struct QPair;
 template <typename K, typename V> class QMap;
+
+struct KeyValue
+{
+    explicit KeyValue(const QString &k = QString(), const QString &v = QString())
+        : key(k), value(v) {}
+    QString key;
+    QString value;
+    bool operator<(const KeyValue &other) const { return key < other.key; }
+    static bool lessThan(const KeyValue &first, const KeyValue &other) { return first.key < other.key; }
+};
 
 /**
  * @brief Per-type singleton holding all reference data, for comboboxes
@@ -55,7 +64,7 @@ public:
 
     QString referencedData(const QString &id) const;
 
-    QPair<QString, QString> data(int row) const;
+    KeyValue data(int row) const;
     int count() const;
 
 
