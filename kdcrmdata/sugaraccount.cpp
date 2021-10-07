@@ -81,6 +81,9 @@ public:
     QString mCampaignId;
     QString mCampaignName;
     QMap<QString, QString> mCustomFields;
+
+    // cached values
+    mutable QString mCachedCleanAccountName;
 };
 
 SugarAccount::SugarAccount()
@@ -154,6 +157,9 @@ QString SugarAccount::key() const
 
 QString SugarAccount::cleanAccountName() const
 {
+    if (!d->mCachedCleanAccountName.isEmpty())
+        return d->mCachedCleanAccountName;
+
     QString result = d->mName;
     for (int i = 0; i < s_extensionCount; ++i) {
         const QString extension = s_extensions[i];
@@ -172,7 +178,8 @@ QString SugarAccount::cleanAccountName() const
             result.truncate(pos);
         }
     }
-    return result.toLower();
+    d->mCachedCleanAccountName = result.toLower();
+    return d->mCachedCleanAccountName;
 }
 
 QString SugarAccount::countryForGui() const
@@ -221,6 +228,7 @@ void SugarAccount::setName(const QString &name)
 {
     d->mEmpty = false;
     d->mName = name;
+    d->mCachedCleanAccountName.clear(); // trigger recalc on next use
 }
 
 QString SugarAccount::name() const
