@@ -131,10 +131,12 @@ target_link_libraries(fatcrmprivate
         KF5::DBusAddons
         KF5::GuiAddons
         KF5::KIOWidgets
-        KF5::WidgetsAddons
+        KF5::TextWidgets
         Qt5::PrintSupport
+        KF5::IconThemes
     PUBLIC
         kdcrmdata
+        KF5::WidgetsAddons # KDateComboBox
         KF5::Contacts
 )
 
@@ -153,6 +155,7 @@ target_link_libraries(fatcrm PRIVATE
     fatcrmprivate
     KDReports::kdreports
     KF5::DBusAddons
+    KF5::WidgetsAddons
 )
 
 install(TARGETS fatcrmprivate ${INSTALL_TARGETS_DEFAULT_ARGS})

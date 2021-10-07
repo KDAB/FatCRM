@@ -23,16 +23,12 @@ add_library(kdcrmdata SHARED
 )
 generate_export_header(kdcrmdata BASE_NAME kdcrmdata)
 
-target_link_libraries(kdcrmdata PUBLIC
+target_link_libraries(kdcrmdata
+PUBLIC
   Qt5::Core
-  Qt5::DBus
-  KF5::AkonadiCore
+  KF5::AkonadiCore      # Akonadi::Attribute
   KF5::I18n
-  KF5::ConfigCore
-  KF5::Codecs
-  KF5::IconThemes
-  KF5::WidgetsAddons
-  KF5::TextWidgets
+  KF5::Contacts
 )
 
 set_target_properties(kdcrmdata PROPERTIES
