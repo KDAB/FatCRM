@@ -26,17 +26,6 @@
 #include <QMap>
 #include <QPair>
 
-class KeyValueVector : public QVector<KeyValue>
-{
-public:
-    inline iterator binaryFind(const QString& key) {
-        return qBinaryFind(begin(), end(), KeyValue(key, QString()));
-    }
-    inline const_iterator constBinaryFind(const QString& key) const {
-        return qBinaryFind(constBegin(), constEnd(), KeyValue(key, QString()));
-    }
-};
-
 class ReferencedData::Private
 {
 public:
@@ -46,7 +35,7 @@ public:
     }
 
 public:
-    KeyValueVector mVector;
+    QVector<KeyValue> mVector;
     const ReferencedDataType mType;
 };
 
@@ -54,7 +43,10 @@ public:
 class ReferenceDataMap
 {
 public:
+    ReferenceDataMap() = default;
     ~ReferenceDataMap() { qDeleteAll(map); }
+    ReferenceDataMap(const ReferenceDataMap &other) = delete;
+    ReferenceDataMap& operator=(const ReferenceDataMap &other) = delete;
     QMap<ReferencedDataType, ReferencedData *> map;
 };
 
@@ -102,8 +94,8 @@ void ReferencedData::setReferencedData(const QString &id, const QString &data)
 
 void ReferencedData::setReferencedDataInternal(const QString &id, const QString &data, bool emitChanges)
 {
-    KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
-    if (findIt != d->mVector.end()) {
+    auto findIt = std::lower_bound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
+    if (findIt != d->mVector.end() && findIt->key == id) {
         if (data != findIt->value) {
             findIt->value = data;
             if (emitChanges) {
@@ -111,7 +103,6 @@ void ReferencedData::setReferencedDataInternal(const QString &id, const QString 
             }
         }
     } else {
-        findIt = qLowerBound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
         const int row = findIt - d->mVector.begin();
         if (emitChanges) {
             emit rowsAboutToBeInserted(row, row);
@@ -151,8 +142,8 @@ void ReferencedData::addMap(const QMap<QString, QString> &idDataMap, bool emitCh
 
 QString ReferencedData::referencedData(const QString &id) const
 {
-    KeyValueVector::const_iterator findIt = d->mVector.constBinaryFind(id);
-    if (findIt != d->mVector.constEnd()) {
+    auto findIt = std::lower_bound(d->mVector.cbegin(), d->mVector.cend(), KeyValue(id), KeyValue::lessThan);
+    if (findIt != d->mVector.constEnd() && findIt->key == id) {
         return findIt->value;
     }
     return QString();
@@ -160,8 +151,8 @@ QString ReferencedData::referencedData(const QString &id) const
 
 void ReferencedData::removeReferencedData(const QString &id, bool emitChanges)
 {
-    KeyValueVector::iterator findIt = d->mVector.binaryFind(id);
-    if (findIt != d->mVector.end()) {
+    auto findIt = std::lower_bound(d->mVector.begin(), d->mVector.end(), KeyValue(id), KeyValue::lessThan);
+    if (findIt != d->mVector.end() && findIt->key == id) {
         const int row = findIt - d->mVector.begin();
         if (emitChanges) {
             emit rowsAboutToBeRemoved(row, row);
