@@ -215,10 +215,10 @@ MergeWidget::MergeWidget(const SugarAccount &account, const KContacts::Addressee
     mImportedContactLabel->setWordWrap(true);
     mImportedContactLayout->addWidget(mImportedContactLabel);
 
-    mImportedAddressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
+    SugarContactWrapper contactWrapper(mImportedAddressee);
+    contactWrapper.setAccountId(mAccount.id());
     mImportedContactLabel->setText(formattedContact(mImportedAddressee, true));
 
-    SugarContactWrapper contactWrapper(mImportedAddressee);
     if (!contactWrapper.salutation().isEmpty()) {
         mUpdateCheckBoxes.prefix = addFieldCheckBox(contactWrapper.salutation());
     }
@@ -370,7 +370,7 @@ void MergeWidget::updateFinalContact()
 
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             prefixFlags = IsNew;
-            mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), importedContactWrapper.salutation());
+            finalContactWrapper.setSalutation(importedContactWrapper.salutation());
         }
 
         if (mUpdateCheckBoxes.givenName && mUpdateCheckBoxes.givenName->isChecked()) {
@@ -417,7 +417,7 @@ void MergeWidget::updateFinalContact()
         mFinalContact.removeAddress(mFinalContact.address(KContacts::Address::Work|KContacts::Address::Pref));
         mFinalContact.insertAddress(address);
 
-        mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), mAccount.id());
+        finalContactWrapper.setAccountId(mAccount.id());
     } else {
         mFinalContact = mPossibleMatches.at(index).contact;
 
@@ -427,7 +427,7 @@ void MergeWidget::updateFinalContact()
         if (mUpdateCheckBoxes.prefix && mUpdateCheckBoxes.prefix->isChecked()) {
             if (finalContactWrapper.salutation() != importedContactWrapper.salutation()) {
                 prefixFlags = (mFinalContact.prefix().isEmpty() ? IsNew : IsModified);
-                mFinalContact.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), importedContactWrapper.salutation());
+                finalContactWrapper.setSalutation(importedContactWrapper.salutation());
             }
         }
 

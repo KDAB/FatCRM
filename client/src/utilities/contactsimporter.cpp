@@ -33,6 +33,7 @@
 #include <QLocale>
 #include <QString>
 #include <QTextCodec>
+#include <sugarcontactwrapper.h>
 
 #include <config-phonenumber.h>
 
@@ -117,6 +118,7 @@ bool ContactsImporter::importFile(const QString &fileName)
         }
 
         KContacts::Addressee addressee;
+        SugarContactWrapper contactWrapper(addressee);
         const QString givenName = builder.data(row, 0).trimmed();
         if (!givenName.isEmpty())
             addressee.setGivenName(givenName);
@@ -127,7 +129,7 @@ bool ContactsImporter::importFile(const QString &fileName)
 
         const QString prefix = builder.data(row, 2).trimmed();
         if (!prefix.isEmpty())
-            addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), prefix);
+            contactWrapper.setSalutation(prefix);
 
         const QString phoneNumber = builder.data(row, 3).trimmed();
         if (!phoneNumber.isEmpty())

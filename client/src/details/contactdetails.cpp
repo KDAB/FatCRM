@@ -217,7 +217,7 @@ QMap<QString, QString> ContactDetails::data(const Akonadi::Item &item) const
 
 QMap<QString, QString> ContactDetails::contactData(const KContacts::Addressee &addressee) const
 {
-    SugarContactWrapper contactWrapper(addressee);
+    const SugarContactWrapper contactWrapper(addressee);
     QMap<QString, QString> data;
     data.insert(KDCRMFields::salutation(), contactWrapper.salutation());
     data.insert(KDCRMFields::firstName(), addressee.givenName());
@@ -301,6 +301,7 @@ QMap<QString, QString> ContactDetails::fillAddressFieldsMap(QGroupBox *box) cons
 void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const
 {
     KContacts::Addressee addressee;
+    SugarContactWrapper contactWrapper(addressee);
     if (item.hasPayload<KContacts::Addressee>()) {
         // start from the existing item (to keep custom fields not shown in GUI, I suppose)
         addressee = item.payload<KContacts::Addressee>();
@@ -316,7 +317,7 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.setTitle(data.value(KDCRMFields::title()));
     addressee.setDepartment(data.value(KDCRMFields::department()));
     addressee.setOrganization(data.value(KDCRMFields::accountName()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId"), data.value(KDCRMFields::accountId()));
+    contactWrapper.setAccountId(data.value(KDCRMFields::accountId()));
     QStringList emails;
     emails << data.value(KDCRMFields::email1()) // first one is preferred one
            << data.value(KDCRMFields::email2());
@@ -348,29 +349,29 @@ void ContactDetails::updateItem(Akonadi::Item &item, const QMap<QString, QString
     addressee.setBirthday(KDCRMUtils::dateFromString(data.value(KDCRMFields::birthdate())));
 
     addressee.setNote(data.value(KDCRMFields::description()));
-    addressee.insertCustom(QStringLiteral("KADDRESSBOOK"), QStringLiteral("X-AssistantsName"), data.value(KDCRMFields::assistant()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssistantsPhone"), data.value(KDCRMFields::phoneAssistant()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-LeadSourceName"), data.value(KDCRMFields::leadSource()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignName"), data.value(KDCRMFields::campaign()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CampaignId"), data.value(KDCRMFields::campaignId()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CacceptStatusFields"), data.value(KDCRMFields::cAcceptStatusFields()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-MacceptStatusFields"), data.value(KDCRMFields::mAcceptStatusFields()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserId"), data.value(KDCRMFields::assignedUserId()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-AssignedUserName"), data.value(KDCRMFields::assignedUserName()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserName"), data.value(KDCRMFields::reportsTo()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ReportsToUserId"), data.value(KDCRMFields::reportsToId()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-OpportunityRoleFields"), data.value(KDCRMFields::opportunityRoleFields()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedByName"), data.value(KDCRMFields::modifiedByName()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DateModified"), data.value(KDCRMFields::dateModified()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ModifiedUserId"), data.value(KDCRMFields::modifiedUserId()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DateCreated"), data.value(KDCRMFields::dateEntered()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedByName"), data.value(KDCRMFields::createdByName()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-CreatedById"), data.value(KDCRMFields::createdBy()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"), data.value(KDCRMFields::id()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Salutation"), data.value(KDCRMFields::salutation()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-Deleted"), data.value(KDCRMFields::deleted()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-DoNotCall"), data.value(KDCRMFields::doNotCall()));
-    addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-InvalidEmail"), data.value(KDCRMFields::invalidEmail()));
+    contactWrapper.setAssistant(data.value(KDCRMFields::assistant()));
+    contactWrapper.setPhoneAssistant(data.value(KDCRMFields::phoneAssistant()));
+    contactWrapper.setLeadSource(data.value(KDCRMFields::leadSource()));
+    contactWrapper.setCampaign(data.value(KDCRMFields::campaign()));
+    contactWrapper.setCampaignId(data.value(KDCRMFields::campaignId()));
+    contactWrapper.setCAcceptStatusFields(data.value(KDCRMFields::cAcceptStatusFields()));
+    contactWrapper.setMAcceptStatusFields(data.value(KDCRMFields::mAcceptStatusFields()));
+    contactWrapper.setAssignedUserId(data.value(KDCRMFields::assignedUserId()));
+    contactWrapper.setAssignedUserName(data.value(KDCRMFields::assignedUserName()));
+    contactWrapper.setReportsTo(data.value(KDCRMFields::reportsTo()));
+    contactWrapper.setReportsToId(data.value(KDCRMFields::reportsToId()));
+    contactWrapper.setOpportunityRoleFields(data.value(KDCRMFields::opportunityRoleFields()));
+    contactWrapper.setModifiedByName(data.value(KDCRMFields::modifiedByName()));
+    contactWrapper.setDateModified(data.value(KDCRMFields::dateModified()));
+    contactWrapper.setModifiedUserId(data.value(KDCRMFields::modifiedUserId()));
+    contactWrapper.setDateEntered(data.value(KDCRMFields::dateEntered()));
+    contactWrapper.setCreatedByName(data.value(KDCRMFields::createdByName()));
+    contactWrapper.setCreatedBy(data.value(KDCRMFields::createdBy()));
+    contactWrapper.setId(data.value(KDCRMFields::id()));
+    contactWrapper.setSalutation(data.value(KDCRMFields::salutation()));
+    contactWrapper.setDeleted(data.value(KDCRMFields::deleted()));
+    contactWrapper.setDoNotCall(data.value(KDCRMFields::doNotCall()));
+    contactWrapper.setInvalidEmail(data.value(KDCRMFields::invalidEmail()));
 
     item.setMimeType(KContacts::Addressee::mimeType());
     item.setPayload<KContacts::Addressee>(addressee);
