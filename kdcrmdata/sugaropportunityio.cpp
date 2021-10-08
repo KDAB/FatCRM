@@ -33,6 +33,8 @@
 #include <QIODevice>
 #include <QXmlStreamWriter>
 
+static const char s_primaryContactIdKey[] = "primary_contact_id";
+
 SugarOpportunityIO::SugarOpportunityIO()
 {
 }
@@ -80,6 +82,8 @@ void SugarOpportunityIO::readOpportunity(SugarOpportunity &opportunity)
             if (key == QLatin1String("nextCallDate")) {
                 // compat code, fixing previous mistake
                 opportunity.setCustomField(KDCRMFields::nextCallDate(), value);
+            } else if (key == QLatin1String(s_primaryContactIdKey)) {
+                opportunity.setPrimaryContactId(value);
             } else {
                 opportunity.setCustomField(key, value);
             }
@@ -111,6 +115,9 @@ bool SugarOpportunityIO::writeSugarOpportunity(const SugarOpportunity &opportuni
     for (auto cit = customFields.constBegin(); cit != customFields.constEnd(); ++cit ) {
         writer.writeTextElement(cit.key(), cit.value());
     }
+
+    if (!opportunity.primaryContactId().isEmpty())
+        writer.writeTextElement(s_primaryContactIdKey, opportunity.primaryContactId());
 
     writer.writeEndDocument();
 

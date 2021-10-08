@@ -341,6 +341,15 @@ public:
      */
     QDate nextCallDate() const;
 
+    /**
+      Sets the IDs of contacts that are linked to this document.
+     */
+    void setPrimaryContactId(const QString &id);
+    /**
+      Returns the IDs of contacts that are linked to this document.
+     */
+    QString primaryContactId() const;
+
     // Unknown fields (missing in this code) and custom fields (added by Sugar configuration)
     void setCustomField(const QString &name, const QString &value);
     QMap<QString, QString> customFields() const;

@@ -75,9 +75,15 @@ public:
     int getEntry(const Akonadi::Item &item, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage);
 
     // Return true if the handler wants to fetch extra information on listed items
-    // (e.g. email text)
+    // (e.g. email text, linked doucments, linked contacts...)
     virtual bool needsExtraInformation() const { return false; }
     virtual void getExtraInformation(Akonadi::Item::List &) {}
+    virtual int saveExtraInformation(const Akonadi::Item &item, const QString &id, QString &errorMessage) {
+        Q_UNUSED(item)
+        Q_UNUSED(id)
+        Q_UNUSED(errorMessage)
+        return KJob::NoError;
+    }
 
     virtual QString queryStringForListing() const { return QString(); }
     virtual QString orderByForListing() const = 0;

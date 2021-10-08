@@ -329,6 +329,18 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
     return KJob::NoError;
 }
 
+int SugarMockProtocol::setRelationship(const QString &sourceItemId, Module sourceModuleName, const QStringList &targetItemIds, Module targetModuleName, bool shouldDelete, QString &errorMessage) const
+{
+    // Not implemented
+    Q_UNUSED(sourceItemId)
+    Q_UNUSED(sourceModuleName)
+    Q_UNUSED(targetItemIds)
+    Q_UNUSED(targetModuleName)
+    Q_UNUSED(shouldDelete)
+    errorMessage = "NOT IMPLEMENTED";
+    return KJob::UserDefinedError;
+}
+
 void SugarMockProtocol::addAccounts()
 {
     mAccounts.resize(3);

@@ -45,6 +45,8 @@
 #include <QCalendarWidget>
 #include <QCompleter>
 #include <QMenu>
+#include <referenceddata.h>
+#include <sugarcontactwrapper.h>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor)
@@ -86,6 +88,7 @@ void OpportunityDetails::initialize()
 {
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
+
     connect(mUi->assigned_user_id, &QComboBox::currentTextChanged, this, [this](const QString &currentText) {
         mUi->assignToMeButton->setEnabled(currentText != ClientSettings::self()->fullUserName());
     });
@@ -97,6 +100,8 @@ void OpportunityDetails::initialize()
     connect(mUi->sales_stage, SIGNAL(activated(QString)),
             this, SLOT(slotSalesStageActivated(QString)));
     connect(mUi->date_closed, &KDateComboBox::dateChanged, this, &OpportunityDetails::slotCloseDateChanged);
+    connect(mUi->buttonOpenAccount, &QAbstractButton::clicked, this, &OpportunityDetails::slotOpenAccount);
+    connect(mUi->buttonOpenContact, &QAbstractButton::clicked, this, &OpportunityDetails::slotOpenContact);
 }
 
 ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
@@ -210,6 +215,16 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     fillComboBox(mUi->opportunitySize, KDCRMFields::opportunitySize());
     fillComboBox(mUi->currency_id, KDCRMFields::currencyId());
 
+    auto contactsData = new ReferencedData(ReferencedDataType::ContactRef, this);
+    const QVector<KContacts::Addressee> contacts = mLinkedItemsRepository->contactsForAccount(data.value(KDCRMFields::accountId()));
+    QMap<QString, QString> contactIdName;
+    for (const KContacts::Addressee &contact : contacts) {
+        const SugarContactWrapper wrapper(contact);
+        contactIdName.insert(wrapper.id(), wrapper.fullName());
+    }
+    contactsData->addMap(contactIdName, false);
+    ReferencedDataModel::setModelForCombo(mUi->primary_contact_id, contactsData);
+
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())
         mUi->urllabel->setText(QStringLiteral("<a href=\"%1\">Open Opportunity in Web Browser</a>").arg(url.toString()));
@@ -270,10 +285,18 @@ void OpportunityDetails::on_manageDocumentsButton_clicked()
     dlg->show();
 }
 
-void OpportunityDetails::on_buttonOpenAccount_clicked()
+void OpportunityDetails::slotOpenAccount()
 {
     const QString accountId = currentAccountId();
     emit openObject(DetailsType::Account, accountId);
+}
+
+void OpportunityDetails::slotOpenContact()
+{
+    const QString contactId = mUi->primary_contact_id->itemData(mUi->primary_contact_id->currentIndex()).toString();
+    if (!contactId.isEmpty()) {
+        emit openObject(DetailsType::Contact, contactId);
+    }
 }
 
 void OpportunityDetails::slotSelectAccount()

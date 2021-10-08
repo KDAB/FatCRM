@@ -57,7 +57,8 @@ private Q_SLOTS:
 
     void on_viewNotesButton_clicked();
     void on_manageDocumentsButton_clicked();
-    void on_buttonOpenAccount_clicked();
+    void slotOpenAccount();
+    void slotOpenContact();
 
 private:
     void initialize();

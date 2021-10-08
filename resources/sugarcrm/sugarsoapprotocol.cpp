@@ -162,6 +162,32 @@ int SugarSoapProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
     return checkError(soap, "setEntry", errorMessage);
 }
 
+int SugarSoapProtocol::setRelationship(const QString &sourceItemId, Module sourceModule, const QStringList &targetItemIds, Module targetModule, bool shouldDelete, QString &errorMessage) const
+{
+     auto *soap = mSession->soap();
+
+     KDSoapGenerated::TNS__Select_fields relatedIds;
+     relatedIds.setItems(targetItemIds);
+
+     const QString sourceModuleName = moduleToName(sourceModule);
+     const QString targetModuleName = moduleToName(targetModule);
+     const KDSoapGenerated::TNS__New_set_relationship_list_result result =
+             soap->set_relationship(mSession->sessionId(), sourceModuleName, sourceItemId, targetModuleName.toLower(),
+                                    relatedIds, KDSoapGenerated::TNS__Name_value_list(), shouldDelete ? 1 : 0);
+     if ((!shouldDelete && result.created()) || (shouldDelete && result.deleted())) {
+         return KJob::NoError;
+     }
+
+     const QString baseErrorMessage = QStringLiteral("Unable to link %1 %2 to %3 %4").arg(sourceModuleName, sourceItemId, targetModuleName, targetItemIds.join(','));
+     if (!soap->lastError().isEmpty()) {
+         errorMessage = baseErrorMessage + ":" + soap->lastError();
+     } else if (result.failed()) {
+         errorMessage = baseErrorMessage + ": the server said 'failed'";
+     }
+     qWarning() << errorMessage;
+     return KJob::UserDefinedError;
+}
+
 int SugarSoapProtocol::getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields, KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage)
 {
     auto *soap = mSession->soap();

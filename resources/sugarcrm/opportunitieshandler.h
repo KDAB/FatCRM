@@ -42,10 +42,13 @@ public:
     int expectedContentsVersion() const override;
 
     int setEntry(const Akonadi::Item &item, QString &newId, QString &errorMessage) override;
+    int saveExtraInformation(const Akonadi::Item &item, const QString &id, QString &errorMessage) override;
 
     QString orderByForListing() const override;
     QStringList supportedSugarFields() const override;
     QStringList supportedCRMFields() const override;
+    bool needsExtraInformation() const override;
+    void getExtraInformation(Akonadi::Item::List &items) override;
 
     Akonadi::Item itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted) override;
 
@@ -57,6 +60,8 @@ public:
     static SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 
 private:
+    QStringList fetchLinkedContacts(const SugarOpportunity &opp);
+
     SugarOpportunity::AccessorHash mAccessors;
 };
 

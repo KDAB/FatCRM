@@ -120,6 +120,9 @@ void UpdateEntryJob::Private::getEntryDone(const KDSoapGenerated::TNS__Entry_val
         //}
         int result = mHandler->setEntry(mItem, id, errorMessage);
         if (result == KJob::NoError) {
+            result = mHandler->saveExtraInformation(mItem, id, errorMessage);
+        }
+        if (result == KJob::NoError) {
             setEntryDone(remoteItem.remoteId());
         } else {
             setEntryError(result, errorMessage);

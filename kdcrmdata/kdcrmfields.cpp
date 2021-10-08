@@ -751,3 +751,8 @@ QString KDCRMFields::templateType()
 {
     return QStringLiteral("template_type");
 }
+
+QString KDCRMFields::primaryContactId()
+{
+    return QStringLiteral("primary_contact_id");
+}

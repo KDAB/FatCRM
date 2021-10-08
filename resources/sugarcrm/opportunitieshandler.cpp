@@ -116,6 +116,30 @@ int OpportunitiesHandler::setEntry(const Akonadi::Item &item, QString &newId, QS
     return mSession->protocol()->setEntry(module(), valueList, newId, errorMessage);
 }
 
+int OpportunitiesHandler::saveExtraInformation(const Akonadi::Item &item, const QString &id, QString &errorMessage)
+{
+    const SugarOpportunity opp = item.payload<SugarOpportunity>();
+
+    // set_relationship can either add or remove relationships, but not just replace
+    // So we need to fetch existing, compare, delete, and then add (!)
+    const QStringList oldLinkedContacts = fetchLinkedContacts(opp);
+    const QString oldPrimaryContactId = oldLinkedContacts.isEmpty() ? QString() : oldLinkedContacts.at(0);
+    const QString newPrimaryContactId = opp.primaryContactId();
+    if (oldPrimaryContactId != newPrimaryContactId) {
+        // API docs: https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Integration/Web_Services/Legacy_API/Methods/set_relationship
+        if (!oldLinkedContacts.isEmpty()) {
+            //qDebug() << "removing old linked contacts" << oldLinkedContacts;
+            mSession->protocol()->setRelationship(id, Opportunities, oldLinkedContacts, Contacts, true /*delete*/, errorMessage);
+        }
+        if (!newPrimaryContactId.isEmpty()) {
+            //qDebug() << "saving primary contact" << newPrimaryContactId << "for opp" << id;
+            return mSession->protocol()->setRelationship(id, Opportunities, {newPrimaryContactId}, Contacts, false, errorMessage);
+        }
+    }
+    // Nothing to do
+    return KJob::NoError;
+}
+
 int OpportunitiesHandler::expectedContentsVersion() const
 {
     // version 1 = account_name is resolved to account_id upon loading
@@ -137,7 +161,7 @@ QStringList OpportunitiesHandler::supportedSugarFields() const
 
 QStringList OpportunitiesHandler::supportedCRMFields() const
 {
-    return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::accountId();
+    return sugarFieldsToCrmFields(availableFields()) << KDCRMFields::primaryContactId() /* stored as extra information (relationship) */;
 }
 
 SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list & valueList, const QString &id)
@@ -158,6 +182,62 @@ SugarOpportunity OpportunitiesHandler::nameValueListToSugarOpportunity(const KDS
         (opportunity.*(accessIt.value().setter))(value);
     }
     return opportunity;
+}
+
+bool OpportunitiesHandler::needsExtraInformation() const
+{
+    return true;
+}
+
+QStringList OpportunitiesHandler::fetchLinkedContacts(const SugarOpportunity &opp)
+{
+    KDSoapGenerated::TNS__Select_fields selectedFields;
+    selectedFields.setItems({QStringLiteral("id")});
+
+    // Get the Contact(s) related to this opportunity
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Integration/Web_Services/Legacy_API/Methods/get_relationships/
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Cookbook/Web_Services/Legacy_API/SOAP/PHP/Retrieving_Related_Records/
+    KDSoapGenerated::TNS__Get_entry_result_version2 result = mSession->soap()->get_relationships(sessionId(), moduleToName(Module::Opportunities), opp.id(),
+                                                                                                 moduleToName(Module::Contacts).toLower(), {}, selectedFields,
+                                                                                                 {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
+    const auto &items = result.entry_list().items();
+    QStringList linkedContactIds;
+    if (!items.isEmpty()) {
+        linkedContactIds.reserve(items.size());
+        auto extractId = [](const KDSoapGenerated::TNS__Entry_value& entry) { return entry.id(); };
+        std::transform(items.begin(), items.end(), std::back_inserter(linkedContactIds), extractId);
+    }
+    return linkedContactIds;
+}
+
+void OpportunitiesHandler::getExtraInformation(Akonadi::Item::List &items)
+{
+    if (!mSession->soap())
+        return; // e.g. in unittests
+    for (int pos = 0; pos < items.count(); ++pos) {
+        Akonadi::Item &item = items[pos];
+
+        if (!item.hasPayload<SugarOpportunity>()) {
+            qCCritical(FATCRM_SUGARCRMRESOURCE_LOG) << "item (id=" << item.id() << ", remoteId=" << item.remoteId()
+                                                    << ", mime=" << item.mimeType() << ") is missing Opportunity payload";
+            continue;
+        }
+
+        SugarOpportunity opp = item.payload<SugarOpportunity>();
+        bool update = false;
+        const QStringList linkedContacts = fetchLinkedContacts(opp);
+        if (!linkedContacts.isEmpty()) {
+            // The GUI is only interested in the first linked contact
+            // We store that as the primary contact (so that it fits with the getData/setData mechanism in FatCRM)
+            const QString primaryContactId = linkedContacts.at(0);
+            opp.setPrimaryContactId(primaryContactId);
+            update = true;
+        }
+
+        if (update) {
+            item.setPayload<SugarOpportunity>(opp);
+        }
+    }
 }
 
 Akonadi::Item OpportunitiesHandler::itemFromEntry(const KDSoapGenerated::TNS__Entry_value &entry, const Akonadi::Collection &parentCollection, bool &deleted)

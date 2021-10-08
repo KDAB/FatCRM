@@ -30,6 +30,8 @@ class ContactDataExtractor : public ItemDataExtractor
 public:
     explicit ContactDataExtractor();
 
+
+
 protected:
     QString itemAddress() const override ;
     QString idForItem(const Akonadi::Item &item) const override;

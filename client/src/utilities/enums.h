@@ -45,7 +45,7 @@ enum ReferencedDataType {
     AccountRef,        // account.id()     => account.name()
     AssignedToRef,     // user id          => user name
     //CampaignRef,       // campaign.id()    => campaign.name()
-    ContactRef        // contact id       => full name   (used for "reports to" combo)
+    ContactRef        // contact id       => full name   (used for "reports to" combo, and for primary contact)
 };
 
 enum MaxNextStepDate {

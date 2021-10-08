@@ -148,6 +148,9 @@ void CreateEntryJob::startSugarTask()
     QString newId, errorMessage;
     int result = d->mHandler->setEntry(d->mItem, newId, errorMessage);
     if (result == KJob::NoError) {
+        result = d->mHandler->saveExtraInformation(d->mItem, newId, errorMessage);
+    }
+    if (result == KJob::NoError) {
         d->setEntryDone(newId);
     } else if (result == SugarJob::InvalidContextError) {
         setError(result);

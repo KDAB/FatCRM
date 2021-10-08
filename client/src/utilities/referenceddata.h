@@ -41,6 +41,8 @@ struct KeyValue
 };
 
 /**
+ * This class contains the reference data (id+name of contacts, accounts, etc.)
+ * for comboboxes (accounts list, assigned-to list, etc.)
  * @brief Per-type singleton holding all reference data, for comboboxes
  * (accounts list, assigned-to list, etc.)
  *
@@ -51,7 +53,19 @@ class FATCRMPRIVATE_EXPORT ReferencedData : public QObject
     Q_OBJECT
 
 public:
+    /**
+     * @brief Per-type singleton holding the full list of all contacts or accounts.
+     */
     static ReferencedData *instance(ReferencedDataType type);
+    /**
+     * Constructor, only public for the restricted data sets
+     * (e.g. the few accounts for an account, as shown in an opportunity)
+     */
+    explicit ReferencedData(ReferencedDataType type, QObject *parent = nullptr);
+
+    /**
+     * Clears all the per-type singletons
+     */
     static void clearAll();
 
     ~ReferencedData() override;
@@ -66,7 +80,6 @@ public:
 
     KeyValue data(int row) const;
     int count() const;
-
 
     ReferencedDataType dataType() const;
 
@@ -85,7 +98,6 @@ Q_SIGNALS:
     void initialLoadingDone();
 
 private:
-    explicit ReferencedData(ReferencedDataType type, QObject *parent = nullptr);
     void setReferencedDataInternal(const QString &id, const QString &data, bool emitChanges);
 
 private:

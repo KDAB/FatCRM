@@ -40,6 +40,7 @@ public:
 
     bool mEmpty = true;
 
+    // Only add member vars for what's in accessorHash. Use mCustomFields for stuff that's not mapped to an upstream sugar field.
     QString mId;
     QString mName;
     QString mDateEntered;
@@ -434,6 +435,16 @@ void SugarOpportunity::setNextCallDate(const QDate &date)
 QDate SugarOpportunity::nextCallDate() const
 {
     return KDCRMUtils::dateFromString(d->mCustomFields.value(KDCRMFields::nextCallDate()));
+}
+
+void SugarOpportunity::setPrimaryContactId(const QString &id)
+{
+    setCustomField(KDCRMFields::primaryContactId(), id);
+}
+
+QString SugarOpportunity::primaryContactId() const
+{
+    return d->mCustomFields.value(KDCRMFields::primaryContactId());
 }
 
 void SugarOpportunity::setCustomField(const QString &name, const QString &value)

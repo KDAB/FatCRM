@@ -154,8 +154,10 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         // Get the Account(s) related to this document
         // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Integration/Web_Services/Legacy_API/Methods/get_relationships/
         // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Cookbook/Web_Services/Legacy_API/SOAP/PHP/Retrieving_Related_Records/
-        KDSoapGenerated::TNS__Get_entry_result_version2 result = mSession->soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Accounts).toLower(), {}, selectedFields,
-                                                                   {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
+        KDSoapGenerated::TNS__Get_entry_result_version2 result =
+                mSession->soap()->get_relationships(sessionId(), moduleToName(Module::Documents), document.id(),
+                                                    moduleToName(Module::Accounts).toLower(), {}, selectedFields,
+                                                    {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
 
         QStringList linkedAccountIds;
         Q_FOREACH (const KDSoapGenerated::TNS__Entry_value& entry, result.entry_list().items()) {
@@ -168,7 +170,8 @@ void DocumentsHandler::getExtraInformation(Akonadi::Item::List &items)
         }
 
         QStringList linkedOpportunityIds;
-        result = mSession->soap()->get_relationships(sessionId(), QStringLiteral("Documents"), document.id(), moduleToName(Module::Opportunities).toLower(), {}, selectedFields,
+        result = mSession->soap()->get_relationships(sessionId(), moduleToName(Module::Documents), document.id(),
+                                                     moduleToName(Module::Opportunities).toLower(), {}, selectedFields,
                                            {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
 
         Q_FOREACH (const KDSoapGenerated::TNS__Entry_value &entry, result.entry_list().items()) {

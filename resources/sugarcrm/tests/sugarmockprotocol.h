@@ -55,6 +55,8 @@ public:
                     const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                     QString &errorMessage) override;
     int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &idItemCreate, QString &errorMessage) override;
+    int setRelationship(const QString &sourceItemId, Module sourceModule,
+                        const QStringList &targetItemIds, Module targetModule, bool shouldDelete, QString &errorMessage) const override;
     int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,
                  KDSoapGenerated::TNS__Entry_value &entryValue, QString &errorMessage) override;
     int listModules(QStringList &moduleNames, QString &errorMessage) override;

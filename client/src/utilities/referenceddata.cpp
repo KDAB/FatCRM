@@ -65,7 +65,7 @@ ReferencedData *ReferencedData::instance(ReferencedDataType type)
 
 void ReferencedData::clearAll()
 {
-    foreach(ReferencedData *data, s_instances()->map) {
+    for (ReferencedData *data : qAsConst(s_instances()->map)) {
         data->clear();
     }
 }
@@ -184,7 +184,7 @@ ReferencedDataType ReferencedData::dataType() const
 
 void ReferencedData::emitInitialLoadingDoneForAll()
 {
-    foreach(ReferencedData *data, s_instances()->map) {
+    for (ReferencedData *data : qAsConst(s_instances()->map)) {
         emit data->initialLoadingDone();
     }
 }

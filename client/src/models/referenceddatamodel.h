@@ -26,6 +26,8 @@
 #include "enums.h"
 #include "fatcrmprivate_export.h"
 #include <QAbstractListModel>
+
+class ReferencedData;
 class QComboBox;
 
 // List model for filling comboboxes referencing an account/campaign/user/etc.
@@ -33,11 +35,12 @@ class FATCRMPRIVATE_EXPORT ReferencedDataModel : public QAbstractListModel
 {
     Q_OBJECT
 public:
-    explicit ReferencedDataModel(ReferencedDataType type, QObject *parent = nullptr);
+    explicit ReferencedDataModel(ReferencedData *data, QObject *parent = nullptr);
 
     ~ReferencedDataModel() override;
 
     static void setModelForCombo(QComboBox *combo, ReferencedDataType type);
+    static void setModelForCombo(QComboBox *combo, ReferencedData *data);
 
     /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const override;

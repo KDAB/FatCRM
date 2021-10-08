@@ -91,10 +91,10 @@ void ReferencedDataModel::Private::slotCleared()
     q->endRemoveRows();
 }
 
-ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *parent)
+ReferencedDataModel::ReferencedDataModel(ReferencedData *data, QObject *parent)
     : QAbstractListModel(parent), d(new Private(this))
 {
-    d->mData = ReferencedData::instance(type);
+    d->mData = data;
     connect(d->mData, SIGNAL(dataChanged(int)), this, SLOT(slotDataChanged(int)));
     connect(d->mData, SIGNAL(rowsAboutToBeInserted(int,int)), this, SLOT(slotRowsAboutToBeInserted(int,int)));
     connect(d->mData, SIGNAL(rowsInserted()), this, SLOT(slotRowsInserted()));
@@ -104,6 +104,7 @@ ReferencedDataModel::ReferencedDataModel(ReferencedDataType type, QObject *paren
     connect(d->mData, SIGNAL(cleared()), this, SLOT(slotCleared()));
 }
 
+
 ReferencedDataModel::~ReferencedDataModel()
 {
     delete d;
@@ -111,11 +112,16 @@ ReferencedDataModel::~ReferencedDataModel()
 
 void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedDataType type)
 {
+    setModelForCombo(combo, ReferencedData::instance(type));
+}
+
+void ReferencedDataModel::setModelForCombo(QComboBox *combo, ReferencedData *data)
+{
     auto *proxy = new QSortFilterProxyModel(combo);
     proxy->setDynamicSortFilter(true);
     proxy->setSortCaseSensitivity(Qt::CaseInsensitive);
     proxy->setSortLocaleAware(true);
-    auto *model = new ReferencedDataModel(type, combo);
+    auto *model = new ReferencedDataModel(data, combo);
     proxy->setSourceModel(model);
     proxy->sort(0);
     combo->setModel(proxy);
