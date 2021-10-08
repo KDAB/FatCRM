@@ -15,6 +15,11 @@ void SugarContactWrapper::setId(const QString &value)
     m_addressee.insertCustom(QStringLiteral("FATCRM"), QStringLiteral("X-ContactId"), value);
 }
 
+QString SugarContactWrapper::fullName() const
+{
+    return m_addressee.givenName() + ' ' + m_addressee.familyName();
+}
+
 // you get the idea....
 
 QString SugarContactWrapper::accountId()             const { return m_addressee.custom(QStringLiteral("FATCRM"), QStringLiteral("X-AccountId")); }

@@ -12,6 +12,8 @@ public:
     QString id() const;
     void setId(const QString &value);
 
+    QString fullName() const;
+
     QString accountId() const;
     QString assignedUserId() const;
     QString assignedUserName() const;

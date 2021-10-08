@@ -101,7 +101,6 @@ void ContactsPage::handleItemChanged(const Item &item)
     Q_ASSERT(item.hasPayload<KContacts::Addressee>());
     const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
     const SugarContactWrapper contactWrapper(addressee);
-    const QString fullName = addressee.givenName() + ' ' + addressee.familyName();
     const QString id = contactWrapper.id();
     if (!id.isEmpty()) {
         const int idx = mPendingContactsToOpen.indexOf(item.id());
@@ -109,7 +108,7 @@ void ContactsPage::handleItemChanged(const Item &item)
             mPendingContactsToOpen.remove(idx);
             openWidgetForItem(item, DetailsType::Contact);
         }
-        ReferencedData::instance(ContactRef)->setReferencedData(id, fullName);
+        ReferencedData::instance(ContactRef)->setReferencedData(id, contactWrapper.fullName());
         ReferencedData::instance(AssignedToRef)->setReferencedData(contactWrapper.assignedUserId(), contactWrapper.assignedUserName());
         linkedItemsRepository()->updateContact(addressee);
     }
