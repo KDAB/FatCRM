@@ -444,7 +444,7 @@ QVector<SugarOpportunity> LinkedItemsRepository::opportunitiesForAccount(const Q
 
 void LinkedItemsRepository::addContact(const KContacts::Addressee &contact)
 {
-    mAccountContactsHash[SugarContactWrapper(contact).id()].push_back(contact);
+    mAccountContactsHash[SugarContactWrapper(contact).accountId()].push_back(contact);
 }
 
 static bool eraseContactByUid(QVector<KContacts::Addressee> &vec, const QString &uid)
@@ -461,7 +461,7 @@ static bool eraseContactByUid(QVector<KContacts::Addressee> &vec, const QString 
 
 void LinkedItemsRepository::removeContact(const KContacts::Addressee &contact)
 {
-    auto & contacts = mAccountContactsHash[SugarContactWrapper(contact).id()];
+    auto & contacts = mAccountContactsHash[SugarContactWrapper(contact).accountId()];
     eraseContactByUid(contacts, contact.uid());
 }
 
