@@ -131,21 +131,15 @@ bool ItemTransferInterface::linkItem(const QString &sourceItemId, const QString 
         return false;
     }
 
-    QUrl url(mSession->host());
-    url.setPath("/service/v4_1/soap.php");
-    url.setQuery(QString());
-
-    KDSoapGenerated::Sugarsoap soap;
-    soap.setEndPoint(url.url());
-
+    KDSoapGenerated::Sugarsoap *soap = mSession->soap();
 
     KDSoapGenerated::TNS__Select_fields relatedIds;
-    relatedIds.setItems(QStringList() << targetItemId);
+    relatedIds.setItems({targetItemId});
 
-    const KDSoapGenerated::TNS__New_set_relationship_list_result result = soap.set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated::TNS__Name_value_list(), 0);
+    const KDSoapGenerated::TNS__New_set_relationship_list_result result = soap->set_relationship(sessionId, sourceModuleName, sourceItemId, targetModuleName.toLower(), relatedIds, KDSoapGenerated::TNS__Name_value_list(), 0);
 
-    if (!soap.lastError().isEmpty()) {
-        qWarning() << "Unable to link items:" << soap.lastError();
+    if (!soap->lastError().isEmpty()) {
+        qWarning() << "Unable to link items:" << soap->lastError();
         return false;
     }
 
