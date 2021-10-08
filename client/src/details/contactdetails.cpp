@@ -496,16 +496,18 @@ void ContactDetails::slotOtherAddressCountryEditingFinished()
 
 void ContactDetails::setItemsTreeModel(ItemsTreeModel *model)
 {
-    QSet<QString> words;
+    QStringList titleList;
+    titleList.reserve(2500);
     for (int row = 0; row < model->rowCount(); ++row) {
         const QModelIndex index = model->index(row, 0);
         const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         const KContacts::Addressee addressee = item.payload<KContacts::Addressee>();
         const QString addresseeTitle = addressee.title();
-        if (!addresseeTitle.isEmpty())
-            words.insert(addresseeTitle);
+        if (!addresseeTitle.isEmpty() && !titleList.contains(addresseeTitle))
+            titleList.append(addresseeTitle);
     }
-    QCompleter *titlesCompleter = new QCompleter(words.toList(), this);
+
+    QCompleter *titlesCompleter = new QCompleter(titleList, this);
     titlesCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     mUi->title->setCompleter(titlesCompleter);
     Details::setItemsTreeModel(model);

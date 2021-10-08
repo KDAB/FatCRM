@@ -295,17 +295,18 @@ void OpportunityDetails::slotAccountSelected(const QString &accountId)
 
 void OpportunityDetails::setItemsTreeModel(ItemsTreeModel *model)
 {
-    QSet<QString> words;
+    QStringList nextStepList;
+    nextStepList.reserve(2500);
     for (int row = 0; row < model->rowCount(); ++row) {
         const QModelIndex index = model->index(row, 0);
         const Akonadi::Item item = index.data(Akonadi::EntityTreeModel::ItemRole).value<Akonadi::Item>();
         const SugarOpportunity opportunity = item.payload<SugarOpportunity>();
         const QString nextStep = opportunity.nextStep();
-        if (!nextStep.isEmpty())
-            words.insert(nextStep);
+        if (!nextStep.isEmpty() && !nextStepList.contains(nextStep))
+            nextStepList.append(nextStep);
     }
 
-    QCompleter *nextStepCompleter = new QCompleter(words.toList(), this);
+    QCompleter *nextStepCompleter = new QCompleter(nextStepList, this);
     nextStepCompleter->setCaseSensitivity(Qt::CaseInsensitive);
     mUi->next_step->setCompleter(nextStepCompleter);
     Details::setItemsTreeModel(model);
