@@ -12,12 +12,6 @@ Each collection has an attribute which stores
   - the contents version of the items (this allows the resource to re-download everything when supporting more fields)
   - the list of fields that it supports (for the client to use, see below)
 
-Account renaming: for some reason Sugar has account_name but not account_id in each opportunity.
-  So opportunities point to account names, which used to break our cache when renaming accounts.
-  Therefore we resolve account_id using our list of accounts (SugarAccountCache), whenever loading an opportunity.
-  If the account isn't known yet (rare case, e.g. due to F5 in Opps, or some decoding bug in account names),
-   then we add it to a list of pending account names to resolve (see SugarAccountCache), for fixing later.
-
 Sugar Client:
 =============
 
