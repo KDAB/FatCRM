@@ -239,18 +239,3 @@ void OpportunitiesHandler::compare(Akonadi::AbstractDifferencesReporter *reporte
         }
     }
 }
-
-ReferenceUpdateFunction OpportunitiesHandler::getOppAccountModifyFunction(const QString &name, const QString &id) const
-{
-    return [name,id](Akonadi::Item &item) {
-        Q_ASSERT(item.hasPayload<SugarOpportunity>());
-        SugarOpportunity opp = item.payload<SugarOpportunity>();
-        if (opp.tempAccountName() == name) {
-            qCDebug(FATCRM_SUGARCRMRESOURCE_LOG) << "Updating opp" << opp.name() << "from" << name << "to" << id;
-            opp.setAccountId(id);
-            item.setPayload(opp);
-            return true;
-        }
-        return false;
-    };
-}

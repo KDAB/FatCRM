@@ -28,8 +28,6 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include <functional>
 
-using ReferenceUpdateFunction = std::function<bool (Akonadi::Item &)>;
-
 template <typename U, typename V> class QHash;
 class OpportunitiesHandler : public ModuleHandler
 {
@@ -56,7 +54,6 @@ public:
 
     static KDSoapGenerated::TNS__Name_value_list sugarOpportunityToNameValueList(const SugarOpportunity &opp, QList<KDSoapGenerated::TNS__Name_value> itemList = {});
 
-    ReferenceUpdateFunction getOppAccountModifyFunction(const QString &name, const QString &id) const;
     static SugarOpportunity nameValueListToSugarOpportunity(const KDSoapGenerated::TNS__Name_value_list &valueList, const QString &id);
 
 private:
