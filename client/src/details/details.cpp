@@ -80,7 +80,6 @@ static bool isQtPrivateObject(const QString &objectName)
             objectName.startsWith(QLatin1String("_qt_")));
 }
 
-
 Details::Details(DetailsType type, QWidget *parent)
     : QWidget(parent), mItemsTreeModel(nullptr), mType(type)
 {
@@ -95,23 +94,31 @@ Details::~Details()
 void Details::doConnects()
 {
     // connect to changed signals
-    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
+    const auto lineEdits = findChildren<QLineEdit *>();
+    for (QLineEdit *le : lineEdits) {
         if (!qobject_cast<QAbstractSpinBox *>(le->parentWidget()))
             connect(le, &QLineEdit::textChanged, this, &Details::modified);
     }
-    Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>())
+    const auto comboBoxes = findChildren<QComboBox *>();
+    for (QComboBox *cb : comboBoxes)
         connect(cb, SIGNAL(currentIndexChanged(int)), this, SIGNAL(modified()));
-    Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>())
+    const auto checkBoxes = findChildren<QCheckBox *>();
+    for (QCheckBox *cb : checkBoxes)
         connect(cb, &QAbstractButton::toggled, this, &Details::modified);
-    Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>())
-        connect(te, &QTextEdit::textChanged, this, &Details::modified);
-    Q_FOREACH (QPlainTextEdit *te, findChildren<QPlainTextEdit *>())
-        connect(te, &QPlainTextEdit::textChanged, this, &Details::modified);
-    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>())
+    const auto textEdits = findChildren<QTextEdit *>();
+    for (QTextEdit *w : textEdits)
+        connect(w, &QTextEdit::textChanged, this, &Details::modified);
+    const auto plainTextEdits = findChildren<QPlainTextEdit *>();
+    for (QPlainTextEdit *w : plainTextEdits)
+        connect(w, &QPlainTextEdit::textChanged, this, &Details::modified);
+    const auto spinBoxes = findChildren<QSpinBox *>();
+    for (QSpinBox *w : spinBoxes)
         connect(w, SIGNAL(valueChanged(int)), this, SIGNAL(modified()));
-    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>())
+    const auto doubleSpinBoxes = findChildren<QDoubleSpinBox *>();
+    for (QDoubleSpinBox *w : doubleSpinBoxes)
         connect(w, SIGNAL(valueChanged(double)), this, SIGNAL(modified()));
-    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>())
+    const auto nullableDateCombos = findChildren<NullableDateComboBox *>();
+    for (NullableDateComboBox *w : nullableDateCombos)
         connect(w, &KDateComboBox::dateChanged, this, &Details::modified);
 }
 
@@ -122,11 +129,11 @@ void Details::hideIfUnsupported(QWidget *widget)
         //qCDebug(FATCRM_CLIENT_LOG) << "HIDING" << key << "because of the contents of the EntityAnnotationsAttribute for the collection";
         widget->hide();
         // Find the label whose buddy is <widget>
-        foreach (QLabel *label, widget->parentWidget()->findChildren<QLabel *>()) {
-            if (label->buddy() == widget) {
-                label->hide();
-                break;
-            }
+        const auto labels = widget->parentWidget()->findChildren<QLabel *>();
+        auto buddyIsWidget = [widget](QLabel *label) { return label->buddy() == widget; };
+        const auto it = std::find_if(labels.cbegin(), labels.cend(), buddyIsWidget);
+        if (it != labels.cend()) {
+            (*it)->hide();
         }
     }
 }
@@ -152,31 +159,40 @@ void Details::fillComboBox(QComboBox *combo, const QString &objectName) const
  */
 void Details::clear()
 {
-    Q_FOREACH (QLineEdit *le, findChildren<QLineEdit *>()) {
+    const auto lineEdits = findChildren<QLineEdit *>();
+    for (QLineEdit *le : lineEdits) {
         le->clear();
     }
-    Q_FOREACH (QComboBox *cb, findChildren<QComboBox *>()) {
+    const auto comboBoxes = findChildren<QComboBox *>();
+    for (QComboBox *cb : comboBoxes) {
         cb->setCurrentIndex(0);
     }
-    Q_FOREACH (QCheckBox *cb, findChildren<QCheckBox *>()) {
+    const auto checkBoxes = findChildren<QCheckBox *>();
+    for (QCheckBox *cb : checkBoxes) {
         cb->setChecked(false);
     }
-    Q_FOREACH (QTextEdit *te, findChildren<QTextEdit *>()) {
-        te->clear();
-    }
-    Q_FOREACH (QPlainTextEdit *te, findChildren<QPlainTextEdit *>()) {
-        te->clear();
-    }
-    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+    const auto textEdits = findChildren<QTextEdit *>();
+    for (QTextEdit *w : textEdits) {
         w->clear();
     }
-    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
+    const auto plainTextEdits = findChildren<QPlainTextEdit *>();
+    for (QPlainTextEdit *w : plainTextEdits) {
         w->clear();
     }
-    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
+    const auto spinBoxes = findChildren<QSpinBox *>();
+    for (QSpinBox *w : spinBoxes) {
+        w->clear();
+    }
+    const auto doubleSpinBoxes = findChildren<QDoubleSpinBox *>();
+    for (QDoubleSpinBox *w : doubleSpinBoxes) {
+        w->clear();
+    }
+    const auto nullableDateCombos = findChildren<NullableDateComboBox *>();
+    for (NullableDateComboBox *w : nullableDateCombos) {
         w->setDate(QDate());
     }
-    Q_FOREACH (const QString &prop, storedProperties()) {
+    const QStringList props = storedProperties();
+    for (const QString &prop : props) {
         setProperty(prop.toLatin1(), QVariant());
     }
 }
@@ -214,7 +230,8 @@ void Details::setCollectionManager(CollectionManager *collectionManager)
 void Details::setData(const QMap<QString, QString> &data,
                       QWidget *createdModifiedContainer)
 {
-    Q_FOREACH (const QString &prop, storedProperties()) {
+    const QStringList props = storedProperties();
+    for (const QString &prop : props) {
         if (data.contains(prop)) {
             setProperty(prop.toLatin1(), data.value(prop));
         }
@@ -231,8 +248,8 @@ void Details::setData(const QMap<QString, QString> &data,
 
     QString key;
 
-    QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *w, lineEdits) {
+    const auto lineEdits = findChildren<QLineEdit *>();
+    for (QLineEdit *w : lineEdits) {
         key = w->objectName();
         if (isQtPrivateObject(key)) {
             continue; // skip internal lineedits (e.g. in spinbox)
@@ -240,8 +257,8 @@ void Details::setData(const QMap<QString, QString> &data,
         hideIfUnsupported(w);
         w->setText(data.value(key));
     }
-    QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
+    const auto comboBoxes = findChildren<QComboBox *>();
+    for (QComboBox *cb : comboBoxes) {
         key = cb->objectName();
         if (isQtPrivateObject(key)) {
             continue; // skip internal combos (e.g. in NullableDateComboBox)
@@ -257,28 +274,29 @@ void Details::setData(const QMap<QString, QString> &data,
         cb->setCurrentIndex(idx);
     }
 
-    QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *w, checkBoxes) {
+    const auto checkBoxes = findChildren<QCheckBox *>();
+    for (QCheckBox *w : checkBoxes) {
         key = w->objectName();
         hideIfUnsupported(w);
         w->setChecked(data.value(key) == QLatin1String("1"));
     }
 
-    QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *w, textEdits) {
+    const auto textEdits = findChildren<QTextEdit *>();
+    for (QTextEdit *w : textEdits) {
         key = w->objectName();
         hideIfUnsupported(w);
         w->setPlainText(data.value(key));
     }
 
-    QList<QPlainTextEdit *> plainTextEdits = findChildren<QPlainTextEdit *>();
-    Q_FOREACH (QPlainTextEdit *w, plainTextEdits) {
+    const auto plainTextEdits = findChildren<QPlainTextEdit *>();
+    for (QPlainTextEdit *w : plainTextEdits) {
         key = w->objectName();
         hideIfUnsupported(w);
         w->setPlainText(data.value(key));
     }
 
-    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+    const auto spinBoxes = findChildren<QSpinBox *>();
+    for (QSpinBox *w : spinBoxes) {
         key = w->objectName();
         if (isQtPrivateObject(key)) {
             continue; // skip internal widgets (e.g. in QCalendarWidget)
@@ -287,22 +305,24 @@ void Details::setData(const QMap<QString, QString> &data,
         w->setValue(data.value(key).toInt());
     }
 
-    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
+    const auto doubleSpinBoxes = findChildren<QDoubleSpinBox *>();
+    for (QDoubleSpinBox *w : doubleSpinBoxes) {
         key = w->objectName();
         hideIfUnsupported(w);
         //qCDebug(FATCRM_CLIENT_LOG) << data.value(key);
         w->setValue(QLocale::c().toDouble(data.value(key)));
     }
 
-    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
+    const auto nullableDateCombos = findChildren<NullableDateComboBox *>();
+    for (NullableDateComboBox *w : nullableDateCombos) {
         key = w->objectName();
         hideIfUnsupported(w);
         //qCDebug(FATCRM_CLIENT_LOG) << w << "setDate" << key << data.value(key) << KDCRMUtils::dateFromString(data.value(key));
         w->setDate(KDCRMUtils::dateFromString(data.value(key)));
     }
 
-    QList<QLabel *> labels = createdModifiedContainer->findChildren<QLabel *>();
-    Q_FOREACH (QLabel *lb, labels) {
+    const auto labels = createdModifiedContainer->findChildren<QLabel *>();
+    for (QLabel *lb : labels) {
         key = lb->objectName();
         if (key == KDCRMFields::modifiedByName()) {
             lb->setText(data.value(KDCRMFields::modifiedByName()));
@@ -324,62 +344,66 @@ const QMap<QString, QString> Details::getData() const
 
     QMap<QString, QString> currentData;
     QString key;
-    QList<QLineEdit *> lineEdits = findChildren<QLineEdit *>();
-    Q_FOREACH (QLineEdit *le, lineEdits) {
+    const auto lineEdits = findChildren<QLineEdit *>();
+    for (QLineEdit *le : lineEdits) {
         key = le->objectName();
         if (!mKeys.contains(key)) continue;
         if (qobject_cast<QAbstractSpinBox *>(le->parent())) continue;
         currentData[key] = le->text();
     }
 
-    QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
+    const auto comboBoxes = findChildren<QComboBox *>();
+    for (QComboBox *cb : comboBoxes) {
         key = cb->objectName();
         if (!mKeys.contains(key)) { qCDebug(FATCRM_CLIENT_LOG) << "skipping" << key; continue; }
         currentData[key] = cb->itemData(cb->currentIndex()).toString();
     }
 
-    QList<QCheckBox *> checkBoxes = findChildren<QCheckBox *>();
-    Q_FOREACH (QCheckBox *cb, checkBoxes) {
+    const auto checkBoxes = findChildren<QCheckBox *>();
+    for (QCheckBox *cb : checkBoxes) {
         key = cb->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = cb->isChecked() ? "1" : "0";
     }
 
-    QList<QTextEdit *> textEdits = findChildren<QTextEdit *>();
-    Q_FOREACH (QTextEdit *w, textEdits) {
+    const auto textEdits = findChildren<QTextEdit *>();
+    for (QTextEdit *w : textEdits) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = w->toPlainText();
     }
 
-    QList<QPlainTextEdit *> plainTextEdits = findChildren<QPlainTextEdit *>();
-    Q_FOREACH (QPlainTextEdit *w, plainTextEdits) {
+    const auto plainTextEdits = findChildren<QPlainTextEdit *>();
+    for (QPlainTextEdit *w : plainTextEdits) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData.insert(key, w->toPlainText());
     }
 
-    Q_FOREACH (QSpinBox *w, findChildren<QSpinBox *>()) {
+    const auto spinBoxes = findChildren<QSpinBox *>();
+    for (QSpinBox *w : spinBoxes) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = QString::number(w->value());
     }
 
-    Q_FOREACH (QDoubleSpinBox *w, findChildren<QDoubleSpinBox *>()) {
+    const auto doubleSpinBoxes = findChildren<QDoubleSpinBox *>();
+    for (QDoubleSpinBox *w : doubleSpinBoxes) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData[key] = QString::number(w->value());
     }
 
-    Q_FOREACH (NullableDateComboBox *w, findChildren<NullableDateComboBox *>()) {
+    const auto nullableDateCombos = findChildren<NullableDateComboBox *>();
+    for (NullableDateComboBox *w : nullableDateCombos) {
         key = w->objectName();
         if (!mKeys.contains(key)) continue;
         currentData.insert(key, KDCRMUtils::dateToString(w->date()));
     }
 
-    Q_FOREACH (const QString &prop, storedProperties()) {
-        QVariant val = property(prop.toLatin1());
+    const QStringList props = storedProperties();
+    for (const QString &prop : props) {
+        const QVariant val = property(prop.toLatin1());
         if (val.isValid()) {
             currentData.insert(prop, val.toString());
         }
@@ -419,7 +443,7 @@ QString Details::currentAccountId() const
     // Contact, Leads, Opportunity have KDCRMFields::accountId()
     if (mType != DetailsType::Campaign) {
         const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-        Q_FOREACH (QComboBox *cb, comboBoxes) {
+        for (QComboBox *cb : comboBoxes) {
             const QString key = cb->objectName();
             if (key == KDCRMFields::parentId() || key == KDCRMFields::accountId()) {
                 return cb->itemData(cb->currentIndex()).toString();
@@ -435,7 +459,7 @@ void Details::assignToMe()
     if (fullUserName.isEmpty())
         return;
     const QList<QComboBox *> comboBoxes = findChildren<QComboBox *>();
-    Q_FOREACH (QComboBox *cb, comboBoxes) {
+    for (QComboBox *cb : comboBoxes) {
         const QString key = cb->objectName();
         if (key == KDCRMFields::assignedUserId()) {
             const int idx = cb->findText(fullUserName);
