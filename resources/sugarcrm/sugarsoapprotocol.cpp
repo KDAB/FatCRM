@@ -162,6 +162,29 @@ int SugarSoapProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
     return checkError(soap, "setEntry", errorMessage);
 }
 
+SugarProtocolBase::GetRelationShipsResult SugarSoapProtocol::getRelationships(const QString &sourceItemId, Module sourceModule, Module targetModule) const
+{
+    GetRelationShipsResult ret;
+    KDSoapGenerated::TNS__Select_fields selectedFields;
+    selectedFields.setItems({QStringLiteral("id")});
+
+    // Get the Contact(s) related to this opportunity
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Integration/Web_Services/Legacy_API/Methods/get_relationships/
+    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Cookbook/Web_Services/Legacy_API/SOAP/PHP/Retrieving_Related_Records/
+    KDSoapGenerated::TNS__Get_entry_result_version2 result = mSession->soap()->get_relationships(mSession->sessionId(), moduleToName(sourceModule), sourceItemId,
+                                                                                                 moduleToName(targetModule).toLower(), {}, selectedFields,
+                                                                                                 {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
+    const auto &items = result.entry_list().items();
+    if (!items.isEmpty()) {
+        ret.ids.reserve(items.size());
+        auto extractId = [](const KDSoapGenerated::TNS__Entry_value& entry) { return entry.id(); };
+        std::transform(items.begin(), items.end(), std::back_inserter(ret.ids), extractId);
+    }
+    ret.errorCode = checkError(mSession->soap(), "getRelationships", ret.errorMessage);
+    return ret;
+
+}
+
 int SugarSoapProtocol::setRelationship(const QString &sourceItemId, Module sourceModule, const QStringList &targetItemIds, Module targetModule, bool shouldDelete, QString &errorMessage) const
 {
      auto *soap = mSession->soap();

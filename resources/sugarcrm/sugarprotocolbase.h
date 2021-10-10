@@ -52,6 +52,13 @@ public:
                             const QString &orderBy, const QStringList &selectedFields, EntriesListResult &entriesListResult,
                             QString &errorMessage) = 0;
     virtual int setEntry(Module module_name, const KDSoapGenerated::TNS__Name_value_list& name_value_list, QString &id, QString &errorMessage) = 0;
+    struct GetRelationShipsResult {
+        int errorCode;
+        QString errorMessage;
+        QStringList ids;
+    };
+    virtual GetRelationShipsResult getRelationships(const QString &sourceItemId, Module sourceModule, Module targetModule) const = 0;
+
     virtual int setRelationship(const QString &sourceItemId, Module sourceModule,
                                 const QStringList &targetItemIds, Module targetModule, bool shouldDelete, QString &errorMessage) const = 0;
     virtual int getEntry(Module moduleName, const QString &remoteId, const QStringList &selectedFields,

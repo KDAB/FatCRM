@@ -191,29 +191,12 @@ bool OpportunitiesHandler::needsExtraInformation() const
 
 QStringList OpportunitiesHandler::fetchLinkedContacts(const SugarOpportunity &opp)
 {
-    KDSoapGenerated::TNS__Select_fields selectedFields;
-    selectedFields.setItems({QStringLiteral("id")});
-
-    // Get the Contact(s) related to this opportunity
-    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Integration/Web_Services/Legacy_API/Methods/get_relationships/
-    // https://support.sugarcrm.com/Documentation/Sugar_Developer/Sugar_Developer_Guide_10.0/Cookbook/Web_Services/Legacy_API/SOAP/PHP/Retrieving_Related_Records/
-    KDSoapGenerated::TNS__Get_entry_result_version2 result = mSession->soap()->get_relationships(sessionId(), moduleToName(Module::Opportunities), opp.id(),
-                                                                                                 moduleToName(Module::Contacts).toLower(), {}, selectedFields,
-                                                                                                 {}, 0 /*deleted*/, QString(), 0 /*offset*/, 0 /*limit*/);
-    const auto &items = result.entry_list().items();
-    QStringList linkedContactIds;
-    if (!items.isEmpty()) {
-        linkedContactIds.reserve(items.size());
-        auto extractId = [](const KDSoapGenerated::TNS__Entry_value& entry) { return entry.id(); };
-        std::transform(items.begin(), items.end(), std::back_inserter(linkedContactIds), extractId);
-    }
-    return linkedContactIds;
+    auto result = mSession->protocol()->getRelationships(opp.id(), module(), Module::Contacts);
+    return result.ids;
 }
 
 void OpportunitiesHandler::getExtraInformation(Akonadi::Item::List &items)
 {
-    if (!mSession->soap())
-        return; // e.g. in unittests
     for (int pos = 0; pos < items.count(); ++pos) {
         Akonadi::Item &item = items[pos];
 

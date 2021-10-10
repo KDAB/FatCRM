@@ -329,6 +329,14 @@ int SugarMockProtocol::setEntry(Module moduleName, const KDSoapGenerated::TNS__N
     return KJob::NoError;
 }
 
+SugarProtocolBase::GetRelationShipsResult SugarMockProtocol::getRelationships(const QString &sourceItemId, Module sourceModule, Module targetModule) const
+{
+    Q_UNUSED(sourceItemId)
+    Q_UNUSED(sourceModule)
+    Q_UNUSED(targetModule)
+    return { KJob::NoError, {}, {} };
+}
+
 int SugarMockProtocol::setRelationship(const QString &sourceItemId, Module sourceModuleName, const QStringList &targetItemIds, Module targetModuleName, bool shouldDelete, QString &errorMessage) const
 {
     // Not implemented
