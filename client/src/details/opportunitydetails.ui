@@ -54,6 +54,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="buttonOpenAccount">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Open Account</string>
+          </property>
           <property name="icon">
            <iconset theme="document-open">
             <normaloff>.</normaloff>.</iconset>
@@ -180,6 +186,12 @@
         </item>
         <item>
          <widget class="QToolButton" name="buttonOpenContact">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Open Contact</string>
+          </property>
           <property name="icon">
            <iconset theme="document-open">
             <normaloff>.</normaloff>.</iconset>

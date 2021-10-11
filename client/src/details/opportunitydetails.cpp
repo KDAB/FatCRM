@@ -101,7 +101,13 @@ void OpportunityDetails::initialize()
             this, SLOT(slotSalesStageActivated(QString)));
     connect(mUi->date_closed, &KDateComboBox::dateChanged, this, &OpportunityDetails::slotCloseDateChanged);
     connect(mUi->buttonOpenAccount, &QAbstractButton::clicked, this, &OpportunityDetails::slotOpenAccount);
+    connect(mUi->account_id, &QComboBox::currentTextChanged, this, [this](const QString &currentText) {
+        mUi->buttonOpenAccount->setEnabled(!currentText.isEmpty());
+    });
     connect(mUi->buttonOpenContact, &QAbstractButton::clicked, this, &OpportunityDetails::slotOpenContact);
+    connect(mUi->primary_contact_id, &QComboBox::currentTextChanged, this, [this](const QString &currentText) {
+        mUi->buttonOpenContact->setEnabled(!currentText.isEmpty());
+    });
 }
 
 ItemDataExtractor *OpportunityDetails::itemDataExtractor() const
