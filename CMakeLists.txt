@@ -69,6 +69,7 @@ find_package(KF5ConfigWidgets CONFIG REQUIRED)
 
 # KDChart is potentially a dependency of KDReports
 # Work-around issue in KDReports CMake config files: It doesn't try to detect the KDChart dependency
+#   (can be removed when depending on KDReports 2.1 -- also see: https://github.com/KDAB/KDReports/pull/31)
 find_package(KDChart CONFIG QUIET)
 
 find_package(KDReports CONFIG)
