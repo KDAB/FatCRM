@@ -22,12 +22,9 @@
 #include "sugarcrmresource_debug.h"
 #include <settings.h>
 
-#if USE_KWALLET
-#include <KWallet/KWallet>
-using KWallet::Wallet;
+#include <qt5keychain/keychain.h>
 
-static const char s_walletFolderName[] = "SugarCRM";
-#endif
+static const char s_keychainFolderName[] = "SugarCRM";
 
 // Implementation inspired from kdepim-runtime/resources/imap/settings.cpp branch KDE/4.14
 
@@ -35,66 +32,55 @@ PasswordHandler::PasswordHandler(const QString &resourceId, QObject *parent) :
     QObject(parent),
     mResourceId(resourceId)
 {
-#if USE_KWALLET
-    // We have no GUI to use on startup
-    // We could at least use the config dialog though.
-    m_winId = 0;
-    mWalletOpened = false;
+    auto *job = new QKeychain::ReadPasswordJob(s_keychainFolderName);
 
-    Wallet *wallet = Wallet::openWallet( Wallet::NetworkWallet(), m_winId, Wallet::Asynchronous );
-    if (wallet) {
-        connect(wallet, SIGNAL(walletOpened(bool)),
-                 this, SLOT(onWalletOpened(bool)));
-    } else {
-        qCWarning(FATCRM_SUGARCRMRESOURCE_LOG) << "openWallet(Asynchronous) failed!";
-    }
-#endif
+    job->setKey(resourceId);
+
+    connect(job, &QKeychain::Job::finished, this, [this, job] {
+        if (job->error()) {
+            qWarning() << "Error reading password for" << mResourceId << job->errorString();
+
+            if (job->error() == QKeychain::AccessDeniedByUser) {
+                mDeniedByUser = true;
+            }
+        } else {
+            mPassword = job->textData();
+            mKeychainOpened = true;
+            Q_EMIT passwordAvailable();
+        }
+    });
+
+    job->start();
 }
 
 bool PasswordHandler::isPasswordAvailable()
 {
-#if USE_KWALLET
-    if (!mWalletOpened)
-        return false;
-    QScopedPointer<Wallet> wallet(Wallet::openWallet(Wallet::NetworkWallet(), m_winId));
-    return wallet && wallet->isOpen();
-#else
-    return true;
-#endif
+    return mKeychainOpened;
 }
 
 QString PasswordHandler::password(bool *userRejected)
 {
     if (userRejected != nullptr) {
-        *userRejected = false;
+        *userRejected = mDeniedByUser;
+
+        if (mDeniedByUser) {
+            return QString();
+        }
     }
 
-    if (!mPassword.isEmpty())
-        return mPassword;
-#if USE_KWALLET
-    QScopedPointer<Wallet> wallet(Wallet::openWallet(Wallet::NetworkWallet(), m_winId));
-    if (wallet && wallet->isOpen()) {
-        if (wallet->hasFolder(QString(s_walletFolderName))) {
-            wallet->setFolder(QString(s_walletFolderName));
-            wallet->readPassword(mResourceId, mPassword);
-        } else {
-            wallet->createFolder(QString(s_walletFolderName));
-        }
-        // Initial migration: password not in wallet yet
-        if (mPassword.isEmpty()) {
-            mPassword = Settings::password();
-            if (!mPassword.isEmpty()) {
-                savePassword();
-            }
-        }
-    } else if (userRejected != nullptr) {
-        *userRejected = true;
+    if (!mKeychainOpened) {
+        return QString();
     }
-#else
-    mPassword = Settings::password();
-#endif
+
+    // Initial migration: password not in keychain yet
+    if (mPassword.isEmpty()) {
+        mPassword = Settings::password();
+        if (!mPassword.isEmpty()) {
+            savePassword();
+        }
+    }
+
     return mPassword;
-
 }
 
 void PasswordHandler::setPassword(const QString &password)
@@ -103,47 +89,25 @@ void PasswordHandler::setPassword(const QString &password)
         return;
 
     mPassword = password;
-
-#if USE_KWALLET
     savePassword();
-#else
-    Settings::setPassword(mPassword);
-    Settings::self()->writeConfig();
-#endif
 }
 
-void PasswordHandler::onWalletOpened(bool success)
-{
-#if USE_KWALLET
-    Wallet *wallet = qobject_cast<Wallet*>( sender() );
-    mWalletOpened = success;
-    if (wallet && success) {
-        // read and store the password
-        password();
-        emit passwordAvailable();
-    }
-    if (wallet) {
-        wallet->deleteLater();
-    }
-#else
-    Q_UNUSED(success);
-#endif
-}
-
-#if USE_KWALLET
 bool PasswordHandler::savePassword()
 {
-    QScopedPointer<Wallet> wallet(Wallet::openWallet(Wallet::NetworkWallet(), m_winId));
-    if (wallet && wallet->isOpen()) {
-        if (!wallet->hasFolder(QString(s_walletFolderName)))
-            wallet->createFolder(QString(s_walletFolderName));
-        wallet->setFolder(QString(s_walletFolderName));
-        wallet->writePassword(mResourceId, mPassword);
-        wallet->sync();
-        Settings::setPassword(QString()); // ensure no plain-text password from before in the config file
-        Settings::self()->save();
-        return true;
-    }
-    return false;
+    auto *job = new QKeychain::WritePasswordJob(s_keychainFolderName);
+    job->setKey(mResourceId);
+    job->setTextData(mPassword);
+
+    connect(job, &QKeychain::Job::finished, this, [this, job] {
+        if (job->error()) {
+            qWarning() << "password save error" << job->errorString();
+        }
+    });
+
+    job->start();
+
+    Settings::setPassword(QString()); // ensure no plain-text password from before in the config file
+    Settings::self()->save();
+
+    return true;
 }
-#endif

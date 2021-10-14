@@ -64,7 +64,6 @@ find_package(KF5IconThemes CONFIG REQUIRED)
 find_package(KF5TextWidgets CONFIG REQUIRED)
 find_package(KF5WidgetsAddons CONFIG REQUIRED)
 find_package(KF5WindowSystem CONFIG REQUIRED)
-find_package(KF5Wallet CONFIG REQUIRED)
 find_package(KF5ConfigWidgets CONFIG REQUIRED)
 
 # KDChart is potentially a dependency of KDReports
@@ -95,6 +94,8 @@ set_package_properties(ICU PROPERTIES
   TYPE OPTIONAL
   PURPOSE "Required to localize country names"
 )
+
+find_package(Qt5Keychain REQUIRED)
 
 if(PhoneNumber_FOUND AND ICU_FOUND)
     set(USE_PHONENUMBER 1)
