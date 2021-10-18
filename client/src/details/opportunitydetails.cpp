@@ -89,6 +89,8 @@ void OpportunityDetails::initialize()
     ReferencedDataModel::setModelForCombo(mUi->account_id, AccountRef);
     ReferencedDataModel::setModelForCombo(mUi->assigned_user_id, AssignedToRef);
 
+    connect(mUi->account_id, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &OpportunityDetails::slotAccountChanged);
     connect(mUi->assigned_user_id, &QComboBox::currentTextChanged, this, [this](const QString &currentText) {
         mUi->assignToMeButton->setEnabled(currentText != ClientSettings::self()->fullUserName());
     });
@@ -162,6 +164,25 @@ void OpportunityDetails::slotLinkedItemsModified(const QString &oppId)
     }
 }
 
+void OpportunityDetails::slotAccountChanged()
+{
+    const QString accountId = mUi->account_id->currentData().toString();
+    fillContactCombo(accountId);
+}
+
+void OpportunityDetails::fillContactCombo(const QString& accountId)
+{
+    auto contactsData = new ReferencedData(ReferencedDataType::ContactRef, this);
+    const QVector<KContacts::Addressee> contacts = mLinkedItemsRepository->contactsForAccount(accountId);
+    QMap<QString, QString> contactIdName;
+    for (const KContacts::Addressee &contact : contacts) {
+        const SugarContactWrapper wrapper(contact);
+        contactIdName.insert(wrapper.id(), wrapper.fullName());
+    }
+    contactsData->addMap(contactIdName, false);
+    ReferencedDataModel::setModelForCombo(mUi->primary_contact_id, contactsData);
+}
+
 QMap<QString, QString> OpportunityDetails::data(const Akonadi::Item &item) const
 {
     Q_ASSERT(item.isValid());
@@ -221,15 +242,7 @@ void OpportunityDetails::setDataInternal(const QMap<QString, QString> &data)
     fillComboBox(mUi->opportunitySize, KDCRMFields::opportunitySize());
     fillComboBox(mUi->currency_id, KDCRMFields::currencyId());
 
-    auto contactsData = new ReferencedData(ReferencedDataType::ContactRef, this);
-    const QVector<KContacts::Addressee> contacts = mLinkedItemsRepository->contactsForAccount(data.value(KDCRMFields::accountId()));
-    QMap<QString, QString> contactIdName;
-    for (const KContacts::Addressee &contact : contacts) {
-        const SugarContactWrapper wrapper(contact);
-        contactIdName.insert(wrapper.id(), wrapper.fullName());
-    }
-    contactsData->addMap(contactIdName, false);
-    ReferencedDataModel::setModelForCombo(mUi->primary_contact_id, contactsData);
+    fillContactCombo(data.value(KDCRMFields::accountId()));
 
     const QUrl url = itemDataExtractor()->itemUrl(resourceBaseUrl(), id());
     if (url.isValid())

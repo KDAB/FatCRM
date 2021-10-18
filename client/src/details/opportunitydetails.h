@@ -54,6 +54,7 @@ private Q_SLOTS:
     void slotAccountSelected(const QString &accountId);
     void slotCloseDateChanged(const QDate &date);
     void slotLinkedItemsModified(const QString &oppId);
+    void slotAccountChanged();
 
     void on_viewNotesButton_clicked();
     void on_manageDocumentsButton_clicked();
@@ -66,6 +67,8 @@ private:
     void updateItem(Akonadi::Item &item, const QMap<QString, QString> &data) const override;
     void setDataInternal(const QMap<QString, QString> &data) override;
     void updateCloseDateLabel(bool closed);
+    void updateLinkedItemsButtons();
+    void fillContactCombo(const QString &accountId);
 
 private:
     Ui::OpportunityDetails *mUi = nullptr;
@@ -73,7 +76,6 @@ private:
     std::unique_ptr<OpportunityDataExtractor> mDataExtractor;
     QDate mOriginalCloseDate;
     bool mCloseDateChangedByUser = false;
-    void updateLinkedItemsButtons();
 };
 
 #endif /* OPPORTUNITYDETAILS_H */
