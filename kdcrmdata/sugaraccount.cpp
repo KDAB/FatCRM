@@ -174,10 +174,11 @@ QString SugarAccount::cleanAccountName() const
     }();
 
     QString result = d->mName;
+    result.replace(QChar('&'), QStringLiteral("and"));
+
     for (const QString &pattern : patterns) {
         result.remove(pattern, Qt::CaseInsensitive);
     }
-    result.replace(QChar('&'), QStringLiteral("and"));
 
     if (result.endsWith(']')) {
         int pos = result.lastIndexOf('[');
