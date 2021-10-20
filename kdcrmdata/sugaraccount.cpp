@@ -160,15 +160,25 @@ QString SugarAccount::cleanAccountName() const
     if (!d->mCachedCleanAccountName.isEmpty())
         return d->mCachedCleanAccountName;
 
+    // cache patterns once so they're no recalculated every time
+    static const QStringList patterns = []() {
+        QStringList patterns;
+        patterns.reserve(s_extensionCount * 4);
+        std::for_each(std::begin(s_extensions), std::end(s_extensions), [&patterns](const QString &extension) {
+            patterns.append(", " + extension + '.');
+            patterns.append(", " + extension);
+            patterns.append(QChar(' ') + extension + '.');
+            patterns.append(QChar(' ') + extension);
+        });
+        return patterns;
+    }();
+
     QString result = d->mName;
-    for (int i = 0; i < s_extensionCount; ++i) {
-        const QString extension = s_extensions[i];
-        result.remove(", " + extension + '.', Qt::CaseInsensitive);
-        result.remove(", " + extension, Qt::CaseInsensitive);
-        result.remove(QChar(' ') + extension + '.', Qt::CaseInsensitive);
-        result.remove(QChar(' ') + extension, Qt::CaseInsensitive);
-        result.replace(QChar('&'), QStringLiteral("and"));
+    for (const QString &pattern : patterns) {
+        result.remove(pattern, Qt::CaseInsensitive);
     }
+    result.replace(QChar('&'), QStringLiteral("and"));
+
     if (result.endsWith(']')) {
         int pos = result.lastIndexOf('[');
         if (pos > 0) {
