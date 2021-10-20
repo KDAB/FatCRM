@@ -42,8 +42,8 @@ public:
     static void setModelForCombo(QComboBox *combo, ReferencedDataType type);
     static void setModelForCombo(QComboBox *combo, ReferencedData *data);
 
-    /* reimpl */ QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
-    /* reimpl */ int rowCount(const QModelIndex &index = QModelIndex()) const override;
+    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    int rowCount(const QModelIndex &index = QModelIndex()) const override;
 
 private:
     class Private;
