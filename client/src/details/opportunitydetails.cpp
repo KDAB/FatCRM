@@ -177,7 +177,11 @@ void OpportunityDetails::fillContactCombo(const QString& accountId)
     QMap<QString, QString> contactIdName;
     for (const KContacts::Addressee &contact : contacts) {
         const SugarContactWrapper wrapper(contact);
-        contactIdName.insert(wrapper.id(), wrapper.fullName());
+        QString name = wrapper.fullName();
+        if (!contact.title().isEmpty()) {
+            name = tr("%1 (%2)", "FULL NAME (TITLE)").arg(wrapper.fullName(), contact.title());
+        }
+        contactIdName.insert(wrapper.id(), name);
     }
     contactsData->addMap(contactIdName, false);
     ReferencedDataModel::setModelForCombo(mUi->primary_contact_id, contactsData);
