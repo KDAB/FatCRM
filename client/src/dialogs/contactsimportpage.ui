@@ -21,8 +21,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>386</width>
-        <height>233</height>
+        <width>384</width>
+        <height>208</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout"/>
@@ -34,7 +34,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>&amp;Text to add to all created/modified contacts</string>
+        <string>&amp;Text to add to all created/modified contacts:</string>
        </property>
        <property name="buddy">
         <cstring>lineEdit</cstring>
@@ -49,7 +49,7 @@
    <item>
     <widget class="QCheckBox" name="cbOpenContacts">
      <property name="text">
-      <string>Open Contacts after Import</string>
+      <string>Open contacts after import</string>
      </property>
     </widget>
    </item>
