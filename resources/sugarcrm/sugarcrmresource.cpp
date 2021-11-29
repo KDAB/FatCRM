@@ -52,13 +52,13 @@
 #include "sugarsoapprotocol.h"
 #include "tests/sugarmockprotocol.h"
 
-#include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/CachePolicy>
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemFetchJob>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/Collection>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/CachePolicy>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemFetchJob>
 
 #include <KContacts/Addressee>
 

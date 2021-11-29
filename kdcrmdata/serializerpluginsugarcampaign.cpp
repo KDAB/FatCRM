@@ -25,7 +25,7 @@
 #include "sugarcampaign.h"
 #include "sugarcampaignio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

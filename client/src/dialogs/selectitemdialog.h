@@ -23,7 +23,7 @@
 
 #include <QDialog>
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include "enums.h"
 

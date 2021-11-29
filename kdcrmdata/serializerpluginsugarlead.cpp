@@ -25,7 +25,7 @@
 #include "sugarlead.h"
 #include "sugarleadio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

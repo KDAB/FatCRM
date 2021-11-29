@@ -25,8 +25,8 @@
 
 #include "contactsset.h"
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
 
 #include <QWizardPage>
 #include <QSignalMapper>

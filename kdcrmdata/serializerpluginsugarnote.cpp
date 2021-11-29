@@ -25,7 +25,7 @@
 #include "sugarnote.h"
 #include "sugarnoteio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

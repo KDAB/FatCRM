@@ -30,7 +30,7 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include "sugarcrmresource_debug.h"
 #include <KLocalizedString>

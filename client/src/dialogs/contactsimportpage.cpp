@@ -24,7 +24,7 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 
-#include <AkonadiCore/ItemCreateJob>
+#include <Akonadi/ItemCreateJob>
 
 #include <KJobUiDelegate>
 #include <KLocalizedString>

@@ -31,10 +31,10 @@ using namespace KDSoapGenerated;
 
 #include "kdcrmdata/sugaraccount.h"
 
-#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/Collection>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 
 #include <KContacts/Address>
 

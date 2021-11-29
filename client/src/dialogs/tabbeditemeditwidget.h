@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 
 namespace Ui {

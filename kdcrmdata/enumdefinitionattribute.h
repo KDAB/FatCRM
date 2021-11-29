@@ -23,7 +23,7 @@
 #ifndef ENUMDEFINITIONATTRIBUTE_H
 #define ENUMDEFINITIONATTRIBUTE_H
 #include "kdcrmdata_export.h"
-#include <AkonadiCore/Attribute>
+#include <Akonadi/Attribute>
 #include <QMap>
 #include <QString>
 

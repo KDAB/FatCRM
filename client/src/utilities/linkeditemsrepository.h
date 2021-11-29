@@ -29,8 +29,8 @@
 #include "kdcrmdata/sugaropportunity.h"
 #include "fatcrmprivate_export.h"
 
-#include <AkonadiCore/Item>
-#include <AkonadiCore/Collection>
+#include <Akonadi/Item>
+#include <Akonadi/Collection>
 
 #include <QObject>
 

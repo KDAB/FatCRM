@@ -25,7 +25,7 @@
 #include "wsdl_salesforce-partner.h"
 using namespace KDSoapGenerated;
 
-#include <AkonadiCore/Collection>
+#include <Akonadi/Collection>
 
 #include <KContacts/Addressee>
 

@@ -33,7 +33,7 @@
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
 
-#include <AkonadiCore/EntityTreeModel>
+#include <Akonadi/EntityTreeModel>
 
 #include <KLocalizedString>
 #include <QCoreApplication>

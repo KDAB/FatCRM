@@ -25,7 +25,7 @@
 #include "accountrepository.h"
 #include "fatcrm_client_debug.h"
 
-#include <AkonadiCore/ItemCreateJob>
+#include <Akonadi/ItemCreateJob>
 
 #include <KJobUiDelegate>
 #include <KLocalizedString>

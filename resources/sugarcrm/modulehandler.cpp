@@ -36,10 +36,10 @@ using namespace KDSoapGenerated;
 #include "currency.h"
 #include "sugarprotocolbase.h"
 
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/CollectionFetchJob>
-#include <AkonadiCore/CollectionModifyJob>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionModifyJob>
 
 #include <KLocalizedString>
 

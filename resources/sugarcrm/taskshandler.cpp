@@ -31,8 +31,8 @@ using namespace KDSoapGenerated;
 #include <KCalCore/Todo>
 using namespace KCalCore;
 
-#include <AkonadiCore/abstractdifferencesreporter.h>
-#include <AkonadiCore/Collection>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/Collection>
 
 #include <KLocalizedString>
 

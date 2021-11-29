@@ -21,7 +21,7 @@
 #include <QTest>
 #include <QDebug>
 #include <QSignalSpy>
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 #include "sugaraccount.h"
 #include "sugarsession.h"
 #include "accountshandler.h"

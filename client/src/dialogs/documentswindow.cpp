@@ -29,9 +29,9 @@
 #include "sugarresourceitemtransfer.h"
 #include "fatcrm_client_debug.h"
 
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/ServerManager>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/ServerManager>
 
 #include <KLocalizedString>
 #include <KRun>

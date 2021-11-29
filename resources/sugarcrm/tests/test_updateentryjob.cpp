@@ -26,7 +26,7 @@
 #include "updateentryjob.h"
 #include "kdcrmdata/kdcrmutils.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QDebug>
 #include <QSignalSpy>

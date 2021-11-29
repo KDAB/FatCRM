@@ -29,7 +29,7 @@
 #include <QMap>
 #include <QVector>
 
-#include <AkonadiCore/item.h>
+#include <Akonadi/Item>
 
 class FATCRMPRIVATE_EXPORT AccountRepository : public QObject
 {

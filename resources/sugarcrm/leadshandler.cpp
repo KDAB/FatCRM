@@ -30,8 +30,8 @@ using namespace KDSoapGenerated;
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugarlead.h"
 
-#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <AkonadiCore/Collection>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/Collection>
 
 #include <KContacts/Address>
 

@@ -30,10 +30,10 @@
 #include "sugarlead.h"
 #include "sugaropportunity.h"
 
-#include <AkonadiCore/CollectionFetchJob>
-#include <AkonadiCore/CollectionFetchScope>
-#include <AkonadiCore/CollectionModifyJob>
-#include <AkonadiCore/EntityAnnotationsAttribute>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionFetchScope>
+#include <Akonadi/CollectionModifyJob>
+#include <Akonadi/EntityAnnotationsAttribute>
 
 #include <KContacts/Addressee>
 

@@ -24,8 +24,8 @@
 #include "contactsimportpage.h"
 #include "kjobprogresstracker.h"
 
-#include <AkonadiCore/ItemCreateJob>
-#include <AkonadiCore/ItemModifyJob>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemModifyJob>
 #include <KLocalizedString>
 
 ContactsImportWizard::ContactsImportWizard(QWidget *parent)

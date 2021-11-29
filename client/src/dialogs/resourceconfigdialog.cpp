@@ -25,14 +25,14 @@
 #include "ui_resourceconfigdialog.h"
 #include "fatcrm_client_debug.h"
 
-#include <AkonadiCore/AgentFilterProxyModel>
-#include <AkonadiCore/AgentInstance>
-#include <AkonadiCore/AgentInstanceCreateJob>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceCreateJob>
 #include <AkonadiWidgets/agentinstancewidget.h>
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AgentType>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AgentType>
 #include <AkonadiWidgets/AgentTypeDialog>
-#include <AkonadiCore/AgentTypeModel>
+#include <Akonadi/AgentTypeModel>
 #include <AkonadiWidgets/controlgui.h>
 using namespace Akonadi;
 

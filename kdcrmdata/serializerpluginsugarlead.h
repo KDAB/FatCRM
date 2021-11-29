@@ -23,8 +23,8 @@
 #ifndef SERIALIZERPLUGINSUGARLEAD_H
 #define SERIALIZERPLUGINSUGARLEAD_H
 
-#include <AkonadiCore/ItemSerializerPlugin>
-#include <AkonadiCore/GidExtractorInterface>
+#include <Akonadi/ItemSerializerPlugin>
+#include <Akonadi/GidExtractorInterface>
 
 #include <QObject>
 

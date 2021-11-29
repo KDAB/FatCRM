@@ -30,7 +30,7 @@
 #include "enums.h"
 #include "enumdefinitions.h"
 #include "fatcrmprivate_export.h"
-#include <AkonadiCore/Collection>
+#include <Akonadi/Collection>
 
 class KJob;
 

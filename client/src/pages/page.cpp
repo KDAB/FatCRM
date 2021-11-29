@@ -50,17 +50,17 @@
 
 #include <KDReportsReport.h>
 
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/CollectionStatistics>
-#include <AkonadiCore/EntityMimeTypeFilterModel>
-#include <AkonadiCore/Item>
-#include <AkonadiCore/ItemCreateJob>
-#include <AkonadiCore/ItemDeleteJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/EntityAnnotationsAttribute>
-#include <AkonadiCore/ServerManager>
+#include <Akonadi/AgentManager>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/CollectionStatistics>
+#include <Akonadi/EntityMimeTypeFilterModel>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemDeleteJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/EntityAnnotationsAttribute>
+#include <Akonadi/ServerManager>
 #include <AkonadiWidgets/EntityTreeView>
 
 #include <KContacts/Address>

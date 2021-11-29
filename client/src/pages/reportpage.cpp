@@ -29,8 +29,8 @@
 #include "referenceddata.h"
 #include "fatcrm_client_debug.h"
 
-#include <AkonadiCore/EntityTreeModel>
-#include <AkonadiCore/Item>
+#include <Akonadi/EntityTreeModel>
+#include <Akonadi/Item>
 
 #include <KLocalizedString>
 
