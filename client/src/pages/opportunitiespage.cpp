@@ -35,7 +35,7 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/sugaropportunity.h"
 
-#include <AkonadiWidgets/EntityTreeView>
+#include <Akonadi/EntityTreeView>
 #include <KLocalizedString>
 
 #include <QApplication>

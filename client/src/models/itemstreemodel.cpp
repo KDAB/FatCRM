@@ -37,9 +37,9 @@
 #include <KContacts/Addressee>
 #include <KContacts/PhoneNumber>
 
-#include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/EntityDisplayAttribute>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/EntityDisplayAttribute>
 #include <akonadi_version.h>
 
 #include <QDebug>

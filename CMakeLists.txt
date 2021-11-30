@@ -43,7 +43,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 find_package(KF5DBusAddons ${KF5_VERSION} CONFIG REQUIRED)
-find_package(KF5Akonadi "5.1" CONFIG QUIET)
+find_package(KF5Akonadi "5.19" CONFIG QUIET)
 if (NOT KF5Akonadi_FOUND)
     find_package(KF5Akonadi "4.80" CONFIG REQUIRED)
     add_definitions(-DAKONADI_OLD_API)

@@ -23,7 +23,7 @@
 #include "sugarresourceitemtransfer.h"
 #include "fatcrm_client_debug.h"
 
-#include <AkonadiCore/ServerManager>
+#include <Akonadi/ServerManager>
 
 #include <KLocalizedString>
 #include <KRun>

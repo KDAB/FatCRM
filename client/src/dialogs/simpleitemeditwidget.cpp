@@ -31,10 +31,10 @@
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
-#include <AkonadiCore/ItemCreateJob>
-#include <AkonadiCore/ItemModifyJob>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemModifyJob>
 
 #include <KIO/KUriFilterSearchProviderActions>
 

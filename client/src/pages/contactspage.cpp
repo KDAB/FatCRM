@@ -28,7 +28,7 @@
 #include "linkeditemsrepository.h"
 #include "contactfilterwidget.h"
 
-#include <AkonadiWidgets/EntityTreeView>
+#include <Akonadi/EntityTreeView>
 
 #include <KContacts/Address>
 #include <KContacts/Addressee>

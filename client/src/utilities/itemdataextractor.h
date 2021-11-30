@@ -24,7 +24,7 @@
 #include "fatcrmprivate_export.h"
 #include "enums.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <memory>
 

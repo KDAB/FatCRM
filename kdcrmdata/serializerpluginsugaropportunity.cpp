@@ -25,7 +25,7 @@
 #include "sugaropportunity.h"
 #include "sugaropportunityio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

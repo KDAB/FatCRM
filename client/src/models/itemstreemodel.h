@@ -25,7 +25,7 @@
 
 #include "enums.h"
 #include "fatcrmprivate_export.h"
-#include <AkonadiCore/EntityTreeModel>
+#include <Akonadi/EntityTreeModel>
 #include "accountrepository.h"
 
 #include <QVector>

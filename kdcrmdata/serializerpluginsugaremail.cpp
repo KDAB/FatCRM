@@ -25,7 +25,7 @@
 #include "sugaremail.h"
 #include "sugaremailio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

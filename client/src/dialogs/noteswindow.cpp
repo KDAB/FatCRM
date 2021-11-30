@@ -27,8 +27,8 @@
 #include "kdcrmdata/sugarnote.h"
 #include "kdcrmdata/sugaremail.h"
 
-#include <AkonadiCore/Item>
-#include <AkonadiCore/ItemCreateJob>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
 
 #include <KLocalizedString>
 

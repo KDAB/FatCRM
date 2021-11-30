@@ -23,11 +23,11 @@
 #include "conflicthandler.h"
 #include "conflictresolvedialog.h"
 #include "sugarcrmresource_debug.h"
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/Item>
-#include <AkonadiCore/ItemCreateJob>
-#include <AkonadiCore/ItemModifyJob>
-#include <AkonadiCore/Session>
+#include <Akonadi/Collection>
+#include <Akonadi/Item>
+#include <Akonadi/ItemCreateJob>
+#include <Akonadi/ItemModifyJob>
+#include <Akonadi/Session>
 using namespace Akonadi;
 
 #include <KLocalizedString>

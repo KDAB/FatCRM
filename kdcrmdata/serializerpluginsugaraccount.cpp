@@ -25,7 +25,7 @@
 #include "sugaraccount.h"
 #include "sugaraccountio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 

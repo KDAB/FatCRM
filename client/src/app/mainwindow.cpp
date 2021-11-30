@@ -53,13 +53,13 @@
 #include <KDReportsPreviewDialog.h>
 #include <KDReportsPreviewWidget.h>
 
-#include <AkonadiCore/AgentFilterProxyModel>
-#include <AkonadiCore/AgentInstance>
-#include <AkonadiCore/AgentInstanceModel>
-#include <AkonadiCore/AgentManager>
-#include <AkonadiCore/AttributeFactory>
-#include <AkonadiCore/ServerManager>
-#include <AkonadiWidgets/ControlGui>
+#include <Akonadi/AgentFilterProxyModel>
+#include <Akonadi/AgentInstance>
+#include <Akonadi/AgentInstanceModel>
+#include <Akonadi/AgentManager>
+#include <Akonadi/AttributeFactory>
+#include <Akonadi/ServerManager>
+#include <Akonadi/ControlGui>
 using namespace Akonadi;
 
 #include <KAboutData>

@@ -31,8 +31,8 @@
 using namespace KDSoapGenerated;
 #include <Akonadi/Contact/ContactParts>
 
-#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <AkonadiCore/Collection>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/Collection>
 
 #include <KContacts/Addressee>
 #include <KContacts/Address>

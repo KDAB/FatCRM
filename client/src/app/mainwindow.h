@@ -23,7 +23,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <AkonadiCore/Collection>
+#include <Akonadi/Collection>
 #include "enums.h"
 #include "fatcrmprivate_export.h"
 #include "opportunitiespage.h"

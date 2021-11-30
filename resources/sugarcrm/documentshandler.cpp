@@ -27,8 +27,8 @@
 #include "sugarjob.h"
 using namespace KDSoapGenerated;
 
-#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <AkonadiCore/Collection>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/Collection>
 
 #include <KLocalizedString>
 

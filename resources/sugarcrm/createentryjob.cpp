@@ -28,7 +28,7 @@
 using namespace KDSoapGenerated;
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <KLocalizedString>
 

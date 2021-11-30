@@ -25,7 +25,7 @@
 
 #include "sugarjob.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 namespace Akonadi
 {

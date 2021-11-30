@@ -27,7 +27,7 @@
 #include "campaignshandler.h"
 #include "sugarsession.h"
 #include <QSignalSpy>
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 Q_DECLARE_METATYPE(Module)
 

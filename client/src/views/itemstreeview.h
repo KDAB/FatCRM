@@ -24,7 +24,7 @@
 #define ITEMSTREEVIEW_H
 
 #include "itemstreemodel.h"
-#include <AkonadiWidgets/EntityTreeView>
+#include <Akonadi/EntityTreeView>
 
 class ItemsTreeView : public Akonadi::EntityTreeView
 {

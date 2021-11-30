@@ -22,9 +22,9 @@
 
 #include "conflictresolvedialog.h"
 
-#include <AkonadiCore/abstractdifferencesreporter.h> //krazy:exclude=camelcase
-#include <AkonadiCore/differencesalgorithminterface.h>
-#include <AkonadiCore/Item>
+#include <Akonadi/AbstractDifferencesReporter>
+#include <Akonadi/DifferencesAlgorithmInterface>
+#include <Akonadi/Item>
 
 #include <KColorScheme>
 #include <KLocalizedString>

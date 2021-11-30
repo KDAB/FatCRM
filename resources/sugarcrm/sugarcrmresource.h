@@ -23,7 +23,7 @@
 #ifndef SUGARCRMRESOURCE_H
 #define SUGARCRMRESOURCE_H
 
-#include <AkonadiAgentBase/ResourceBase>
+#include <Akonadi/ResourceBase>
 
 #include <QStringList>
 

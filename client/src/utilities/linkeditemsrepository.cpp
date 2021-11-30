@@ -22,11 +22,11 @@
 
 #include "linkeditemsrepository.h"
 #include "collectionmanager.h"
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/collectionstatistics.h>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiCore/Monitor>
+#include <Akonadi/Collection>
+#include <Akonadi/CollectionStatistics>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/Monitor>
 
 #include <QStringList>
 #include <sugarcontactwrapper.h>

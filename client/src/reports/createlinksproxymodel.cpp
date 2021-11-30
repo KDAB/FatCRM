@@ -22,7 +22,7 @@
 
 #include "accountdataextractor.h"
 #include "contactdataextractor.h"
-#include "entitytreemodel.h"
+#include <Akonadi/EntityTreeModel>
 #include "itemstreemodel.h"
 #include "opportunitydataextractor.h"
 

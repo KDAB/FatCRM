@@ -35,7 +35,7 @@
 #include "sugarsoapprotocol.h"
 #include "updateentryjob.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QDebug>
 #include <QSettings>

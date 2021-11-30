@@ -29,13 +29,13 @@
 #include <KAboutData>
 #include <KLocalizedString>
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/CollectionFetchJob>
-#include <AkonadiCore/CollectionFetchScope>
-#include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/ItemFetchScope>
-#include <AkonadiWidgets/EntityTreeView>
-#include <AkonadiCore/Session>
+#include <Akonadi/Collection>
+#include <Akonadi/CollectionFetchJob>
+#include <Akonadi/CollectionFetchScope>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/ItemFetchScope>
+#include <Akonadi/EntityTreeView>
+#include <Akonadi/Session>
 
 using namespace Akonadi;
 

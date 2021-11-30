@@ -33,9 +33,9 @@ using namespace KDSoapGenerated;
 
 #include "kdcrmutils.h"
 
-#include <AkonadiCore/ChangeRecorder>
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/ChangeRecorder>
+#include <Akonadi/Collection>
+#include <Akonadi/ItemFetchScope>
 
 #include <KLocalizedString>
 #include <KWindowSystem>

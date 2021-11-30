@@ -25,9 +25,9 @@
 
 #include "kdcrmdata/enumdefinitions.h"
 
-#include <AkonadiCore/differencesalgorithminterface.h> //krazy:exclude=camelcase
-#include <AkonadiCore/Item>
-#include <AkonadiCore/Collection>
+#include <Akonadi/DifferencesAlgorithmInterface>
+#include <Akonadi/Item>
+#include <Akonadi/Collection>
 
 #include <QStringList>
 #include "sugarprotocolbase.h"

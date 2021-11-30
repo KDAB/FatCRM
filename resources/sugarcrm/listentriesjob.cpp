@@ -35,10 +35,10 @@ using namespace KDSoapGenerated;
 
 #include <KDSoapClient/KDSoapMessage.h>
 
-#include <AkonadiCore/Collection>
-#include <AkonadiCore/EntityAnnotationsAttribute>
-#include <AkonadiCore/ItemFetchJob>
-#include <AkonadiCore/ItemFetchScope>
+#include <Akonadi/Collection>
+#include <Akonadi/EntityAnnotationsAttribute>
+#include <Akonadi/ItemFetchJob>
+#include <Akonadi/ItemFetchScope>
 
 using namespace Akonadi;
 

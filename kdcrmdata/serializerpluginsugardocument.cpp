@@ -23,7 +23,7 @@
 #include "sugardocument.h"
 #include "sugardocumentio.h"
 
-#include <AkonadiCore/Item>
+#include <Akonadi/Item>
 
 #include <QtCore/qplugin.h>
 
