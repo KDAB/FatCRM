@@ -22,11 +22,13 @@
 
 #include "contactshandler.h"
 #include "sugarcrmresource_debug.h"
+#include "sugarjob.h"
 #include "sugarsession.h"
+#include "sugarcontactwrapper.h"
 #include "wsdl_sugar41.h"
+
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
-#include "sugarjob.h"
 
 using namespace KDSoapGenerated;
 #include <Akonadi/Contact/ContactParts>
@@ -40,7 +42,6 @@ using namespace KDSoapGenerated;
 #include <KLocalizedString>
 
 #include <QHash>
-#include <sugarcontactwrapper.h>
 
 using valueGetter = QString (*)(const KContacts::Addressee &);
 using valueSetter = void (*)(const QString &, KContacts::Addressee &);

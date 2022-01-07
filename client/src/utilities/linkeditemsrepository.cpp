@@ -22,6 +22,8 @@
 
 #include "linkeditemsrepository.h"
 #include "collectionmanager.h"
+#include "sugarcontactwrapper.h"
+
 #include <Akonadi/Collection>
 #include <Akonadi/CollectionStatistics>
 #include <Akonadi/ItemFetchJob>
@@ -29,7 +31,6 @@
 #include <Akonadi/Monitor>
 
 #include <QStringList>
-#include <sugarcontactwrapper.h>
 
 #include "fatcrm_client_debug.h"
 

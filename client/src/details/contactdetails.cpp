@@ -32,6 +32,7 @@
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
 #include "ui_contactdetails.h"
+#include "sugarcontactwrapper.h"
 #include "fatcrm_client_debug.h"
 
 #include "kdcrmutils.h"
@@ -45,7 +46,6 @@
 #include <QCompleter>
 #include <QDesktopServices>
 #include <QMessageBox>
-#include <sugarcontactwrapper.h>
 
 ContactDetails::ContactDetails(QWidget *parent)
     : Details(DetailsType::Contact, parent), mUi(new Ui::ContactDetails), mDataExtractor(new ContactDataExtractor)

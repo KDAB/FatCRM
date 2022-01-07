@@ -37,7 +37,7 @@
 #include <Akonadi/Job>
 #include <Akonadi/Monitor>
 #include <Akonadi/ServerManager>
-#include <akonadi/qtest_akonadi.h>
+#include <akonadi/qtest_akonadi.h> //krazy:exclude=camelcase
 
 #include <QDBusInterface>
 #include <QDBusReply>

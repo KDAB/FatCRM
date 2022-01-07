@@ -21,11 +21,11 @@
 */
 
 #include "contactdataextractor.h"
+#include "sugarcontactwrapper.h"
 
 #include <KContacts/Addressee>
 
 #include <KLocalizedString>
-#include <sugarcontactwrapper.h>
 
 ContactDataExtractor::ContactDataExtractor()
 {

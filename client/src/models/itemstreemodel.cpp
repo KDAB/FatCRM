@@ -25,6 +25,7 @@
 #include "clientsettings.h"
 #include "linkeditemsrepository.h"
 #include "collectionmanager.h"
+#include "sugarcontactwrapper.h"
 #include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -57,7 +58,6 @@
 #include <QElapsedTimer>
 #include <QHash>
 #include <QScopedValueRollback>
-#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 

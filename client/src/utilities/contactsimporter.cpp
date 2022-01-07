@@ -25,6 +25,7 @@
 
 #include "contactsimporter.h"
 #include "qcsvreader.h"
+#include "sugarcontactwrapper.h"
 #include "kdcrmdata/kdcrmfields.h"
 #include "kdcrmdata/kdcrmutils.h"
 #include "fatcrm_client_debug.h"
@@ -33,7 +34,6 @@
 #include <QLocale>
 #include <QString>
 #include <QTextCodec>
-#include <sugarcontactwrapper.h>
 
 #include <config-phonenumber.h>
 

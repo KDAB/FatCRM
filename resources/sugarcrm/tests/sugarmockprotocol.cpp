@@ -28,9 +28,11 @@
 #include "listentriesscope.h"
 #include "modulename.h"
 #include "sugarsession.h"
+#include "sugarcontactwrapper.h"
+
 #include "kdcrmdata/kdcrmutils.h"
+
 #include <QtDBus/QDBusConnection>
-#include <sugarcontactwrapper.h>
 
 SugarMockProtocol::SugarMockProtocol()
     : mLastTimeStamp(QDateTime(QDate(2000, 1, 1), QTime(0, 0, 0)))

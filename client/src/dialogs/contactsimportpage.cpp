@@ -23,6 +23,7 @@
 
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
+#include "sugarcontactwrapper.h"
 
 #include <Akonadi/ItemCreateJob>
 
@@ -35,7 +36,6 @@
 #include <QGroupBox>
 #include <QLabel>
 #include <QRadioButton>
-#include <sugarcontactwrapper.h>
 
 namespace {
 

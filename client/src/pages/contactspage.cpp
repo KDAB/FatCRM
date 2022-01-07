@@ -27,6 +27,7 @@
 #include "referenceddata.h"
 #include "linkeditemsrepository.h"
 #include "contactfilterwidget.h"
+#include "sugarcontactwrapper.h"
 
 #include <Akonadi/EntityTreeView>
 
@@ -34,7 +35,6 @@
 #include <KContacts/Addressee>
 
 #include <KLocalizedString>
-#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 

@@ -23,6 +23,7 @@
 #include "filterproxymodel.h"
 #include "itemstreemodel.h"
 #include "linkeditemsrepository.h"
+#include "sugarcontactwrapper.h"
 #include "fatcrm_client_debug.h"
 
 #include "kdcrmdata/sugaraccount.h"
@@ -38,7 +39,6 @@
 #include <KLocalizedString>
 #include <QCoreApplication>
 #include <QFile>
-#include <sugarcontactwrapper.h>
 
 static bool accountMatchesFilter(const SugarAccount &account,
                                  const QString &filterString);

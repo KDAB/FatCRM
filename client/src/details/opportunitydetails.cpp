@@ -34,6 +34,8 @@
 #include "referenceddatamodel.h"
 #include "selectitemdialog.h"
 #include "externalopen.h"
+#include "referenceddata.h"
+#include "sugarcontactwrapper.h"
 
 #include "kdcrmdata/kdcrmutils.h"
 #include "kdcrmdata/kdcrmfields.h"
@@ -45,8 +47,6 @@
 #include <QCalendarWidget>
 #include <QCompleter>
 #include <QMenu>
-#include <referenceddata.h>
-#include <sugarcontactwrapper.h>
 
 OpportunityDetails::OpportunityDetails(QWidget *parent)
     : Details(DetailsType::Opportunity, parent), mUi(new Ui::OpportunityDetails), mDataExtractor(new OpportunityDataExtractor)

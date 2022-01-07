@@ -28,6 +28,7 @@
 #include "simpleitemeditwidget.h"
 #include "sugaraccount.h"
 #include "sugaropportunity.h"
+#include "sugarcontactwrapper.h"
 
 #include <KContacts/Addressee>
 
@@ -37,7 +38,6 @@
 #include <QPushButton>
 #include <QStringListModel>
 #include <QVBoxLayout>
-#include <sugarcontactwrapper.h>
 
 using namespace Akonadi;
 
