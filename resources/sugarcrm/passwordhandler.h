@@ -24,8 +24,6 @@
 #include <QObject>
 #include <QWidget>
 
-#include <config-kwallet.h>
-
 class PasswordHandler : public QObject
 {
     Q_OBJECT
@@ -39,18 +37,12 @@ public:
 Q_SIGNALS:
     void passwordAvailable();
 
-private Q_SLOTS:
-    void onWalletOpened(bool success);
-
 private:
-#if USE_KWALLET
     bool savePassword();
-
-    WId m_winId;
-    bool mWalletOpened;
-#endif
     QString mPassword;
     const QString mResourceId;
+    bool mKeychainOpened = false;
+    bool mDeniedByUser = false;
 };
 
 #endif // PASSWORDHANDLER_H

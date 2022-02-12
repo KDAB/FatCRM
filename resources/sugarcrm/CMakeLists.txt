@@ -72,6 +72,7 @@ target_link_libraries(akonadi_sugarcrm_resource_private
         KF5::CalendarCore
         KF5::AkonadiContact
         KF5::WindowSystem
+        qt5keychain
     PUBLIC
         KF5::AkonadiAgentBase
         KF5::Contacts
@@ -81,11 +82,7 @@ if(KCALENDARCORE_REQUIRES_KDE4SUPPORT)
     KF5::KDELibs4Support
   )
 endif()
-if(USE_KWALLET)
-  target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE
-    KF5::Wallet
-  )
-endif()
+
 target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE KDReports::kdreports)
 
 target_link_libraries(akonadi_sugarcrm_resource PRIVATE

@@ -19,16 +19,5 @@ endif()
 
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-if(APPLE OR WIN32)
-  set(_default_kwallet_option 0)
-else()
-  set(_default_kwallet_option 1)
-endif()
-option(USE_KWALLET "Use KWallet for password storage (default 1 on Unix, 0 on Windows/Mac)" ${_default_kwallet_option})
-if(USE_KWALLET)
-  find_package(KF5Wallet ${KF5_VERSION} CONFIG REQUIRED)
-endif()
-configure_file(config-kwallet.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-kwallet.h)
-
 add_subdirectory(salesforce)
 add_subdirectory(sugarcrm)
