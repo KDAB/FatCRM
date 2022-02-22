@@ -45,7 +45,7 @@ using namespace KDSoapGenerated;
 
 #include <KContacts/Addressee>
 #include <KContacts/Address>
-#include <KContacts/kcontacts_version.h>
+#include <kcontacts_version.h> // warning: kcontacts_version.h is installed into the KContacts prefix only since 5.92.0, so search globally for it for now
 
 #include <KLocalizedString>
 
