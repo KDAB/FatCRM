@@ -31,7 +31,14 @@
 #include "kdcrmdata/kdcrmfields.h"
 
 using namespace KDSoapGenerated;
-#include <Akonadi/Contact/ContactParts>
+
+// version header for akonadi-contacts was added just lately
+// if the include is there => means we're on PIM version 5.19.41 => new-style includes layout
+#ifdef AKONADI_CONTACT_OLD_INCLUDES_LAYOUT
+#  include <Akonadi/Contact/ContactParts> // old-style includes layout
+#else
+#  include <Akonadi/ContactParts>
+#endif
 
 #include <Akonadi/AbstractDifferencesReporter>
 #include <Akonadi/Collection>

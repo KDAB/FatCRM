@@ -76,11 +76,6 @@ target_link_libraries(akonadi_sugarcrm_resource_private
         KF5::AkonadiAgentBase
         KF5::Contacts
 )
-if(KCALENDARCORE_REQUIRES_KDE4SUPPORT)
-  target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE
-    KF5::KDELibs4Support
-  )
-endif()
 if(USE_KWALLET)
   target_link_libraries(akonadi_sugarcrm_resource_private PRIVATE
     KF5::Wallet
