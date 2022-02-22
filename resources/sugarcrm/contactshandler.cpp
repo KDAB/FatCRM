@@ -45,6 +45,7 @@ using namespace KDSoapGenerated;
 
 #include <KContacts/Addressee>
 #include <KContacts/Address>
+#include <KContacts/kcontacts_version.h>
 
 #include <KLocalizedString>
 
@@ -364,9 +365,20 @@ static QString getEmail1(const KContacts::Addressee &addressee)
     return addressee.preferredEmail();
 }
 
+static void setEmail(const QString &value, KContacts::Addressee &addressee, bool preferred)
+{
+#if KContacts_VERSION >= QT_VERSION_CHECK(5, 88, 0)
+    KContacts::Email email(value);
+    email.setPreferred(preferred);
+    addressee.addEmail(value);
+#else
+    addressee.insertEmail(value, preferred);
+#endif
+}
+
 static void setEmail1(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.insertEmail(value, true);
+    setEmail(value, addressee, true);
 }
 
 static QString getEmail2(const KContacts::Addressee &addressee)
@@ -384,7 +396,7 @@ static QString getEmail2(const KContacts::Addressee &addressee)
 
 static void setEmail2(const QString &value, KContacts::Addressee &addressee)
 {
-    addressee.insertEmail(value, false);
+    setEmail(value, addressee, false);
 }
 
 static QString getHomePhone(const KContacts::Addressee &addressee)
