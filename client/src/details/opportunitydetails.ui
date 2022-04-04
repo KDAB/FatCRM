@@ -398,6 +398,8 @@
   <tabstop>date_closed</tabstop>
   <tabstop>assigned_user_id</tabstop>
   <tabstop>assignToMeButton</tabstop>
+  <tabstop>primary_contact_id</tabstop>
+  <tabstop>buttonOpenContact</tabstop>
   <tabstop>opportunityPriority</tabstop>
   <tabstop>urgent</tabstop>
   <tabstop>amount</tabstop>
