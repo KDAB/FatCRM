@@ -1,5 +1,5 @@
 Name:           fatcrm
-Version:        2.4.0
+Version:        2.5.0
 Release:        0
 Summary:        Desktop application for SugarCRM
 Source0:        %{name}-%{version}.tar.gz
@@ -19,7 +19,7 @@ BuildRequires:  python libxslt-tools libqt5-qtbase-devel update-desktop-files kd
 
 %if %{defined fedora}
 Requires: akonadi
-BuildRequires:  gcc-c++ shared-mime-info python qt5-qtbase-devel desktop-file-utils kf5-kio-devel kf5-kwindowsystem-devel kf5-ktextwidgets-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kconfigwidgets-devel kf5-kdbusaddons-devel kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel generic-logos
+BuildRequires:  gcc-c++ shared-mime-info python qt5-qtbase-devel desktop-file-utils kf5-kio-devel kf5-kwindowsystem-devel kf5-ktextwidgets-devel kf5-kguiaddons-devel kf5-ki18n-devel kf5-kiconthemes-devel kf5-kconfigwidgets-devel kf5-kdbusaddons-devel kf5-kwallet-devel kf5-kcontacts-devel kf5-akonadi-server-devel kf5-kcalendarcore-devel kf5-akonadi-contacts-devel grantlee-devel generic-logos util-linux
 %endif
 
 %description
@@ -92,6 +92,8 @@ cmake . -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release
 %{_prefix}/share/akonadi/agents/sugarcrmresource.desktop
 
 %changelog
+* Mon Feb 28 2022 Allen Winter <allen.winter@kdab.com> 2.5.0
+- 2.5.0 release
 * Thu Dec 09 2021 Allen Winter <allen.winter@kdab.com> 2.4.0
 - 2.4.0 release
 * Tue Dec 08 2020 Allen Winter <allen.winter@kdab.com> 2.3.2
