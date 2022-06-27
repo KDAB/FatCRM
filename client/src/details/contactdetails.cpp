@@ -180,10 +180,10 @@ void ContactDetails::slotAccountActivated()
     msgBox.setWindowTitle(title);
     msgBox.setText(message);
     msgBox.setStandardButtons(QMessageBox::Yes |
-                              QMessageBox::Cancel);
+                              QMessageBox::No);
     msgBox.setDefaultButton(QMessageBox::Yes);
     int ret = msgBox.exec();
-    if (ret == QMessageBox::Cancel) {
+    if (ret != QMessageBox::Yes) {
         return;
     }
 
