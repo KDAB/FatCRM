@@ -72,11 +72,11 @@ FilterProxyModel::FilterProxyModel(DetailsType type, QObject *parent)
     setDynamicSortFilter(true); // for sorting during insertion, too
 
     if (type == DetailsType::Contact) {
-         // mailchimp export
+         // mailchimp/sendinblue export
         const QString filePath = QCoreApplication::applicationDirPath() + QLatin1String("/newsletter.txt");
         QFile f(filePath);
         if (f.open(QIODevice::ReadOnly)) {
-            d->mProtectedEmails.reserve(918);
+            d->mProtectedEmails.reserve(2500);
             while (!f.atEnd()) {
                 QByteArray line = f.readLine();
                 Q_ASSERT(line.endsWith('\n'));
