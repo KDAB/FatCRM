@@ -102,7 +102,8 @@ QVector<AccountRepository::Field> AccountRepository::modifyAccount(const SugarAc
 void AccountRepository::removeAccount(const SugarAccount &account)
 {
     const QString id = account.id();
-    Q_ASSERT(!id.isEmpty());
+    if (id.isEmpty()) // not yet created on server
+        return;
     const QString key = account.key();
     const QString cleanAccountName = account.cleanAccountName();
 
